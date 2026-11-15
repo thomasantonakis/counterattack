@@ -1,0 +1,6 @@
+{"name":"ShootoutRollPanelPlayModeTests.ShootoutPanel(\"1/keeper\")","status":"Passed","message":"","stackTrace":""}
+{"name":"ShootoutRollPanelPlayModeTests.ShootoutPanel(\"-1/keeper\")","status":"Passed","message":"","stackTrace":""}
+{"name":"ShootoutRollPanelPlayModeTests.ShootoutPanel(\"1/offtarget\")","status":"Passed","message":"","stackTrace":""}
+{"name":"ShootoutRollPanelPlayModeTests.ShootoutPanel(\"-1/offtarget\")","status":"Passed","message":"","stackTrace":""}
+{"name":"ShootoutRollPanelPlayModeTests.ShootoutPanel(\"1/animation\")","status":"Passed","message":"","stackTrace":""}
+{"name":"ShootoutRollPanelPlayModeTests.ShootoutPanel(\"-1/animation\")","status":"Passed","message":"","stackTrace":""}

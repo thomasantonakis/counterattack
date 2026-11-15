@@ -1,0 +1,12 @@
+{"name":"OnlineSharedPausePlayModeTests.InFlightBallFreezesAndResumesOnce(1)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSharedPausePlayModeTests.InFlightBallFreezesAndResumesOnce(-1)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSharedPausePlayModeTests.PausedInterceptionCannotDrawOrReplayARoll(1)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSharedPausePlayModeTests.PausedInterceptionCannotDrawOrReplayARoll(-1)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSharedPausePlayModeTests.RequesterOwnsPauseAcrossReconnect(1,False,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSharedPausePlayModeTests.RequesterOwnsPauseAcrossReconnect(1,False,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSharedPausePlayModeTests.RequesterOwnsPauseAcrossReconnect(1,True,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSharedPausePlayModeTests.RequesterOwnsPauseAcrossReconnect(1,True,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSharedPausePlayModeTests.RequesterOwnsPauseAcrossReconnect(-1,False,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSharedPausePlayModeTests.RequesterOwnsPauseAcrossReconnect(-1,False,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSharedPausePlayModeTests.RequesterOwnsPauseAcrossReconnect(-1,True,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSharedPausePlayModeTests.RequesterOwnsPauseAcrossReconnect(-1,True,True)","status":"Passed","message":"","stackTrace":""}

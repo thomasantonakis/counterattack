@@ -4,6 +4,9 @@ using CounterAttack.Online;
 using UnityEngine;
 public partial class MatchManager
 {
+    public bool OnlineMatchComplete=>isMatchComplete && !isHalfTimeFlowRunning && !isTieBreakerTossRunning;
+    private PenaltyShootoutManager onlineShootoutManager;
+    public PenaltyShootoutManager OnlineShootoutManager=>onlineShootoutManager!=null?onlineShootoutManager:onlineShootoutManager=gameObject.scene.GetRootGameObjects().SelectMany(r=>r.GetComponentsInChildren<PenaltyShootoutManager>(true)).FirstOrDefault();
     public RoomTokenSnapshot CaptureOnlineRosterToken(PlayerToken token)=>CreateTokenSnapshot(token);
     public bool OnlineExtraTimeSubstitutionCredit=>extraTimeSubstitutionCreditGranted;
     public void InitializeAuthoredOnlineMatch(GameData initial)
@@ -24,6 +27,7 @@ public partial class MatchManager
         if(!OnlineRoomSession.IsGuest)throw new InvalidOperationException("Only replicas apply published match state");
         if(Enum.TryParse(state.gameState,out GameState parsed))currentState=parsed;
         if(Enum.TryParse(state.possessionTeam,out TeamInAttack attack))teamInAttack=attack;
+        isMatchComplete=state.matchComplete;
         attackHasPossession=state.attackHasPossession;currentHalf=state.half;currentHalfRegulationSeconds=state.regulationSeconds;isClockRunning=state.clockRunning;
         gameData.stats.homeTeamStats=JsonUtility.FromJson<TeamStats>(JsonUtility.ToJson(state.homeStats));
         gameData.stats.awayTeamStats=JsonUtility.FromJson<TeamStats>(JsonUtility.ToJson(state.awayStats));
@@ -61,6 +65,7 @@ public partial class MatchManager
                 var hex=hexGrid.GetHexCellAt(new Vector3Int(item.x,0,item.z));if(hex==null)continue;
                 token.isAttacker=token.isHomeTeam==(teamInAttack==TeamInAttack.Home);hex.isAttackOccupied=token.isAttacker;hex.isDefenseOccupied=!token.isAttacker;token.SetCurrentHex(hex);
             }
+            OnlineShootoutManager?.ApplyOnlineShootout(state.shootout,tokens);
             if(state.ballOnBoard)ball.PlaceAtCell(hexGrid.GetHexCellAt(new Vector3Int(state.ballX,0,state.ballZ)));
             LastTokenToTouchTheBallOnPurpose=tokens.FirstOrDefault(t=>OnlineRollPublication.ActorId(t)==state.lastTouch);
             if(playerTokenManager.AuthoredOnlineRoster!=null)

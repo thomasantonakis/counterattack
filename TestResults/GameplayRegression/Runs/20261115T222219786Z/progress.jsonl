@@ -1,0 +1,11 @@
+{"name":"OnlineSharedPauseEditorTests.ControlReceiptsAreBoundedAndCannotReplayAnExpiredPause","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSharedPauseEditorTests.DisposeRestoresOwnedPauseAndScaleWithoutTouchingGameState","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSharedPauseEditorTests.InvalidControlCannotMutatePause(\"unknown\",\"match\",1,0,\"shared-pause\",\"pause.request\",UnknownConnection)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSharedPauseEditorTests.InvalidControlCannotMutatePause(\"h\",\"wrong\",1,0,\"shared-pause\",\"pause.request\",WrongMatch)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSharedPauseEditorTests.InvalidControlCannotMutatePause(\"h\",\"match\",0,0,\"shared-pause\",\"pause.request\",InvalidCommand)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSharedPauseEditorTests.InvalidControlCannotMutatePause(\"h\",\"match\",1,1,\"shared-pause\",\"pause.request\",StaleRevision)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSharedPauseEditorTests.InvalidControlCannotMutatePause(\"h\",\"match\",1,0,\"wrong\",\"pause.request\",WrongDecision)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSharedPauseEditorTests.InvalidControlCannotMutatePause(\"h\",\"match\",1,0,\"shared-pause\",\"anything\",IllegalAction)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSharedPauseEditorTests.InvalidControlCannotMutatePause(\"h\",\"match\",1,0,\"shared-pause\",\"pause.resume\",NotReady)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSharedPauseEditorTests.OldWireVersionCannotSilentlySkipSharedPause","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSharedPauseEditorTests.VersionSixControlFramePreservesItsSeparateRevisionAndSequence","status":"Passed","message":"","stackTrace":""}

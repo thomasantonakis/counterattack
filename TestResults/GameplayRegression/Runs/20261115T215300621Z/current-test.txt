@@ -1,0 +1,1 @@
+OnlineShootoutPlayModeTests.OwnOrdersRequireBothManagers(False,False,False)

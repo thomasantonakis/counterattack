@@ -1,5 +1,14 @@
 # Running gameplay regressions
 
+For online shootouts, run EditMode fixture `OnlineShootoutEditorTests` (19 cases)
+and PlayMode fixture `OnlineShootoutPlayModeTests` (36 cases), category
+`OnlineShootout`. Folders: `Assets/Editor/FeatureTests/OnlineShootout/` and
+`Assets/Tests/PlayMode/Features/OnlineShootout/`. The PlayMode methods separately
+select ordering (8), paused substitution reconciliation (4), first-kick outcomes
+(16) and complete early/sudden-death shootouts (8). They use real authored Room,
+deterministic dice and fresh inert guests, with no external EOS peer required.
+Use focused method filters serially for iteration; retain native XML/progress.
+
 For in-flight full Room snapshot continuity, run EditMode fixture
 `OnlineSnapshotPoseEditorTests` (9 cases) and PlayMode fixture
 `OnlineSnapshotPosePlayModeTests` (5 cases), category `OnlineSnapshotPose`.

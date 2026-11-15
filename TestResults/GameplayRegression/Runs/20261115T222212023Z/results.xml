@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="8" result="Passed" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-15 22:22:12Z" end-time="2026-11-15 22:22:12Z" duration="0.0891419">
+  <test-suite type="TestSuite" id="4714" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1684" result="Passed" start-time="2026-11-15 22:22:12Z" end-time="2026-11-15 22:22:12Z" duration="0.089142" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="4708" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="1684" result="Passed" start-time="2026-11-15 22:22:12Z" end-time="2026-11-15 22:22:12Z" duration="0.070656" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17216" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="3343" name="OnlineContinuousSessionEditorTests" fullname="OnlineContinuousSessionEditorTests" classname="OnlineContinuousSessionEditorTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-11-15 22:22:12Z" end-time="2026-11-15 22:22:12Z" duration="0.067473" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineContinuousSession" />
+        </properties>
+        <test-case id="3344" name="CompletedPassEndsProofButKeepsContinuousSessionOpen" fullname="OnlineContinuousSessionEditorTests.CompletedPassEndsProofButKeepsContinuousSessionOpen" methodname="CompletedPassEndsProofButKeepsContinuousSessionOpen" classname="OnlineContinuousSessionEditorTests" runstate="Runnable" seed="1847542305" result="Passed" start-time="2026-11-15 22:22:12Z" end-time="2026-11-15 22:22:12Z" duration="0.004226" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="3345" name="MatchEndCanFinishContinuousWithoutAPass" fullname="OnlineContinuousSessionEditorTests.MatchEndCanFinishContinuousWithoutAPass" methodname="MatchEndCanFinishContinuousWithoutAPass" classname="OnlineContinuousSessionEditorTests" runstate="Runnable" seed="92509855" result="Passed" start-time="2026-11-15 22:22:12Z" end-time="2026-11-15 22:22:12Z" duration="0.000721" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="3351" name="MatchEndWaitsForMotionAndHolds" fullname="OnlineContinuousSessionEditorTests.MatchEndWaitsForMotionAndHolds" classname="OnlineContinuousSessionEditorTests" runstate="Runnable" testcasecount="5" result="Passed" start-time="2026-11-15 22:22:12Z" end-time="2026-11-15 22:22:12Z" duration="0.036093" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="3346" name="MatchEndWaitsForMotionAndHolds(&quot;pass&quot;)" fullname="OnlineContinuousSessionEditorTests.MatchEndWaitsForMotionAndHolds(&quot;pass&quot;)" methodname="MatchEndWaitsForMotionAndHolds" classname="OnlineContinuousSessionEditorTests" runstate="Runnable" seed="1959099097" result="Passed" start-time="2026-11-15 22:22:12Z" end-time="2026-11-15 22:22:12Z" duration="0.000823" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3347" name="MatchEndWaitsForMotionAndHolds(&quot;ball&quot;)" fullname="OnlineContinuousSessionEditorTests.MatchEndWaitsForMotionAndHolds(&quot;ball&quot;)" methodname="MatchEndWaitsForMotionAndHolds" classname="OnlineContinuousSessionEditorTests" runstate="Runnable" seed="543281795" result="Passed" start-time="2026-11-15 22:22:12Z" end-time="2026-11-15 22:22:12Z" duration="0.000190" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3348" name="MatchEndWaitsForMotionAndHolds(&quot;player&quot;)" fullname="OnlineContinuousSessionEditorTests.MatchEndWaitsForMotionAndHolds(&quot;player&quot;)" methodname="MatchEndWaitsForMotionAndHolds" classname="OnlineContinuousSessionEditorTests" runstate="Runnable" seed="1940492164" result="Passed" start-time="2026-11-15 22:22:12Z" end-time="2026-11-15 22:22:12Z" duration="0.000189" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3349" name="MatchEndWaitsForMotionAndHolds(&quot;pause&quot;)" fullname="OnlineContinuousSessionEditorTests.MatchEndWaitsForMotionAndHolds(&quot;pause&quot;)" methodname="MatchEndWaitsForMotionAndHolds" classname="OnlineContinuousSessionEditorTests" runstate="Runnable" seed="1227914675" result="Passed" start-time="2026-11-15 22:22:12Z" end-time="2026-11-15 22:22:12Z" duration="0.000278" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3350" name="MatchEndWaitsForMotionAndHolds(&quot;connection&quot;)" fullname="OnlineContinuousSessionEditorTests.MatchEndWaitsForMotionAndHolds(&quot;connection&quot;)" methodname="MatchEndWaitsForMotionAndHolds" classname="OnlineContinuousSessionEditorTests" runstate="Runnable" seed="818130552" result="Passed" start-time="2026-11-15 22:22:12Z" end-time="2026-11-15 22:22:12Z" duration="0.000195" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-case id="3352" name="ProfilesCannotAcceptEachOthersSnapshotCatalog" fullname="OnlineContinuousSessionEditorTests.ProfilesCannotAcceptEachOthersSnapshotCatalog" methodname="ProfilesCannotAcceptEachOthersSnapshotCatalog" classname="OnlineContinuousSessionEditorTests" runstate="Runnable" seed="857100362" result="Passed" start-time="2026-11-15 22:22:12Z" end-time="2026-11-15 22:22:12Z" duration="0.007927" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Saving results to: TestResults\GameplayRegression\Runs\20261115T222212023Z\results.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

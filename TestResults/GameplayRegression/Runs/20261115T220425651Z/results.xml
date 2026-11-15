@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="19" result="Passed" total="19" passed="19" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-15 22:04:25Z" end-time="2026-11-15 22:04:25Z" duration="0.2626594">
+  <test-suite type="TestSuite" id="2991" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1684" result="Passed" start-time="2026-11-15 22:04:25Z" end-time="2026-11-15 22:04:25Z" duration="0.262659" total="19" passed="19" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="2985" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="1684" result="Passed" start-time="2026-11-15 22:04:25Z" end-time="2026-11-15 22:04:25Z" duration="0.221882" total="19" passed="19" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17216" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="2180" name="OnlineShootoutEditorTests" fullname="OnlineShootoutEditorTests" classname="OnlineShootoutEditorTests" runstate="Runnable" testcasecount="19" result="Passed" start-time="2026-11-15 22:04:25Z" end-time="2026-11-15 22:04:25Z" duration="0.213375" total="19" passed="19" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineShootout" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="2187" name="FullRoomFinishesOnlyAfterRealCompletion" fullname="OnlineShootoutEditorTests.FullRoomFinishesOnlyAfterRealCompletion" classname="OnlineShootoutEditorTests" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-11-15 22:04:25Z" end-time="2026-11-15 22:04:25Z" duration="0.074271" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="2181" name="FullRoomFinishesOnlyAfterRealCompletion(&quot;MatchEnded&quot;,False,False)" fullname="OnlineShootoutEditorTests.FullRoomFinishesOnlyAfterRealCompletion(&quot;MatchEnded&quot;,False,False)" methodname="FullRoomFinishesOnlyAfterRealCompletion" classname="OnlineShootoutEditorTests" runstate="Runnable" seed="1021928298" result="Passed" start-time="2026-11-15 22:04:25Z" end-time="2026-11-15 22:04:25Z" duration="0.023025" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2182" name="FullRoomFinishesOnlyAfterRealCompletion(&quot;MatchEnded&quot;,True,True)" fullname="OnlineShootoutEditorTests.FullRoomFinishesOnlyAfterRealCompletion(&quot;MatchEnded&quot;,True,True)" methodname="FullRoomFinishesOnlyAfterRealCompletion" classname="OnlineShootoutEditorTests" runstate="Runnable" seed="446594847" result="Passed" start-time="2026-11-15 22:04:25Z" end-time="2026-11-15 22:04:25Z" duration="0.000230" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2183" name="FullRoomFinishesOnlyAfterRealCompletion(&quot;PenaltyShootoutComplete&quot;,False,False)" fullname="OnlineShootoutEditorTests.FullRoomFinishesOnlyAfterRealCompletion(&quot;PenaltyShootoutComplete&quot;,False,False)" methodname="FullRoomFinishesOnlyAfterRealCompletion" classname="OnlineShootoutEditorTests" runstate="Runnable" seed="168188190" result="Passed" start-time="2026-11-15 22:04:25Z" end-time="2026-11-15 22:04:25Z" duration="0.000220" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2184" name="FullRoomFinishesOnlyAfterRealCompletion(&quot;PenaltyShootoutComplete&quot;,True,True)" fullname="OnlineShootoutEditorTests.FullRoomFinishesOnlyAfterRealCompletion(&quot;PenaltyShootoutComplete&quot;,True,True)" methodname="FullRoomFinishesOnlyAfterRealCompletion" classname="OnlineShootoutEditorTests" runstate="Runnable" seed="1861633652" result="Passed" start-time="2026-11-15 22:04:25Z" end-time="2026-11-15 22:04:25Z" duration="0.000340" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2185" name="FullRoomFinishesOnlyAfterRealCompletion(&quot;PenaltyShootoutOrderSelection&quot;,False,False)" fullname="OnlineShootoutEditorTests.FullRoomFinishesOnlyAfterRealCompletion(&quot;PenaltyShootoutOrderSelection&quot;,False,False)" methodname="FullRoomFinishesOnlyAfterRealCompletion" classname="OnlineShootoutEditorTests" runstate="Runnable" seed="1296339735" result="Passed" start-time="2026-11-15 22:04:25Z" end-time="2026-11-15 22:04:25Z" duration="0.000324" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2186" name="FullRoomFinishesOnlyAfterRealCompletion(&quot;PenaltyShootoutOrderSelection&quot;,True,False)" fullname="OnlineShootoutEditorTests.FullRoomFinishesOnlyAfterRealCompletion(&quot;PenaltyShootoutOrderSelection&quot;,True,False)" methodname="FullRoomFinishesOnlyAfterRealCompletion" classname="OnlineShootoutEditorTests" runstate="Runnable" seed="2120683417" result="Passed" start-time="2026-11-15 22:04:25Z" end-time="2026-11-15 22:04:25Z" duration="0.000306" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="2201" name="InvalidShootoutCannotAdvanceGuest" fullname="OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest" classname="OnlineShootoutEditorTests" runstate="Runnable" testcasecount="13" result="Passed" start-time="2026-11-15 22:04:25Z" end-time="2026-11-15 22:04:25Z" duration="0.131223" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="2188" name="InvalidShootoutCannotAdvanceGuest(&quot;missing-order&quot;)" fullname="OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(&quot;missing-order&quot;)" methodname="InvalidShootoutCannotAdvanceGuest" classname="OnlineShootoutEditorTests" runstate="Runnable" seed="584285724" result="Passed" start-time="2026-11-15 22:04:25Z" end-time="2026-11-15 22:04:25Z" duration="0.042630" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2189" name="InvalidShootoutCannotAdvanceGuest(&quot;duplicate&quot;)" fullname="OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(&quot;duplicate&quot;)" methodname="InvalidShootoutCannotAdvanceGuest" classname="OnlineShootoutEditorTests" runstate="Runnable" seed="1520642049" result="Passed" start-time="2026-11-15 22:04:25Z" end-time="2026-11-15 22:04:25Z" duration="0.004204" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2190" name="InvalidShootoutCannotAdvanceGuest(&quot;cross-team&quot;)" fullname="OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(&quot;cross-team&quot;)" methodname="InvalidShootoutCannotAdvanceGuest" classname="OnlineShootoutEditorTests" runstate="Runnable" seed="1968585386" result="Passed" start-time="2026-11-15 22:04:25Z" end-time="2026-11-15 22:04:25Z" duration="0.004657" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2191" name="InvalidShootoutCannotAdvanceGuest(&quot;ineligible&quot;)" fullname="OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(&quot;ineligible&quot;)" methodname="InvalidShootoutCannotAdvanceGuest" classname="OnlineShootoutEditorTests" runstate="Runnable" seed="984348682" result="Passed" start-time="2026-11-15 22:04:25Z" end-time="2026-11-15 22:04:25Z" duration="0.004224" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2192" name="InvalidShootoutCannotAdvanceGuest(&quot;unequal&quot;)" fullname="OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(&quot;unequal&quot;)" methodname="InvalidShootoutCannotAdvanceGuest" classname="OnlineShootoutEditorTests" runstate="Runnable" seed="325286634" result="Passed" start-time="2026-11-15 22:04:25Z" end-time="2026-11-15 22:04:25Z" duration="0.005096" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2193" name="InvalidShootoutCannotAdvanceGuest(&quot;sent-off&quot;)" fullname="OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(&quot;sent-off&quot;)" methodname="InvalidShootoutCannotAdvanceGuest" classname="OnlineShootoutEditorTests" runstate="Runnable" seed="1380920275" result="Passed" start-time="2026-11-15 22:04:25Z" end-time="2026-11-15 22:04:25Z" duration="0.004763" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2194" name="InvalidShootoutCannotAdvanceGuest(&quot;score&quot;)" fullname="OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(&quot;score&quot;)" methodname="InvalidShootoutCannotAdvanceGuest" classname="OnlineShootoutEditorTests" runstate="Runnable" seed="1085389757" result="Passed" start-time="2026-11-15 22:04:25Z" end-time="2026-11-15 22:04:25Z" duration="0.004111" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2195" name="InvalidShootoutCannotAdvanceGuest(&quot;results&quot;)" fullname="OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(&quot;results&quot;)" methodname="InvalidShootoutCannotAdvanceGuest" classname="OnlineShootoutEditorTests" runstate="Runnable" seed="1278635089" result="Passed" start-time="2026-11-15 22:04:25Z" end-time="2026-11-15 22:04:25Z" duration="0.004215" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2196" name="InvalidShootoutCannotAdvanceGuest(&quot;attempts&quot;)" fullname="OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(&quot;attempts&quot;)" methodname="InvalidShootoutCannotAdvanceGuest" classname="OnlineShootoutEditorTests" runstate="Runnable" seed="529268036" result="Passed" start-time="2026-11-15 22:04:25Z" end-time="2026-11-15 22:04:25Z" duration="0.004311" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2197" name="InvalidShootoutCannotAdvanceGuest(&quot;phase&quot;)" fullname="OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(&quot;phase&quot;)" methodname="InvalidShootoutCannotAdvanceGuest" classname="OnlineShootoutEditorTests" runstate="Runnable" seed="720112884" result="Passed" start-time="2026-11-15 22:04:25Z" end-time="2026-11-15 22:04:25Z" duration="0.004117" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2198" name="InvalidShootoutCannotAdvanceGuest(&quot;unknown-shooter&quot;)" fullname="OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(&quot;unknown-shooter&quot;)" methodname="InvalidShootoutCannotAdvanceGuest" classname="OnlineShootoutEditorTests" runstate="Runnable" seed="2000957741" result="Passed" start-time="2026-11-15 22:04:25Z" end-time="2026-11-15 22:04:25Z" duration="0.004994" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2199" name="InvalidShootoutCannotAdvanceGuest(&quot;unknown-keeper&quot;)" fullname="OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(&quot;unknown-keeper&quot;)" methodname="InvalidShootoutCannotAdvanceGuest" classname="OnlineShootoutEditorTests" runstate="Runnable" seed="1783958618" result="Passed" start-time="2026-11-15 22:04:25Z" end-time="2026-11-15 22:04:25Z" duration="0.004987" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2200" name="InvalidShootoutCannotAdvanceGuest(&quot;missing-eligible&quot;)" fullname="OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(&quot;missing-eligible&quot;)" methodname="InvalidShootoutCannotAdvanceGuest" classname="OnlineShootoutEditorTests" runstate="Runnable" seed="1663319061" result="Passed" start-time="2026-11-15 22:04:25Z" end-time="2026-11-15 22:04:25Z" duration="0.004245" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Saving results to: TestResults\GameplayRegression\Runs\20261115T220425651Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

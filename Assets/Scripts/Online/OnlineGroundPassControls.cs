@@ -25,6 +25,9 @@ namespace CounterAttack.Online
             :state.awayKeeperReplacement || state.awayForcedKeeperSubstitution || state.awayEmergencyKeeper);
         public bool CanManageRequiredKeeper=>connected && !pending && state?.isSharedPaused==true && !state.connectionHeld && OwnRequiredKeeper;
         public bool CanManageSubstitutions=>state?.keeperActionBlocked==true?CanManageRequiredKeeper && !(team==OnlineTeam.Home?state.homeEmergencyKeeper:state.awayEmergencyKeeper):CanManageOwnPause;
+        public bool CanManageShootout=>connected && !pending && state?.shootout?.selecting==true && !state.connectionHeld && !state.isSharedPaused;
+        public void SwapShootout(int first,int second)=>Control("shootout.swap:"+first+":"+second);
+        public void ConfirmShootout()=>Control("shootout.ready");
         public bool CanNominateKeeper=>CanManageRequiredKeeper && (team==OnlineTeam.Home?state.homeEmergencyKeeper:state.awayEmergencyKeeper);
         private OnlineGroundPassState state;
         private OnlineTeam team;
@@ -207,12 +210,14 @@ namespace CounterAttack.Online
             if (!connected || pending || state == null || action == OnlineSharedPause.ResumeAction
                 && (!state.isSharedPaused || state.pauseRequester != team.ToString())
                 || action == OnlineSharedPause.RequestAction && state.isSharedPaused) return;
+            bool shootout=action.StartsWith("shootout.",StringComparison.Ordinal);
+            if(shootout && !CanManageShootout)return;
             if(action.StartsWith("roster.substitute:",StringComparison.Ordinal)
                 && (!CanManageSubstitutions || !state.substitutionsAvailable))return;
             if(action.StartsWith("keeper.nominate:",StringComparison.Ordinal) && !CanNominateKeeper)return;
             if(action==OnlineSharedPause.ResumeAction && state.keeperActionBlocked)return;
             Emit(new OnlineGroundPassMessage { kind = "control", matchId = state.matchId, sequence = checked(++controlSequence),
-                revision = state.sharedPauseRevision, decisionId = "shared-pause", actionId = action });
+                revision = state.sharedPauseRevision, decisionId = shootout?"shootout-order":"shared-pause", actionId = action });
         }
 
         private void Emit(OnlineGroundPassMessage message)

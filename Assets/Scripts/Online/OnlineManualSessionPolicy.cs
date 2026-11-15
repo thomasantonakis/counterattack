@@ -8,7 +8,12 @@ namespace CounterAttack.Online
         public static bool CanFinish(OnlineGroundPassState state,bool continuous)
         {
             if(state==null || state.passActive || state.ballMoving || state.playerMoving || state.isSharedPaused || state.connectionHeld)return false;
-            if(continuous)return state.gameState==MatchManager.GameState.MatchEnded.ToString();
+            if(continuous)
+            {
+                if(state.catalogId==OnlineFullRoomBootstrap.Catalog)return state.matchComplete &&
+                    (state.gameState==MatchManager.GameState.MatchEnded.ToString() || state.gameState==MatchManager.GameState.PenaltyShootoutComplete.ToString() && state.shootout?.complete==true);
+                return state.gameState==MatchManager.GameState.MatchEnded.ToString();
+            }
             return (state.stage=="continuation" || state.stage=="action") && state.tokens!=null
                 && state.tokens.Any(token=>token.passesAttempted==1);
         }

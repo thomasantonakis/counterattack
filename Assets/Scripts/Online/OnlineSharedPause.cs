@@ -68,6 +68,7 @@ namespace CounterAttack.Online
             OnlineCommandReply Reply(OnlineCommandStatus status) => new(status, Revision);
             if (disposed || faulted) return Reply(OnlineCommandStatus.NotReady);
             SynchronizeRequiredKeeperHold();
+            if(protocol.Compatibility.Catalog==OnlineFullRoomBootstrap.Catalog && match.OnlineShootoutManager?.RefreshOnlineOrders()==true)Revision=checked(Revision+1);
             if (control == null || !control.IsValid) return Reply(OnlineCommandStatus.InvalidCommand);
             if (control.MatchId != protocol.MatchId) return Reply(OnlineCommandStatus.WrongMatch);
             if (!protocol.TryGetTeam(connection, out var team)) return Reply(OnlineCommandStatus.UnknownConnection);
@@ -78,12 +79,14 @@ namespace CounterAttack.Online
             if (control.Sequence <= lastSequence[team]) return Reply(OnlineCommandStatus.StaleSequence);
             if (!protocol.BothConnected) return Reply(OnlineCommandStatus.Disconnected);
             if (control.Revision != Revision) return Reply(OnlineCommandStatus.StaleRevision);
-            if (control.DecisionId != "shared-pause") return Reply(OnlineCommandStatus.WrongDecision);
+            bool shootout=control.ActionId.StartsWith("shootout.",StringComparison.Ordinal);
+            if (control.DecisionId != (shootout?"shootout-order":"shared-pause")) return Reply(OnlineCommandStatus.WrongDecision);
             bool substitution=ParseSubstitution(control.ActionId,out int outgoing,out int incoming);
             bool nomination=ParseEmergencyKeeper(control.ActionId,out int nominee);
             bool full=protocol.Compatibility.Catalog==OnlineFullRoomBootstrap.Catalog;
             var requiredTeam=default(OnlineTeam);bool required=full && match.TryGetOnlineRequiredKeeperTeam(out requiredTeam);
-            if (control.ActionId != RequestAction && control.ActionId != ResumeAction && !substitution && !nomination) return Reply(OnlineCommandStatus.IllegalAction);
+            if (control.ActionId != RequestAction && control.ActionId != ResumeAction && !substitution && !nomination && !shootout) return Reply(OnlineCommandStatus.IllegalAction);
+            if(shootout && (!full || IsPaused || ConnectionHeld || match.OnlineShootoutManager?.OnlineOrderSelection!=true))return Reply(OnlineCommandStatus.NotReady);
             if((substitution || nomination) && required && requiredTeam!=team)return Reply(OnlineCommandStatus.WrongTeam);
             // Required team choices do not transfer another manager's user pause.
             if (IsPaused && Requester != team && !((substitution || nomination) && required && requiredTeam==team)) return Reply(OnlineCommandStatus.WrongTeam);
@@ -94,7 +97,12 @@ namespace CounterAttack.Online
             if(control.ActionId==ResumeAction && full && match.HasGoalkeeperActionBlockingResume())return Reply(OnlineCommandStatus.NotReady);
 
             var nextRevision = checked(Revision + 1);
-            if(substitution)
+            if(shootout)
+            {
+                try{if(!match.OnlineShootoutManager.TryExecuteOnlineOrder(team==OnlineTeam.Home,control.ActionId))return Reply(OnlineCommandStatus.IllegalAction);}
+                catch{faulted=true;throw;}
+            }
+            else if(substitution)
             {
                 if(protocol.Compatibility.Catalog!=OnlineFullRoomBootstrap.Catalog)return Reply(OnlineCommandStatus.IllegalAction);
                 var roster=match.playerTokenManager?.AuthoredOnlineRoster;
@@ -142,6 +150,7 @@ namespace CounterAttack.Online
         public OnlineGroundPassState Capture(OnlineGroundPassAuthority authority)
         {
             SynchronizeRequiredKeeperHold();
+            if(protocol.Compatibility.Catalog==OnlineFullRoomBootstrap.Catalog && match.OnlineShootoutManager?.RefreshOnlineOrders()==true)Revision=checked(Revision+1);
             return authority.Capture(this);
         }
         private void SynchronizeRequiredKeeperHold()

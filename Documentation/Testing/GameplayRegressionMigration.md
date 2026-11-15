@@ -1,5 +1,14 @@
 # Gameplay regression migration
 
+Online shootout ordering/outcomes add 19 EditMode and 36 PlayMode cases in
+`Assets/Editor/FeatureTests/OnlineShootout/` and
+`Assets/Tests/PlayMode/Features/OnlineShootout/`, category `OnlineShootout`.
+Feature Verification.md retains exact native evidence, fixture corrections and
+the reproduced online end-panel/scoreboard issue. Full Room v6 publishes orders,
+readiness, scores, attempts/results, actors and explicit final completion.
+No legacy scenario is retired; normal Room opening coin toss/half transitions
+and actual paired internet acceptance remain separate integration work.
+
 Full Room snapshot pose continuity adds 9 EditMode and 5 PlayMode cases in
 `Assets/Editor/FeatureTests/OnlineSnapshotPose/` and
 `Assets/Tests/PlayMode/Features/OnlineSnapshotPose/`, category `OnlineSnapshotPose`.

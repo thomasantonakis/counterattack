@@ -43,11 +43,12 @@ namespace CounterAttack.Online
         public DecisionTimingSnapshot timing;
         public float regulationSeconds;
         public int half;
-        public bool clockRunning;
+        public bool clockRunning,matchComplete;
         public MatchManager.TeamStats homeStats, awayStats;
         public OnlineRollPublication[] rolls;
         public OnlineHeaderObservation header;
         public OnlineGroundPassPresentation roomPose;
+        public OnlineShootoutSnapshot shootout;
     }
 
     /// <summary>
@@ -195,6 +196,7 @@ namespace CounterAttack.Online
                 homeEmergencyKeeper=protocol.Compatibility.Catalog==OnlineFullRoomBootstrap.Catalog && match.IsEmergencyGoalkeeperNominationRequiredForTeam(true),
                 awayEmergencyKeeper=protocol.Compatibility.Catalog==OnlineFullRoomBootstrap.Catalog && match.IsEmergencyGoalkeeperNominationRequiredForTeam(false),
                 substitutionsReason=protocol.Compatibility.Catalog==OnlineFullRoomBootstrap.Catalog?match.SubstitutionsAvailabilityReason:null,
+                shootout=protocol.Compatibility.Catalog==OnlineFullRoomBootstrap.Catalog?match.OnlineShootoutManager?.CaptureOnlineShootout():null,
                 rolls = match.CaptureOnlineRolls(),
                 header = CaptureHeaderObservation(),
                 homeAcceptedSequence = protocol.LastAcceptedSequence(OnlineTeam.Home),
@@ -202,7 +204,7 @@ namespace CounterAttack.Online
                 homePauseSequence = sharedPause?.LastAcceptedSequence(OnlineTeam.Home) ?? 0,
                 awayPauseSequence = sharedPause?.LastAcceptedSequence(OnlineTeam.Away) ?? 0,
                 timing = match.CaptureOnlineDecisionTiming(), regulationSeconds = match.OnlineRegulationSeconds,
-                half = match.currentHalf, clockRunning = match.isClockRunning,
+                half = match.currentHalf, clockRunning = match.isClockRunning,matchComplete=match.OnlineMatchComplete,
                 homeStats = JsonUtility.FromJson<MatchManager.TeamStats>(JsonUtility.ToJson(match.gameData.stats.homeTeamStats)),
                 awayStats = JsonUtility.FromJson<MatchManager.TeamStats>(JsonUtility.ToJson(match.gameData.stats.awayTeamStats)),
                 stage = "continuation", owner = attacking, gameState = match.currentState.ToString(),
@@ -226,7 +228,8 @@ namespace CounterAttack.Online
                 interceptorZ = interceptor == null ? 0 : interceptor.coordinates.z,
                 movementAvailable = match.movementPhaseManager?.isAvailable == true,
                 movementActive = match.movementPhaseManager?.isActivated == true,
-                playerMoving = match.movementPhaseManager?.isPlayerMoving == true
+                playerMoving = match.OnlineShootoutManager?.OnlinePresentationMoving==true
+                    || match.movementPhaseManager?.isPlayerMoving == true
                     || match.movementPhaseManager?.IsResolvingReposition == true
                     || match.goalFlowManager?.isActivated == true || match.kickoffManager?.IsWaitingForMovementToComplete() == true
                     || KeeperRules?.IsResolvingMove == true || match.freeKickManager?.IsResolvingSetup == true || match.penaltyKickManager?.OnlinePenaltyMoving == true || ThrowInRules?.OnlineThrowInMoving == true,
@@ -248,6 +251,15 @@ namespace CounterAttack.Online
             // Pause/intro need their own shared authority adapter. Never bypass them
             // by accepting a command in this initial, unwired proof slice.
             else if (match.IsGameplayInputBlocked) state.stage = "blocked";
+            else if(state.shootout!=null)
+            {
+                state.awaitingRoll=state.awaitingTarget=false;
+                if(state.shootout.selecting){state.stage="shootout.order";state.owner="Both";}
+                else if(state.shootout.complete){state.stage="shootout.complete";state.owner="None";}
+                else if(match.looseBallManager?.isActivated==true)ReadLooseBallDecision(state,actions);
+                else if(match.currentState==MatchManager.GameState.PenaltyShootoutKickExecution && match.shotManager?.isActivated==true)ReadShotDecision(state,actions);
+                else{state.stage="shootout.resolving";state.owner="None";}
+            }
             else if (match.goalFlowManager?.isActivated == true)
             { state.stage="goal.resolving";state.owner="None";state.awaitingRoll=false;state.awaitingTarget=false; }
             else if (match.kickoffManager?.OnlineActive == true) ReadKickoffDecision(state,actions);

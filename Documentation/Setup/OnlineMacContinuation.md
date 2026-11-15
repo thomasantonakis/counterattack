@@ -77,7 +77,10 @@ full normal-game internet acceptance.
 Continue from `OnlineNextSessionPrompt.md`, following AGENTS.md and unity-cli.
 Full Room native handoff, pause/menu/substitutions, required keeper decisions
 and in-flight snapshot poses are implemented with focused Windows evidence.
-Prioritize shootout ordering, shared settings and half/end match transitions,
+Shootout orders, owned rolls/outcomes and early/sudden-death endings now have
+focused real-scene coverage. Room tiebreaker/extra-time coin toss still needs its
+authenticated adapter; the shootout fixtures supply the agreed opening setup.
+Prioritize that coin toss, shared settings and half/end match transitions,
 then presentation interpolation/transport tuning and deferred paired acceptance.
 Preserve host-only RNG/rules, authenticated semantic commands, guest inactivity,
 receipt/revision checks and reconnect holds. Compile, run feature-focused native

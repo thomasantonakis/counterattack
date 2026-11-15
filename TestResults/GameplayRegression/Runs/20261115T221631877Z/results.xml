@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="1" result="Failed(Child)" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-15 22:16:31Z" end-time="2026-11-15 22:16:47Z" duration="15.9967336">
+  <test-suite type="TestSuite" id="2722" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1416" result="Failed" site="Child" start-time="2026-11-15 22:16:31Z" end-time="2026-11-15 22:16:47Z" duration="15.996734" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="2719" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1416" result="Failed" site="Child" start-time="2026-11-15 22:16:31Z" end-time="2026-11-15 22:16:47Z" duration="15.964852" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17216" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestFixture" id="2054" name="OnlineShootoutPlayModeTests" fullname="OnlineShootoutPlayModeTests" classname="OnlineShootoutPlayModeTests" runstate="Runnable" testcasecount="36" result="Failed" site="Child" start-time="2026-11-15 22:16:31Z" end-time="2026-11-15 22:16:47Z" duration="15.960345" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineShootout" />
+        </properties>
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="ParameterizedMethod" id="2068" name="CompleteShootout" fullname="OnlineShootoutPlayModeTests.CompleteShootout" classname="OnlineShootoutPlayModeTests" runstate="Runnable" testcasecount="8" result="Failed" site="Child" start-time="2026-11-15 22:16:31Z" end-time="2026-11-15 22:16:47Z" duration="15.953132" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-case id="2060" name="CompleteShootout(False,False,False)" fullname="OnlineShootoutPlayModeTests.CompleteShootout(False,False,False)" methodname="CompleteShootout" classname="OnlineShootoutPlayModeTests" runstate="Runnable" seed="1225777298" result="Failed" start-time="2026-11-15 22:16:31Z" end-time="2026-11-15 22:16:47Z" duration="15.929977" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Online shootout completion must preserve the authored live scoreboard
+  Expected: True
+  But was:  False
+]]></message>
+              <stack-trace><![CDATA[at OnlineFullRoomSceneFixture+<RunShootout>d__31.MoveNext () [0x00f47] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineShootout\OnlineFullRoomSceneFixture.Shootout.cs:140
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[[TokenKitCatalog] Loading kits JSON from Resources path 'Kits/kit-picker-v1-11-supported' (asset: Assets/Resources/Kits/kit-picker-v1-11-supported.json).
+[TokenKitCatalog] Found kits JSON TextAsset 'kit-picker-v1-11-supported' at Resources path 'Kits/kit-picker-v1-11-supported' (32277 characters).
+[TokenKitCatalog] Parsed 101 kit preset(s) from Resources path 'Kits/kit-picker-v1-11-supported'.
+[TokenKitCatalog] Active kit catalog contains 101 kit preset(s).
+MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584951296960
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+[Shootout] Order selection opened with 11 nominees per team.
+Substitutions are no longer available: Penalty shootout
+⚽ Ball just entered the penalty box! Checking if GK should move.
+[Shootout] Home kick 1: 4. Gortz shoots at the left goal.
+Substitutions are no longer available: Committed to Shot
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, 0). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+4. Gortz Penalty Kick roll: 1 + Shooting: 5 = 0
+4. Gortz rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Home miss. Shootout score 0-0.
+Hex (-18, 0, 0) does not have 1. Aziz as its occupying token!
+Hex (-14, 0, 0) does not have 4. Gortz as its occupying token!
+[Shootout] Away kick 2: 3. Vladoiu shoots at the left goal.
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+3. Vladoiu Penalty Kick roll: 6 + Shooting: 5 = 50
+GK has no save interaction after the ball-in-box free move.
+Penalty shootout forcing GK save interaction for 1. Kuzmic at (-18, 0, 0).
+Penalty Kick has reached GK 1. Kuzmic. Press [R] to roll for the save.
+GK 1. Kuzmic rolls 1 + Saving: 5 + Penalty: -2 = 4
+3. Vladoiu Shot roll: 6 + Shooting: 5 = 50
+Get IN!! 3. Vladoiu, buries it to the top corner! Goal!!!
+MoveTokenAlongPath: shouldCarryBall: False
+Token arrived at hex: HexCell [-18, 1]
+[Shootout] Away score. Shootout score 0-1.
+[Shootout] Goal celebration flash.
+[Shootout] Home kick 3: 6. Terto shoots at the left goal.
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, 3). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+6. Terto Penalty Kick roll: 1 + Shooting: 5 = 0
+6. Terto rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Home miss. Shootout score 0-1.
+[Shootout] Away kick 4: 6. Delpech shoots at the left goal.
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+6. Delpech Penalty Kick roll: 6 + Shooting: 5 = 50
+GK has no save interaction after the ball-in-box free move.
+Penalty shootout forcing GK save interaction for 1. Kuzmic at (-18, 0, 0).
+Penalty Kick has reached GK 1. Kuzmic. Press [R] to roll for the save.
+GK 1. Kuzmic rolls 1 + Saving: 5 + Penalty: -2 = 4
+6. Delpech Shot roll: 6 + Shooting: 5 = 50
+Get IN!! 6. Delpech, buries it to the top corner! Goal!!!
+MoveTokenAlongPath: shouldCarryBall: False
+Token arrived at hex: HexCell [-18, 1]
+[Shootout] Away score. Shootout score 0-2.
+[Shootout] Goal celebration flash.
+Hex (-14, 0, 0) does not have 6. Delpech as its occupying token!
+[Shootout] Home kick 5: 2. Baez shoots at the left goal.
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, 3). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+2. Baez Penalty Kick roll: 1 + Shooting: 5 = 0
+2. Baez rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Home miss. Shootout score 0-2.
+[Shootout] Away kick 6: 2. Aguayo shoots at the left goal.
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+2. Aguayo Penalty Kick roll: 6 + Shooting: 5 = 50
+GK has no save interaction after the ball-in-box free move.
+Penalty shootout forcing GK save interaction for 1. Kuzmic at (-18, 0, 0).
+Penalty Kick has reached GK 1. Kuzmic. Press [R] to roll for the save.
+GK 1. Kuzmic rolls 1 + Saving: 5 + Penalty: -2 = 4
+2. Aguayo Shot roll: 6 + Shooting: 5 = 50
+Get IN!! 2. Aguayo, buries it to the top corner! Goal!!!
+MoveTokenAlongPath: shouldCarryBall: False
+Token arrived at hex: HexCell [-18, 1]
+[Shootout] Away score. Shootout score 0-3.
+[EndGamePanel] Match recap panel shown.
+Saving results to: TestResults\GameplayRegression\Runs\20261115T221631877Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

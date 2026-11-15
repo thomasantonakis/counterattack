@@ -1,0 +1,4 @@
+{"name":"ShootoutInstructionVisibilityPlayModeTests.InstructionTextWithOpenRollPanel(\"shootout/prompt\")","status":"Passed","message":"","stackTrace":""}
+{"name":"ShootoutInstructionVisibilityPlayModeTests.InstructionTextWithOpenRollPanel(\"shootout/result\")","status":"Passed","message":"","stackTrace":""}
+{"name":"ShootoutInstructionVisibilityPlayModeTests.InstructionTextWithOpenRollPanel(\"normal/prompt\")","status":"Passed","message":"","stackTrace":""}
+{"name":"ShootoutInstructionVisibilityPlayModeTests.InstructionTextWithOpenRollPanel(\"normal/result\")","status":"Passed","message":"","stackTrace":""}

@@ -79,6 +79,7 @@ public partial class PenaltyShootoutManager : MonoBehaviour
 
     public void ShowOrderSelection()
     {
+        if(FullOnline && CounterAttack.Online.OnlineRoomSession.IsGuest)return;
         Configure(matchManager);
         if (matchManager == null || playerTokenManager == null)
         {
@@ -120,12 +121,14 @@ public partial class PenaltyShootoutManager : MonoBehaviour
         orderSelectionCompleted = false;
         matchManager.currentState = MatchManager.GameState.PenaltyShootoutOrderSelection;
         matchManager.MarkPenaltyShootoutInProgress();
-        orderPanel.Configure(this, homeOrder, awayOrder);
+        onlineHomeReady=onlineAwayReady=false;
+        if(FullOnline)HideOrderPanel();else orderPanel.Configure(this, homeOrder, awayOrder);
         Debug.Log($"[Shootout] Order selection opened with {listLength} nominees per team.");
     }
 
     public void UpdateOrdersFromPanel(List<PlayerToken> nextHomeOrder, List<PlayerToken> nextAwayOrder)
     {
+        if(FullOnline && !applyingOnlineOrder)return;
         if (nextHomeOrder != null && nextHomeOrder.Count > 0)
         {
             homeOrder = nextHomeOrder.Where(token => token != null).ToList();
@@ -139,6 +142,7 @@ public partial class PenaltyShootoutManager : MonoBehaviour
 
     public void BeginShootoutFromOrderPanel(List<PlayerToken> selectedHomeOrder, List<PlayerToken> selectedAwayOrder)
     {
+        if(FullOnline && !applyingOnlineOrder)return;
         UpdateOrdersFromPanel(selectedHomeOrder, selectedAwayOrder);
         if (homeOrder.Count == 0 || awayOrder.Count == 0)
         {

@@ -18,6 +18,7 @@ namespace CounterAttack.Online
         public bool liveFullRoom;
         public ScoreboardManager liveScoreboard;
         public OnlineRoomMenu menu;
+        public OnlineShootoutView shootoutView;
         public Vector3Int[] initialCoordinates;
         public Transform[] displayedTokens;
         public Transform displayedBall;
@@ -83,6 +84,7 @@ namespace CounterAttack.Online
             if (requesterPauseMessage != null) requesterPauseMessage.SetActive(requester);
             if (passivePauseMessage != null) passivePauseMessage.SetActive(state.isSharedPaused && !requester);
             menu?.Display(state);
+            shootoutView?.Display(state);
             foreach (var token in state.tokens)
             {
                 if(liveFullRoom && !OnlineRoomSession.IsGuest)break;
@@ -107,6 +109,7 @@ namespace CounterAttack.Online
                 + (state.connectionHeld ? "\nConnection interrupted - waiting for player" : state.isSharedPaused ? "\nPaused by " + state.pauseRequester : "")
                 + "\n" + string.Join("  ", state.tokens.Where(t => t.passesAttempted > 0 || t.interceptionsAttempted > 0)
                     .Select(t => t.id + " passes " + t.passesCompleted + "/" + t.passesAttempted + " interceptions " + t.interceptionsMade));
+            if(statusText!=null && state.shootout!=null)statusText.text+="\nPenalties "+state.shootout.homeScore+" - "+state.shootout.awayScore+" | Attempts "+state.shootout.homeAttempts+" - "+state.shootout.awayAttempts;
             if (statusText != null && state.rolls?.Length > 0)
             {
                 var roll = state.rolls[state.rolls.Length - 1];

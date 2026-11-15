@@ -15,6 +15,7 @@ namespace CounterAttack.Online
                 || state.ballOnBoard && (state.ballX < -25 || state.ballX>24 || state.ballZ < -19 || state.ballZ>18)
                 || state.homeDirection is not ("LeftToRight" or "RightToLeft")
                 || state.awayDirection is not ("LeftToRight" or "RightToLeft") || state.homeDirection==state.awayDirection)return false;
+            if(state.shootout!=null && !state.shootout.Valid(state))return false;
             var pose=state.roomPose;
             if((state.ballMoving || state.playerMoving)!=(pose!=null))return false;
             if(pose!=null && (pose.matchId!=state.matchId || !Finite(pose.ballX) || !Finite(pose.ballY) || !Finite(pose.ballZ)

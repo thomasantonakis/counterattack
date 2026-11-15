@@ -344,6 +344,16 @@
     },
     {
       "mode": "editor",
+      "fixture": "OnlineShootoutEditorTests",
+      "categories": [
+        "OnlineShootout"
+      ],
+      "definition_sha256": "41fc36ed761311c637093b6a1b3aef763e5121294c7589c23ad3f98d86ff99e4",
+      "route": "native",
+      "source": "Assets/Editor/FeatureTests/OnlineShootout/OnlineShootoutEditorTests.cs"
+    },
+    {
+      "mode": "editor",
       "fixture": "OnlineSnapshotPoseEditorTests",
       "categories": [
         "OnlineSnapshotPose"
@@ -792,6 +802,16 @@
       "definition_sha256": "ee65035a22813404da064c6fe357fa520d4f3f6bc61ee7ea7b1bdba087772e4d",
       "route": "native",
       "source": "Assets/Tests/PlayMode/Features/OnlineSharedPause/OnlineSharedPausePlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineShootoutPlayModeTests",
+      "categories": [
+        "OnlineShootout"
+      ],
+      "definition_sha256": "a8c57408f9bdad035dc56123453c4f4cc5bb87d1a40a1289e1dbafd66144b5e2",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineShootout/OnlineShootoutPlayModeTests.cs"
     },
     {
       "mode": "playmode",
@@ -9391,6 +9411,721 @@
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
       "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T210343538Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutEditorTests.FullRoomFinishesOnlyAfterRealCompletion(\"MatchEnded\",False,False)",
+      "feature": "OnlineShootout",
+      "mode": "editor",
+      "fixture": "OnlineShootoutEditorTests",
+      "method": "FullRoomFinishesOnlyAfterRealCompletion",
+      "parameters": [
+        "\"MatchEnded\",False,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220425651Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutEditorTests.FullRoomFinishesOnlyAfterRealCompletion(\"MatchEnded\",True,True)",
+      "feature": "OnlineShootout",
+      "mode": "editor",
+      "fixture": "OnlineShootoutEditorTests",
+      "method": "FullRoomFinishesOnlyAfterRealCompletion",
+      "parameters": [
+        "\"MatchEnded\",True,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220425651Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutEditorTests.FullRoomFinishesOnlyAfterRealCompletion(\"PenaltyShootoutComplete\",False,False)",
+      "feature": "OnlineShootout",
+      "mode": "editor",
+      "fixture": "OnlineShootoutEditorTests",
+      "method": "FullRoomFinishesOnlyAfterRealCompletion",
+      "parameters": [
+        "\"PenaltyShootoutComplete\",False,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220425651Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutEditorTests.FullRoomFinishesOnlyAfterRealCompletion(\"PenaltyShootoutComplete\",True,True)",
+      "feature": "OnlineShootout",
+      "mode": "editor",
+      "fixture": "OnlineShootoutEditorTests",
+      "method": "FullRoomFinishesOnlyAfterRealCompletion",
+      "parameters": [
+        "\"PenaltyShootoutComplete\",True,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220425651Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutEditorTests.FullRoomFinishesOnlyAfterRealCompletion(\"PenaltyShootoutOrderSelection\",False,False)",
+      "feature": "OnlineShootout",
+      "mode": "editor",
+      "fixture": "OnlineShootoutEditorTests",
+      "method": "FullRoomFinishesOnlyAfterRealCompletion",
+      "parameters": [
+        "\"PenaltyShootoutOrderSelection\",False,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220425651Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutEditorTests.FullRoomFinishesOnlyAfterRealCompletion(\"PenaltyShootoutOrderSelection\",True,False)",
+      "feature": "OnlineShootout",
+      "mode": "editor",
+      "fixture": "OnlineShootoutEditorTests",
+      "method": "FullRoomFinishesOnlyAfterRealCompletion",
+      "parameters": [
+        "\"PenaltyShootoutOrderSelection\",True,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220425651Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(\"missing-order\")",
+      "feature": "OnlineShootout",
+      "mode": "editor",
+      "fixture": "OnlineShootoutEditorTests",
+      "method": "InvalidShootoutCannotAdvanceGuest",
+      "parameters": [
+        "\"missing-order\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220425651Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(\"duplicate\")",
+      "feature": "OnlineShootout",
+      "mode": "editor",
+      "fixture": "OnlineShootoutEditorTests",
+      "method": "InvalidShootoutCannotAdvanceGuest",
+      "parameters": [
+        "\"duplicate\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220425651Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(\"cross-team\")",
+      "feature": "OnlineShootout",
+      "mode": "editor",
+      "fixture": "OnlineShootoutEditorTests",
+      "method": "InvalidShootoutCannotAdvanceGuest",
+      "parameters": [
+        "\"cross-team\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220425651Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(\"ineligible\")",
+      "feature": "OnlineShootout",
+      "mode": "editor",
+      "fixture": "OnlineShootoutEditorTests",
+      "method": "InvalidShootoutCannotAdvanceGuest",
+      "parameters": [
+        "\"ineligible\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220425651Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(\"unequal\")",
+      "feature": "OnlineShootout",
+      "mode": "editor",
+      "fixture": "OnlineShootoutEditorTests",
+      "method": "InvalidShootoutCannotAdvanceGuest",
+      "parameters": [
+        "\"unequal\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220425651Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(\"sent-off\")",
+      "feature": "OnlineShootout",
+      "mode": "editor",
+      "fixture": "OnlineShootoutEditorTests",
+      "method": "InvalidShootoutCannotAdvanceGuest",
+      "parameters": [
+        "\"sent-off\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220425651Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(\"score\")",
+      "feature": "OnlineShootout",
+      "mode": "editor",
+      "fixture": "OnlineShootoutEditorTests",
+      "method": "InvalidShootoutCannotAdvanceGuest",
+      "parameters": [
+        "\"score\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220425651Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(\"results\")",
+      "feature": "OnlineShootout",
+      "mode": "editor",
+      "fixture": "OnlineShootoutEditorTests",
+      "method": "InvalidShootoutCannotAdvanceGuest",
+      "parameters": [
+        "\"results\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220425651Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(\"attempts\")",
+      "feature": "OnlineShootout",
+      "mode": "editor",
+      "fixture": "OnlineShootoutEditorTests",
+      "method": "InvalidShootoutCannotAdvanceGuest",
+      "parameters": [
+        "\"attempts\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220425651Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(\"phase\")",
+      "feature": "OnlineShootout",
+      "mode": "editor",
+      "fixture": "OnlineShootoutEditorTests",
+      "method": "InvalidShootoutCannotAdvanceGuest",
+      "parameters": [
+        "\"phase\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220425651Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(\"unknown-shooter\")",
+      "feature": "OnlineShootout",
+      "mode": "editor",
+      "fixture": "OnlineShootoutEditorTests",
+      "method": "InvalidShootoutCannotAdvanceGuest",
+      "parameters": [
+        "\"unknown-shooter\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220425651Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(\"unknown-keeper\")",
+      "feature": "OnlineShootout",
+      "mode": "editor",
+      "fixture": "OnlineShootoutEditorTests",
+      "method": "InvalidShootoutCannotAdvanceGuest",
+      "parameters": [
+        "\"unknown-keeper\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220425651Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(\"missing-eligible\")",
+      "feature": "OnlineShootout",
+      "mode": "editor",
+      "fixture": "OnlineShootoutEditorTests",
+      "method": "InvalidShootoutCannotAdvanceGuest",
+      "parameters": [
+        "\"missing-eligible\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220425651Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutPlayModeTests.FirstKickOutcomeContinues(False,\"goal\",False)",
+      "feature": "OnlineShootout",
+      "mode": "playmode",
+      "fixture": "OnlineShootoutPlayModeTests",
+      "method": "FirstKickOutcomeContinues",
+      "parameters": [
+        "False,\"goal\",False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220440309Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutPlayModeTests.FirstKickOutcomeContinues(False,\"goal\",True)",
+      "feature": "OnlineShootout",
+      "mode": "playmode",
+      "fixture": "OnlineShootoutPlayModeTests",
+      "method": "FirstKickOutcomeContinues",
+      "parameters": [
+        "False,\"goal\",True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220440309Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutPlayModeTests.FirstKickOutcomeContinues(False,\"offtarget\",False)",
+      "feature": "OnlineShootout",
+      "mode": "playmode",
+      "fixture": "OnlineShootoutPlayModeTests",
+      "method": "FirstKickOutcomeContinues",
+      "parameters": [
+        "False,\"offtarget\",False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220440309Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutPlayModeTests.FirstKickOutcomeContinues(False,\"offtarget\",True)",
+      "feature": "OnlineShootout",
+      "mode": "playmode",
+      "fixture": "OnlineShootoutPlayModeTests",
+      "method": "FirstKickOutcomeContinues",
+      "parameters": [
+        "False,\"offtarget\",True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220440309Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutPlayModeTests.FirstKickOutcomeContinues(False,\"save\",False)",
+      "feature": "OnlineShootout",
+      "mode": "playmode",
+      "fixture": "OnlineShootoutPlayModeTests",
+      "method": "FirstKickOutcomeContinues",
+      "parameters": [
+        "False,\"save\",False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220440309Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutPlayModeTests.FirstKickOutcomeContinues(False,\"save\",True)",
+      "feature": "OnlineShootout",
+      "mode": "playmode",
+      "fixture": "OnlineShootoutPlayModeTests",
+      "method": "FirstKickOutcomeContinues",
+      "parameters": [
+        "False,\"save\",True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220440309Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutPlayModeTests.FirstKickOutcomeContinues(False,\"tie\",False)",
+      "feature": "OnlineShootout",
+      "mode": "playmode",
+      "fixture": "OnlineShootoutPlayModeTests",
+      "method": "FirstKickOutcomeContinues",
+      "parameters": [
+        "False,\"tie\",False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220440309Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutPlayModeTests.FirstKickOutcomeContinues(False,\"tie\",True)",
+      "feature": "OnlineShootout",
+      "mode": "playmode",
+      "fixture": "OnlineShootoutPlayModeTests",
+      "method": "FirstKickOutcomeContinues",
+      "parameters": [
+        "False,\"tie\",True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220440309Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutPlayModeTests.FirstKickOutcomeContinues(True,\"goal\",False)",
+      "feature": "OnlineShootout",
+      "mode": "playmode",
+      "fixture": "OnlineShootoutPlayModeTests",
+      "method": "FirstKickOutcomeContinues",
+      "parameters": [
+        "True,\"goal\",False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220440309Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutPlayModeTests.FirstKickOutcomeContinues(True,\"goal\",True)",
+      "feature": "OnlineShootout",
+      "mode": "playmode",
+      "fixture": "OnlineShootoutPlayModeTests",
+      "method": "FirstKickOutcomeContinues",
+      "parameters": [
+        "True,\"goal\",True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220440309Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutPlayModeTests.FirstKickOutcomeContinues(True,\"offtarget\",False)",
+      "feature": "OnlineShootout",
+      "mode": "playmode",
+      "fixture": "OnlineShootoutPlayModeTests",
+      "method": "FirstKickOutcomeContinues",
+      "parameters": [
+        "True,\"offtarget\",False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220440309Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutPlayModeTests.FirstKickOutcomeContinues(True,\"offtarget\",True)",
+      "feature": "OnlineShootout",
+      "mode": "playmode",
+      "fixture": "OnlineShootoutPlayModeTests",
+      "method": "FirstKickOutcomeContinues",
+      "parameters": [
+        "True,\"offtarget\",True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220440309Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutPlayModeTests.FirstKickOutcomeContinues(True,\"save\",False)",
+      "feature": "OnlineShootout",
+      "mode": "playmode",
+      "fixture": "OnlineShootoutPlayModeTests",
+      "method": "FirstKickOutcomeContinues",
+      "parameters": [
+        "True,\"save\",False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220440309Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutPlayModeTests.FirstKickOutcomeContinues(True,\"save\",True)",
+      "feature": "OnlineShootout",
+      "mode": "playmode",
+      "fixture": "OnlineShootoutPlayModeTests",
+      "method": "FirstKickOutcomeContinues",
+      "parameters": [
+        "True,\"save\",True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220440309Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutPlayModeTests.FirstKickOutcomeContinues(True,\"tie\",False)",
+      "feature": "OnlineShootout",
+      "mode": "playmode",
+      "fixture": "OnlineShootoutPlayModeTests",
+      "method": "FirstKickOutcomeContinues",
+      "parameters": [
+        "True,\"tie\",False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220440309Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutPlayModeTests.FirstKickOutcomeContinues(True,\"tie\",True)",
+      "feature": "OnlineShootout",
+      "mode": "playmode",
+      "fixture": "OnlineShootoutPlayModeTests",
+      "method": "FirstKickOutcomeContinues",
+      "parameters": [
+        "True,\"tie\",True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220440309Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutPlayModeTests.OrderingTracksPausedSubstitution(False,False)",
+      "feature": "OnlineShootout",
+      "mode": "playmode",
+      "fixture": "OnlineShootoutPlayModeTests",
+      "method": "OrderingTracksPausedSubstitution",
+      "parameters": [
+        "False,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220944705Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutPlayModeTests.OrderingTracksPausedSubstitution(False,True)",
+      "feature": "OnlineShootout",
+      "mode": "playmode",
+      "fixture": "OnlineShootoutPlayModeTests",
+      "method": "OrderingTracksPausedSubstitution",
+      "parameters": [
+        "False,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220944705Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutPlayModeTests.OrderingTracksPausedSubstitution(True,False)",
+      "feature": "OnlineShootout",
+      "mode": "playmode",
+      "fixture": "OnlineShootoutPlayModeTests",
+      "method": "OrderingTracksPausedSubstitution",
+      "parameters": [
+        "True,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220944705Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutPlayModeTests.OrderingTracksPausedSubstitution(True,True)",
+      "feature": "OnlineShootout",
+      "mode": "playmode",
+      "fixture": "OnlineShootoutPlayModeTests",
+      "method": "OrderingTracksPausedSubstitution",
+      "parameters": [
+        "True,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220944705Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutPlayModeTests.CompleteShootout(False,False,False)",
+      "feature": "OnlineShootout",
+      "mode": "playmode",
+      "fixture": "OnlineShootoutPlayModeTests",
+      "method": "CompleteShootout",
+      "parameters": [
+        "False,False,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T221726352Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutPlayModeTests.CompleteShootout(False,False,True)",
+      "feature": "OnlineShootout",
+      "mode": "playmode",
+      "fixture": "OnlineShootoutPlayModeTests",
+      "method": "CompleteShootout",
+      "parameters": [
+        "False,False,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T221726352Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutPlayModeTests.CompleteShootout(False,True,False)",
+      "feature": "OnlineShootout",
+      "mode": "playmode",
+      "fixture": "OnlineShootoutPlayModeTests",
+      "method": "CompleteShootout",
+      "parameters": [
+        "False,True,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T221726352Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutPlayModeTests.CompleteShootout(False,True,True)",
+      "feature": "OnlineShootout",
+      "mode": "playmode",
+      "fixture": "OnlineShootoutPlayModeTests",
+      "method": "CompleteShootout",
+      "parameters": [
+        "False,True,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T221726352Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutPlayModeTests.CompleteShootout(True,False,False)",
+      "feature": "OnlineShootout",
+      "mode": "playmode",
+      "fixture": "OnlineShootoutPlayModeTests",
+      "method": "CompleteShootout",
+      "parameters": [
+        "True,False,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T221726352Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutPlayModeTests.CompleteShootout(True,False,True)",
+      "feature": "OnlineShootout",
+      "mode": "playmode",
+      "fixture": "OnlineShootoutPlayModeTests",
+      "method": "CompleteShootout",
+      "parameters": [
+        "True,False,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T221726352Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutPlayModeTests.CompleteShootout(True,True,False)",
+      "feature": "OnlineShootout",
+      "mode": "playmode",
+      "fixture": "OnlineShootoutPlayModeTests",
+      "method": "CompleteShootout",
+      "parameters": [
+        "True,True,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T221726352Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutPlayModeTests.CompleteShootout(True,True,True)",
+      "feature": "OnlineShootout",
+      "mode": "playmode",
+      "fixture": "OnlineShootoutPlayModeTests",
+      "method": "CompleteShootout",
+      "parameters": [
+        "True,True,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T221726352Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutPlayModeTests.OwnOrdersRequireBothManagers(False,False,False)",
+      "feature": "OnlineShootout",
+      "mode": "playmode",
+      "fixture": "OnlineShootoutPlayModeTests",
+      "method": "OwnOrdersRequireBothManagers",
+      "parameters": [
+        "False,False,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T221402527Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutPlayModeTests.OwnOrdersRequireBothManagers(False,False,True)",
+      "feature": "OnlineShootout",
+      "mode": "playmode",
+      "fixture": "OnlineShootoutPlayModeTests",
+      "method": "OwnOrdersRequireBothManagers",
+      "parameters": [
+        "False,False,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T221402527Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutPlayModeTests.OwnOrdersRequireBothManagers(False,True,False)",
+      "feature": "OnlineShootout",
+      "mode": "playmode",
+      "fixture": "OnlineShootoutPlayModeTests",
+      "method": "OwnOrdersRequireBothManagers",
+      "parameters": [
+        "False,True,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T221402527Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutPlayModeTests.OwnOrdersRequireBothManagers(False,True,True)",
+      "feature": "OnlineShootout",
+      "mode": "playmode",
+      "fixture": "OnlineShootoutPlayModeTests",
+      "method": "OwnOrdersRequireBothManagers",
+      "parameters": [
+        "False,True,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T221402527Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutPlayModeTests.OwnOrdersRequireBothManagers(True,False,False)",
+      "feature": "OnlineShootout",
+      "mode": "playmode",
+      "fixture": "OnlineShootoutPlayModeTests",
+      "method": "OwnOrdersRequireBothManagers",
+      "parameters": [
+        "True,False,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T221402527Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutPlayModeTests.OwnOrdersRequireBothManagers(True,False,True)",
+      "feature": "OnlineShootout",
+      "mode": "playmode",
+      "fixture": "OnlineShootoutPlayModeTests",
+      "method": "OwnOrdersRequireBothManagers",
+      "parameters": [
+        "True,False,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T221402527Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutPlayModeTests.OwnOrdersRequireBothManagers(True,True,False)",
+      "feature": "OnlineShootout",
+      "mode": "playmode",
+      "fixture": "OnlineShootoutPlayModeTests",
+      "method": "OwnOrdersRequireBothManagers",
+      "parameters": [
+        "True,True,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T221402527Z/results.xml"
+    },
+    {
+      "id": "OnlineShootoutPlayModeTests.OwnOrdersRequireBothManagers(True,True,True)",
+      "feature": "OnlineShootout",
+      "mode": "playmode",
+      "fixture": "OnlineShootoutPlayModeTests",
+      "method": "OwnOrdersRequireBothManagers",
+      "parameters": [
+        "True,True,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T221402527Z/results.xml"
     }
   ]
 }

@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="6" result="Passed" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-15 22:20:39Z" end-time="2026-11-15 22:20:45Z" duration="6.2406551">
+  <test-suite type="TestSuite" id="2722" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1416" result="Passed" start-time="2026-11-15 22:20:39Z" end-time="2026-11-15 22:20:45Z" duration="6.240655" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2719" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1416" result="Passed" start-time="2026-11-15 22:20:39Z" end-time="2026-11-15 22:20:45Z" duration="6.205268" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17216" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="2241" name="ShootoutRollPanelPlayModeTests" fullname="ShootoutRollPanelPlayModeTests" classname="ShootoutRollPanelPlayModeTests" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-11-15 22:20:39Z" end-time="2026-11-15 22:20:45Z" duration="6.199079" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="ParameterizedMethod" id="2248" name="ShootoutPanel" fullname="ShootoutRollPanelPlayModeTests.ShootoutPanel" classname="ShootoutRollPanelPlayModeTests" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-11-15 22:20:39Z" end-time="2026-11-15 22:20:45Z" duration="6.191342" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="2242" name="ShootoutPanel(&quot;1/keeper&quot;)" fullname="ShootoutRollPanelPlayModeTests.ShootoutPanel(&quot;1/keeper&quot;)" methodname="ShootoutPanel" classname="ShootoutRollPanelPlayModeTests" runstate="Runnable" seed="1822426356" result="Passed" start-time="2026-11-15 22:20:39Z" end-time="2026-11-15 22:20:40Z" duration="1.725706" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Substitutions are no longer available: Committed to Shot
+Goalkeeper Away keeper can attempt a save at (18, 0, -2) with penalty -2
+Goalkeeper Away keeper can attempt a save at (18, 0, -2) with penalty -2
+Goalkeeper Away keeper can attempt a save at (18, 0, -1) with penalty -2
+Goalkeeper Away keeper can attempt a save at (18, 0, 0) with penalty -2
+Goalkeeper Away keeper can attempt a save at (18, 0, 0) with penalty -2
+Goalkeeper Away keeper can attempt a save at (18, 0, 1) with penalty -2
+Goalkeeper Away keeper can attempt a save at (18, 0, 2) with penalty -2
+Goalkeeper Away keeper can attempt a save at (18, 0, 2) with penalty -2
+Penalty Shootout Kick initiated. Random target selected at (19, 0, 0). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Hello from the StartShotRoll
+Home carrier Penalty Kick roll: 4 + Shooting: 5 = 9
+Goalkeeper Away keeper can attempt a save at (18, 0, 0) with penalty -2
+Penalty Kick has reached GK Away keeper. Press [R] to roll for the save.
+Unknown kit preset ''. Falling back to blue token style.
+]]></output>
+          </test-case>
+          <test-case id="2243" name="ShootoutPanel(&quot;-1/keeper&quot;)" fullname="ShootoutRollPanelPlayModeTests.ShootoutPanel(&quot;-1/keeper&quot;)" methodname="ShootoutPanel" classname="ShootoutRollPanelPlayModeTests" runstate="Runnable" seed="65531765" result="Passed" start-time="2026-11-15 22:20:40Z" end-time="2026-11-15 22:20:41Z" duration="0.903018" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Substitutions are no longer available: Committed to Shot
+Goalkeeper Away keeper can attempt a save at (-18, 0, -2) with penalty -2
+Goalkeeper Away keeper can attempt a save at (-18, 0, -2) with penalty -2
+Goalkeeper Away keeper can attempt a save at (-18, 0, -1) with penalty -2
+Goalkeeper Away keeper can attempt a save at (-18, 0, 0) with penalty -2
+Goalkeeper Away keeper can attempt a save at (-18, 0, 0) with penalty -2
+Goalkeeper Away keeper can attempt a save at (-18, 0, 1) with penalty -2
+Goalkeeper Away keeper can attempt a save at (-18, 0, 2) with penalty -2
+Goalkeeper Away keeper can attempt a save at (-18, 0, 2) with penalty -2
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, 0). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Hello from the StartShotRoll
+Home carrier Penalty Kick roll: 4 + Shooting: 5 = 9
+Goalkeeper Away keeper can attempt a save at (-18, 0, 0) with penalty -2
+Penalty Kick has reached GK Away keeper. Press [R] to roll for the save.
+Unknown kit preset ''. Falling back to blue token style.
+]]></output>
+          </test-case>
+          <test-case id="2244" name="ShootoutPanel(&quot;1/offtarget&quot;)" fullname="ShootoutRollPanelPlayModeTests.ShootoutPanel(&quot;1/offtarget&quot;)" methodname="ShootoutPanel" classname="ShootoutRollPanelPlayModeTests" runstate="Runnable" seed="1575391013" result="Passed" start-time="2026-11-15 22:20:41Z" end-time="2026-11-15 22:20:42Z" duration="0.876186" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Substitutions are no longer available: Committed to Shot
+Goalkeeper Away keeper can attempt a save at (18, 0, -2) with penalty -2
+Goalkeeper Away keeper can attempt a save at (18, 0, -2) with penalty -2
+Goalkeeper Away keeper can attempt a save at (18, 0, -1) with penalty -2
+Goalkeeper Away keeper can attempt a save at (18, 0, 0) with penalty -2
+Goalkeeper Away keeper can attempt a save at (18, 0, 0) with penalty -2
+Goalkeeper Away keeper can attempt a save at (18, 0, 1) with penalty -2
+Goalkeeper Away keeper can attempt a save at (18, 0, 2) with penalty -2
+Goalkeeper Away keeper can attempt a save at (18, 0, 2) with penalty -2
+Penalty Shootout Kick initiated. Random target selected at (19, 0, 0). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Hello from the StartShotRoll
+Home carrier Penalty Kick roll: 1 + Shooting: 5 = 0
+Home carrier rolled a 1, this means the penalty shootout kick is OFF target.
+]]></output>
+          </test-case>
+          <test-case id="2245" name="ShootoutPanel(&quot;-1/offtarget&quot;)" fullname="ShootoutRollPanelPlayModeTests.ShootoutPanel(&quot;-1/offtarget&quot;)" methodname="ShootoutPanel" classname="ShootoutRollPanelPlayModeTests" runstate="Runnable" seed="306218808" result="Passed" start-time="2026-11-15 22:20:42Z" end-time="2026-11-15 22:20:43Z" duration="0.865973" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Substitutions are no longer available: Committed to Shot
+Goalkeeper Away keeper can attempt a save at (-18, 0, -2) with penalty -2
+Goalkeeper Away keeper can attempt a save at (-18, 0, -2) with penalty -2
+Goalkeeper Away keeper can attempt a save at (-18, 0, -1) with penalty -2
+Goalkeeper Away keeper can attempt a save at (-18, 0, 0) with penalty -2
+Goalkeeper Away keeper can attempt a save at (-18, 0, 0) with penalty -2
+Goalkeeper Away keeper can attempt a save at (-18, 0, 1) with penalty -2
+Goalkeeper Away keeper can attempt a save at (-18, 0, 2) with penalty -2
+Goalkeeper Away keeper can attempt a save at (-18, 0, 2) with penalty -2
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, 0). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Hello from the StartShotRoll
+Home carrier Penalty Kick roll: 1 + Shooting: 5 = 0
+Home carrier rolled a 1, this means the penalty shootout kick is OFF target.
+]]></output>
+          </test-case>
+          <test-case id="2246" name="ShootoutPanel(&quot;1/animation&quot;)" fullname="ShootoutRollPanelPlayModeTests.ShootoutPanel(&quot;1/animation&quot;)" methodname="ShootoutPanel" classname="ShootoutRollPanelPlayModeTests" runstate="Runnable" seed="2078245727" result="Passed" start-time="2026-11-15 22:20:43Z" end-time="2026-11-15 22:20:44Z" duration="0.930563" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Substitutions are no longer available: Committed to Shot
+Goalkeeper Away keeper can attempt a save at (18, 0, -2) with penalty -2
+Goalkeeper Away keeper can attempt a save at (18, 0, -2) with penalty -2
+Goalkeeper Away keeper can attempt a save at (18, 0, -1) with penalty -2
+Goalkeeper Away keeper can attempt a save at (18, 0, 0) with penalty -2
+Goalkeeper Away keeper can attempt a save at (18, 0, 0) with penalty -2
+Goalkeeper Away keeper can attempt a save at (18, 0, 1) with penalty -2
+Goalkeeper Away keeper can attempt a save at (18, 0, 2) with penalty -2
+Goalkeeper Away keeper can attempt a save at (18, 0, 2) with penalty -2
+Penalty Shootout Kick initiated. Random target selected at (19, 0, 0). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Hello from the StartShotRoll
+Home carrier Penalty Kick roll: 4 + Shooting: 5 = 9
+Goalkeeper Away keeper can attempt a save at (18, 0, 0) with penalty -2
+Penalty Kick has reached GK Away keeper. Press [R] to roll for the save.
+Unknown kit preset ''. Falling back to blue token style.
+GK Away keeper rolls 1 + Saving: 4 + Penalty: -2 = 3
+Home carrier Shot roll: 4 + Shooting: 5 = 9
+Get IN!! Home carrier, buries it to the top corner! Goal!!!
+MoveTokenAlongPath: shouldCarryBall: False
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+]]></output>
+          </test-case>
+          <test-case id="2247" name="ShootoutPanel(&quot;-1/animation&quot;)" fullname="ShootoutRollPanelPlayModeTests.ShootoutPanel(&quot;-1/animation&quot;)" methodname="ShootoutPanel" classname="ShootoutRollPanelPlayModeTests" runstate="Runnable" seed="947840491" result="Passed" start-time="2026-11-15 22:20:44Z" end-time="2026-11-15 22:20:45Z" duration="0.848685" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Substitutions are no longer available: Committed to Shot
+Goalkeeper Away keeper can attempt a save at (-18, 0, -2) with penalty -2
+Goalkeeper Away keeper can attempt a save at (-18, 0, -2) with penalty -2
+Goalkeeper Away keeper can attempt a save at (-18, 0, -1) with penalty -2
+Goalkeeper Away keeper can attempt a save at (-18, 0, 0) with penalty -2
+Goalkeeper Away keeper can attempt a save at (-18, 0, 0) with penalty -2
+Goalkeeper Away keeper can attempt a save at (-18, 0, 1) with penalty -2
+Goalkeeper Away keeper can attempt a save at (-18, 0, 2) with penalty -2
+Goalkeeper Away keeper can attempt a save at (-18, 0, 2) with penalty -2
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, 0). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Hello from the StartShotRoll
+Home carrier Penalty Kick roll: 4 + Shooting: 5 = 9
+Goalkeeper Away keeper can attempt a save at (-18, 0, 0) with penalty -2
+Penalty Kick has reached GK Away keeper. Press [R] to roll for the save.
+Unknown kit preset ''. Falling back to blue token style.
+GK Away keeper rolls 1 + Saving: 4 + Penalty: -2 = 3
+Home carrier Shot roll: 4 + Shooting: 5 = 9
+Get IN!! Home carrier, buries it to the top corner! Goal!!!
+MoveTokenAlongPath: shouldCarryBall: False
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Saving results to: TestResults\GameplayRegression\Runs\20261115T222039135Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>
