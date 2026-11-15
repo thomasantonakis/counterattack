@@ -334,6 +334,16 @@
     },
     {
       "mode": "playmode",
+      "fixture": "OnlineFrontendNativeLobbyPlayModeTests",
+      "categories": [
+        "OnlineFrontendNativeLobby"
+      ],
+      "definition_sha256": "5ddb21a1d4f46da4909252e30817d6695237d30a090ebbb2344b8a02c46890a8",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineFrontendEntry/OnlineFrontendNativeLobbyPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
       "fixture": "OnlineGoalkeeperPlayModeTests",
       "categories": [
         "OnlineGoalkeeper"
@@ -4853,6 +4863,17 @@
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
       "windows_evidence": "Assets/Editor/FeatureTests/OnlineFrontendRecovery/Verification.md"
+    },
+    {
+      "id": "OnlineFrontendNativeLobbyPlayModeTests.AuthoredHostCreatesAndCancelsPrivateNativeLobby",
+      "feature": "OnlineFrontendEntry",
+      "mode": "playmode",
+      "fixture": "OnlineFrontendNativeLobbyPlayModeTests",
+      "method": "AuthoredHostCreatesAndCancelsPrivateNativeLobby",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T054507321Z/results.xml"
     }
   ]
 }

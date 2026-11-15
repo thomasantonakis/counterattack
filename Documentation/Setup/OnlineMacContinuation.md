@@ -20,26 +20,31 @@ git pull --ff-only origin codex/online-foundation-personal-mac
 git log -3 --oneline
 ```
 
-Preserve any existing Mac edits. Required gameplay checkpoint: `61e3e38`
-(goalkeeper free moves and deferred pickup), preceded by `4668d13`
-(goals/reset/kickoff). The next documentation commit records refreshed exports.
-Windows GitHub HTTPS was temporarily unreachable during this handoff. Verify
-that `git merge-base --is-ancestor 61e3e38 HEAD` succeeds before resuming; a
-successful pull of an older remote branch is insufficient.
-
-If GitHub still lacks that checkpoint, copy the prepared
-`Temp/OnlineMacContinuation.bundle` from Windows to the Mac, then use its actual
-location below. The bundle requires the already published base `95caf71`.
+Preserve any existing Mac edits. Current frontend checkpoint: `951eb9b`
+(normal menu entry, authored Host/Join, persistent EOS lifetime and bounded
+recovery). Earlier gameplay integration remains on the same branch. Verify:
 
 ```sh
-git fetch "$HOME/Downloads/OnlineMacContinuation.bundle" codex/online-foundation-personal-mac
-git merge --ff-only FETCH_HEAD
-git merge-base --is-ancestor 61e3e38 HEAD
+git merge-base --is-ancestor 951eb9b HEAD
 ```
+
+The old Windows handoff bundle predates this checkpoint; use the pushed branch.
+Full authoritative Draft and normal full Room handoff are still in development.
 
 ## Build and run on Mac
 
 With Unity manually open, stopped and scenes saved:
+
+The one-command verification run remains deferred until requested. To build the
+normal scenes independently when resuming on Mac:
+
+```sh
+bash Documentation/Setup/BuildEOSStandaloneMac.sh game
+open Build/OnlineGame/Mac/Counterattack.app
+```
+
+This exports the normal menu and setup UI; it does not establish completed online
+Draft/Room play. For the isolated Room checks, use:
 
 ```sh
 bash Documentation/Setup/BuildEOSStandaloneMac.sh room

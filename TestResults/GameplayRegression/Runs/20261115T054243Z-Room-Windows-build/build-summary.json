@@ -1,0 +1,24 @@
+{
+  "status": "completed",
+  "buildId": "build_6c6089c7a517",
+  "result": "Succeeded",
+  "platform": "StandaloneWindows64",
+  "outputPath": "C:/Users/thomas/Documents/Projects/Personal/counterattack/Build/OnlineRoom/Windows/CounterattackOnlineRoom.exe",
+  "totalSizeBytes": 464778995,
+  "buildTimeMs": 29682,
+  "totalErrors": 1,
+  "totalWarnings": 2,
+  "errors": [
+    {
+      "message": "FileNotFoundException: While determining the PlatformToolsets that are installed, the vswhere.exe utility could not be found."
+    }
+  ],
+  "warnings": [
+    {
+      "message": "Value 0 is out of range for TEnum, setting to 0."
+    },
+    {
+      "message": "Pipeline: No RuntimePipelineConfig asset found (Project Settings > Pipeline > Runtime). Pipeline will be disabled in Player builds."
+    }
+  ]
+}

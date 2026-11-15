@@ -62,6 +62,30 @@ public sealed class OnlineFrontendEntrySceneFixture
             panel.setup.SaveGameSettingsToJson();Assert.That(SceneManager.GetActiveScene().name,Is.EqualTo("CreateNewGameScene"));
             Assert.That(OnlineFrontendSession.Current,Is.Null);Assert.That(panel.connectionStatus.text,Does.Contain("Host or join"));
         }
+        if(branch=="host-cancel")
+        {
+            bool previousBackground=Application.runInBackground;
+            panel.setup.ApplyOnlineSetupSettings(OnlineSetupAgreementEditorTests.Valid());
+            panel.hostButton.onClick.Invoke();var session=OnlineFrontendSession.Current;
+            Assert.That(session,Is.Not.Null);Assert.That(session.Hosting,Is.True);Assert.That(Application.runInBackground,Is.True);
+            double deadline=Time.realtimeSinceStartupAsDouble+65;
+            while(session.Busy && session.LobbyCode==null && Time.realtimeSinceStartupAsDouble<deadline)yield return null;
+            Assert.That(session.Error,Is.Null,session.Error);Assert.That(session.Busy,Is.True);
+            Assert.That(OnlineFrontendSessionPolicy.ValidLobbyCode(session.LobbyCode),Is.True,"Native private lobby creation must complete");
+            Assert.That(session.Client,Is.Null,"No remote manager has authenticated yet");
+            string directory=session.RunDirectory;panel.leaveButton.onClick.Invoke();
+            deadline=Time.realtimeSinceStartupAsDouble+15;
+            while(OnlineFrontendSession.Current!=null && Time.realtimeSinceStartupAsDouble<deadline)yield return null;
+            Assert.That(OnlineFrontendSession.Current,Is.Null,"Cancel must dispose the lobby/session without waiting for a guest");
+            Assert.That(Application.runInBackground,Is.EqualTo(previousBackground));
+            string report=System.IO.File.ReadAllText(System.IO.Path.Combine(directory,"frontend-session-report.json"));
+            var json=Newtonsoft.Json.Linq.JObject.Parse(report);
+            Assert.That((string)json["status"],Is.EqualTo("closed"));Assert.That((string)json["routingPolicy"],Is.EqualTo("AllowRelays"));
+            string evidence=SessionState.GetString("CounterAttack.FrameworkResultDirectory","");
+            if(!string.IsNullOrEmpty(evidence))System.IO.File.WriteAllText(System.IO.Path.Combine(evidence,"frontend-session-report.json"),report);
+            Assert.That(SceneManager.GetActiveScene().name,Is.EqualTo("CreateNewGameScene"));
+            Assert.That(panel.setup.createGameButton.interactable,Is.False);
+        }
         if(branch=="persistent-lifetime")
         {
             var root=Object.Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>(OnlineFrontendEntryAuthoring.PrefabPath));

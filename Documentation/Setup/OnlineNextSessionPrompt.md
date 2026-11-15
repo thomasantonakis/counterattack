@@ -456,3 +456,23 @@ launched and no full multiplayer acceptance is claimed. The Mac one-command
 verifier now also builds the normal game scenes through
 `BuildEOSStandaloneMac.sh game`. Its 13 tooling tests and Bash syntax check
 passed on Windows; actual macOS export remains deferred.
+
+Real production Host-button acceptance: 1 native PlayMode pass, 0 failed/skipped
+at `20261115T054507321Z`. The existing scene controls captured valid selections,
+created an EOS private lobby with AllowRelays, then cancelled without a guest.
+The test verified transport cleanup, background setting restoration, guarded
+local save and the retained redacted session report. This is not a paired join,
+remote recovery or RTT measurement. The feature now has 19 distinct passed cases.
+Its dedicated fixture/category is `OnlineFrontendNativeLobbyPlayModeTests` /
+`OnlineFrontendNativeLobby`; it requires this machine's local EOS configuration.
+It is separately registered for the deferred Mac run. Native result/report are
+retained beside the XML in the run directory.
+
+Latest proof exports also succeeded: Room `build_6c6089c7a517` (05:42:43 UTC),
+prepared `build_92273852a34c` (05:43:03 UTC), each 2 warnings and the known
+nonfatal vswhere.exe post-build diagnostic. Packaged checks passed:
+`20261115T054303870Z-Room-local`, `20261115T054325787Z-Gameplay-local`,
+`20261115T054339522Z-Room-login` (liveness notifications registered).
+Build summaries and native evidence are under TestResults/GameplayRegression/Runs.
+The normal-scene export and these proofs contain the same production C# changes;
+the subsequent added native fixture is Editor/test-only. Full Draft/Room remains.

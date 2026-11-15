@@ -424,6 +424,8 @@ class Runner:
                 raise RuntimeError("No implemented online fixtures discovered")
             self.report["fixture_plan"] = plan
             self.report["test_manifest"] = manifest
+            self.stage("tooling:verifier", lambda: self.command_stage(
+                [sys.executable, "-m", "unittest", "discover", "-s", "Documentation/Setup/tests", "-p", "test_online_verification.py"], 120))
             compiled = self.stage("compile", self.compile)
             usable = compiled["status"] == "passed"
             for fixture in plan:
