@@ -15,6 +15,12 @@ namespace CounterAttack.Online
                 || state.ballOnBoard && (state.ballX < -25 || state.ballX>24 || state.ballZ < -19 || state.ballZ>18)
                 || state.homeDirection is not ("LeftToRight" or "RightToLeft")
                 || state.awayDirection is not ("LeftToRight" or "RightToLeft") || state.homeDirection==state.awayDirection)return false;
+            var pose=state.roomPose;
+            if((state.ballMoving || state.playerMoving)!=(pose!=null))return false;
+            if(pose!=null && (pose.matchId!=state.matchId || !Finite(pose.ballX) || !Finite(pose.ballY) || !Finite(pose.ballZ)
+                || pose.players==null || pose.players.Length!=state.tokens.Length
+                || pose.players.Any(p=>p==null || !Finite(p.x) || !Finite(p.y) || !Finite(p.z))
+                || !pose.players.Select(p=>p.id).OrderBy(id=>id,StringComparer.Ordinal).SequenceEqual(state.tokens.Select(t=>t.id).OrderBy(id=>id,StringComparer.Ordinal))))return false;
             var occupied=new HashSet<(int,int)>();
             foreach(var token in state.tokens)
             {

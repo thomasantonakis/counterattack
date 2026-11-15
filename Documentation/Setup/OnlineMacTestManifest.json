@@ -343,6 +343,16 @@
       "source": "Assets/Editor/FeatureTests/OnlineSharedPause/OnlineSharedPauseEditorTests.cs"
     },
     {
+      "mode": "editor",
+      "fixture": "OnlineSnapshotPoseEditorTests",
+      "categories": [
+        "OnlineSnapshotPose"
+      ],
+      "definition_sha256": "f80b5e6d1fcc34ae28b38a3b929ec77236dc94b8def658b9136e988252913f69",
+      "route": "native",
+      "source": "Assets/Editor/FeatureTests/OnlineSnapshotPose/OnlineSnapshotPoseEditorTests.cs"
+    },
+    {
       "mode": "playmode",
       "fixture": "OnlineAutomaticRollPlayModeTests",
       "categories": [
@@ -812,6 +822,16 @@
       "definition_sha256": "07de3f4956cc3b57ef569a36800ef872484edcd96ca2b8e3bf06778cebc3e7dc",
       "route": "native",
       "source": "Assets/Tests/PlayMode/Features/OnlineShots/OnlineShotBlockPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineSnapshotPosePlayModeTests",
+      "categories": [
+        "OnlineSnapshotPose"
+      ],
+      "definition_sha256": "4b385ae3218bd8e3e53685a907756f215e169505d18ecd1f0a9d7730da438901",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineSnapshotPose/OnlineSnapshotPosePlayModeTests.cs"
     },
     {
       "mode": "playmode",
@@ -9191,6 +9211,186 @@
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
       "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T204750695Z/results.xml"
+    },
+    {
+      "id": "OnlineSnapshotPoseEditorTests.RejectsInvalidPoseWithoutConsumingPublication(\"missing-pose\")",
+      "feature": "OnlineSnapshotPose",
+      "mode": "editor",
+      "fixture": "OnlineSnapshotPoseEditorTests",
+      "method": "RejectsInvalidPoseWithoutConsumingPublication",
+      "parameters": [
+        "\"missing-pose\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T210329422Z/results.xml"
+    },
+    {
+      "id": "OnlineSnapshotPoseEditorTests.RejectsInvalidPoseWithoutConsumingPublication(\"wrong-match\")",
+      "feature": "OnlineSnapshotPose",
+      "mode": "editor",
+      "fixture": "OnlineSnapshotPoseEditorTests",
+      "method": "RejectsInvalidPoseWithoutConsumingPublication",
+      "parameters": [
+        "\"wrong-match\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T210329422Z/results.xml"
+    },
+    {
+      "id": "OnlineSnapshotPoseEditorTests.RejectsInvalidPoseWithoutConsumingPublication(\"missing-player\")",
+      "feature": "OnlineSnapshotPose",
+      "mode": "editor",
+      "fixture": "OnlineSnapshotPoseEditorTests",
+      "method": "RejectsInvalidPoseWithoutConsumingPublication",
+      "parameters": [
+        "\"missing-player\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T210329422Z/results.xml"
+    },
+    {
+      "id": "OnlineSnapshotPoseEditorTests.RejectsInvalidPoseWithoutConsumingPublication(\"duplicate-player\")",
+      "feature": "OnlineSnapshotPose",
+      "mode": "editor",
+      "fixture": "OnlineSnapshotPoseEditorTests",
+      "method": "RejectsInvalidPoseWithoutConsumingPublication",
+      "parameters": [
+        "\"duplicate-player\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T210329422Z/results.xml"
+    },
+    {
+      "id": "OnlineSnapshotPoseEditorTests.RejectsInvalidPoseWithoutConsumingPublication(\"unknown-player\")",
+      "feature": "OnlineSnapshotPose",
+      "mode": "editor",
+      "fixture": "OnlineSnapshotPoseEditorTests",
+      "method": "RejectsInvalidPoseWithoutConsumingPublication",
+      "parameters": [
+        "\"unknown-player\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T210329422Z/results.xml"
+    },
+    {
+      "id": "OnlineSnapshotPoseEditorTests.RejectsInvalidPoseWithoutConsumingPublication(\"nan-ball\")",
+      "feature": "OnlineSnapshotPose",
+      "mode": "editor",
+      "fixture": "OnlineSnapshotPoseEditorTests",
+      "method": "RejectsInvalidPoseWithoutConsumingPublication",
+      "parameters": [
+        "\"nan-ball\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T210329422Z/results.xml"
+    },
+    {
+      "id": "OnlineSnapshotPoseEditorTests.RejectsInvalidPoseWithoutConsumingPublication(\"infinite-player\")",
+      "feature": "OnlineSnapshotPose",
+      "mode": "editor",
+      "fixture": "OnlineSnapshotPoseEditorTests",
+      "method": "RejectsInvalidPoseWithoutConsumingPublication",
+      "parameters": [
+        "\"infinite-player\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T210329422Z/results.xml"
+    },
+    {
+      "id": "OnlineSnapshotPoseEditorTests.RejectsInvalidPoseWithoutConsumingPublication(\"world-bound\")",
+      "feature": "OnlineSnapshotPose",
+      "mode": "editor",
+      "fixture": "OnlineSnapshotPoseEditorTests",
+      "method": "RejectsInvalidPoseWithoutConsumingPublication",
+      "parameters": [
+        "\"world-bound\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T210329422Z/results.xml"
+    },
+    {
+      "id": "OnlineSnapshotPoseEditorTests.RejectsInvalidPoseWithoutConsumingPublication(\"static-pose\")",
+      "feature": "OnlineSnapshotPose",
+      "mode": "editor",
+      "fixture": "OnlineSnapshotPoseEditorTests",
+      "method": "RejectsInvalidPoseWithoutConsumingPublication",
+      "parameters": [
+        "\"static-pose\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T210329422Z/results.xml"
+    },
+    {
+      "id": "OnlineSnapshotPosePlayModeTests.EncodedSnapshotKeepsMovingPoses(16,False)",
+      "feature": "OnlineSnapshotPose",
+      "mode": "playmode",
+      "fixture": "OnlineSnapshotPosePlayModeTests",
+      "method": "EncodedSnapshotKeepsMovingPoses",
+      "parameters": [
+        "16,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T210343538Z/results.xml"
+    },
+    {
+      "id": "OnlineSnapshotPosePlayModeTests.EncodedSnapshotKeepsMovingPoses(16,True)",
+      "feature": "OnlineSnapshotPose",
+      "mode": "playmode",
+      "fixture": "OnlineSnapshotPosePlayModeTests",
+      "method": "EncodedSnapshotKeepsMovingPoses",
+      "parameters": [
+        "16,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T210343538Z/results.xml"
+    },
+    {
+      "id": "OnlineSnapshotPosePlayModeTests.EncodedSnapshotKeepsMovingPoses(18,False)",
+      "feature": "OnlineSnapshotPose",
+      "mode": "playmode",
+      "fixture": "OnlineSnapshotPosePlayModeTests",
+      "method": "EncodedSnapshotKeepsMovingPoses",
+      "parameters": [
+        "18,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T210343538Z/results.xml"
+    },
+    {
+      "id": "OnlineSnapshotPosePlayModeTests.EncodedSnapshotKeepsMovingPoses(18,True)",
+      "feature": "OnlineSnapshotPose",
+      "mode": "playmode",
+      "fixture": "OnlineSnapshotPosePlayModeTests",
+      "method": "EncodedSnapshotKeepsMovingPoses",
+      "parameters": [
+        "18,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T210343538Z/results.xml"
+    },
+    {
+      "id": "OnlineSnapshotPosePlayModeTests.ReconnectDuringFlight",
+      "feature": "OnlineSnapshotPose",
+      "mode": "playmode",
+      "fixture": "OnlineSnapshotPosePlayModeTests",
+      "method": "ReconnectDuringFlight",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T210343538Z/results.xml"
     }
   ]
 }

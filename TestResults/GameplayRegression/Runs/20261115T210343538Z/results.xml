@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="5" result="Passed" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-15 21:03:43Z" end-time="2026-11-15 21:04:43Z" duration="59.8495491">
+  <test-suite type="TestSuite" id="2681" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1380" result="Passed" start-time="2026-11-15 21:03:43Z" end-time="2026-11-15 21:04:43Z" duration="59.849549" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2678" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1380" result="Passed" start-time="2026-11-15 21:03:43Z" end-time="2026-11-15 21:04:43Z" duration="59.820875" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17216" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="2102" name="OnlineSnapshotPosePlayModeTests" fullname="OnlineSnapshotPosePlayModeTests" classname="OnlineSnapshotPosePlayModeTests" runstate="Runnable" testcasecount="5" result="Passed" start-time="2026-11-15 21:03:43Z" end-time="2026-11-15 21:04:43Z" duration="59.814919" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineSnapshotPose" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="2108" name="EncodedSnapshotKeepsMovingPoses" fullname="OnlineSnapshotPosePlayModeTests.EncodedSnapshotKeepsMovingPoses" classname="OnlineSnapshotPosePlayModeTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-11-15 21:03:43Z" end-time="2026-11-15 21:04:31Z" duration="48.200882" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="2104" name="EncodedSnapshotKeepsMovingPoses(16,False)" fullname="OnlineSnapshotPosePlayModeTests.EncodedSnapshotKeepsMovingPoses(16,False)" methodname="EncodedSnapshotKeepsMovingPoses" classname="OnlineSnapshotPosePlayModeTests" runstate="Runnable" seed="2030677044" result="Passed" start-time="2026-11-15 21:03:43Z" end-time="2026-11-15 21:03:56Z" duration="13.070045" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[TokenKitCatalog] Loading kits JSON from Resources path 'Kits/kit-picker-v1-11-supported' (asset: Assets/Resources/Kits/kit-picker-v1-11-supported.json).
+[TokenKitCatalog] Found kits JSON TextAsset 'kit-picker-v1-11-supported' at Resources path 'Kits/kit-picker-v1-11-supported' (32277 characters).
+[TokenKitCatalog] Parsed 101 kit preset(s) from Resources path 'Kits/kit-picker-v1-11-supported'.
+[TokenKitCatalog] Active kit catalog contains 101 kit preset(s).
+MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584942752672
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+MoveTokenAlongPath: shouldCarryBall: False
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2105" name="EncodedSnapshotKeepsMovingPoses(16,True)" fullname="OnlineSnapshotPosePlayModeTests.EncodedSnapshotKeepsMovingPoses(16,True)" methodname="EncodedSnapshotKeepsMovingPoses" classname="OnlineSnapshotPosePlayModeTests" runstate="Runnable" seed="1043067210" result="Passed" start-time="2026-11-15 21:03:56Z" end-time="2026-11-15 21:04:08Z" duration="11.609963" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584942878864
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+MoveTokenAlongPath: shouldCarryBall: False
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2106" name="EncodedSnapshotKeepsMovingPoses(18,False)" fullname="OnlineSnapshotPosePlayModeTests.EncodedSnapshotKeepsMovingPoses(18,False)" methodname="EncodedSnapshotKeepsMovingPoses" classname="OnlineSnapshotPosePlayModeTests" runstate="Runnable" seed="184623048" result="Passed" start-time="2026-11-15 21:04:08Z" end-time="2026-11-15 21:04:20Z" duration="11.925208" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584943005056
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+MoveTokenAlongPath: shouldCarryBall: False
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2107" name="EncodedSnapshotKeepsMovingPoses(18,True)" fullname="OnlineSnapshotPosePlayModeTests.EncodedSnapshotKeepsMovingPoses(18,True)" methodname="EncodedSnapshotKeepsMovingPoses" classname="OnlineSnapshotPosePlayModeTests" runstate="Runnable" seed="296349053" result="Passed" start-time="2026-11-15 21:04:20Z" end-time="2026-11-15 21:04:31Z" duration="11.573109" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584943131248
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+MoveTokenAlongPath: shouldCarryBall: False
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+        </test-suite>
+        <test-case id="2103" name="ReconnectDuringFlight" fullname="OnlineSnapshotPosePlayModeTests.ReconnectDuringFlight" methodname="ReconnectDuringFlight" classname="OnlineSnapshotPosePlayModeTests" runstate="Runnable" seed="359418010" result="Passed" start-time="2026-11-15 21:04:31Z" end-time="2026-11-15 21:04:43Z" duration="11.594745" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584943257440
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+MoveTokenAlongPath: shouldCarryBall: False
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+Saving results to: TestResults\GameplayRegression\Runs\20261115T210343538Z\results.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

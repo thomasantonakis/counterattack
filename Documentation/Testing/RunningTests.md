@@ -1,5 +1,12 @@
 # Running gameplay regressions
 
+For in-flight full Room snapshot continuity, run EditMode fixture
+`OnlineSnapshotPoseEditorTests` (9 cases) and PlayMode fixture
+`OnlineSnapshotPosePlayModeTests` (5 cases), category `OnlineSnapshotPose`.
+Folders: `Assets/Editor/FeatureTests/OnlineSnapshotPose/` and
+`Assets/Tests/PlayMode/Features/OnlineSnapshotPose/`. The latter uses real
+movement and a fresh guest; it does not require EOS login or another machine.
+
 For required online goalkeeper decisions, use PlayMode fixture
 `OnlineRequiredKeeperPlayModeTests` (category `OnlineRequiredKeeper`, 33 cases)
 in `Assets/Tests/PlayMode/Features/OnlineRequiredKeeper/`. Its three methods are

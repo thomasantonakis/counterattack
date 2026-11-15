@@ -122,6 +122,7 @@ public sealed partial class OnlineFullRoomSceneFixture
         Assert.That(board.authorityRoot.activeSelf,Is.EqualTo(!guest));
         if(guest){board.match.AdvanceOnlineAuthorityTime(5);Assert.That(board.match.OnlineRegulationSeconds,Is.Zero);Assert.That(board.match.TimingRollSequence,Is.Zero);Assert.That(board.match.CaptureOnlineDecisionTiming(),Is.Null);yield break;}
         var hostAuthority=new OnlineGroundPassAuthority(board.match,protocol);var state=hostAuthority.Capture();Assert.That(state.stage,Is.EqualTo("kickoff.setup"));Assert.That(state.tokens.Length,Is.EqualTo(size*2));
+        if(branch=="snapshot-pose"){yield return RunSnapshotPose(board,protocol,data);yield break;}
         if(branch=="transport"){yield return RunTransport(board,protocol,size);yield break;}
         if(branch.StartsWith("required-keeper:")){var parts=branch.Split(':');yield return RunRequiredKeeper(board,protocol,data,bool.Parse(parts[1]),parts[2],bool.Parse(parts[3]));yield break;}
         if(branch.StartsWith("substitution-limit-")){yield return RunSubstitutionLimit(board,protocol,data,branch.EndsWith("home"));yield break;}

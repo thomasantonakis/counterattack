@@ -75,8 +75,10 @@ full normal-game internet acceptance.
 ## Continuation instructions
 
 Continue from `OnlineNextSessionPrompt.md`, following AGENTS.md and unity-cli.
-Prioritize full Room native handoff, then normal pause/menu/substitutions,
-replacement goalkeepers, shootout ordering and half/end match transitions.
+Full Room native handoff, pause/menu/substitutions, required keeper decisions
+and in-flight snapshot poses are implemented with focused Windows evidence.
+Prioritize shootout ordering, shared settings and half/end match transitions,
+then presentation interpolation/transport tuning and deferred paired acceptance.
 Preserve host-only RNG/rules, authenticated semantic commands, guest inactivity,
 receipt/revision checks and reconnect holds. Compile, run feature-focused native
 tests and build through the already-open Editor. Commit/push verified batches.

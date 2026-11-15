@@ -5,8 +5,11 @@ actual authored OnlineRoom, with full drafted rosters, real grid/managers,
 replicated match/roster state, shared pause, normal substitutions and required
 keeper decisions. The original six-token proof descriptions below record older
 checkpoints. Required keeper replacement/emergency nomination has 33 focused
-passes; see OnlineRequiredKeeper/Verification.md. Remaining priorities include
-shootout ordering/lifecycle, shared settings, presentation continuity and actual
+passes; see OnlineRequiredKeeper/Verification.md. In-flight snapshot poses now
+have 9 validation and 5 actual-scene passes; see OnlineSnapshotPose/Verification.md.
+Remaining priorities include
+shootout ordering/lifecycle, shared settings, motion interpolation/transport
+tuning and actual
 paired internet acceptance/latency measurement. Mac execution remains deferred.
 
 User scope expanded on 2026-11-13: prepare the full game for internet play.

@@ -47,6 +47,7 @@ namespace CounterAttack.Online
         public MatchManager.TeamStats homeStats, awayStats;
         public OnlineRollPublication[] rolls;
         public OnlineHeaderObservation header;
+        public OnlineGroundPassPresentation roomPose;
     }
 
     /// <summary>
@@ -235,6 +236,13 @@ namespace CounterAttack.Online
                 tokens = RosterForPublication().Where(t => t != null).Distinct().Select(ReadToken)
                     .OrderBy(t => t.id, StringComparer.Ordinal).ToArray()
             };
+            if(protocol.Compatibility.Catalog==OnlineFullRoomBootstrap.Catalog && (state.ballMoving || state.playerMoving))
+            {
+                var position=match.ball.transform.position;
+                state.roomPose=new OnlineGroundPassPresentation{matchId=protocol.MatchId,ballX=position.x,ballY=position.y,ballZ=position.z,
+                    players=RosterForPublication().Where(t=>t!=null).Distinct().Select(t=>new OnlinePlayerPresentation{id=TokenId(t),
+                        x=t.transform.position.x,y=t.transform.position.y,z=t.transform.position.z}).OrderBy(t=>t.id,StringComparer.Ordinal).ToArray()};
+            }
             var actions = new List<string>();
             if (faulted) state.stage = "faulted";
             // Pause/intro need their own shared authority adapter. Never bypass them

@@ -1,5 +1,14 @@
 # Gameplay regression migration
 
+Full Room snapshot pose continuity adds 9 EditMode and 5 PlayMode cases in
+`Assets/Editor/FeatureTests/OnlineSnapshotPose/` and
+`Assets/Tests/PlayMode/Features/OnlineSnapshotPose/`, category `OnlineSnapshotPose`.
+All passed with zero failures/skips in `Runs/20261115T210329422Z/results.xml`
+and `Runs/20261115T210343538Z/results.xml`; compilation separately clean.
+The red `Runs/20261115T210205269Z/results.xml` reproduces actual ball snapping.
+No legacy scenario was retired. These are local full snapshots, not paired
+internet latency acceptance. Every case is registered in the Mac manifest.
+
 Required online goalkeeper decisions add 33 independently selectable PlayMode
 cases in `Assets/Tests/PlayMode/Features/OnlineRequiredKeeper/`, category
 `OnlineRequiredKeeper`: 1 + 16 + 16 passed, zero failed/skipped, in

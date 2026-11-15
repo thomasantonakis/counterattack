@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="1" result="Failed(Child)" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-15 21:02:05Z" end-time="2026-11-15 21:02:18Z" duration="12.993918">
+  <test-suite type="TestSuite" id="2681" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1380" result="Failed" site="Child" start-time="2026-11-15 21:02:05Z" end-time="2026-11-15 21:02:18Z" duration="12.993918" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="2678" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1380" result="Failed" site="Child" start-time="2026-11-15 21:02:05Z" end-time="2026-11-15 21:02:18Z" duration="12.967166" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17216" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestFixture" id="2102" name="OnlineSnapshotPosePlayModeTests" fullname="OnlineSnapshotPosePlayModeTests" classname="OnlineSnapshotPosePlayModeTests" runstate="Runnable" testcasecount="5" result="Failed" site="Child" start-time="2026-11-15 21:02:05Z" end-time="2026-11-15 21:02:18Z" duration="12.962236" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineSnapshotPose" />
+        </properties>
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-case id="2103" name="ReconnectDuringFlight" fullname="OnlineSnapshotPosePlayModeTests.ReconnectDuringFlight" methodname="ReconnectDuringFlight" classname="OnlineSnapshotPosePlayModeTests" runstate="Runnable" seed="524712856" result="Failed" start-time="2026-11-15 21:02:05Z" end-time="2026-11-15 21:02:18Z" duration="12.938109" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <failure>
+            <message><![CDATA[  Full snapshots must retain the actual in-flight ball pose
+  Expected: less than 0.00100000005f
+  But was:  0.0736946836f
+]]></message>
+            <stack-trace><![CDATA[at OnlineFullRoomSceneFixture+<RunSnapshotPose>d__31.MoveNext () [0x003fd] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineSnapshotPose\OnlineFullRoomSceneFixture.Pose.cs:34
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+          </failure>
+          <output><![CDATA[[TokenKitCatalog] Loading kits JSON from Resources path 'Kits/kit-picker-v1-11-supported' (asset: Assets/Resources/Kits/kit-picker-v1-11-supported.json).
+[TokenKitCatalog] Found kits JSON TextAsset 'kit-picker-v1-11-supported' at Resources path 'Kits/kit-picker-v1-11-supported' (32277 characters).
+[TokenKitCatalog] Parsed 101 kit preset(s) from Resources path 'Kits/kit-picker-v1-11-supported'.
+[TokenKitCatalog] Active kit catalog contains 101 kit preset(s).
+MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584942579668
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+MoveTokenAlongPath: shouldCarryBall: False
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+Saving results to: TestResults\GameplayRegression\Runs\20261115T210205269Z\results.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

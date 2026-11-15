@@ -96,6 +96,10 @@ namespace CounterAttack.Online
             displayedBall.gameObject.SetActive(state.ballOnBoard);
             if (state.ballOnBoard) displayedBall.position = Center(state.ballX, state.ballZ) + Vector3.up * (liveFullRoom?match.ball.transform.position.y:1.2f);
             }
+            // A full snapshot can arrive between animation frames, or be the first
+            // state after reconnect. Restore its captured visual pose after the
+            // logical occupancy pass; presentation never invokes movement/rules.
+            if(liveFullRoom && OnlineRoomSession.IsGuest && state.roomPose!=null)DisplayPresentation(state.roomPose);
             if (statusText != null) statusText.text = role + " | " + state.stage + " | " + state.owner
                 + " | Score " + (state.homeStats?.totalGoals ?? 0) + " - " + (state.awayStats?.totalGoals ?? 0)
                 + "\nState " + state.publicationSequence + " | Rolls " + state.rollSequence
