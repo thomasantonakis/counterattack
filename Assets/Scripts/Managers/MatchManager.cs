@@ -6668,6 +6668,11 @@ public partial class MatchManager : MonoBehaviour
     
     public void LoadGameSettingsFromJson()
     {
+        var online=CounterAttack.Online.OnlineRoomSession.Current;
+        if(online?.HasInitialData==true)
+        {
+            gameData=online.CaptureInitialData();EnsureGameplayEventLogInitialized();OnGameSettingsLoaded?.Invoke();return;
+        }
         if (CounterAttack.Online.OnlineRoomSession.IsGuest) return;
         ApplicationManager.EnsureInstanceExists();
         string filePath = string.Empty;

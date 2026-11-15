@@ -207,7 +207,8 @@ public static class RoomLiveLogService
         // Reading save context must never resurrect a destroyed application during
         // MatchManager.OnDestroy / Play Mode shutdown.
         var application = ApplicationManager.Instance;
-        filePath = application != null ? application.GetLastSavedFilePath() : string.Empty;
+        var online=CounterAttack.Online.OnlineRoomSession.Current;
+        filePath = online?.HasInitialData==true?online.AuthoritySavePath:application != null ? application.GetLastSavedFilePath() : string.Empty;
         if (string.IsNullOrWhiteSpace(filePath))
         {
             message = "No active save file is selected for this match.";

@@ -421,3 +421,7 @@ remaining boundaries. Mac/paired execution remains explicitly deferred.
 Opening toss filters: `OnlineOpeningEditorTests` (20 EditMode),
 `OnlineOpeningScenePlayModeTests` (4 PlayMode). Regular/variant Start assertions
 now lead into opening-roll; the opening fixture verifies room-ready continuation.
+
+Room launch: `OnlineRoomLaunchEditorTests` / category `OnlineRoomLaunch`
+(36 EditMode cases) exercises real data loading, stat graph linkage and persistence
+isolation without live save fixtures. Full Room runtime acceptance is separate.

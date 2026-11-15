@@ -143,3 +143,14 @@ hashes/evidence refreshed for changed Start expectations. Frontend rules v4.
 See OnlineOpeningSetup/Verification.md. Next full Room initialization/roster and
 runtime transport, normal pause/substitution/shootout UI; Arcade returns remain.
 No full remote match start is claimed. Windows exports predate Draft/opening.
+
+Online Room launch preparation now produces real MatchManager.GameData from all
+16/18 drafted slots per side, goalkeeper attributes, one host-resolved referee,
+opening choices and host session ID/UTC. Real loading prioritizes authenticated
+bootstrap instead of local save discovery. Host live logs use session storage;
+manual local save-slot APIs are blocked for a full online session. 36 new focused
+passes plus affected startup2+1 and opening20+4; compilation separately clean.
+See OnlineRoomLaunch/Verification.md. Each new case registered for deferred Mac.
+Native frontend caches room-bootstrap.json but does not yet load full Room.
+Next actual full Scene startup/roster/transport and normal menus. Rules v5;
+exports predate Draft/opening/launch and need refresh before paired execution.

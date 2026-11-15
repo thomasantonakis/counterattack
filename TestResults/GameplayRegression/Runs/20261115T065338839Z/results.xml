@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="1" result="Passed" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-15 06:53:38Z" end-time="2026-11-15 06:53:43Z" duration="4.5016451">
+  <test-suite type="TestSuite" id="2575" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1294" result="Passed" start-time="2026-11-15 06:53:38Z" end-time="2026-11-15 06:53:43Z" duration="4.501645" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2572" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1294" result="Passed" start-time="2026-11-15 06:53:38Z" end-time="2026-11-15 06:53:43Z" duration="4.474150" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="1132" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1923" name="OnlineRoomStartupPlayModeTests" fullname="OnlineRoomStartupPlayModeTests" classname="OnlineRoomStartupPlayModeTests" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-11-15 06:53:38Z" end-time="2026-11-15 06:53:43Z" duration="4.468026" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineRoomStartup" />
+        </properties>
+        <test-case id="1924" name="NormallyLoadedGuestRoomHasNoAuthorityStartup" fullname="OnlineRoomStartupPlayModeTests.NormallyLoadedGuestRoomHasNoAuthorityStartup" methodname="NormallyLoadedGuestRoomHasNoAuthorityStartup" classname="OnlineRoomStartupPlayModeTests" runstate="Runnable" seed="1392577084" result="Passed" start-time="2026-11-15 06:53:38Z" end-time="2026-11-15 06:53:43Z" duration="4.442086" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Saving results to: TestResults\GameplayRegression\Runs\20261115T065338839Z\results.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

@@ -27,6 +27,7 @@ namespace CounterAttack.Online
         public bool freeSelection,repeatable;public string[] available;
         public bool openingCanChooseKickoff,openingWinnerIsHome;
         public MatchOpeningSetup openingSetup;
+        public string roomSessionId,roomStartedUtc;
         public GameSettings settings;
         public OnlineDraftCard[] cards,home,away;
     }
@@ -80,6 +81,11 @@ namespace CounterAttack.Online
             if(all.Any(c=>c==null || string.IsNullOrEmpty(c.id)) || all.Select(c=>c.id).Distinct().Count()!=all.Length)throw new ArgumentException("Draft cards require unique IDs");
             int size=int.Parse(settings.squadSize);home=new OnlineDraftCard[size];away=new OnlineDraftCard[size];
             die=roll??(()=>UnityEngine.Random.Range(1,7));nextIndex??=max=>UnityEngine.Random.Range(0,max);
+            if(settings.referee=="Random")
+            {
+                string[] referees={"Webster - 2","Castolo - 3","Bakker - 4","Read - 5"};int selected=nextIndex(referees.Length);
+                if(selected<0 || selected>=referees.Length)throw new InvalidOperationException("Invalid host referee selection");settings.referee=referees[selected];
+            }
             var players=all.Where(c=>!c.goalkeeper && Allowed(c,false)).ToList();var keepers=all.Where(c=>c.goalkeeper && Allowed(c,true)).ToList();
             if(settings.matchType=="International"){InitializeInternational(all);connections=protocol.ConnectionRevision;return;}
             if(players.Count<(settings.draft=="Arcade"?1:(size-2)*2) || keepers.Count<(settings.gkDraft=="Arcade"?1:4))throw new ArgumentException("Selected pools do not contain enough players");
@@ -108,7 +114,7 @@ namespace CounterAttack.Online
                 phase=phase,turn=turn,hostTeam=protocol.HostTeam,firstPicker=first,connected=protocol.BothConnected,homeReady=homeReady,awayReady=awayReady,
                 homeRoll=homeRoll,awayRoll=awayRoll,rollRound=round,batch=batch,totalBatches=(home.Length-2)/2,settings=settings,cards=visible.ToArray(),home=home,away=away,
                 selection=goalkeeperPhase?"goalkeepers":"outfielders",freeSelection=FreeSelection,repeatable=Repeatable,available=FreeSelection && phase is "pick" or "roll"?pool.Select(c=>c.id).ToArray():Array.Empty<string>(),
-                openingCanChooseKickoff=opening?.CanChooseKickoff==true,openingWinnerIsHome=opening?.WinnerIsHome==true,openingSetup=opening?.Result});
+                openingCanChooseKickoff=opening?.CanChooseKickoff==true,openingWinnerIsHome=opening?.WinnerIsHome==true,openingSetup=opening?.Result,roomSessionId=roomSessionId,roomStartedUtc=roomStartedUtc});
         }
         public OnlineCommandReply Submit(string connection,OnlineDraftRequest request)
         {
@@ -178,7 +184,8 @@ namespace CounterAttack.Online
                     if(phase!="opening-choice" || opening==null)return Reply(OnlineCommandStatus.NotReady);
                     if(actor!=turn)return Reply(OnlineCommandStatus.WrongTeam);
                     if(!opening.Choose(request.choice))return Reply(OnlineCommandStatus.IllegalAction);
-                    turn=opening.ChoosingHome?OnlineTeam.Home:OnlineTeam.Away;if(opening.IsComplete)phase="room-ready";break;
+                    turn=opening.ChoosingHome?OnlineTeam.Home:OnlineTeam.Away;
+                    if(opening.IsComplete){phase="room-ready";roomSessionId=Guid.NewGuid().ToString("N");roomStartedUtc=DateTime.UtcNow.ToString("O");}break;
             }
             revision++;if(actor==OnlineTeam.Home)homeSequence=request.sequence;else awaySequence=request.sequence;
             receipts.Add(key,(body,revision));receiptOrder.Enqueue(key);while(receiptOrder.Count>128)receipts.Remove(receiptOrder.Dequeue());return Reply(OnlineCommandStatus.Accepted);

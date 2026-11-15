@@ -16,6 +16,9 @@ namespace CounterAttack.Online
         public event Action<GameSettings> DraftAgreed;
         public event Action<OnlineDraftClient> DraftAvailable;
         public OnlineDraftClient Draft=>channel?.Draft;
+        public event Action<MatchManager.GameData> RoomPrepared;
+        private MatchManager.GameData roomLaunch;
+        public MatchManager.GameData CaptureRoomLaunch()=>OnlineRoomLaunchData.Copy(roomLaunch);
         private OnlineDraftClient announcedDraft;
         public OnlineSetupClient Client=>channel?.Client;
         public string LobbyCode {get;private set;}
@@ -222,6 +225,12 @@ namespace CounterAttack.Online
             {
                 announcedDraft=Draft;DraftAvailable?.Invoke(Draft);
                 if(agreedSettings!=null && UnityEngine.SceneManagement.SceneManager.GetActiveScene().name=="CreateNewGameScene")UnityEngine.SceneManagement.SceneManager.LoadScene("Draft");
+            }
+            if(roomLaunch==null && Draft?.Connected==true && Draft.Phase=="room-ready")
+            {
+                roomLaunch=OnlineRoomLaunchData.Create(Draft.Capture());
+                File.WriteAllText(Path.Combine(RunDirectory,"room-bootstrap.json"),Newtonsoft.Json.JsonConvert.SerializeObject(roomLaunch,Newtonsoft.Json.Formatting.Indented));
+                RoomPrepared?.Invoke(OnlineRoomLaunchData.Copy(roomLaunch));
             }
             if(!Busy || !Hosting || LobbyCode!=null || RunDirectory==null)return;
             string path=Path.Combine(RunDirectory,"lobby-id.txt");

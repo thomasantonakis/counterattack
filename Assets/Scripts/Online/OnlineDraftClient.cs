@@ -9,6 +9,7 @@ namespace CounterAttack.Online
         public event Action Changed;
         public event Action<OnlineDraftRequest> Requested;
         public OnlineTeam Team {get;}
+        public string Phase=>state?.phase;
         public bool Connected=>available && state?.connected==true;
         public bool Pending {get;private set;}
         public bool IsHost=>state?.hostTeam==Team;

@@ -33,6 +33,7 @@ public static class RoomSaveService
     {
         runPath = string.Empty;
         if (CounterAttack.Online.OnlineRoomSession.IsGuest) { message = "Online replicas cannot write match saves."; return false; }
+        if (CounterAttack.Online.OnlineRoomSession.Current?.HasInitialData==true) { message = "Online match persistence belongs to the session, not a local save slot."; return false; }
         try
         {
             if (string.IsNullOrWhiteSpace(sourcePath) || !File.Exists(sourcePath))
@@ -105,6 +106,7 @@ public static class RoomSaveService
     {
         savedPath = string.Empty;
         if (CounterAttack.Online.OnlineRoomSession.IsGuest) { message = "Online replicas cannot write match saves."; return false; }
+        if (CounterAttack.Online.OnlineRoomSession.Current?.HasInitialData==true) { message = "Online match persistence belongs to the session, not a local save slot."; return false; }
         ApplicationManager.EnsureInstanceExists();
         string activePath = ApplicationManager.Instance.GetLastSavedFilePath();
         if (string.IsNullOrWhiteSpace(activePath))
@@ -128,6 +130,7 @@ public static class RoomSaveService
     {
         savedPath = string.Empty;
         if (CounterAttack.Online.OnlineRoomSession.IsGuest) { message = "Online replicas cannot write match saves."; return false; }
+        if (CounterAttack.Online.OnlineRoomSession.Current?.HasInitialData==true) { message = "Online match persistence belongs to the session, not a local save slot."; return false; }
         string filePath = BuildSaveAsPath(requestedName);
         if (string.IsNullOrWhiteSpace(filePath))
         {
@@ -142,6 +145,7 @@ public static class RoomSaveService
     {
         savedPath = string.Empty;
         if (CounterAttack.Online.OnlineRoomSession.IsGuest) { message = "Online replicas cannot write match saves."; return false; }
+        if (CounterAttack.Online.OnlineRoomSession.Current?.HasInitialData==true) { message = "Online match persistence belongs to the session, not a local save slot."; return false; }
         if (matchManager == null)
         {
             message = "MatchManager is not available.";

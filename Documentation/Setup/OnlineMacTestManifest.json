@@ -214,6 +214,16 @@
     },
     {
       "mode": "editor",
+      "fixture": "OnlineRoomLaunchEditorTests",
+      "categories": [
+        "OnlineRoomLaunch"
+      ],
+      "definition_sha256": "5f53c75cfc5ac1b19ec601ac060a657bd0a052701099f28f38ed4484c627b99a",
+      "route": "native",
+      "source": "Assets/Editor/FeatureTests/OnlineRoomLaunch/OnlineRoomLaunchEditorTests.cs"
+    },
+    {
+      "mode": "editor",
       "fixture": "OnlineRoomStartupEditorTests",
       "categories": [
         "OnlineRoomStartup"
@@ -7018,6 +7028,474 @@
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
       "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T063248358Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(False,16,\"attributes\")",
+      "feature": "OnlineRoomLaunch",
+      "mode": "editor",
+      "fixture": "OnlineRoomLaunchEditorTests",
+      "method": "CompleteDraftBuildsRealMatchData",
+      "parameters": [
+        "False,16,\"attributes\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T065225277Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(False,16,\"opening\")",
+      "feature": "OnlineRoomLaunch",
+      "mode": "editor",
+      "fixture": "OnlineRoomLaunchEditorTests",
+      "method": "CompleteDraftBuildsRealMatchData",
+      "parameters": [
+        "False,16,\"opening\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T065225277Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(False,16,\"detached\")",
+      "feature": "OnlineRoomLaunch",
+      "mode": "editor",
+      "fixture": "OnlineRoomLaunchEditorTests",
+      "method": "CompleteDraftBuildsRealMatchData",
+      "parameters": [
+        "False,16,\"detached\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T065225277Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(False,16,\"rebind\")",
+      "feature": "OnlineRoomLaunch",
+      "mode": "editor",
+      "fixture": "OnlineRoomLaunchEditorTests",
+      "method": "CompleteDraftBuildsRealMatchData",
+      "parameters": [
+        "False,16,\"rebind\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T065225277Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(False,16,\"reject\")",
+      "feature": "OnlineRoomLaunch",
+      "mode": "editor",
+      "fixture": "OnlineRoomLaunchEditorTests",
+      "method": "CompleteDraftBuildsRealMatchData",
+      "parameters": [
+        "False,16,\"reject\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T065225277Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(False,16,\"host-load\")",
+      "feature": "OnlineRoomLaunch",
+      "mode": "editor",
+      "fixture": "OnlineRoomLaunchEditorTests",
+      "method": "CompleteDraftBuildsRealMatchData",
+      "parameters": [
+        "False,16,\"host-load\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T065225277Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(False,16,\"guest-load\")",
+      "feature": "OnlineRoomLaunch",
+      "mode": "editor",
+      "fixture": "OnlineRoomLaunchEditorTests",
+      "method": "CompleteDraftBuildsRealMatchData",
+      "parameters": [
+        "False,16,\"guest-load\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T065225277Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(False,16,\"save-isolation\")",
+      "feature": "OnlineRoomLaunch",
+      "mode": "editor",
+      "fixture": "OnlineRoomLaunchEditorTests",
+      "method": "CompleteDraftBuildsRealMatchData",
+      "parameters": [
+        "False,16,\"save-isolation\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T065225277Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(False,16,\"stats-link\")",
+      "feature": "OnlineRoomLaunch",
+      "mode": "editor",
+      "fixture": "OnlineRoomLaunchEditorTests",
+      "method": "CompleteDraftBuildsRealMatchData",
+      "parameters": [
+        "False,16,\"stats-link\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T065225277Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(False,18,\"attributes\")",
+      "feature": "OnlineRoomLaunch",
+      "mode": "editor",
+      "fixture": "OnlineRoomLaunchEditorTests",
+      "method": "CompleteDraftBuildsRealMatchData",
+      "parameters": [
+        "False,18,\"attributes\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T065225277Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(False,18,\"opening\")",
+      "feature": "OnlineRoomLaunch",
+      "mode": "editor",
+      "fixture": "OnlineRoomLaunchEditorTests",
+      "method": "CompleteDraftBuildsRealMatchData",
+      "parameters": [
+        "False,18,\"opening\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T065225277Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(False,18,\"detached\")",
+      "feature": "OnlineRoomLaunch",
+      "mode": "editor",
+      "fixture": "OnlineRoomLaunchEditorTests",
+      "method": "CompleteDraftBuildsRealMatchData",
+      "parameters": [
+        "False,18,\"detached\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T065225277Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(False,18,\"rebind\")",
+      "feature": "OnlineRoomLaunch",
+      "mode": "editor",
+      "fixture": "OnlineRoomLaunchEditorTests",
+      "method": "CompleteDraftBuildsRealMatchData",
+      "parameters": [
+        "False,18,\"rebind\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T065225277Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(False,18,\"reject\")",
+      "feature": "OnlineRoomLaunch",
+      "mode": "editor",
+      "fixture": "OnlineRoomLaunchEditorTests",
+      "method": "CompleteDraftBuildsRealMatchData",
+      "parameters": [
+        "False,18,\"reject\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T065225277Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(False,18,\"host-load\")",
+      "feature": "OnlineRoomLaunch",
+      "mode": "editor",
+      "fixture": "OnlineRoomLaunchEditorTests",
+      "method": "CompleteDraftBuildsRealMatchData",
+      "parameters": [
+        "False,18,\"host-load\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T065225277Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(False,18,\"guest-load\")",
+      "feature": "OnlineRoomLaunch",
+      "mode": "editor",
+      "fixture": "OnlineRoomLaunchEditorTests",
+      "method": "CompleteDraftBuildsRealMatchData",
+      "parameters": [
+        "False,18,\"guest-load\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T065225277Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(False,18,\"save-isolation\")",
+      "feature": "OnlineRoomLaunch",
+      "mode": "editor",
+      "fixture": "OnlineRoomLaunchEditorTests",
+      "method": "CompleteDraftBuildsRealMatchData",
+      "parameters": [
+        "False,18,\"save-isolation\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T065225277Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(False,18,\"stats-link\")",
+      "feature": "OnlineRoomLaunch",
+      "mode": "editor",
+      "fixture": "OnlineRoomLaunchEditorTests",
+      "method": "CompleteDraftBuildsRealMatchData",
+      "parameters": [
+        "False,18,\"stats-link\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T065225277Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(True,16,\"attributes\")",
+      "feature": "OnlineRoomLaunch",
+      "mode": "editor",
+      "fixture": "OnlineRoomLaunchEditorTests",
+      "method": "CompleteDraftBuildsRealMatchData",
+      "parameters": [
+        "True,16,\"attributes\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T065225277Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(True,16,\"opening\")",
+      "feature": "OnlineRoomLaunch",
+      "mode": "editor",
+      "fixture": "OnlineRoomLaunchEditorTests",
+      "method": "CompleteDraftBuildsRealMatchData",
+      "parameters": [
+        "True,16,\"opening\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T065225277Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(True,16,\"detached\")",
+      "feature": "OnlineRoomLaunch",
+      "mode": "editor",
+      "fixture": "OnlineRoomLaunchEditorTests",
+      "method": "CompleteDraftBuildsRealMatchData",
+      "parameters": [
+        "True,16,\"detached\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T065225277Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(True,16,\"rebind\")",
+      "feature": "OnlineRoomLaunch",
+      "mode": "editor",
+      "fixture": "OnlineRoomLaunchEditorTests",
+      "method": "CompleteDraftBuildsRealMatchData",
+      "parameters": [
+        "True,16,\"rebind\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T065225277Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(True,16,\"reject\")",
+      "feature": "OnlineRoomLaunch",
+      "mode": "editor",
+      "fixture": "OnlineRoomLaunchEditorTests",
+      "method": "CompleteDraftBuildsRealMatchData",
+      "parameters": [
+        "True,16,\"reject\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T065225277Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(True,16,\"host-load\")",
+      "feature": "OnlineRoomLaunch",
+      "mode": "editor",
+      "fixture": "OnlineRoomLaunchEditorTests",
+      "method": "CompleteDraftBuildsRealMatchData",
+      "parameters": [
+        "True,16,\"host-load\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T065225277Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(True,16,\"guest-load\")",
+      "feature": "OnlineRoomLaunch",
+      "mode": "editor",
+      "fixture": "OnlineRoomLaunchEditorTests",
+      "method": "CompleteDraftBuildsRealMatchData",
+      "parameters": [
+        "True,16,\"guest-load\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T065225277Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(True,16,\"save-isolation\")",
+      "feature": "OnlineRoomLaunch",
+      "mode": "editor",
+      "fixture": "OnlineRoomLaunchEditorTests",
+      "method": "CompleteDraftBuildsRealMatchData",
+      "parameters": [
+        "True,16,\"save-isolation\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T065225277Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(True,16,\"stats-link\")",
+      "feature": "OnlineRoomLaunch",
+      "mode": "editor",
+      "fixture": "OnlineRoomLaunchEditorTests",
+      "method": "CompleteDraftBuildsRealMatchData",
+      "parameters": [
+        "True,16,\"stats-link\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T065225277Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(True,18,\"attributes\")",
+      "feature": "OnlineRoomLaunch",
+      "mode": "editor",
+      "fixture": "OnlineRoomLaunchEditorTests",
+      "method": "CompleteDraftBuildsRealMatchData",
+      "parameters": [
+        "True,18,\"attributes\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T065225277Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(True,18,\"opening\")",
+      "feature": "OnlineRoomLaunch",
+      "mode": "editor",
+      "fixture": "OnlineRoomLaunchEditorTests",
+      "method": "CompleteDraftBuildsRealMatchData",
+      "parameters": [
+        "True,18,\"opening\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T065225277Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(True,18,\"detached\")",
+      "feature": "OnlineRoomLaunch",
+      "mode": "editor",
+      "fixture": "OnlineRoomLaunchEditorTests",
+      "method": "CompleteDraftBuildsRealMatchData",
+      "parameters": [
+        "True,18,\"detached\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T065225277Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(True,18,\"rebind\")",
+      "feature": "OnlineRoomLaunch",
+      "mode": "editor",
+      "fixture": "OnlineRoomLaunchEditorTests",
+      "method": "CompleteDraftBuildsRealMatchData",
+      "parameters": [
+        "True,18,\"rebind\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T065225277Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(True,18,\"reject\")",
+      "feature": "OnlineRoomLaunch",
+      "mode": "editor",
+      "fixture": "OnlineRoomLaunchEditorTests",
+      "method": "CompleteDraftBuildsRealMatchData",
+      "parameters": [
+        "True,18,\"reject\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T065225277Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(True,18,\"host-load\")",
+      "feature": "OnlineRoomLaunch",
+      "mode": "editor",
+      "fixture": "OnlineRoomLaunchEditorTests",
+      "method": "CompleteDraftBuildsRealMatchData",
+      "parameters": [
+        "True,18,\"host-load\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T065225277Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(True,18,\"guest-load\")",
+      "feature": "OnlineRoomLaunch",
+      "mode": "editor",
+      "fixture": "OnlineRoomLaunchEditorTests",
+      "method": "CompleteDraftBuildsRealMatchData",
+      "parameters": [
+        "True,18,\"guest-load\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T065225277Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(True,18,\"save-isolation\")",
+      "feature": "OnlineRoomLaunch",
+      "mode": "editor",
+      "fixture": "OnlineRoomLaunchEditorTests",
+      "method": "CompleteDraftBuildsRealMatchData",
+      "parameters": [
+        "True,18,\"save-isolation\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T065225277Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(True,18,\"stats-link\")",
+      "feature": "OnlineRoomLaunch",
+      "mode": "editor",
+      "fixture": "OnlineRoomLaunchEditorTests",
+      "method": "CompleteDraftBuildsRealMatchData",
+      "parameters": [
+        "True,18,\"stats-link\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T065225277Z/results.xml"
     }
   ]
 }
