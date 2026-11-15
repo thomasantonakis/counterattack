@@ -4,7 +4,7 @@
 - [x] Bind real drafted attributes, goalkeeper/bench roles and opening formation.
 - [x] Keep guest authority inactive while projecting the complete roster.
 - [x] Execute focused host/guest actual-scene tests.
-- [ ] Connect persistent native frontend to continuous full Room transport.
+- [x] Connect persistent native frontend to continuous full Room transport.
 - [ ] Normal pause/substitution/shootout menus and full-match acceptance.
 
 This owned scene derives from Room; original designer-owned Room edits/layout
@@ -28,3 +28,5 @@ included in snapshots; complete substitution/status/direction replication and
 normal match menus remain work in progress.
 
 Final isolation rerun: `TestResults/GameplayRegression/Runs/20261115T074316240Z/results.xml`: 16 passed, zero failed/skipped. Prior application intro/save context, logging caches, match/ball references, random state and time scale are restored. All 16 cases are registered separately for the deferred Mac run.
+
+Native handoff and four additional encoded real Room kickoff cases are recorded in `../OnlineRoomHandoff/Verification.md`; the full fixture now contains 20 passing cases. Internet pairing remains deferred.

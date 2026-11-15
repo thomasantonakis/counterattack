@@ -214,6 +214,16 @@
     },
     {
       "mode": "editor",
+      "fixture": "OnlineRoomHandoffEditorTests",
+      "categories": [
+        "OnlineRoomHandoff"
+      ],
+      "definition_sha256": "0f7368e29f9b5ebdbe7bad0519805fd8b55de3fa98e1de7205f5eb39f5c63521",
+      "route": "native",
+      "source": "Assets/Editor/FeatureTests/OnlineRoomHandoff/OnlineRoomHandoffEditorTests.cs"
+    },
+    {
+      "mode": "editor",
       "fixture": "OnlineRoomLaunchEditorTests",
       "categories": [
         "OnlineRoomLaunch"
@@ -426,9 +436,10 @@
       "mode": "playmode",
       "fixture": "OnlineFullRoomPlayModeTests",
       "categories": [
-        "OnlineFullRoom"
+        "OnlineFullRoom",
+        "OnlineRoomHandoffTransport"
       ],
-      "definition_sha256": "2f00019739d76a6dac504f8df42574e1f65ab6f7f7240e3c34a3d7e751fdca1e",
+      "definition_sha256": "f41b52fe6d6bd17334ac7f68dcd0451e2079e318b3334e4fb5c26569c23f47e1",
       "route": "native",
       "source": "Assets/Tests/PlayMode/Features/OnlineFullRoom/OnlineFullRoomPlayModeTests.cs"
     },
@@ -7518,7 +7529,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T074316240Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T180807610Z/results.xml"
     },
     {
       "id": "OnlineFullRoomPlayModeTests.ActualFullRoom(False,16,True)",
@@ -7531,7 +7542,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T074316240Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T180807610Z/results.xml"
     },
     {
       "id": "OnlineFullRoomPlayModeTests.ActualFullRoom(False,18,False)",
@@ -7544,7 +7555,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T074316240Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T180807610Z/results.xml"
     },
     {
       "id": "OnlineFullRoomPlayModeTests.ActualFullRoom(False,18,True)",
@@ -7557,7 +7568,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T074316240Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T180807610Z/results.xml"
     },
     {
       "id": "OnlineFullRoomPlayModeTests.ActualFullRoom(True,16,False)",
@@ -7570,7 +7581,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T074316240Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T180807610Z/results.xml"
     },
     {
       "id": "OnlineFullRoomPlayModeTests.ActualFullRoom(True,16,True)",
@@ -7583,7 +7594,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T074316240Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T180807610Z/results.xml"
     },
     {
       "id": "OnlineFullRoomPlayModeTests.ActualFullRoom(True,18,False)",
@@ -7596,7 +7607,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T074316240Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T180807610Z/results.xml"
     },
     {
       "id": "OnlineFullRoomPlayModeTests.ActualFullRoom(True,18,True)",
@@ -7609,7 +7620,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T074316240Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T180807610Z/results.xml"
     },
     {
       "id": "OnlineFullRoomPlayModeTests.AuthoredKickoff(16,False)",
@@ -7622,7 +7633,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T074316240Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T180807610Z/results.xml"
     },
     {
       "id": "OnlineFullRoomPlayModeTests.AuthoredKickoff(16,True)",
@@ -7635,7 +7646,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T074316240Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T180807610Z/results.xml"
     },
     {
       "id": "OnlineFullRoomPlayModeTests.AuthoredKickoff(18,False)",
@@ -7648,7 +7659,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T074316240Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T180807610Z/results.xml"
     },
     {
       "id": "OnlineFullRoomPlayModeTests.AuthoredKickoff(18,True)",
@@ -7661,7 +7672,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T074316240Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T180807610Z/results.xml"
     },
     {
       "id": "OnlineFullRoomPlayModeTests.FullGuestProjection(16,False)",
@@ -7674,7 +7685,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T074316240Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T180807610Z/results.xml"
     },
     {
       "id": "OnlineFullRoomPlayModeTests.FullGuestProjection(16,True)",
@@ -7687,7 +7698,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T074316240Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T180807610Z/results.xml"
     },
     {
       "id": "OnlineFullRoomPlayModeTests.FullGuestProjection(18,False)",
@@ -7700,7 +7711,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T074316240Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T180807610Z/results.xml"
     },
     {
       "id": "OnlineFullRoomPlayModeTests.FullGuestProjection(18,True)",
@@ -7713,7 +7724,226 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T074316240Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T180807610Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomHandoffEditorTests.FailedLaunchLeavesNoActiveSession(False)",
+      "feature": "OnlineRoomHandoff",
+      "mode": "editor",
+      "fixture": "OnlineRoomHandoffEditorTests",
+      "method": "FailedLaunchLeavesNoActiveSession",
+      "parameters": [
+        "False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T181316630Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomHandoffEditorTests.FailedLaunchLeavesNoActiveSession(True)",
+      "feature": "OnlineRoomHandoff",
+      "mode": "editor",
+      "fixture": "OnlineRoomHandoffEditorTests",
+      "method": "FailedLaunchLeavesNoActiveSession",
+      "parameters": [
+        "True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T181316630Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomHandoffEditorTests.NativeTeardownDisposesGameplayBeforeProbe(False)",
+      "feature": "OnlineRoomHandoff",
+      "mode": "editor",
+      "fixture": "OnlineRoomHandoffEditorTests",
+      "method": "NativeTeardownDisposesGameplayBeforeProbe",
+      "parameters": [
+        "False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T181316630Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomHandoffEditorTests.NativeTeardownDisposesGameplayBeforeProbe(True)",
+      "feature": "OnlineRoomHandoff",
+      "mode": "editor",
+      "fixture": "OnlineRoomHandoffEditorTests",
+      "method": "NativeTeardownDisposesGameplayBeforeProbe",
+      "parameters": [
+        "True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T181316630Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomHandoffEditorTests.RejectsFrontendWithoutFullRoomHandoff",
+      "feature": "OnlineRoomHandoff",
+      "mode": "editor",
+      "fixture": "OnlineRoomHandoffEditorTests",
+      "method": "RejectsFrontendWithoutFullRoomHandoff",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T181316630Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomHandoffEditorTests.SessionOwnsAndRestoresSaveContext(False,False,False)",
+      "feature": "OnlineRoomHandoff",
+      "mode": "editor",
+      "fixture": "OnlineRoomHandoffEditorTests",
+      "method": "SessionOwnsAndRestoresSaveContext",
+      "parameters": [
+        "False,False,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T181316630Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomHandoffEditorTests.SessionOwnsAndRestoresSaveContext(False,False,True)",
+      "feature": "OnlineRoomHandoff",
+      "mode": "editor",
+      "fixture": "OnlineRoomHandoffEditorTests",
+      "method": "SessionOwnsAndRestoresSaveContext",
+      "parameters": [
+        "False,False,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T181316630Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomHandoffEditorTests.SessionOwnsAndRestoresSaveContext(False,True,False)",
+      "feature": "OnlineRoomHandoff",
+      "mode": "editor",
+      "fixture": "OnlineRoomHandoffEditorTests",
+      "method": "SessionOwnsAndRestoresSaveContext",
+      "parameters": [
+        "False,True,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T181316630Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomHandoffEditorTests.SessionOwnsAndRestoresSaveContext(False,True,True)",
+      "feature": "OnlineRoomHandoff",
+      "mode": "editor",
+      "fixture": "OnlineRoomHandoffEditorTests",
+      "method": "SessionOwnsAndRestoresSaveContext",
+      "parameters": [
+        "False,True,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T181316630Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomHandoffEditorTests.SessionOwnsAndRestoresSaveContext(True,False,False)",
+      "feature": "OnlineRoomHandoff",
+      "mode": "editor",
+      "fixture": "OnlineRoomHandoffEditorTests",
+      "method": "SessionOwnsAndRestoresSaveContext",
+      "parameters": [
+        "True,False,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T181316630Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomHandoffEditorTests.SessionOwnsAndRestoresSaveContext(True,False,True)",
+      "feature": "OnlineRoomHandoff",
+      "mode": "editor",
+      "fixture": "OnlineRoomHandoffEditorTests",
+      "method": "SessionOwnsAndRestoresSaveContext",
+      "parameters": [
+        "True,False,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T181316630Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomHandoffEditorTests.SessionOwnsAndRestoresSaveContext(True,True,False)",
+      "feature": "OnlineRoomHandoff",
+      "mode": "editor",
+      "fixture": "OnlineRoomHandoffEditorTests",
+      "method": "SessionOwnsAndRestoresSaveContext",
+      "parameters": [
+        "True,True,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T181316630Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomHandoffEditorTests.SessionOwnsAndRestoresSaveContext(True,True,True)",
+      "feature": "OnlineRoomHandoff",
+      "mode": "editor",
+      "fixture": "OnlineRoomHandoffEditorTests",
+      "method": "SessionOwnsAndRestoresSaveContext",
+      "parameters": [
+        "True,True,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T181316630Z/results.xml"
+    },
+    {
+      "id": "OnlineFullRoomPlayModeTests.EncodedFullRoomKickoff(16,False)",
+      "feature": "OnlineFullRoom",
+      "mode": "playmode",
+      "fixture": "OnlineFullRoomPlayModeTests",
+      "method": "EncodedFullRoomKickoff",
+      "parameters": [
+        "16,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T180807610Z/results.xml"
+    },
+    {
+      "id": "OnlineFullRoomPlayModeTests.EncodedFullRoomKickoff(16,True)",
+      "feature": "OnlineFullRoom",
+      "mode": "playmode",
+      "fixture": "OnlineFullRoomPlayModeTests",
+      "method": "EncodedFullRoomKickoff",
+      "parameters": [
+        "16,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T180807610Z/results.xml"
+    },
+    {
+      "id": "OnlineFullRoomPlayModeTests.EncodedFullRoomKickoff(18,False)",
+      "feature": "OnlineFullRoom",
+      "mode": "playmode",
+      "fixture": "OnlineFullRoomPlayModeTests",
+      "method": "EncodedFullRoomKickoff",
+      "parameters": [
+        "18,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T180807610Z/results.xml"
+    },
+    {
+      "id": "OnlineFullRoomPlayModeTests.EncodedFullRoomKickoff(18,True)",
+      "feature": "OnlineFullRoom",
+      "mode": "playmode",
+      "fixture": "OnlineFullRoomPlayModeTests",
+      "method": "EncodedFullRoomKickoff",
+      "parameters": [
+        "18,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T180807610Z/results.xml"
     }
   ]
 }

@@ -44,7 +44,7 @@ for ((i=0; i<600; i++)); do
         printf '%s\n' "$status" | jq -e '.data.result.result == "Succeeded"' >/dev/null
         if [ "$mode" = game ]; then
             printf 'Normal-scene Mac build ready. Manual launch: open Build/OnlineGame/Mac/Counterattack.app\n'
-            printf 'Online setup is implemented; full Draft/Room multiplayer handoff is still in development.\n'
+            printf 'Full Room handoff is implemented; paired internet acceptance and remaining match menus are still pending.\n'
         else
             printf 'Mac proof build ready. Run: bash Documentation/Setup/RunEOSStandaloneMac.sh login %s\n' "$mode"
         fi

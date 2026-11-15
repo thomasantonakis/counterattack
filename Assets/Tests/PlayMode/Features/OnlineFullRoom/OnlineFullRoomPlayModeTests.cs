@@ -16,4 +16,6 @@ public sealed class OnlineFullRoomPlayModeTests
         =>(IEnumerator)Bridge.GetMethod("Run").Invoke(fixture,new object[]{false,size,mirror,"kickoff"});
     [UnityTest] public IEnumerator FullGuestProjection([Values(16,18)]int size,[Values(false,true)]bool mirror)
         =>(IEnumerator)Bridge.GetMethod("Run").Invoke(fixture,new object[]{false,size,mirror,"replica"});
+    [UnityTest,Category("OnlineRoomHandoffTransport")] public IEnumerator EncodedFullRoomKickoff([Values(16,18)]int size,[Values(false,true)]bool mirror)
+        =>(IEnumerator)Bridge.GetMethod("Run").Invoke(fixture,new object[]{false,size,mirror,"transport"});
 }

@@ -1,0 +1,10 @@
+{"name":"OnlineRoomHandoffEditorTests.FailedLaunchLeavesNoActiveSession(False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomHandoffEditorTests.FailedLaunchLeavesNoActiveSession(True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomHandoffEditorTests.SessionOwnsAndRestoresSaveContext(False,False,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomHandoffEditorTests.SessionOwnsAndRestoresSaveContext(False,False,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomHandoffEditorTests.SessionOwnsAndRestoresSaveContext(False,True,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomHandoffEditorTests.SessionOwnsAndRestoresSaveContext(False,True,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomHandoffEditorTests.SessionOwnsAndRestoresSaveContext(True,False,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomHandoffEditorTests.SessionOwnsAndRestoresSaveContext(True,False,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomHandoffEditorTests.SessionOwnsAndRestoresSaveContext(True,True,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomHandoffEditorTests.SessionOwnsAndRestoresSaveContext(True,True,True)","status":"Passed","message":"","stackTrace":""}

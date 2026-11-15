@@ -31,7 +31,13 @@ namespace CounterAttack.Online
         private readonly Func<double> recoveryClock;
         private bool manualTransport, transportUnavailable, peerLeft;
         private bool ContinuousManualSession=>board.continuousManualSession || Environment.GetCommandLineArgs().Contains("-ca-online-continuous");
-        private string SessionCatalog=>OnlineManualSessionPolicy.Catalog(ContinuousManualSession);
+        private string SessionCatalog=>board.liveFullRoom?OnlineFullRoomBootstrap.Catalog:OnlineManualSessionPolicy.Catalog(ContinuousManualSession);
+        private void PrepareHostBoard()
+        {
+            if(!board.liveFullRoom){board.InitializeAuthority();return;}
+            EOSProofCheck.Require(board.grid.IsGridInitialized() && board.match.gameData?.gameSettings?.gameMode==ApplicationManager.OnlineGameMode
+                && board.tokens.Length is 32 or 36,"Full Room must be initialized from the agreed draft before transport starts");
+        }
 
         private void MarkTransportUnavailable()
         { transportUnavailable = true; if (board.controls != null) board.controls.SetConnected(false); }
@@ -216,17 +222,18 @@ namespace CounterAttack.Online
         internal IEnumerator Host(EOSStandaloneSession session, ProductUserId remote, SocketId socket, string lobby)
         {
             SetPeer(session, remote, socket, lobby);
-            board.InitializeAuthority();
+            PrepareHostBoard();
             var version = new OnlineCompatibility("ground-wire-v7", "ground-rules-v1", SessionCatalog);
             var protocol = new OnlineMatchProtocol(matchId, remote.ToString(), session.UserId.ToString(), session.UserId.ToString(), version);
             EOSProofCheck.Require(protocol.BindAuthenticatedAccount(remote.ToString(), "guest-home", version), "Binding guest Home identity");
             EOSProofCheck.Require(protocol.BindAuthenticatedAccount(session.UserId.ToString(), "host-away", version), "Binding host Away identity");
             var authority = new OnlineGroundPassAuthority(board.match, protocol);
             using var pause = new OnlineSharedPause(protocol, board.match);
-            if (Environment.GetCommandLineArgs().Contains("-ca-online-manual"))
+            if (board.liveFullRoom || Environment.GetCommandLineArgs().Contains("-ca-online-manual"))
             {
                 var manual = ManualHost(authority, protocol, pause);
-                while (manual.MoveNext()) yield return manual.Current;
+                using(manual as IDisposable)
+                    while (manual.MoveNext()) yield return manual.Current;
                 yield break;
             }
             var first = authority.Capture();
@@ -303,10 +310,11 @@ namespace CounterAttack.Online
             SetPeer(session, remote, socket, lobby);
             EOSProofCheck.Require(!board.authorityRoot.activeSelf, "Guest gameplay managers must remain inactive");
             var replica = new OnlineGroundPassReplica(matchId, board.tokens.Select(token => (token.isHomeTeam ? "home:" : "away:") + token.jerseyNumber), SessionCatalog);
-            if (Environment.GetCommandLineArgs().Contains("-ca-online-manual"))
+            if (board.liveFullRoom || Environment.GetCommandLineArgs().Contains("-ca-online-manual"))
             {
                 var manual = ManualGuest(replica);
-                while (manual.MoveNext()) yield return manual.Current;
+                using(manual as IDisposable)
+                    while (manual.MoveNext()) yield return manual.Current;
                 yield break;
             }
             Send(new OnlineGroundPassMessage { kind = "hello" });

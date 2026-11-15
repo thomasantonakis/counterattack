@@ -6,9 +6,11 @@ Current priority (2026-11-15): normal Host/Join, persistent native setup, all Dr
 variants, opening coin toss and complete roster launch data are implemented.
 The authored OnlineRoom now uses the actual 1,900-hex pitch, 32/36 drafted actors,
 real kickoff managers and guest score/time/position projection. Sixteen focused
-actual-scene cases passed; final isolation verification is in progress.
-Next connect native frontend transport to this scene, then integrate normal
-pause/substitution/shootout controls. Full-match internet acceptance and measured
+actual-scene cases passed, including final isolation verification. Native
+frontend ? full Room handoff has 13 lifecycle and four encoded kickoff passes;
+seven affected manual-control and 12 frontend-entry cases also passed. All three
+Windows exports and packaged proof local/login checks succeeded.
+Next integrate normal pause/substitution/shootout controls. Full-match internet acceptance and measured
 latency remain unverified. Paired Mac testing is deferred.
 See Assets/Editor/FeatureTests/OnlineFullRoom/Verification.md.
 

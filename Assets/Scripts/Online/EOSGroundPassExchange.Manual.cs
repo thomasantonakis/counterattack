@@ -42,7 +42,7 @@ namespace CounterAttack.Online
             {
                 bool ready = false, done = false;
                 long sent = -1;
-                var deadline = RecoveryNow + (ContinuousManualSession?7200:900);
+                var deadline = board.liveFullRoom?double.PositiveInfinity:RecoveryNow + (ContinuousManualSession?7200:900);
                 while (!done && RecoveryNow < deadline)
                 {
                     Poll();
@@ -97,7 +97,7 @@ namespace CounterAttack.Online
                     var state = finishingSnapshot ?? pause.Capture(authority);
                     if (ready && finishingSnapshot == null && CompletedManualAction(state))
                     { finishingSnapshot = state; board.controls.SetConnected(false); }
-                    board.Display(state, "Authority Away | enter target X/Z; Home chooses the pass");
+                    board.Display(state, board.liveFullRoom?"Online match | Away authority":"Authority Away | enter target X/Z; Home chooses the pass");
                     var boundary = state.revision + ":" + state.sharedPauseRevision + ":" + state.connectionHeld
                         + ":" + state.stage + ":" + state.owner + ":" + state.rollSequence;
                     // Commit/hold/owner changes go immediately. Budget and clock
@@ -116,9 +116,9 @@ namespace CounterAttack.Online
                         var position = board.match.ball.transform.position;
                         Send(new OnlineGroundPassMessage { kind = "presentation", peerNonce = nonce, connectionGeneration = recovery.Generation,
                             presentation = new OnlineGroundPassPresentation { matchId = matchId, publicationSequence = sent,
-                                frameSequence = ++presentationSequence, ballX = position.x, ballY = position.y + 1f, ballZ = position.z,
+                                frameSequence = ++presentationSequence, ballX = position.x, ballY = position.y + (board.liveFullRoom?0:1f), ballZ = position.z,
                                 players=board.tokens.Select(token=>new OnlinePlayerPresentation{id=OnlineRollPublication.ActorId(token),
-                                    x=token.transform.position.x,y=token.transform.position.y+.5f,z=token.transform.position.z}).ToArray() } });
+                                    x=token.transform.position.x,y=token.transform.position.y+(board.liveFullRoom?0:.5f),z=token.transform.position.z}).ToArray() } });
                         nextPresentation = RecoveryNow + .05;
                     }
                     yield return null;
@@ -144,7 +144,7 @@ namespace CounterAttack.Online
             {
                 SendCurrent(new OnlineGroundPassMessage { kind = "hello" });
                 bool doneSent = false, finished = false;
-                var deadline = RecoveryNow + (ContinuousManualSession?7200:900);
+                var deadline = board.liveFullRoom?double.PositiveInfinity:RecoveryNow + (ContinuousManualSession?7200:900);
                 while (!finished && RecoveryNow < deadline)
                 {
                     Poll();
@@ -163,7 +163,7 @@ namespace CounterAttack.Online
                         if (message.kind == "state")
                         {
                             EOSProofCheck.Require(replica.Apply(message.state), "Manual guest accepts ordered state");
-                            board.Display(replica.State, "Replica Home | Start, enter X/Z, preview then confirm");
+                            board.Display(replica.State, board.liveFullRoom?"Online match | Home replica":"Replica Home | Start, enter X/Z, preview then confirm");
                             if (message.status == "resync")
                                 SendCurrent(new OnlineGroundPassMessage { kind = "hello", status = "resync-ack", digest = Digest(message.state) });
                             board.controls.SetConnected(!message.state.connectionHeld && message.status != "resync");

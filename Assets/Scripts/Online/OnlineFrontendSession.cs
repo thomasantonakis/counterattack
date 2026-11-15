@@ -18,6 +18,9 @@ namespace CounterAttack.Online
         public OnlineDraftClient Draft=>channel?.Draft;
         public event Action<MatchManager.GameData> RoomPrepared;
         private MatchManager.GameData roomLaunch;
+        private OnlineRoomLaunchLifetime roomLifetime;
+        private IEnumerator gameplay;
+        private OnlineGroundPassBoard roomBoard;
         public MatchManager.GameData CaptureRoomLaunch()=>OnlineRoomLaunchData.Copy(roomLaunch);
         private OnlineDraftClient announcedDraft;
         public OnlineSetupClient Client=>channel?.Client;
@@ -90,6 +93,7 @@ namespace CounterAttack.Online
                 if(!next || failure!=null)break;
                 yield return probe.Current;
             }
+            try{StopRoom();}catch(Exception error){failure??=error;}
             try{(probe as IDisposable)?.Dispose();}catch(Exception error){failure??=error;}
             probe=null;native=null;channel?.TransportLost();
             try{EOSStandaloneSession.Shutdown();}catch(Exception error){failure??=error;}
@@ -130,7 +134,22 @@ namespace CounterAttack.Online
                     if(channel.PeerLeft){Status="The other manager left the session.";break;}
                     if(stop)break;
                     if(recovery.Expired)throw new TimeoutException("The other manager did not reconnect within five minutes.");
-                    if(recovery.Recovering)Status="Connection interrupted. Waiting for the other manager to reconnect...";
+                    if(roomLifetime!=null)
+                    {
+                        if(gameplay==null)
+                        {
+                            var bootstrap=FindAnyObjectByType<OnlineFullRoomBootstrap>();
+                            if(bootstrap!=null && bootstrap.Ready)
+                            {
+                                roomBoard=bootstrap.board;
+                                var exchange=new EOSGroundPassExchange(roomBoard,RunDirectory);
+                                gameplay=Hosting?exchange.Host(native,peer,socket,LobbyCode):exchange.Guest(native,peer,socket,LobbyCode);
+                            }
+                        }
+                        if(gameplay!=null && !gameplay.MoveNext()){Status="Online match finished.";break;}
+                        Status=recovery.Recovering?"Connection interrupted. Waiting for the other manager...":"Online match connected";
+                    }
+                    else if(recovery.Recovering)Status="Connection interrupted. Waiting for the other manager to reconnect...";
                     else if(channel.Ready)Status=agreedSettings==null?"Connected. Review your selections.":"Both managers agreed. Preparing Draft...";
                     yield return null;
                 }
@@ -231,6 +250,8 @@ namespace CounterAttack.Online
                 roomLaunch=OnlineRoomLaunchData.Create(Draft.Capture());
                 File.WriteAllText(Path.Combine(RunDirectory,"room-bootstrap.json"),Newtonsoft.Json.JsonConvert.SerializeObject(roomLaunch,Newtonsoft.Json.Formatting.Indented));
                 RoomPrepared?.Invoke(OnlineRoomLaunchData.Copy(roomLaunch));
+                roomLifetime=new OnlineRoomLaunchLifetime("ground-"+LobbyCode,!Hosting,roomLaunch,RunDirectory);
+                UnityEngine.SceneManagement.SceneManager.LoadScene(OnlineFullRoomBootstrap.SceneName);
             }
             if(!Busy || !Hosting || LobbyCode!=null || RunDirectory==null)return;
             string path=Path.Combine(RunDirectory,"lobby-id.txt");
@@ -265,10 +286,31 @@ namespace CounterAttack.Online
         private void OnDestroy()
         {
             if(disposed)return;disposed=true;
+            try{StopRoom();}catch(Exception error){Debug.LogWarning("Online Room cleanup: "+error.Message);}
             bool ownedProbe=probe!=null;
             try{(probe as IDisposable)?.Dispose();if(ownedProbe)EOSStandaloneSession.Shutdown();}catch(Exception error){Debug.LogWarning("Online session cleanup: "+error.Message);}
             probe=null;if(ownsBackground)Application.runInBackground=previousBackground;
             if(Current==this)Current=null;
+        }
+        private void StopRoom()
+        {
+            try{(gameplay as IDisposable)?.Dispose();}
+            finally
+            {
+                gameplay=null;
+                try
+                {
+                    if(roomBoard!=null)
+                    {
+                        if(roomBoard.controls!=null)roomBoard.controls.SetConnected(false);
+                        // Rules coroutines cannot outlive their authenticated transport.
+                        foreach(var component in roomBoard.authorityRoot.GetComponentsInChildren<MonoBehaviour>(true))
+                            if(component!=null)component.StopAllCoroutines();
+                        roomBoard.authorityRoot.SetActive(false);
+                    }
+                }
+                finally{roomBoard=null;roomLifetime?.Dispose();roomLifetime=null;}
+            }
         }
     }
 }

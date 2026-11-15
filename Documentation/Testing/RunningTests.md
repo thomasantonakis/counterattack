@@ -427,3 +427,5 @@ Room launch: `OnlineRoomLaunchEditorTests` / category `OnlineRoomLaunch`
 isolation without live save fixtures. Full Room runtime acceptance is separate.
 
 Full authored online Room: `Assets/Tests/PlayMode/Features/OnlineFullRoom/`, fixture `OnlineFullRoomPlayModeTests`, category `OnlineFullRoom` (16 cases). Covers actual pitch/roster startup, real kickoff and inert guest score/time/hex projection. Broader affected offline Room/startup and gameplay checks remain selectable independently; no complete suite was run.
+
+Online Room handoff lifecycle: `Assets/Editor/FeatureTests/OnlineRoomHandoff/`, fixture `OnlineRoomHandoffEditorTests`, category `OnlineRoomHandoff` (13 cases). Encoded full Room kickoff: fixture `OnlineFullRoomPlayModeTests`, category `OnlineRoomHandoffTransport` (four cases); full fixture contains 20. Native test results and red/green teardown evidence are retained in the feature verification checklist.

@@ -110,6 +110,7 @@ public sealed class OnlineFullRoomSceneFixture
         Assert.That(board.authorityRoot.activeSelf,Is.EqualTo(!guest));
         if(guest){board.match.AdvanceOnlineAuthorityTime(5);Assert.That(board.match.OnlineRegulationSeconds,Is.Zero);Assert.That(board.match.TimingRollSequence,Is.Zero);Assert.That(board.match.CaptureOnlineDecisionTiming(),Is.Null);yield break;}
         var hostAuthority=new OnlineGroundPassAuthority(board.match,protocol);var state=hostAuthority.Capture();Assert.That(state.stage,Is.EqualTo("kickoff.setup"));Assert.That(state.tokens.Length,Is.EqualTo(size*2));
+        if(branch=="transport"){yield return RunTransport(board,protocol,size);yield break;}
         if(branch=="kickoff")
         {
             long homeSeq=0,awaySeq=0;
@@ -122,6 +123,69 @@ public sealed class OnlineFullRoomSceneFixture
             Assert.That(hostAuthority.Capture().passActive,Is.True);Assert.That(hostAuthority.Capture().awaitingTarget,Is.True,"Kickoff automatically commits its required standard pass");
             Assert.That(board.match.ball.GetCurrentHex().GetOccupyingToken(),Is.Not.Null);
         }
+    }
+    private IEnumerator RunTransport(OnlineGroundPassBoard board,OnlineMatchProtocol protocol,int size)
+    {
+        protocol.BindAuthenticatedAccount("home","guest-home",protocol.Compatibility);protocol.BindAuthenticatedAccount("away","host-away",protocol.Compatibility);
+        var authority=new OnlineGroundPassAuthority(board.match,protocol);
+        var type=typeof(OnlineGroundPassBoard).Assembly.GetType("CounterAttack.Online.EOSGroundPassExchange",true);
+        const BindingFlags flags=BindingFlags.Instance|BindingFlags.NonPublic;
+        var constructor=type.GetConstructors(flags).Single(c=>c.GetParameters().Length==7);
+        var incoming=new Queue<OnlineGroundPassMessage>();var outgoing=new Queue<OnlineGroundPassMessage>();
+        OnlineGroundPassMessage Copy(OnlineGroundPassMessage message)
+        {
+            message.matchId="full-room-scene";var wire=new OnlineGroundPassWire();OnlineGroundPassMessage decoded=null;
+            foreach(var packet in OnlineGroundPassWire.Encode(message))decoded=wire.Receive(packet,packet.Length);
+            Assert.That(decoded,Is.Not.Null);return decoded;
+        }
+        object exchange=null;double now=0;string nonce=Guid.NewGuid().ToString("N");long generation=0,sequence=0,heartbeat=0;
+        exchange=constructor.Invoke(new object[]{board,directory,(Action<OnlineGroundPassMessage>)(m=>outgoing.Enqueue(Copy(m))),
+            (Action)(()=>{var queue=(Queue<OnlineGroundPassMessage>)type.GetField("messages",flags).GetValue(exchange);while(incoming.Count>0)queue.Enqueue(incoming.Dequeue());}),"home","full-room-scene",(Func<double>)(()=>now)});
+        string sessionId=board.match.gameData.playSessionId;
+        type.GetMethod("PrepareHostBoard",flags).Invoke(exchange,null);
+        Assert.That(board.match.gameData.playSessionId,Is.EqualTo(sessionId));
+        Assert.That(board.tokens.Length,Is.EqualTo(size*2));
+        Assert.That(type.GetProperty("SessionCatalog",flags).GetValue(exchange),Is.EqualTo(OnlineFullRoomBootstrap.Catalog));
+        var flow=(IEnumerator)type.GetMethod("ManualHost",flags).Invoke(exchange,new object[]{authority,protocol,pause});
+        var replica=new OnlineGroundPassReplica("full-room-scene",board.tokens.Select(OnlineRollPublication.ActorId),OnlineFullRoomBootstrap.Catalog);
+        void Send(OnlineGroundPassMessage message){message.peerNonce=nonce;message.connectionGeneration=generation;incoming.Enqueue(Copy(message));}
+        Send(new OnlineGroundPassMessage{kind="hello"});bool ready=false;int commands=0;string lastDecision=null;
+        double deadline=Time.realtimeSinceStartupAsDouble+20;
+        try
+        {
+            while(Time.realtimeSinceStartupAsDouble<deadline)
+            {
+                now+=.05;Assert.That(flow.MoveNext(),Is.True,"Full match must remain open across kickoff");
+                while(outgoing.Count>0)
+                {
+                    var message=outgoing.Dequeue();generation=message.connectionGeneration;
+                    if(message.kind=="state")
+                    {
+                        Assert.That(replica.Apply(message.state),Is.True);Assert.That(message.state.tokens.Length,Is.EqualTo(size*2));
+                        if(message.status=="resync")Send(new OnlineGroundPassMessage{kind="hello",status="resync-ack",digest=(string)type.GetMethod("Digest",BindingFlags.Static|BindingFlags.NonPublic).Invoke(null,new object[]{message.state})});
+                        else ready=true;
+                    }
+                    if(message.kind=="reply")Assert.That(message.status,Is.EqualTo(OnlineCommandStatus.Accepted.ToString()));
+                }
+                Send(new OnlineGroundPassMessage{kind="hello",status="heartbeat",sequence=++heartbeat});
+                var state=authority.Capture();
+                if(ready && state.passActive && state.awaitingTarget){Assert.That(commands,Is.EqualTo(3));Assert.That(replica.State.tokens.Length,Is.EqualTo(size*2));yield break;}
+                string action=state.stage=="kickoff.setup"?OnlineGroundPassAuthority.KickoffConfirmAction:state.stage=="kickoff.taker"?state.legalActions.FirstOrDefault(a=>a.StartsWith("kickoff.taker:")):null;
+                string decision=state.decisionId+":"+state.revision;
+                if(ready && action!=null && decision!=lastDecision)
+                {
+                    lastDecision=decision;commands++;
+                    if(state.owner=="Home")Send(OnlineGroundPassMessage.Command(state,++sequence,action));
+                    else
+                    {
+                        Assert.That(board.controls.commandButton.interactable,Is.True);board.controls.legalCommands.value=Array.IndexOf(state.legalActions,action);board.controls.commandButton.onClick.Invoke();
+                    }
+                }
+                yield return null;
+            }
+            Assert.Fail("Encoded full Room kickoff did not reach its required pass");
+        }
+        finally{(flow as IDisposable)?.Dispose();}
     }
     public IEnumerator Cleanup()
     {

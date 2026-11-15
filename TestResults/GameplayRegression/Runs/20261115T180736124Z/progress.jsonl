@@ -1,0 +1,7 @@
+{"name":"OnlineManualControlsPlayModeTests.PendingAndLocalLossStopSubmission","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineManualControlsPlayModeTests.RealButtonsUseAuthorizedGateway(1)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineManualControlsPlayModeTests.RealButtonsUseAuthorizedGateway(-1)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineManualControlsPlayModeTests.RealExchangeRecoversInterruptedTransport(1,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineManualControlsPlayModeTests.RealExchangeRecoversInterruptedTransport(1,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineManualControlsPlayModeTests.RealExchangeRecoversInterruptedTransport(-1,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineManualControlsPlayModeTests.RealExchangeRecoversInterruptedTransport(-1,True)","status":"Passed","message":"","stackTrace":""}

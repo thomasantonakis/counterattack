@@ -1,15 +1,10 @@
-# Continue online gameplay development on Mac
+# Continue online development on Mac
 
-Follow `PersonalMac.md` first on a fresh Mac. Use the existing Mac-local Unity,
-GitHub and ignored EOS configuration; do not copy credentials from Windows.
+Follow `PersonalMac.md` first on a fresh Mac. Use Mac-local Unity, GitHub and
+ignored EOS configuration. Keep credentials on their original machines.
 Manually open this checkout in Unity 6000.5.3f1 before Editor operations.
 
-## Bring over the checkpoint
-
-For the son's verification run, use `OnlineMacVerification.md` and the single
-`VerifyOnlineMac.sh` command. It handles native online fixtures, builds, local/
-login checks, Windows-host requests and a committed JSON report automatically.
-The individual manual commands below remain available for development.
+## Update the checkout
 
 ```sh
 cd "$HOME/Documents/Projects/Personal/counterattack"
@@ -18,85 +13,73 @@ git fetch origin
 git switch codex/online-foundation-personal-mac
 git pull --ff-only origin codex/online-foundation-personal-mac
 git log -3 --oneline
+repo_root="$(git rev-parse --show-toplevel)"
+unity status --project-path "$repo_root" --format json
 ```
 
-Preserve any existing Mac edits. Current frontend checkpoint: `951eb9b`
-(normal menu entry, authored Host/Join, persistent EOS lifetime and bounded
-recovery). Earlier gameplay integration remains on the same branch. Verify:
+Preserve any existing local edits. Full Room scene checkpoint: `c787232`.
+It contains the actual 1,900-hex pitch, 32/36 drafted actors, real kickoff and
+inert guest score/time/position projection, with 16 focused Windows passes.
+Subsequent native handoff work stays on the same branch; read the current
+`OnlineNextSessionPrompt.md` and feature Verification.md files for evidence.
 
-```sh
-git merge-base --is-ancestor 951eb9b HEAD
-```
+## Build and run the normal game
 
-The old Windows handoff bundle predates this checkpoint; use the pushed branch.
-Full authoritative Draft and normal full Room handoff are still in development.
-
-## Build and run on Mac
-
-With Unity manually open, stopped and scenes saved:
-
-The one-command verification run remains deferred until requested. To build the
-normal scenes independently when resuming on Mac:
+With the project open in the Editor, stopped and scenes saved:
 
 ```sh
 bash Documentation/Setup/BuildEOSStandaloneMac.sh game
 open Build/OnlineGame/Mac/Counterattack.app
 ```
 
-This exports the normal menu and setup UI; it does not establish completed online
-Draft/Room play. For the isolated Room checks, use:
+The build includes normal menus, Create New Game, Draft and OnlineRoom.
+Use the authored Host/Join controls and share the private lobby code. Both
+managers choose their own identity/kit, agree settings, draft and complete the
+opening coin toss before entering the full Room. Native handoff still requires
+paired acceptance; normal pause/substitutions/shootout menus remain integration
+work. No actual internet latency has been measured.
+
+## One-command son's Mac verification
+
+**Deferred until the user requests it.** Do not start a host or wait for reports
+as part of independent development. Once arranged, use:
+
+```sh
+bash Documentation/Setup/VerifyOnlineMac.sh
+```
+
+This reads `OnlineMacTestManifest.json`, executes registered online fixtures,
+builds all three profiles, performs available local/login/paired checks and
+publishes one JSON report with stage outcomes on its verification branch.
+The Windows supervisor must be explicitly arranged for paired stages.
+Each new native test case needs its own manifest entry; changed fixture source
+needs a refreshed definition hash. The verifier rejects stale registrations.
+
+## Isolated proof commands
+
+These existing helpers exercise the prepared Room proof profile:
 
 ```sh
 bash Documentation/Setup/BuildEOSStandaloneMac.sh room
 bash Documentation/Setup/RunEOSStandaloneMac.sh login room
 bash Documentation/Setup/RunEOSStandaloneMac.sh local room
-```
-
-For an arranged paired session, choose one role:
-
-```sh
-# Mac hosts; start the other machine's guest after the host publishes its lobby.
-bash Documentation/Setup/RunEOSStandaloneMacHost.sh room manual
-
-# Mac joins an already-published Windows/Mac host lobby.
+# Only during an arranged paired run:
 bash Documentation/Setup/RunEOSStandaloneMac.sh guest room manual
+# Or reverse roles:
+bash Documentation/Setup/RunEOSStandaloneMacHost.sh room manual
 ```
 
-Hosting is not PowerShell-only. The Mac host helper is separate from the
-login/local/guest helper. Reverse-role helpers are prepared; actual paired
-Windows/Mac acceptance has not run. Local reports do not prove internet play.
+The prepared proof uses its own scene/catalog; its reports do not establish
+full normal-game internet acceptance.
 
-## Paste into the Mac Codex session
+## Continuation instructions
 
-> Continue the online gameplay task from Documentation/Setup/OnlineMacContinuation.md
-> and Documentation/Setup/OnlineNextSessionPrompt.md. Follow AGENTS.md and the
-> unity-cli skill, resolving this Mac checkout with git rev-parse --show-toplevel.
-> Verify that checkpoint 61e3e38 is present. Goalkeeper integration has ten focused
-> PlayMode passes, offline kickoff has two, and goal/kickoff has six. Read the feature
-> Verification.md files and retained XML; do not rerun broad suites by default.
-> First Time Pass is implemented in 90a0af2 with 16 focused passes and 10 affected
-> offline passes. The continuous-session boundary has 8 EditMode and 2 PlayMode
-> passes plus 7 affected manual transport passes. Read the latest feature
-> Verification.md files. Prioritize the one-command Mac verifier and host
-> supervisor until the paired run is collected; keep their source/binaries stable.
-> Then implement the remaining movement/dribbling/duel decisions with dedicated
-> native coverage, followed by set pieces and normal full-Room roster/lifecycle.
-> Preserve mandatory keeper/Final Third/loose-ball priority, receipt/revision
-> validation, host-only RNG and guest inactivity. Then continue dribbling/duels,
-> restarts/set pieces and full-match roster/lifecycle. Keep paired/manual sessions
-> deferred until I have time. Compile/test/build through the open Editor, commit
-> and push verified batches. Never launch Unity, batchmode, ordinary editor_play,
-> GUI automation or additive scenes. Preserve unrelated local scene/font/settings
-> edits. Room's current online startup still uses six prepared tokens. Default
-> proof mode ends after the first action; opt-in continuous mode removes that
-> boundary but does not make it a complete normal Room match. Continue independent
-> work when a second-machine action is unavailable.
-
-Implemented First Time Pass source navigation: `FirstTimePassManager.cs` provides
-`GetLegalFirstTimePassTargetsForDecisionPreview()` and
-`GetValidFtpMovementDestinationsForDecision(...)`. Its real path uses
-`MatchManager.TriggerFTP()`, `HandleFTPBallPath(...)`, attacker/defender selection
-and movement, `SkipAttackerMovementPhase()` / `SkipDefenderMovementPhase()`, and
-`PerformFTPInterceptionRolls(...)`. `FirstTimePassManager.Online.cs`, the authority
-partial and Match decision timing now use a typed roll entry point and cancelled
-result guard. Extend these patterns for movement/duel choices.
+Continue from `OnlineNextSessionPrompt.md`, following AGENTS.md and unity-cli.
+Prioritize full Room native handoff, then normal pause/menu/substitutions,
+replacement goalkeepers, shootout ordering and half/end match transitions.
+Preserve host-only RNG/rules, authenticated semantic commands, guest inactivity,
+receipt/revision checks and reconnect holds. Compile, run feature-focused native
+tests and build through the already-open Editor. Commit/push verified batches.
+Preserve unrelated local scene/font/settings edits. Do not launch Unity,
+batchmode, ordinary editor_play, GUI automation or additive scene loads.
+Continue independent implementation whenever Mac actions are unavailable.
