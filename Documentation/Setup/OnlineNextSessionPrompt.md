@@ -12,9 +12,12 @@ seven affected manual-control and 12 frontend-entry cases also passed. All three
 Windows exports and packaged proof local/login checks succeeded.
 Roster status contract v2 has 13 validation and four real-scene projection passes:
 bookings/injuries, bench changes, converted keepers, directions and player stats.
-Online pause/menu and safe Leave now have eight focused cases. Next integrate
-substitution/settings/shootout commands and preserve in-flight visual poses
-across timed snapshots. Full-match internet acceptance and measured
+Online pause/menu and safe Leave have eight focused cases. Authoritative
+substitutions and normal goalkeeper swaps now have 18 passing cases, including
+allowance/rebind boundaries. Bounded full-snapshot compression has 15 passes and
+fixes a real 36-actor wire-size failure without dropping fields. Next: forced
+keeper replacement/emergency nomination, shootout ordering, shared settings
+commands and preserving in-flight visual poses across timed snapshots. Full-match internet acceptance and measured
 latency remain unverified. Paired Mac testing is deferred.
 See Assets/Editor/FeatureTests/OnlineFullRoom/Verification.md.
 

@@ -1,0 +1,16 @@
+{"name":"OnlineSubstitutionsPlayModeTests.AuthoredGoalkeeperSwapPreservesRole(False,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSubstitutionsPlayModeTests.AuthoredGoalkeeperSwapPreservesRole(False,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSubstitutionsPlayModeTests.AuthoredGoalkeeperSwapPreservesRole(True,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSubstitutionsPlayModeTests.AuthoredGoalkeeperSwapPreservesRole(True,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSubstitutionsPlayModeTests.AuthoredSubstitutionControlsRouteOwnTeam(False,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSubstitutionsPlayModeTests.AuthoredSubstitutionControlsRouteOwnTeam(False,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSubstitutionsPlayModeTests.AuthoredSubstitutionControlsRouteOwnTeam(True,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSubstitutionsPlayModeTests.AuthoredSubstitutionControlsRouteOwnTeam(True,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSubstitutionsPlayModeTests.OwnPausedTeamSubstitutesOnceAndReplicates(False,16,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSubstitutionsPlayModeTests.OwnPausedTeamSubstitutesOnceAndReplicates(False,16,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSubstitutionsPlayModeTests.OwnPausedTeamSubstitutesOnceAndReplicates(False,18,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSubstitutionsPlayModeTests.OwnPausedTeamSubstitutesOnceAndReplicates(False,18,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSubstitutionsPlayModeTests.OwnPausedTeamSubstitutesOnceAndReplicates(True,16,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSubstitutionsPlayModeTests.OwnPausedTeamSubstitutesOnceAndReplicates(True,16,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSubstitutionsPlayModeTests.OwnPausedTeamSubstitutesOnceAndReplicates(True,18,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSubstitutionsPlayModeTests.OwnPausedTeamSubstitutesOnceAndReplicates(True,18,True)","status":"Passed","message":"","stackTrace":""}

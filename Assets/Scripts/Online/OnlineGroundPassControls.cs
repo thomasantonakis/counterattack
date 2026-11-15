@@ -18,6 +18,7 @@ namespace CounterAttack.Online
         private string[] commandOptions=Array.Empty<string>();
         private string[] targetOptions = Array.Empty<string>();
         public event Action<OnlineGroundPassMessage> Requested;
+        public Func<bool> LocalEscapeHandler {get;set;}
         private OnlineGroundPassState state;
         private OnlineTeam team;
         private long sequence, controlSequence;
@@ -175,8 +176,13 @@ namespace CounterAttack.Online
         }
         public void Pause() => Control(OnlineSharedPause.RequestAction);
         public void Resume() => Control(OnlineSharedPause.ResumeAction);
+        public void Substitute(int outgoing,int incoming)
+        {
+            if(outgoing is >=1 and <=18 && incoming is >=1 and <=18 && outgoing!=incoming)
+                Control(OnlineSharedPause.SubstitutionAction(outgoing,incoming));
+        }
         public void Escape()
-        { if (state?.isSharedPaused == true) Resume(); else Pause(); }
+        { if(LocalEscapeHandler?.Invoke()==true)return; if (state?.isSharedPaused == true) Resume(); else Pause(); }
         private void Update()
         { if (Input.GetKeyDown(KeyCode.Escape)) Escape(); }
 
@@ -192,6 +198,8 @@ namespace CounterAttack.Online
             if (!connected || pending || state == null || action == OnlineSharedPause.ResumeAction
                 && (!state.isSharedPaused || state.pauseRequester != team.ToString())
                 || action == OnlineSharedPause.RequestAction && state.isSharedPaused) return;
+            if(action.StartsWith("roster.substitute:",StringComparison.Ordinal)
+                && (!state.isSharedPaused || state.pauseRequester!=team.ToString() || state.connectionHeld || !state.substitutionsAvailable))return;
             Emit(new OnlineGroundPassMessage { kind = "control", matchId = state.matchId, sequence = checked(++controlSequence),
                 revision = state.sharedPauseRevision, decisionId = "shared-pause", actionId = action });
         }

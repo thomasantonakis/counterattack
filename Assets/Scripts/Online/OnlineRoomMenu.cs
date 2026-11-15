@@ -3,7 +3,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 namespace CounterAttack.Online
 {
-    public sealed class OnlineRoomMenu:MonoBehaviour
+    public sealed partial class OnlineRoomMenu:MonoBehaviour
     {
         public OnlineGroundPassBoard board;
         public Button pauseButton,resumeButton,leaveButton;
@@ -14,6 +14,7 @@ namespace CounterAttack.Online
             pauseButton.onClick.AddListener(board.controls.Pause);
             resumeButton.onClick.AddListener(board.controls.Resume);
             leaveButton.onClick.AddListener(Leave);
+            WireSubstitutionControls();
         }
         public void Display(OnlineGroundPassState state)
         {
@@ -22,6 +23,7 @@ namespace CounterAttack.Online
             status.text=connectionHeld?"Reconnecting. The match is held.":own?"You paused the match. Resume when ready.":"The other manager paused the match. They can resume it.";
             var data=board.match.gameData.gameSettings;
             settings.text=$"{data.homeTeamName}  —  {data.awayTeamName}\nWeather: {data.weatherConditions}\nBall: {data.ballColor}\nAssistance: {AssistanceLabel(data.playerAssistance)}\nTiebreaker: {data.tiebreaker}";
+            DisplaySubstitutions(state);
             RefreshButtons();
         }
         private static string AssistanceLabel(int value)=>value==1?"Novice":value==2?"Intermediate":"Experienced";
@@ -30,6 +32,7 @@ namespace CounterAttack.Online
         {
             pauseButton.interactable=!connectionHeld && board.controls.pauseButton.interactable;
             resumeButton.interactable=!connectionHeld && board.controls.resumeButton.interactable;
+            RefreshSubstitutionButtons();
         }
         public void Leave()
         {

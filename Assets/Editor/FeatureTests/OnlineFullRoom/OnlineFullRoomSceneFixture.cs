@@ -123,6 +123,8 @@ public sealed class OnlineFullRoomSceneFixture
         if(guest){board.match.AdvanceOnlineAuthorityTime(5);Assert.That(board.match.OnlineRegulationSeconds,Is.Zero);Assert.That(board.match.TimingRollSequence,Is.Zero);Assert.That(board.match.CaptureOnlineDecisionTiming(),Is.Null);yield break;}
         var hostAuthority=new OnlineGroundPassAuthority(board.match,protocol);var state=hostAuthority.Capture();Assert.That(state.stage,Is.EqualTo("kickoff.setup"));Assert.That(state.tokens.Length,Is.EqualTo(size*2));
         if(branch=="transport"){yield return RunTransport(board,protocol,size);yield break;}
+        if(branch.StartsWith("substitution-limit-")){yield return RunSubstitutionLimit(board,protocol,data,branch.EndsWith("home"));yield break;}
+        if(branch.StartsWith("substitution-")){yield return RunSubstitution(board,protocol,data,branch.EndsWith("home"),branch.Contains("-ui-"),branch.Contains("-keeper-"));yield break;}
         if(branch=="kickoff")
         {
             long homeSeq=0,awaySeq=0;
@@ -135,6 +137,88 @@ public sealed class OnlineFullRoomSceneFixture
             Assert.That(hostAuthority.Capture().passActive,Is.True);Assert.That(hostAuthority.Capture().awaitingTarget,Is.True,"Kickoff automatically commits its required standard pass");
             Assert.That(board.match.ball.GetCurrentHex().GetOccupyingToken(),Is.Not.Null);
         }
+    }
+    private IEnumerator RunSubstitutionLimit(OnlineGroundPassBoard board,OnlineMatchProtocol protocol,MatchManager.GameData data,bool home)
+    {
+        board.match.SetSubstitutionsAvailable(true,"Owned extra-time boundary fixture");string actor=home?"h":"a";long sequence=0;
+        OnlineCommandReply Submit(string action)=>pause.Submit(actor,new OnlineMatchCommand("full-room-scene",++sequence,pause.Revision,"shared-pause",action));
+        Assert.That(Submit(OnlineSharedPause.RequestAction).Status,Is.EqualTo(OnlineCommandStatus.Accepted));
+        int limit=MatchManager.MaxSubstitutionsPerTeam;
+        for(int i=0;i<limit;i++)Assert.That(Submit(OnlineSharedPause.SubstitutionAction(2+i,13+i)).Status,Is.EqualTo(OnlineCommandStatus.Accepted));
+        var authority=new OnlineGroundPassAuthority(board.match,protocol);board.localTeam=home?OnlineTeam.Home:OnlineTeam.Away;board.controls.Configure(board.localTeam);board.Display(pause.Capture(authority),"Limit fixture");
+        Assert.That(board.match.GetSubstitutionsRemaining(home),Is.Zero);Assert.That(board.menu.substitutionButton.interactable,Is.False,"The menu must honor the configured substitution limit");
+        Assert.That(Submit(OnlineSharedPause.SubstitutionAction(2+limit,13+limit)).Status,Is.EqualTo(OnlineCommandStatus.IllegalAction));
+        typeof(MatchManager).GetMethod("GrantExtraTimeSubstitutionCreditIfNeeded",BindingFlags.Instance|BindingFlags.NonPublic).Invoke(board.match,null);
+        board.Display(pause.Capture(authority),"Extra time");Assert.That(board.menu.substitutionButton.interactable,Is.True);Assert.That(board.match.GetSubstitutionsRemaining(home),Is.EqualTo(1));
+        Assert.That(Submit(OnlineSharedPause.SubstitutionAction(2+limit,13+limit)).Status,Is.EqualTo(OnlineCommandStatus.Accepted));
+        var published=pause.Capture(authority);pause.Dispose();pause=null;
+        yield return EditorSceneManager.LoadSceneAsyncInPlayMode("Assets/Scenes/MainMenu.unity",new LoadSceneParameters(LoadSceneMode.Single));session.Dispose();session=null;MatchManager.Instance=null;
+        yield return Load(data,true);board=Object.FindAnyObjectByType<OnlineFullRoomBootstrap>().board;
+        var replica=new OnlineGroundPassReplica("full-room-scene",board.tokens.Select(OnlineRollPublication.ActorId),OnlineFullRoomBootstrap.Catalog);Assert.That(replica.Apply(published),Is.True);board.Display(replica.State,"Extra time replica");
+        Assert.That(board.match.GetSubstitutionLimit(home),Is.EqualTo(MatchManager.ExtraTimeMaxSubstitutionsPerTeam));Assert.That(board.match.GetSubstitutionsUsed(home),Is.EqualTo(MatchManager.ExtraTimeMaxSubstitutionsPerTeam));Assert.That(board.match.GetSubstitutionsRemaining(home),Is.Zero);
+        Assert.That(board.match.GetSubstitutionsUsed(!home),Is.Zero);Assert.That(board.match.GetSubstitutionsRemaining(!home),Is.EqualTo(MatchManager.ExtraTimeMaxSubstitutionsPerTeam));
+        Assert.That(board.match.gameData.events,Is.Empty);Assert.That(board.match.CaptureOnlineDecisionTiming(),Is.Null);
+    }
+    private IEnumerator RunSubstitution(OnlineGroundPassBoard board,OnlineMatchProtocol protocol,MatchManager.GameData data,bool home,bool ui,bool keeper)
+    {
+        int offNumber=keeper?1:2,onNumber=keeper?12:13;
+        var manager=board.match.playerTokenManager;var outgoing=board.tokens.Single(t=>t.isHomeTeam==home && t.jerseyNumber==offNumber);var incoming=board.tokens.Single(t=>t.isHomeTeam==home && t.jerseyNumber==onNumber);
+        var destination=outgoing.GetCurrentHex().coordinates;string actor=home?"h":"a",other=home?"a":"h";
+        board.match.SetSubstitutionsAvailable(true,"Owned stoppage fixture");
+        OnlineMatchCommand Command(long sequence,string action,long? revision=null)=>new("full-room-scene",sequence,revision??pause.Revision,"shared-pause",action);
+        Assert.That(pause.Submit(actor,Command(1,OnlineSharedPause.RequestAction)).Status,Is.EqualTo(OnlineCommandStatus.Accepted));
+        if(!home)board.match.ball.PlaceAtCell(outgoing.GetCurrentHex());
+        var request=Command(2,OnlineSharedPause.SubstitutionAction(offNumber,onNumber));
+        if(ui)
+        {
+            board.localTeam=home?OnlineTeam.Home:OnlineTeam.Away;board.controls.Configure(board.localTeam);
+            var viewAuthority=new OnlineGroundPassAuthority(board.match,protocol);board.Display(pause.Capture(viewAuthority),"Substitution controls");
+            OnlineCommandStatus? status=null;
+            void Requested(OnlineGroundPassMessage message)
+            {
+                var wire=new OnlineGroundPassWire();OnlineGroundPassMessage decoded=null;foreach(var packet in OnlineGroundPassWire.Encode(message))decoded=wire.Receive(packet,packet.Length);
+                Assert.That(decoded.kind,Is.EqualTo("control"));request=decoded.ToCommand();var reply=pause.Submit(actor,request);status=reply.Status;
+                board.controls.Reply(new OnlineGroundPassMessage{status=reply.Status.ToString()});board.Display(pause.Capture(viewAuthority),"Substitution controls");
+            }
+            board.controls.Requested+=Requested;
+            try
+            {
+                var menu=board.menu;Assert.That(menu.substitutionButton.interactable,Is.True);menu.substitutionButton.onClick.Invoke();Assert.That(menu.substitutionPanel.activeSelf,Is.True);
+                board.controls.Escape();Assert.That(menu.substitutionPanel.activeSelf,Is.False);Assert.That(pause.IsPaused,Is.True);Assert.That(status,Is.Null,"Escape closes personal selection without resuming shared play");menu.substitutionButton.onClick.Invoke();
+                menu.outgoingPlayer.value=menu.outgoingPlayer.options.FindIndex(o=>o.text.StartsWith(offNumber+". "));menu.incomingPlayer.value=menu.incomingPlayer.options.FindIndex(o=>o.text.StartsWith(onNumber+". "));
+                Assert.That(menu.substitutionCommitButton.interactable,Is.True);menu.substitutionCommitButton.onClick.Invoke();Assert.That(status,Is.EqualTo(OnlineCommandStatus.Accepted));Assert.That(menu.substitutionPanel.activeSelf,Is.False);
+            }
+            finally{board.controls.Requested-=Requested;}
+        }
+        else Assert.That(pause.Submit(actor,request).Status,Is.EqualTo(OnlineCommandStatus.Accepted));
+        Assert.That(outgoing.wasSubbedOff,Is.True);Assert.That(incoming.wasSubbedOn,Is.True);Assert.That(incoming.GetCurrentHex().coordinates,Is.EqualTo(destination));Assert.That(incoming.GetCurrentHex().occupyingToken,Is.SameAs(incoming));
+        Assert.That(board.match.GetSubstitutionsUsed(home),Is.EqualTo(1));Assert.That(board.match.GetSubstitutionsUsed(!home),Is.Zero);
+        Assert.That(pause.Submit(actor,request).Status,Is.EqualTo(OnlineCommandStatus.Duplicate));
+        Assert.That(pause.Submit(actor,Command(2,"roster.substitute:3:14")).Status,Is.EqualTo(OnlineCommandStatus.SequenceConflict));
+        Assert.That(pause.Submit(other,Command(1,"roster.substitute:2:13")).Status,Is.EqualTo(OnlineCommandStatus.WrongTeam));
+        foreach(string invalid in new[]{"roster.substitute:2:12","roster.substitute:2:19","roster.substitute:away:2:13","roster.substitute:02:14"})
+            Assert.That(pause.Submit(actor,Command(3,invalid)).Status,Is.EqualTo(OnlineCommandStatus.IllegalAction));
+        Assert.That(pause.Submit(actor,Command(3,OnlineSharedPause.SubstitutionAction(onNumber,offNumber))).Status,Is.EqualTo(OnlineCommandStatus.IllegalAction),"Subbed-off players cannot return");
+        Assert.That(pause.Submit(actor,Command(3,"roster.substitute:3:14",pause.Revision-1)).Status,Is.EqualTo(OnlineCommandStatus.StaleRevision));
+        pause.SetConnectionHold(true);Assert.That(pause.Submit(actor,Command(3,"roster.substitute:3:14")).Status,Is.EqualTo(OnlineCommandStatus.NotReady));pause.SetConnectionHold(false);
+        string previousConnection=actor;protocol.Disconnect(actor);pause.SetConnectionHold(true);
+        Assert.That(protocol.BindAuthenticatedAccount(home?"home":"away","returned",protocol.Compatibility),Is.True);actor="returned";
+        Assert.That(pause.Submit(previousConnection,request).Status,Is.EqualTo(OnlineCommandStatus.UnknownConnection));
+        Assert.That(pause.Submit(actor,request).Status,Is.EqualTo(OnlineCommandStatus.Duplicate));Assert.That(pause.Requester,Is.EqualTo(home?OnlineTeam.Home:OnlineTeam.Away));
+        Assert.That(board.match.GetSubstitutionsUsed(home),Is.EqualTo(1));pause.SetConnectionHold(false);Assert.That(pause.IsPaused,Is.True);
+        Assert.That(pause.Submit(actor,Command(3,OnlineSharedPause.ResumeAction)).Status,Is.EqualTo(OnlineCommandStatus.Accepted));
+        Assert.That(pause.Submit(actor,Command(4,"roster.substitute:3:14")).Status,Is.EqualTo(OnlineCommandStatus.NotReady));
+        Assert.That(board.match.GetSubstitutionsUsed(home),Is.EqualTo(1));
+        var authority=new OnlineGroundPassAuthority(board.match,protocol);var published=pause.Capture(authority);
+        pause.Dispose();pause=null;
+        yield return EditorSceneManager.LoadSceneAsyncInPlayMode("Assets/Scenes/MainMenu.unity",new LoadSceneParameters(LoadSceneMode.Single));session.Dispose();session=null;MatchManager.Instance=null;
+        yield return Load(data,true);board=Object.FindAnyObjectByType<OnlineFullRoomBootstrap>().board;
+        var replica=new OnlineGroundPassReplica("full-room-scene",board.tokens.Select(OnlineRollPublication.ActorId),OnlineFullRoomBootstrap.Catalog);Assert.That(replica.Apply(published),Is.True);board.Display(replica.State,"Substitution replica");
+        outgoing=board.tokens.Single(t=>t.isHomeTeam==home && t.jerseyNumber==offNumber);incoming=board.tokens.Single(t=>t.isHomeTeam==home && t.jerseyNumber==onNumber);
+        Assert.That(outgoing.wasSubbedOff,Is.True);Assert.That(outgoing.isPlaying,Is.False);Assert.That(incoming.wasSubbedOn,Is.True);Assert.That(incoming.GetCurrentHex().coordinates,Is.EqualTo(destination));Assert.That(board.match.GetSubstitutionsUsed(home),Is.EqualTo(1));
+        if(!home)Assert.That(board.match.ball.GetCurrentHex().GetOccupyingToken(),Is.SameAs(incoming));
+        if(keeper)Assert.That(incoming.IsGoalKeeper,Is.True);
+        Assert.That(board.match.gameData.events,Is.Empty);Assert.That(board.match.CaptureOnlineDecisionTiming(),Is.Null);
     }
     private IEnumerator RunMenu(OnlineGroundPassBoard board,bool guest,bool own,string branch)
     {

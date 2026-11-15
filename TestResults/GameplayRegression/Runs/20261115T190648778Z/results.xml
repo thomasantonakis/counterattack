@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="8" result="Failed(Child)" total="8" passed="7" failed="1" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-15 19:06:48Z" end-time="2026-11-15 19:08:21Z" duration="93.0569608">
+  <test-suite type="TestSuite" id="2625" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1332" result="Failed" site="Child" start-time="2026-11-15 19:06:48Z" end-time="2026-11-15 19:08:21Z" duration="93.056961" total="8" passed="7" failed="1" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="2622" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1332" result="Failed" site="Child" start-time="2026-11-15 19:06:48Z" end-time="2026-11-15 19:08:21Z" duration="93.031852" total="8" passed="7" failed="1" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17216" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestFixture" id="2066" name="OnlineSubstitutionsPlayModeTests" fullname="OnlineSubstitutionsPlayModeTests" classname="OnlineSubstitutionsPlayModeTests" runstate="Runnable" testcasecount="8" result="Failed" site="Child" start-time="2026-11-15 19:06:48Z" end-time="2026-11-15 19:08:21Z" duration="93.023838" total="8" passed="7" failed="1" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineSubstitutions" />
+        </properties>
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="ParameterizedMethod" id="2075" name="OwnPausedTeamSubstitutesOnceAndReplicates" fullname="OnlineSubstitutionsPlayModeTests.OwnPausedTeamSubstitutesOnceAndReplicates" classname="OnlineSubstitutionsPlayModeTests" runstate="Runnable" testcasecount="8" result="Failed" site="Child" start-time="2026-11-15 19:06:48Z" end-time="2026-11-15 19:08:21Z" duration="93.016176" total="8" passed="7" failed="1" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-case id="2067" name="OwnPausedTeamSubstitutesOnceAndReplicates(False,16,False)" fullname="OnlineSubstitutionsPlayModeTests.OwnPausedTeamSubstitutesOnceAndReplicates(False,16,False)" methodname="OwnPausedTeamSubstitutesOnceAndReplicates" classname="OnlineSubstitutionsPlayModeTests" runstate="Runnable" seed="1475909406" result="Failed" start-time="2026-11-15 19:06:48Z" end-time="2026-11-15 19:07:01Z" duration="12.947542" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[Unhandled log message: '[Error] ExecuteCommandByName: No command named 'editor status' is available. Available: [set_serialized_field, clear_baked_lighting, set_player_settings, remove_animation_curve, open_scene, set_selection, cancel_occlusion_bake, add_animator_transition, delete_gameobject, set_build_settings, get_player_settings, set_active, set_authoring_root, set_tags_layers, create_timeline, clear_occlusion_culling, set_layer, instantiate_prefab, add_component, cancel_lighting_bake, set_time_settings, bake_navmesh_surfaces, set_transform, get_lighting_settings, build, attach_script, write_text_file, get_navmesh_settings, remove_component, set_autotick, read_text_file, set_active_scene, wait_for, unpack_prefab, create_animation_clip, add_scene_to_build, switch_build_target, get_input_settings, find_gameobjects, get_timeline, set_input_settings, cancel_navmesh_bake, delete_asset, add_animator_state, create_scene, create_prefab_variant, package_add, get_component_properties, screenshot, get_graphics_settings, set_graphics_settings, list_open_scenes, get_tags_layers, rename_asset, get_performance_stats, get_quality_settings, audit, package_list, set_runtime_pipeline_settings, create_prefab, set_navmesh_settings, wait_status, build_status, batch, list_shaders, create_folder, test_status, set_audio_settings, menu, get_audio_settings, set_animation_curve, get_runtime_pipeline_settings, package_remove, set_lighting_settings, get_shader_properties, revert_prefab_overrides, editor_stop, switch_build_target_status, save_all, move_asset, wait_cancel, apply_prefab_overrides, reload_file_player_interpreter, set_parent, copy_asset, create_asset, get_serialized_fields, package_search, get_scene_hierarchy, set_component_properties, set_quality_settings, navmesh_bake_status, import_asset, occlusion_bake_status, set_import_settings, bake_occlusion_culling, list_build_profiles, get_build_settings, get_animation_clip, editor_play, get_time_settings, audit_status, set_physics_settings, capture_scene_view, recompile, clear_navmesh, add_animator_layer, search, capture_game_view, create_script, add_animator_parameter, save_prefab_contents, package_status, rename_gameobject, editor_focus, create_gameobjects, bake_navmesh, get_animator_controller, create_animator_controller, save_scene, editor_status, get_selection, recompile_status, find_assets, get_material_properties, get_physics_settings, add_timeline_track, create_gameobject, get_import_settings, add_timeline_clip, set_tag, set_material_properties, editor_pause, list_tests, run_script, remove_scene_from_build, package_resolve, bake_lighting, list_build_targets, run_tests, get_authoring_root, cancel_tests, lighting_bake_status, clear_console, eval_file, console_status, report_evals, runtime_status, cleanup_codereload, log, reload_file_editor_interpreter, codereload_status, simulate_pointer, quit, set_target_framerate, simulate_key, set_timescale, console, eval, reload_file, author_online_action_choices, author_online_full_room, author_online_opening_choices, author_online_room_menu, author_online_room_startup, prepare_eos_standalone_proof, author_online_shared_pause, author_online_target_choices, author_online_draft, prepare_online_ground_pass_proof, author_online_setup_view, repair_online_full_room_controls, author_online_room_proof, author_online_frontend_entry, author_online_draft_pool, scale_online_room_menu, author_online_manual_controls]'. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+              <stack-trace><![CDATA[Unity.Pipeline.BasePipelineServer:ResolveCommand (string) (at ./Library/PackageCache/com.unity.pipeline@62c08c808737/Runtime/Common/BasePipelineServer.cs:2622)
+Unity.Pipeline.BasePipelineServer/<HandleExecRequest>d__119:MoveNext () (at ./Library/PackageCache/com.unity.pipeline@62c08c808737/Runtime/Common/BasePipelineServer.cs:2085)
+System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<int>:SetResult (int)
+Unity.Pipeline.MaxLengthStream/<ReadAsync>d__6:MoveNext () (at ./Library/PackageCache/com.unity.pipeline@62c08c808737/Runtime/Common/MaxLengthStream.cs:46)
+System.Threading._ThreadPoolWaitCallback:PerformWaitCallback ()
+
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[[TokenKitCatalog] Loading kits JSON from Resources path 'Kits/kit-picker-v1-11-supported' (asset: Assets/Resources/Kits/kit-picker-v1-11-supported.json).
+[TokenKitCatalog] Found kits JSON TextAsset 'kit-picker-v1-11-supported' at Resources path 'Kits/kit-picker-v1-11-supported' (32277 characters).
+[TokenKitCatalog] Parsed 101 kit preset(s) from Resources path 'Kits/kit-picker-v1-11-supported'.
+[TokenKitCatalog] Active kit catalog contains 101 kit preset(s).
+MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584926828666
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Substitutions are now available: Owned stoppage fixture
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2068" name="OwnPausedTeamSubstitutesOnceAndReplicates(False,16,True)" fullname="OnlineSubstitutionsPlayModeTests.OwnPausedTeamSubstitutesOnceAndReplicates(False,16,True)" methodname="OwnPausedTeamSubstitutesOnceAndReplicates" classname="OnlineSubstitutionsPlayModeTests" runstate="Runnable" seed="686141155" result="Passed" start-time="2026-11-15 19:07:01Z" end-time="2026-11-15 19:07:12Z" duration="11.027597" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584926953886
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Substitutions are now available: Owned stoppage fixture
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2069" name="OwnPausedTeamSubstitutesOnceAndReplicates(False,18,False)" fullname="OnlineSubstitutionsPlayModeTests.OwnPausedTeamSubstitutesOnceAndReplicates(False,18,False)" methodname="OwnPausedTeamSubstitutesOnceAndReplicates" classname="OnlineSubstitutionsPlayModeTests" runstate="Runnable" seed="213096296" result="Passed" start-time="2026-11-15 19:07:12Z" end-time="2026-11-15 19:07:24Z" duration="11.641391" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584927079106
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Substitutions are now available: Owned stoppage fixture
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2070" name="OwnPausedTeamSubstitutesOnceAndReplicates(False,18,True)" fullname="OnlineSubstitutionsPlayModeTests.OwnPausedTeamSubstitutesOnceAndReplicates(False,18,True)" methodname="OwnPausedTeamSubstitutesOnceAndReplicates" classname="OnlineSubstitutionsPlayModeTests" runstate="Runnable" seed="1387492742" result="Passed" start-time="2026-11-15 19:07:24Z" end-time="2026-11-15 19:07:35Z" duration="11.475161" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584927204326
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Substitutions are now available: Owned stoppage fixture
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2071" name="OwnPausedTeamSubstitutesOnceAndReplicates(True,16,False)" fullname="OnlineSubstitutionsPlayModeTests.OwnPausedTeamSubstitutesOnceAndReplicates(True,16,False)" methodname="OwnPausedTeamSubstitutesOnceAndReplicates" classname="OnlineSubstitutionsPlayModeTests" runstate="Runnable" seed="2023783970" result="Passed" start-time="2026-11-15 19:07:35Z" end-time="2026-11-15 19:07:47Z" duration="11.431254" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584927329546
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Substitutions are now available: Owned stoppage fixture
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2072" name="OwnPausedTeamSubstitutesOnceAndReplicates(True,16,True)" fullname="OnlineSubstitutionsPlayModeTests.OwnPausedTeamSubstitutesOnceAndReplicates(True,16,True)" methodname="OwnPausedTeamSubstitutesOnceAndReplicates" classname="OnlineSubstitutionsPlayModeTests" runstate="Runnable" seed="1553530483" result="Passed" start-time="2026-11-15 19:07:47Z" end-time="2026-11-15 19:07:59Z" duration="11.665470" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584927454766
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Substitutions are now available: Owned stoppage fixture
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2073" name="OwnPausedTeamSubstitutesOnceAndReplicates(True,18,False)" fullname="OnlineSubstitutionsPlayModeTests.OwnPausedTeamSubstitutesOnceAndReplicates(True,18,False)" methodname="OwnPausedTeamSubstitutesOnceAndReplicates" classname="OnlineSubstitutionsPlayModeTests" runstate="Runnable" seed="1483118790" result="Passed" start-time="2026-11-15 19:07:59Z" end-time="2026-11-15 19:08:10Z" duration="11.336748" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584927579986
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Substitutions are now available: Owned stoppage fixture
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2074" name="OwnPausedTeamSubstitutesOnceAndReplicates(True,18,True)" fullname="OnlineSubstitutionsPlayModeTests.OwnPausedTeamSubstitutesOnceAndReplicates(True,18,True)" methodname="OwnPausedTeamSubstitutesOnceAndReplicates" classname="OnlineSubstitutionsPlayModeTests" runstate="Runnable" seed="950330804" result="Passed" start-time="2026-11-15 19:08:10Z" end-time="2026-11-15 19:08:21Z" duration="11.459891" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584927705206
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Substitutions are now available: Owned stoppage fixture
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+Saving results to: TestResults\GameplayRegression\Runs\20261115T190648778Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

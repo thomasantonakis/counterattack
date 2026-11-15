@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="18" result="Passed" total="18" passed="18" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-15 19:39:50Z" end-time="2026-11-15 19:43:18Z" duration="208.3180639">
+  <test-suite type="TestSuite" id="2638" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1342" result="Passed" start-time="2026-11-15 19:39:50Z" end-time="2026-11-15 19:43:18Z" duration="208.318064" total="18" passed="18" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2635" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1342" result="Passed" start-time="2026-11-15 19:39:50Z" end-time="2026-11-15 19:43:18Z" duration="208.273637" total="18" passed="18" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17216" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="2066" name="OnlineSubstitutionsPlayModeTests" fullname="OnlineSubstitutionsPlayModeTests" classname="OnlineSubstitutionsPlayModeTests" runstate="Runnable" testcasecount="18" result="Passed" start-time="2026-11-15 19:39:50Z" end-time="2026-11-15 19:43:18Z" duration="208.262000" total="18" passed="18" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineSubstitutions" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="2085" name="AuthoredGoalkeeperSwapPreservesRole" fullname="OnlineSubstitutionsPlayModeTests.AuthoredGoalkeeperSwapPreservesRole" classname="OnlineSubstitutionsPlayModeTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-11-15 19:39:50Z" end-time="2026-11-15 19:40:37Z" duration="46.626388" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="2081" name="AuthoredGoalkeeperSwapPreservesRole(False,False)" fullname="OnlineSubstitutionsPlayModeTests.AuthoredGoalkeeperSwapPreservesRole(False,False)" methodname="AuthoredGoalkeeperSwapPreservesRole" classname="OnlineSubstitutionsPlayModeTests" runstate="Runnable" seed="800962799" result="Passed" start-time="2026-11-15 19:39:50Z" end-time="2026-11-15 19:40:03Z" duration="12.934960" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[TokenKitCatalog] Loading kits JSON from Resources path 'Kits/kit-picker-v1-11-supported' (asset: Assets/Resources/Kits/kit-picker-v1-11-supported.json).
+[TokenKitCatalog] Found kits JSON TextAsset 'kit-picker-v1-11-supported' at Resources path 'Kits/kit-picker-v1-11-supported' (32277 characters).
+[TokenKitCatalog] Parsed 101 kit preset(s) from Resources path 'Kits/kit-picker-v1-11-supported'.
+[TokenKitCatalog] Active kit catalog contains 101 kit preset(s).
+MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584930634964
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Substitutions are now available: Owned stoppage fixture
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2082" name="AuthoredGoalkeeperSwapPreservesRole(False,True)" fullname="OnlineSubstitutionsPlayModeTests.AuthoredGoalkeeperSwapPreservesRole(False,True)" methodname="AuthoredGoalkeeperSwapPreservesRole" classname="OnlineSubstitutionsPlayModeTests" runstate="Runnable" seed="350245733" result="Passed" start-time="2026-11-15 19:40:03Z" end-time="2026-11-15 19:40:14Z" duration="11.267480" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584930760780
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Substitutions are now available: Owned stoppage fixture
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2083" name="AuthoredGoalkeeperSwapPreservesRole(True,False)" fullname="OnlineSubstitutionsPlayModeTests.AuthoredGoalkeeperSwapPreservesRole(True,False)" methodname="AuthoredGoalkeeperSwapPreservesRole" classname="OnlineSubstitutionsPlayModeTests" runstate="Runnable" seed="1177065137" result="Passed" start-time="2026-11-15 19:40:14Z" end-time="2026-11-15 19:40:26Z" duration="11.114855" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584930886596
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Substitutions are now available: Owned stoppage fixture
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2084" name="AuthoredGoalkeeperSwapPreservesRole(True,True)" fullname="OnlineSubstitutionsPlayModeTests.AuthoredGoalkeeperSwapPreservesRole(True,True)" methodname="AuthoredGoalkeeperSwapPreservesRole" classname="OnlineSubstitutionsPlayModeTests" runstate="Runnable" seed="968091515" result="Passed" start-time="2026-11-15 19:40:26Z" end-time="2026-11-15 19:40:37Z" duration="11.276427" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584931012412
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Substitutions are now available: Owned stoppage fixture
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="2080" name="AuthoredSubstitutionControlsRouteOwnTeam" fullname="OnlineSubstitutionsPlayModeTests.AuthoredSubstitutionControlsRouteOwnTeam" classname="OnlineSubstitutionsPlayModeTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-11-15 19:40:37Z" end-time="2026-11-15 19:41:23Z" duration="46.232386" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="2076" name="AuthoredSubstitutionControlsRouteOwnTeam(False,False)" fullname="OnlineSubstitutionsPlayModeTests.AuthoredSubstitutionControlsRouteOwnTeam(False,False)" methodname="AuthoredSubstitutionControlsRouteOwnTeam" classname="OnlineSubstitutionsPlayModeTests" runstate="Runnable" seed="1429773916" result="Passed" start-time="2026-11-15 19:40:37Z" end-time="2026-11-15 19:40:48Z" duration="11.450637" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584931138228
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Substitutions are now available: Owned stoppage fixture
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2077" name="AuthoredSubstitutionControlsRouteOwnTeam(False,True)" fullname="OnlineSubstitutionsPlayModeTests.AuthoredSubstitutionControlsRouteOwnTeam(False,True)" methodname="AuthoredSubstitutionControlsRouteOwnTeam" classname="OnlineSubstitutionsPlayModeTests" runstate="Runnable" seed="64875826" result="Passed" start-time="2026-11-15 19:40:48Z" end-time="2026-11-15 19:41:00Z" duration="11.249323" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584931264044
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Substitutions are now available: Owned stoppage fixture
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2078" name="AuthoredSubstitutionControlsRouteOwnTeam(True,False)" fullname="OnlineSubstitutionsPlayModeTests.AuthoredSubstitutionControlsRouteOwnTeam(True,False)" methodname="AuthoredSubstitutionControlsRouteOwnTeam" classname="OnlineSubstitutionsPlayModeTests" runstate="Runnable" seed="955389405" result="Passed" start-time="2026-11-15 19:41:00Z" end-time="2026-11-15 19:41:12Z" duration="12.016017" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584931389860
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Substitutions are now available: Owned stoppage fixture
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2079" name="AuthoredSubstitutionControlsRouteOwnTeam(True,True)" fullname="OnlineSubstitutionsPlayModeTests.AuthoredSubstitutionControlsRouteOwnTeam(True,True)" methodname="AuthoredSubstitutionControlsRouteOwnTeam" classname="OnlineSubstitutionsPlayModeTests" runstate="Runnable" seed="378211668" result="Passed" start-time="2026-11-15 19:41:12Z" end-time="2026-11-15 19:41:23Z" duration="11.478579" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584931515676
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Substitutions are now available: Owned stoppage fixture
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="2088" name="ExtraTimeAllowanceProjectsWithoutGuessing" fullname="OnlineSubstitutionsPlayModeTests.ExtraTimeAllowanceProjectsWithoutGuessing" classname="OnlineSubstitutionsPlayModeTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-15 19:41:23Z" end-time="2026-11-15 19:41:46Z" duration="22.818971" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="2086" name="ExtraTimeAllowanceProjectsWithoutGuessing(False)" fullname="OnlineSubstitutionsPlayModeTests.ExtraTimeAllowanceProjectsWithoutGuessing(False)" methodname="ExtraTimeAllowanceProjectsWithoutGuessing" classname="OnlineSubstitutionsPlayModeTests" runstate="Runnable" seed="746144145" result="Passed" start-time="2026-11-15 19:41:23Z" end-time="2026-11-15 19:41:34Z" duration="11.351233" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584931641492
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Substitutions are now available: Owned extra-time boundary fixture
+Extra time reached. Each team receives one additional substitution.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2087" name="ExtraTimeAllowanceProjectsWithoutGuessing(True)" fullname="OnlineSubstitutionsPlayModeTests.ExtraTimeAllowanceProjectsWithoutGuessing(True)" methodname="ExtraTimeAllowanceProjectsWithoutGuessing" classname="OnlineSubstitutionsPlayModeTests" runstate="Runnable" seed="734201795" result="Passed" start-time="2026-11-15 19:41:34Z" end-time="2026-11-15 19:41:46Z" duration="11.446932" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584931767308
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Substitutions are now available: Owned extra-time boundary fixture
+Extra time reached. Each team receives one additional substitution.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="2075" name="OwnPausedTeamSubstitutesOnceAndReplicates" fullname="OnlineSubstitutionsPlayModeTests.OwnPausedTeamSubstitutesOnceAndReplicates" classname="OnlineSubstitutionsPlayModeTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-11-15 19:41:46Z" end-time="2026-11-15 19:43:18Z" duration="92.574934" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="2067" name="OwnPausedTeamSubstitutesOnceAndReplicates(False,16,False)" fullname="OnlineSubstitutionsPlayModeTests.OwnPausedTeamSubstitutesOnceAndReplicates(False,16,False)" methodname="OwnPausedTeamSubstitutesOnceAndReplicates" classname="OnlineSubstitutionsPlayModeTests" runstate="Runnable" seed="1761898254" result="Passed" start-time="2026-11-15 19:41:46Z" end-time="2026-11-15 19:41:57Z" duration="11.344843" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584931893124
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Substitutions are now available: Owned stoppage fixture
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2068" name="OwnPausedTeamSubstitutesOnceAndReplicates(False,16,True)" fullname="OnlineSubstitutionsPlayModeTests.OwnPausedTeamSubstitutesOnceAndReplicates(False,16,True)" methodname="OwnPausedTeamSubstitutesOnceAndReplicates" classname="OnlineSubstitutionsPlayModeTests" runstate="Runnable" seed="233918190" result="Passed" start-time="2026-11-15 19:41:57Z" end-time="2026-11-15 19:42:09Z" duration="11.569442" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584932018940
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Substitutions are now available: Owned stoppage fixture
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2069" name="OwnPausedTeamSubstitutesOnceAndReplicates(False,18,False)" fullname="OnlineSubstitutionsPlayModeTests.OwnPausedTeamSubstitutesOnceAndReplicates(False,18,False)" methodname="OwnPausedTeamSubstitutesOnceAndReplicates" classname="OnlineSubstitutionsPlayModeTests" runstate="Runnable" seed="191899967" result="Passed" start-time="2026-11-15 19:42:09Z" end-time="2026-11-15 19:42:20Z" duration="11.471945" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584932144756
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Substitutions are now available: Owned stoppage fixture
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2070" name="OwnPausedTeamSubstitutesOnceAndReplicates(False,18,True)" fullname="OnlineSubstitutionsPlayModeTests.OwnPausedTeamSubstitutesOnceAndReplicates(False,18,True)" methodname="OwnPausedTeamSubstitutesOnceAndReplicates" classname="OnlineSubstitutionsPlayModeTests" runstate="Runnable" seed="1959892474" result="Passed" start-time="2026-11-15 19:42:20Z" end-time="2026-11-15 19:42:32Z" duration="11.644495" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584932270572
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Substitutions are now available: Owned stoppage fixture
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2071" name="OwnPausedTeamSubstitutesOnceAndReplicates(True,16,False)" fullname="OnlineSubstitutionsPlayModeTests.OwnPausedTeamSubstitutesOnceAndReplicates(True,16,False)" methodname="OwnPausedTeamSubstitutesOnceAndReplicates" classname="OnlineSubstitutionsPlayModeTests" runstate="Runnable" seed="434822023" result="Passed" start-time="2026-11-15 19:42:32Z" end-time="2026-11-15 19:42:44Z" duration="11.697416" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584932396388
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Substitutions are now available: Owned stoppage fixture
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2072" name="OwnPausedTeamSubstitutesOnceAndReplicates(True,16,True)" fullname="OnlineSubstitutionsPlayModeTests.OwnPausedTeamSubstitutesOnceAndReplicates(True,16,True)" methodname="OwnPausedTeamSubstitutesOnceAndReplicates" classname="OnlineSubstitutionsPlayModeTests" runstate="Runnable" seed="1516938755" result="Passed" start-time="2026-11-15 19:42:44Z" end-time="2026-11-15 19:42:55Z" duration="11.688586" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584932522204
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Substitutions are now available: Owned stoppage fixture
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2073" name="OwnPausedTeamSubstitutesOnceAndReplicates(True,18,False)" fullname="OnlineSubstitutionsPlayModeTests.OwnPausedTeamSubstitutesOnceAndReplicates(True,18,False)" methodname="OwnPausedTeamSubstitutesOnceAndReplicates" classname="OnlineSubstitutionsPlayModeTests" runstate="Runnable" seed="619893684" result="Passed" start-time="2026-11-15 19:42:55Z" end-time="2026-11-15 19:43:07Z" duration="11.529698" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584932648020
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Substitutions are now available: Owned stoppage fixture
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2074" name="OwnPausedTeamSubstitutesOnceAndReplicates(True,18,True)" fullname="OnlineSubstitutionsPlayModeTests.OwnPausedTeamSubstitutesOnceAndReplicates(True,18,True)" methodname="OwnPausedTeamSubstitutesOnceAndReplicates" classname="OnlineSubstitutionsPlayModeTests" runstate="Runnable" seed="919422850" result="Passed" start-time="2026-11-15 19:43:07Z" end-time="2026-11-15 19:43:18Z" duration="11.597736" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584932773836
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Substitutions are now available: Owned stoppage fixture
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+Saving results to: TestResults\GameplayRegression\Runs\20261115T193950556Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

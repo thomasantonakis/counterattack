@@ -124,6 +124,16 @@
     },
     {
       "mode": "editor",
+      "fixture": "OnlineFullRoomPayloadEditorTests",
+      "categories": [
+        "OnlineFullRoomPayload"
+      ],
+      "definition_sha256": "a17f93ec7c201a44f9b5fd808d9b6ad79caaf987a01ba81a165939761492a6c8",
+      "route": "native",
+      "source": "Assets/Editor/FeatureTests/OnlineFullRoomPayload/OnlineFullRoomPayloadEditorTests.cs"
+    },
+    {
+      "mode": "editor",
       "fixture": "OnlineGroundPassBoundaryEditorTests",
       "categories": [
         "OnlineGroundPass"
@@ -792,6 +802,16 @@
       "definition_sha256": "07de3f4956cc3b57ef569a36800ef872484edcd96ca2b8e3bf06778cebc3e7dc",
       "route": "native",
       "source": "Assets/Tests/PlayMode/Features/OnlineShots/OnlineShotBlockPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineSubstitutionsPlayModeTests",
+      "categories": [
+        "OnlineSubstitutions"
+      ],
+      "definition_sha256": "fa0dcae45c12f0a7b26988edeb4e25d0552cca82cd3bd85478096d8080149145",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineSubstitutions/OnlineSubstitutionsPlayModeTests.cs"
     },
     {
       "mode": "playmode",
@@ -8309,6 +8329,431 @@
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
       "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T185132333Z/results.xml"
+    },
+    {
+      "id": "OnlineSubstitutionsPlayModeTests.AuthoredGoalkeeperSwapPreservesRole(False,False)",
+      "feature": "OnlineSubstitutions",
+      "mode": "playmode",
+      "fixture": "OnlineSubstitutionsPlayModeTests",
+      "method": "AuthoredGoalkeeperSwapPreservesRole",
+      "parameters": [
+        "False,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T193950556Z/results.xml"
+    },
+    {
+      "id": "OnlineSubstitutionsPlayModeTests.AuthoredGoalkeeperSwapPreservesRole(False,True)",
+      "feature": "OnlineSubstitutions",
+      "mode": "playmode",
+      "fixture": "OnlineSubstitutionsPlayModeTests",
+      "method": "AuthoredGoalkeeperSwapPreservesRole",
+      "parameters": [
+        "False,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T193950556Z/results.xml"
+    },
+    {
+      "id": "OnlineSubstitutionsPlayModeTests.AuthoredGoalkeeperSwapPreservesRole(True,False)",
+      "feature": "OnlineSubstitutions",
+      "mode": "playmode",
+      "fixture": "OnlineSubstitutionsPlayModeTests",
+      "method": "AuthoredGoalkeeperSwapPreservesRole",
+      "parameters": [
+        "True,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T193950556Z/results.xml"
+    },
+    {
+      "id": "OnlineSubstitutionsPlayModeTests.AuthoredGoalkeeperSwapPreservesRole(True,True)",
+      "feature": "OnlineSubstitutions",
+      "mode": "playmode",
+      "fixture": "OnlineSubstitutionsPlayModeTests",
+      "method": "AuthoredGoalkeeperSwapPreservesRole",
+      "parameters": [
+        "True,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T193950556Z/results.xml"
+    },
+    {
+      "id": "OnlineSubstitutionsPlayModeTests.AuthoredSubstitutionControlsRouteOwnTeam(False,False)",
+      "feature": "OnlineSubstitutions",
+      "mode": "playmode",
+      "fixture": "OnlineSubstitutionsPlayModeTests",
+      "method": "AuthoredSubstitutionControlsRouteOwnTeam",
+      "parameters": [
+        "False,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T193950556Z/results.xml"
+    },
+    {
+      "id": "OnlineSubstitutionsPlayModeTests.AuthoredSubstitutionControlsRouteOwnTeam(False,True)",
+      "feature": "OnlineSubstitutions",
+      "mode": "playmode",
+      "fixture": "OnlineSubstitutionsPlayModeTests",
+      "method": "AuthoredSubstitutionControlsRouteOwnTeam",
+      "parameters": [
+        "False,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T193950556Z/results.xml"
+    },
+    {
+      "id": "OnlineSubstitutionsPlayModeTests.AuthoredSubstitutionControlsRouteOwnTeam(True,False)",
+      "feature": "OnlineSubstitutions",
+      "mode": "playmode",
+      "fixture": "OnlineSubstitutionsPlayModeTests",
+      "method": "AuthoredSubstitutionControlsRouteOwnTeam",
+      "parameters": [
+        "True,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T193950556Z/results.xml"
+    },
+    {
+      "id": "OnlineSubstitutionsPlayModeTests.AuthoredSubstitutionControlsRouteOwnTeam(True,True)",
+      "feature": "OnlineSubstitutions",
+      "mode": "playmode",
+      "fixture": "OnlineSubstitutionsPlayModeTests",
+      "method": "AuthoredSubstitutionControlsRouteOwnTeam",
+      "parameters": [
+        "True,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T193950556Z/results.xml"
+    },
+    {
+      "id": "OnlineSubstitutionsPlayModeTests.ExtraTimeAllowanceProjectsWithoutGuessing(False)",
+      "feature": "OnlineSubstitutions",
+      "mode": "playmode",
+      "fixture": "OnlineSubstitutionsPlayModeTests",
+      "method": "ExtraTimeAllowanceProjectsWithoutGuessing",
+      "parameters": [
+        "False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T193950556Z/results.xml"
+    },
+    {
+      "id": "OnlineSubstitutionsPlayModeTests.ExtraTimeAllowanceProjectsWithoutGuessing(True)",
+      "feature": "OnlineSubstitutions",
+      "mode": "playmode",
+      "fixture": "OnlineSubstitutionsPlayModeTests",
+      "method": "ExtraTimeAllowanceProjectsWithoutGuessing",
+      "parameters": [
+        "True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T193950556Z/results.xml"
+    },
+    {
+      "id": "OnlineSubstitutionsPlayModeTests.OwnPausedTeamSubstitutesOnceAndReplicates(False,16,False)",
+      "feature": "OnlineSubstitutions",
+      "mode": "playmode",
+      "fixture": "OnlineSubstitutionsPlayModeTests",
+      "method": "OwnPausedTeamSubstitutesOnceAndReplicates",
+      "parameters": [
+        "False,16,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T193950556Z/results.xml"
+    },
+    {
+      "id": "OnlineSubstitutionsPlayModeTests.OwnPausedTeamSubstitutesOnceAndReplicates(False,16,True)",
+      "feature": "OnlineSubstitutions",
+      "mode": "playmode",
+      "fixture": "OnlineSubstitutionsPlayModeTests",
+      "method": "OwnPausedTeamSubstitutesOnceAndReplicates",
+      "parameters": [
+        "False,16,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T193950556Z/results.xml"
+    },
+    {
+      "id": "OnlineSubstitutionsPlayModeTests.OwnPausedTeamSubstitutesOnceAndReplicates(False,18,False)",
+      "feature": "OnlineSubstitutions",
+      "mode": "playmode",
+      "fixture": "OnlineSubstitutionsPlayModeTests",
+      "method": "OwnPausedTeamSubstitutesOnceAndReplicates",
+      "parameters": [
+        "False,18,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T193950556Z/results.xml"
+    },
+    {
+      "id": "OnlineSubstitutionsPlayModeTests.OwnPausedTeamSubstitutesOnceAndReplicates(False,18,True)",
+      "feature": "OnlineSubstitutions",
+      "mode": "playmode",
+      "fixture": "OnlineSubstitutionsPlayModeTests",
+      "method": "OwnPausedTeamSubstitutesOnceAndReplicates",
+      "parameters": [
+        "False,18,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T193950556Z/results.xml"
+    },
+    {
+      "id": "OnlineSubstitutionsPlayModeTests.OwnPausedTeamSubstitutesOnceAndReplicates(True,16,False)",
+      "feature": "OnlineSubstitutions",
+      "mode": "playmode",
+      "fixture": "OnlineSubstitutionsPlayModeTests",
+      "method": "OwnPausedTeamSubstitutesOnceAndReplicates",
+      "parameters": [
+        "True,16,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T193950556Z/results.xml"
+    },
+    {
+      "id": "OnlineSubstitutionsPlayModeTests.OwnPausedTeamSubstitutesOnceAndReplicates(True,16,True)",
+      "feature": "OnlineSubstitutions",
+      "mode": "playmode",
+      "fixture": "OnlineSubstitutionsPlayModeTests",
+      "method": "OwnPausedTeamSubstitutesOnceAndReplicates",
+      "parameters": [
+        "True,16,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T193950556Z/results.xml"
+    },
+    {
+      "id": "OnlineSubstitutionsPlayModeTests.OwnPausedTeamSubstitutesOnceAndReplicates(True,18,False)",
+      "feature": "OnlineSubstitutions",
+      "mode": "playmode",
+      "fixture": "OnlineSubstitutionsPlayModeTests",
+      "method": "OwnPausedTeamSubstitutesOnceAndReplicates",
+      "parameters": [
+        "True,18,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T193950556Z/results.xml"
+    },
+    {
+      "id": "OnlineSubstitutionsPlayModeTests.OwnPausedTeamSubstitutesOnceAndReplicates(True,18,True)",
+      "feature": "OnlineSubstitutions",
+      "mode": "playmode",
+      "fixture": "OnlineSubstitutionsPlayModeTests",
+      "method": "OwnPausedTeamSubstitutesOnceAndReplicates",
+      "parameters": [
+        "True,18,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T193950556Z/results.xml"
+    },
+    {
+      "id": "OnlineFullRoomPayloadEditorTests.ExpandedStateHasIndependentHardLimit",
+      "feature": "OnlineFullRoomPayload",
+      "mode": "editor",
+      "fixture": "OnlineFullRoomPayloadEditorTests",
+      "method": "ExpandedStateHasIndependentHardLimit",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T195834930Z/results.xml"
+    },
+    {
+      "id": "OnlineFullRoomPayloadEditorTests.LargeRosterRoundTripsWithinWireBudget(16,False)",
+      "feature": "OnlineFullRoomPayload",
+      "mode": "editor",
+      "fixture": "OnlineFullRoomPayloadEditorTests",
+      "method": "LargeRosterRoundTripsWithinWireBudget",
+      "parameters": [
+        "16,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T195834930Z/results.xml"
+    },
+    {
+      "id": "OnlineFullRoomPayloadEditorTests.LargeRosterRoundTripsWithinWireBudget(16,True)",
+      "feature": "OnlineFullRoomPayload",
+      "mode": "editor",
+      "fixture": "OnlineFullRoomPayloadEditorTests",
+      "method": "LargeRosterRoundTripsWithinWireBudget",
+      "parameters": [
+        "16,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T195834930Z/results.xml"
+    },
+    {
+      "id": "OnlineFullRoomPayloadEditorTests.LargeRosterRoundTripsWithinWireBudget(18,False)",
+      "feature": "OnlineFullRoomPayload",
+      "mode": "editor",
+      "fixture": "OnlineFullRoomPayloadEditorTests",
+      "method": "LargeRosterRoundTripsWithinWireBudget",
+      "parameters": [
+        "18,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T195834930Z/results.xml"
+    },
+    {
+      "id": "OnlineFullRoomPayloadEditorTests.LargeRosterRoundTripsWithinWireBudget(18,True)",
+      "feature": "OnlineFullRoomPayload",
+      "mode": "editor",
+      "fixture": "OnlineFullRoomPayloadEditorTests",
+      "method": "LargeRosterRoundTripsWithinWireBudget",
+      "parameters": [
+        "18,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T195834930Z/results.xml"
+    },
+    {
+      "id": "OnlineFullRoomPayloadEditorTests.MalformedCompressionCannotPoisonNextMessage(\"base64\")",
+      "feature": "OnlineFullRoomPayload",
+      "mode": "editor",
+      "fixture": "OnlineFullRoomPayloadEditorTests",
+      "method": "MalformedCompressionCannotPoisonNextMessage",
+      "parameters": [
+        "\"base64\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T195834930Z/results.xml"
+    },
+    {
+      "id": "OnlineFullRoomPayloadEditorTests.MalformedCompressionCannotPoisonNextMessage(\"truncated\")",
+      "feature": "OnlineFullRoomPayload",
+      "mode": "editor",
+      "fixture": "OnlineFullRoomPayloadEditorTests",
+      "method": "MalformedCompressionCannotPoisonNextMessage",
+      "parameters": [
+        "\"truncated\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T195834930Z/results.xml"
+    },
+    {
+      "id": "OnlineFullRoomPayloadEditorTests.MalformedCompressionCannotPoisonNextMessage(\"length\")",
+      "feature": "OnlineFullRoomPayload",
+      "mode": "editor",
+      "fixture": "OnlineFullRoomPayloadEditorTests",
+      "method": "MalformedCompressionCannotPoisonNextMessage",
+      "parameters": [
+        "\"length\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T195834930Z/results.xml"
+    },
+    {
+      "id": "OnlineFullRoomPayloadEditorTests.MalformedCompressionCannotPoisonNextMessage(\"bomb\")",
+      "feature": "OnlineFullRoomPayload",
+      "mode": "editor",
+      "fixture": "OnlineFullRoomPayloadEditorTests",
+      "method": "MalformedCompressionCannotPoisonNextMessage",
+      "parameters": [
+        "\"bomb\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T195834930Z/results.xml"
+    },
+    {
+      "id": "OnlineFullRoomPayloadEditorTests.MalformedCompressionCannotPoisonNextMessage(\"kind\")",
+      "feature": "OnlineFullRoomPayload",
+      "mode": "editor",
+      "fixture": "OnlineFullRoomPayloadEditorTests",
+      "method": "MalformedCompressionCannotPoisonNextMessage",
+      "parameters": [
+        "\"kind\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T195834930Z/results.xml"
+    },
+    {
+      "id": "OnlineFullRoomPayloadEditorTests.MalformedCompressionCannotPoisonNextMessage(\"conflict\")",
+      "feature": "OnlineFullRoomPayload",
+      "mode": "editor",
+      "fixture": "OnlineFullRoomPayloadEditorTests",
+      "method": "MalformedCompressionCannotPoisonNextMessage",
+      "parameters": [
+        "\"conflict\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T195834930Z/results.xml"
+    },
+    {
+      "id": "OnlineFullRoomPayloadEditorTests.MalformedCompressionCannotPoisonNextMessage(\"catalog\")",
+      "feature": "OnlineFullRoomPayload",
+      "mode": "editor",
+      "fixture": "OnlineFullRoomPayloadEditorTests",
+      "method": "MalformedCompressionCannotPoisonNextMessage",
+      "parameters": [
+        "\"catalog\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T195834930Z/results.xml"
+    },
+    {
+      "id": "OnlineFullRoomPayloadEditorTests.MalformedCompressionCannotPoisonNextMessage(\"missing-data\")",
+      "feature": "OnlineFullRoomPayload",
+      "mode": "editor",
+      "fixture": "OnlineFullRoomPayloadEditorTests",
+      "method": "MalformedCompressionCannotPoisonNextMessage",
+      "parameters": [
+        "\"missing-data\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T195834930Z/results.xml"
+    },
+    {
+      "id": "OnlineFullRoomPayloadEditorTests.MalformedCompressionCannotPoisonNextMessage(\"size-header\")",
+      "feature": "OnlineFullRoomPayload",
+      "mode": "editor",
+      "fixture": "OnlineFullRoomPayloadEditorTests",
+      "method": "MalformedCompressionCannotPoisonNextMessage",
+      "parameters": [
+        "\"size-header\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T195834930Z/results.xml"
+    },
+    {
+      "id": "OnlineFullRoomPayloadEditorTests.PreparedProfileKeepsUncompressedState",
+      "feature": "OnlineFullRoomPayload",
+      "mode": "editor",
+      "fixture": "OnlineFullRoomPayloadEditorTests",
+      "method": "PreparedProfileKeepsUncompressedState",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T195834930Z/results.xml"
     }
   ]
 }

@@ -26,6 +26,7 @@ namespace CounterAttack.Online
         public string matchId, decisionId, stage, owner, gameState, possessionTeam, lastTouch, pauseRequester, catalogId;
         public string homeDirection,awayDirection,substitutionsReason;
         public bool substitutionsAvailable;
+        public bool extraTimeSubstitutionCredit;
         public long revision, publicationSequence, rollSequence, sharedPauseRevision;
         public long homeAcceptedSequence, awayAcceptedSequence, homePauseSequence, awayPauseSequence;
         public bool isSharedPaused, connectionHeld;
@@ -181,6 +182,7 @@ namespace CounterAttack.Online
                 homeDirection=protocol.Compatibility.Catalog==OnlineFullRoomBootstrap.Catalog?match.homeTeamDirection.ToString():null,
                 awayDirection=protocol.Compatibility.Catalog==OnlineFullRoomBootstrap.Catalog?match.awayTeamDirection.ToString():null,
                 substitutionsAvailable=protocol.Compatibility.Catalog==OnlineFullRoomBootstrap.Catalog && match.AreSubstitutionsAvailable,
+                extraTimeSubstitutionCredit=protocol.Compatibility.Catalog==OnlineFullRoomBootstrap.Catalog && match.OnlineExtraTimeSubstitutionCredit,
                 substitutionsReason=protocol.Compatibility.Catalog==OnlineFullRoomBootstrap.Catalog?match.SubstitutionsAvailabilityReason:null,
                 rolls = match.CaptureOnlineRolls(),
                 header = CaptureHeaderObservation(),

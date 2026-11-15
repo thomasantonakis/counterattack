@@ -33,6 +33,12 @@ namespace CounterAttack.Online
         public long connectionGeneration;
         public OnlineGroundPassState state;
         public OnlineGroundPassPresentation presentation;
+        public string compressedState;
+        public int expandedStateBytes;
+        internal OnlineGroundPassMessage WithCompressedState(string payload,int size)
+        {
+            var copy=(OnlineGroundPassMessage)MemberwiseClone();copy.state=null;copy.compressedState=payload;copy.expandedStateBytes=size;return copy;
+        }
 
         public OnlineMatchCommand ToCommand() => new(matchId, sequence, revision, decisionId, actionId);
         public static OnlineGroundPassMessage Command(OnlineGroundPassState state, long sequence, string action)
@@ -48,14 +54,21 @@ namespace CounterAttack.Online
         public const int HeaderSize=OnlineReliableJsonWire<OnlineGroundPassMessage>.HeaderSize;
         private readonly OnlineReliableJsonWire<OnlineGroundPassMessage> framing=new(0xCA07,Valid);
         private static bool Valid(OnlineGroundPassMessage message)=>message.version=="ground-wire-v7" && OnlineProtocolIds.IsValid(message.matchId)
-            && new[]{"hello","command","state","presentation","reply","control","control-reply","done","finish"}.Contains(message.kind);
+            && new[]{"hello","command","state","presentation","reply","control","control-reply","done","finish"}.Contains(message.kind)
+            && (message.compressedState==null?message.expandedStateBytes==0:message.kind=="state" && message.state==null && message.compressedState.Length>0
+                && message.expandedStateBytes>0 && message.expandedStateBytes<=OnlineFullRoomStateCodec.ExpandedLimit);
         public static IEnumerable<byte[]> Encode(OnlineGroundPassMessage message)
         {
             message.version="ground-wire-v7";
-            foreach(var fragment in new OnlineReliableJsonWire<OnlineGroundPassMessage>(0xCA07,Valid).Encode(message))yield return fragment;
+            if(message.state!=null && message.compressedState!=null)throw new InvalidDataException("Conflicting state encodings");
+            var envelope=message.state?.catalogId==OnlineFullRoomBootstrap.Catalog?OnlineFullRoomStateCodec.Compress(message):message;
+            foreach(var fragment in new OnlineReliableJsonWire<OnlineGroundPassMessage>(0xCA07,Valid).Encode(envelope))yield return fragment;
         }
         public OnlineGroundPassMessage Receive(byte[] packet,int length,bool allowConnectionRestart=false)
-            =>framing.Receive(packet,length,allowConnectionRestart);
+        {
+            var message=framing.Receive(packet,length,allowConnectionRestart);
+            return message?.compressedState==null?message:OnlineFullRoomStateCodec.Expand(message);
+        }
     }
 
     /// <summary>Guest value replica. It has no gameplay manager, dice or clock references.</summary>
