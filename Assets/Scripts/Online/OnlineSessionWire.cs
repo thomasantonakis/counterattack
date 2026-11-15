@@ -9,6 +9,8 @@ namespace CounterAttack.Online
         public long sequence;
         public OnlineSetupRequest request;
         public OnlineSetupState state;
+        public OnlineDraftRequest draftRequest;
+        public OnlineDraftState draftState;
     }
     // Dedicated frontend control channel; it cannot be decoded as a gameplay packet.
     public sealed class OnlineSessionWire
@@ -19,7 +21,7 @@ namespace CounterAttack.Online
         public const int PayloadLimit=OnlineReliableJsonWire<OnlineSessionMessage>.PayloadLimit;
         private readonly OnlineReliableJsonWire<OnlineSessionMessage> framing=new(0xCA11,Valid);
         private static bool Valid(OnlineSessionMessage m)=>m.version==Version && OnlineProtocolIds.IsValid(m.matchId)
-            && new[]{"hello","setup-request","setup-state","setup-reply","heartbeat","leave","phase-ready","phase-ack"}.Contains(m.kind);
+            && new[]{"hello","setup-request","setup-state","setup-reply","heartbeat","leave","phase-ready","phase-ack","draft-request","draft-state","draft-reply"}.Contains(m.kind);
         public static IEnumerable<byte[]> Encode(OnlineSessionMessage message)
         {
             message.version=Version;

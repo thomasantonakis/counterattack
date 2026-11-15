@@ -14,6 +14,9 @@ namespace CounterAttack.Online
         public static OnlineFrontendSession Current {get;private set;}
         public event Action<OnlineSetupClient> ClientAvailable;
         public event Action<GameSettings> DraftAgreed;
+        public event Action<OnlineDraftClient> DraftAvailable;
+        public OnlineDraftClient Draft=>channel?.Draft;
+        private OnlineDraftClient announcedDraft;
         public OnlineSetupClient Client=>channel?.Client;
         public string LobbyCode {get;private set;}
         public string Status {get;private set;}="Not connected";
@@ -101,7 +104,9 @@ namespace CounterAttack.Online
             {
                 var protocol=new OnlineMatchProtocol(match,remote.ToString(),session.UserId.ToString(),session.UserId.ToString(),compatibility);
                 protocol.BindAuthenticatedAccount(session.UserId.ToString(),"frontend-host",compatibility);
-                channel=new OnlineSetupHostChannel(protocol,"frontend-host",remote.ToString(),initial,()=>Time.realtimeSinceStartupAsDouble);
+                var hostChannel=new OnlineSetupHostChannel(protocol,"frontend-host",remote.ToString(),initial,()=>Time.realtimeSinceStartupAsDouble);
+                hostChannel.EnableDraft(s=>s.matchType=="Regular" && s.draft=="Regular" && s.gkDraft=="Deal"?new OnlineDraftAuthority(protocol,s,OnlineDraftCatalog.Load()):null);
+                channel=hostChannel;
             }
             else channel=new OnlineSetupGuestChannel(match,remote.ToString(),compatibility,OnlineTeam.Away,()=>Time.realtimeSinceStartupAsDouble);
             channel.Outgoing+=Queue;
@@ -213,6 +218,11 @@ namespace CounterAttack.Online
         }
         private void Update()
         {
+            if(Draft!=null && !ReferenceEquals(announcedDraft,Draft))
+            {
+                announcedDraft=Draft;DraftAvailable?.Invoke(Draft);
+                if(agreedSettings!=null && UnityEngine.SceneManagement.SceneManager.GetActiveScene().name=="CreateNewGameScene")UnityEngine.SceneManagement.SceneManager.LoadScene("Draft");
+            }
             if(!Busy || !Hosting || LobbyCode!=null || RunDirectory==null)return;
             string path=Path.Combine(RunDirectory,"lobby-id.txt");
             if(!File.Exists(path))return;

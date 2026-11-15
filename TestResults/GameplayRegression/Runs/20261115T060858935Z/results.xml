@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="16" result="Passed" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-15 06:08:58Z" end-time="2026-11-15 06:08:59Z" duration="0.4648213">
+  <test-suite type="TestSuite" id="4357" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1517" result="Passed" start-time="2026-11-15 06:08:58Z" end-time="2026-11-15 06:08:59Z" duration="0.464821" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="4350" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="1517" result="Passed" start-time="2026-11-15 06:08:58Z" end-time="2026-11-15 06:08:59Z" duration="0.446820" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="1132" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="3277" name="OnlineFrontendRecoveryEditorTests" fullname="OnlineFrontendRecoveryEditorTests" classname="OnlineFrontendRecoveryEditorTests" runstate="Runnable" testcasecount="16" result="Passed" start-time="2026-11-15 06:08:58Z" end-time="2026-11-15 06:08:59Z" duration="0.441057" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineFrontendRecovery" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="3294" name="SerializedRecovery" fullname="OnlineFrontendRecoveryEditorTests.SerializedRecovery" classname="OnlineFrontendRecoveryEditorTests" runstate="Runnable" testcasecount="16" result="Passed" start-time="2026-11-15 06:08:58Z" end-time="2026-11-15 06:08:59Z" duration="0.439372" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="3278" name="SerializedRecovery(False,&quot;initial-retry&quot;)" fullname="OnlineFrontendRecoveryEditorTests.SerializedRecovery(False,&quot;initial-retry&quot;)" methodname="SerializedRecovery" classname="OnlineFrontendRecoveryEditorTests" runstate="Runnable" seed="1847774715" result="Passed" start-time="2026-11-15 06:08:58Z" end-time="2026-11-15 06:08:59Z" duration="0.051135" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3279" name="SerializedRecovery(False,&quot;silence&quot;)" fullname="OnlineFrontendRecoveryEditorTests.SerializedRecovery(False,&quot;silence&quot;)" methodname="SerializedRecovery" classname="OnlineFrontendRecoveryEditorTests" runstate="Runnable" seed="1226947910" result="Passed" start-time="2026-11-15 06:08:59Z" end-time="2026-11-15 06:08:59Z" duration="0.023416" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3280" name="SerializedRecovery(False,&quot;pending&quot;)" fullname="OnlineFrontendRecoveryEditorTests.SerializedRecovery(False,&quot;pending&quot;)" methodname="SerializedRecovery" classname="OnlineFrontendRecoveryEditorTests" runstate="Runnable" seed="554632813" result="Passed" start-time="2026-11-15 06:08:59Z" end-time="2026-11-15 06:08:59Z" duration="0.023033" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3281" name="SerializedRecovery(False,&quot;agreed&quot;)" fullname="OnlineFrontendRecoveryEditorTests.SerializedRecovery(False,&quot;agreed&quot;)" methodname="SerializedRecovery" classname="OnlineFrontendRecoveryEditorTests" runstate="Runnable" seed="1868621802" result="Passed" start-time="2026-11-15 06:08:59Z" end-time="2026-11-15 06:08:59Z" duration="0.040024" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3282" name="SerializedRecovery(False,&quot;bounded-retry&quot;)" fullname="OnlineFrontendRecoveryEditorTests.SerializedRecovery(False,&quot;bounded-retry&quot;)" methodname="SerializedRecovery" classname="OnlineFrontendRecoveryEditorTests" runstate="Runnable" seed="1596068898" result="Passed" start-time="2026-11-15 06:08:59Z" end-time="2026-11-15 06:08:59Z" duration="0.019569" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3283" name="SerializedRecovery(False,&quot;expiry&quot;)" fullname="OnlineFrontendRecoveryEditorTests.SerializedRecovery(False,&quot;expiry&quot;)" methodname="SerializedRecovery" classname="OnlineFrontendRecoveryEditorTests" runstate="Runnable" seed="2019749945" result="Passed" start-time="2026-11-15 06:08:59Z" end-time="2026-11-15 06:08:59Z" duration="0.012148" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3284" name="SerializedRecovery(False,&quot;untrusted&quot;)" fullname="OnlineFrontendRecoveryEditorTests.SerializedRecovery(False,&quot;untrusted&quot;)" methodname="SerializedRecovery" classname="OnlineFrontendRecoveryEditorTests" runstate="Runnable" seed="2069257124" result="Passed" start-time="2026-11-15 06:08:59Z" end-time="2026-11-15 06:08:59Z" duration="0.047439" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3285" name="SerializedRecovery(False,&quot;closed&quot;)" fullname="OnlineFrontendRecoveryEditorTests.SerializedRecovery(False,&quot;closed&quot;)" methodname="SerializedRecovery" classname="OnlineFrontendRecoveryEditorTests" runstate="Runnable" seed="253593229" result="Passed" start-time="2026-11-15 06:08:59Z" end-time="2026-11-15 06:08:59Z" duration="0.016682" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3286" name="SerializedRecovery(True,&quot;initial-retry&quot;)" fullname="OnlineFrontendRecoveryEditorTests.SerializedRecovery(True,&quot;initial-retry&quot;)" methodname="SerializedRecovery" classname="OnlineFrontendRecoveryEditorTests" runstate="Runnable" seed="2041785865" result="Passed" start-time="2026-11-15 06:08:59Z" end-time="2026-11-15 06:08:59Z" duration="0.008505" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3287" name="SerializedRecovery(True,&quot;silence&quot;)" fullname="OnlineFrontendRecoveryEditorTests.SerializedRecovery(True,&quot;silence&quot;)" methodname="SerializedRecovery" classname="OnlineFrontendRecoveryEditorTests" runstate="Runnable" seed="1869858536" result="Passed" start-time="2026-11-15 06:08:59Z" end-time="2026-11-15 06:08:59Z" duration="0.013782" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3288" name="SerializedRecovery(True,&quot;pending&quot;)" fullname="OnlineFrontendRecoveryEditorTests.SerializedRecovery(True,&quot;pending&quot;)" methodname="SerializedRecovery" classname="OnlineFrontendRecoveryEditorTests" runstate="Runnable" seed="1565823028" result="Passed" start-time="2026-11-15 06:08:59Z" end-time="2026-11-15 06:08:59Z" duration="0.018153" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3289" name="SerializedRecovery(True,&quot;agreed&quot;)" fullname="OnlineFrontendRecoveryEditorTests.SerializedRecovery(True,&quot;agreed&quot;)" methodname="SerializedRecovery" classname="OnlineFrontendRecoveryEditorTests" runstate="Runnable" seed="8017425" result="Passed" start-time="2026-11-15 06:08:59Z" end-time="2026-11-15 06:08:59Z" duration="0.033446" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3290" name="SerializedRecovery(True,&quot;bounded-retry&quot;)" fullname="OnlineFrontendRecoveryEditorTests.SerializedRecovery(True,&quot;bounded-retry&quot;)" methodname="SerializedRecovery" classname="OnlineFrontendRecoveryEditorTests" runstate="Runnable" seed="1972630638" result="Passed" start-time="2026-11-15 06:08:59Z" end-time="2026-11-15 06:08:59Z" duration="0.022829" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3291" name="SerializedRecovery(True,&quot;expiry&quot;)" fullname="OnlineFrontendRecoveryEditorTests.SerializedRecovery(True,&quot;expiry&quot;)" methodname="SerializedRecovery" classname="OnlineFrontendRecoveryEditorTests" runstate="Runnable" seed="1882873490" result="Passed" start-time="2026-11-15 06:08:59Z" end-time="2026-11-15 06:08:59Z" duration="0.050772" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3292" name="SerializedRecovery(True,&quot;untrusted&quot;)" fullname="OnlineFrontendRecoveryEditorTests.SerializedRecovery(True,&quot;untrusted&quot;)" methodname="SerializedRecovery" classname="OnlineFrontendRecoveryEditorTests" runstate="Runnable" seed="4772741" result="Passed" start-time="2026-11-15 06:08:59Z" end-time="2026-11-15 06:08:59Z" duration="0.016348" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3293" name="SerializedRecovery(True,&quot;closed&quot;)" fullname="OnlineFrontendRecoveryEditorTests.SerializedRecovery(True,&quot;closed&quot;)" methodname="SerializedRecovery" classname="OnlineFrontendRecoveryEditorTests" runstate="Runnable" seed="569430520" result="Passed" start-time="2026-11-15 06:08:59Z" end-time="2026-11-15 06:08:59Z" duration="0.013823" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Saving results to: TestResults\GameplayRegression\Runs\20261115T060858935Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

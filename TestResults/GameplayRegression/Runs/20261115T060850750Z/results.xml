@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="26" result="Passed" total="26" passed="26" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-15 06:08:50Z" end-time="2026-11-15 06:08:51Z" duration="0.6905701">
+  <test-suite type="TestSuite" id="4356" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1517" result="Passed" start-time="2026-11-15 06:08:50Z" end-time="2026-11-15 06:08:51Z" duration="0.690570" total="26" passed="26" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="4350" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="1517" result="Passed" start-time="2026-11-15 06:08:50Z" end-time="2026-11-15 06:08:51Z" duration="0.671664" total="26" passed="26" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="1132" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="3436" name="OnlineSetupChannelEditorTests" fullname="OnlineSetupChannelEditorTests" classname="OnlineSetupChannelEditorTests" runstate="Runnable" testcasecount="26" result="Passed" start-time="2026-11-15 06:08:50Z" end-time="2026-11-15 06:08:51Z" duration="0.663607" total="26" passed="26" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineSessionTransport" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="3463" name="AuthenticatedChannel" fullname="OnlineSetupChannelEditorTests.AuthenticatedChannel" classname="OnlineSetupChannelEditorTests" runstate="Runnable" testcasecount="26" result="Passed" start-time="2026-11-15 06:08:50Z" end-time="2026-11-15 06:08:51Z" duration="0.660439" total="26" passed="26" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="3437" name="AuthenticatedChannel(False,&quot;agreement&quot;)" fullname="OnlineSetupChannelEditorTests.AuthenticatedChannel(False,&quot;agreement&quot;)" methodname="AuthenticatedChannel" classname="OnlineSetupChannelEditorTests" runstate="Runnable" seed="886436846" result="Passed" start-time="2026-11-15 06:08:50Z" end-time="2026-11-15 06:08:50Z" duration="0.034798" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3438" name="AuthenticatedChannel(False,&quot;unauthenticated&quot;)" fullname="OnlineSetupChannelEditorTests.AuthenticatedChannel(False,&quot;unauthenticated&quot;)" methodname="AuthenticatedChannel" classname="OnlineSetupChannelEditorTests" runstate="Runnable" seed="1502867609" result="Passed" start-time="2026-11-15 06:08:50Z" end-time="2026-11-15 06:08:50Z" duration="0.054778" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3439" name="AuthenticatedChannel(False,&quot;before-hello&quot;)" fullname="OnlineSetupChannelEditorTests.AuthenticatedChannel(False,&quot;before-hello&quot;)" methodname="AuthenticatedChannel" classname="OnlineSetupChannelEditorTests" runstate="Runnable" seed="2011581242" result="Passed" start-time="2026-11-15 06:08:50Z" end-time="2026-11-15 06:08:50Z" duration="0.004646" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3440" name="AuthenticatedChannel(False,&quot;wrong-version&quot;)" fullname="OnlineSetupChannelEditorTests.AuthenticatedChannel(False,&quot;wrong-version&quot;)" methodname="AuthenticatedChannel" classname="OnlineSetupChannelEditorTests" runstate="Runnable" seed="1305583624" result="Passed" start-time="2026-11-15 06:08:50Z" end-time="2026-11-15 06:08:50Z" duration="0.004198" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3441" name="AuthenticatedChannel(False,&quot;wrong-catalog&quot;)" fullname="OnlineSetupChannelEditorTests.AuthenticatedChannel(False,&quot;wrong-catalog&quot;)" methodname="AuthenticatedChannel" classname="OnlineSetupChannelEditorTests" runstate="Runnable" seed="97752100" result="Passed" start-time="2026-11-15 06:08:50Z" end-time="2026-11-15 06:08:50Z" duration="0.003879" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3442" name="AuthenticatedChannel(False,&quot;nonce&quot;)" fullname="OnlineSetupChannelEditorTests.AuthenticatedChannel(False,&quot;nonce&quot;)" methodname="AuthenticatedChannel" classname="OnlineSetupChannelEditorTests" runstate="Runnable" seed="887716276" result="Passed" start-time="2026-11-15 06:08:50Z" end-time="2026-11-15 06:08:50Z" duration="0.007762" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3443" name="AuthenticatedChannel(False,&quot;reconnect&quot;)" fullname="OnlineSetupChannelEditorTests.AuthenticatedChannel(False,&quot;reconnect&quot;)" methodname="AuthenticatedChannel" classname="OnlineSetupChannelEditorTests" runstate="Runnable" seed="1928200690" result="Passed" start-time="2026-11-15 06:08:50Z" end-time="2026-11-15 06:08:50Z" duration="0.036921" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3444" name="AuthenticatedChannel(False,&quot;heartbeat&quot;)" fullname="OnlineSetupChannelEditorTests.AuthenticatedChannel(False,&quot;heartbeat&quot;)" methodname="AuthenticatedChannel" classname="OnlineSetupChannelEditorTests" runstate="Runnable" seed="1880317117" result="Passed" start-time="2026-11-15 06:08:50Z" end-time="2026-11-15 06:08:50Z" duration="0.014999" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3445" name="AuthenticatedChannel(False,&quot;leave&quot;)" fullname="OnlineSetupChannelEditorTests.AuthenticatedChannel(False,&quot;leave&quot;)" methodname="AuthenticatedChannel" classname="OnlineSetupChannelEditorTests" runstate="Runnable" seed="571538030" result="Passed" start-time="2026-11-15 06:08:50Z" end-time="2026-11-15 06:08:50Z" duration="0.009429" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3446" name="AuthenticatedChannel(False,&quot;guest-injection&quot;)" fullname="OnlineSetupChannelEditorTests.AuthenticatedChannel(False,&quot;guest-injection&quot;)" methodname="AuthenticatedChannel" classname="OnlineSetupChannelEditorTests" runstate="Runnable" seed="1477297307" result="Passed" start-time="2026-11-15 06:08:50Z" end-time="2026-11-15 06:08:51Z" duration="0.009088" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3447" name="AuthenticatedChannel(False,&quot;stale-frame&quot;)" fullname="OnlineSetupChannelEditorTests.AuthenticatedChannel(False,&quot;stale-frame&quot;)" methodname="AuthenticatedChannel" classname="OnlineSetupChannelEditorTests" runstate="Runnable" seed="1709719618" result="Passed" start-time="2026-11-15 06:08:51Z" end-time="2026-11-15 06:08:51Z" duration="0.071743" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3448" name="AuthenticatedChannel(False,&quot;local-loss&quot;)" fullname="OnlineSetupChannelEditorTests.AuthenticatedChannel(False,&quot;local-loss&quot;)" methodname="AuthenticatedChannel" classname="OnlineSetupChannelEditorTests" runstate="Runnable" seed="1038398439" result="Passed" start-time="2026-11-15 06:08:51Z" end-time="2026-11-15 06:08:51Z" duration="0.011198" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3449" name="AuthenticatedChannel(False,&quot;reconnect-after-start&quot;)" fullname="OnlineSetupChannelEditorTests.AuthenticatedChannel(False,&quot;reconnect-after-start&quot;)" methodname="AuthenticatedChannel" classname="OnlineSetupChannelEditorTests" runstate="Runnable" seed="1232649547" result="Passed" start-time="2026-11-15 06:08:51Z" end-time="2026-11-15 06:08:51Z" duration="0.029575" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3450" name="AuthenticatedChannel(True,&quot;agreement&quot;)" fullname="OnlineSetupChannelEditorTests.AuthenticatedChannel(True,&quot;agreement&quot;)" methodname="AuthenticatedChannel" classname="OnlineSetupChannelEditorTests" runstate="Runnable" seed="272557885" result="Passed" start-time="2026-11-15 06:08:51Z" end-time="2026-11-15 06:08:51Z" duration="0.065684" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3451" name="AuthenticatedChannel(True,&quot;unauthenticated&quot;)" fullname="OnlineSetupChannelEditorTests.AuthenticatedChannel(True,&quot;unauthenticated&quot;)" methodname="AuthenticatedChannel" classname="OnlineSetupChannelEditorTests" runstate="Runnable" seed="145251252" result="Passed" start-time="2026-11-15 06:08:51Z" end-time="2026-11-15 06:08:51Z" duration="0.021165" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3452" name="AuthenticatedChannel(True,&quot;before-hello&quot;)" fullname="OnlineSetupChannelEditorTests.AuthenticatedChannel(True,&quot;before-hello&quot;)" methodname="AuthenticatedChannel" classname="OnlineSetupChannelEditorTests" runstate="Runnable" seed="1470807876" result="Passed" start-time="2026-11-15 06:08:51Z" end-time="2026-11-15 06:08:51Z" duration="0.004175" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3453" name="AuthenticatedChannel(True,&quot;wrong-version&quot;)" fullname="OnlineSetupChannelEditorTests.AuthenticatedChannel(True,&quot;wrong-version&quot;)" methodname="AuthenticatedChannel" classname="OnlineSetupChannelEditorTests" runstate="Runnable" seed="620705678" result="Passed" start-time="2026-11-15 06:08:51Z" end-time="2026-11-15 06:08:51Z" duration="0.005023" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3454" name="AuthenticatedChannel(True,&quot;wrong-catalog&quot;)" fullname="OnlineSetupChannelEditorTests.AuthenticatedChannel(True,&quot;wrong-catalog&quot;)" methodname="AuthenticatedChannel" classname="OnlineSetupChannelEditorTests" runstate="Runnable" seed="803857177" result="Passed" start-time="2026-11-15 06:08:51Z" end-time="2026-11-15 06:08:51Z" duration="0.004060" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3455" name="AuthenticatedChannel(True,&quot;nonce&quot;)" fullname="OnlineSetupChannelEditorTests.AuthenticatedChannel(True,&quot;nonce&quot;)" methodname="AuthenticatedChannel" classname="OnlineSetupChannelEditorTests" runstate="Runnable" seed="332415461" result="Passed" start-time="2026-11-15 06:08:51Z" end-time="2026-11-15 06:08:51Z" duration="0.007779" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3456" name="AuthenticatedChannel(True,&quot;reconnect&quot;)" fullname="OnlineSetupChannelEditorTests.AuthenticatedChannel(True,&quot;reconnect&quot;)" methodname="AuthenticatedChannel" classname="OnlineSetupChannelEditorTests" runstate="Runnable" seed="1907868485" result="Passed" start-time="2026-11-15 06:08:51Z" end-time="2026-11-15 06:08:51Z" duration="0.080705" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3457" name="AuthenticatedChannel(True,&quot;heartbeat&quot;)" fullname="OnlineSetupChannelEditorTests.AuthenticatedChannel(True,&quot;heartbeat&quot;)" methodname="AuthenticatedChannel" classname="OnlineSetupChannelEditorTests" runstate="Runnable" seed="2117621484" result="Passed" start-time="2026-11-15 06:08:51Z" end-time="2026-11-15 06:08:51Z" duration="0.007381" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3458" name="AuthenticatedChannel(True,&quot;leave&quot;)" fullname="OnlineSetupChannelEditorTests.AuthenticatedChannel(True,&quot;leave&quot;)" methodname="AuthenticatedChannel" classname="OnlineSetupChannelEditorTests" runstate="Runnable" seed="2141697332" result="Passed" start-time="2026-11-15 06:08:51Z" end-time="2026-11-15 06:08:51Z" duration="0.009751" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3459" name="AuthenticatedChannel(True,&quot;guest-injection&quot;)" fullname="OnlineSetupChannelEditorTests.AuthenticatedChannel(True,&quot;guest-injection&quot;)" methodname="AuthenticatedChannel" classname="OnlineSetupChannelEditorTests" runstate="Runnable" seed="512979365" result="Passed" start-time="2026-11-15 06:08:51Z" end-time="2026-11-15 06:08:51Z" duration="0.007015" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3460" name="AuthenticatedChannel(True,&quot;stale-frame&quot;)" fullname="OnlineSetupChannelEditorTests.AuthenticatedChannel(True,&quot;stale-frame&quot;)" methodname="AuthenticatedChannel" classname="OnlineSetupChannelEditorTests" runstate="Runnable" seed="85837192" result="Passed" start-time="2026-11-15 06:08:51Z" end-time="2026-11-15 06:08:51Z" duration="0.031238" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3461" name="AuthenticatedChannel(True,&quot;local-loss&quot;)" fullname="OnlineSetupChannelEditorTests.AuthenticatedChannel(True,&quot;local-loss&quot;)" methodname="AuthenticatedChannel" classname="OnlineSetupChannelEditorTests" runstate="Runnable" seed="30277178" result="Passed" start-time="2026-11-15 06:08:51Z" end-time="2026-11-15 06:08:51Z" duration="0.009275" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3462" name="AuthenticatedChannel(True,&quot;reconnect-after-start&quot;)" fullname="OnlineSetupChannelEditorTests.AuthenticatedChannel(True,&quot;reconnect-after-start&quot;)" methodname="AuthenticatedChannel" classname="OnlineSetupChannelEditorTests" runstate="Runnable" seed="1679354339" result="Passed" start-time="2026-11-15 06:08:51Z" end-time="2026-11-15 06:08:51Z" duration="0.070906" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Saving results to: TestResults\GameplayRegression\Runs\20261115T060850750Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

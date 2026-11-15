@@ -113,3 +113,14 @@ must still belong to the lobby before native reacceptance. Own-feature 16 passes
 affected channels 26 passes and entry scenes 6 passes; compilation separately
 clean. See OnlineFrontendRecovery/Verification.md. Actual native reconnect/RTT
 requires the deferred paired run. Continue authoritative Draft then full Room.
+
+Regular online Draft is integrated with the authenticated native frontend and
+normal Draft scene: host deck/GK deal, owned rolls/picks/reordering, detached
+stats/rosters, lost-reply/rejoin continuity and both confirm. It uses 36 authored
+slots/four cards and suppresses local Draft save/random startup online. 76 new
+focused cases passed (40 authority,16 serialized,20 actual-scene), plus26 affected
+channels and16 recovery; compilation separately clean. Every case registered for
+Mac. See OnlineDraft/Verification.md. Frontend rules version is now v2.
+Next: Free/international variants, opening coin toss, full Room roster/save-free
+handoff and menus/substitutions/shootouts. Regular Draft currently ends at agreed
+room-ready state; no full match start is claimed. Exports predate this slice.
