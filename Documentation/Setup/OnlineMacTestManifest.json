@@ -284,6 +284,16 @@
     },
     {
       "mode": "editor",
+      "fixture": "OnlinePickupKeyEditorTests",
+      "categories": [
+        "OnlinePickupKey"
+      ],
+      "definition_sha256": "f83a3cda4508bc7ebc3b7aa29751dc63ad07fea1ca50a52cc8d6063decd84015",
+      "route": "native",
+      "source": "Assets/Editor/FeatureTests/OnlinePickupKey/OnlinePickupKeyEditorTests.cs"
+    },
+    {
+      "mode": "editor",
       "fixture": "OnlineRecoveryEditorTests",
       "categories": [
         "OnlineRecovery"
@@ -872,6 +882,16 @@
       "definition_sha256": "70227b6d20e90188f3d1b3bb85e267d90d491b45b7636a2d08504783518105cb",
       "route": "native",
       "source": "Assets/Tests/PlayMode/Features/OnlinePenalties/OnlineRoomPenaltyPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlinePickupKeyPlayModeTests",
+      "categories": [
+        "OnlinePickupKey"
+      ],
+      "definition_sha256": "720aaa74e9003d9526847ef54ecf704ae0da0e5bea89808faa4dee9fdf2c90c0",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlinePickupKey/OnlinePickupKeyPlayModeTests.cs"
     },
     {
       "mode": "playmode",
@@ -15639,6 +15659,381 @@
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
       "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T185807545Z/results.xml"
+    },
+    {
+      "id": "OnlinePickupKeyEditorTests.VCannotGuessAnUnpublishedPickup(\"off-board\")",
+      "feature": "OnlinePickupKey",
+      "mode": "editor",
+      "fixture": "OnlinePickupKeyEditorTests",
+      "method": "VCannotGuessAnUnpublishedPickup",
+      "parameters": [
+        "\"off-board\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T215225946Z/results.xml"
+    },
+    {
+      "id": "OnlinePickupKeyEditorTests.VCannotGuessAnUnpublishedPickup(\"unpublished\")",
+      "feature": "OnlinePickupKey",
+      "mode": "editor",
+      "fixture": "OnlinePickupKeyEditorTests",
+      "method": "VCannotGuessAnUnpublishedPickup",
+      "parameters": [
+        "\"unpublished\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T215225946Z/results.xml"
+    },
+    {
+      "id": "OnlinePickupKeyEditorTests.VCannotGuessAnUnpublishedPickup(\"pass\")",
+      "feature": "OnlinePickupKey",
+      "mode": "editor",
+      "fixture": "OnlinePickupKeyEditorTests",
+      "method": "VCannotGuessAnUnpublishedPickup",
+      "parameters": [
+        "\"pass\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T215225946Z/results.xml"
+    },
+    {
+      "id": "OnlinePickupKeyEditorTests.VCannotGuessAnUnpublishedPickup(\"dribble\")",
+      "feature": "OnlinePickupKey",
+      "mode": "editor",
+      "fixture": "OnlinePickupKeyEditorTests",
+      "method": "VCannotGuessAnUnpublishedPickup",
+      "parameters": [
+        "\"dribble\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T215225946Z/results.xml"
+    },
+    {
+      "id": "OnlinePickupKeyEditorTests.VCannotGuessAnUnpublishedPickup(\"selection\")",
+      "feature": "OnlinePickupKey",
+      "mode": "editor",
+      "fixture": "OnlinePickupKeyEditorTests",
+      "method": "VCannotGuessAnUnpublishedPickup",
+      "parameters": [
+        "\"selection\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T215225946Z/results.xml"
+    },
+    {
+      "id": "OnlinePickupKeyEditorTests.VCannotGuessAnUnpublishedPickup(\"ambiguous\")",
+      "feature": "OnlinePickupKey",
+      "mode": "editor",
+      "fixture": "OnlinePickupKeyEditorTests",
+      "method": "VCannotGuessAnUnpublishedPickup",
+      "parameters": [
+        "\"ambiguous\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T215225946Z/results.xml"
+    },
+    {
+      "id": "OnlinePickupKeyEditorTests.VRetainsPublishedKeeperClaim",
+      "feature": "OnlinePickupKey",
+      "mode": "editor",
+      "fixture": "OnlinePickupKeyEditorTests",
+      "method": "VRetainsPublishedKeeperClaim",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T215225946Z/results.xml"
+    },
+    {
+      "id": "OnlinePickupKeyEditorTests.VUsesPublishedBallDestination(\"attack\",1)",
+      "feature": "OnlinePickupKey",
+      "mode": "editor",
+      "fixture": "OnlinePickupKeyEditorTests",
+      "method": "VUsesPublishedBallDestination",
+      "parameters": [
+        "\"attack\",1"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T215225946Z/results.xml"
+    },
+    {
+      "id": "OnlinePickupKeyEditorTests.VUsesPublishedBallDestination(\"attack\",-1)",
+      "feature": "OnlinePickupKey",
+      "mode": "editor",
+      "fixture": "OnlinePickupKeyEditorTests",
+      "method": "VUsesPublishedBallDestination",
+      "parameters": [
+        "\"attack\",-1"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T215225946Z/results.xml"
+    },
+    {
+      "id": "OnlinePickupKeyEditorTests.VUsesPublishedBallDestination(\"defence\",1)",
+      "feature": "OnlinePickupKey",
+      "mode": "editor",
+      "fixture": "OnlinePickupKeyEditorTests",
+      "method": "VUsesPublishedBallDestination",
+      "parameters": [
+        "\"defence\",1"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T215225946Z/results.xml"
+    },
+    {
+      "id": "OnlinePickupKeyEditorTests.VUsesPublishedBallDestination(\"defence\",-1)",
+      "feature": "OnlinePickupKey",
+      "mode": "editor",
+      "fixture": "OnlinePickupKeyEditorTests",
+      "method": "VUsesPublishedBallDestination",
+      "parameters": [
+        "\"defence\",-1"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T215225946Z/results.xml"
+    },
+    {
+      "id": "OnlinePickupKeyEditorTests.VUsesPublishedBallDestination(\"two-for-two\",1)",
+      "feature": "OnlinePickupKey",
+      "mode": "editor",
+      "fixture": "OnlinePickupKeyEditorTests",
+      "method": "VUsesPublishedBallDestination",
+      "parameters": [
+        "\"two-for-two\",1"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T215225946Z/results.xml"
+    },
+    {
+      "id": "OnlinePickupKeyEditorTests.VUsesPublishedBallDestination(\"two-for-two\",-1)",
+      "feature": "OnlinePickupKey",
+      "mode": "editor",
+      "fixture": "OnlinePickupKeyEditorTests",
+      "method": "VUsesPublishedBallDestination",
+      "parameters": [
+        "\"two-for-two\",-1"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T215225946Z/results.xml"
+    },
+    {
+      "id": "OnlinePickupKeyPlayModeTests.ExcludedCollectorCannotUseV(1,False,False)",
+      "feature": "OnlinePickupKey",
+      "mode": "playmode",
+      "fixture": "OnlinePickupKeyPlayModeTests",
+      "method": "ExcludedCollectorCannotUseV",
+      "parameters": [
+        "1,False,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T215246159Z/results.xml"
+    },
+    {
+      "id": "OnlinePickupKeyPlayModeTests.ExcludedCollectorCannotUseV(1,False,True)",
+      "feature": "OnlinePickupKey",
+      "mode": "playmode",
+      "fixture": "OnlinePickupKeyPlayModeTests",
+      "method": "ExcludedCollectorCannotUseV",
+      "parameters": [
+        "1,False,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T215246159Z/results.xml"
+    },
+    {
+      "id": "OnlinePickupKeyPlayModeTests.ExcludedCollectorCannotUseV(1,True,False)",
+      "feature": "OnlinePickupKey",
+      "mode": "playmode",
+      "fixture": "OnlinePickupKeyPlayModeTests",
+      "method": "ExcludedCollectorCannotUseV",
+      "parameters": [
+        "1,True,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T215246159Z/results.xml"
+    },
+    {
+      "id": "OnlinePickupKeyPlayModeTests.ExcludedCollectorCannotUseV(1,True,True)",
+      "feature": "OnlinePickupKey",
+      "mode": "playmode",
+      "fixture": "OnlinePickupKeyPlayModeTests",
+      "method": "ExcludedCollectorCannotUseV",
+      "parameters": [
+        "1,True,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T215246159Z/results.xml"
+    },
+    {
+      "id": "OnlinePickupKeyPlayModeTests.ExcludedCollectorCannotUseV(-1,False,False)",
+      "feature": "OnlinePickupKey",
+      "mode": "playmode",
+      "fixture": "OnlinePickupKeyPlayModeTests",
+      "method": "ExcludedCollectorCannotUseV",
+      "parameters": [
+        "-1,False,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T215246159Z/results.xml"
+    },
+    {
+      "id": "OnlinePickupKeyPlayModeTests.ExcludedCollectorCannotUseV(-1,False,True)",
+      "feature": "OnlinePickupKey",
+      "mode": "playmode",
+      "fixture": "OnlinePickupKeyPlayModeTests",
+      "method": "ExcludedCollectorCannotUseV",
+      "parameters": [
+        "-1,False,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T215246159Z/results.xml"
+    },
+    {
+      "id": "OnlinePickupKeyPlayModeTests.ExcludedCollectorCannotUseV(-1,True,False)",
+      "feature": "OnlinePickupKey",
+      "mode": "playmode",
+      "fixture": "OnlinePickupKeyPlayModeTests",
+      "method": "ExcludedCollectorCannotUseV",
+      "parameters": [
+        "-1,True,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T215246159Z/results.xml"
+    },
+    {
+      "id": "OnlinePickupKeyPlayModeTests.ExcludedCollectorCannotUseV(-1,True,True)",
+      "feature": "OnlinePickupKey",
+      "mode": "playmode",
+      "fixture": "OnlinePickupKeyPlayModeTests",
+      "method": "ExcludedCollectorCannotUseV",
+      "parameters": [
+        "-1,True,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T215246159Z/results.xml"
+    },
+    {
+      "id": "OnlinePickupKeyPlayModeTests.RealPickupThroughV(1,False,False)",
+      "feature": "OnlinePickupKey",
+      "mode": "playmode",
+      "fixture": "OnlinePickupKeyPlayModeTests",
+      "method": "RealPickupThroughV",
+      "parameters": [
+        "1,False,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T215246159Z/results.xml"
+    },
+    {
+      "id": "OnlinePickupKeyPlayModeTests.RealPickupThroughV(1,False,True)",
+      "feature": "OnlinePickupKey",
+      "mode": "playmode",
+      "fixture": "OnlinePickupKeyPlayModeTests",
+      "method": "RealPickupThroughV",
+      "parameters": [
+        "1,False,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T215246159Z/results.xml"
+    },
+    {
+      "id": "OnlinePickupKeyPlayModeTests.RealPickupThroughV(1,True,False)",
+      "feature": "OnlinePickupKey",
+      "mode": "playmode",
+      "fixture": "OnlinePickupKeyPlayModeTests",
+      "method": "RealPickupThroughV",
+      "parameters": [
+        "1,True,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T215246159Z/results.xml"
+    },
+    {
+      "id": "OnlinePickupKeyPlayModeTests.RealPickupThroughV(1,True,True)",
+      "feature": "OnlinePickupKey",
+      "mode": "playmode",
+      "fixture": "OnlinePickupKeyPlayModeTests",
+      "method": "RealPickupThroughV",
+      "parameters": [
+        "1,True,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T215246159Z/results.xml"
+    },
+    {
+      "id": "OnlinePickupKeyPlayModeTests.RealPickupThroughV(-1,False,False)",
+      "feature": "OnlinePickupKey",
+      "mode": "playmode",
+      "fixture": "OnlinePickupKeyPlayModeTests",
+      "method": "RealPickupThroughV",
+      "parameters": [
+        "-1,False,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T215246159Z/results.xml"
+    },
+    {
+      "id": "OnlinePickupKeyPlayModeTests.RealPickupThroughV(-1,False,True)",
+      "feature": "OnlinePickupKey",
+      "mode": "playmode",
+      "fixture": "OnlinePickupKeyPlayModeTests",
+      "method": "RealPickupThroughV",
+      "parameters": [
+        "-1,False,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T215246159Z/results.xml"
+    },
+    {
+      "id": "OnlinePickupKeyPlayModeTests.RealPickupThroughV(-1,True,False)",
+      "feature": "OnlinePickupKey",
+      "mode": "playmode",
+      "fixture": "OnlinePickupKeyPlayModeTests",
+      "method": "RealPickupThroughV",
+      "parameters": [
+        "-1,True,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T215246159Z/results.xml"
+    },
+    {
+      "id": "OnlinePickupKeyPlayModeTests.RealPickupThroughV(-1,True,True)",
+      "feature": "OnlinePickupKey",
+      "mode": "playmode",
+      "fixture": "OnlinePickupKeyPlayModeTests",
+      "method": "RealPickupThroughV",
+      "parameters": [
+        "-1,True,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T215246159Z/results.xml"
     }
   ]
 }

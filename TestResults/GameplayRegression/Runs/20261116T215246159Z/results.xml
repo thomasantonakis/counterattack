@@ -1,0 +1,558 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="16" result="Passed" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 21:52:46Z" end-time="2026-11-16 21:53:00Z" duration="14.4329437">
+  <test-suite type="TestSuite" id="3009" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1665" result="Passed" start-time="2026-11-16 21:52:46Z" end-time="2026-11-16 21:53:00Z" duration="14.432944" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="3006" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1665" result="Passed" start-time="2026-11-16 21:52:46Z" end-time="2026-11-16 21:53:00Z" duration="14.393077" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12156" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="2126" name="OnlinePickupKeyPlayModeTests" fullname="OnlinePickupKeyPlayModeTests" classname="OnlinePickupKeyPlayModeTests" runstate="Runnable" testcasecount="16" result="Passed" start-time="2026-11-16 21:52:46Z" end-time="2026-11-16 21:53:00Z" duration="14.382138" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlinePickupKey" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="2144" name="ExcludedCollectorCannotUseV" fullname="OnlinePickupKeyPlayModeTests.ExcludedCollectorCannotUseV" classname="OnlinePickupKeyPlayModeTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-11-16 21:52:46Z" end-time="2026-11-16 21:52:53Z" duration="7.111429" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="2136" name="ExcludedCollectorCannotUseV(1,False,False)" fullname="OnlinePickupKeyPlayModeTests.ExcludedCollectorCannotUseV(1,False,False)" methodname="ExcludedCollectorCannotUseV" classname="OnlinePickupKeyPlayModeTests" runstate="Runnable" seed="1133560593" result="Passed" start-time="2026-11-16 21:52:46Z" end-time="2026-11-16 21:52:47Z" duration="1.371129" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: False.
+Attacking team has possession: False.
+Offside assessment preserved (end_movement_phase) while ball remains uncollected. Requested context: end_movement_phase.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Online pickup collector to HandleTokenSelection
+Invalid hex clicked. All highlights cleared.
+]]></output>
+          </test-case>
+          <test-case id="2137" name="ExcludedCollectorCannotUseV(1,False,True)" fullname="OnlinePickupKeyPlayModeTests.ExcludedCollectorCannotUseV(1,False,True)" methodname="ExcludedCollectorCannotUseV" classname="OnlinePickupKeyPlayModeTests" runstate="Runnable" seed="538503226" result="Passed" start-time="2026-11-16 21:52:47Z" end-time="2026-11-16 21:52:48Z" duration="0.826114" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: False.
+Online pickup collector took the set piece and cannot be the next player to touch the ball.
+Attacking team has possession: False.
+Offside assessment preserved (end_movement_phase) while ball remains uncollected. Requested context: end_movement_phase.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Online pickup collector to HandleTokenSelection
+Invalid hex clicked. All highlights cleared.
+]]></output>
+          </test-case>
+          <test-case id="2138" name="ExcludedCollectorCannotUseV(1,True,False)" fullname="OnlinePickupKeyPlayModeTests.ExcludedCollectorCannotUseV(1,True,False)" methodname="ExcludedCollectorCannotUseV" classname="OnlinePickupKeyPlayModeTests" runstate="Runnable" seed="61291139" result="Passed" start-time="2026-11-16 21:52:48Z" end-time="2026-11-16 21:52:49Z" duration="0.806254" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: False.
+Attacking team has possession: False.
+Offside assessment preserved (end_movement_phase) while ball remains uncollected. Requested context: end_movement_phase.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Online pickup collector to HandleTokenSelection
+Invalid hex clicked. All highlights cleared.
+]]></output>
+          </test-case>
+          <test-case id="2139" name="ExcludedCollectorCannotUseV(1,True,True)" fullname="OnlinePickupKeyPlayModeTests.ExcludedCollectorCannotUseV(1,True,True)" methodname="ExcludedCollectorCannotUseV" classname="OnlinePickupKeyPlayModeTests" runstate="Runnable" seed="270469644" result="Passed" start-time="2026-11-16 21:52:49Z" end-time="2026-11-16 21:52:50Z" duration="0.816900" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: False.
+Online pickup collector took the set piece and cannot be the next player to touch the ball.
+Attacking team has possession: False.
+Offside assessment preserved (end_movement_phase) while ball remains uncollected. Requested context: end_movement_phase.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Online pickup collector to HandleTokenSelection
+Invalid hex clicked. All highlights cleared.
+]]></output>
+          </test-case>
+          <test-case id="2140" name="ExcludedCollectorCannotUseV(-1,False,False)" fullname="OnlinePickupKeyPlayModeTests.ExcludedCollectorCannotUseV(-1,False,False)" methodname="ExcludedCollectorCannotUseV" classname="OnlinePickupKeyPlayModeTests" runstate="Runnable" seed="941764120" result="Passed" start-time="2026-11-16 21:52:50Z" end-time="2026-11-16 21:52:50Z" duration="0.842047" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: False.
+Attacking team has possession: False.
+Offside assessment preserved (end_movement_phase) while ball remains uncollected. Requested context: end_movement_phase.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Online pickup collector to HandleTokenSelection
+Invalid hex clicked. All highlights cleared.
+]]></output>
+          </test-case>
+          <test-case id="2141" name="ExcludedCollectorCannotUseV(-1,False,True)" fullname="OnlinePickupKeyPlayModeTests.ExcludedCollectorCannotUseV(-1,False,True)" methodname="ExcludedCollectorCannotUseV" classname="OnlinePickupKeyPlayModeTests" runstate="Runnable" seed="285124874" result="Passed" start-time="2026-11-16 21:52:50Z" end-time="2026-11-16 21:52:51Z" duration="0.811266" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: False.
+Online pickup collector took the set piece and cannot be the next player to touch the ball.
+Attacking team has possession: False.
+Offside assessment preserved (end_movement_phase) while ball remains uncollected. Requested context: end_movement_phase.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Online pickup collector to HandleTokenSelection
+Invalid hex clicked. All highlights cleared.
+]]></output>
+          </test-case>
+          <test-case id="2142" name="ExcludedCollectorCannotUseV(-1,True,False)" fullname="OnlinePickupKeyPlayModeTests.ExcludedCollectorCannotUseV(-1,True,False)" methodname="ExcludedCollectorCannotUseV" classname="OnlinePickupKeyPlayModeTests" runstate="Runnable" seed="1855895838" result="Passed" start-time="2026-11-16 21:52:51Z" end-time="2026-11-16 21:52:52Z" duration="0.794495" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: False.
+Attacking team has possession: False.
+Offside assessment preserved (end_movement_phase) while ball remains uncollected. Requested context: end_movement_phase.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Online pickup collector to HandleTokenSelection
+Invalid hex clicked. All highlights cleared.
+]]></output>
+          </test-case>
+          <test-case id="2143" name="ExcludedCollectorCannotUseV(-1,True,True)" fullname="OnlinePickupKeyPlayModeTests.ExcludedCollectorCannotUseV(-1,True,True)" methodname="ExcludedCollectorCannotUseV" classname="OnlinePickupKeyPlayModeTests" runstate="Runnable" seed="1755333737" result="Passed" start-time="2026-11-16 21:52:52Z" end-time="2026-11-16 21:52:53Z" duration="0.801350" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: False.
+Online pickup collector took the set piece and cannot be the next player to touch the ball.
+Attacking team has possession: False.
+Offside assessment preserved (end_movement_phase) while ball remains uncollected. Requested context: end_movement_phase.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Online pickup collector to HandleTokenSelection
+Invalid hex clicked. All highlights cleared.
+]]></output>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="2135" name="RealPickupThroughV" fullname="OnlinePickupKeyPlayModeTests.RealPickupThroughV" classname="OnlinePickupKeyPlayModeTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-11-16 21:52:53Z" end-time="2026-11-16 21:53:00Z" duration="7.256368" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="2127" name="RealPickupThroughV(1,False,False)" fullname="OnlinePickupKeyPlayModeTests.RealPickupThroughV(1,False,False)" methodname="RealPickupThroughV" classname="OnlinePickupKeyPlayModeTests" runstate="Runnable" seed="377521167" result="Passed" start-time="2026-11-16 21:52:53Z" end-time="2026-11-16 21:52:54Z" duration="0.948782" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: False.
+Attacking team has possession: False.
+Offside assessment preserved (end_movement_phase) while ball remains uncollected. Requested context: end_movement_phase.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Online pickup collector to HandleTokenSelection
+Passing Hex 20,19 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 20,19
+Attacking team has possession: True.
+[Game Log] Online pickup collector (Fixture Away) moves 1 paces
+isDribblerRunning set to true because someone picked up the ball.
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Online pickup collector, IsDribbler: True, remainingDribblerPace: 5
+Set LastTokenToTouchTheBallOnPurpose to Online pickup collector
+Offside assessment cleared: ball_collection.
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+remainingDribblerPace: 4, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Online pickup collector Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Skipping ZOI steal attempts because the dribbler has just picked up a free ball, not dribbled it into a defender's ZOI.
+Dribbler has 4 remaining Pace, Highlighting 1 Hex, isAwaitingHexDestination
+Dribbler is running. Forfeiting remaining pace.
+Advancing Movement Phase
+]]></output>
+          </test-case>
+          <test-case id="2128" name="RealPickupThroughV(1,False,True)" fullname="OnlinePickupKeyPlayModeTests.RealPickupThroughV(1,False,True)" methodname="RealPickupThroughV" classname="OnlinePickupKeyPlayModeTests" runstate="Runnable" seed="254312772" result="Passed" start-time="2026-11-16 21:52:54Z" end-time="2026-11-16 21:52:55Z" duration="0.904110" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: False.
+Attacking team has possession: False.
+Offside assessment preserved (end_movement_phase) while ball remains uncollected. Requested context: end_movement_phase.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Passing Online pickup collector to HandleTokenSelection
+A Valid Defender was selected: Online pickup collector
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Passing Hex 20,19 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 20,19
+Attacking team has possession: False.
+[Game Log] Online pickup collector (Fixture Home) moves 1 paces
+isDribblerRunning set to true because someone picked up the ball.
+isMovingTokenAttacker: False
+Defender picks up the loose ball
+Defender has picked up the loose ball!
+[Expected Stats] Online pickup collector records xRecovery 1 on loose against Away recovering player
+🔍 Connected Token Found: Away recovering player
+[Game Log] Online pickup collector (Fixture Home) wins possession by picking up a loose ball
+Possession changed! Home now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Offside assessment cleared: ball_collection.
+Movement phase has been reset.
+Movement phase is over.
+Offside assessed (any_other_scenario): line x=-9, tokens=none.
+]]></output>
+          </test-case>
+          <test-case id="2129" name="RealPickupThroughV(1,True,False)" fullname="OnlinePickupKeyPlayModeTests.RealPickupThroughV(1,True,False)" methodname="RealPickupThroughV" classname="OnlinePickupKeyPlayModeTests" runstate="Runnable" seed="212008510" result="Passed" start-time="2026-11-16 21:52:55Z" end-time="2026-11-16 21:52:56Z" duration="0.878497" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: False.
+Attacking team has possession: False.
+Offside assessment preserved (end_movement_phase) while ball remains uncollected. Requested context: end_movement_phase.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Online pickup collector to HandleTokenSelection
+Passing Hex 20,19 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 20,19
+Attacking team has possession: True.
+[Game Log] Online pickup collector (Fixture Home) moves 1 paces
+isDribblerRunning set to true because someone picked up the ball.
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Online pickup collector, IsDribbler: True, remainingDribblerPace: 5
+Set LastTokenToTouchTheBallOnPurpose to Online pickup collector
+Offside assessment cleared: ball_collection.
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+remainingDribblerPace: 4, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Online pickup collector Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Skipping ZOI steal attempts because the dribbler has just picked up a free ball, not dribbled it into a defender's ZOI.
+Dribbler has 4 remaining Pace, Highlighting 1 Hex, isAwaitingHexDestination
+Dribbler is running. Forfeiting remaining pace.
+Advancing Movement Phase
+]]></output>
+          </test-case>
+          <test-case id="2130" name="RealPickupThroughV(1,True,True)" fullname="OnlinePickupKeyPlayModeTests.RealPickupThroughV(1,True,True)" methodname="RealPickupThroughV" classname="OnlinePickupKeyPlayModeTests" runstate="Runnable" seed="1949475430" result="Passed" start-time="2026-11-16 21:52:56Z" end-time="2026-11-16 21:52:57Z" duration="0.892080" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: False.
+Attacking team has possession: False.
+Offside assessment preserved (end_movement_phase) while ball remains uncollected. Requested context: end_movement_phase.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Passing Online pickup collector to HandleTokenSelection
+A Valid Defender was selected: Online pickup collector
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Passing Hex 20,19 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 20,19
+Attacking team has possession: False.
+[Game Log] Online pickup collector (Fixture Away) moves 1 paces
+isDribblerRunning set to true because someone picked up the ball.
+isMovingTokenAttacker: False
+Defender picks up the loose ball
+Defender has picked up the loose ball!
+[Expected Stats] Online pickup collector records xRecovery 1 on loose against Home carrier
+🔍 Connected Token Found: Home carrier
+[Game Log] Online pickup collector (Fixture Away) wins possession by picking up a loose ball
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Offside assessment cleared: ball_collection.
+Movement phase has been reset.
+Movement phase is over.
+Offside assessed (any_other_scenario): line x=-9, tokens=none.
+]]></output>
+          </test-case>
+          <test-case id="2131" name="RealPickupThroughV(-1,False,False)" fullname="OnlinePickupKeyPlayModeTests.RealPickupThroughV(-1,False,False)" methodname="RealPickupThroughV" classname="OnlinePickupKeyPlayModeTests" runstate="Runnable" seed="1528699663" result="Passed" start-time="2026-11-16 21:52:57Z" end-time="2026-11-16 21:52:57Z" duration="0.927508" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: False.
+Attacking team has possession: False.
+Offside assessment preserved (end_movement_phase) while ball remains uncollected. Requested context: end_movement_phase.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Online pickup collector to HandleTokenSelection
+Passing Hex 30,19 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 30,19
+Attacking team has possession: True.
+[Game Log] Online pickup collector (Fixture Away) moves 1 paces
+isDribblerRunning set to true because someone picked up the ball.
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Online pickup collector, IsDribbler: True, remainingDribblerPace: 5
+Set LastTokenToTouchTheBallOnPurpose to Online pickup collector
+Offside assessment cleared: ball_collection.
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+remainingDribblerPace: 4, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Online pickup collector Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Skipping ZOI steal attempts because the dribbler has just picked up a free ball, not dribbled it into a defender's ZOI.
+Dribbler has 4 remaining Pace, Highlighting 1 Hex, isAwaitingHexDestination
+Dribbler is running. Forfeiting remaining pace.
+Advancing Movement Phase
+]]></output>
+          </test-case>
+          <test-case id="2132" name="RealPickupThroughV(-1,False,True)" fullname="OnlinePickupKeyPlayModeTests.RealPickupThroughV(-1,False,True)" methodname="RealPickupThroughV" classname="OnlinePickupKeyPlayModeTests" runstate="Runnable" seed="1997308125" result="Passed" start-time="2026-11-16 21:52:57Z" end-time="2026-11-16 21:52:58Z" duration="0.874016" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: False.
+Attacking team has possession: False.
+Offside assessment preserved (end_movement_phase) while ball remains uncollected. Requested context: end_movement_phase.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Passing Online pickup collector to HandleTokenSelection
+A Valid Defender was selected: Online pickup collector
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Passing Hex 30,19 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 30,19
+Attacking team has possession: False.
+[Game Log] Online pickup collector (Fixture Home) moves 1 paces
+isDribblerRunning set to true because someone picked up the ball.
+isMovingTokenAttacker: False
+Defender picks up the loose ball
+Defender has picked up the loose ball!
+[Expected Stats] Online pickup collector records xRecovery 1 on loose against Away recovering player
+🔍 Connected Token Found: Away recovering player
+[Game Log] Online pickup collector (Fixture Home) wins possession by picking up a loose ball
+Possession changed! Home now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Offside assessment cleared: ball_collection.
+Movement phase has been reset.
+Movement phase is over.
+Offside assessed (any_other_scenario): line x=9, tokens=none.
+]]></output>
+          </test-case>
+          <test-case id="2133" name="RealPickupThroughV(-1,True,False)" fullname="OnlinePickupKeyPlayModeTests.RealPickupThroughV(-1,True,False)" methodname="RealPickupThroughV" classname="OnlinePickupKeyPlayModeTests" runstate="Runnable" seed="1062549430" result="Passed" start-time="2026-11-16 21:52:58Z" end-time="2026-11-16 21:52:59Z" duration="0.861785" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: False.
+Attacking team has possession: False.
+Offside assessment preserved (end_movement_phase) while ball remains uncollected. Requested context: end_movement_phase.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Online pickup collector to HandleTokenSelection
+Passing Hex 30,19 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 30,19
+Attacking team has possession: True.
+[Game Log] Online pickup collector (Fixture Home) moves 1 paces
+isDribblerRunning set to true because someone picked up the ball.
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Online pickup collector, IsDribbler: True, remainingDribblerPace: 5
+Set LastTokenToTouchTheBallOnPurpose to Online pickup collector
+Offside assessment cleared: ball_collection.
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+remainingDribblerPace: 4, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Online pickup collector Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Skipping ZOI steal attempts because the dribbler has just picked up a free ball, not dribbled it into a defender's ZOI.
+Dribbler has 4 remaining Pace, Highlighting 1 Hex, isAwaitingHexDestination
+Dribbler is running. Forfeiting remaining pace.
+Advancing Movement Phase
+]]></output>
+          </test-case>
+          <test-case id="2134" name="RealPickupThroughV(-1,True,True)" fullname="OnlinePickupKeyPlayModeTests.RealPickupThroughV(-1,True,True)" methodname="RealPickupThroughV" classname="OnlinePickupKeyPlayModeTests" runstate="Runnable" seed="545330336" result="Passed" start-time="2026-11-16 21:52:59Z" end-time="2026-11-16 21:53:00Z" duration="0.939816" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: False.
+Attacking team has possession: False.
+Offside assessment preserved (end_movement_phase) while ball remains uncollected. Requested context: end_movement_phase.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Passing Online pickup collector to HandleTokenSelection
+A Valid Defender was selected: Online pickup collector
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Passing Hex 30,19 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 30,19
+Attacking team has possession: False.
+[Game Log] Online pickup collector (Fixture Away) moves 1 paces
+isDribblerRunning set to true because someone picked up the ball.
+isMovingTokenAttacker: False
+Defender picks up the loose ball
+Defender has picked up the loose ball!
+[Expected Stats] Online pickup collector records xRecovery 1 on loose against Home carrier
+🔍 Connected Token Found: Home carrier
+[Game Log] Online pickup collector (Fixture Away) wins possession by picking up a loose ball
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Offside assessment cleared: ball_collection.
+Movement phase has been reset.
+Movement phase is over.
+Offside assessed (any_other_scenario): line x=9, tokens=none.
+Saving results to: TestResults\GameplayRegression\Runs\20261116T215246159Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

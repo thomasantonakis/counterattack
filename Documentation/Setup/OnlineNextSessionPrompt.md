@@ -603,3 +603,9 @@ outside-box keepers also retain movement alongside dive/foot/stand. Sixteen new
 native cases and 41 selected affected cases passed. See OnlineStationaryDefender/
 Verification.md. Room is now v16, wire v7. Exports still contain v14 and will be
 refreshed with the pickup/header batch. Continue the source input/decision audit.
+
+V now selects the existing published legal ball-pickup destination. Twenty-nine
+new native cases and 89 affected shortcut cases passed, including real attacking/
+defensive possession, recovery statistics, dribble continuation and prohibited
+collector/next-touch cases. See OnlinePickupKey/Verification.md. Room remains
+v16/wire v7. Continue header select-all and local input audit, then refresh exports.

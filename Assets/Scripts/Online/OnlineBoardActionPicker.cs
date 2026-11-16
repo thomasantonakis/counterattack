@@ -47,7 +47,9 @@ namespace CounterAttack.Online
                 case KeyCode.K:return OneOf(state,"keeper.final-third","final-third.kick");
                 case KeyCode.H:return OneOf(state,"header.free","header.pass","header.backpass.hands","keeper.pickup.hands");
                 case KeyCode.G:return available("high.keeper.stay");
-                case KeyCode.V:return available("long.keeper.claim");
+                case KeyCode.V:return OneOf(state,"long.keeper.claim",state?.ballOnBoard==true
+                    && (state.stage=="movement.attack.target" || state.stage=="movement.defence.target" || state.stage=="movement.two-for-two.target")
+                    ?OnlineGroundPassAuthority.MovementTargetAction(state.ballX,state.ballZ):null);
                 case KeyCode.A:return available("foul.advantage");
                 case KeyCode.X:return OneOf(state,"movement.snapshot.decline","dribble.finish","shot.cancel","shot.decline","movement.forfeit",
                     "high.skip","high.keeper.decline","ftp.skip","long.keeper.decline","keeper.stay","set-piece.skip","duel.stay","dribble.decline-nutmeg");
