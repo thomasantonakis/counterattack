@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="4" result="Failed(Child)" total="4" passed="0" failed="4" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 23:33:19Z" end-time="2026-11-16 23:33:53Z" duration="34.341987">
+  <test-suite type="TestSuite" id="3157" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1797" result="Failed" site="Child" start-time="2026-11-16 23:33:19Z" end-time="2026-11-16 23:33:53Z" duration="34.341987" total="4" passed="0" failed="4" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="3154" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1797" result="Failed" site="Child" start-time="2026-11-16 23:33:19Z" end-time="2026-11-16 23:33:53Z" duration="34.306382" total="4" passed="0" failed="4" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12156" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestFixture" id="2274" name="OnlinePublicationCadencePlayModeTests" fullname="OnlinePublicationCadencePlayModeTests" classname="OnlinePublicationCadencePlayModeTests" runstate="Runnable" testcasecount="16" result="Failed" site="Child" start-time="2026-11-16 23:33:19Z" end-time="2026-11-16 23:33:53Z" duration="34.293441" total="4" passed="0" failed="4" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlinePublicationCadence" />
+        </properties>
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="ParameterizedMethod" id="2292" name="ClockRefreshPreservesCommand" fullname="OnlinePublicationCadencePlayModeTests.ClockRefreshPreservesCommand" classname="OnlinePublicationCadencePlayModeTests" runstate="Runnable" testcasecount="4" result="Failed" site="Child" start-time="2026-11-16 23:33:19Z" end-time="2026-11-16 23:33:53Z" duration="34.272780" total="4" passed="0" failed="4" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-case id="2288" name="ClockRefreshPreservesCommand(16,False)" fullname="OnlinePublicationCadencePlayModeTests.ClockRefreshPreservesCommand(16,False)" methodname="ClockRefreshPreservesCommand" classname="OnlinePublicationCadencePlayModeTests" runstate="Runnable" seed="1659621303" result="Failed" start-time="2026-11-16 23:33:19Z" end-time="2026-11-16 23:33:29Z" duration="9.576290" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Host command captured before clock refresh remains legal
+  Expected: Accepted
+  But was:  SequenceConflict
+]]></message>
+              <stack-trace><![CDATA[at OnlineFullRoomSceneFixture+<RunPublicationCadence>d__34.MoveNext () [0x00ca1] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlinePublicationCadence\OnlinePublicationCadenceFixture.cs:106
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[[TokenKitCatalog] Loading kits JSON from Resources path 'Kits/kit-picker-v1-11-supported' (asset: Assets/Resources/Kits/kit-picker-v1-11-supported.json).
+[TokenKitCatalog] Found kits JSON TextAsset 'kit-picker-v1-11-supported' at Resources path 'Kits/kit-picker-v1-11-supported' (32277 characters).
+[TokenKitCatalog] Parsed 101 kit preset(s) from Resources path 'Kits/kit-picker-v1-11-supported'.
+[TokenKitCatalog] Active kit catalog contains 101 kit preset(s).
+MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584929049224
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+1. Aziz took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+]]></output>
+          </test-case>
+          <test-case id="2289" name="ClockRefreshPreservesCommand(16,True)" fullname="OnlinePublicationCadencePlayModeTests.ClockRefreshPreservesCommand(16,True)" methodname="ClockRefreshPreservesCommand" classname="OnlinePublicationCadencePlayModeTests" runstate="Runnable" seed="1721599350" result="Failed" start-time="2026-11-16 23:33:29Z" end-time="2026-11-16 23:33:37Z" duration="8.172546" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Host command captured before clock refresh remains legal
+  Expected: Accepted
+  But was:  SequenceConflict
+]]></message>
+              <stack-trace><![CDATA[at OnlineFullRoomSceneFixture+<RunPublicationCadence>d__34.MoveNext () [0x00ca1] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlinePublicationCadence\OnlinePublicationCadenceFixture.cs:106
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584929112862
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+1. Aziz took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+]]></output>
+          </test-case>
+          <test-case id="2290" name="ClockRefreshPreservesCommand(18,False)" fullname="OnlinePublicationCadencePlayModeTests.ClockRefreshPreservesCommand(18,False)" methodname="ClockRefreshPreservesCommand" classname="OnlinePublicationCadencePlayModeTests" runstate="Runnable" seed="1119604993" result="Failed" start-time="2026-11-16 23:33:37Z" end-time="2026-11-16 23:33:45Z" duration="8.206721" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Host command captured before clock refresh remains legal
+  Expected: Accepted
+  But was:  SequenceConflict
+]]></message>
+              <stack-trace><![CDATA[at OnlineFullRoomSceneFixture+<RunPublicationCadence>d__34.MoveNext () [0x00ca1] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlinePublicationCadence\OnlinePublicationCadenceFixture.cs:106
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584929176500
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+1. Aziz took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+]]></output>
+          </test-case>
+          <test-case id="2291" name="ClockRefreshPreservesCommand(18,True)" fullname="OnlinePublicationCadencePlayModeTests.ClockRefreshPreservesCommand(18,True)" methodname="ClockRefreshPreservesCommand" classname="OnlinePublicationCadencePlayModeTests" runstate="Runnable" seed="1566324648" result="Failed" start-time="2026-11-16 23:33:45Z" end-time="2026-11-16 23:33:53Z" duration="8.280383" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Host command captured before clock refresh remains legal
+  Expected: Accepted
+  But was:  SequenceConflict
+]]></message>
+              <stack-trace><![CDATA[at OnlineFullRoomSceneFixture+<RunPublicationCadence>d__34.MoveNext () [0x00ca1] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlinePublicationCadence\OnlinePublicationCadenceFixture.cs:106
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584929240138
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+1. Aziz took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+Saving results to: TestResults\GameplayRegression\Runs\20261116T233319353Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

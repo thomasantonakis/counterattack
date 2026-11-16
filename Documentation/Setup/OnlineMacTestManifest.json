@@ -935,6 +935,16 @@
     },
     {
       "mode": "playmode",
+      "fixture": "OnlinePublicationCadencePlayModeTests",
+      "categories": [
+        "OnlinePublicationCadence"
+      ],
+      "definition_sha256": "895bb315de7666098641eb17457b7df6fa21e616faa106b6803861639c240be1",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlinePublicationCadence/OnlinePublicationCadencePlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
       "fixture": "OnlineRecoveryPlayModeTests",
       "categories": [
         "OnlineRecovery"
@@ -17604,6 +17614,214 @@
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
       "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T231842371Z/results.xml"
+    },
+    {
+      "id": "OnlinePublicationCadencePlayModeTests.ReliableHostPublication(16,False,\"selection\")",
+      "feature": "OnlinePublicationCadence",
+      "mode": "playmode",
+      "fixture": "OnlinePublicationCadencePlayModeTests",
+      "method": "ReliableHostPublication",
+      "parameters": [
+        "16,False,\"selection\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T232933699Z/results.xml"
+    },
+    {
+      "id": "OnlinePublicationCadencePlayModeTests.ReliableHostPublication(16,False,\"pause\")",
+      "feature": "OnlinePublicationCadence",
+      "mode": "playmode",
+      "fixture": "OnlinePublicationCadencePlayModeTests",
+      "method": "ReliableHostPublication",
+      "parameters": [
+        "16,False,\"pause\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T232933699Z/results.xml"
+    },
+    {
+      "id": "OnlinePublicationCadencePlayModeTests.ReliableHostPublication(16,False,\"heartbeat\")",
+      "feature": "OnlinePublicationCadence",
+      "mode": "playmode",
+      "fixture": "OnlinePublicationCadencePlayModeTests",
+      "method": "ReliableHostPublication",
+      "parameters": [
+        "16,False,\"heartbeat\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T232933699Z/results.xml"
+    },
+    {
+      "id": "OnlinePublicationCadencePlayModeTests.ReliableHostPublication(16,True,\"selection\")",
+      "feature": "OnlinePublicationCadence",
+      "mode": "playmode",
+      "fixture": "OnlinePublicationCadencePlayModeTests",
+      "method": "ReliableHostPublication",
+      "parameters": [
+        "16,True,\"selection\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T232933699Z/results.xml"
+    },
+    {
+      "id": "OnlinePublicationCadencePlayModeTests.ReliableHostPublication(16,True,\"pause\")",
+      "feature": "OnlinePublicationCadence",
+      "mode": "playmode",
+      "fixture": "OnlinePublicationCadencePlayModeTests",
+      "method": "ReliableHostPublication",
+      "parameters": [
+        "16,True,\"pause\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T232933699Z/results.xml"
+    },
+    {
+      "id": "OnlinePublicationCadencePlayModeTests.ReliableHostPublication(16,True,\"heartbeat\")",
+      "feature": "OnlinePublicationCadence",
+      "mode": "playmode",
+      "fixture": "OnlinePublicationCadencePlayModeTests",
+      "method": "ReliableHostPublication",
+      "parameters": [
+        "16,True,\"heartbeat\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T232933699Z/results.xml"
+    },
+    {
+      "id": "OnlinePublicationCadencePlayModeTests.ReliableHostPublication(18,False,\"selection\")",
+      "feature": "OnlinePublicationCadence",
+      "mode": "playmode",
+      "fixture": "OnlinePublicationCadencePlayModeTests",
+      "method": "ReliableHostPublication",
+      "parameters": [
+        "18,False,\"selection\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T232933699Z/results.xml"
+    },
+    {
+      "id": "OnlinePublicationCadencePlayModeTests.ReliableHostPublication(18,False,\"pause\")",
+      "feature": "OnlinePublicationCadence",
+      "mode": "playmode",
+      "fixture": "OnlinePublicationCadencePlayModeTests",
+      "method": "ReliableHostPublication",
+      "parameters": [
+        "18,False,\"pause\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T232933699Z/results.xml"
+    },
+    {
+      "id": "OnlinePublicationCadencePlayModeTests.ReliableHostPublication(18,False,\"heartbeat\")",
+      "feature": "OnlinePublicationCadence",
+      "mode": "playmode",
+      "fixture": "OnlinePublicationCadencePlayModeTests",
+      "method": "ReliableHostPublication",
+      "parameters": [
+        "18,False,\"heartbeat\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T232933699Z/results.xml"
+    },
+    {
+      "id": "OnlinePublicationCadencePlayModeTests.ReliableHostPublication(18,True,\"selection\")",
+      "feature": "OnlinePublicationCadence",
+      "mode": "playmode",
+      "fixture": "OnlinePublicationCadencePlayModeTests",
+      "method": "ReliableHostPublication",
+      "parameters": [
+        "18,True,\"selection\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T232933699Z/results.xml"
+    },
+    {
+      "id": "OnlinePublicationCadencePlayModeTests.ReliableHostPublication(18,True,\"pause\")",
+      "feature": "OnlinePublicationCadence",
+      "mode": "playmode",
+      "fixture": "OnlinePublicationCadencePlayModeTests",
+      "method": "ReliableHostPublication",
+      "parameters": [
+        "18,True,\"pause\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T232933699Z/results.xml"
+    },
+    {
+      "id": "OnlinePublicationCadencePlayModeTests.ReliableHostPublication(18,True,\"heartbeat\")",
+      "feature": "OnlinePublicationCadence",
+      "mode": "playmode",
+      "fixture": "OnlinePublicationCadencePlayModeTests",
+      "method": "ReliableHostPublication",
+      "parameters": [
+        "18,True,\"heartbeat\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T232933699Z/results.xml"
+    },
+    {
+      "id": "OnlinePublicationCadencePlayModeTests.ClockRefreshPreservesCommand(16,False)",
+      "feature": "OnlinePublicationCadence",
+      "mode": "playmode",
+      "fixture": "OnlinePublicationCadencePlayModeTests",
+      "method": "ClockRefreshPreservesCommand",
+      "parameters": [
+        "16,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T233434438Z/results.xml"
+    },
+    {
+      "id": "OnlinePublicationCadencePlayModeTests.ClockRefreshPreservesCommand(16,True)",
+      "feature": "OnlinePublicationCadence",
+      "mode": "playmode",
+      "fixture": "OnlinePublicationCadencePlayModeTests",
+      "method": "ClockRefreshPreservesCommand",
+      "parameters": [
+        "16,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T233434438Z/results.xml"
+    },
+    {
+      "id": "OnlinePublicationCadencePlayModeTests.ClockRefreshPreservesCommand(18,False)",
+      "feature": "OnlinePublicationCadence",
+      "mode": "playmode",
+      "fixture": "OnlinePublicationCadencePlayModeTests",
+      "method": "ClockRefreshPreservesCommand",
+      "parameters": [
+        "18,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T233434438Z/results.xml"
+    },
+    {
+      "id": "OnlinePublicationCadencePlayModeTests.ClockRefreshPreservesCommand(18,True)",
+      "feature": "OnlinePublicationCadence",
+      "mode": "playmode",
+      "fixture": "OnlinePublicationCadencePlayModeTests",
+      "method": "ClockRefreshPreservesCommand",
+      "parameters": [
+        "18,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T233434438Z/results.xml"
     }
   ]
 }

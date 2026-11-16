@@ -642,3 +642,5 @@ exports and packaged local/login checks refreshed at 23:23-23:26 UTC November 16
 Room remains v18/wire v7. Each new case has a separate deferred Mac manifest entry.
 Continue the remaining frontend/full-match audit and transport verification.
 Paired testing and actual internet latency remain deferred.
+
+Reliable publication timing now has 16 new native passes: same-phase reselection, stale commands, immediate pause/resume, idle heartbeat and 250 ms clock-only refreshes preserving valid commands. No runtime change was needed. See OnlinePublicationCadence/Verification.md. All new cases are separately registered for the deferred Mac run. Next: guest visual motion smoothing and remaining full-match audit.
