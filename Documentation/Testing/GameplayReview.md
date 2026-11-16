@@ -324,3 +324,13 @@ or revert all earlier commits as if they were six migration bug fixes.
 - Full history, failed artifacts and per-original mappings remain in
   [MorningReview.md](MorningReview.md), [GameplayRegressionMigration.md](GameplayRegressionMigration.md)
   and [LegacyScenarioInventory.md](LegacyScenarioInventory.md).
+
+- Stationary outfield tackle X (2026-11-17, unresolved; no rule change made):
+  the physical X guard permits an attempt while isWaitingForTackleDecisionWithoutMoving
+  is true. ForfeitTeamMovementPhase sets defendersMoved to maxDefenderMoves - 1,
+  but AdvanceMovementPhase then waits for the outstanding choice. Should X cancel
+  that choice and forfeit immediately, defer the phase forfeit until the choice is
+  answered, or be unavailable? Preserve the existing online outfield offer and the
+  keeper dialog's previous lack of a forfeit offer until this is clarified.
+  Initial nutmeg X is separate and explicitly blocked by its full source key guard;
+  native tests preserve that rule. OnlinePreMoveChoices/Verification.md records coverage.

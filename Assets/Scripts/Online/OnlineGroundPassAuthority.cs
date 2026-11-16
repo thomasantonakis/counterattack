@@ -345,6 +345,9 @@ namespace CounterAttack.Online
                 if(match.longBallManager?.isAvailable == true) AddAdditional(actions,LongStartAction,()=>match.TriggerLongPass());
                 if(canHigh)AddAdditional(actions,HighStartAction,()=>match.TriggerHighPass());
             }
+            // Action-switch offers are appended after the primary phase decision.
+            // Every lane must still obey a Room pause, intro or transport hold.
+            if(match.IsGameplayInputBlocked || state.isSharedPaused || state.connectionHeld)actions.Clear();
             state.legalActions = actions.OrderBy(a => a, StringComparer.Ordinal).ToArray();
             return state;
         }

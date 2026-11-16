@@ -19,14 +19,10 @@ namespace CounterAttack.Online
             state.owner=manager.IsInstructionExpectingHomeTeam()==true?"Home":"Away";
             state.stage="movement."+phase+".resolving";
             if(!manager.OnlineBasicMovementAvailable) return;
-            void Command(string id,OnlineMovementIntent intent,PlayerToken player=null,HexCell target=null)=>AddAdditional(actions,id,()=>
-            {if(!manager.TryExecuteOnlineMovement(intent,player,target))throw new InvalidOperationException("Accepted movement decision became unavailable");});
             if(manager.isAwaitingTokenSelection)
             {
                 state.stage="movement."+phase+".select";
-                foreach(var player in manager.GetSelectableMovementTokensForDecisionPreview())
-                    Command(MovementPlayerAction(TokenId(player)),OnlineMovementIntent.SelectPlayer,player);
-                Command(MovementForfeitAction,OnlineMovementIntent.Forfeit);
+                AddMovementSelections(actions,manager);
             }
             if(manager.isAwaitingHexDestination)
             {
@@ -34,6 +30,15 @@ namespace CounterAttack.Online
                 state.awaitingTarget=AddMovementTargets(actions,manager)>0;
                 if(manager.OnlineCanStationaryFootTackle)AddGroundDuel(actions,"duel.tackle",OnlineGroundDuelIntent.Tackle);
             }
+        }
+        private void AddMovementSelections(List<string> actions,MovementPhaseManager manager,bool includeForfeit=true)
+        {
+            if(manager.OnlineCanSelectMovementPlayer)
+                foreach(var player in manager.GetSelectableMovementTokensForDecisionPreview())
+                    AddAdditional(actions,MovementPlayerAction(TokenId(player)),()=>
+                    {if(!manager.TryExecuteOnlineMovement(OnlineMovementIntent.SelectPlayer,player))throw new InvalidOperationException("Accepted player selection became unavailable");});
+            if(includeForfeit && manager.OnlineCanForfeitMovement)AddAdditional(actions,MovementForfeitAction,()=>
+                {if(!manager.TryExecuteOnlineMovement(OnlineMovementIntent.Forfeit))throw new InvalidOperationException("Accepted movement forfeit became unavailable");});
         }
         private int AddMovementTargets(List<string> actions,MovementPhaseManager manager)
         {

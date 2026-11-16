@@ -623,3 +623,13 @@ same-phase decision replacement. Do not add a redundant decision-ID hot path.
 The 250 ms refresh applies to clock/budget updates. Investigate pre-move keeper
 reselection/phase forfeit and movement instead of an initial nutmeg: those source
 choices may still be missing from published online actions.
+
+Pre-move parity now has 32 new native passes and 64 distinct selected affected
+passes: movement/direct victim clicks at an initial nutmeg, keeper reselection,
+required throw-in clearance and a final authority hold gate for uncommitted pass
+switches. Existing initial-nutmeg X rejection and stationary outfield offers are
+preserved. The stationary physical-X ambiguity is recorded in GameplayReview.md;
+no offline rule was changed. See OnlinePreMoveChoices/Verification.md. Room is
+v18/wire v7. All Windows exports refreshed successfully with v18 at 22:49-22:50
+UTC. Next: authenticated normal-Draft drag/drop and the remaining frontend/full-
+match input audit. Paired Mac testing stays deferred; each new case is registered.

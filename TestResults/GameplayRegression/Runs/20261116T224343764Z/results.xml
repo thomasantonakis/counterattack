@@ -1,0 +1,1110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="32" result="Passed" total="32" passed="32" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 22:43:43Z" end-time="2026-11-16 22:44:40Z" duration="56.7733145">
+  <test-suite type="TestSuite" id="3065" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1713" result="Passed" start-time="2026-11-16 22:43:43Z" end-time="2026-11-16 22:44:40Z" duration="56.773315" total="32" passed="32" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="3062" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1713" result="Passed" start-time="2026-11-16 22:43:43Z" end-time="2026-11-16 22:44:40Z" duration="56.719755" total="32" passed="32" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12156" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="2164" name="OnlinePreMoveChoicesPlayModeTests" fullname="OnlinePreMoveChoicesPlayModeTests" classname="OnlinePreMoveChoicesPlayModeTests" runstate="Runnable" testcasecount="32" result="Passed" start-time="2026-11-16 22:43:43Z" end-time="2026-11-16 22:44:40Z" duration="56.704912" total="32" passed="32" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlinePreMoveChoices" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="2185" name="ExistingPreMoveAlternatives" fullname="OnlinePreMoveChoicesPlayModeTests.ExistingPreMoveAlternatives" classname="OnlinePreMoveChoicesPlayModeTests" runstate="Runnable" testcasecount="20" result="Passed" start-time="2026-11-16 22:43:43Z" end-time="2026-11-16 22:44:24Z" duration="40.659388" total="20" passed="20" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="2165" name="ExistingPreMoveAlternatives(1,False,&quot;keeper-switch&quot;)" fullname="OnlinePreMoveChoicesPlayModeTests.ExistingPreMoveAlternatives(1,False,&quot;keeper-switch&quot;)" methodname="ExistingPreMoveAlternatives" classname="OnlinePreMoveChoicesPlayModeTests" runstate="Runnable" seed="665476803" result="Passed" start-time="2026-11-16 22:43:43Z" end-time="2026-11-16 22:43:45Z" duration="1.460569" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=1, tokens=none.
+Attacking team has possession: True.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Home keeper to HandleTokenSelection
+A Valid Defender was selected: Home keeper
+Home keeper is adjacent to Away recovering player outside the goalkeeper's penalty box. Press [D]ive, [T]ackle with feet, or [N] to stand there.
+Passing Home carrier to HandleTokenSelection
+A Valid Defender was selected: Home carrier
+Passing Hex 27,8 to AsyncMoveTokenToHexRegularly
+Passing Hex 27,8 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 27,8
+[Game Log] Home carrier (Fixture Home) moves 1 paces
+isMovingTokenAttacker: False
+Defender does not land on Ball Hex
+Defender is not close enough to pickup or intercept. No prompt shown.
+Advancing Movement Phase
+]]></output>
+          </test-case>
+          <test-case id="2166" name="ExistingPreMoveAlternatives(1,False,&quot;nutmeg-move&quot;)" fullname="OnlinePreMoveChoicesPlayModeTests.ExistingPreMoveAlternatives(1,False,&quot;nutmeg-move&quot;)" methodname="ExistingPreMoveAlternatives" classname="OnlinePreMoveChoicesPlayModeTests" runstate="Runnable" seed="526661025" result="Passed" start-time="2026-11-16 22:43:45Z" end-time="2026-11-16 22:43:46Z" duration="0.784026" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=1, tokens=none.
+Movement phase has been reset.
+Passing Away recovering player to HandleTokenSelection
+Away recovering player selected as dribbler. Starting dribble movement.
+Setting remaining Pace to Away recovering player's Pace: 5
+Checking for nutmeggable Defenders
+Nutmeg options: Home carrier
+Away recovering player is next to at least one Nutmeggable Defender. Select a nutmeggable Defender, or Press [N] to attempt a Nutmeg OR Select a Hex to Move.
+Committing to Movement Phase action. section=AttMP, selectedToken=Away recovering player, awaitingHexDestination=True, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Hex 25,18 to MoveTokenToHex
+isDribblerRunning set to true
+MoveTokenAlongPath: shouldCarryBall: True
+MovingBall with Token
+MovingBall with Token
+Token arrived at hex: Hex 25,18
+Attacking team has possession: True.
+[Game Log] Away recovering player (Fixture Away) moves 1 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Away recovering player, IsDribbler: True, remainingDribblerPace: 5
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+remainingDribblerPace: 4, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Away recovering player Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Calculating Eligible Defenders for Interception
+eligibleDefenders.Count: 0
+No interceptions Available, let the dribbler move if available
+Dribbler has 4 remaining Pace, Highlighting 1 Hex, isAwaitingHexDestination
+Dribbler is running. Forfeiting remaining pace.
+Advancing Movement Phase
+]]></output>
+          </test-case>
+          <test-case id="2167" name="ExistingPreMoveAlternatives(1,False,&quot;blocked-forfeit&quot;)" fullname="OnlinePreMoveChoicesPlayModeTests.ExistingPreMoveAlternatives(1,False,&quot;blocked-forfeit&quot;)" methodname="ExistingPreMoveAlternatives" classname="OnlinePreMoveChoicesPlayModeTests" runstate="Runnable" seed="816228912" result="Passed" start-time="2026-11-16 22:43:46Z" end-time="2026-11-16 22:43:46Z" duration="0.754423" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=1, tokens=none.
+Movement phase has been reset.
+Passing Away recovering player to HandleTokenSelection
+Away recovering player selected as dribbler. Starting dribble movement.
+Setting remaining Pace to Away recovering player's Pace: 5
+Checking for nutmeggable Defenders
+Nutmeg options: Home carrier
+Away recovering player is next to at least one Nutmeggable Defender. Select a nutmeggable Defender, or Press [N] to attempt a Nutmeg OR Select a Hex to Move.
+]]></output>
+          </test-case>
+          <test-case id="2168" name="ExistingPreMoveAlternatives(1,False,&quot;offline-blocked-forfeit&quot;)" fullname="OnlinePreMoveChoicesPlayModeTests.ExistingPreMoveAlternatives(1,False,&quot;offline-blocked-forfeit&quot;)" methodname="ExistingPreMoveAlternatives" classname="OnlinePreMoveChoicesPlayModeTests" runstate="Runnable" seed="186069471" result="Passed" start-time="2026-11-16 22:43:46Z" end-time="2026-11-16 22:43:47Z" duration="0.757287" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=1, tokens=none.
+Movement phase has been reset.
+Passing Away recovering player to HandleTokenSelection
+Away recovering player selected as dribbler. Starting dribble movement.
+Setting remaining Pace to Away recovering player's Pace: 5
+Checking for nutmeggable Defenders
+Nutmeg options: Home carrier
+Away recovering player is next to at least one Nutmeggable Defender. Select a nutmeggable Defender, or Press [N] to attempt a Nutmeg OR Select a Hex to Move.
+]]></output>
+          </test-case>
+          <test-case id="2169" name="ExistingPreMoveAlternatives(1,False,&quot;nutmeg-direct&quot;)" fullname="OnlinePreMoveChoicesPlayModeTests.ExistingPreMoveAlternatives(1,False,&quot;nutmeg-direct&quot;)" methodname="ExistingPreMoveAlternatives" classname="OnlinePreMoveChoicesPlayModeTests" runstate="Runnable" seed="519949196" result="Passed" start-time="2026-11-16 22:43:47Z" end-time="2026-11-16 22:43:54Z" duration="7.057847" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=1, tokens=none.
+Movement phase has been reset.
+Passing Away recovering player to HandleTokenSelection
+Away recovering player selected as dribbler. Starting dribble movement.
+Setting remaining Pace to Away recovering player's Pace: 5
+Checking for nutmeggable Defenders
+Nutmeg options: Home carrier
+Away recovering player is next to at least one Nutmeggable Defender. Select a nutmeggable Defender, or Press [N] to attempt a Nutmeg OR Select a Hex to Move.
+While waiting for a Nutmeg Decision, a nutmeggable Defender was clicked
+Committing to Movement Phase action. section=AttMP, selectedToken=Away recovering player, awaitingHexDestination=True, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Selected Home carrier to nutmeg. Proceeding with nutmeg.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+🔍 Connected Token Found: Home carrier
+[Game Log] Away recovering player (Fixture Away) engages in a ground duel
+[Expected Stats] Away recovering player vs Home carrier (nutmeg duel) xDribbles=0.372, xTackles=0.628, tie=0.104, foul=0.167
+Press R to roll the dice for tackle. Defender rolls first.
+Defender rolled: 2. Now it's the attacker's turn.
+Attacker rolled: 6. Comparing results...
+Tackle phase reset.
+This is a nutmeg attempt
+Defender Name: Home carrier with Tackling: 4, Attacker: Away recovering player with Dribbling: 4
+Tackle failed! Home carrier Roll(2)+Tackling(4)+Nutmeg bonus(1)=7 loses to Away recovering player's Roll(6)+Dribbling(4) = 10, who retains possession of the ball.
+🔍 Connected Token Found: Home carrier
+[Game Log] Away recovering player (Fixture Away) successful nutmeg on Home carrier
+Home carrier will be stunned in the Defensive Part of the Movement Phase
+Away recovering player can reposition!
+Away recovering player won the nutmeg tackle and is repositioning around Home carrier. Click a Highlighted Hex to move there.
+Away recovering player repositioning to Hex 26,20.
+Repositioning complete.
+Reducing Away recovering player's remaining Pace by 2 due to the Nutmeg
+Checking for nutmeggable Defenders
+remainingDribblerPace: 3, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Away recovering player Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Calculating Eligible Defenders for Interception
+eligibleDefenders.Count: 0
+No interceptions Available, let the dribbler move if available
+Dribbler has 3 remaining Pace, Highlighting 1 Hex, isAwaitingHexDestination
+]]></output>
+          </test-case>
+          <test-case id="2170" name="ExistingPreMoveAlternatives(1,True,&quot;keeper-switch&quot;)" fullname="OnlinePreMoveChoicesPlayModeTests.ExistingPreMoveAlternatives(1,True,&quot;keeper-switch&quot;)" methodname="ExistingPreMoveAlternatives" classname="OnlinePreMoveChoicesPlayModeTests" runstate="Runnable" seed="1455658223" result="Passed" start-time="2026-11-16 22:43:54Z" end-time="2026-11-16 22:43:55Z" duration="0.841532" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: True.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Away keeper to HandleTokenSelection
+A Valid Defender was selected: Away keeper
+Away keeper is adjacent to Home carrier outside the goalkeeper's penalty box. Press [D]ive, [T]ackle with feet, or [N] to stand there.
+Passing Away recovering player to HandleTokenSelection
+A Valid Defender was selected: Away recovering player
+Passing Hex 27,8 to AsyncMoveTokenToHexRegularly
+Passing Hex 27,8 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 27,8
+[Game Log] Away recovering player (Fixture Away) moves 1 paces
+isMovingTokenAttacker: False
+Defender does not land on Ball Hex
+Defender is not close enough to pickup or intercept. No prompt shown.
+Advancing Movement Phase
+]]></output>
+          </test-case>
+          <test-case id="2171" name="ExistingPreMoveAlternatives(1,True,&quot;nutmeg-move&quot;)" fullname="OnlinePreMoveChoicesPlayModeTests.ExistingPreMoveAlternatives(1,True,&quot;nutmeg-move&quot;)" methodname="ExistingPreMoveAlternatives" classname="OnlinePreMoveChoicesPlayModeTests" runstate="Runnable" seed="1751824826" result="Passed" start-time="2026-11-16 22:43:55Z" end-time="2026-11-16 22:43:56Z" duration="0.776787" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Passing Home carrier to HandleTokenSelection
+Home carrier selected as dribbler. Starting dribble movement.
+Setting remaining Pace to Home carrier's Pace: 5
+Checking for nutmeggable Defenders
+Nutmeg options: Away recovering player
+Home carrier is next to at least one Nutmeggable Defender. Select a nutmeggable Defender, or Press [N] to attempt a Nutmeg OR Select a Hex to Move.
+Committing to Movement Phase action. section=AttMP, selectedToken=Home carrier, awaitingHexDestination=True, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Hex 25,18 to MoveTokenToHex
+isDribblerRunning set to true
+MoveTokenAlongPath: shouldCarryBall: True
+MovingBall with Token
+MovingBall with Token
+Token arrived at hex: Hex 25,18
+Attacking team has possession: True.
+[Game Log] Home carrier (Fixture Home) moves 1 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Home carrier, IsDribbler: True, remainingDribblerPace: 5
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+remainingDribblerPace: 4, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Home carrier Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Calculating Eligible Defenders for Interception
+eligibleDefenders.Count: 0
+No interceptions Available, let the dribbler move if available
+Dribbler has 4 remaining Pace, Highlighting 1 Hex, isAwaitingHexDestination
+Dribbler is running. Forfeiting remaining pace.
+Advancing Movement Phase
+]]></output>
+          </test-case>
+          <test-case id="2172" name="ExistingPreMoveAlternatives(1,True,&quot;blocked-forfeit&quot;)" fullname="OnlinePreMoveChoicesPlayModeTests.ExistingPreMoveAlternatives(1,True,&quot;blocked-forfeit&quot;)" methodname="ExistingPreMoveAlternatives" classname="OnlinePreMoveChoicesPlayModeTests" runstate="Runnable" seed="1366328099" result="Passed" start-time="2026-11-16 22:43:56Z" end-time="2026-11-16 22:43:57Z" duration="0.693807" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Passing Home carrier to HandleTokenSelection
+Home carrier selected as dribbler. Starting dribble movement.
+Setting remaining Pace to Home carrier's Pace: 5
+Checking for nutmeggable Defenders
+Nutmeg options: Away recovering player
+Home carrier is next to at least one Nutmeggable Defender. Select a nutmeggable Defender, or Press [N] to attempt a Nutmeg OR Select a Hex to Move.
+]]></output>
+          </test-case>
+          <test-case id="2173" name="ExistingPreMoveAlternatives(1,True,&quot;offline-blocked-forfeit&quot;)" fullname="OnlinePreMoveChoicesPlayModeTests.ExistingPreMoveAlternatives(1,True,&quot;offline-blocked-forfeit&quot;)" methodname="ExistingPreMoveAlternatives" classname="OnlinePreMoveChoicesPlayModeTests" runstate="Runnable" seed="975367291" result="Passed" start-time="2026-11-16 22:43:57Z" end-time="2026-11-16 22:43:57Z" duration="0.766863" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Passing Home carrier to HandleTokenSelection
+Home carrier selected as dribbler. Starting dribble movement.
+Setting remaining Pace to Home carrier's Pace: 5
+Checking for nutmeggable Defenders
+Nutmeg options: Away recovering player
+Home carrier is next to at least one Nutmeggable Defender. Select a nutmeggable Defender, or Press [N] to attempt a Nutmeg OR Select a Hex to Move.
+]]></output>
+          </test-case>
+          <test-case id="2174" name="ExistingPreMoveAlternatives(1,True,&quot;nutmeg-direct&quot;)" fullname="OnlinePreMoveChoicesPlayModeTests.ExistingPreMoveAlternatives(1,True,&quot;nutmeg-direct&quot;)" methodname="ExistingPreMoveAlternatives" classname="OnlinePreMoveChoicesPlayModeTests" runstate="Runnable" seed="1344739025" result="Passed" start-time="2026-11-16 22:43:57Z" end-time="2026-11-16 22:44:04Z" duration="6.799724" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Passing Home carrier to HandleTokenSelection
+Home carrier selected as dribbler. Starting dribble movement.
+Setting remaining Pace to Home carrier's Pace: 5
+Checking for nutmeggable Defenders
+Nutmeg options: Away recovering player
+Home carrier is next to at least one Nutmeggable Defender. Select a nutmeggable Defender, or Press [N] to attempt a Nutmeg OR Select a Hex to Move.
+While waiting for a Nutmeg Decision, a nutmeggable Defender was clicked
+Committing to Movement Phase action. section=AttMP, selectedToken=Home carrier, awaitingHexDestination=True, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Selected Away recovering player to nutmeg. Proceeding with nutmeg.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+🔍 Connected Token Found: Away recovering player
+[Game Log] Home carrier (Fixture Home) engages in a ground duel
+[Expected Stats] Home carrier vs Away recovering player (nutmeg duel) xDribbles=0.372, xTackles=0.628, tie=0.104, foul=0.167
+Press R to roll the dice for tackle. Defender rolls first.
+Defender rolled: 2. Now it's the attacker's turn.
+Attacker rolled: 6. Comparing results...
+Tackle phase reset.
+This is a nutmeg attempt
+Defender Name: Away recovering player with Tackling: 4, Attacker: Home carrier with Dribbling: 4
+Tackle failed! Away recovering player Roll(2)+Tackling(4)+Nutmeg bonus(1)=7 loses to Home carrier's Roll(6)+Dribbling(4) = 10, who retains possession of the ball.
+🔍 Connected Token Found: Away recovering player
+[Game Log] Home carrier (Fixture Home) successful nutmeg on Away recovering player
+Away recovering player will be stunned in the Defensive Part of the Movement Phase
+Home carrier can reposition!
+Home carrier won the nutmeg tackle and is repositioning around Away recovering player. Click a Highlighted Hex to move there.
+Home carrier repositioning to Hex 26,20.
+Repositioning complete.
+Reducing Home carrier's remaining Pace by 2 due to the Nutmeg
+Checking for nutmeggable Defenders
+remainingDribblerPace: 3, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Home carrier Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Calculating Eligible Defenders for Interception
+eligibleDefenders.Count: 0
+No interceptions Available, let the dribbler move if available
+Dribbler has 3 remaining Pace, Highlighting 1 Hex, isAwaitingHexDestination
+]]></output>
+          </test-case>
+          <test-case id="2175" name="ExistingPreMoveAlternatives(-1,False,&quot;keeper-switch&quot;)" fullname="OnlinePreMoveChoicesPlayModeTests.ExistingPreMoveAlternatives(-1,False,&quot;keeper-switch&quot;)" methodname="ExistingPreMoveAlternatives" classname="OnlinePreMoveChoicesPlayModeTests" runstate="Runnable" seed="435360499" result="Passed" start-time="2026-11-16 22:44:04Z" end-time="2026-11-16 22:44:05Z" duration="0.862647" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-1, tokens=none.
+Attacking team has possession: True.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Home keeper to HandleTokenSelection
+A Valid Defender was selected: Home keeper
+Home keeper is adjacent to Away recovering player outside the goalkeeper's penalty box. Press [D]ive, [T]ackle with feet, or [N] to stand there.
+Passing Home carrier to HandleTokenSelection
+A Valid Defender was selected: Home carrier
+Passing Hex 23,8 to AsyncMoveTokenToHexRegularly
+Passing Hex 23,8 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 23,8
+[Game Log] Home carrier (Fixture Home) moves 1 paces
+isMovingTokenAttacker: False
+Defender does not land on Ball Hex
+Defender is not close enough to pickup or intercept. No prompt shown.
+Advancing Movement Phase
+]]></output>
+          </test-case>
+          <test-case id="2176" name="ExistingPreMoveAlternatives(-1,False,&quot;nutmeg-move&quot;)" fullname="OnlinePreMoveChoicesPlayModeTests.ExistingPreMoveAlternatives(-1,False,&quot;nutmeg-move&quot;)" methodname="ExistingPreMoveAlternatives" classname="OnlinePreMoveChoicesPlayModeTests" runstate="Runnable" seed="591732707" result="Passed" start-time="2026-11-16 22:44:05Z" end-time="2026-11-16 22:44:06Z" duration="0.834211" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-1, tokens=none.
+Movement phase has been reset.
+Passing Away recovering player to HandleTokenSelection
+Away recovering player selected as dribbler. Starting dribble movement.
+Setting remaining Pace to Away recovering player's Pace: 5
+Checking for nutmeggable Defenders
+Nutmeg options: Home carrier
+Away recovering player is next to at least one Nutmeggable Defender. Select a nutmeggable Defender, or Press [N] to attempt a Nutmeg OR Select a Hex to Move.
+Committing to Movement Phase action. section=AttMP, selectedToken=Away recovering player, awaitingHexDestination=True, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Hex 25,18 to MoveTokenToHex
+isDribblerRunning set to true
+MoveTokenAlongPath: shouldCarryBall: True
+MovingBall with Token
+MovingBall with Token
+Token arrived at hex: Hex 25,18
+Attacking team has possession: True.
+[Game Log] Away recovering player (Fixture Away) moves 1 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Away recovering player, IsDribbler: True, remainingDribblerPace: 5
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+remainingDribblerPace: 4, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Away recovering player Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Calculating Eligible Defenders for Interception
+eligibleDefenders.Count: 0
+No interceptions Available, let the dribbler move if available
+Dribbler has 4 remaining Pace, Highlighting 1 Hex, isAwaitingHexDestination
+Dribbler is running. Forfeiting remaining pace.
+Advancing Movement Phase
+]]></output>
+          </test-case>
+          <test-case id="2177" name="ExistingPreMoveAlternatives(-1,False,&quot;blocked-forfeit&quot;)" fullname="OnlinePreMoveChoicesPlayModeTests.ExistingPreMoveAlternatives(-1,False,&quot;blocked-forfeit&quot;)" methodname="ExistingPreMoveAlternatives" classname="OnlinePreMoveChoicesPlayModeTests" runstate="Runnable" seed="326131447" result="Passed" start-time="2026-11-16 22:44:06Z" end-time="2026-11-16 22:44:07Z" duration="0.737840" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-1, tokens=none.
+Movement phase has been reset.
+Passing Away recovering player to HandleTokenSelection
+Away recovering player selected as dribbler. Starting dribble movement.
+Setting remaining Pace to Away recovering player's Pace: 5
+Checking for nutmeggable Defenders
+Nutmeg options: Home carrier
+Away recovering player is next to at least one Nutmeggable Defender. Select a nutmeggable Defender, or Press [N] to attempt a Nutmeg OR Select a Hex to Move.
+]]></output>
+          </test-case>
+          <test-case id="2178" name="ExistingPreMoveAlternatives(-1,False,&quot;offline-blocked-forfeit&quot;)" fullname="OnlinePreMoveChoicesPlayModeTests.ExistingPreMoveAlternatives(-1,False,&quot;offline-blocked-forfeit&quot;)" methodname="ExistingPreMoveAlternatives" classname="OnlinePreMoveChoicesPlayModeTests" runstate="Runnable" seed="1659097983" result="Passed" start-time="2026-11-16 22:44:07Z" end-time="2026-11-16 22:44:07Z" duration="0.764077" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-1, tokens=none.
+Movement phase has been reset.
+Passing Away recovering player to HandleTokenSelection
+Away recovering player selected as dribbler. Starting dribble movement.
+Setting remaining Pace to Away recovering player's Pace: 5
+Checking for nutmeggable Defenders
+Nutmeg options: Home carrier
+Away recovering player is next to at least one Nutmeggable Defender. Select a nutmeggable Defender, or Press [N] to attempt a Nutmeg OR Select a Hex to Move.
+]]></output>
+          </test-case>
+          <test-case id="2179" name="ExistingPreMoveAlternatives(-1,False,&quot;nutmeg-direct&quot;)" fullname="OnlinePreMoveChoicesPlayModeTests.ExistingPreMoveAlternatives(-1,False,&quot;nutmeg-direct&quot;)" methodname="ExistingPreMoveAlternatives" classname="OnlinePreMoveChoicesPlayModeTests" runstate="Runnable" seed="1018282095" result="Passed" start-time="2026-11-16 22:44:07Z" end-time="2026-11-16 22:44:14Z" duration="6.795017" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-1, tokens=none.
+Movement phase has been reset.
+Passing Away recovering player to HandleTokenSelection
+Away recovering player selected as dribbler. Starting dribble movement.
+Setting remaining Pace to Away recovering player's Pace: 5
+Checking for nutmeggable Defenders
+Nutmeg options: Home carrier
+Away recovering player is next to at least one Nutmeggable Defender. Select a nutmeggable Defender, or Press [N] to attempt a Nutmeg OR Select a Hex to Move.
+While waiting for a Nutmeg Decision, a nutmeggable Defender was clicked
+Committing to Movement Phase action. section=AttMP, selectedToken=Away recovering player, awaitingHexDestination=True, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Selected Home carrier to nutmeg. Proceeding with nutmeg.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+🔍 Connected Token Found: Home carrier
+[Game Log] Away recovering player (Fixture Away) engages in a ground duel
+[Expected Stats] Away recovering player vs Home carrier (nutmeg duel) xDribbles=0.372, xTackles=0.628, tie=0.104, foul=0.167
+Press R to roll the dice for tackle. Defender rolls first.
+Defender rolled: 2. Now it's the attacker's turn.
+Attacker rolled: 6. Comparing results...
+Tackle phase reset.
+This is a nutmeg attempt
+Defender Name: Home carrier with Tackling: 4, Attacker: Away recovering player with Dribbling: 4
+Tackle failed! Home carrier Roll(2)+Tackling(4)+Nutmeg bonus(1)=7 loses to Away recovering player's Roll(6)+Dribbling(4) = 10, who retains possession of the ball.
+🔍 Connected Token Found: Home carrier
+[Game Log] Away recovering player (Fixture Away) successful nutmeg on Home carrier
+Home carrier will be stunned in the Defensive Part of the Movement Phase
+Away recovering player can reposition!
+Away recovering player won the nutmeg tackle and is repositioning around Home carrier. Click a Highlighted Hex to move there.
+Away recovering player repositioning to Hex 23,19.
+Repositioning complete.
+Reducing Away recovering player's remaining Pace by 2 due to the Nutmeg
+Checking for nutmeggable Defenders
+remainingDribblerPace: 3, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Away recovering player Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Calculating Eligible Defenders for Interception
+eligibleDefenders.Count: 0
+No interceptions Available, let the dribbler move if available
+Dribbler has 3 remaining Pace, Highlighting 1 Hex, isAwaitingHexDestination
+]]></output>
+          </test-case>
+          <test-case id="2180" name="ExistingPreMoveAlternatives(-1,True,&quot;keeper-switch&quot;)" fullname="OnlinePreMoveChoicesPlayModeTests.ExistingPreMoveAlternatives(-1,True,&quot;keeper-switch&quot;)" methodname="ExistingPreMoveAlternatives" classname="OnlinePreMoveChoicesPlayModeTests" runstate="Runnable" seed="968038171" result="Passed" start-time="2026-11-16 22:44:14Z" end-time="2026-11-16 22:44:15Z" duration="0.859998" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: True.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Away keeper to HandleTokenSelection
+A Valid Defender was selected: Away keeper
+Away keeper is adjacent to Home carrier outside the goalkeeper's penalty box. Press [D]ive, [T]ackle with feet, or [N] to stand there.
+Passing Away recovering player to HandleTokenSelection
+A Valid Defender was selected: Away recovering player
+Passing Hex 23,8 to AsyncMoveTokenToHexRegularly
+Passing Hex 23,8 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 23,8
+[Game Log] Away recovering player (Fixture Away) moves 1 paces
+isMovingTokenAttacker: False
+Defender does not land on Ball Hex
+Defender is not close enough to pickup or intercept. No prompt shown.
+Advancing Movement Phase
+]]></output>
+          </test-case>
+          <test-case id="2181" name="ExistingPreMoveAlternatives(-1,True,&quot;nutmeg-move&quot;)" fullname="OnlinePreMoveChoicesPlayModeTests.ExistingPreMoveAlternatives(-1,True,&quot;nutmeg-move&quot;)" methodname="ExistingPreMoveAlternatives" classname="OnlinePreMoveChoicesPlayModeTests" runstate="Runnable" seed="1297258729" result="Passed" start-time="2026-11-16 22:44:15Z" end-time="2026-11-16 22:44:16Z" duration="0.770920" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Passing Home carrier to HandleTokenSelection
+Home carrier selected as dribbler. Starting dribble movement.
+Setting remaining Pace to Home carrier's Pace: 5
+Checking for nutmeggable Defenders
+Nutmeg options: Away recovering player
+Home carrier is next to at least one Nutmeggable Defender. Select a nutmeggable Defender, or Press [N] to attempt a Nutmeg OR Select a Hex to Move.
+Committing to Movement Phase action. section=AttMP, selectedToken=Home carrier, awaitingHexDestination=True, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Hex 25,18 to MoveTokenToHex
+isDribblerRunning set to true
+MoveTokenAlongPath: shouldCarryBall: True
+MovingBall with Token
+MovingBall with Token
+Token arrived at hex: Hex 25,18
+Attacking team has possession: True.
+[Game Log] Home carrier (Fixture Home) moves 1 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Home carrier, IsDribbler: True, remainingDribblerPace: 5
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+remainingDribblerPace: 4, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Home carrier Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Calculating Eligible Defenders for Interception
+eligibleDefenders.Count: 0
+No interceptions Available, let the dribbler move if available
+Dribbler has 4 remaining Pace, Highlighting 1 Hex, isAwaitingHexDestination
+Dribbler is running. Forfeiting remaining pace.
+Advancing Movement Phase
+]]></output>
+          </test-case>
+          <test-case id="2182" name="ExistingPreMoveAlternatives(-1,True,&quot;blocked-forfeit&quot;)" fullname="OnlinePreMoveChoicesPlayModeTests.ExistingPreMoveAlternatives(-1,True,&quot;blocked-forfeit&quot;)" methodname="ExistingPreMoveAlternatives" classname="OnlinePreMoveChoicesPlayModeTests" runstate="Runnable" seed="1515666559" result="Passed" start-time="2026-11-16 22:44:16Z" end-time="2026-11-16 22:44:17Z" duration="0.763964" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Passing Home carrier to HandleTokenSelection
+Home carrier selected as dribbler. Starting dribble movement.
+Setting remaining Pace to Home carrier's Pace: 5
+Checking for nutmeggable Defenders
+Nutmeg options: Away recovering player
+Home carrier is next to at least one Nutmeggable Defender. Select a nutmeggable Defender, or Press [N] to attempt a Nutmeg OR Select a Hex to Move.
+]]></output>
+          </test-case>
+          <test-case id="2183" name="ExistingPreMoveAlternatives(-1,True,&quot;offline-blocked-forfeit&quot;)" fullname="OnlinePreMoveChoicesPlayModeTests.ExistingPreMoveAlternatives(-1,True,&quot;offline-blocked-forfeit&quot;)" methodname="ExistingPreMoveAlternatives" classname="OnlinePreMoveChoicesPlayModeTests" runstate="Runnable" seed="1832897817" result="Passed" start-time="2026-11-16 22:44:17Z" end-time="2026-11-16 22:44:17Z" duration="0.728992" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Passing Home carrier to HandleTokenSelection
+Home carrier selected as dribbler. Starting dribble movement.
+Setting remaining Pace to Home carrier's Pace: 5
+Checking for nutmeggable Defenders
+Nutmeg options: Away recovering player
+Home carrier is next to at least one Nutmeggable Defender. Select a nutmeggable Defender, or Press [N] to attempt a Nutmeg OR Select a Hex to Move.
+]]></output>
+          </test-case>
+          <test-case id="2184" name="ExistingPreMoveAlternatives(-1,True,&quot;nutmeg-direct&quot;)" fullname="OnlinePreMoveChoicesPlayModeTests.ExistingPreMoveAlternatives(-1,True,&quot;nutmeg-direct&quot;)" methodname="ExistingPreMoveAlternatives" classname="OnlinePreMoveChoicesPlayModeTests" runstate="Runnable" seed="60719636" result="Passed" start-time="2026-11-16 22:44:17Z" end-time="2026-11-16 22:44:24Z" duration="6.781499" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Passing Home carrier to HandleTokenSelection
+Home carrier selected as dribbler. Starting dribble movement.
+Setting remaining Pace to Home carrier's Pace: 5
+Checking for nutmeggable Defenders
+Nutmeg options: Away recovering player
+Home carrier is next to at least one Nutmeggable Defender. Select a nutmeggable Defender, or Press [N] to attempt a Nutmeg OR Select a Hex to Move.
+While waiting for a Nutmeg Decision, a nutmeggable Defender was clicked
+Committing to Movement Phase action. section=AttMP, selectedToken=Home carrier, awaitingHexDestination=True, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Selected Away recovering player to nutmeg. Proceeding with nutmeg.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+🔍 Connected Token Found: Away recovering player
+[Game Log] Home carrier (Fixture Home) engages in a ground duel
+[Expected Stats] Home carrier vs Away recovering player (nutmeg duel) xDribbles=0.372, xTackles=0.628, tie=0.104, foul=0.167
+Press R to roll the dice for tackle. Defender rolls first.
+Defender rolled: 2. Now it's the attacker's turn.
+Attacker rolled: 6. Comparing results...
+Tackle phase reset.
+This is a nutmeg attempt
+Defender Name: Away recovering player with Tackling: 4, Attacker: Home carrier with Dribbling: 4
+Tackle failed! Away recovering player Roll(2)+Tackling(4)+Nutmeg bonus(1)=7 loses to Home carrier's Roll(6)+Dribbling(4) = 10, who retains possession of the ball.
+🔍 Connected Token Found: Away recovering player
+[Game Log] Home carrier (Fixture Home) successful nutmeg on Away recovering player
+Away recovering player will be stunned in the Defensive Part of the Movement Phase
+Home carrier can reposition!
+Home carrier won the nutmeg tackle and is repositioning around Away recovering player. Click a Highlighted Hex to move there.
+Home carrier repositioning to Hex 23,19.
+Repositioning complete.
+Reducing Home carrier's remaining Pace by 2 due to the Nutmeg
+Checking for nutmeggable Defenders
+remainingDribblerPace: 3, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Home carrier Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Calculating Eligible Defenders for Interception
+eligibleDefenders.Count: 0
+No interceptions Available, let the dribbler move if available
+Dribbler has 3 remaining Pace, Highlighting 1 Hex, isAwaitingHexDestination
+]]></output>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="2195" name="HoldBlocksUncommittedActionSwitch" fullname="OnlinePreMoveChoicesPlayModeTests.HoldBlocksUncommittedActionSwitch" classname="OnlinePreMoveChoicesPlayModeTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-11-16 22:44:24Z" end-time="2026-11-16 22:44:27Z" duration="3.373709" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="2191" name="HoldBlocksUncommittedActionSwitch(1,False)" fullname="OnlinePreMoveChoicesPlayModeTests.HoldBlocksUncommittedActionSwitch(1,False)" methodname="HoldBlocksUncommittedActionSwitch" classname="OnlinePreMoveChoicesPlayModeTests" runstate="Runnable" seed="1902594891" result="Passed" start-time="2026-11-16 22:44:24Z" end-time="2026-11-16 22:44:25Z" duration="0.839085" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=1, tokens=none.
+Movement phase has been reset.
+Passing Away keeper to HandleTokenSelection
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+]]></output>
+          </test-case>
+          <test-case id="2192" name="HoldBlocksUncommittedActionSwitch(1,True)" fullname="OnlinePreMoveChoicesPlayModeTests.HoldBlocksUncommittedActionSwitch(1,True)" methodname="HoldBlocksUncommittedActionSwitch" classname="OnlinePreMoveChoicesPlayModeTests" runstate="Runnable" seed="2079112214" result="Passed" start-time="2026-11-16 22:44:25Z" end-time="2026-11-16 22:44:26Z" duration="0.819178" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Passing Home keeper to HandleTokenSelection
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+]]></output>
+          </test-case>
+          <test-case id="2193" name="HoldBlocksUncommittedActionSwitch(-1,False)" fullname="OnlinePreMoveChoicesPlayModeTests.HoldBlocksUncommittedActionSwitch(-1,False)" methodname="HoldBlocksUncommittedActionSwitch" classname="OnlinePreMoveChoicesPlayModeTests" runstate="Runnable" seed="1087533938" result="Passed" start-time="2026-11-16 22:44:26Z" end-time="2026-11-16 22:44:27Z" duration="0.840089" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-1, tokens=none.
+Movement phase has been reset.
+Passing Away keeper to HandleTokenSelection
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+]]></output>
+          </test-case>
+          <test-case id="2194" name="HoldBlocksUncommittedActionSwitch(-1,True)" fullname="OnlinePreMoveChoicesPlayModeTests.HoldBlocksUncommittedActionSwitch(-1,True)" methodname="HoldBlocksUncommittedActionSwitch" classname="OnlinePreMoveChoicesPlayModeTests" runstate="Runnable" seed="1859895370" result="Passed" start-time="2026-11-16 22:44:27Z" end-time="2026-11-16 22:44:27Z" duration="0.865721" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Passing Home keeper to HandleTokenSelection
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+]]></output>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="2200" name="StationaryOutfieldForfeitOfferRemainsUnchanged" fullname="OnlinePreMoveChoicesPlayModeTests.StationaryOutfieldForfeitOfferRemainsUnchanged" classname="OnlinePreMoveChoicesPlayModeTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-11-16 22:44:27Z" end-time="2026-11-16 22:44:31Z" duration="3.096314" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="2196" name="StationaryOutfieldForfeitOfferRemainsUnchanged(1,False)" fullname="OnlinePreMoveChoicesPlayModeTests.StationaryOutfieldForfeitOfferRemainsUnchanged(1,False)" methodname="StationaryOutfieldForfeitOfferRemainsUnchanged" classname="OnlinePreMoveChoicesPlayModeTests" runstate="Runnable" seed="1211680631" result="Passed" start-time="2026-11-16 22:44:27Z" end-time="2026-11-16 22:44:28Z" duration="0.834805" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=1, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Home carrier to HandleTokenSelection
+A Valid Defender was selected: Home carrier
+Home carrier is adjacent to Away recovering player. Press 'T' to tackle or select a hex to move.
+]]></output>
+          </test-case>
+          <test-case id="2197" name="StationaryOutfieldForfeitOfferRemainsUnchanged(1,True)" fullname="OnlinePreMoveChoicesPlayModeTests.StationaryOutfieldForfeitOfferRemainsUnchanged(1,True)" methodname="StationaryOutfieldForfeitOfferRemainsUnchanged" classname="OnlinePreMoveChoicesPlayModeTests" runstate="Runnable" seed="155811578" result="Passed" start-time="2026-11-16 22:44:28Z" end-time="2026-11-16 22:44:29Z" duration="0.748337" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Away recovering player to HandleTokenSelection
+A Valid Defender was selected: Away recovering player
+Away recovering player is adjacent to Home carrier. Press 'T' to tackle or select a hex to move.
+]]></output>
+          </test-case>
+          <test-case id="2198" name="StationaryOutfieldForfeitOfferRemainsUnchanged(-1,False)" fullname="OnlinePreMoveChoicesPlayModeTests.StationaryOutfieldForfeitOfferRemainsUnchanged(-1,False)" methodname="StationaryOutfieldForfeitOfferRemainsUnchanged" classname="OnlinePreMoveChoicesPlayModeTests" runstate="Runnable" seed="1353113993" result="Passed" start-time="2026-11-16 22:44:29Z" end-time="2026-11-16 22:44:30Z" duration="0.753927" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-1, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Home carrier to HandleTokenSelection
+A Valid Defender was selected: Home carrier
+Home carrier is adjacent to Away recovering player. Press 'T' to tackle or select a hex to move.
+]]></output>
+          </test-case>
+          <test-case id="2199" name="StationaryOutfieldForfeitOfferRemainsUnchanged(-1,True)" fullname="OnlinePreMoveChoicesPlayModeTests.StationaryOutfieldForfeitOfferRemainsUnchanged(-1,True)" methodname="StationaryOutfieldForfeitOfferRemainsUnchanged" classname="OnlinePreMoveChoicesPlayModeTests" runstate="Runnable" seed="1597453052" result="Passed" start-time="2026-11-16 22:44:30Z" end-time="2026-11-16 22:44:31Z" duration="0.742351" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Away recovering player to HandleTokenSelection
+A Valid Defender was selected: Away recovering player
+Away recovering player is adjacent to Home carrier. Press 'T' to tackle or select a hex to move.
+]]></output>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="2190" name="ThrowInMustMoveRequiredDefenders" fullname="OnlinePreMoveChoicesPlayModeTests.ThrowInMustMoveRequiredDefenders" classname="OnlinePreMoveChoicesPlayModeTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-11-16 22:44:31Z" end-time="2026-11-16 22:44:40Z" duration="9.561776" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="2186" name="ThrowInMustMoveRequiredDefenders(1,False)" fullname="OnlinePreMoveChoicesPlayModeTests.ThrowInMustMoveRequiredDefenders(1,False)" methodname="ThrowInMustMoveRequiredDefenders" classname="OnlinePreMoveChoicesPlayModeTests" runstate="Runnable" seed="962482471" result="Passed" start-time="2026-11-16 22:44:31Z" end-time="2026-11-16 22:44:33Z" duration="2.369334" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=1, tokens=none.
+Throw-in preparation started at (0, 0, 12) for Away. Select the taker.
+Away recovering player took the set piece and cannot be the next player to touch the ball.
+Away recovering player moved to throw-in hex at (0, 0, 12).
+Substitutions are no longer available: Throw-in mandatory movement
+Movement phase has been reset.
+Throw-in movement restrictions applied. Taker: Away recovering player, protected hex: (0, 0, 12), radius: 2.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Home carrier to HandleTokenSelection
+A Valid Defender was selected: Home carrier
+Home carrier is touching the throw-in taker and must move away before challenging.
+Passing Hex 26,28 to AsyncMoveTokenToHexRegularly
+Passing Hex 26,28 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 26,28
+[Game Log] Home carrier (Fixture Home) moves 2 paces
+isMovingTokenAttacker: False
+Defender does not land on Ball Hex
+Defender is not close enough to pickup or intercept. No prompt shown.
+Advancing Movement Phase
+Trying to Forfeit Movement.
+No more defenders wish to move. Attack gets 2f2 move.
+Advancing Movement Phase
+All defenders have moved. Ready for Movement Phase 2f2.
+]]></output>
+          </test-case>
+          <test-case id="2187" name="ThrowInMustMoveRequiredDefenders(1,True)" fullname="OnlinePreMoveChoicesPlayModeTests.ThrowInMustMoveRequiredDefenders(1,True)" methodname="ThrowInMustMoveRequiredDefenders" classname="OnlinePreMoveChoicesPlayModeTests" runstate="Runnable" seed="1337573611" result="Passed" start-time="2026-11-16 22:44:33Z" end-time="2026-11-16 22:44:35Z" duration="2.364630" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Throw-in preparation started at (0, 0, 12) for Home. Select the taker.
+Home carrier took the set piece and cannot be the next player to touch the ball.
+Home carrier moved to throw-in hex at (0, 0, 12).
+Substitutions are no longer available: Throw-in mandatory movement
+Movement phase has been reset.
+Throw-in movement restrictions applied. Taker: Home carrier, protected hex: (0, 0, 12), radius: 2.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Away recovering player to HandleTokenSelection
+A Valid Defender was selected: Away recovering player
+Away recovering player is touching the throw-in taker and must move away before challenging.
+Passing Hex 26,28 to AsyncMoveTokenToHexRegularly
+Passing Hex 26,28 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 26,28
+[Game Log] Away recovering player (Fixture Away) moves 2 paces
+isMovingTokenAttacker: False
+Defender does not land on Ball Hex
+Defender is not close enough to pickup or intercept. No prompt shown.
+Advancing Movement Phase
+Trying to Forfeit Movement.
+No more defenders wish to move. Attack gets 2f2 move.
+Advancing Movement Phase
+All defenders have moved. Ready for Movement Phase 2f2.
+]]></output>
+          </test-case>
+          <test-case id="2188" name="ThrowInMustMoveRequiredDefenders(-1,False)" fullname="OnlinePreMoveChoicesPlayModeTests.ThrowInMustMoveRequiredDefenders(-1,False)" methodname="ThrowInMustMoveRequiredDefenders" classname="OnlinePreMoveChoicesPlayModeTests" runstate="Runnable" seed="112085914" result="Passed" start-time="2026-11-16 22:44:35Z" end-time="2026-11-16 22:44:38Z" duration="2.375243" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-1, tokens=none.
+Throw-in preparation started at (0, 0, 12) for Away. Select the taker.
+Away recovering player took the set piece and cannot be the next player to touch the ball.
+Away recovering player moved to throw-in hex at (0, 0, 12).
+Substitutions are no longer available: Throw-in mandatory movement
+Movement phase has been reset.
+Throw-in movement restrictions applied. Taker: Away recovering player, protected hex: (0, 0, 12), radius: 2.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Home carrier to HandleTokenSelection
+A Valid Defender was selected: Home carrier
+Home carrier is touching the throw-in taker and must move away before challenging.
+Passing Hex 24,28 to AsyncMoveTokenToHexRegularly
+Passing Hex 24,28 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 24,28
+[Game Log] Home carrier (Fixture Home) moves 2 paces
+isMovingTokenAttacker: False
+Defender does not land on Ball Hex
+Defender is not close enough to pickup or intercept. No prompt shown.
+Advancing Movement Phase
+Trying to Forfeit Movement.
+No more defenders wish to move. Attack gets 2f2 move.
+Advancing Movement Phase
+All defenders have moved. Ready for Movement Phase 2f2.
+]]></output>
+          </test-case>
+          <test-case id="2189" name="ThrowInMustMoveRequiredDefenders(-1,True)" fullname="OnlinePreMoveChoicesPlayModeTests.ThrowInMustMoveRequiredDefenders(-1,True)" methodname="ThrowInMustMoveRequiredDefenders" classname="OnlinePreMoveChoicesPlayModeTests" runstate="Runnable" seed="1008128084" result="Passed" start-time="2026-11-16 22:44:38Z" end-time="2026-11-16 22:44:40Z" duration="2.435761" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Throw-in preparation started at (0, 0, 12) for Home. Select the taker.
+Home carrier took the set piece and cannot be the next player to touch the ball.
+Home carrier moved to throw-in hex at (0, 0, 12).
+Substitutions are no longer available: Throw-in mandatory movement
+Movement phase has been reset.
+Throw-in movement restrictions applied. Taker: Home carrier, protected hex: (0, 0, 12), radius: 2.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Away recovering player to HandleTokenSelection
+A Valid Defender was selected: Away recovering player
+Away recovering player is touching the throw-in taker and must move away before challenging.
+Passing Hex 24,28 to AsyncMoveTokenToHexRegularly
+Passing Hex 24,28 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 24,28
+[Game Log] Away recovering player (Fixture Away) moves 2 paces
+isMovingTokenAttacker: False
+Defender does not land on Ball Hex
+Defender is not close enough to pickup or intercept. No prompt shown.
+Advancing Movement Phase
+Trying to Forfeit Movement.
+No more defenders wish to move. Attack gets 2f2 move.
+Advancing Movement Phase
+All defenders have moved. Ready for Movement Phase 2f2.
+Saving results to: TestResults\GameplayRegression\Runs\20261116T224343764Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

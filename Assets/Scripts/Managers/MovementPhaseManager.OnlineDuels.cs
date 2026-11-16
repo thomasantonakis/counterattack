@@ -25,7 +25,8 @@ public partial class MovementPhaseManager
         && isAwaitingHexDestination && selectedToken!=null && !selectedToken.isAttacker && !IsThrowInTackleWithoutMovingBlocked(selectedToken);
     public bool OnlineCanFootTackle=>OnlineCanStationaryFootTackle || OnlineGroundDuelStage=="choice"
         && (!OnlineStationaryKeeperChoice || !IsThrowInTackleWithoutMovingBlocked(selectedToken));
-    public PlayerToken[] OnlineNutmegVictims=>lookingForNutmegVictim?nutmeggableDefenders.Where(t=>t!=null && t.isPlaying && !t.isAttacker).ToArray():System.Array.Empty<PlayerToken>();
+    public PlayerToken[] OnlineNutmegVictims=>lookingForNutmegVictim || isWaitingForNutmegDecisionWithoutMoving
+        ?nutmeggableDefenders.Where(t=>t!=null && t.isPlaying && !t.isAttacker).ToArray():System.Array.Empty<PlayerToken>();
     public HexCell[] OnlineDuelRepositionTargets=>OnlineGroundDuelStage!="reposition"?System.Array.Empty<HexCell>()
         :repositionHexes.Where(h=>h!=null && h.GetOccupyingToken()==null && !h.isAttackOccupied && !h.isDefenseOccupied).ToArray();
     public bool OnlineCanStayAfterDuel=>isWaitingForReposition && !IsResolvingReposition && (!isNutmegInProgress || isSuccessfulTackleRepositionPending);
@@ -43,7 +44,10 @@ public partial class MovementPhaseManager
                 StartChosenNutmeg();return true;
             case OnlineGroundDuelIntent.Victim:
                 if(!OnlineNutmegVictims.Contains(player))return false;
-                HandleNutmegVictimSelection(player);return true;
+                if(lookingForNutmegVictim){HandleNutmegVictimSelection(player);return true;}
+                if(isWaitingForNutmegDecisionWithoutMoving)
+                {RecordNutmegChoiceSelected("online","attempt_nutmeg",IsInstructionExpectingHomeTeam());CommitToNutmeg(player);return true;}
+                return false;
             case OnlineGroundDuelIntent.Tackle:
                 if(!OnlineCanFootTackle)return false;
                 PrepareOnlineStationaryTackleChoice();

@@ -139,3 +139,8 @@ header select-all. Read OnlineHeaderSelectAll/Verification.md for current eviden
 Use the normal game build/run commands above after pulling; do not run the paired
 verification script until the user requests it. Further independent publication
 latency and full-match audits are continuing on the same branch.
+
+Latest contract is Room v18 / wire v7. Windows exports now include the pre-move
+choice and authority-hold fixes; see OnlinePreMoveChoices/Verification.md. Continue
+using the normal Mac game build/run commands after pulling the current branch.
+Paired verification remains deferred while independent Draft/input work continues.

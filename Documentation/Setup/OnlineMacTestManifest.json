@@ -915,6 +915,16 @@
     },
     {
       "mode": "playmode",
+      "fixture": "OnlinePreMoveChoicesPlayModeTests",
+      "categories": [
+        "OnlinePreMoveChoices"
+      ],
+      "definition_sha256": "379e8c83434202b3a88528534f0dc31d11be1ec88ccaa584004ff9a3d6a11cbf",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlinePreMoveChoices/OnlinePreMoveChoicesPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
       "fixture": "OnlineRecoveryPlayModeTests",
       "categories": [
         "OnlineRecovery"
@@ -16284,6 +16294,422 @@
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
       "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T220152170Z/results.xml"
+    },
+    {
+      "id": "OnlinePreMoveChoicesPlayModeTests.ExistingPreMoveAlternatives(1,False,\"keeper-switch\")",
+      "feature": "OnlinePreMoveChoices",
+      "mode": "playmode",
+      "fixture": "OnlinePreMoveChoicesPlayModeTests",
+      "method": "ExistingPreMoveAlternatives",
+      "parameters": [
+        "1,False,\"keeper-switch\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T224343764Z/results.xml"
+    },
+    {
+      "id": "OnlinePreMoveChoicesPlayModeTests.ExistingPreMoveAlternatives(1,False,\"nutmeg-move\")",
+      "feature": "OnlinePreMoveChoices",
+      "mode": "playmode",
+      "fixture": "OnlinePreMoveChoicesPlayModeTests",
+      "method": "ExistingPreMoveAlternatives",
+      "parameters": [
+        "1,False,\"nutmeg-move\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T224343764Z/results.xml"
+    },
+    {
+      "id": "OnlinePreMoveChoicesPlayModeTests.ExistingPreMoveAlternatives(1,False,\"blocked-forfeit\")",
+      "feature": "OnlinePreMoveChoices",
+      "mode": "playmode",
+      "fixture": "OnlinePreMoveChoicesPlayModeTests",
+      "method": "ExistingPreMoveAlternatives",
+      "parameters": [
+        "1,False,\"blocked-forfeit\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T224343764Z/results.xml"
+    },
+    {
+      "id": "OnlinePreMoveChoicesPlayModeTests.ExistingPreMoveAlternatives(1,False,\"offline-blocked-forfeit\")",
+      "feature": "OnlinePreMoveChoices",
+      "mode": "playmode",
+      "fixture": "OnlinePreMoveChoicesPlayModeTests",
+      "method": "ExistingPreMoveAlternatives",
+      "parameters": [
+        "1,False,\"offline-blocked-forfeit\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T224343764Z/results.xml"
+    },
+    {
+      "id": "OnlinePreMoveChoicesPlayModeTests.ExistingPreMoveAlternatives(1,False,\"nutmeg-direct\")",
+      "feature": "OnlinePreMoveChoices",
+      "mode": "playmode",
+      "fixture": "OnlinePreMoveChoicesPlayModeTests",
+      "method": "ExistingPreMoveAlternatives",
+      "parameters": [
+        "1,False,\"nutmeg-direct\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T224343764Z/results.xml"
+    },
+    {
+      "id": "OnlinePreMoveChoicesPlayModeTests.ExistingPreMoveAlternatives(1,True,\"keeper-switch\")",
+      "feature": "OnlinePreMoveChoices",
+      "mode": "playmode",
+      "fixture": "OnlinePreMoveChoicesPlayModeTests",
+      "method": "ExistingPreMoveAlternatives",
+      "parameters": [
+        "1,True,\"keeper-switch\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T224343764Z/results.xml"
+    },
+    {
+      "id": "OnlinePreMoveChoicesPlayModeTests.ExistingPreMoveAlternatives(1,True,\"nutmeg-move\")",
+      "feature": "OnlinePreMoveChoices",
+      "mode": "playmode",
+      "fixture": "OnlinePreMoveChoicesPlayModeTests",
+      "method": "ExistingPreMoveAlternatives",
+      "parameters": [
+        "1,True,\"nutmeg-move\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T224343764Z/results.xml"
+    },
+    {
+      "id": "OnlinePreMoveChoicesPlayModeTests.ExistingPreMoveAlternatives(1,True,\"blocked-forfeit\")",
+      "feature": "OnlinePreMoveChoices",
+      "mode": "playmode",
+      "fixture": "OnlinePreMoveChoicesPlayModeTests",
+      "method": "ExistingPreMoveAlternatives",
+      "parameters": [
+        "1,True,\"blocked-forfeit\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T224343764Z/results.xml"
+    },
+    {
+      "id": "OnlinePreMoveChoicesPlayModeTests.ExistingPreMoveAlternatives(1,True,\"offline-blocked-forfeit\")",
+      "feature": "OnlinePreMoveChoices",
+      "mode": "playmode",
+      "fixture": "OnlinePreMoveChoicesPlayModeTests",
+      "method": "ExistingPreMoveAlternatives",
+      "parameters": [
+        "1,True,\"offline-blocked-forfeit\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T224343764Z/results.xml"
+    },
+    {
+      "id": "OnlinePreMoveChoicesPlayModeTests.ExistingPreMoveAlternatives(1,True,\"nutmeg-direct\")",
+      "feature": "OnlinePreMoveChoices",
+      "mode": "playmode",
+      "fixture": "OnlinePreMoveChoicesPlayModeTests",
+      "method": "ExistingPreMoveAlternatives",
+      "parameters": [
+        "1,True,\"nutmeg-direct\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T224343764Z/results.xml"
+    },
+    {
+      "id": "OnlinePreMoveChoicesPlayModeTests.ExistingPreMoveAlternatives(-1,False,\"keeper-switch\")",
+      "feature": "OnlinePreMoveChoices",
+      "mode": "playmode",
+      "fixture": "OnlinePreMoveChoicesPlayModeTests",
+      "method": "ExistingPreMoveAlternatives",
+      "parameters": [
+        "-1,False,\"keeper-switch\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T224343764Z/results.xml"
+    },
+    {
+      "id": "OnlinePreMoveChoicesPlayModeTests.ExistingPreMoveAlternatives(-1,False,\"nutmeg-move\")",
+      "feature": "OnlinePreMoveChoices",
+      "mode": "playmode",
+      "fixture": "OnlinePreMoveChoicesPlayModeTests",
+      "method": "ExistingPreMoveAlternatives",
+      "parameters": [
+        "-1,False,\"nutmeg-move\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T224343764Z/results.xml"
+    },
+    {
+      "id": "OnlinePreMoveChoicesPlayModeTests.ExistingPreMoveAlternatives(-1,False,\"blocked-forfeit\")",
+      "feature": "OnlinePreMoveChoices",
+      "mode": "playmode",
+      "fixture": "OnlinePreMoveChoicesPlayModeTests",
+      "method": "ExistingPreMoveAlternatives",
+      "parameters": [
+        "-1,False,\"blocked-forfeit\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T224343764Z/results.xml"
+    },
+    {
+      "id": "OnlinePreMoveChoicesPlayModeTests.ExistingPreMoveAlternatives(-1,False,\"offline-blocked-forfeit\")",
+      "feature": "OnlinePreMoveChoices",
+      "mode": "playmode",
+      "fixture": "OnlinePreMoveChoicesPlayModeTests",
+      "method": "ExistingPreMoveAlternatives",
+      "parameters": [
+        "-1,False,\"offline-blocked-forfeit\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T224343764Z/results.xml"
+    },
+    {
+      "id": "OnlinePreMoveChoicesPlayModeTests.ExistingPreMoveAlternatives(-1,False,\"nutmeg-direct\")",
+      "feature": "OnlinePreMoveChoices",
+      "mode": "playmode",
+      "fixture": "OnlinePreMoveChoicesPlayModeTests",
+      "method": "ExistingPreMoveAlternatives",
+      "parameters": [
+        "-1,False,\"nutmeg-direct\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T224343764Z/results.xml"
+    },
+    {
+      "id": "OnlinePreMoveChoicesPlayModeTests.ExistingPreMoveAlternatives(-1,True,\"keeper-switch\")",
+      "feature": "OnlinePreMoveChoices",
+      "mode": "playmode",
+      "fixture": "OnlinePreMoveChoicesPlayModeTests",
+      "method": "ExistingPreMoveAlternatives",
+      "parameters": [
+        "-1,True,\"keeper-switch\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T224343764Z/results.xml"
+    },
+    {
+      "id": "OnlinePreMoveChoicesPlayModeTests.ExistingPreMoveAlternatives(-1,True,\"nutmeg-move\")",
+      "feature": "OnlinePreMoveChoices",
+      "mode": "playmode",
+      "fixture": "OnlinePreMoveChoicesPlayModeTests",
+      "method": "ExistingPreMoveAlternatives",
+      "parameters": [
+        "-1,True,\"nutmeg-move\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T224343764Z/results.xml"
+    },
+    {
+      "id": "OnlinePreMoveChoicesPlayModeTests.ExistingPreMoveAlternatives(-1,True,\"blocked-forfeit\")",
+      "feature": "OnlinePreMoveChoices",
+      "mode": "playmode",
+      "fixture": "OnlinePreMoveChoicesPlayModeTests",
+      "method": "ExistingPreMoveAlternatives",
+      "parameters": [
+        "-1,True,\"blocked-forfeit\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T224343764Z/results.xml"
+    },
+    {
+      "id": "OnlinePreMoveChoicesPlayModeTests.ExistingPreMoveAlternatives(-1,True,\"offline-blocked-forfeit\")",
+      "feature": "OnlinePreMoveChoices",
+      "mode": "playmode",
+      "fixture": "OnlinePreMoveChoicesPlayModeTests",
+      "method": "ExistingPreMoveAlternatives",
+      "parameters": [
+        "-1,True,\"offline-blocked-forfeit\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T224343764Z/results.xml"
+    },
+    {
+      "id": "OnlinePreMoveChoicesPlayModeTests.ExistingPreMoveAlternatives(-1,True,\"nutmeg-direct\")",
+      "feature": "OnlinePreMoveChoices",
+      "mode": "playmode",
+      "fixture": "OnlinePreMoveChoicesPlayModeTests",
+      "method": "ExistingPreMoveAlternatives",
+      "parameters": [
+        "-1,True,\"nutmeg-direct\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T224343764Z/results.xml"
+    },
+    {
+      "id": "OnlinePreMoveChoicesPlayModeTests.HoldBlocksUncommittedActionSwitch(1,False)",
+      "feature": "OnlinePreMoveChoices",
+      "mode": "playmode",
+      "fixture": "OnlinePreMoveChoicesPlayModeTests",
+      "method": "HoldBlocksUncommittedActionSwitch",
+      "parameters": [
+        "1,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T224343764Z/results.xml"
+    },
+    {
+      "id": "OnlinePreMoveChoicesPlayModeTests.HoldBlocksUncommittedActionSwitch(1,True)",
+      "feature": "OnlinePreMoveChoices",
+      "mode": "playmode",
+      "fixture": "OnlinePreMoveChoicesPlayModeTests",
+      "method": "HoldBlocksUncommittedActionSwitch",
+      "parameters": [
+        "1,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T224343764Z/results.xml"
+    },
+    {
+      "id": "OnlinePreMoveChoicesPlayModeTests.HoldBlocksUncommittedActionSwitch(-1,False)",
+      "feature": "OnlinePreMoveChoices",
+      "mode": "playmode",
+      "fixture": "OnlinePreMoveChoicesPlayModeTests",
+      "method": "HoldBlocksUncommittedActionSwitch",
+      "parameters": [
+        "-1,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T224343764Z/results.xml"
+    },
+    {
+      "id": "OnlinePreMoveChoicesPlayModeTests.HoldBlocksUncommittedActionSwitch(-1,True)",
+      "feature": "OnlinePreMoveChoices",
+      "mode": "playmode",
+      "fixture": "OnlinePreMoveChoicesPlayModeTests",
+      "method": "HoldBlocksUncommittedActionSwitch",
+      "parameters": [
+        "-1,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T224343764Z/results.xml"
+    },
+    {
+      "id": "OnlinePreMoveChoicesPlayModeTests.StationaryOutfieldForfeitOfferRemainsUnchanged(1,False)",
+      "feature": "OnlinePreMoveChoices",
+      "mode": "playmode",
+      "fixture": "OnlinePreMoveChoicesPlayModeTests",
+      "method": "StationaryOutfieldForfeitOfferRemainsUnchanged",
+      "parameters": [
+        "1,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T224343764Z/results.xml"
+    },
+    {
+      "id": "OnlinePreMoveChoicesPlayModeTests.StationaryOutfieldForfeitOfferRemainsUnchanged(1,True)",
+      "feature": "OnlinePreMoveChoices",
+      "mode": "playmode",
+      "fixture": "OnlinePreMoveChoicesPlayModeTests",
+      "method": "StationaryOutfieldForfeitOfferRemainsUnchanged",
+      "parameters": [
+        "1,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T224343764Z/results.xml"
+    },
+    {
+      "id": "OnlinePreMoveChoicesPlayModeTests.StationaryOutfieldForfeitOfferRemainsUnchanged(-1,False)",
+      "feature": "OnlinePreMoveChoices",
+      "mode": "playmode",
+      "fixture": "OnlinePreMoveChoicesPlayModeTests",
+      "method": "StationaryOutfieldForfeitOfferRemainsUnchanged",
+      "parameters": [
+        "-1,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T224343764Z/results.xml"
+    },
+    {
+      "id": "OnlinePreMoveChoicesPlayModeTests.StationaryOutfieldForfeitOfferRemainsUnchanged(-1,True)",
+      "feature": "OnlinePreMoveChoices",
+      "mode": "playmode",
+      "fixture": "OnlinePreMoveChoicesPlayModeTests",
+      "method": "StationaryOutfieldForfeitOfferRemainsUnchanged",
+      "parameters": [
+        "-1,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T224343764Z/results.xml"
+    },
+    {
+      "id": "OnlinePreMoveChoicesPlayModeTests.ThrowInMustMoveRequiredDefenders(1,False)",
+      "feature": "OnlinePreMoveChoices",
+      "mode": "playmode",
+      "fixture": "OnlinePreMoveChoicesPlayModeTests",
+      "method": "ThrowInMustMoveRequiredDefenders",
+      "parameters": [
+        "1,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T224343764Z/results.xml"
+    },
+    {
+      "id": "OnlinePreMoveChoicesPlayModeTests.ThrowInMustMoveRequiredDefenders(1,True)",
+      "feature": "OnlinePreMoveChoices",
+      "mode": "playmode",
+      "fixture": "OnlinePreMoveChoicesPlayModeTests",
+      "method": "ThrowInMustMoveRequiredDefenders",
+      "parameters": [
+        "1,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T224343764Z/results.xml"
+    },
+    {
+      "id": "OnlinePreMoveChoicesPlayModeTests.ThrowInMustMoveRequiredDefenders(-1,False)",
+      "feature": "OnlinePreMoveChoices",
+      "mode": "playmode",
+      "fixture": "OnlinePreMoveChoicesPlayModeTests",
+      "method": "ThrowInMustMoveRequiredDefenders",
+      "parameters": [
+        "-1,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T224343764Z/results.xml"
+    },
+    {
+      "id": "OnlinePreMoveChoicesPlayModeTests.ThrowInMustMoveRequiredDefenders(-1,True)",
+      "feature": "OnlinePreMoveChoices",
+      "mode": "playmode",
+      "fixture": "OnlinePreMoveChoicesPlayModeTests",
+      "method": "ThrowInMustMoveRequiredDefenders",
+      "parameters": [
+        "-1,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T224343764Z/results.xml"
     }
   ]
 }

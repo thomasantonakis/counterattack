@@ -1,0 +1,16 @@
+{"name":"OnlineStationaryDefenderPlayModeTests.DistantDefenderCannotTackleInPlace(1,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineStationaryDefenderPlayModeTests.DistantDefenderCannotTackleInPlace(1,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineStationaryDefenderPlayModeTests.DistantDefenderCannotTackleInPlace(-1,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineStationaryDefenderPlayModeTests.DistantDefenderCannotTackleInPlace(-1,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineStationaryDefenderPlayModeTests.KeeperCanMoveInsteadOfChallenge(1,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineStationaryDefenderPlayModeTests.KeeperCanMoveInsteadOfChallenge(1,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineStationaryDefenderPlayModeTests.KeeperCanMoveInsteadOfChallenge(-1,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineStationaryDefenderPlayModeTests.KeeperCanMoveInsteadOfChallenge(-1,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineStationaryDefenderPlayModeTests.OutfielderCanTackleOrMove(1,False,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineStationaryDefenderPlayModeTests.OutfielderCanTackleOrMove(1,False,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineStationaryDefenderPlayModeTests.OutfielderCanTackleOrMove(1,True,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineStationaryDefenderPlayModeTests.OutfielderCanTackleOrMove(1,True,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineStationaryDefenderPlayModeTests.OutfielderCanTackleOrMove(-1,False,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineStationaryDefenderPlayModeTests.OutfielderCanTackleOrMove(-1,False,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineStationaryDefenderPlayModeTests.OutfielderCanTackleOrMove(-1,True,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineStationaryDefenderPlayModeTests.OutfielderCanTackleOrMove(-1,True,True)","status":"Passed","message":"","stackTrace":""}

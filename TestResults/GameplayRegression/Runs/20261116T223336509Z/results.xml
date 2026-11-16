@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="4" result="Failed(Child)" total="4" passed="0" failed="4" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 22:33:36Z" end-time="2026-11-16 22:33:40Z" duration="3.7698422">
+  <test-suite type="TestSuite" id="3060" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1709" result="Failed" site="Child" start-time="2026-11-16 22:33:36Z" end-time="2026-11-16 22:33:40Z" duration="3.769842" total="4" passed="0" failed="4" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="3057" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1709" result="Failed" site="Child" start-time="2026-11-16 22:33:36Z" end-time="2026-11-16 22:33:40Z" duration="3.741005" total="4" passed="0" failed="4" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12156" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestFixture" id="2164" name="OnlinePreMoveChoicesPlayModeTests" fullname="OnlinePreMoveChoicesPlayModeTests" classname="OnlinePreMoveChoicesPlayModeTests" runstate="Runnable" testcasecount="28" result="Failed" site="Child" start-time="2026-11-16 22:33:36Z" end-time="2026-11-16 22:33:40Z" duration="3.734947" total="4" passed="0" failed="4" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlinePreMoveChoices" />
+        </properties>
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="ParameterizedMethod" id="2195" name="HoldBlocksUncommittedActionSwitch" fullname="OnlinePreMoveChoicesPlayModeTests.HoldBlocksUncommittedActionSwitch" classname="OnlinePreMoveChoicesPlayModeTests" runstate="Runnable" testcasecount="4" result="Failed" site="Child" start-time="2026-11-16 22:33:36Z" end-time="2026-11-16 22:33:40Z" duration="3.727454" total="4" passed="0" failed="4" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-case id="2191" name="HoldBlocksUncommittedActionSwitch(1,False)" fullname="OnlinePreMoveChoicesPlayModeTests.HoldBlocksUncommittedActionSwitch(1,False)" methodname="HoldBlocksUncommittedActionSwitch" classname="OnlinePreMoveChoicesPlayModeTests" runstate="Runnable" seed="66568846" result="Failed" start-time="2026-11-16 22:33:36Z" end-time="2026-11-16 22:33:37Z" duration="1.378723" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: <empty>
+  But was:  < "ground.start", "high.start", "long.start" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlinePreMove>d__122.MoveNext () [0x002f4] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlinePreMoveChoices\OnlinePreMoveChoicesFixture.cs:25
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=1, tokens=none.
+Movement phase has been reset.
+Passing Away keeper to HandleTokenSelection
+]]></output>
+          </test-case>
+          <test-case id="2192" name="HoldBlocksUncommittedActionSwitch(1,True)" fullname="OnlinePreMoveChoicesPlayModeTests.HoldBlocksUncommittedActionSwitch(1,True)" methodname="HoldBlocksUncommittedActionSwitch" classname="OnlinePreMoveChoicesPlayModeTests" runstate="Runnable" seed="921568455" result="Failed" start-time="2026-11-16 22:33:37Z" end-time="2026-11-16 22:33:38Z" duration="0.779570" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: <empty>
+  But was:  < "ground.start", "high.start", "long.start" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlinePreMove>d__122.MoveNext () [0x002f4] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlinePreMoveChoices\OnlinePreMoveChoicesFixture.cs:25
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Passing Home keeper to HandleTokenSelection
+]]></output>
+          </test-case>
+          <test-case id="2193" name="HoldBlocksUncommittedActionSwitch(-1,False)" fullname="OnlinePreMoveChoicesPlayModeTests.HoldBlocksUncommittedActionSwitch(-1,False)" methodname="HoldBlocksUncommittedActionSwitch" classname="OnlinePreMoveChoicesPlayModeTests" runstate="Runnable" seed="66089061" result="Failed" start-time="2026-11-16 22:33:38Z" end-time="2026-11-16 22:33:39Z" duration="0.770965" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: <empty>
+  But was:  < "ground.start", "high.start", "long.start" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlinePreMove>d__122.MoveNext () [0x002f4] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlinePreMoveChoices\OnlinePreMoveChoicesFixture.cs:25
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-1, tokens=none.
+Movement phase has been reset.
+Passing Away keeper to HandleTokenSelection
+]]></output>
+          </test-case>
+          <test-case id="2194" name="HoldBlocksUncommittedActionSwitch(-1,True)" fullname="OnlinePreMoveChoicesPlayModeTests.HoldBlocksUncommittedActionSwitch(-1,True)" methodname="HoldBlocksUncommittedActionSwitch" classname="OnlinePreMoveChoicesPlayModeTests" runstate="Runnable" seed="598318701" result="Failed" start-time="2026-11-16 22:33:39Z" end-time="2026-11-16 22:33:40Z" duration="0.760805" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: <empty>
+  But was:  < "ground.start", "high.start", "long.start" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlinePreMove>d__122.MoveNext () [0x002f4] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlinePreMoveChoices\OnlinePreMoveChoicesFixture.cs:25
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Passing Home keeper to HandleTokenSelection
+Saving results to: TestResults\GameplayRegression\Runs\20261116T223336509Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>
