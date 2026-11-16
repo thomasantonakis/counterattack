@@ -10,7 +10,7 @@ using UnityEngine.UI;
 namespace CounterAttack.Online
 {
     [DefaultExecutionOrder(-500)]
-    public sealed class OnlineDraftView:MonoBehaviour
+    public sealed partial class OnlineDraftView:MonoBehaviour
     {
         public DraftManager source;
         public DraftUIManager sourceUi;
@@ -62,7 +62,7 @@ namespace CounterAttack.Online
         }
         public void SelectCard(int index)
         {
-            var s=client?.Capture();if(s?.phase!="pick" || !client.Connected || client.Pending || !s.repeatable && s.turn!=client.Team)return;
+            var s=client?.Capture();if(activeDrag!=null || s?.phase!="pick" || !client.Connected || client.Pending || !s.repeatable && s.turn!=client.Team)return;
             var displayed=DisplayedCards(s);if(index<0 || index>=displayed.Length)return;
             selected=displayed[index].id;selectedSlot=0;Render();
         }
@@ -77,7 +77,7 @@ namespace CounterAttack.Online
         }
         public void SelectSlot(OnlineTeam team,int slot)
         {
-            if(client==null || team!=client.Team || !client.Connected || client.Pending)return;
+            if(activeDrag!=null || client==null || team!=client.Team || !client.Connected || client.Pending)return;
             var s=client.Capture();if(s==null || s.phase is not ("pick" or "review"))return;
             if(selected!=null)
             {
@@ -109,7 +109,7 @@ namespace CounterAttack.Online
         private void Render()
         {
             if(!online)return;
-            var s=client?.Capture();
+            var s=client?.Capture();rendered=s;
             actionButton.interactable=false;
             if(s==null){sourceUi.draftTurnText.text="Connecting to Draft...";sourceUi.draftMetaText.text="Waiting for the shared draft state.";return;}
             if(poolSelection!=s.selection){poolSelection=s.selection;page=0;selected=null;selectedSlot=0;}
@@ -157,7 +157,7 @@ namespace CounterAttack.Online
             actionButton.GetComponentInChildren<TMP_Text>(true).text=label;
             actionButton.interactable=client.Connected && !client.Pending && ((s.phase is "roll" or "opening-roll") && s.turn==client.Team || s.phase=="review" && (!localReady || client.IsHost && s.homeReady && s.awayReady));
             sourceUi.draftMetaText.text=!client.Connected?"Connection interrupted. Draft is held.":s.phase=="room-ready"?"Opening choices agreed. Preparing match...":client.Pending?"Sending selection...":s.phase=="opening-choice"?s.turn==client.Team?"Choose kickoff or your attacking direction.":"Waiting for the other manager's opening choice."
-                :selected!=null?"Select a destination slot in your roster.":selectedSlot>0?"Select another own slot to swap with number "+selectedSlot+"."
+                :activeDrag!=null?"Drop onto one of your own roster slots.":selected!=null?"Select a destination slot in your roster.":selectedSlot>0?"Select another own slot to swap with number "+selectedSlot+"."
                 :s.phase=="pick"?"Select a card, then your preferred slot. Select two own slots to swap.":s.phase=="review"?"Review your roster and confirm. Changes clear both confirmations.":"Each manager rolls for their own team.";
         }
         private static Dictionary<string,string> Fields(OnlineDraftCard c)=>new()

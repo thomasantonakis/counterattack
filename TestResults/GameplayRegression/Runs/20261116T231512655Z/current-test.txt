@@ -1,0 +1,1 @@
+OnlineDraftDragPlayModeTests.LastPoolCardRestoresVisualWhenHidden(True)

@@ -37,7 +37,7 @@ public sealed partial class OnlineDraftSceneFixture
         hostAccount=hostAway?"away":"home";guestAccount=hostAway?"home":"away";
         var version=new OnlineCompatibility(OnlineSessionWire.Version,"draft-scene","catalog");
         var protocol=new OnlineMatchProtocol("draft-scene","home","away",hostAccount,version);protocol.BindAuthenticatedAccount(hostAccount,"host",version);
-        host=new(protocol,"host",guestAccount,OnlineSetupAgreementEditorTests.Valid(),()=>0);
+        host=new(protocol,"host",guestAccount,branch.StartsWith("drag-",System.StringComparison.Ordinal)?DragSettings(branch):OnlineSetupAgreementEditorTests.Valid(),()=>0);
         guest=new(protocol.MatchId,hostAccount,version,protocol.HostTeam,()=>0);
         host.EnableDraft(s=>new OnlineDraftAuthority(protocol,s,OnlineDraftCatalog.Load(),_=>0,()=>rolls.Dequeue()));
         host.Outgoing+=toGuest.Enqueue;guest.Outgoing+=toHost.Enqueue;host.Begin();Flush();
@@ -47,6 +47,7 @@ public sealed partial class OnlineDraftSceneFixture
         var client=localHost?host.Draft:guest.Draft;view.Configure(client);yield return null;
         Assert.That(view.source.enabled || view.sourceUi.enabled,Is.False,"Guest/local menus cannot bootstrap independent saves or rules");
         Assert.That(view.source.allPlayers,Is.Null,"Local CSV/random startup remains inactive");
+        if(branch.StartsWith("drag-",System.StringComparison.Ordinal)){yield return RunDrag(view,client,branch.Substring(5));yield break;}
         Assert.That(view.source.draftOrderPanel.visuals.activeInHierarchy,Is.True,"Roll projection must remain visible");
         Assert.That(view.homeSlots.Length,Is.EqualTo(18));Assert.That(view.awaySlots.Length,Is.EqualTo(18));Assert.That(view.cards.Length,Is.EqualTo(4));
         Assert.That(view.homeSlots.Count(s=>s.gameObject.activeInHierarchy),Is.EqualTo(16));
@@ -87,6 +88,7 @@ public sealed partial class OnlineDraftSceneFixture
     {
         if(app==null)yield break;
         yield return EditorSceneManager.LoadSceneAsyncInPlayMode("Assets/Scenes/MainMenu.unity",new LoadSceneParameters(LoadSceneMode.Single));
-        app.SetSelectedRoomGameMode(previousMode);if(created)Object.Destroy(app.gameObject);Random.state=random;yield return null;
+        app.SetSelectedRoomGameMode(previousMode);if(explicitSave)app.SetActiveSaveFilePath(previousSave);else{app.ClearActiveSaveContext();app.LastSavedFileName=previousSave;}
+        if(created)Object.Destroy(app.gameObject);Random.state=random;yield return null;
     }
 }

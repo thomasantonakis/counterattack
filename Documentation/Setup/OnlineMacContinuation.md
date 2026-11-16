@@ -36,8 +36,9 @@ The build includes normal menus, Create New Game, Draft and OnlineRoom.
 Use the authored Host/Join controls and share the private lobby code. Both
 managers choose their own identity/kit, agree settings, draft and complete the
 opening coin toss before entering the full Room. Native handoff still requires
-paired acceptance; normal pause/substitutions/shootout menus remain integration
-work. No actual internet latency has been measured.
+paired acceptance. Pause, substitutions and shootout ordering now have native
+integration coverage; their cross-machine acceptance remains deferred. No actual
+internet latency has been measured.
 
 ## One-command son's Mac verification
 
@@ -144,3 +145,12 @@ Latest contract is Room v18 / wire v7. Windows exports now include the pre-move
 choice and authority-hold fixes; see OnlinePreMoveChoices/Verification.md. Continue
 using the normal Mac game build/run commands after pulling the current branch.
 Paired verification remains deferred while independent Draft/input work continues.
+
+Authenticated normal-Draft drag/drop is implemented over existing Pick/Swap
+requests, including own-slot rearrangement and stale/pending gesture rejection.
+68 new native cases and 30 affected click/variant cases passed; see
+Assets/Editor/FeatureTests/OnlineDraftDrag/Verification.md. All three Windows
+exports and packaged local/login checks refreshed at 23:23-23:26 UTC November 16.
+Room remains v18/wire v7. Each new case has a separate deferred Mac manifest entry.
+Continue the remaining frontend/full-match audit and transport verification.
+Paired testing and actual internet latency remain deferred.

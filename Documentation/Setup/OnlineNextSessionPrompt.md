@@ -633,3 +633,12 @@ no offline rule was changed. See OnlinePreMoveChoices/Verification.md. Room is
 v18/wire v7. All Windows exports refreshed successfully with v18 at 22:49-22:50
 UTC. Next: authenticated normal-Draft drag/drop and the remaining frontend/full-
 match input audit. Paired Mac testing stays deferred; each new case is registered.
+
+Authenticated normal-Draft drag/drop is implemented over existing Pick/Swap
+requests, including own-slot rearrangement and stale/pending gesture rejection.
+68 new native cases and 30 affected click/variant cases passed; see
+Assets/Editor/FeatureTests/OnlineDraftDrag/Verification.md. All three Windows
+exports and packaged local/login checks refreshed at 23:23-23:26 UTC November 16.
+Room remains v18/wire v7. Each new case has a separate deferred Mac manifest entry.
+Continue the remaining frontend/full-match audit and transport verification.
+Paired testing and actual internet latency remain deferred.

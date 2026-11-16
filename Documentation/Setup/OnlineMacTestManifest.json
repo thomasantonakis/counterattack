@@ -554,6 +554,16 @@
     },
     {
       "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "categories": [
+        "OnlineDraftDrag"
+      ],
+      "definition_sha256": "c4cf195eced60a735cfe4d68c6819924f40694657b8aaff1f4f261e4360652f6",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineDraftDrag/OnlineDraftDragPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
       "fixture": "OnlineDraftVariantScenePlayModeTests",
       "categories": [
         "OnlineDraftVariantScene"
@@ -16710,6 +16720,890 @@
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
       "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T224343764Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.AuthoredDragRoutesOneSemanticRequest(False,False,\"card\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "AuthoredDragRoutesOneSemanticRequest",
+      "parameters": [
+        "False,False,\"card\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.AuthoredDragRoutesOneSemanticRequest(False,False,\"roster\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "AuthoredDragRoutesOneSemanticRequest",
+      "parameters": [
+        "False,False,\"roster\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.AuthoredDragRoutesOneSemanticRequest(False,False,\"keeper\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "AuthoredDragRoutesOneSemanticRequest",
+      "parameters": [
+        "False,False,\"keeper\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.AuthoredDragRoutesOneSemanticRequest(False,False,\"foreign\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "AuthoredDragRoutesOneSemanticRequest",
+      "parameters": [
+        "False,False,\"foreign\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.AuthoredDragRoutesOneSemanticRequest(False,False,\"kind\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "AuthoredDragRoutesOneSemanticRequest",
+      "parameters": [
+        "False,False,\"kind\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.AuthoredDragRoutesOneSemanticRequest(False,False,\"disconnect\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "AuthoredDragRoutesOneSemanticRequest",
+      "parameters": [
+        "False,False,\"disconnect\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.AuthoredDragRoutesOneSemanticRequest(False,False,\"reconnect\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "AuthoredDragRoutesOneSemanticRequest",
+      "parameters": [
+        "False,False,\"reconnect\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.AuthoredDragRoutesOneSemanticRequest(False,False,\"same\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "AuthoredDragRoutesOneSemanticRequest",
+      "parameters": [
+        "False,False,\"same\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.AuthoredDragRoutesOneSemanticRequest(False,False,\"empty\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "AuthoredDragRoutesOneSemanticRequest",
+      "parameters": [
+        "False,False,\"empty\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.AuthoredDragRoutesOneSemanticRequest(False,False,\"ready\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "AuthoredDragRoutesOneSemanticRequest",
+      "parameters": [
+        "False,False,\"ready\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.AuthoredDragRoutesOneSemanticRequest(False,False,\"cancel\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "AuthoredDragRoutesOneSemanticRequest",
+      "parameters": [
+        "False,False,\"cancel\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.AuthoredDragRoutesOneSemanticRequest(False,True,\"card\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "AuthoredDragRoutesOneSemanticRequest",
+      "parameters": [
+        "False,True,\"card\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.AuthoredDragRoutesOneSemanticRequest(False,True,\"roster\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "AuthoredDragRoutesOneSemanticRequest",
+      "parameters": [
+        "False,True,\"roster\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.AuthoredDragRoutesOneSemanticRequest(False,True,\"keeper\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "AuthoredDragRoutesOneSemanticRequest",
+      "parameters": [
+        "False,True,\"keeper\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.AuthoredDragRoutesOneSemanticRequest(False,True,\"foreign\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "AuthoredDragRoutesOneSemanticRequest",
+      "parameters": [
+        "False,True,\"foreign\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.AuthoredDragRoutesOneSemanticRequest(False,True,\"kind\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "AuthoredDragRoutesOneSemanticRequest",
+      "parameters": [
+        "False,True,\"kind\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.AuthoredDragRoutesOneSemanticRequest(False,True,\"reconnect\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "AuthoredDragRoutesOneSemanticRequest",
+      "parameters": [
+        "False,True,\"reconnect\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.AuthoredDragRoutesOneSemanticRequest(False,True,\"same\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "AuthoredDragRoutesOneSemanticRequest",
+      "parameters": [
+        "False,True,\"same\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.AuthoredDragRoutesOneSemanticRequest(False,True,\"empty\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "AuthoredDragRoutesOneSemanticRequest",
+      "parameters": [
+        "False,True,\"empty\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.AuthoredDragRoutesOneSemanticRequest(False,True,\"ready\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "AuthoredDragRoutesOneSemanticRequest",
+      "parameters": [
+        "False,True,\"ready\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.AuthoredDragRoutesOneSemanticRequest(False,True,\"cancel\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "AuthoredDragRoutesOneSemanticRequest",
+      "parameters": [
+        "False,True,\"cancel\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.AuthoredDragRoutesOneSemanticRequest(True,False,\"card\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "AuthoredDragRoutesOneSemanticRequest",
+      "parameters": [
+        "True,False,\"card\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.AuthoredDragRoutesOneSemanticRequest(True,False,\"roster\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "AuthoredDragRoutesOneSemanticRequest",
+      "parameters": [
+        "True,False,\"roster\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.AuthoredDragRoutesOneSemanticRequest(True,False,\"keeper\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "AuthoredDragRoutesOneSemanticRequest",
+      "parameters": [
+        "True,False,\"keeper\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.AuthoredDragRoutesOneSemanticRequest(True,False,\"foreign\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "AuthoredDragRoutesOneSemanticRequest",
+      "parameters": [
+        "True,False,\"foreign\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.AuthoredDragRoutesOneSemanticRequest(True,False,\"kind\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "AuthoredDragRoutesOneSemanticRequest",
+      "parameters": [
+        "True,False,\"kind\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.AuthoredDragRoutesOneSemanticRequest(True,False,\"disconnect\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "AuthoredDragRoutesOneSemanticRequest",
+      "parameters": [
+        "True,False,\"disconnect\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.AuthoredDragRoutesOneSemanticRequest(True,False,\"reconnect\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "AuthoredDragRoutesOneSemanticRequest",
+      "parameters": [
+        "True,False,\"reconnect\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.AuthoredDragRoutesOneSemanticRequest(True,False,\"same\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "AuthoredDragRoutesOneSemanticRequest",
+      "parameters": [
+        "True,False,\"same\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.AuthoredDragRoutesOneSemanticRequest(True,False,\"empty\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "AuthoredDragRoutesOneSemanticRequest",
+      "parameters": [
+        "True,False,\"empty\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.AuthoredDragRoutesOneSemanticRequest(True,False,\"ready\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "AuthoredDragRoutesOneSemanticRequest",
+      "parameters": [
+        "True,False,\"ready\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.AuthoredDragRoutesOneSemanticRequest(True,False,\"cancel\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "AuthoredDragRoutesOneSemanticRequest",
+      "parameters": [
+        "True,False,\"cancel\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.AuthoredDragRoutesOneSemanticRequest(True,True,\"card\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "AuthoredDragRoutesOneSemanticRequest",
+      "parameters": [
+        "True,True,\"card\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.AuthoredDragRoutesOneSemanticRequest(True,True,\"roster\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "AuthoredDragRoutesOneSemanticRequest",
+      "parameters": [
+        "True,True,\"roster\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.AuthoredDragRoutesOneSemanticRequest(True,True,\"keeper\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "AuthoredDragRoutesOneSemanticRequest",
+      "parameters": [
+        "True,True,\"keeper\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.AuthoredDragRoutesOneSemanticRequest(True,True,\"foreign\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "AuthoredDragRoutesOneSemanticRequest",
+      "parameters": [
+        "True,True,\"foreign\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.AuthoredDragRoutesOneSemanticRequest(True,True,\"kind\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "AuthoredDragRoutesOneSemanticRequest",
+      "parameters": [
+        "True,True,\"kind\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.AuthoredDragRoutesOneSemanticRequest(True,True,\"reconnect\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "AuthoredDragRoutesOneSemanticRequest",
+      "parameters": [
+        "True,True,\"reconnect\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.AuthoredDragRoutesOneSemanticRequest(True,True,\"same\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "AuthoredDragRoutesOneSemanticRequest",
+      "parameters": [
+        "True,True,\"same\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.AuthoredDragRoutesOneSemanticRequest(True,True,\"empty\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "AuthoredDragRoutesOneSemanticRequest",
+      "parameters": [
+        "True,True,\"empty\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.AuthoredDragRoutesOneSemanticRequest(True,True,\"ready\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "AuthoredDragRoutesOneSemanticRequest",
+      "parameters": [
+        "True,True,\"ready\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.AuthoredDragRoutesOneSemanticRequest(True,True,\"cancel\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "AuthoredDragRoutesOneSemanticRequest",
+      "parameters": [
+        "True,True,\"cancel\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.DraftModeAndPhaseGuards(False,False,\"roll-blocked\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "DraftModeAndPhaseGuards",
+      "parameters": [
+        "False,False,\"roll-blocked\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.DraftModeAndPhaseGuards(False,False,\"gk-card\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "DraftModeAndPhaseGuards",
+      "parameters": [
+        "False,False,\"gk-card\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.DraftModeAndPhaseGuards(False,False,\"arcade-card\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "DraftModeAndPhaseGuards",
+      "parameters": [
+        "False,False,\"arcade-card\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.DraftModeAndPhaseGuards(False,False,\"free-card\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "DraftModeAndPhaseGuards",
+      "parameters": [
+        "False,False,\"free-card\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.DraftModeAndPhaseGuards(False,False,\"large\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "DraftModeAndPhaseGuards",
+      "parameters": [
+        "False,False,\"large\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.DraftModeAndPhaseGuards(False,True,\"roll-blocked\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "DraftModeAndPhaseGuards",
+      "parameters": [
+        "False,True,\"roll-blocked\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.DraftModeAndPhaseGuards(False,True,\"gk-card\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "DraftModeAndPhaseGuards",
+      "parameters": [
+        "False,True,\"gk-card\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.DraftModeAndPhaseGuards(False,True,\"arcade-card\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "DraftModeAndPhaseGuards",
+      "parameters": [
+        "False,True,\"arcade-card\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.DraftModeAndPhaseGuards(False,True,\"free-card\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "DraftModeAndPhaseGuards",
+      "parameters": [
+        "False,True,\"free-card\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.DraftModeAndPhaseGuards(False,True,\"large\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "DraftModeAndPhaseGuards",
+      "parameters": [
+        "False,True,\"large\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.DraftModeAndPhaseGuards(True,False,\"roll-blocked\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "DraftModeAndPhaseGuards",
+      "parameters": [
+        "True,False,\"roll-blocked\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.DraftModeAndPhaseGuards(True,False,\"gk-card\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "DraftModeAndPhaseGuards",
+      "parameters": [
+        "True,False,\"gk-card\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.DraftModeAndPhaseGuards(True,False,\"arcade-card\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "DraftModeAndPhaseGuards",
+      "parameters": [
+        "True,False,\"arcade-card\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.DraftModeAndPhaseGuards(True,False,\"free-card\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "DraftModeAndPhaseGuards",
+      "parameters": [
+        "True,False,\"free-card\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.DraftModeAndPhaseGuards(True,False,\"large\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "DraftModeAndPhaseGuards",
+      "parameters": [
+        "True,False,\"large\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.DraftModeAndPhaseGuards(True,True,\"roll-blocked\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "DraftModeAndPhaseGuards",
+      "parameters": [
+        "True,True,\"roll-blocked\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.DraftModeAndPhaseGuards(True,True,\"gk-card\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "DraftModeAndPhaseGuards",
+      "parameters": [
+        "True,True,\"gk-card\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.DraftModeAndPhaseGuards(True,True,\"arcade-card\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "DraftModeAndPhaseGuards",
+      "parameters": [
+        "True,True,\"arcade-card\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.DraftModeAndPhaseGuards(True,True,\"free-card\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "DraftModeAndPhaseGuards",
+      "parameters": [
+        "True,True,\"free-card\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.DraftModeAndPhaseGuards(True,True,\"large\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "DraftModeAndPhaseGuards",
+      "parameters": [
+        "True,True,\"large\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T230954240Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.AuthoredDragRoutesOneSemanticRequest(False,True,\"disconnect\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "AuthoredDragRoutesOneSemanticRequest",
+      "parameters": [
+        "False,True,\"disconnect\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T231414933Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.AuthoredDragRoutesOneSemanticRequest(True,True,\"disconnect\")",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "AuthoredDragRoutesOneSemanticRequest",
+      "parameters": [
+        "True,True,\"disconnect\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T231433442Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.LastPoolCardRestoresVisualWhenHidden(False)",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "LastPoolCardRestoresVisualWhenHidden",
+      "parameters": [
+        "False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T231451816Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.LastPoolCardRestoresVisualWhenHidden(True)",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "LastPoolCardRestoresVisualWhenHidden",
+      "parameters": [
+        "True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T231512655Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.PendingGuestDropCannotSubmitAgain(False)",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "PendingGuestDropCannotSubmitAgain",
+      "parameters": [
+        "False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T231842371Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftDragPlayModeTests.PendingGuestDropCannotSubmitAgain(True)",
+      "feature": "OnlineDraftDrag",
+      "mode": "playmode",
+      "fixture": "OnlineDraftDragPlayModeTests",
+      "method": "PendingGuestDropCannotSubmitAgain",
+      "parameters": [
+        "True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T231842371Z/results.xml"
     }
   ]
 }
