@@ -25,9 +25,13 @@ optional snapshot objects becoming empty live state on guests. See
 OnlineRoomCoinToss/Verification.md; all three Windows exports and local/login
 checks refreshed. Regular-match conclusion now has 26 new native passes and 35
 affected passes, including safe host/guest return and preserved scoreboard/Stats.
-See OnlineMatchConclusion/Verification.md; full contract is Room v8. Next: direct
-board interactions, shared settings commands and motion interpolation/transport
-tuning. In-flight full snapshots
+See OnlineMatchConclusion/Verification.md. Direct pitch input now adds 52 native
+passes (44 EditMode, eight actual-scene), plus 11 affected passes. Player/hex clicks,
+real collider raycasts and original action keys use the authenticated semantic
+gateway. Host movement/kickoff and inert guest commands passed in both attacking
+directions. See OnlineBoardInput/Verification.md; full contract is Room v9.
+Next: shared settings commands and motion interpolation/transport tuning.
+In-flight full snapshots
 now retain actual ball/player poses, with 9 validation and 5 actual-scene passes. Full-match internet acceptance and measured
 latency remain unverified. Paired Mac testing is deferred.
 See Assets/Editor/FeatureTests/OnlineFullRoom/Verification.md.

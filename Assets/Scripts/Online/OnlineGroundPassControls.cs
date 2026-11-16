@@ -27,6 +27,11 @@ namespace CounterAttack.Online
         public bool CanManageSubstitutions=>state?.keeperActionBlocked==true?CanManageRequiredKeeper && !(team==OnlineTeam.Home?state.homeEmergencyKeeper:state.awayEmergencyKeeper):CanManageOwnPause;
         public bool CanSubmitAction(string action)=>CanAct && state.legalActions?.Contains(action)==true;
         public void SubmitAction(string action)=>Gameplay(action);
+        public bool TrySubmitAction(string action)
+        {
+            if(!CanSubmitAction(action) || Requested==null)return false;
+            Gameplay(action);return true;
+        }
         public bool CanManageShootout=>connected && !pending && state?.shootout?.selecting==true && !state.connectionHeld && !state.isSharedPaused;
         public void SwapShootout(int first,int second)=>Control("shootout.swap:"+first+":"+second);
         public void ConfirmShootout()=>Control("shootout.ready");

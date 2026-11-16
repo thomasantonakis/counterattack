@@ -82,8 +82,12 @@ focused real-scene coverage. Room tiebreaker/extra-time coin toss and half trans
 new native passes and 142 affected passes; full contract is Room v7.
 Regular-match conclusion now adds 26 native passes and 35 affected passes;
 rebuild both full-game clients for Room v8.
-Prioritize direct board input and shared settings,
-then presentation interpolation/transport tuning and deferred paired acceptance.
+Direct board input adds 52 focused native passes: player/hex clicks, real physics
+raycasts, original action keys, kickoff movement and inert guest intentions.
+Rebuild both full-game clients for Room v9; wire framing remains v7. All 52 cases
+are separate deferred entries in the Mac manifest. See OnlineBoardInput/Verification.md.
+Prioritize shared settings, then presentation interpolation/transport tuning and
+deferred paired acceptance. Physical two-machine input and latency remain untested.
 Preserve host-only RNG/rules, authenticated semantic commands, guest inactivity,
 receipt/revision checks and reconnect holds. Compile, run feature-focused native
 tests and build through the already-open Editor. Commit/push verified batches.

@@ -4,6 +4,16 @@
   "fixtures": [
     {
       "mode": "editor",
+      "fixture": "OnlineBoardInputEditorTests",
+      "categories": [
+        "OnlineBoardInput"
+      ],
+      "definition_sha256": "d7baaf8e6e676a9bacfb3f068154dd232db5f5413912885d492a6ba28f30a9fe",
+      "route": "native",
+      "source": "Assets/Editor/FeatureTests/OnlineBoardInput/OnlineBoardInputEditorTests.cs"
+    },
+    {
+      "mode": "editor",
       "fixture": "OnlineContinuousSessionEditorTests",
       "categories": [
         "OnlineContinuousSession"
@@ -391,6 +401,16 @@
       "definition_sha256": "5f85b1d38350e0002a2fe2d39e66c01989ef4ad720492f413fb63864999400b1",
       "route": "native",
       "source": "Assets/Tests/PlayMode/Features/OnlineAutomaticRoll/OnlineAutomaticRollPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineBoardInputPlayModeTests",
+      "categories": [
+        "OnlineBoardInput"
+      ],
+      "definition_sha256": "a66d6a9706fb9f73ccfcd330003b4324b9eed781116539c0905ccffdbecb2507",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineBoardInput/OnlineBoardInputPlayModeTests.cs"
     },
     {
       "mode": "playmode",
@@ -10983,6 +11003,676 @@
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
       "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T063847072Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputEditorTests.ActorUsesOnlyPublishedChoice(\"kickoff.player\")",
+      "feature": "OnlineBoardInput",
+      "mode": "editor",
+      "fixture": "OnlineBoardInputEditorTests",
+      "method": "ActorUsesOnlyPublishedChoice",
+      "parameters": [
+        "\"kickoff.player\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072259556Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputEditorTests.ActorUsesOnlyPublishedChoice(\"kickoff.taker\")",
+      "feature": "OnlineBoardInput",
+      "mode": "editor",
+      "fixture": "OnlineBoardInputEditorTests",
+      "method": "ActorUsesOnlyPublishedChoice",
+      "parameters": [
+        "\"kickoff.taker\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072259556Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputEditorTests.ActorUsesOnlyPublishedChoice(\"movement.player\")",
+      "feature": "OnlineBoardInput",
+      "mode": "editor",
+      "fixture": "OnlineBoardInputEditorTests",
+      "method": "ActorUsesOnlyPublishedChoice",
+      "parameters": [
+        "\"movement.player\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072259556Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputEditorTests.ActorUsesOnlyPublishedChoice(\"high.player\")",
+      "feature": "OnlineBoardInput",
+      "mode": "editor",
+      "fixture": "OnlineBoardInputEditorTests",
+      "method": "ActorUsesOnlyPublishedChoice",
+      "parameters": [
+        "\"high.player\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072259556Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputEditorTests.ActorUsesOnlyPublishedChoice(\"ftp.player\")",
+      "feature": "OnlineBoardInput",
+      "mode": "editor",
+      "fixture": "OnlineBoardInputEditorTests",
+      "method": "ActorUsesOnlyPublishedChoice",
+      "parameters": [
+        "\"ftp.player\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072259556Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputEditorTests.ActorUsesOnlyPublishedChoice(\"header.nominate\")",
+      "feature": "OnlineBoardInput",
+      "mode": "editor",
+      "fixture": "OnlineBoardInputEditorTests",
+      "method": "ActorUsesOnlyPublishedChoice",
+      "parameters": [
+        "\"header.nominate\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072259556Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputEditorTests.ActorUsesOnlyPublishedChoice(\"header.remove\")",
+      "feature": "OnlineBoardInput",
+      "mode": "editor",
+      "fixture": "OnlineBoardInputEditorTests",
+      "method": "ActorUsesOnlyPublishedChoice",
+      "parameters": [
+        "\"header.remove\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072259556Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputEditorTests.ActorUsesOnlyPublishedChoice(\"penalty.player\")",
+      "feature": "OnlineBoardInput",
+      "mode": "editor",
+      "fixture": "OnlineBoardInputEditorTests",
+      "method": "ActorUsesOnlyPublishedChoice",
+      "parameters": [
+        "\"penalty.player\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072259556Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputEditorTests.ActorUsesOnlyPublishedChoice(\"set-piece.player\")",
+      "feature": "OnlineBoardInput",
+      "mode": "editor",
+      "fixture": "OnlineBoardInputEditorTests",
+      "method": "ActorUsesOnlyPublishedChoice",
+      "parameters": [
+        "\"set-piece.player\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072259556Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputEditorTests.ActorUsesOnlyPublishedChoice(\"throw.player\")",
+      "feature": "OnlineBoardInput",
+      "mode": "editor",
+      "fixture": "OnlineBoardInputEditorTests",
+      "method": "ActorUsesOnlyPublishedChoice",
+      "parameters": [
+        "\"throw.player\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072259556Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputEditorTests.AmbiguousChoicesAreNotGuessed",
+      "feature": "OnlineBoardInput",
+      "mode": "editor",
+      "fixture": "OnlineBoardInputEditorTests",
+      "method": "AmbiguousChoicesAreNotGuessed",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072259556Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputEditorTests.AmbiguousConfirmCannotFallBackToTarget",
+      "feature": "OnlineBoardInput",
+      "mode": "editor",
+      "fixture": "OnlineBoardInputEditorTests",
+      "method": "AmbiguousConfirmCannotFallBackToTarget",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072259556Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputEditorTests.ConfirmUsesPublishedPreviewAndShotCommit",
+      "feature": "OnlineBoardInput",
+      "mode": "editor",
+      "fixture": "OnlineBoardInputEditorTests",
+      "method": "ConfirmUsesPublishedPreviewAndShotCommit",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072259556Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputEditorTests.HexUsesExactSignedCoordinates(\"ground.target\")",
+      "feature": "OnlineBoardInput",
+      "mode": "editor",
+      "fixture": "OnlineBoardInputEditorTests",
+      "method": "HexUsesExactSignedCoordinates",
+      "parameters": [
+        "\"ground.target\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072259556Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputEditorTests.HexUsesExactSignedCoordinates(\"long.target\")",
+      "feature": "OnlineBoardInput",
+      "mode": "editor",
+      "fixture": "OnlineBoardInputEditorTests",
+      "method": "HexUsesExactSignedCoordinates",
+      "parameters": [
+        "\"long.target\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072259556Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputEditorTests.HexUsesExactSignedCoordinates(\"high.target\")",
+      "feature": "OnlineBoardInput",
+      "mode": "editor",
+      "fixture": "OnlineBoardInputEditorTests",
+      "method": "HexUsesExactSignedCoordinates",
+      "parameters": [
+        "\"high.target\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072259556Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputEditorTests.HexUsesExactSignedCoordinates(\"ftp.target\")",
+      "feature": "OnlineBoardInput",
+      "mode": "editor",
+      "fixture": "OnlineBoardInputEditorTests",
+      "method": "HexUsesExactSignedCoordinates",
+      "parameters": [
+        "\"ftp.target\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072259556Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputEditorTests.HexUsesExactSignedCoordinates(\"movement.target\")",
+      "feature": "OnlineBoardInput",
+      "mode": "editor",
+      "fixture": "OnlineBoardInputEditorTests",
+      "method": "HexUsesExactSignedCoordinates",
+      "parameters": [
+        "\"movement.target\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072259556Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputEditorTests.HexUsesExactSignedCoordinates(\"kickoff.move\")",
+      "feature": "OnlineBoardInput",
+      "mode": "editor",
+      "fixture": "OnlineBoardInputEditorTests",
+      "method": "HexUsesExactSignedCoordinates",
+      "parameters": [
+        "\"kickoff.move\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072259556Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputEditorTests.HexUsesExactSignedCoordinates(\"header.target\")",
+      "feature": "OnlineBoardInput",
+      "mode": "editor",
+      "fixture": "OnlineBoardInputEditorTests",
+      "method": "HexUsesExactSignedCoordinates",
+      "parameters": [
+        "\"header.target\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072259556Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputEditorTests.HexUsesExactSignedCoordinates(\"header.goal\")",
+      "feature": "OnlineBoardInput",
+      "mode": "editor",
+      "fixture": "OnlineBoardInputEditorTests",
+      "method": "HexUsesExactSignedCoordinates",
+      "parameters": [
+        "\"header.goal\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072259556Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputEditorTests.HexUsesExactSignedCoordinates(\"shot.target\")",
+      "feature": "OnlineBoardInput",
+      "mode": "editor",
+      "fixture": "OnlineBoardInputEditorTests",
+      "method": "HexUsesExactSignedCoordinates",
+      "parameters": [
+        "\"shot.target\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072259556Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputEditorTests.HexUsesExactSignedCoordinates(\"penalty.target\")",
+      "feature": "OnlineBoardInput",
+      "mode": "editor",
+      "fixture": "OnlineBoardInputEditorTests",
+      "method": "HexUsesExactSignedCoordinates",
+      "parameters": [
+        "\"penalty.target\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072259556Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputEditorTests.HexUsesExactSignedCoordinates(\"set-piece.target\")",
+      "feature": "OnlineBoardInput",
+      "mode": "editor",
+      "fixture": "OnlineBoardInputEditorTests",
+      "method": "HexUsesExactSignedCoordinates",
+      "parameters": [
+        "\"set-piece.target\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072259556Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputEditorTests.HexUsesExactSignedCoordinates(\"throw.target\")",
+      "feature": "OnlineBoardInput",
+      "mode": "editor",
+      "fixture": "OnlineBoardInputEditorTests",
+      "method": "HexUsesExactSignedCoordinates",
+      "parameters": [
+        "\"throw.target\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072259556Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputEditorTests.HexUsesExactSignedCoordinates(\"final-third.target\")",
+      "feature": "OnlineBoardInput",
+      "mode": "editor",
+      "fixture": "OnlineBoardInputEditorTests",
+      "method": "HexUsesExactSignedCoordinates",
+      "parameters": [
+        "\"final-third.target\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072259556Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputEditorTests.KeysRequirePublishedAction(P,\"ground.start\")",
+      "feature": "OnlineBoardInput",
+      "mode": "editor",
+      "fixture": "OnlineBoardInputEditorTests",
+      "method": "KeysRequirePublishedAction",
+      "parameters": [
+        "P,\"ground.start\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072259556Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputEditorTests.KeysRequirePublishedAction(L,\"long.start\")",
+      "feature": "OnlineBoardInput",
+      "mode": "editor",
+      "fixture": "OnlineBoardInputEditorTests",
+      "method": "KeysRequirePublishedAction",
+      "parameters": [
+        "L,\"long.start\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072259556Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputEditorTests.KeysRequirePublishedAction(C,\"high.start\")",
+      "feature": "OnlineBoardInput",
+      "mode": "editor",
+      "fixture": "OnlineBoardInputEditorTests",
+      "method": "KeysRequirePublishedAction",
+      "parameters": [
+        "C,\"high.start\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072259556Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputEditorTests.KeysRequirePublishedAction(F,\"ftp.start\")",
+      "feature": "OnlineBoardInput",
+      "mode": "editor",
+      "fixture": "OnlineBoardInputEditorTests",
+      "method": "KeysRequirePublishedAction",
+      "parameters": [
+        "F,\"ftp.start\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072259556Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputEditorTests.KeysRequirePublishedAction(M,\"movement.start\")",
+      "feature": "OnlineBoardInput",
+      "mode": "editor",
+      "fixture": "OnlineBoardInputEditorTests",
+      "method": "KeysRequirePublishedAction",
+      "parameters": [
+        "M,\"movement.start\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072259556Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputEditorTests.KeysRequirePublishedAction(S,\"shot.start\")",
+      "feature": "OnlineBoardInput",
+      "mode": "editor",
+      "fixture": "OnlineBoardInputEditorTests",
+      "method": "KeysRequirePublishedAction",
+      "parameters": [
+        "S,\"shot.start\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072259556Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputEditorTests.KeysRequirePublishedAction(R,\"shot.save\")",
+      "feature": "OnlineBoardInput",
+      "mode": "editor",
+      "fixture": "OnlineBoardInputEditorTests",
+      "method": "KeysRequirePublishedAction",
+      "parameters": [
+        "R,\"shot.save\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072259556Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputEditorTests.KeysRequirePublishedAction(R,\"coin.roll\")",
+      "feature": "OnlineBoardInput",
+      "mode": "editor",
+      "fixture": "OnlineBoardInputEditorTests",
+      "method": "KeysRequirePublishedAction",
+      "parameters": [
+        "R,\"coin.roll\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072259556Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputEditorTests.KeysRequirePublishedAction(R,\"header.interception\")",
+      "feature": "OnlineBoardInput",
+      "mode": "editor",
+      "fixture": "OnlineBoardInputEditorTests",
+      "method": "KeysRequirePublishedAction",
+      "parameters": [
+        "R,\"header.interception\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072259556Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputEditorTests.KeysRequirePublishedAction(Return,\"kickoff.confirm\")",
+      "feature": "OnlineBoardInput",
+      "mode": "editor",
+      "fixture": "OnlineBoardInputEditorTests",
+      "method": "KeysRequirePublishedAction",
+      "parameters": [
+        "Return,\"kickoff.confirm\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072259556Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputEditorTests.KeysRequirePublishedAction(KeypadEnter,\"penalty.confirm\")",
+      "feature": "OnlineBoardInput",
+      "mode": "editor",
+      "fixture": "OnlineBoardInputEditorTests",
+      "method": "KeysRequirePublishedAction",
+      "parameters": [
+        "KeypadEnter,\"penalty.confirm\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072259556Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputEditorTests.RejectsMalformedActor(null)",
+      "feature": "OnlineBoardInput",
+      "mode": "editor",
+      "fixture": "OnlineBoardInputEditorTests",
+      "method": "RejectsMalformedActor",
+      "parameters": [
+        "null"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072259556Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputEditorTests.RejectsMalformedActor(\"\")",
+      "feature": "OnlineBoardInput",
+      "mode": "editor",
+      "fixture": "OnlineBoardInputEditorTests",
+      "method": "RejectsMalformedActor",
+      "parameters": [
+        "\"\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072259556Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputEditorTests.RejectsMalformedActor(\"home:0\")",
+      "feature": "OnlineBoardInput",
+      "mode": "editor",
+      "fixture": "OnlineBoardInputEditorTests",
+      "method": "RejectsMalformedActor",
+      "parameters": [
+        "\"home:0\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072259556Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputEditorTests.RejectsMalformedActor(\"away:19\")",
+      "feature": "OnlineBoardInput",
+      "mode": "editor",
+      "fixture": "OnlineBoardInputEditorTests",
+      "method": "RejectsMalformedActor",
+      "parameters": [
+        "\"away:19\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072259556Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputEditorTests.RejectsMalformedActor(\"home:01\")",
+      "feature": "OnlineBoardInput",
+      "mode": "editor",
+      "fixture": "OnlineBoardInputEditorTests",
+      "method": "RejectsMalformedActor",
+      "parameters": [
+        "\"home:01\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072259556Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputEditorTests.RejectsMalformedActor(\"other:2\")",
+      "feature": "OnlineBoardInput",
+      "mode": "editor",
+      "fixture": "OnlineBoardInputEditorTests",
+      "method": "RejectsMalformedActor",
+      "parameters": [
+        "\"other:2\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072259556Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputEditorTests.RejectsMalformedActor(\"home:2:3\")",
+      "feature": "OnlineBoardInput",
+      "mode": "editor",
+      "fixture": "OnlineBoardInputEditorTests",
+      "method": "RejectsMalformedActor",
+      "parameters": [
+        "\"home:2:3\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072259556Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputPlayModeTests.ActualPitchInput(\"click\",False)",
+      "feature": "OnlineBoardInput",
+      "mode": "playmode",
+      "fixture": "OnlineBoardInputPlayModeTests",
+      "method": "ActualPitchInput",
+      "parameters": [
+        "\"click\",False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072315142Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputPlayModeTests.ActualPitchInput(\"click\",True)",
+      "feature": "OnlineBoardInput",
+      "mode": "playmode",
+      "fixture": "OnlineBoardInputPlayModeTests",
+      "method": "ActualPitchInput",
+      "parameters": [
+        "\"click\",True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072315142Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputPlayModeTests.ActualPitchInput(\"ray\",False)",
+      "feature": "OnlineBoardInput",
+      "mode": "playmode",
+      "fixture": "OnlineBoardInputPlayModeTests",
+      "method": "ActualPitchInput",
+      "parameters": [
+        "\"ray\",False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072315142Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputPlayModeTests.ActualPitchInput(\"ray\",True)",
+      "feature": "OnlineBoardInput",
+      "mode": "playmode",
+      "fixture": "OnlineBoardInputPlayModeTests",
+      "method": "ActualPitchInput",
+      "parameters": [
+        "\"ray\",True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072315142Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputPlayModeTests.ActualPitchInput(\"guards\",False)",
+      "feature": "OnlineBoardInput",
+      "mode": "playmode",
+      "fixture": "OnlineBoardInputPlayModeTests",
+      "method": "ActualPitchInput",
+      "parameters": [
+        "\"guards\",False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072315142Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputPlayModeTests.ActualPitchInput(\"guards\",True)",
+      "feature": "OnlineBoardInput",
+      "mode": "playmode",
+      "fixture": "OnlineBoardInputPlayModeTests",
+      "method": "ActualPitchInput",
+      "parameters": [
+        "\"guards\",True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072315142Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputPlayModeTests.ActualPitchInput(\"guest\",False)",
+      "feature": "OnlineBoardInput",
+      "mode": "playmode",
+      "fixture": "OnlineBoardInputPlayModeTests",
+      "method": "ActualPitchInput",
+      "parameters": [
+        "\"guest\",False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072315142Z/results.xml"
+    },
+    {
+      "id": "OnlineBoardInputPlayModeTests.ActualPitchInput(\"guest\",True)",
+      "feature": "OnlineBoardInput",
+      "mode": "playmode",
+      "fixture": "OnlineBoardInputPlayModeTests",
+      "method": "ActualPitchInput",
+      "parameters": [
+        "\"guest\",True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072315142Z/results.xml"
     }
   ]
 }
