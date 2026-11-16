@@ -1,0 +1,595 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="16" result="Failed(Child)" total="16" passed="0" failed="16" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 08:07:29Z" end-time="2026-11-16 08:07:42Z" duration="13.1111611">
+  <test-suite type="TestSuite" id="2814" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1494" result="Failed" site="Child" start-time="2026-11-16 08:07:29Z" end-time="2026-11-16 08:07:42Z" duration="13.111161" total="16" passed="0" failed="16" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="2811" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1494" result="Failed" site="Child" start-time="2026-11-16 08:07:29Z" end-time="2026-11-16 08:07:42Z" duration="13.074588" total="16" passed="0" failed="16" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17216" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestFixture" id="1844" name="OnlineKeeperGroundChoicesPlayModeTests" fullname="OnlineKeeperGroundChoicesPlayModeTests" classname="OnlineKeeperGroundChoicesPlayModeTests" runstate="Runnable" testcasecount="16" result="Failed" site="Child" start-time="2026-11-16 08:07:29Z" end-time="2026-11-16 08:07:42Z" duration="13.041231" total="16" passed="0" failed="16" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineKeeperGroundChoices" />
+        </properties>
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="ParameterizedMethod" id="1857" name="OutsideKeeperChoices" fullname="OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices" classname="OnlineKeeperGroundChoicesPlayModeTests" runstate="Runnable" testcasecount="12" result="Failed" site="Child" start-time="2026-11-16 08:07:29Z" end-time="2026-11-16 08:07:39Z" duration="9.940495" total="12" passed="0" failed="12" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-case id="1845" name="OutsideKeeperChoices(1,&quot;moving&quot;,&quot;dive&quot;)" fullname="OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(1,&quot;moving&quot;,&quot;dive&quot;)" methodname="OutsideKeeperChoices" classname="OnlineKeeperGroundChoicesPlayModeTests" runstate="Runnable" seed="795489524" result="Failed" start-time="2026-11-16 08:07:29Z" end-time="2026-11-16 08:07:30Z" duration="1.306190" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: collection containing "duel.dive"
+  But was:  < "duel.stand", "duel.tackle" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineKeeperGroundChoice>d__105.MoveNext () [0x003f5] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineKeeperGroundChoices\OnlineKeeperGroundChoicesFixture.cs:36
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: True.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Away keeper to HandleTokenSelection
+A Valid Defender was selected: Away keeper
+Passing Hex 37,19 to AsyncMoveTokenToHexRegularly
+Passing Hex 37,19 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 37,19
+[Game Log] Away keeper (Fixture Away) moves 1 paces
+isMovingTokenAttacker: False
+Defender does not land on Ball Hex
+Goalkeeper lands next to the dribbler outside the box. Prompt for dive, tackle, or no tackle.
+Goalkeeper near the attacker with the ball. Waiting for tackle decision...Press [D]ive, [T]ackle with feet, or [N]o Tackle
+]]></output>
+          </test-case>
+          <test-case id="1846" name="OutsideKeeperChoices(1,&quot;moving&quot;,&quot;foot&quot;)" fullname="OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(1,&quot;moving&quot;,&quot;foot&quot;)" methodname="OutsideKeeperChoices" classname="OnlineKeeperGroundChoicesPlayModeTests" runstate="Runnable" seed="1289327814" result="Failed" start-time="2026-11-16 08:07:30Z" end-time="2026-11-16 08:07:31Z" duration="0.794891" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: collection containing "duel.dive"
+  But was:  < "duel.stand", "duel.tackle" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineKeeperGroundChoice>d__105.MoveNext () [0x003f5] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineKeeperGroundChoices\OnlineKeeperGroundChoicesFixture.cs:36
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: True.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Away keeper to HandleTokenSelection
+A Valid Defender was selected: Away keeper
+Passing Hex 37,19 to AsyncMoveTokenToHexRegularly
+Passing Hex 37,19 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 37,19
+[Game Log] Away keeper (Fixture Away) moves 1 paces
+isMovingTokenAttacker: False
+Defender does not land on Ball Hex
+Goalkeeper lands next to the dribbler outside the box. Prompt for dive, tackle, or no tackle.
+Goalkeeper near the attacker with the ball. Waiting for tackle decision...Press [D]ive, [T]ackle with feet, or [N]o Tackle
+]]></output>
+          </test-case>
+          <test-case id="1847" name="OutsideKeeperChoices(1,&quot;moving&quot;,&quot;stand&quot;)" fullname="OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(1,&quot;moving&quot;,&quot;stand&quot;)" methodname="OutsideKeeperChoices" classname="OnlineKeeperGroundChoicesPlayModeTests" runstate="Runnable" seed="1198151614" result="Failed" start-time="2026-11-16 08:07:31Z" end-time="2026-11-16 08:07:32Z" duration="0.807906" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: collection containing "duel.dive"
+  But was:  < "duel.stand", "duel.tackle" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineKeeperGroundChoice>d__105.MoveNext () [0x003f5] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineKeeperGroundChoices\OnlineKeeperGroundChoicesFixture.cs:36
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: True.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Away keeper to HandleTokenSelection
+A Valid Defender was selected: Away keeper
+Passing Hex 37,19 to AsyncMoveTokenToHexRegularly
+Passing Hex 37,19 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 37,19
+[Game Log] Away keeper (Fixture Away) moves 1 paces
+isMovingTokenAttacker: False
+Defender does not land on Ball Hex
+Goalkeeper lands next to the dribbler outside the box. Prompt for dive, tackle, or no tackle.
+Goalkeeper near the attacker with the ball. Waiting for tackle decision...Press [D]ive, [T]ackle with feet, or [N]o Tackle
+]]></output>
+          </test-case>
+          <test-case id="1848" name="OutsideKeeperChoices(1,&quot;stationary&quot;,&quot;dive&quot;)" fullname="OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(1,&quot;stationary&quot;,&quot;dive&quot;)" methodname="OutsideKeeperChoices" classname="OnlineKeeperGroundChoicesPlayModeTests" runstate="Runnable" seed="1289441824" result="Failed" start-time="2026-11-16 08:07:32Z" end-time="2026-11-16 08:07:33Z" duration="0.695063" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected string length 11 but was 26. Strings differ at index 0.
+  Expected: "duel.choice"
+  But was:  "movement.defence.resolving"
+  -----------^
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineKeeperGroundChoice>d__105.MoveNext () [0x003a1] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineKeeperGroundChoices\OnlineKeeperGroundChoicesFixture.cs:34
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: True.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Away keeper to HandleTokenSelection
+A Valid Defender was selected: Away keeper
+Away keeper is adjacent to Home carrier outside the goalkeeper's penalty box. Press [D]ive, [T]ackle with feet, or [N] to stand there.
+]]></output>
+          </test-case>
+          <test-case id="1849" name="OutsideKeeperChoices(1,&quot;stationary&quot;,&quot;foot&quot;)" fullname="OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(1,&quot;stationary&quot;,&quot;foot&quot;)" methodname="OutsideKeeperChoices" classname="OnlineKeeperGroundChoicesPlayModeTests" runstate="Runnable" seed="1590422181" result="Failed" start-time="2026-11-16 08:07:33Z" end-time="2026-11-16 08:07:34Z" duration="0.833996" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected string length 11 but was 26. Strings differ at index 0.
+  Expected: "duel.choice"
+  But was:  "movement.defence.resolving"
+  -----------^
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineKeeperGroundChoice>d__105.MoveNext () [0x003a1] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineKeeperGroundChoices\OnlineKeeperGroundChoicesFixture.cs:34
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: True.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Away keeper to HandleTokenSelection
+A Valid Defender was selected: Away keeper
+Away keeper is adjacent to Home carrier outside the goalkeeper's penalty box. Press [D]ive, [T]ackle with feet, or [N] to stand there.
+]]></output>
+          </test-case>
+          <test-case id="1850" name="OutsideKeeperChoices(1,&quot;stationary&quot;,&quot;stand&quot;)" fullname="OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(1,&quot;stationary&quot;,&quot;stand&quot;)" methodname="OutsideKeeperChoices" classname="OnlineKeeperGroundChoicesPlayModeTests" runstate="Runnable" seed="2010922759" result="Failed" start-time="2026-11-16 08:07:34Z" end-time="2026-11-16 08:07:34Z" duration="0.730851" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected string length 11 but was 26. Strings differ at index 0.
+  Expected: "duel.choice"
+  But was:  "movement.defence.resolving"
+  -----------^
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineKeeperGroundChoice>d__105.MoveNext () [0x003a1] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineKeeperGroundChoices\OnlineKeeperGroundChoicesFixture.cs:34
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: True.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Away keeper to HandleTokenSelection
+A Valid Defender was selected: Away keeper
+Away keeper is adjacent to Home carrier outside the goalkeeper's penalty box. Press [D]ive, [T]ackle with feet, or [N] to stand there.
+]]></output>
+          </test-case>
+          <test-case id="1851" name="OutsideKeeperChoices(-1,&quot;moving&quot;,&quot;dive&quot;)" fullname="OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(-1,&quot;moving&quot;,&quot;dive&quot;)" methodname="OutsideKeeperChoices" classname="OnlineKeeperGroundChoicesPlayModeTests" runstate="Runnable" seed="247994320" result="Failed" start-time="2026-11-16 08:07:34Z" end-time="2026-11-16 08:07:35Z" duration="0.814733" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: collection containing "duel.dive"
+  But was:  < "duel.stand", "duel.tackle" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineKeeperGroundChoice>d__105.MoveNext () [0x003f5] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineKeeperGroundChoices\OnlineKeeperGroundChoicesFixture.cs:36
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: True.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Away keeper to HandleTokenSelection
+A Valid Defender was selected: Away keeper
+Passing Hex 13,19 to AsyncMoveTokenToHexRegularly
+Passing Hex 13,19 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 13,19
+[Game Log] Away keeper (Fixture Away) moves 1 paces
+isMovingTokenAttacker: False
+Defender does not land on Ball Hex
+Goalkeeper lands next to the dribbler outside the box. Prompt for dive, tackle, or no tackle.
+Goalkeeper near the attacker with the ball. Waiting for tackle decision...Press [D]ive, [T]ackle with feet, or [N]o Tackle
+]]></output>
+          </test-case>
+          <test-case id="1852" name="OutsideKeeperChoices(-1,&quot;moving&quot;,&quot;foot&quot;)" fullname="OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(-1,&quot;moving&quot;,&quot;foot&quot;)" methodname="OutsideKeeperChoices" classname="OnlineKeeperGroundChoicesPlayModeTests" runstate="Runnable" seed="10452839" result="Failed" start-time="2026-11-16 08:07:35Z" end-time="2026-11-16 08:07:36Z" duration="0.784251" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: collection containing "duel.dive"
+  But was:  < "duel.stand", "duel.tackle" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineKeeperGroundChoice>d__105.MoveNext () [0x003f5] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineKeeperGroundChoices\OnlineKeeperGroundChoicesFixture.cs:36
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: True.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Away keeper to HandleTokenSelection
+A Valid Defender was selected: Away keeper
+Passing Hex 13,19 to AsyncMoveTokenToHexRegularly
+Passing Hex 13,19 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 13,19
+[Game Log] Away keeper (Fixture Away) moves 1 paces
+isMovingTokenAttacker: False
+Defender does not land on Ball Hex
+Goalkeeper lands next to the dribbler outside the box. Prompt for dive, tackle, or no tackle.
+Goalkeeper near the attacker with the ball. Waiting for tackle decision...Press [D]ive, [T]ackle with feet, or [N]o Tackle
+]]></output>
+          </test-case>
+          <test-case id="1853" name="OutsideKeeperChoices(-1,&quot;moving&quot;,&quot;stand&quot;)" fullname="OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(-1,&quot;moving&quot;,&quot;stand&quot;)" methodname="OutsideKeeperChoices" classname="OnlineKeeperGroundChoicesPlayModeTests" runstate="Runnable" seed="618232801" result="Failed" start-time="2026-11-16 08:07:36Z" end-time="2026-11-16 08:07:37Z" duration="0.864917" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: collection containing "duel.dive"
+  But was:  < "duel.stand", "duel.tackle" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineKeeperGroundChoice>d__105.MoveNext () [0x003f5] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineKeeperGroundChoices\OnlineKeeperGroundChoicesFixture.cs:36
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: True.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Away keeper to HandleTokenSelection
+A Valid Defender was selected: Away keeper
+Passing Hex 13,19 to AsyncMoveTokenToHexRegularly
+Passing Hex 13,19 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 13,19
+[Game Log] Away keeper (Fixture Away) moves 1 paces
+isMovingTokenAttacker: False
+Defender does not land on Ball Hex
+Goalkeeper lands next to the dribbler outside the box. Prompt for dive, tackle, or no tackle.
+Goalkeeper near the attacker with the ball. Waiting for tackle decision...Press [D]ive, [T]ackle with feet, or [N]o Tackle
+]]></output>
+          </test-case>
+          <test-case id="1854" name="OutsideKeeperChoices(-1,&quot;stationary&quot;,&quot;dive&quot;)" fullname="OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(-1,&quot;stationary&quot;,&quot;dive&quot;)" methodname="OutsideKeeperChoices" classname="OnlineKeeperGroundChoicesPlayModeTests" runstate="Runnable" seed="1102207723" result="Failed" start-time="2026-11-16 08:07:37Z" end-time="2026-11-16 08:07:38Z" duration="0.710815" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected string length 11 but was 26. Strings differ at index 0.
+  Expected: "duel.choice"
+  But was:  "movement.defence.resolving"
+  -----------^
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineKeeperGroundChoice>d__105.MoveNext () [0x003a1] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineKeeperGroundChoices\OnlineKeeperGroundChoicesFixture.cs:34
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: True.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Away keeper to HandleTokenSelection
+A Valid Defender was selected: Away keeper
+Away keeper is adjacent to Home carrier outside the goalkeeper's penalty box. Press [D]ive, [T]ackle with feet, or [N] to stand there.
+]]></output>
+          </test-case>
+          <test-case id="1855" name="OutsideKeeperChoices(-1,&quot;stationary&quot;,&quot;foot&quot;)" fullname="OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(-1,&quot;stationary&quot;,&quot;foot&quot;)" methodname="OutsideKeeperChoices" classname="OnlineKeeperGroundChoicesPlayModeTests" runstate="Runnable" seed="497353614" result="Failed" start-time="2026-11-16 08:07:38Z" end-time="2026-11-16 08:07:38Z" duration="0.825183" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected string length 11 but was 26. Strings differ at index 0.
+  Expected: "duel.choice"
+  But was:  "movement.defence.resolving"
+  -----------^
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineKeeperGroundChoice>d__105.MoveNext () [0x003a1] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineKeeperGroundChoices\OnlineKeeperGroundChoicesFixture.cs:34
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: True.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Away keeper to HandleTokenSelection
+A Valid Defender was selected: Away keeper
+Away keeper is adjacent to Home carrier outside the goalkeeper's penalty box. Press [D]ive, [T]ackle with feet, or [N] to stand there.
+]]></output>
+          </test-case>
+          <test-case id="1856" name="OutsideKeeperChoices(-1,&quot;stationary&quot;,&quot;stand&quot;)" fullname="OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(-1,&quot;stationary&quot;,&quot;stand&quot;)" methodname="OutsideKeeperChoices" classname="OnlineKeeperGroundChoicesPlayModeTests" runstate="Runnable" seed="569078480" result="Failed" start-time="2026-11-16 08:07:38Z" end-time="2026-11-16 08:07:39Z" duration="0.713198" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected string length 11 but was 26. Strings differ at index 0.
+  Expected: "duel.choice"
+  But was:  "movement.defence.resolving"
+  -----------^
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineKeeperGroundChoice>d__105.MoveNext () [0x003a1] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineKeeperGroundChoices\OnlineKeeperGroundChoicesFixture.cs:34
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: True.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Away keeper to HandleTokenSelection
+A Valid Defender was selected: Away keeper
+Away keeper is adjacent to Home carrier outside the goalkeeper's penalty box. Press [D]ive, [T]ackle with feet, or [N] to stand there.
+]]></output>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="1862" name="WallKeeperChoices" fullname="OnlineKeeperGroundChoicesPlayModeTests.WallKeeperChoices" classname="OnlineKeeperGroundChoicesPlayModeTests" runstate="Runnable" testcasecount="4" result="Failed" site="Child" start-time="2026-11-16 08:07:39Z" end-time="2026-11-16 08:07:42Z" duration="3.091882" total="4" passed="0" failed="4" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-case id="1858" name="WallKeeperChoices(1,&quot;dive&quot;)" fullname="OnlineKeeperGroundChoicesPlayModeTests.WallKeeperChoices(1,&quot;dive&quot;)" methodname="WallKeeperChoices" classname="OnlineKeeperGroundChoicesPlayModeTests" runstate="Runnable" seed="407382469" result="Failed" start-time="2026-11-16 08:07:39Z" end-time="2026-11-16 08:07:40Z" duration="0.824601" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected string length 16 but was 17. Strings differ at index 1.
+  Expected: "duel.wall-choice"
+  But was:  "dribble.resolving"
+  ------------^
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineKeeperGroundChoice>d__105.MoveNext () [0x003a1] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineKeeperGroundChoices\OnlineKeeperGroundChoicesFixture.cs:34
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: True.
+Movement phase has been reset.
+Passing Home carrier to HandleTokenSelection
+Home carrier selected as dribbler. Starting dribble movement.
+Setting remaining Pace to Home carrier's Pace: 5
+Checking for nutmeggable Defenders
+Committing to Movement Phase action. section=AttMP, selectedToken=Home carrier, awaitingHexDestination=True, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Hex 37,17 to AsyncMoveTokenToHexRegularly
+Passing Hex 37,17 to MoveTokenToHex
+isDribblerRunning set to true
+MoveTokenAlongPath: shouldCarryBall: True
+MovingBall with Token
+MovingBall with Token
+Away keeper may dive from the GK Wall at (12, 0, -2) with penalty 0. Press [D]ive or [N]ot.
+]]></output>
+          </test-case>
+          <test-case id="1859" name="WallKeeperChoices(1,&quot;stand&quot;)" fullname="OnlineKeeperGroundChoicesPlayModeTests.WallKeeperChoices(1,&quot;stand&quot;)" methodname="WallKeeperChoices" classname="OnlineKeeperGroundChoicesPlayModeTests" runstate="Runnable" seed="730664000" result="Failed" start-time="2026-11-16 08:07:40Z" end-time="2026-11-16 08:07:41Z" duration="0.711787" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected string length 16 but was 17. Strings differ at index 1.
+  Expected: "duel.wall-choice"
+  But was:  "dribble.resolving"
+  ------------^
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineKeeperGroundChoice>d__105.MoveNext () [0x003a1] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineKeeperGroundChoices\OnlineKeeperGroundChoicesFixture.cs:34
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: True.
+Movement phase has been reset.
+Passing Home carrier to HandleTokenSelection
+Home carrier selected as dribbler. Starting dribble movement.
+Setting remaining Pace to Home carrier's Pace: 5
+Checking for nutmeggable Defenders
+Committing to Movement Phase action. section=AttMP, selectedToken=Home carrier, awaitingHexDestination=True, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Hex 37,17 to AsyncMoveTokenToHexRegularly
+Passing Hex 37,17 to MoveTokenToHex
+isDribblerRunning set to true
+MoveTokenAlongPath: shouldCarryBall: True
+MovingBall with Token
+MovingBall with Token
+Away keeper may dive from the GK Wall at (12, 0, -2) with penalty 0. Press [D]ive or [N]ot.
+]]></output>
+          </test-case>
+          <test-case id="1860" name="WallKeeperChoices(-1,&quot;dive&quot;)" fullname="OnlineKeeperGroundChoicesPlayModeTests.WallKeeperChoices(-1,&quot;dive&quot;)" methodname="WallKeeperChoices" classname="OnlineKeeperGroundChoicesPlayModeTests" runstate="Runnable" seed="366887989" result="Failed" start-time="2026-11-16 08:07:41Z" end-time="2026-11-16 08:07:41Z" duration="0.821282" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected string length 16 but was 17. Strings differ at index 1.
+  Expected: "duel.wall-choice"
+  But was:  "dribble.resolving"
+  ------------^
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineKeeperGroundChoice>d__105.MoveNext () [0x003a1] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineKeeperGroundChoices\OnlineKeeperGroundChoicesFixture.cs:34
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: True.
+Movement phase has been reset.
+Passing Home carrier to HandleTokenSelection
+Home carrier selected as dribbler. Starting dribble movement.
+Setting remaining Pace to Home carrier's Pace: 5
+Checking for nutmeggable Defenders
+Committing to Movement Phase action. section=AttMP, selectedToken=Home carrier, awaitingHexDestination=True, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Hex 13,17 to AsyncMoveTokenToHexRegularly
+Passing Hex 13,17 to MoveTokenToHex
+isDribblerRunning set to true
+MoveTokenAlongPath: shouldCarryBall: True
+MovingBall with Token
+MovingBall with Token
+Away keeper may dive from the GK Wall at (-12, 0, -2) with penalty 0. Press [D]ive or [N]ot.
+]]></output>
+          </test-case>
+          <test-case id="1861" name="WallKeeperChoices(-1,&quot;stand&quot;)" fullname="OnlineKeeperGroundChoicesPlayModeTests.WallKeeperChoices(-1,&quot;stand&quot;)" methodname="WallKeeperChoices" classname="OnlineKeeperGroundChoicesPlayModeTests" runstate="Runnable" seed="1487095902" result="Failed" start-time="2026-11-16 08:07:41Z" end-time="2026-11-16 08:07:42Z" duration="0.724664" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected string length 16 but was 17. Strings differ at index 1.
+  Expected: "duel.wall-choice"
+  But was:  "dribble.resolving"
+  ------------^
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineKeeperGroundChoice>d__105.MoveNext () [0x003a1] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineKeeperGroundChoices\OnlineKeeperGroundChoicesFixture.cs:34
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: True.
+Movement phase has been reset.
+Passing Home carrier to HandleTokenSelection
+Home carrier selected as dribbler. Starting dribble movement.
+Setting remaining Pace to Home carrier's Pace: 5
+Checking for nutmeggable Defenders
+Committing to Movement Phase action. section=AttMP, selectedToken=Home carrier, awaitingHexDestination=True, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Hex 13,17 to AsyncMoveTokenToHexRegularly
+Passing Hex 13,17 to MoveTokenToHex
+isDribblerRunning set to true
+MoveTokenAlongPath: shouldCarryBall: True
+MovingBall with Token
+MovingBall with Token
+Away keeper may dive from the GK Wall at (-12, 0, -2) with penalty 0. Press [D]ive or [N]ot.
+Saving results to: TestResults\GameplayRegression\Runs\20261116T080729521Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

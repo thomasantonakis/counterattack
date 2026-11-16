@@ -102,6 +102,7 @@ namespace CounterAttack.Online
             "ftp.start"=>"Start First Time Pass", "ftp.skip"=>"Skip preparation move", "ftp.roll"=>"Roll First Time Pass interception",
             "dribble.finish"=>"Finish this player's dribble", "dribble.decline-nutmeg"=>"Decline nutmeg and face steals", "dribble.roll"=>"Roll ball recovery",
             "duel.nutmeg"=>"Attempt nutmeg", "duel.tackle"=>"Attempt tackle", "duel.stand"=>"Stand without tackling", "duel.roll"=>"Roll ground duel", "duel.stay"=>"Stay after ground duel",
+            "duel.dive"=>"D: Goalkeeper dive with hands",
             "keeper.stay"=>"Keep goalkeeper in position", "keeper.pickup.hands"=>"Pick up the ball", "keeper.pickup.feet"=>"Keep the ball at feet",
             "throw.movement"=>"Take optional movement", "throw.now"=>"Throw now",
             "throw.feet"=>"Throw to feet", "throw.head"=>"Throw to head",

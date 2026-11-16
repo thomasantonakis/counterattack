@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="1" result="Passed" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 16:51:04Z" end-time="2026-11-16 16:51:07Z" duration="3.2872589">
+  <test-suite type="TestSuite" id="2833" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1512" result="Passed" start-time="2026-11-16 16:51:04Z" end-time="2026-11-16 16:51:07Z" duration="3.287259" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2830" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1512" result="Passed" start-time="2026-11-16 16:51:04Z" end-time="2026-11-16 16:51:07Z" duration="3.253027" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12156" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1689" name="OnlineGroundDuelPlayModeTests" fullname="OnlineGroundDuelPlayModeTests" classname="OnlineGroundDuelPlayModeTests" runstate="Runnable" testcasecount="36" result="Passed" start-time="2026-11-16 16:51:04Z" end-time="2026-11-16 16:51:07Z" duration="3.240004" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineGroundDuels" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="1722" name="GroundDuelContinues" fullname="OnlineGroundDuelPlayModeTests.GroundDuelContinues" classname="OnlineGroundDuelPlayModeTests" runstate="Runnable" testcasecount="32" result="Passed" start-time="2026-11-16 16:51:04Z" end-time="2026-11-16 16:51:07Z" duration="3.223038" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="1715" name="GroundDuelContinues(-1,&quot;tackle&quot;,&quot;defender&quot;)" fullname="OnlineGroundDuelPlayModeTests.GroundDuelContinues(-1,&quot;tackle&quot;,&quot;defender&quot;)" methodname="GroundDuelContinues" classname="OnlineGroundDuelPlayModeTests" runstate="Runnable" seed="359618777" result="Passed" start-time="2026-11-16 16:51:04Z" end-time="2026-11-16 16:51:07Z" duration="3.201714" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Away recovering player to HandleTokenSelection
+A Valid Defender was selected: Away recovering player
+Passing Hex 24,19 to AsyncMoveTokenToHexRegularly
+Passing Hex 24,19 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 24,19
+[Game Log] Away recovering player (Fixture Away) moves 2 paces
+isMovingTokenAttacker: False
+Defender does not land on Ball Hex
+Defender lands next to the dribbler Prompt for Tackle or not.
+Defender near the attacker with the ball. Waiting for tackle decision...Press [T]ackle or [N]o Tackle
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+🔍 Connected Token Found: Away recovering player
+[Game Log] Home carrier (Fixture Home) engages in a ground duel
+[Expected Stats] Home carrier vs Away recovering player (tackle duel) xDribbles=0.472, xTackles=0.528, tie=0.125, foul=0.167
+Press R to roll the dice for tackle. Defender rolls first.
+Defender rolled: 6. Now it's the attacker's turn.
+Attacker rolled: 2. Comparing results...
+Tackle phase reset.
+Defender Name: Away recovering player with Tackling: 4, Attacker: Home carrier with Dribbling: 4
+Tackle succeeded! Away recovering player Roll(6)+Tackling(4)=10 beats Home carrier's Roll(2)+Dribbling(4) = 6, and wins possession of the ball.
+🔍 Connected Token Found: Home carrier
+[Game Log] Away recovering player (Fixture Away) successful tackle on Home carrier
+🔍 Connected Token Found: Home carrier
+[Game Log] Away recovering player (Fixture Away) wins possession after tackling Home carrier
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Offside assessment cleared: ball_collection.
+Away recovering player can reposition!
+Away recovering player won the tackle and is repositioning around Home carrier. Click a Highlighted Hex to move there or Press X to stay put.
+Away recovering player repositioning to Hex 25,18.
+Repositioning complete.
+Attacking team has possession: True.
+postSuccessfulTackleEligibleDefenders.Count: 0
+Movement phase has been reset.
+Movement phase is over.
+Offside assessed (successful_tackle): line x=0, tokens=none.
+Movement phase ended due to successful tackle.
+Saving results to: TestResults\GameplayRegression\Runs\20261116T165104329Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

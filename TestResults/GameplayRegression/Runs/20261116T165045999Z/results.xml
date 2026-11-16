@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="1" result="Passed" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 16:50:46Z" end-time="2026-11-16 16:50:49Z" duration="2.9844376">
+  <test-suite type="TestSuite" id="2833" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1512" result="Passed" start-time="2026-11-16 16:50:46Z" end-time="2026-11-16 16:50:49Z" duration="2.984438" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2830" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1512" result="Passed" start-time="2026-11-16 16:50:46Z" end-time="2026-11-16 16:50:49Z" duration="2.943459" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12156" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1689" name="OnlineGroundDuelPlayModeTests" fullname="OnlineGroundDuelPlayModeTests" classname="OnlineGroundDuelPlayModeTests" runstate="Runnable" testcasecount="36" result="Passed" start-time="2026-11-16 16:50:46Z" end-time="2026-11-16 16:50:49Z" duration="2.936887" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineGroundDuels" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="1722" name="GroundDuelContinues" fullname="OnlineGroundDuelPlayModeTests.GroundDuelContinues" classname="OnlineGroundDuelPlayModeTests" runstate="Runnable" testcasecount="32" result="Passed" start-time="2026-11-16 16:50:46Z" end-time="2026-11-16 16:50:49Z" duration="2.924088" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="1698" name="GroundDuelContinues(1,&quot;tackle&quot;,&quot;attacker&quot;)" fullname="OnlineGroundDuelPlayModeTests.GroundDuelContinues(1,&quot;tackle&quot;,&quot;attacker&quot;)" methodname="GroundDuelContinues" classname="OnlineGroundDuelPlayModeTests" runstate="Runnable" seed="1697067238" result="Passed" start-time="2026-11-16 16:50:46Z" end-time="2026-11-16 16:50:49Z" duration="2.900541" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Away recovering player to HandleTokenSelection
+A Valid Defender was selected: Away recovering player
+Passing Hex 26,19 to AsyncMoveTokenToHexRegularly
+Passing Hex 26,19 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 26,19
+[Game Log] Away recovering player (Fixture Away) moves 2 paces
+isMovingTokenAttacker: False
+Defender does not land on Ball Hex
+Defender lands next to the dribbler Prompt for Tackle or not.
+Defender near the attacker with the ball. Waiting for tackle decision...Press [T]ackle or [N]o Tackle
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+🔍 Connected Token Found: Away recovering player
+[Game Log] Home carrier (Fixture Home) engages in a ground duel
+[Expected Stats] Home carrier vs Away recovering player (tackle duel) xDribbles=0.472, xTackles=0.528, tie=0.125, foul=0.167
+Press R to roll the dice for tackle. Defender rolls first.
+Defender rolled: 2. Now it's the attacker's turn.
+Attacker rolled: 6. Comparing results...
+Tackle phase reset.
+Defender Name: Away recovering player with Tackling: 4, Attacker: Home carrier with Dribbling: 4
+Tackle failed! Away recovering player Roll(2)+Tackling(4)=6 loses to Home carrier's Roll(6)+Dribbling(4) = 10, who retains possession of the ball.
+🔍 Connected Token Found: Away recovering player
+[Game Log] Home carrier (Fixture Home) skips past Away recovering player
+Home carrier can reposition!
+Home carrier won the tackle and is repositioning around Away recovering player. Click a Highlighted Hex to move there or Press X to stay put.
+Home carrier repositioning to Hex 26,18.
+Repositioning complete.
+Dribbler repositioned after tackle
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Home carrier avoided tackle and repositioned, forcing interceptions from adjacent defenders.
+Calculating Eligible Defenders for Interception
+eligibleDefenders.Count: 0
+Advancing Movement Phase
+Saving results to: TestResults\GameplayRegression\Runs\20261116T165045999Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

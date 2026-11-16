@@ -14,7 +14,11 @@ namespace CounterAttack.Online
             {
                 case "nutmeg":AddGroundDuel(actions,"duel.nutmeg",OnlineGroundDuelIntent.Nutmeg);break;
                 case "victim":foreach(var player in manager.OnlineNutmegVictims)AddGroundDuel(actions,"duel.victim:"+TokenId(player),OnlineGroundDuelIntent.Victim,player);break;
-                case "choice":AddGroundDuel(actions,"duel.tackle",OnlineGroundDuelIntent.Tackle);AddGroundDuel(actions,"duel.stand",OnlineGroundDuelIntent.Stand);break;
+                case "wall-choice":AddGroundDuel(actions,"duel.dive",OnlineGroundDuelIntent.Dive);AddGroundDuel(actions,"duel.stand",OnlineGroundDuelIntent.Stand);break;
+                case "choice":
+                    if(manager.OnlineCanDive)AddGroundDuel(actions,"duel.dive",OnlineGroundDuelIntent.Dive);
+                    if(manager.OnlineCanFootTackle)AddGroundDuel(actions,"duel.tackle",OnlineGroundDuelIntent.Tackle);
+                    AddGroundDuel(actions,"duel.stand",OnlineGroundDuelIntent.Stand);break;
                 case "roll":AddGroundDuel(actions,"duel.roll",OnlineGroundDuelIntent.Roll);break;
                 case "reposition":
                     foreach(var hex in manager.OnlineDuelRepositionTargets)AddGroundDuel(actions,"duel.target:"+hex.coordinates.x+":"+hex.coordinates.z,OnlineGroundDuelIntent.Reposition,target:hex);

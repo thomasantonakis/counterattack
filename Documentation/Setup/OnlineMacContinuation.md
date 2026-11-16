@@ -98,6 +98,11 @@ blocks, goals, handball/red card, holds and cancellation in both directions;
 19 affected shot/legacy cases passed. Full Room now requires **v10** on both
 clients. See OnlineOutsideKeeperShot/Verification.md. Shared live-settings consent
 is awaiting the user's answer; continue remaining gameplay and transport work.
+Keeper movement choices add 72 native passes and nine selected affected passes,
+including serialized decisions for both teams/directions and actual wall-dive
+continuation. Full Room now requires **v11**; exports still precede that batch.
+See OnlineKeeperGroundChoices/Verification.md. Movement snapshot offers/declines
+and presentation/transport tuning remain independent next work.
 Preserve host-only RNG/rules, authenticated semantic commands, guest inactivity,
 receipt/revision checks and reconnect holds. Compile, run feature-focused native
 tests and build through the already-open Editor. Commit/push verified batches.

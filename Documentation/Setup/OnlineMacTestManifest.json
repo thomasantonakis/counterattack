@@ -184,6 +184,16 @@
     },
     {
       "mode": "editor",
+      "fixture": "OnlineKeeperGroundChoicesEditorTests",
+      "categories": [
+        "OnlineKeeperGroundChoices"
+      ],
+      "definition_sha256": "35c8d452fa13f5a7bf8dbe09ee0b6a0c61a4fc1468742b5dc5f35cd1fe407d2f",
+      "route": "native",
+      "source": "Assets/Editor/FeatureTests/OnlineKeeperGroundChoices/OnlineKeeperGroundChoicesEditorTests.cs"
+    },
+    {
+      "mode": "editor",
       "fixture": "OnlineMatchProtocolEditorTests",
       "categories": [
         "OnlineMatchProtocol"
@@ -642,6 +652,16 @@
       "definition_sha256": "5909fb045d5ca84c8bcece338b414bfac4e0e08190fa874a78208a50a99054a8",
       "route": "native",
       "source": "Assets/Tests/PlayMode/Features/OnlineKeeperDistribution/OnlineKeeperDistributionPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "categories": [
+        "OnlineKeeperGroundChoices"
+      ],
+      "definition_sha256": "e8a99bb0d9c0d762ada7af28dc075ff9ff198b70bb621e8025a34044a16002da",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineKeeperGroundChoices/OnlineKeeperGroundChoicesPlayModeTests.cs"
     },
     {
       "mode": "playmode",
@@ -12011,6 +12031,940 @@
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
       "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T075621546Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesEditorTests.AmbiguousDiveFamiliesAreNotGuessed",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "editor",
+      "fixture": "OnlineKeeperGroundChoicesEditorTests",
+      "method": "AmbiguousDiveFamiliesAreNotGuessed",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T164829156Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesEditorTests.KeysUsePublishedKeeperChoices(D,\"duel.dive\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "editor",
+      "fixture": "OnlineKeeperGroundChoicesEditorTests",
+      "method": "KeysUsePublishedKeeperChoices",
+      "parameters": [
+        "D,\"duel.dive\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T164829156Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesEditorTests.KeysUsePublishedKeeperChoices(T,\"duel.tackle\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "editor",
+      "fixture": "OnlineKeeperGroundChoicesEditorTests",
+      "method": "KeysUsePublishedKeeperChoices",
+      "parameters": [
+        "T,\"duel.tackle\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T164829156Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesEditorTests.KeysUsePublishedKeeperChoices(N,\"duel.stand\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "editor",
+      "fixture": "OnlineKeeperGroundChoicesEditorTests",
+      "method": "KeysUsePublishedKeeperChoices",
+      "parameters": [
+        "N,\"duel.stand\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T164829156Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.AwayAttackWallChoices(1,\"dive\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "AwayAttackWallChoices",
+      "parameters": [
+        "1,\"dive\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.AwayAttackWallChoices(1,\"stand\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "AwayAttackWallChoices",
+      "parameters": [
+        "1,\"stand\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.AwayAttackWallChoices(-1,\"dive\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "AwayAttackWallChoices",
+      "parameters": [
+        "-1,\"dive\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.AwayAttackWallChoices(-1,\"stand\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "AwayAttackWallChoices",
+      "parameters": [
+        "-1,\"stand\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.KeeperDiveOutcomes(1,\"moving\",\"win\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "KeeperDiveOutcomes",
+      "parameters": [
+        "1,\"moving\",\"win\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.KeeperDiveOutcomes(1,\"moving\",\"lose\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "KeeperDiveOutcomes",
+      "parameters": [
+        "1,\"moving\",\"lose\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.KeeperDiveOutcomes(1,\"moving\",\"tie\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "KeeperDiveOutcomes",
+      "parameters": [
+        "1,\"moving\",\"tie\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.KeeperDiveOutcomes(1,\"stationary\",\"win\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "KeeperDiveOutcomes",
+      "parameters": [
+        "1,\"stationary\",\"win\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.KeeperDiveOutcomes(1,\"stationary\",\"lose\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "KeeperDiveOutcomes",
+      "parameters": [
+        "1,\"stationary\",\"lose\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.KeeperDiveOutcomes(1,\"stationary\",\"tie\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "KeeperDiveOutcomes",
+      "parameters": [
+        "1,\"stationary\",\"tie\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.KeeperDiveOutcomes(1,\"wall\",\"win\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "KeeperDiveOutcomes",
+      "parameters": [
+        "1,\"wall\",\"win\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.KeeperDiveOutcomes(1,\"wall\",\"lose\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "KeeperDiveOutcomes",
+      "parameters": [
+        "1,\"wall\",\"lose\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.KeeperDiveOutcomes(1,\"wall\",\"tie\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "KeeperDiveOutcomes",
+      "parameters": [
+        "1,\"wall\",\"tie\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.KeeperDiveOutcomes(1,\"away-moving\",\"win\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "KeeperDiveOutcomes",
+      "parameters": [
+        "1,\"away-moving\",\"win\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.KeeperDiveOutcomes(1,\"away-moving\",\"lose\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "KeeperDiveOutcomes",
+      "parameters": [
+        "1,\"away-moving\",\"lose\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.KeeperDiveOutcomes(1,\"away-moving\",\"tie\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "KeeperDiveOutcomes",
+      "parameters": [
+        "1,\"away-moving\",\"tie\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.KeeperDiveOutcomes(1,\"away-stationary\",\"win\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "KeeperDiveOutcomes",
+      "parameters": [
+        "1,\"away-stationary\",\"win\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.KeeperDiveOutcomes(1,\"away-stationary\",\"lose\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "KeeperDiveOutcomes",
+      "parameters": [
+        "1,\"away-stationary\",\"lose\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.KeeperDiveOutcomes(1,\"away-stationary\",\"tie\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "KeeperDiveOutcomes",
+      "parameters": [
+        "1,\"away-stationary\",\"tie\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.KeeperDiveOutcomes(1,\"away-wall\",\"win\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "KeeperDiveOutcomes",
+      "parameters": [
+        "1,\"away-wall\",\"win\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.KeeperDiveOutcomes(1,\"away-wall\",\"lose\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "KeeperDiveOutcomes",
+      "parameters": [
+        "1,\"away-wall\",\"lose\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.KeeperDiveOutcomes(1,\"away-wall\",\"tie\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "KeeperDiveOutcomes",
+      "parameters": [
+        "1,\"away-wall\",\"tie\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.KeeperDiveOutcomes(-1,\"moving\",\"win\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "KeeperDiveOutcomes",
+      "parameters": [
+        "-1,\"moving\",\"win\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.KeeperDiveOutcomes(-1,\"moving\",\"lose\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "KeeperDiveOutcomes",
+      "parameters": [
+        "-1,\"moving\",\"lose\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.KeeperDiveOutcomes(-1,\"moving\",\"tie\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "KeeperDiveOutcomes",
+      "parameters": [
+        "-1,\"moving\",\"tie\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.KeeperDiveOutcomes(-1,\"stationary\",\"win\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "KeeperDiveOutcomes",
+      "parameters": [
+        "-1,\"stationary\",\"win\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.KeeperDiveOutcomes(-1,\"stationary\",\"lose\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "KeeperDiveOutcomes",
+      "parameters": [
+        "-1,\"stationary\",\"lose\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.KeeperDiveOutcomes(-1,\"stationary\",\"tie\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "KeeperDiveOutcomes",
+      "parameters": [
+        "-1,\"stationary\",\"tie\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.KeeperDiveOutcomes(-1,\"wall\",\"win\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "KeeperDiveOutcomes",
+      "parameters": [
+        "-1,\"wall\",\"win\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.KeeperDiveOutcomes(-1,\"wall\",\"lose\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "KeeperDiveOutcomes",
+      "parameters": [
+        "-1,\"wall\",\"lose\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.KeeperDiveOutcomes(-1,\"wall\",\"tie\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "KeeperDiveOutcomes",
+      "parameters": [
+        "-1,\"wall\",\"tie\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.KeeperDiveOutcomes(-1,\"away-moving\",\"win\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "KeeperDiveOutcomes",
+      "parameters": [
+        "-1,\"away-moving\",\"win\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.KeeperDiveOutcomes(-1,\"away-moving\",\"lose\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "KeeperDiveOutcomes",
+      "parameters": [
+        "-1,\"away-moving\",\"lose\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.KeeperDiveOutcomes(-1,\"away-moving\",\"tie\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "KeeperDiveOutcomes",
+      "parameters": [
+        "-1,\"away-moving\",\"tie\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.KeeperDiveOutcomes(-1,\"away-stationary\",\"win\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "KeeperDiveOutcomes",
+      "parameters": [
+        "-1,\"away-stationary\",\"win\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.KeeperDiveOutcomes(-1,\"away-stationary\",\"lose\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "KeeperDiveOutcomes",
+      "parameters": [
+        "-1,\"away-stationary\",\"lose\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.KeeperDiveOutcomes(-1,\"away-stationary\",\"tie\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "KeeperDiveOutcomes",
+      "parameters": [
+        "-1,\"away-stationary\",\"tie\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.KeeperDiveOutcomes(-1,\"away-wall\",\"win\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "KeeperDiveOutcomes",
+      "parameters": [
+        "-1,\"away-wall\",\"win\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.KeeperDiveOutcomes(-1,\"away-wall\",\"lose\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "KeeperDiveOutcomes",
+      "parameters": [
+        "-1,\"away-wall\",\"lose\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.KeeperDiveOutcomes(-1,\"away-wall\",\"tie\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "KeeperDiveOutcomes",
+      "parameters": [
+        "-1,\"away-wall\",\"tie\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(1,\"moving\",\"dive\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "OutsideKeeperChoices",
+      "parameters": [
+        "1,\"moving\",\"dive\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(1,\"moving\",\"foot\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "OutsideKeeperChoices",
+      "parameters": [
+        "1,\"moving\",\"foot\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(1,\"moving\",\"stand\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "OutsideKeeperChoices",
+      "parameters": [
+        "1,\"moving\",\"stand\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(1,\"stationary\",\"dive\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "OutsideKeeperChoices",
+      "parameters": [
+        "1,\"stationary\",\"dive\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(1,\"stationary\",\"foot\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "OutsideKeeperChoices",
+      "parameters": [
+        "1,\"stationary\",\"foot\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(1,\"stationary\",\"stand\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "OutsideKeeperChoices",
+      "parameters": [
+        "1,\"stationary\",\"stand\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(1,\"away-moving\",\"dive\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "OutsideKeeperChoices",
+      "parameters": [
+        "1,\"away-moving\",\"dive\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(1,\"away-moving\",\"foot\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "OutsideKeeperChoices",
+      "parameters": [
+        "1,\"away-moving\",\"foot\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(1,\"away-moving\",\"stand\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "OutsideKeeperChoices",
+      "parameters": [
+        "1,\"away-moving\",\"stand\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(1,\"away-stationary\",\"dive\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "OutsideKeeperChoices",
+      "parameters": [
+        "1,\"away-stationary\",\"dive\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(1,\"away-stationary\",\"foot\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "OutsideKeeperChoices",
+      "parameters": [
+        "1,\"away-stationary\",\"foot\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(1,\"away-stationary\",\"stand\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "OutsideKeeperChoices",
+      "parameters": [
+        "1,\"away-stationary\",\"stand\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(-1,\"moving\",\"dive\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "OutsideKeeperChoices",
+      "parameters": [
+        "-1,\"moving\",\"dive\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(-1,\"moving\",\"foot\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "OutsideKeeperChoices",
+      "parameters": [
+        "-1,\"moving\",\"foot\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(-1,\"moving\",\"stand\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "OutsideKeeperChoices",
+      "parameters": [
+        "-1,\"moving\",\"stand\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(-1,\"stationary\",\"dive\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "OutsideKeeperChoices",
+      "parameters": [
+        "-1,\"stationary\",\"dive\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(-1,\"stationary\",\"foot\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "OutsideKeeperChoices",
+      "parameters": [
+        "-1,\"stationary\",\"foot\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(-1,\"stationary\",\"stand\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "OutsideKeeperChoices",
+      "parameters": [
+        "-1,\"stationary\",\"stand\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(-1,\"away-moving\",\"dive\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "OutsideKeeperChoices",
+      "parameters": [
+        "-1,\"away-moving\",\"dive\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(-1,\"away-moving\",\"foot\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "OutsideKeeperChoices",
+      "parameters": [
+        "-1,\"away-moving\",\"foot\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(-1,\"away-moving\",\"stand\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "OutsideKeeperChoices",
+      "parameters": [
+        "-1,\"away-moving\",\"stand\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(-1,\"away-stationary\",\"dive\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "OutsideKeeperChoices",
+      "parameters": [
+        "-1,\"away-stationary\",\"dive\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(-1,\"away-stationary\",\"foot\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "OutsideKeeperChoices",
+      "parameters": [
+        "-1,\"away-stationary\",\"foot\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(-1,\"away-stationary\",\"stand\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "OutsideKeeperChoices",
+      "parameters": [
+        "-1,\"away-stationary\",\"stand\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.WallKeeperChoices(1,\"dive\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "WallKeeperChoices",
+      "parameters": [
+        "1,\"dive\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.WallKeeperChoices(1,\"stand\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "WallKeeperChoices",
+      "parameters": [
+        "1,\"stand\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.WallKeeperChoices(-1,\"dive\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "WallKeeperChoices",
+      "parameters": [
+        "-1,\"dive\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineKeeperGroundChoicesPlayModeTests.WallKeeperChoices(-1,\"stand\")",
+      "feature": "OnlineKeeperGroundChoices",
+      "mode": "playmode",
+      "fixture": "OnlineKeeperGroundChoicesPlayModeTests",
+      "method": "WallKeeperChoices",
+      "parameters": [
+        "-1,\"stand\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
     }
   ]
 }

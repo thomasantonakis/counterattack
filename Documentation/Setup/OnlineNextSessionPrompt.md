@@ -37,6 +37,12 @@ and both directions. See OnlineOutsideKeeperShot/Verification.md. Full Room is
 now v10; wire remains v7. Shared live-setting consent is awaiting the user's
 answer recorded in GameplayReview.md; continue independent gameplay/transport work.
 Next: remaining interruption decisions and motion interpolation/transport tuning.
+Keeper movement choices now add 72 new native passes and nine selected affected
+passes: moving/stationary outside-box dive/foot/stand, goalkeeper-wall decisions,
+real duel continuations, both teams/directions and serialized replica/commands.
+See OnlineKeeperGroundChoices/Verification.md. Full Room is now v11; exports
+still precede this batch and must be refreshed before paired use. Continue the
+movement snapshot offer/decline path and presentation/transport work.
 Controls no longer serialize the complete roster/stats every display update:
 typed detached control decisions have 10 new focused passes and 19 selected
 affected passes. See OnlineControlDecision/Verification.md for memory-measurement

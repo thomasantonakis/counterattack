@@ -1,18 +1,28 @@
 using System.Linq;
 
-public enum OnlineGroundDuelIntent { Nutmeg, Victim, Tackle, Stand, Roll, Reposition, Stay }
+public enum OnlineGroundDuelIntent { Nutmeg, Victim, Tackle, Stand, Roll, Reposition, Stay, Dive }
 
 public partial class MovementPhaseManager
 {
-    public string OnlineGroundDuelStage=>!isActivated?null:OnlineDribbleBlocked || isPlayerMoving || IsResolvingReposition
+    // The dribble's movement coroutine waits at the reached wall hex until the
+    // keeper chooses/resolves. Its parent busy flag must not suppress that child input.
+    private bool OnlineWallParentWaiting=>isGkWallDiveSequenceActive
+        && (isWaitingForGKWallDiveDecision || goalkeeperChallengeMode==GoalkeeperChallengeMode.WallDive);
+    public string OnlineGroundDuelStage=>!isActivated?null:OnlineDribbleBlocked || isPlayerMoving && !OnlineWallParentWaiting || IsResolvingReposition
         ?(isWaitingForTackleRoll || isWaitingForReposition || activeDuelPanel?.IsOpen==true?"resolving":null)
-        :lookingForNutmegVictim?"victim":isWaitingForReposition?"reposition"
+        :isWaitingForGKWallDiveDecision?"wall-choice":lookingForNutmegVictim?"victim":isWaitingForReposition?"reposition"
         :isWaitingForTackleRoll && (!tackleDefenderRolled || !tackleAttackerRolled)?"roll"
-        :isWaitingForTackleDecision?"choice":isWaitingForNutmegDecisionWithoutMoving?"nutmeg"
+        :isWaitingForTackleDecision || OnlineStationaryKeeperChoice?"choice":isWaitingForNutmegDecisionWithoutMoving?"nutmeg"
         :activeDuelPanel?.IsOpen==true?"resolving":null;
-    public PlayerToken OnlineGroundDuelActor=>isWaitingForReposition?repositionWinner
+    public PlayerToken OnlineGroundDuelActor=>isWaitingForGKWallDiveDecision?gkWallDiveGoalkeeper:isWaitingForReposition?repositionWinner
         :isWaitingForTackleRoll?(!tackleDefenderRolled?(isNutmegInProgress?nutmegVictim:selectedDefender):ball.GetCurrentHex()?.GetOccupyingToken())
-        :isWaitingForTackleDecision?selectedDefender??selectedToken:ball.GetCurrentHex()?.GetOccupyingToken()??selectedToken;
+        :OnlineStationaryKeeperChoice?selectedToken:isWaitingForTackleDecision?selectedDefender??selectedToken:ball.GetCurrentHex()?.GetOccupyingToken()??selectedToken;
+    private bool OnlineStationaryKeeperChoice=>isWaitingForTackleDecisionWithoutMoving
+        && IsOutsideBoxGoalkeeperChallengeCandidate(selectedToken,ball?.GetCurrentHex()?.GetOccupyingToken());
+    public bool OnlineCanDive=>OnlineGroundDuelStage=="wall-choice" || OnlineGroundDuelStage=="choice"
+        && (OnlineStationaryKeeperChoice || IsCurrentOutsideBoxGoalkeeperChallengeCandidate());
+    public bool OnlineCanFootTackle=>OnlineGroundDuelStage=="choice"
+        && (!OnlineStationaryKeeperChoice || !IsThrowInTackleWithoutMovingBlocked(selectedToken));
     public PlayerToken[] OnlineNutmegVictims=>lookingForNutmegVictim?nutmeggableDefenders.Where(t=>t!=null && t.isPlaying && !t.isAttacker).ToArray():System.Array.Empty<PlayerToken>();
     public HexCell[] OnlineDuelRepositionTargets=>OnlineGroundDuelStage!="reposition"?System.Array.Empty<HexCell>()
         :repositionHexes.Where(h=>h!=null && h.GetOccupyingToken()==null && !h.isAttackOccupied && !h.isDefenseOccupied).ToArray();
@@ -22,7 +32,7 @@ public partial class MovementPhaseManager
     {
         var match=MatchManager.Instance;
         if(match==null || !match.IsOnlineAuthorityControlled || match.IsGameplayInputBlocked || !isActivated
-            || OnlineDribbleBlocked || isPlayerMoving || IsResolvingReposition)return false;
+            || OnlineDribbleBlocked || isPlayerMoving && !OnlineWallParentWaiting || IsResolvingReposition)return false;
         switch(intent)
         {
             case OnlineGroundDuelIntent.Nutmeg:
@@ -33,12 +43,30 @@ public partial class MovementPhaseManager
                 if(!OnlineNutmegVictims.Contains(player))return false;
                 HandleNutmegVictimSelection(player);return true;
             case OnlineGroundDuelIntent.Tackle:
-                if(OnlineGroundDuelStage!="choice")return false;
+                if(!OnlineCanFootTackle)return false;
+                PrepareOnlineStationaryKeeperChoice();
                 if(IsCurrentOutsideBoxGoalkeeperChallengeCandidate())goalkeeperChallengeMode=GoalkeeperChallengeMode.OutsideBoxFootTackle;
                 isWaitingForTackleDecision=false;StartTackleDiceRollSequence();return true;
             case OnlineGroundDuelIntent.Stand:
+                if(OnlineGroundDuelStage=="wall-choice")
+                {isWaitingForGKWallDiveDecision=false;isGkWallDiveSequenceActive=false;return true;}
                 if(OnlineGroundDuelStage!="choice")return false;
+                if(OnlineStationaryKeeperChoice){PrepareOnlineStationaryKeeperChoice();AdvanceMovementPhase();return true;}
                 isWaitingForTackleDecision=false;ResetTacklePhase();AdvanceMovementPhase();return true;
+            case OnlineGroundDuelIntent.Dive:
+                if(!OnlineCanDive)return false;
+                if(OnlineGroundDuelStage=="wall-choice")
+                {
+                    isWaitingForGKWallDiveDecision=false;isGkWallDiveInProgress=true;
+                    goalkeeperChallengeMode=GoalkeeperChallengeMode.WallDive;selectedDefender=gkWallDiveGoalkeeper;
+                }
+                else
+                {
+                    PrepareOnlineStationaryKeeperChoice();isWaitingForTackleDecision=false;
+                    goalkeeperChallengeMode=GoalkeeperChallengeMode.OutsideBoxDive;isGkWallDiveInProgress=true;
+                    gkWallDiveGoalkeeper=selectedDefender;gkWallDiveHex=ball.GetCurrentHex()?.GetOccupyingToken()?.GetCurrentHex();gkWallDiveSavingPenalty=0;
+                }
+                StartTackleDiceRollSequence();return true;
             case OnlineGroundDuelIntent.Roll:
                 if(OnlineGroundDuelStage!="roll")return false;
                 PerformTackleDiceRollInternal(!tackleDefenderRolled,(RollInputOverride?)null);return true;
@@ -51,6 +79,12 @@ public partial class MovementPhaseManager
                 if(!isSuccessfulTackleRepositionPending)AdvanceMovementPhase();return true;
             default:return false;
         }
+    }
+    private void PrepareOnlineStationaryKeeperChoice()
+    {
+        if(!OnlineStationaryKeeperChoice)return;
+        selectedDefender=selectedToken;RegisterMovedToken(selectedToken);isAwaitingHexDestination=false;
+        isWaitingForTackleDecisionWithoutMoving=false;isWaitingForTackleDecision=false;hexGrid.ClearHighlightedHexes();
     }
     private void StartChosenNutmeg()
     {
