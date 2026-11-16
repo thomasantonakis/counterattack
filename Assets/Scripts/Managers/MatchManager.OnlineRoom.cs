@@ -10,6 +10,13 @@ public partial class MatchManager
     public PenaltyShootoutManager OnlineShootoutManager=>onlineShootoutManager!=null?onlineShootoutManager:onlineShootoutManager=gameObject.scene.GetRootGameObjects().SelectMany(r=>r.GetComponentsInChildren<PenaltyShootoutManager>(true)).FirstOrDefault();
     public RoomTokenSnapshot CaptureOnlineRosterToken(PlayerToken token)=>CreateTokenSnapshot(token);
     public bool OnlineExtraTimeSubstitutionCredit=>extraTimeSubstitutionCreditGranted;
+    public bool OnlineCanRollStoppage=>!OnlineRoomSession.IsGuest && IsOnlineAuthorityControlled && !IsGameplayInputBlocked
+        && isWaitingForExtraActionsRoll && !extraActionsDetermined && !isMatchComplete && !TimingResultBlocked;
+    public bool TryRollOnlineStoppage()
+    {
+        if(!OnlineCanRollStoppage)return false;
+        ExecuteTimingRoll(()=>DetermineExtraActions());return true;
+    }
     public void InitializeAuthoredOnlineMatch(GameData initial)
     {
         if(initial?.openingSetup==null || initial.gameSettings?.gameMode!=ApplicationManager.OnlineGameMode)throw new ArgumentException("An agreed online opening is required",nameof(initial));
@@ -35,6 +42,8 @@ public partial class MatchManager
         gameData.stats.awayTeamStats=JsonUtility.FromJson<TeamStats>(JsonUtility.ToJson(state.awayStats));
         if(state.catalogId==OnlineFullRoomBootstrap.Catalog)
         {
+            isHalfExpired=state.halfExpired;isWaitingForExtraActionsRoll=state.stoppageAwaitingRoll;
+            extraActionsDetermined=state.stoppageDetermined;extraActionsTotal=state.stoppageTotal;extraActionsRemaining=state.stoppageRemaining;
             homeTeamDirection=Enum.Parse<TeamAttackingDirection>(state.homeDirection);awayTeamDirection=Enum.Parse<TeamAttackingDirection>(state.awayDirection);
             areSubstitutionsAvailable=state.substitutionsAvailable;substitutionsAvailabilityReason=state.substitutionsReason;
             extraTimeSubstitutionCreditGranted=state.extraTimeSubstitutionCredit;

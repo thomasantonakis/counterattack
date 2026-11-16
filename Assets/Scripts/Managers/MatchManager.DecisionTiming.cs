@@ -103,7 +103,7 @@ public partial class MatchManager
         movementPhaseManager?.goalKeeperManager?.RegisterTiming(r);
         r.Scope(nameof(MatchManager), null);
         r.Roll(this, "stoppage", isWaitingForExtraActionsRoll,
-            () => isWaitingForExtraActionsRoll && (stoppageActionsPanel == null || !stoppageActionsPanel.HasSceneBindings || stoppageActionsPanel.IsAwaitingRoll), OnKeyReceived);
+            () => isWaitingForExtraActionsRoll && (IsOnlineAuthorityControlled || stoppageActionsPanel == null || !stoppageActionsPanel.HasSceneBindings || stoppageActionsPanel.IsAwaitingRoll), OnKeyReceived);
         timingRollManager = r.RollManager;
         r.ApplyRoll();
         timing.EndRegistration();

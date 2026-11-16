@@ -4436,7 +4436,7 @@ public partial class MatchManager : MonoBehaviour
         if (keyData.isConsumed) return;
         bool hasRollOverride = RollInputOverride.TryParse(keyData, out RollInputOverride rollOverride);
         if (isWaitingForExtraActionsRoll && (keyData.key == KeyCode.R || hasRollOverride)
-            && (stoppageActionsPanel == null || !stoppageActionsPanel.HasSceneBindings || stoppageActionsPanel.IsAwaitingRoll))
+            && (IsOnlineAuthorityControlled || stoppageActionsPanel == null || !stoppageActionsPanel.HasSceneBindings || stoppageActionsPanel.IsAwaitingRoll))
         {
             DetermineExtraActions(hasRollOverride ? (RollInputOverride?)rollOverride : null);
             keyData.Consume(nameof(MatchManager));

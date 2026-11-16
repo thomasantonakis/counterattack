@@ -588,3 +588,12 @@ PlayMode), plus 44 affected shortcut passes. Restart/throw-in actions use their
 normal physical keys through the existing semantic lane; host and guest authored
 UI consumes typing. See OnlineContextKeys/Verification.md. Room v14/wire v7
 remain unchanged. Paired testing stays deferred while independent gaps are fixed.
+
+Stoppage actions now publish the attacking manager's manual/automatic roll and
+replicate expired/waiting/determined state plus total/remaining allowance. The
+fresh guest clock now matches +? / added-action text. 23 new native cases passed;
+see OnlineStoppageActions/Verification.md. Full Room is now v15, wire remains v7.
+Windows exports currently contain v14/690c412 and need refresh before paired use.
+Continue stationary defensive tackle/movement choices, loose-ball pickup and
+header nomination shortcuts, then the remaining full-match local audit. The
+son's Mac run stays deferred; each new test is separately registered.

@@ -124,3 +124,11 @@ tests and build through the already-open Editor. Commit/push verified batches.
 Preserve unrelated local scene/font/settings edits. Do not launch Unity,
 batchmode, ordinary editor_play, GUI automation or additive scene loads.
 Continue independent implementation whenever Mac actions are unavailable.
+
+Latest independent gameplay checkpoint: Room v15 adds authenticated manual and
+automatic stoppage-action rolls and matching guest added-action clock/counts.
+There are 23 new Windows native passes; contextual keys add another 63. Read
+OnlineStoppageActions/Verification.md and OnlineContextKeys/Verification.md.
+Pull/rebuild both clients after the remaining batches; the latest exported
+Windows binaries still contain v14. Do not run the paired script until the user
+requests it after independent readiness work is complete.

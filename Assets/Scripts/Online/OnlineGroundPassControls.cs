@@ -80,6 +80,7 @@ namespace CounterAttack.Online
         private static string CommandLabel(string action) => action switch
         {
             "coin.roll"=>"Roll coin toss", "coin.kickoff"=>"Take first kick", "coin.left"=>"Choose left end / left-to-right", "coin.right"=>"Choose right end / right-to-left",
+            "stoppage.roll"=>"R: Roll stoppage actions",
             "ground.start"=>"Start ground pass", "long.start"=>"Start long pass", "long.roll"=>"Roll",
             "long.keeper.decline"=>"Keep goalkeeper in position", "long.keeper.claim"=>"Claim long pass",
             "movement.start"=>"Start movement", "movement.forfeit"=>"Finish this team's movement",

@@ -16,6 +16,9 @@ namespace CounterAttack.Online
                 || state.homeDirection is not ("LeftToRight" or "RightToLeft")
                 || state.awayDirection is not ("LeftToRight" or "RightToLeft") || state.homeDirection==state.awayDirection)return false;
             if(state.coin!=null && !state.coin.Valid())return false;
+            if(state.stoppageTotal<0 || state.stoppageTotal>(state.half>2?3:7) || state.stoppageRemaining<0 || state.stoppageRemaining>state.stoppageTotal
+                || !state.stoppageDetermined && (state.stoppageTotal!=0 || state.stoppageRemaining!=0)
+                || state.stoppageAwaitingRoll && (!state.halfExpired || state.stoppageDetermined))return false;
             if(state.shootout!=null && !state.shootout.Valid(state))return false;
             var pose=state.roomPose;
             if((state.ballMoving || state.playerMoving)!=(pose!=null))return false;

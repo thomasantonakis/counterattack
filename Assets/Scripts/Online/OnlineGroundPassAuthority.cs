@@ -48,6 +48,8 @@ namespace CounterAttack.Online
         public float regulationSeconds;
         public int half;
         public bool clockRunning,matchComplete;
+        public bool halfExpired,stoppageAwaitingRoll,stoppageDetermined;
+        public int stoppageTotal,stoppageRemaining;
         public MatchManager.TeamStats homeStats, awayStats;
         public OnlineRollPublication[] rolls;
         public OnlineHeaderObservation header;
@@ -214,6 +216,8 @@ namespace CounterAttack.Online
                 awayPauseSequence = sharedPause?.LastAcceptedSequence(OnlineTeam.Away) ?? 0,
                 timing = match.CaptureOnlineDecisionTiming(), regulationSeconds = match.OnlineRegulationSeconds,
                 half = match.currentHalf, clockRunning = match.isClockRunning,matchComplete=match.OnlineMatchComplete,
+                halfExpired=match.isHalfExpired,stoppageAwaitingRoll=match.IsWaitingForExtraActionsRoll,
+                stoppageDetermined=match.extraActionsDetermined,stoppageTotal=match.extraActionsTotal,stoppageRemaining=match.extraActionsRemaining,
                 homeStats = JsonUtility.FromJson<MatchManager.TeamStats>(JsonUtility.ToJson(match.gameData.stats.homeTeamStats)),
                 awayStats = JsonUtility.FromJson<MatchManager.TeamStats>(JsonUtility.ToJson(match.gameData.stats.awayTeamStats)),
                 stage = "continuation", owner = attacking, gameState = match.currentState.ToString(),
@@ -263,6 +267,11 @@ namespace CounterAttack.Online
             else if(match.OnlineBetweenHalves){state.stage="match.transition";state.owner="None";state.awaitingRoll=state.awaitingTarget=false;}
             else if(state.matchComplete && state.gameState==MatchManager.GameState.MatchEnded.ToString()){state.stage="match.complete";state.owner="None";state.awaitingRoll=state.awaitingTarget=false;}
             else if (match.IsGameplayInputBlocked) state.stage = "blocked";
+            else if(match.IsWaitingForExtraActionsRoll)
+            {
+                state.stage="stoppage.roll";state.owner=attacking;state.awaitingTarget=false;state.awaitingRoll=true;
+                if(match.OnlineCanRollStoppage)AddAdditional(actions,"stoppage.roll",()=>{if(!match.TryRollOnlineStoppage())throw new InvalidOperationException("Accepted stoppage roll became unavailable");});
+            }
             else if(state.shootout!=null)
             {
                 state.awaitingRoll=state.awaitingTarget=false;

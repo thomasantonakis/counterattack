@@ -463,6 +463,16 @@
       "source": "Assets/Editor/FeatureTests/OnlineSnapshotPose/OnlineSnapshotPoseEditorTests.cs"
     },
     {
+      "mode": "editor",
+      "fixture": "OnlineStoppageActionsEditorTests",
+      "categories": [
+        "OnlineStoppageActions"
+      ],
+      "definition_sha256": "bc1f5763ebecb2772fb6a12d9a3763c57a25942dc05f6de679b7ac7ead45a359",
+      "route": "native",
+      "source": "Assets/Editor/FeatureTests/OnlineStoppageActions/OnlineStoppageActionsEditorTests.cs"
+    },
+    {
       "mode": "playmode",
       "fixture": "OnlineAutomaticRollPlayModeTests",
       "categories": [
@@ -1042,6 +1052,16 @@
       "definition_sha256": "4b385ae3218bd8e3e53685a907756f215e169505d18ecd1f0a9d7730da438901",
       "route": "native",
       "source": "Assets/Tests/PlayMode/Features/OnlineSnapshotPose/OnlineSnapshotPosePlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineStoppageActionsPlayModeTests",
+      "categories": [
+        "OnlineStoppageActions"
+      ],
+      "definition_sha256": "c619b20c680dee9f75ba673356f05e3066c1f9ac355cd977f4c8bf6724e16770",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineStoppageActions/OnlineStoppageActionsPlayModeTests.cs"
     },
     {
       "mode": "playmode",
@@ -15104,6 +15124,303 @@
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
       "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T183339529Z/results.xml"
+    },
+    {
+      "id": "OnlineStoppageActionsEditorTests.CappedCompletedAllowanceIsRetained(1,7)",
+      "feature": "OnlineStoppageActions",
+      "mode": "editor",
+      "fixture": "OnlineStoppageActionsEditorTests",
+      "method": "CappedCompletedAllowanceIsRetained",
+      "parameters": [
+        "1,7"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T184348365Z/results.xml"
+    },
+    {
+      "id": "OnlineStoppageActionsEditorTests.CappedCompletedAllowanceIsRetained(3,3)",
+      "feature": "OnlineStoppageActions",
+      "mode": "editor",
+      "fixture": "OnlineStoppageActionsEditorTests",
+      "method": "CappedCompletedAllowanceIsRetained",
+      "parameters": [
+        "3,3"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T184348365Z/results.xml"
+    },
+    {
+      "id": "OnlineStoppageActionsEditorTests.MalformedAllowanceDoesNotAdvanceReplica(\"negative-total\")",
+      "feature": "OnlineStoppageActions",
+      "mode": "editor",
+      "fixture": "OnlineStoppageActionsEditorTests",
+      "method": "MalformedAllowanceDoesNotAdvanceReplica",
+      "parameters": [
+        "\"negative-total\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T184348365Z/results.xml"
+    },
+    {
+      "id": "OnlineStoppageActionsEditorTests.MalformedAllowanceDoesNotAdvanceReplica(\"regulation-cap\")",
+      "feature": "OnlineStoppageActions",
+      "mode": "editor",
+      "fixture": "OnlineStoppageActionsEditorTests",
+      "method": "MalformedAllowanceDoesNotAdvanceReplica",
+      "parameters": [
+        "\"regulation-cap\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T184348365Z/results.xml"
+    },
+    {
+      "id": "OnlineStoppageActionsEditorTests.MalformedAllowanceDoesNotAdvanceReplica(\"extra-cap\")",
+      "feature": "OnlineStoppageActions",
+      "mode": "editor",
+      "fixture": "OnlineStoppageActionsEditorTests",
+      "method": "MalformedAllowanceDoesNotAdvanceReplica",
+      "parameters": [
+        "\"extra-cap\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T184348365Z/results.xml"
+    },
+    {
+      "id": "OnlineStoppageActionsEditorTests.MalformedAllowanceDoesNotAdvanceReplica(\"negative-remaining\")",
+      "feature": "OnlineStoppageActions",
+      "mode": "editor",
+      "fixture": "OnlineStoppageActionsEditorTests",
+      "method": "MalformedAllowanceDoesNotAdvanceReplica",
+      "parameters": [
+        "\"negative-remaining\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T184348365Z/results.xml"
+    },
+    {
+      "id": "OnlineStoppageActionsEditorTests.MalformedAllowanceDoesNotAdvanceReplica(\"excess-remaining\")",
+      "feature": "OnlineStoppageActions",
+      "mode": "editor",
+      "fixture": "OnlineStoppageActionsEditorTests",
+      "method": "MalformedAllowanceDoesNotAdvanceReplica",
+      "parameters": [
+        "\"excess-remaining\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T184348365Z/results.xml"
+    },
+    {
+      "id": "OnlineStoppageActionsEditorTests.MalformedAllowanceDoesNotAdvanceReplica(\"undetermined-counts\")",
+      "feature": "OnlineStoppageActions",
+      "mode": "editor",
+      "fixture": "OnlineStoppageActionsEditorTests",
+      "method": "MalformedAllowanceDoesNotAdvanceReplica",
+      "parameters": [
+        "\"undetermined-counts\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T184348365Z/results.xml"
+    },
+    {
+      "id": "OnlineStoppageActionsEditorTests.MalformedAllowanceDoesNotAdvanceReplica(\"awaiting-before-expiry\")",
+      "feature": "OnlineStoppageActions",
+      "mode": "editor",
+      "fixture": "OnlineStoppageActionsEditorTests",
+      "method": "MalformedAllowanceDoesNotAdvanceReplica",
+      "parameters": [
+        "\"awaiting-before-expiry\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T184348365Z/results.xml"
+    },
+    {
+      "id": "OnlineStoppageActionsEditorTests.MalformedAllowanceDoesNotAdvanceReplica(\"awaiting-after-result\")",
+      "feature": "OnlineStoppageActions",
+      "mode": "editor",
+      "fixture": "OnlineStoppageActionsEditorTests",
+      "method": "MalformedAllowanceDoesNotAdvanceReplica",
+      "parameters": [
+        "\"awaiting-after-result\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T184348365Z/results.xml"
+    },
+    {
+      "id": "OnlineStoppageActionsEditorTests.RUsesPublishedStoppageCommand",
+      "feature": "OnlineStoppageActions",
+      "mode": "editor",
+      "fixture": "OnlineStoppageActionsEditorTests",
+      "method": "RUsesPublishedStoppageCommand",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T184348365Z/results.xml"
+    },
+    {
+      "id": "OnlineStoppageActionsPlayModeTests.ExpiredHalfAutomaticRoll(False,False)",
+      "feature": "OnlineStoppageActions",
+      "mode": "playmode",
+      "fixture": "OnlineStoppageActionsPlayModeTests",
+      "method": "ExpiredHalfAutomaticRoll",
+      "parameters": [
+        "False,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T184652107Z/results.xml"
+    },
+    {
+      "id": "OnlineStoppageActionsPlayModeTests.ExpiredHalfAutomaticRoll(False,True)",
+      "feature": "OnlineStoppageActions",
+      "mode": "playmode",
+      "fixture": "OnlineStoppageActionsPlayModeTests",
+      "method": "ExpiredHalfAutomaticRoll",
+      "parameters": [
+        "False,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T184652107Z/results.xml"
+    },
+    {
+      "id": "OnlineStoppageActionsPlayModeTests.ExpiredHalfAutomaticRoll(True,False)",
+      "feature": "OnlineStoppageActions",
+      "mode": "playmode",
+      "fixture": "OnlineStoppageActionsPlayModeTests",
+      "method": "ExpiredHalfAutomaticRoll",
+      "parameters": [
+        "True,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T184652107Z/results.xml"
+    },
+    {
+      "id": "OnlineStoppageActionsPlayModeTests.ExpiredHalfAutomaticRoll(True,True)",
+      "feature": "OnlineStoppageActions",
+      "mode": "playmode",
+      "fixture": "OnlineStoppageActionsPlayModeTests",
+      "method": "ExpiredHalfAutomaticRoll",
+      "parameters": [
+        "True,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T184652107Z/results.xml"
+    },
+    {
+      "id": "OnlineStoppageActionsPlayModeTests.ExpiredHalfRollsAndResumes(False,False,1)",
+      "feature": "OnlineStoppageActions",
+      "mode": "playmode",
+      "fixture": "OnlineStoppageActionsPlayModeTests",
+      "method": "ExpiredHalfRollsAndResumes",
+      "parameters": [
+        "False,False,1"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T184652107Z/results.xml"
+    },
+    {
+      "id": "OnlineStoppageActionsPlayModeTests.ExpiredHalfRollsAndResumes(False,False,6)",
+      "feature": "OnlineStoppageActions",
+      "mode": "playmode",
+      "fixture": "OnlineStoppageActionsPlayModeTests",
+      "method": "ExpiredHalfRollsAndResumes",
+      "parameters": [
+        "False,False,6"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T184652107Z/results.xml"
+    },
+    {
+      "id": "OnlineStoppageActionsPlayModeTests.ExpiredHalfRollsAndResumes(False,True,1)",
+      "feature": "OnlineStoppageActions",
+      "mode": "playmode",
+      "fixture": "OnlineStoppageActionsPlayModeTests",
+      "method": "ExpiredHalfRollsAndResumes",
+      "parameters": [
+        "False,True,1"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T184652107Z/results.xml"
+    },
+    {
+      "id": "OnlineStoppageActionsPlayModeTests.ExpiredHalfRollsAndResumes(False,True,6)",
+      "feature": "OnlineStoppageActions",
+      "mode": "playmode",
+      "fixture": "OnlineStoppageActionsPlayModeTests",
+      "method": "ExpiredHalfRollsAndResumes",
+      "parameters": [
+        "False,True,6"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T184652107Z/results.xml"
+    },
+    {
+      "id": "OnlineStoppageActionsPlayModeTests.ExpiredHalfRollsAndResumes(True,False,1)",
+      "feature": "OnlineStoppageActions",
+      "mode": "playmode",
+      "fixture": "OnlineStoppageActionsPlayModeTests",
+      "method": "ExpiredHalfRollsAndResumes",
+      "parameters": [
+        "True,False,1"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T184652107Z/results.xml"
+    },
+    {
+      "id": "OnlineStoppageActionsPlayModeTests.ExpiredHalfRollsAndResumes(True,False,6)",
+      "feature": "OnlineStoppageActions",
+      "mode": "playmode",
+      "fixture": "OnlineStoppageActionsPlayModeTests",
+      "method": "ExpiredHalfRollsAndResumes",
+      "parameters": [
+        "True,False,6"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T184652107Z/results.xml"
+    },
+    {
+      "id": "OnlineStoppageActionsPlayModeTests.ExpiredHalfRollsAndResumes(True,True,1)",
+      "feature": "OnlineStoppageActions",
+      "mode": "playmode",
+      "fixture": "OnlineStoppageActionsPlayModeTests",
+      "method": "ExpiredHalfRollsAndResumes",
+      "parameters": [
+        "True,True,1"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T184652107Z/results.xml"
+    },
+    {
+      "id": "OnlineStoppageActionsPlayModeTests.ExpiredHalfRollsAndResumes(True,True,6)",
+      "feature": "OnlineStoppageActions",
+      "mode": "playmode",
+      "fixture": "OnlineStoppageActionsPlayModeTests",
+      "method": "ExpiredHalfRollsAndResumes",
+      "parameters": [
+        "True,True,6"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T184652107Z/results.xml"
     }
   ]
 }

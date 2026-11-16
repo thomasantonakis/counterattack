@@ -1,0 +1,12 @@
+{"name":"OnlineStoppageActionsPlayModeTests.ExpiredHalfAutomaticRoll(False,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineStoppageActionsPlayModeTests.ExpiredHalfAutomaticRoll(False,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineStoppageActionsPlayModeTests.ExpiredHalfAutomaticRoll(True,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineStoppageActionsPlayModeTests.ExpiredHalfAutomaticRoll(True,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineStoppageActionsPlayModeTests.ExpiredHalfRollsAndResumes(False,False,1)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineStoppageActionsPlayModeTests.ExpiredHalfRollsAndResumes(False,False,6)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineStoppageActionsPlayModeTests.ExpiredHalfRollsAndResumes(False,True,1)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineStoppageActionsPlayModeTests.ExpiredHalfRollsAndResumes(False,True,6)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineStoppageActionsPlayModeTests.ExpiredHalfRollsAndResumes(True,False,1)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineStoppageActionsPlayModeTests.ExpiredHalfRollsAndResumes(True,False,6)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineStoppageActionsPlayModeTests.ExpiredHalfRollsAndResumes(True,True,1)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineStoppageActionsPlayModeTests.ExpiredHalfRollsAndResumes(True,True,6)","status":"Passed","message":"","stackTrace":""}
