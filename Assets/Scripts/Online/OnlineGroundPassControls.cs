@@ -25,6 +25,8 @@ namespace CounterAttack.Online
             :state.awayKeeperReplacement || state.awayForcedKeeperSubstitution || state.awayEmergencyKeeper);
         public bool CanManageRequiredKeeper=>connected && !pending && state?.isSharedPaused==true && !state.connectionHeld && OwnRequiredKeeper;
         public bool CanManageSubstitutions=>state?.keeperActionBlocked==true?CanManageRequiredKeeper && !(team==OnlineTeam.Home?state.homeEmergencyKeeper:state.awayEmergencyKeeper):CanManageOwnPause;
+        public bool CanSubmitAction(string action)=>CanAct && state.legalActions?.Contains(action)==true;
+        public void SubmitAction(string action)=>Gameplay(action);
         public bool CanManageShootout=>connected && !pending && state?.shootout?.selecting==true && !state.connectionHeld && !state.isSharedPaused;
         public void SwapShootout(int first,int second)=>Control("shootout.swap:"+first+":"+second);
         public void ConfirmShootout()=>Control("shootout.ready");
@@ -51,7 +53,7 @@ namespace CounterAttack.Online
         public void Display(OnlineGroundPassState publication)
         {
             // Detach the displayed decision from transport/caller mutation.
-            state = publication == null ? null : JsonUtility.FromJson<OnlineGroundPassState>(JsonUtility.ToJson(publication));
+            state = OnlineGroundPassState.Copy(publication);
             if (state != null)
             {
                 sequence = Math.Max(sequence, team == OnlineTeam.Home ? state.homeAcceptedSequence : state.awayAcceptedSequence);
@@ -72,6 +74,7 @@ namespace CounterAttack.Online
 
         private static string CommandLabel(string action) => action switch
         {
+            "coin.roll"=>"Roll coin toss", "coin.kickoff"=>"Take first kick", "coin.left"=>"Choose left end / left-to-right", "coin.right"=>"Choose right end / right-to-left",
             "ground.start"=>"Start ground pass", "long.start"=>"Start long pass", "long.roll"=>"Roll",
             "long.keeper.decline"=>"Keep goalkeeper in position", "long.keeper.claim"=>"Claim long pass",
             "movement.start"=>"Start movement", "movement.forfeit"=>"Finish this team's movement",

@@ -1,0 +1,16 @@
+{"name":"OnlineRoomCoinTossPlayModeTests.RealRoomTossTransitions(False,False,False,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomCoinTossPlayModeTests.RealRoomTossTransitions(False,False,False,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomCoinTossPlayModeTests.RealRoomTossTransitions(False,False,True,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomCoinTossPlayModeTests.RealRoomTossTransitions(False,False,True,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomCoinTossPlayModeTests.RealRoomTossTransitions(False,True,False,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomCoinTossPlayModeTests.RealRoomTossTransitions(False,True,False,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomCoinTossPlayModeTests.RealRoomTossTransitions(False,True,True,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomCoinTossPlayModeTests.RealRoomTossTransitions(False,True,True,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomCoinTossPlayModeTests.RealRoomTossTransitions(True,False,False,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomCoinTossPlayModeTests.RealRoomTossTransitions(True,False,False,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomCoinTossPlayModeTests.RealRoomTossTransitions(True,False,True,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomCoinTossPlayModeTests.RealRoomTossTransitions(True,False,True,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomCoinTossPlayModeTests.RealRoomTossTransitions(True,True,False,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomCoinTossPlayModeTests.RealRoomTossTransitions(True,True,False,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomCoinTossPlayModeTests.RealRoomTossTransitions(True,True,True,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomCoinTossPlayModeTests.RealRoomTossTransitions(True,True,True,True)","status":"Passed","message":"","stackTrace":""}

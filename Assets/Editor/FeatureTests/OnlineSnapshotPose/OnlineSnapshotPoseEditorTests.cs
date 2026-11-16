@@ -16,7 +16,7 @@ public sealed class OnlineSnapshotPoseEditorTests
                 return new OnlineGroundPassTokenState{id=side.ToLowerInvariant()+":"+jersey,playerStats=new MatchManager.PlayerStats(),runtime=new RoomTokenSnapshot{tokenKey=side+":"+jersey,teamSide=side,jerseyNumber=jersey,playerName="Pose "+i}};}).ToArray()};
         state.roomPose=new OnlineGroundPassPresentation{matchId=state.matchId,ballX=.35f,ballY=1.2f,players=state.tokens.Select((t,i)=>new OnlinePlayerPresentation{id=t.id,x=i,y=.2f,z=3}).ToArray()};
         var replica=new OnlineGroundPassReplica(state.matchId,state.tokens.Select(t=>t.id),OnlineFullRoomBootstrap.Catalog);Assert.That(replica.Apply(state),Is.True);
-        var invalid=JsonUtility.FromJson<OnlineGroundPassState>(JsonUtility.ToJson(state));invalid.publicationSequence=2;
+        var invalid=OnlineGroundPassState.Copy(state);invalid.publicationSequence=2;
         switch(branch)
         {
             case "missing-pose":invalid.roomPose=null;break;

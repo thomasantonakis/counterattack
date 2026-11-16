@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="44" result="Passed" total="44" passed="44" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 06:05:20Z" end-time="2026-11-16 06:05:24Z" duration="4.0611553">
+  <test-suite type="TestSuite" id="4762" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1697" result="Passed" start-time="2026-11-16 06:05:20Z" end-time="2026-11-16 06:05:24Z" duration="4.061155" total="44" passed="44" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="4752" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="1697" result="Passed" start-time="2026-11-16 06:05:20Z" end-time="2026-11-16 06:05:24Z" duration="4.040285" total="44" passed="44" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17216" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="3678" name="OnlineRoomCoinTossEditorTests" fullname="OnlineRoomCoinTossEditorTests" classname="OnlineRoomCoinTossEditorTests" runstate="Runnable" testcasecount="13" result="Passed" start-time="2026-11-16 06:05:20Z" end-time="2026-11-16 06:05:20Z" duration="0.195322" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineRoomCoinToss" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="3692" name="RejectsMalformedCoinWithoutAdvancingGuest" fullname="OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest" classname="OnlineRoomCoinTossEditorTests" runstate="Runnable" testcasecount="12" result="Passed" start-time="2026-11-16 06:05:20Z" end-time="2026-11-16 06:05:20Z" duration="0.169954" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="3680" name="RejectsMalformedCoinWithoutAdvancingGuest(&quot;purpose&quot;)" fullname="OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(&quot;purpose&quot;)" methodname="RejectsMalformedCoinWithoutAdvancingGuest" classname="OnlineRoomCoinTossEditorTests" runstate="Runnable" seed="501928601" result="Passed" start-time="2026-11-16 06:05:20Z" end-time="2026-11-16 06:05:20Z" duration="0.010685" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3681" name="RejectsMalformedCoinWithoutAdvancingGuest(&quot;stage&quot;)" fullname="OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(&quot;stage&quot;)" methodname="RejectsMalformedCoinWithoutAdvancingGuest" classname="OnlineRoomCoinTossEditorTests" runstate="Runnable" seed="527124008" result="Passed" start-time="2026-11-16 06:05:20Z" end-time="2026-11-16 06:05:20Z" duration="0.015832" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3682" name="RejectsMalformedCoinWithoutAdvancingGuest(&quot;negative&quot;)" fullname="OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(&quot;negative&quot;)" methodname="RejectsMalformedCoinWithoutAdvancingGuest" classname="OnlineRoomCoinTossEditorTests" runstate="Runnable" seed="667339284" result="Passed" start-time="2026-11-16 06:05:20Z" end-time="2026-11-16 06:05:20Z" duration="0.011057" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3683" name="RejectsMalformedCoinWithoutAdvancingGuest(&quot;oversize&quot;)" fullname="OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(&quot;oversize&quot;)" methodname="RejectsMalformedCoinWithoutAdvancingGuest" classname="OnlineRoomCoinTossEditorTests" runstate="Runnable" seed="756664265" result="Passed" start-time="2026-11-16 06:05:20Z" end-time="2026-11-16 06:05:20Z" duration="0.010034" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3684" name="RejectsMalformedCoinWithoutAdvancingGuest(&quot;winner&quot;)" fullname="OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(&quot;winner&quot;)" methodname="RejectsMalformedCoinWithoutAdvancingGuest" classname="OnlineRoomCoinTossEditorTests" runstate="Runnable" seed="2066996951" result="Passed" start-time="2026-11-16 06:05:20Z" end-time="2026-11-16 06:05:20Z" duration="0.009578" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3685" name="RejectsMalformedCoinWithoutAdvancingGuest(&quot;chooser&quot;)" fullname="OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(&quot;chooser&quot;)" methodname="RejectsMalformedCoinWithoutAdvancingGuest" classname="OnlineRoomCoinTossEditorTests" runstate="Runnable" seed="707735395" result="Passed" start-time="2026-11-16 06:05:20Z" end-time="2026-11-16 06:05:20Z" duration="0.010989" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3686" name="RejectsMalformedCoinWithoutAdvancingGuest(&quot;tied-winner&quot;)" fullname="OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(&quot;tied-winner&quot;)" methodname="RejectsMalformedCoinWithoutAdvancingGuest" classname="OnlineRoomCoinTossEditorTests" runstate="Runnable" seed="860670308" result="Passed" start-time="2026-11-16 06:05:20Z" end-time="2026-11-16 06:05:20Z" duration="0.008258" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3687" name="RejectsMalformedCoinWithoutAdvancingGuest(&quot;missing-winner&quot;)" fullname="OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(&quot;missing-winner&quot;)" methodname="RejectsMalformedCoinWithoutAdvancingGuest" classname="OnlineRoomCoinTossEditorTests" runstate="Runnable" seed="1189183177" result="Passed" start-time="2026-11-16 06:05:20Z" end-time="2026-11-16 06:05:20Z" duration="0.008036" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3688" name="RejectsMalformedCoinWithoutAdvancingGuest(&quot;home-stage&quot;)" fullname="OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(&quot;home-stage&quot;)" methodname="RejectsMalformedCoinWithoutAdvancingGuest" classname="OnlineRoomCoinTossEditorTests" runstate="Runnable" seed="967838073" result="Passed" start-time="2026-11-16 06:05:20Z" end-time="2026-11-16 06:05:20Z" duration="0.014870" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3689" name="RejectsMalformedCoinWithoutAdvancingGuest(&quot;away-stage&quot;)" fullname="OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(&quot;away-stage&quot;)" methodname="RejectsMalformedCoinWithoutAdvancingGuest" classname="OnlineRoomCoinTossEditorTests" runstate="Runnable" seed="1627720866" result="Passed" start-time="2026-11-16 06:05:20Z" end-time="2026-11-16 06:05:20Z" duration="0.036529" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3690" name="RejectsMalformedCoinWithoutAdvancingGuest(&quot;result-stage&quot;)" fullname="OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(&quot;result-stage&quot;)" methodname="RejectsMalformedCoinWithoutAdvancingGuest" classname="OnlineRoomCoinTossEditorTests" runstate="Runnable" seed="302842875" result="Passed" start-time="2026-11-16 06:05:20Z" end-time="2026-11-16 06:05:20Z" duration="0.008478" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3691" name="RejectsMalformedCoinWithoutAdvancingGuest(&quot;closed&quot;)" fullname="OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(&quot;closed&quot;)" methodname="RejectsMalformedCoinWithoutAdvancingGuest" classname="OnlineRoomCoinTossEditorTests" runstate="Runnable" seed="339884033" result="Passed" start-time="2026-11-16 06:05:20Z" end-time="2026-11-16 06:05:20Z" duration="0.007931" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-case id="3679" name="ReplicaClearsOptionalCoinAndRetainsAbsentWorldPoses" fullname="OnlineRoomCoinTossEditorTests.ReplicaClearsOptionalCoinAndRetainsAbsentWorldPoses" methodname="ReplicaClearsOptionalCoinAndRetainsAbsentWorldPoses" classname="OnlineRoomCoinTossEditorTests" runstate="Runnable" seed="273822489" result="Passed" start-time="2026-11-16 06:05:20Z" end-time="2026-11-16 06:05:20Z" duration="0.022639" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="4359" name="RoomCoinTossEditorTests" fullname="RoomCoinTossEditorTests" classname="RoomCoinTossEditorTests" runstate="Runnable" testcasecount="31" result="Passed" start-time="2026-11-16 06:05:20Z" end-time="2026-11-16 06:05:24Z" duration="3.827237" total="31" passed="31" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="4394" name="ExtraTimeAndShootoutChoicesSurviveSerializationIndependentlyOfLiveDirections" fullname="RoomCoinTossEditorTests.ExtraTimeAndShootoutChoicesSurviveSerializationIndependentlyOfLiveDirections" methodname="ExtraTimeAndShootoutChoicesSurviveSerializationIndependentlyOfLiveDirections" classname="RoomCoinTossEditorTests" runstate="Runnable" seed="630221719" result="Passed" start-time="2026-11-16 06:05:20Z" end-time="2026-11-16 06:05:20Z" duration="0.048780" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="4381" name="ExtraTimeStartsWithChosenSidesThenSwitchesAndAlternatesItsOwnKickoff" fullname="RoomCoinTossEditorTests.ExtraTimeStartsWithChosenSidesThenSwitchesAndAlternatesItsOwnKickoff" classname="RoomCoinTossEditorTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-11-16 06:05:20Z" end-time="2026-11-16 06:05:20Z" duration="0.028752" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="4377" name="ExtraTimeStartsWithChosenSidesThenSwitchesAndAlternatesItsOwnKickoff(True,True)" fullname="RoomCoinTossEditorTests.ExtraTimeStartsWithChosenSidesThenSwitchesAndAlternatesItsOwnKickoff(True,True)" methodname="ExtraTimeStartsWithChosenSidesThenSwitchesAndAlternatesItsOwnKickoff" classname="RoomCoinTossEditorTests" runstate="Runnable" seed="1457767470" result="Passed" start-time="2026-11-16 06:05:20Z" end-time="2026-11-16 06:05:20Z" duration="0.003394" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Sides switched. Home team is now attacking RightToLeft and away team is attacking LeftToRight
+]]></output>
+          </test-case>
+          <test-case id="4378" name="ExtraTimeStartsWithChosenSidesThenSwitchesAndAlternatesItsOwnKickoff(True,False)" fullname="RoomCoinTossEditorTests.ExtraTimeStartsWithChosenSidesThenSwitchesAndAlternatesItsOwnKickoff(True,False)" methodname="ExtraTimeStartsWithChosenSidesThenSwitchesAndAlternatesItsOwnKickoff" classname="RoomCoinTossEditorTests" runstate="Runnable" seed="1479922129" result="Passed" start-time="2026-11-16 06:05:20Z" end-time="2026-11-16 06:05:20Z" duration="0.002198" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Sides switched. Home team is now attacking RightToLeft and away team is attacking LeftToRight
+]]></output>
+          </test-case>
+          <test-case id="4379" name="ExtraTimeStartsWithChosenSidesThenSwitchesAndAlternatesItsOwnKickoff(False,True)" fullname="RoomCoinTossEditorTests.ExtraTimeStartsWithChosenSidesThenSwitchesAndAlternatesItsOwnKickoff(False,True)" methodname="ExtraTimeStartsWithChosenSidesThenSwitchesAndAlternatesItsOwnKickoff" classname="RoomCoinTossEditorTests" runstate="Runnable" seed="12642340" result="Passed" start-time="2026-11-16 06:05:20Z" end-time="2026-11-16 06:05:20Z" duration="0.001583" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Sides switched. Home team is now attacking LeftToRight and away team is attacking RightToLeft
+]]></output>
+          </test-case>
+          <test-case id="4380" name="ExtraTimeStartsWithChosenSidesThenSwitchesAndAlternatesItsOwnKickoff(False,False)" fullname="RoomCoinTossEditorTests.ExtraTimeStartsWithChosenSidesThenSwitchesAndAlternatesItsOwnKickoff(False,False)" methodname="ExtraTimeStartsWithChosenSidesThenSwitchesAndAlternatesItsOwnKickoff" classname="RoomCoinTossEditorTests" runstate="Runnable" seed="1800472505" result="Passed" start-time="2026-11-16 06:05:20Z" end-time="2026-11-16 06:05:20Z" duration="0.001534" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Sides switched. Home team is now attacking LeftToRight and away team is attacking RightToLeft
+]]></output>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="4365" name="HotSeatKickoffAcceptsBothHumanConfirmationsDespiteStaleCpuPersona" fullname="RoomCoinTossEditorTests.HotSeatKickoffAcceptsBothHumanConfirmationsDespiteStaleCpuPersona" classname="RoomCoinTossEditorTests" runstate="Runnable" testcasecount="5" result="Passed" start-time="2026-11-16 06:05:20Z" end-time="2026-11-16 06:05:20Z" duration="0.039992" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="4360" name="HotSeatKickoffAcceptsBothHumanConfirmationsDespiteStaleCpuPersona(1,Return)" fullname="RoomCoinTossEditorTests.HotSeatKickoffAcceptsBothHumanConfirmationsDespiteStaleCpuPersona(1,Return)" methodname="HotSeatKickoffAcceptsBothHumanConfirmationsDespiteStaleCpuPersona" classname="RoomCoinTossEditorTests" runstate="Runnable" seed="904219399" result="Passed" start-time="2026-11-16 06:05:20Z" end-time="2026-11-16 06:05:20Z" duration="0.006623" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+Home confirmed setup (1/2)
+]]></output>
+          </test-case>
+          <test-case id="4361" name="HotSeatKickoffAcceptsBothHumanConfirmationsDespiteStaleCpuPersona(1,KeypadEnter)" fullname="RoomCoinTossEditorTests.HotSeatKickoffAcceptsBothHumanConfirmationsDespiteStaleCpuPersona(1,KeypadEnter)" methodname="HotSeatKickoffAcceptsBothHumanConfirmationsDespiteStaleCpuPersona" classname="RoomCoinTossEditorTests" runstate="Runnable" seed="293660968" result="Passed" start-time="2026-11-16 06:05:20Z" end-time="2026-11-16 06:05:20Z" duration="0.002791" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+Home confirmed setup (1/2)
+]]></output>
+          </test-case>
+          <test-case id="4362" name="HotSeatKickoffAcceptsBothHumanConfirmationsDespiteStaleCpuPersona(2,Return)" fullname="RoomCoinTossEditorTests.HotSeatKickoffAcceptsBothHumanConfirmationsDespiteStaleCpuPersona(2,Return)" methodname="HotSeatKickoffAcceptsBothHumanConfirmationsDespiteStaleCpuPersona" classname="RoomCoinTossEditorTests" runstate="Runnable" seed="206022323" result="Passed" start-time="2026-11-16 06:05:20Z" end-time="2026-11-16 06:05:20Z" duration="0.002738" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Post-goal kick-off setup: both teams may reposition tokens in their own half, including the halfway line, except the center spot. The kicker will be selected later. Defenders cannot stand in the center circle. Press Enter twice when both teams are ready.
+Home post-goal kick-off setup confirmed (1/2)
+]]></output>
+          </test-case>
+          <test-case id="4363" name="HotSeatKickoffAcceptsBothHumanConfirmationsDespiteStaleCpuPersona(3,Return)" fullname="RoomCoinTossEditorTests.HotSeatKickoffAcceptsBothHumanConfirmationsDespiteStaleCpuPersona(3,Return)" methodname="HotSeatKickoffAcceptsBothHumanConfirmationsDespiteStaleCpuPersona" classname="RoomCoinTossEditorTests" runstate="Runnable" seed="644210799" result="Passed" start-time="2026-11-16 06:05:20Z" end-time="2026-11-16 06:05:20Z" duration="0.002405" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Post-goal kick-off setup: both teams may reposition tokens in their own half, including the halfway line, except the center spot. The kicker will be selected later. Defenders cannot stand in the center circle. Press Enter twice when both teams are ready.
+Home post-goal kick-off setup confirmed (1/2)
+]]></output>
+          </test-case>
+          <test-case id="4364" name="HotSeatKickoffAcceptsBothHumanConfirmationsDespiteStaleCpuPersona(4,Return)" fullname="RoomCoinTossEditorTests.HotSeatKickoffAcceptsBothHumanConfirmationsDespiteStaleCpuPersona(4,Return)" methodname="HotSeatKickoffAcceptsBothHumanConfirmationsDespiteStaleCpuPersona" classname="RoomCoinTossEditorTests" runstate="Runnable" seed="1224771878" result="Passed" start-time="2026-11-16 06:05:20Z" end-time="2026-11-16 06:05:20Z" duration="0.003132" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Post-goal kick-off setup: both teams may reposition tokens in their own half, including the halfway line, except the center spot. The kicker will be selected later. Defenders cannot stand in the center circle. Press Enter twice when both teams are ready.
+Home post-goal kick-off setup confirmed (1/2)
+]]></output>
+          </test-case>
+        </test-suite>
+        <test-case id="4382" name="RegulationHalfTimeStillSwitchesSidesAndAlternatesKickoff" fullname="RoomCoinTossEditorTests.RegulationHalfTimeStillSwitchesSidesAndAlternatesKickoff" methodname="RegulationHalfTimeStillSwitchesSidesAndAlternatesKickoff" classname="RoomCoinTossEditorTests" runstate="Runnable" seed="954188927" result="Passed" start-time="2026-11-16 06:05:20Z" end-time="2026-11-16 06:05:20Z" duration="0.001974" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Sides switched. Home team is now attacking RightToLeft and away team is attacking LeftToRight
+]]></output>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="4397" name="RoomPanelRoutesManagerRollsHoldsClockAndBlocksOtherGameplayUntilBothChoicesFinish" fullname="RoomCoinTossEditorTests.RoomPanelRoutesManagerRollsHoldsClockAndBlocksOtherGameplayUntilBothChoicesFinish" classname="RoomCoinTossEditorTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-16 06:05:20Z" end-time="2026-11-16 06:05:24Z" duration="3.543617" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="4395" name="RoomPanelRoutesManagerRollsHoldsClockAndBlocksOtherGameplayUntilBothChoicesFinish(ExtraTime)" fullname="RoomCoinTossEditorTests.RoomPanelRoutesManagerRollsHoldsClockAndBlocksOtherGameplayUntilBothChoicesFinish(ExtraTime)" methodname="RoomPanelRoutesManagerRollsHoldsClockAndBlocksOtherGameplayUntilBothChoicesFinish" classname="RoomCoinTossEditorTests" runstate="Runnable" seed="1216408564" result="Passed" start-time="2026-11-16 06:05:20Z" end-time="2026-11-16 06:05:23Z" duration="2.674182" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Coin toss: Inverness kicks off. Aurora attacks RightToLeft; Inverness attacks LeftToRight.
+]]></output>
+          </test-case>
+          <test-case id="4396" name="RoomPanelRoutesManagerRollsHoldsClockAndBlocksOtherGameplayUntilBothChoicesFinish(PenaltyShootout)" fullname="RoomCoinTossEditorTests.RoomPanelRoutesManagerRollsHoldsClockAndBlocksOtherGameplayUntilBothChoicesFinish(PenaltyShootout)" methodname="RoomPanelRoutesManagerRollsHoldsClockAndBlocksOtherGameplayUntilBothChoicesFinish" classname="RoomCoinTossEditorTests" runstate="Runnable" seed="364371044" result="Passed" start-time="2026-11-16 06:05:23Z" end-time="2026-11-16 06:05:24Z" duration="0.861695" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Coin toss: Inverness takes the first penalty at the right goal.
+]]></output>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="4393" name="ShootoutCoordinatesFirstTakerAndBothTeamsAttackTheChosenGoal" fullname="RoomCoinTossEditorTests.ShootoutCoordinatesFirstTakerAndBothTeamsAttackTheChosenGoal" classname="RoomCoinTossEditorTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-11-16 06:05:24Z" end-time="2026-11-16 06:05:24Z" duration="0.041606" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="4389" name="ShootoutCoordinatesFirstTakerAndBothTeamsAttackTheChosenGoal(False,False)" fullname="RoomCoinTossEditorTests.ShootoutCoordinatesFirstTakerAndBothTeamsAttackTheChosenGoal(False,False)" methodname="ShootoutCoordinatesFirstTakerAndBothTeamsAttackTheChosenGoal" classname="RoomCoinTossEditorTests" runstate="Runnable" seed="1924535152" result="Passed" start-time="2026-11-16 06:05:24Z" end-time="2026-11-16 06:05:24Z" duration="0.004224" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="4390" name="ShootoutCoordinatesFirstTakerAndBothTeamsAttackTheChosenGoal(False,True)" fullname="RoomCoinTossEditorTests.ShootoutCoordinatesFirstTakerAndBothTeamsAttackTheChosenGoal(False,True)" methodname="ShootoutCoordinatesFirstTakerAndBothTeamsAttackTheChosenGoal" classname="RoomCoinTossEditorTests" runstate="Runnable" seed="312997254" result="Passed" start-time="2026-11-16 06:05:24Z" end-time="2026-11-16 06:05:24Z" duration="0.001025" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="4391" name="ShootoutCoordinatesFirstTakerAndBothTeamsAttackTheChosenGoal(True,False)" fullname="RoomCoinTossEditorTests.ShootoutCoordinatesFirstTakerAndBothTeamsAttackTheChosenGoal(True,False)" methodname="ShootoutCoordinatesFirstTakerAndBothTeamsAttackTheChosenGoal" classname="RoomCoinTossEditorTests" runstate="Runnable" seed="965425678" result="Passed" start-time="2026-11-16 06:05:24Z" end-time="2026-11-16 06:05:24Z" duration="0.000896" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="4392" name="ShootoutCoordinatesFirstTakerAndBothTeamsAttackTheChosenGoal(True,True)" fullname="RoomCoinTossEditorTests.ShootoutCoordinatesFirstTakerAndBothTeamsAttackTheChosenGoal(True,True)" methodname="ShootoutCoordinatesFirstTakerAndBothTeamsAttackTheChosenGoal" classname="RoomCoinTossEditorTests" runstate="Runnable" seed="2115458640" result="Passed" start-time="2026-11-16 06:05:24Z" end-time="2026-11-16 06:05:24Z" duration="0.000898" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-case id="4366" name="SinglePlayerCpuPersonaRemainsAutomated" fullname="RoomCoinTossEditorTests.SinglePlayerCpuPersonaRemainsAutomated" methodname="SinglePlayerCpuPersonaRemainsAutomated" classname="RoomCoinTossEditorTests" runstate="Runnable" seed="737542584" result="Passed" start-time="2026-11-16 06:05:24Z" end-time="2026-11-16 06:05:24Z" duration="0.001789" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="4388" name="TieBreakerRulesStillGateExtraTimeAndPenalties" fullname="RoomCoinTossEditorTests.TieBreakerRulesStillGateExtraTimeAndPenalties" classname="RoomCoinTossEditorTests" runstate="Runnable" testcasecount="5" result="Passed" start-time="2026-11-16 06:05:24Z" end-time="2026-11-16 06:05:24Z" duration="0.037882" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="4383" name="TieBreakerRulesStillGateExtraTimeAndPenalties(&quot;None&quot;,0,False,False)" fullname="RoomCoinTossEditorTests.TieBreakerRulesStillGateExtraTimeAndPenalties(&quot;None&quot;,0,False,False)" methodname="TieBreakerRulesStillGateExtraTimeAndPenalties" classname="RoomCoinTossEditorTests" runstate="Runnable" seed="1030479279" result="Passed" start-time="2026-11-16 06:05:24Z" end-time="2026-11-16 06:05:24Z" duration="0.002286" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="4384" name="TieBreakerRulesStillGateExtraTimeAndPenalties(&quot;Penalties&quot;,0,False,True)" fullname="RoomCoinTossEditorTests.TieBreakerRulesStillGateExtraTimeAndPenalties(&quot;Penalties&quot;,0,False,True)" methodname="TieBreakerRulesStillGateExtraTimeAndPenalties" classname="RoomCoinTossEditorTests" runstate="Runnable" seed="2012014426" result="Passed" start-time="2026-11-16 06:05:24Z" end-time="2026-11-16 06:05:24Z" duration="0.000714" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="4385" name="TieBreakerRulesStillGateExtraTimeAndPenalties(&quot;Extra Time&quot;,0,True,False)" fullname="RoomCoinTossEditorTests.TieBreakerRulesStillGateExtraTimeAndPenalties(&quot;Extra Time&quot;,0,True,False)" methodname="TieBreakerRulesStillGateExtraTimeAndPenalties" classname="RoomCoinTossEditorTests" runstate="Runnable" seed="131396042" result="Passed" start-time="2026-11-16 06:05:24Z" end-time="2026-11-16 06:05:24Z" duration="0.000660" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="4386" name="TieBreakerRulesStillGateExtraTimeAndPenalties(&quot;Extra Time &amp; Penalties&quot;,0,True,True)" fullname="RoomCoinTossEditorTests.TieBreakerRulesStillGateExtraTimeAndPenalties(&quot;Extra Time &amp; Penalties&quot;,0,True,True)" methodname="TieBreakerRulesStillGateExtraTimeAndPenalties" classname="RoomCoinTossEditorTests" runstate="Runnable" seed="1479155032" result="Passed" start-time="2026-11-16 06:05:24Z" end-time="2026-11-16 06:05:24Z" duration="0.000940" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="4387" name="TieBreakerRulesStillGateExtraTimeAndPenalties(&quot;Extra Time &amp; Penalties&quot;,1,False,True)" fullname="RoomCoinTossEditorTests.TieBreakerRulesStillGateExtraTimeAndPenalties(&quot;Extra Time &amp; Penalties&quot;,1,False,True)" methodname="TieBreakerRulesStillGateExtraTimeAndPenalties" classname="RoomCoinTossEditorTests" runstate="Runnable" seed="887307838" result="Passed" start-time="2026-11-16 06:05:24Z" end-time="2026-11-16 06:05:24Z" duration="0.000712" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="4376" name="WinnerChoosingFirstPenaltyLeavesOnlyEndChoiceForOpponent" fullname="RoomCoinTossEditorTests.WinnerChoosingFirstPenaltyLeavesOnlyEndChoiceForOpponent" classname="RoomCoinTossEditorTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-11-16 06:05:24Z" end-time="2026-11-16 06:05:24Z" duration="0.032639" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="4372" name="WinnerChoosingFirstPenaltyLeavesOnlyEndChoiceForOpponent(True,LeftSide,False)" fullname="RoomCoinTossEditorTests.WinnerChoosingFirstPenaltyLeavesOnlyEndChoiceForOpponent(True,LeftSide,False)" methodname="WinnerChoosingFirstPenaltyLeavesOnlyEndChoiceForOpponent" classname="RoomCoinTossEditorTests" runstate="Runnable" seed="1075632900" result="Passed" start-time="2026-11-16 06:05:24Z" end-time="2026-11-16 06:05:24Z" duration="0.001946" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="4373" name="WinnerChoosingFirstPenaltyLeavesOnlyEndChoiceForOpponent(True,RightSide,True)" fullname="RoomCoinTossEditorTests.WinnerChoosingFirstPenaltyLeavesOnlyEndChoiceForOpponent(True,RightSide,True)" methodname="WinnerChoosingFirstPenaltyLeavesOnlyEndChoiceForOpponent" classname="RoomCoinTossEditorTests" runstate="Runnable" seed="1919893388" result="Passed" start-time="2026-11-16 06:05:24Z" end-time="2026-11-16 06:05:24Z" duration="0.000710" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="4374" name="WinnerChoosingFirstPenaltyLeavesOnlyEndChoiceForOpponent(False,LeftSide,False)" fullname="RoomCoinTossEditorTests.WinnerChoosingFirstPenaltyLeavesOnlyEndChoiceForOpponent(False,LeftSide,False)" methodname="WinnerChoosingFirstPenaltyLeavesOnlyEndChoiceForOpponent" classname="RoomCoinTossEditorTests" runstate="Runnable" seed="1134171541" result="Passed" start-time="2026-11-16 06:05:24Z" end-time="2026-11-16 06:05:24Z" duration="0.000729" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="4375" name="WinnerChoosingFirstPenaltyLeavesOnlyEndChoiceForOpponent(False,RightSide,True)" fullname="RoomCoinTossEditorTests.WinnerChoosingFirstPenaltyLeavesOnlyEndChoiceForOpponent(False,RightSide,True)" methodname="WinnerChoosingFirstPenaltyLeavesOnlyEndChoiceForOpponent" classname="RoomCoinTossEditorTests" runstate="Runnable" seed="983685397" result="Passed" start-time="2026-11-16 06:05:24Z" end-time="2026-11-16 06:05:24Z" duration="0.000715" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="4371" name="WinnerChoosingShootoutEndGivesOpponentFirstPenalty" fullname="RoomCoinTossEditorTests.WinnerChoosingShootoutEndGivesOpponentFirstPenalty" classname="RoomCoinTossEditorTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-11-16 06:05:24Z" end-time="2026-11-16 06:05:24Z" duration="0.034019" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="4367" name="WinnerChoosingShootoutEndGivesOpponentFirstPenalty(True,LeftSide,False,False)" fullname="RoomCoinTossEditorTests.WinnerChoosingShootoutEndGivesOpponentFirstPenalty(True,LeftSide,False,False)" methodname="WinnerChoosingShootoutEndGivesOpponentFirstPenalty" classname="RoomCoinTossEditorTests" runstate="Runnable" seed="1978706093" result="Passed" start-time="2026-11-16 06:05:24Z" end-time="2026-11-16 06:05:24Z" duration="0.001965" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="4368" name="WinnerChoosingShootoutEndGivesOpponentFirstPenalty(True,RightSide,False,True)" fullname="RoomCoinTossEditorTests.WinnerChoosingShootoutEndGivesOpponentFirstPenalty(True,RightSide,False,True)" methodname="WinnerChoosingShootoutEndGivesOpponentFirstPenalty" classname="RoomCoinTossEditorTests" runstate="Runnable" seed="505096014" result="Passed" start-time="2026-11-16 06:05:24Z" end-time="2026-11-16 06:05:24Z" duration="0.000701" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="4369" name="WinnerChoosingShootoutEndGivesOpponentFirstPenalty(False,LeftSide,True,False)" fullname="RoomCoinTossEditorTests.WinnerChoosingShootoutEndGivesOpponentFirstPenalty(False,LeftSide,True,False)" methodname="WinnerChoosingShootoutEndGivesOpponentFirstPenalty" classname="RoomCoinTossEditorTests" runstate="Runnable" seed="957255475" result="Passed" start-time="2026-11-16 06:05:24Z" end-time="2026-11-16 06:05:24Z" duration="0.000727" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="4370" name="WinnerChoosingShootoutEndGivesOpponentFirstPenalty(False,RightSide,True,True)" fullname="RoomCoinTossEditorTests.WinnerChoosingShootoutEndGivesOpponentFirstPenalty(False,RightSide,True,True)" methodname="WinnerChoosingShootoutEndGivesOpponentFirstPenalty" classname="RoomCoinTossEditorTests" runstate="Runnable" seed="13909596" result="Passed" start-time="2026-11-16 06:05:24Z" end-time="2026-11-16 06:05:24Z" duration="0.000713" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Saving results to: TestResults\GameplayRegression\Runs\20261116T060520109Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

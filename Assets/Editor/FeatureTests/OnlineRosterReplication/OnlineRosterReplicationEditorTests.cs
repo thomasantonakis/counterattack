@@ -20,7 +20,7 @@ public sealed class OnlineRosterReplicationEditorTests
                     runtime=new RoomTokenSnapshot{tokenKey=side+":"+number,teamSide=side,jerseyNumber=number,playerName="Owned "+i},playerStats=new MatchManager.PlayerStats()};
             }).ToArray()};
         var replica=new OnlineGroundPassReplica(valid.matchId,valid.tokens.Select(t=>t.id),OnlineFullRoomBootstrap.Catalog);
-        Assert.That(replica.Apply(valid),Is.True);var invalid=JsonUtility.FromJson<OnlineGroundPassState>(JsonUtility.ToJson(valid));invalid.publicationSequence=2;
+        Assert.That(replica.Apply(valid),Is.True);var invalid=OnlineGroundPassState.Copy(valid);invalid.publicationSequence=2;
         var token=invalid.tokens[0];
         switch(branch)
         {

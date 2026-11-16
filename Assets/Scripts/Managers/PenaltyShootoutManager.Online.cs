@@ -18,7 +18,7 @@ public partial class PenaltyShootoutManager
             homeScore=homeShootoutScore,awayScore=awayShootoutScore,homeAttempts=homeAttempts,awayAttempts=awayAttempts,
             homePreGoals=HomePreShootoutGoals,awayPreGoals=AwayPreShootoutGoals,homeResults=homeResults.ToArray(),awayResults=awayResults.ToArray(),
             suddenDeath=isSuddenDeath,winnerIsHome=winnerIsHome,shooter=OnlineRollPublication.ActorId(currentShooter),keeper=OnlineRollPublication.ActorId(currentDefendingGoalkeeper),
-            homeFirst=FirstKickIsHome,rightGoal=UseRightGoal};
+            homeFirst=FirstKickIsHome,rightGoal=UseRightGoal,tossWinnerHome=matchManager.gameData.penaltyShootoutSetup?.coinTossWinnerIsHome==true};
     }
     public bool RefreshOnlineOrders()
     {
@@ -69,6 +69,6 @@ public partial class PenaltyShootoutManager
         homeAttempts=state.homeAttempts;awayAttempts=state.awayAttempts;homePreShootoutGoals=state.homePreGoals;awayPreShootoutGoals=state.awayPreGoals;preShootoutScoreCaptured=true;
         homeResults.Clear();homeResults.AddRange(state.homeResults);awayResults.Clear();awayResults.AddRange(state.awayResults);
         isSuddenDeath=state.suddenDeath;winnerIsHome=state.winnerIsHome;currentShooter=Find(state.shooter);currentDefendingGoalkeeper=Find(state.keeper);
-        matchManager.gameData.penaltyShootoutSetup=new PenaltyShootoutSetup{homeTakesFirstPenalty=state.homeFirst,useRightGoal=state.rightGoal};
+        matchManager.gameData.penaltyShootoutSetup=new PenaltyShootoutSetup{coinTossWinnerIsHome=state.tossWinnerHome,homeTakesFirstPenalty=state.homeFirst,useRightGoal=state.rightGoal};
     }
 }

@@ -27,7 +27,7 @@ public sealed class OnlineShootoutEditorTests
         var home=state.tokens.Where(t=>t.runtime.teamSide=="Home" && t.runtime.isPlaying).Select(t=>t.id).ToArray();var away=state.tokens.Where(t=>t.runtime.teamSide=="Away" && t.runtime.isPlaying).Select(t=>t.id).ToArray();
         state.shootout=new OnlineShootoutSnapshot{selecting=true,homeOrder=home,awayOrder=away,homeEligible=home,awayEligible=away,homeResults=Array.Empty<bool>(),awayResults=Array.Empty<bool>()};
         var replica=new OnlineGroundPassReplica(state.matchId,state.tokens.Select(t=>t.id),OnlineFullRoomBootstrap.Catalog);Assert.That(replica.Apply(state),Is.True);
-        var invalid=JsonUtility.FromJson<OnlineGroundPassState>(JsonUtility.ToJson(state));invalid.publicationSequence=2;var s=invalid.shootout;
+        var invalid=OnlineGroundPassState.Copy(state);invalid.publicationSequence=2;var s=invalid.shootout;
         switch(branch)
         {
             case "missing-order":s.homeOrder=null;break;

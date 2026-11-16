@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>Scene-authored first-half, extra-time and shootout coin-toss presentation.</summary>
-public sealed class CoinTossPanelController : MonoBehaviour
+public sealed partial class CoinTossPanelController : MonoBehaviour
 {
     public DraftOrderPanelController dicePanel;
     public GameObject choices;
@@ -55,6 +55,7 @@ public sealed class CoinTossPanelController : MonoBehaviour
             : $"COIN TOSS FLIP · {(shootout ? "PENALTY SHOOTOUT" : "EXTRA TIME")}";
         bool opened = dicePanel.Open(settings, true, title, shootout ? "first penalty or shootout end" : "kickoff or direction");
         if (opened && dicePanel.roomMatch != null) ActiveRoomPanel = this;
+        if(opened && FullOnlineRoom){lastOnlineTick=Time.unscaledTime;dicePanel.visuals.SetActive(false);}
         return opened;
     }
 
@@ -77,6 +78,7 @@ public sealed class CoinTossPanelController : MonoBehaviour
 
     public void Choose(CoinTossChoice choice)
     {
+        if(FullOnlineRoom && !onlineChoice)return;
         if (Decision == null || !IsOpen || !Decision.Choose(choice)) return;
         dicePanel.roomMatch?.RecordGameplayOutcome("coin_toss.choice", "coin_toss", "selected",
             details: new System.Collections.Generic.Dictionary<string, string>
@@ -96,10 +98,11 @@ public sealed class CoinTossPanelController : MonoBehaviour
         RefreshChoices();
     }
 
-    private void Update() => AdvanceChoices();
+    private void Update(){if(!FullOnlineRoom)AdvanceChoices();}
 
     public void AdvanceChoices()
     {
+        if(FullOnlineRoom && !onlineChoice)return;
         if (!IsOpen || !dicePanel.HomeWon.HasValue) return;
         if (Decision == null)
         {

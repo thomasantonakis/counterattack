@@ -4,7 +4,7 @@ namespace CounterAttack.Online
 {
     [Serializable] public sealed class OnlineShootoutSnapshot
     {
-        public bool selecting,active,complete,homeReady,awayReady,suddenDeath,winnerIsHome,homeFirst,rightGoal;
+        public bool selecting,active,complete,homeReady,awayReady,suddenDeath,winnerIsHome,homeFirst,rightGoal,tossWinnerHome;
         public string[] homeOrder,awayOrder,homeEligible,awayEligible;
         public int homeScore,awayScore,homeAttempts,awayAttempts,homePreGoals,awayPreGoals;
         public bool[] homeResults,awayResults;

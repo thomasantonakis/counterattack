@@ -1,5 +1,13 @@
 # Running gameplay regressions
 
+For Room coin toss/half transitions, use EditMode `OnlineRoomCoinTossEditorTests`
+(13 cases) and PlayMode `OnlineRoomCoinTossPlayModeTests` (24 cases), category
+`OnlineRoomCoinToss`, under the same-named Editor/PlayMode feature folders.
+The PlayMode fixture separates 16 real toss transitions, 2 held ties, 4 ordinary
+half swaps and 2 legacy/input-hold guards. Iterate by explicit method filter.
+The filter `RoomCoinTossEditorTests` also matches the online fixture; inspect
+per-case class names when counting legacy-only results.
+
 For online shootouts, run EditMode fixture `OnlineShootoutEditorTests` (19 cases)
 and PlayMode fixture `OnlineShootoutPlayModeTests` (36 cases), category
 `OnlineShootout`. Folders: `Assets/Editor/FeatureTests/OnlineShootout/` and

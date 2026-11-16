@@ -1,5 +1,14 @@
 # Gameplay regression migration
 
+Room coin toss/half transitions add 13 EditMode + 24 PlayMode cases under
+Assets/Editor/FeatureTests/OnlineRoomCoinToss and
+Assets/Tests/PlayMode/Features/OnlineRoomCoinToss, category OnlineRoomCoinToss.
+All 37 passed with zero failed/skipped. Null-preserving replica/view copies fix
+an actual ghost coin panel; existing malformed-state fixtures use the corrected
+copy path without weakened assertions. The 142 distinct affected cases passed;
+feature Verification.md retains exact XML, reproduced failures and build scope.
+No legacy case was retired; Mac/paired internet execution remains deferred.
+
 Online shootout ordering/outcomes add 19 EditMode and 36 PlayMode cases in
 `Assets/Editor/FeatureTests/OnlineShootout/` and
 `Assets/Tests/PlayMode/Features/OnlineShootout/`, category `OnlineShootout`.

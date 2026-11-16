@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="9" result="Passed" total="9" passed="9" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 06:04:55Z" end-time="2026-11-16 06:04:55Z" duration="0.2190874">
+  <test-suite type="TestSuite" id="4759" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1697" result="Passed" start-time="2026-11-16 06:04:55Z" end-time="2026-11-16 06:04:55Z" duration="0.219087" total="9" passed="9" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="4752" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="1697" result="Passed" start-time="2026-11-16 06:04:55Z" end-time="2026-11-16 06:04:55Z" duration="0.198177" total="9" passed="9" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17216" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="3969" name="OnlineSnapshotPoseEditorTests" fullname="OnlineSnapshotPoseEditorTests" classname="OnlineSnapshotPoseEditorTests" runstate="Runnable" testcasecount="9" result="Passed" start-time="2026-11-16 06:04:55Z" end-time="2026-11-16 06:04:55Z" duration="0.189919" total="9" passed="9" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineSnapshotPose" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="3979" name="RejectsInvalidPoseWithoutConsumingPublication" fullname="OnlineSnapshotPoseEditorTests.RejectsInvalidPoseWithoutConsumingPublication" classname="OnlineSnapshotPoseEditorTests" runstate="Runnable" testcasecount="9" result="Passed" start-time="2026-11-16 06:04:55Z" end-time="2026-11-16 06:04:55Z" duration="0.188755" total="9" passed="9" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="3970" name="RejectsInvalidPoseWithoutConsumingPublication(&quot;missing-pose&quot;)" fullname="OnlineSnapshotPoseEditorTests.RejectsInvalidPoseWithoutConsumingPublication(&quot;missing-pose&quot;)" methodname="RejectsInvalidPoseWithoutConsumingPublication" classname="OnlineSnapshotPoseEditorTests" runstate="Runnable" seed="1244546145" result="Passed" start-time="2026-11-16 06:04:55Z" end-time="2026-11-16 06:04:55Z" duration="0.044081" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3971" name="RejectsInvalidPoseWithoutConsumingPublication(&quot;wrong-match&quot;)" fullname="OnlineSnapshotPoseEditorTests.RejectsInvalidPoseWithoutConsumingPublication(&quot;wrong-match&quot;)" methodname="RejectsInvalidPoseWithoutConsumingPublication" classname="OnlineSnapshotPoseEditorTests" runstate="Runnable" seed="2128515200" result="Passed" start-time="2026-11-16 06:04:55Z" end-time="2026-11-16 06:04:55Z" duration="0.017457" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3972" name="RejectsInvalidPoseWithoutConsumingPublication(&quot;missing-player&quot;)" fullname="OnlineSnapshotPoseEditorTests.RejectsInvalidPoseWithoutConsumingPublication(&quot;missing-player&quot;)" methodname="RejectsInvalidPoseWithoutConsumingPublication" classname="OnlineSnapshotPoseEditorTests" runstate="Runnable" seed="1811033650" result="Passed" start-time="2026-11-16 06:04:55Z" end-time="2026-11-16 06:04:55Z" duration="0.013332" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3973" name="RejectsInvalidPoseWithoutConsumingPublication(&quot;duplicate-player&quot;)" fullname="OnlineSnapshotPoseEditorTests.RejectsInvalidPoseWithoutConsumingPublication(&quot;duplicate-player&quot;)" methodname="RejectsInvalidPoseWithoutConsumingPublication" classname="OnlineSnapshotPoseEditorTests" runstate="Runnable" seed="156275758" result="Passed" start-time="2026-11-16 06:04:55Z" end-time="2026-11-16 06:04:55Z" duration="0.013790" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3974" name="RejectsInvalidPoseWithoutConsumingPublication(&quot;unknown-player&quot;)" fullname="OnlineSnapshotPoseEditorTests.RejectsInvalidPoseWithoutConsumingPublication(&quot;unknown-player&quot;)" methodname="RejectsInvalidPoseWithoutConsumingPublication" classname="OnlineSnapshotPoseEditorTests" runstate="Runnable" seed="200936983" result="Passed" start-time="2026-11-16 06:04:55Z" end-time="2026-11-16 06:04:55Z" duration="0.015710" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3975" name="RejectsInvalidPoseWithoutConsumingPublication(&quot;nan-ball&quot;)" fullname="OnlineSnapshotPoseEditorTests.RejectsInvalidPoseWithoutConsumingPublication(&quot;nan-ball&quot;)" methodname="RejectsInvalidPoseWithoutConsumingPublication" classname="OnlineSnapshotPoseEditorTests" runstate="Runnable" seed="902807728" result="Passed" start-time="2026-11-16 06:04:55Z" end-time="2026-11-16 06:04:55Z" duration="0.015688" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3976" name="RejectsInvalidPoseWithoutConsumingPublication(&quot;infinite-player&quot;)" fullname="OnlineSnapshotPoseEditorTests.RejectsInvalidPoseWithoutConsumingPublication(&quot;infinite-player&quot;)" methodname="RejectsInvalidPoseWithoutConsumingPublication" classname="OnlineSnapshotPoseEditorTests" runstate="Runnable" seed="1664224245" result="Passed" start-time="2026-11-16 06:04:55Z" end-time="2026-11-16 06:04:55Z" duration="0.015318" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3977" name="RejectsInvalidPoseWithoutConsumingPublication(&quot;world-bound&quot;)" fullname="OnlineSnapshotPoseEditorTests.RejectsInvalidPoseWithoutConsumingPublication(&quot;world-bound&quot;)" methodname="RejectsInvalidPoseWithoutConsumingPublication" classname="OnlineSnapshotPoseEditorTests" runstate="Runnable" seed="207926605" result="Passed" start-time="2026-11-16 06:04:55Z" end-time="2026-11-16 06:04:55Z" duration="0.015330" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3978" name="RejectsInvalidPoseWithoutConsumingPublication(&quot;static-pose&quot;)" fullname="OnlineSnapshotPoseEditorTests.RejectsInvalidPoseWithoutConsumingPublication(&quot;static-pose&quot;)" methodname="RejectsInvalidPoseWithoutConsumingPublication" classname="OnlineSnapshotPoseEditorTests" runstate="Runnable" seed="662671651" result="Passed" start-time="2026-11-16 06:04:55Z" end-time="2026-11-16 06:04:55Z" duration="0.019063" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Saving results to: TestResults\GameplayRegression\Runs\20261116T060455254Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

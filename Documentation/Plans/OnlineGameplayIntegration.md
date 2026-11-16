@@ -9,8 +9,10 @@ passes; see OnlineRequiredKeeper/Verification.md. In-flight snapshot poses now
 have 9 validation and 5 actual-scene passes; see OnlineSnapshotPose/Verification.md.
 Shootout orders, real shot/save/deflection outcomes and early/sudden-death
 completion now have 55 native cases; see OnlineShootout/Verification.md.
-Remaining priorities include authenticated Room tiebreaker/extra-time coin toss,
-half transitions, shared settings, motion interpolation/transport tuning and actual
+Room tiebreaker/extra-time coin toss and half transitions now have 37 own native
+passes and 142 affected passes; see OnlineRoomCoinToss/Verification.md.
+Remaining priorities include regular-match conclusion, shared settings, direct
+board input, motion interpolation/transport tuning and actual
 paired internet acceptance/latency measurement. Mac execution remains deferred.
 
 User scope expanded on 2026-11-13: prepare the full game for internet play.

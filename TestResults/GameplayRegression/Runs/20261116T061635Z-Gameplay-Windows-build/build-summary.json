@@ -1,0 +1,28 @@
+{
+  "buildId": "build_bede77380cf5",
+  "status": "completed",
+  "result": "Succeeded",
+  "totalErrors": 1,
+  "totalWarnings": 2,
+  "errors": [
+    {
+      "message": "FileNotFoundException: While determining the PlatformToolsets that are installed, the vswhere.exe utility could not be found."
+    }
+  ],
+  "warnings": [
+    {
+      "message": "Value 0 is out of range for TEnum, setting to 0."
+    },
+    {
+      "message": "Pipeline: No RuntimePipelineConfig asset found (Project Settings > Pipeline > Runtime). Pipeline will be disabled in Player builds."
+    }
+  ],
+  "outputPath": "C:/Users/thomas/Documents/Projects/Personal/counterattack/Build/OnlineGroundPass/Windows/CounterattackOnlineGroundPass.exe",
+  "totalSizeBytes": 163718595,
+  "buildTimeMs": 15141,
+  "platform": "StandaloneWindows64",
+  "scope": "Online full-room-v7 Room coin toss, half transitions and null-preserving replica copies; paired internet deferred",
+  "configured_scenes": [
+    "Assets/Scenes/OnlineGroundPassProof.unity"
+  ]
+}

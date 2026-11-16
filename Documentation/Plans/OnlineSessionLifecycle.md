@@ -6,9 +6,11 @@ poses are implemented. Shootout orders now use authenticated team-owned swaps,
 both confirmations, roster reconciliation, real shot/save/deflection adapters,
 results and early/sudden-death completion. The new feature has 55 native cases;
 see OnlineShootout/Verification.md for actual scope/evidence and final UI checks.
-The remaining Room tiebreaker/extra-time coin toss, half transitions and shared
-settings still require adapters. Shootout fixtures supply the agreed opening
-setup; they do not establish complete normal-match internet acceptance. Earlier
+Room tiebreaker/extra-time coin toss and real half transitions now have 37 own
+native passes and 142 affected passes, with null-preserving replica copies and
+explicit opening-choice projection. See OnlineRoomCoinToss/Verification.md.
+Regular-match conclusion, shared settings and direct board interaction remain;
+local fixtures do not establish complete normal-match internet acceptance. Earlier
 progress paragraphs below are historical checkpoints. Mac remains deferred.
 
 User scope clarified 2026-11-15: full online play includes the existing setup,

@@ -2,7 +2,7 @@
 
 ## Start here
 
-Current priority (2026-11-15): normal Host/Join, persistent native setup, all Draft
+Current checkpoint (2026-11-16): normal Host/Join, persistent native setup, all Draft
 variants, opening coin toss and complete roster launch data are implemented.
 The authored OnlineRoom now uses the actual 1,900-hex pitch, 32/36 drafted actors,
 real kickoff managers and guest score/time/position projection. Sixteen focused
@@ -19,8 +19,12 @@ fixes a real 36-actor wire-size failure without dropping fields. Required keeper
 including opponent-owned pauses and guest kit/state projection. Shootout ordering,
 real kick outcomes and early/sudden-death completion now have 55 focused native
 cases; see OnlineShootout/Verification.md for the current run/build evidence.
-Next: authenticated Room tiebreaker/extra-time coin toss and half transitions,
-shared settings commands and motion interpolation/transport tuning. In-flight full snapshots
+Authenticated Room tiebreaker/extra-time coin toss and half transitions now have
+37 new native passes, plus 142 distinct affected passes. This also fixes null
+optional snapshot objects becoming empty live state on guests. See
+OnlineRoomCoinToss/Verification.md; all three Windows exports and local/login
+checks refreshed. Next: regular-match conclusion, shared settings commands,
+direct board interactions and motion interpolation/transport tuning. In-flight full snapshots
 now retain actual ball/player poses, with 9 validation and 5 actual-scene passes. Full-match internet acceptance and measured
 latency remain unverified. Paired Mac testing is deferred.
 See Assets/Editor/FeatureTests/OnlineFullRoom/Verification.md.

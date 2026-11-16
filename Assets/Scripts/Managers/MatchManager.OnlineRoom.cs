@@ -4,6 +4,7 @@ using CounterAttack.Online;
 using UnityEngine;
 public partial class MatchManager
 {
+    public bool OnlineBetweenHalves=>isHalfTimeFlowRunning || isTieBreakerTossRunning;
     public bool OnlineMatchComplete=>isMatchComplete && !isHalfTimeFlowRunning && !isTieBreakerTossRunning;
     private PenaltyShootoutManager onlineShootoutManager;
     public PenaltyShootoutManager OnlineShootoutManager=>onlineShootoutManager!=null?onlineShootoutManager:onlineShootoutManager=gameObject.scene.GetRootGameObjects().SelectMany(r=>r.GetComponentsInChildren<PenaltyShootoutManager>(true)).FirstOrDefault();
@@ -28,6 +29,7 @@ public partial class MatchManager
         if(Enum.TryParse(state.gameState,out GameState parsed))currentState=parsed;
         if(Enum.TryParse(state.possessionTeam,out TeamInAttack attack))teamInAttack=attack;
         isMatchComplete=state.matchComplete;
+        gameData.extraTimeOpeningSetup=state.extraTimeOpening==null?null:new MatchOpeningSetup{coinTossWinnerIsHome=state.extraTimeOpening.coinTossWinnerIsHome,homeHasFirstHalfKickoff=state.extraTimeOpening.homeHasFirstHalfKickoff,homeAttacksLeftToRight=state.extraTimeOpening.homeAttacksLeftToRight};
         attackHasPossession=state.attackHasPossession;currentHalf=state.half;currentHalfRegulationSeconds=state.regulationSeconds;isClockRunning=state.clockRunning;
         gameData.stats.homeTeamStats=JsonUtility.FromJson<TeamStats>(JsonUtility.ToJson(state.homeStats));
         gameData.stats.awayTeamStats=JsonUtility.FromJson<TeamStats>(JsonUtility.ToJson(state.awayStats));

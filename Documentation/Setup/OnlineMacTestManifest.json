@@ -224,6 +224,16 @@
     },
     {
       "mode": "editor",
+      "fixture": "OnlineRoomCoinTossEditorTests",
+      "categories": [
+        "OnlineRoomCoinToss"
+      ],
+      "definition_sha256": "e21cb5a3a0c25d442c1fad1af60a109c93bc3a56da31182a677e068552546a4f",
+      "route": "native",
+      "source": "Assets/Editor/FeatureTests/OnlineRoomCoinToss/OnlineRoomCoinTossEditorTests.cs"
+    },
+    {
+      "mode": "editor",
       "fixture": "OnlineRoomHandoffEditorTests",
       "categories": [
         "OnlineRoomHandoff"
@@ -268,7 +278,7 @@
       "categories": [
         "OnlineRosterReplication"
       ],
-      "definition_sha256": "548a6b6bb0c62f97da16ed90d38b2e082acc85ac66518efc44473654448efc91",
+      "definition_sha256": "f1d1ab1f3116bff6aee248d69ee99112d4045edfc75c36985155d55a7c95e17e",
       "route": "native",
       "source": "Assets/Editor/FeatureTests/OnlineRosterReplication/OnlineRosterReplicationEditorTests.cs"
     },
@@ -348,7 +358,7 @@
       "categories": [
         "OnlineShootout"
       ],
-      "definition_sha256": "41fc36ed761311c637093b6a1b3aef763e5121294c7589c23ad3f98d86ff99e4",
+      "definition_sha256": "4ee2e69a3f007b83850a3f3f2f47eafa7adc53a8f1cdc7287fe3ed5f0fba93de",
       "route": "native",
       "source": "Assets/Editor/FeatureTests/OnlineShootout/OnlineShootoutEditorTests.cs"
     },
@@ -358,7 +368,7 @@
       "categories": [
         "OnlineSnapshotPose"
       ],
-      "definition_sha256": "f80b5e6d1fcc34ae28b38a3b929ec77236dc94b8def658b9136e988252913f69",
+      "definition_sha256": "75f3d75fa16c5bfb89194a1f876a0d28d1beeac138758e07f477b90a4b9e07fb",
       "route": "native",
       "source": "Assets/Editor/FeatureTests/OnlineSnapshotPose/OnlineSnapshotPoseEditorTests.cs"
     },
@@ -722,6 +732,16 @@
       "definition_sha256": "8da6b020c973ef607c4066e4a6cf91edf9a63f4e25b7e54b9d18ee47a3766499",
       "route": "native",
       "source": "Assets/Tests/PlayMode/Features/OnlineRoomAction/OnlineRoomActionPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineRoomCoinTossPlayModeTests",
+      "categories": [
+        "OnlineRoomCoinToss"
+      ],
+      "definition_sha256": "473af5f880eaeab7e28d80f8cb7d561997735bc732932c36cd8ae8fbc16751c4",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineRoomCoinToss/OnlineRoomCoinTossPlayModeTests.cs"
     },
     {
       "mode": "playmode",
@@ -8066,7 +8086,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T182701670Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T060447178Z/results.xml"
     },
     {
       "id": "OnlineRosterReplicationEditorTests.RejectsMalformedRosterWithoutAdvancingReplica(\"identity\")",
@@ -8079,7 +8099,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T182701670Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T060447178Z/results.xml"
     },
     {
       "id": "OnlineRosterReplicationEditorTests.RejectsMalformedRosterWithoutAdvancingReplica(\"duplicate-hex\")",
@@ -8092,7 +8112,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T182701670Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T060447178Z/results.xml"
     },
     {
       "id": "OnlineRosterReplicationEditorTests.RejectsMalformedRosterWithoutAdvancingReplica(\"inconsistent-hex\")",
@@ -8105,7 +8125,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T182701670Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T060447178Z/results.xml"
     },
     {
       "id": "OnlineRosterReplicationEditorTests.RejectsMalformedRosterWithoutAdvancingReplica(\"sent-off-visible\")",
@@ -8118,7 +8138,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T182701670Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T060447178Z/results.xml"
     },
     {
       "id": "OnlineRosterReplicationEditorTests.RejectsMalformedRosterWithoutAdvancingReplica(\"direction\")",
@@ -8131,7 +8151,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T182701670Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T060447178Z/results.xml"
     },
     {
       "id": "OnlineRosterReplicationEditorTests.RejectsMalformedRosterWithoutAdvancingReplica(\"non-finite-world\")",
@@ -8144,7 +8164,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T182701670Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T060447178Z/results.xml"
     },
     {
       "id": "OnlineRosterReplicationEditorTests.RejectsMalformedRosterWithoutAdvancingReplica(\"non-finite-stat\")",
@@ -8157,7 +8177,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T182701670Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T060447178Z/results.xml"
     },
     {
       "id": "OnlineRosterReplicationEditorTests.RejectsMalformedRosterWithoutAdvancingReplica(\"attribute\")",
@@ -8170,7 +8190,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T182701670Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T060447178Z/results.xml"
     },
     {
       "id": "OnlineRosterReplicationEditorTests.RejectsMalformedRosterWithoutAdvancingReplica(\"roster\")",
@@ -8183,7 +8203,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T182701670Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T060447178Z/results.xml"
     },
     {
       "id": "OnlineRosterReplicationEditorTests.RejectsMalformedRosterWithoutAdvancingReplica(\"team-stats\")",
@@ -8196,7 +8216,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T182701670Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T060447178Z/results.xml"
     },
     {
       "id": "OnlineRosterReplicationEditorTests.RejectsMalformedRosterWithoutAdvancingReplica(\"ball-bounds\")",
@@ -8209,7 +8229,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T182701670Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T060447178Z/results.xml"
     },
     {
       "id": "OnlineRosterReplicationEditorTests.RejectsMalformedRosterWithoutAdvancingReplica(\"clock\")",
@@ -8222,7 +8242,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T182701670Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T060447178Z/results.xml"
     },
     {
       "id": "OnlineRosterReplicationPlayModeTests.FullRosterChangesReachInertGuest(16,False)",
@@ -9243,7 +9263,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T210329422Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T060455254Z/results.xml"
     },
     {
       "id": "OnlineSnapshotPoseEditorTests.RejectsInvalidPoseWithoutConsumingPublication(\"wrong-match\")",
@@ -9256,7 +9276,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T210329422Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T060455254Z/results.xml"
     },
     {
       "id": "OnlineSnapshotPoseEditorTests.RejectsInvalidPoseWithoutConsumingPublication(\"missing-player\")",
@@ -9269,7 +9289,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T210329422Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T060455254Z/results.xml"
     },
     {
       "id": "OnlineSnapshotPoseEditorTests.RejectsInvalidPoseWithoutConsumingPublication(\"duplicate-player\")",
@@ -9282,7 +9302,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T210329422Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T060455254Z/results.xml"
     },
     {
       "id": "OnlineSnapshotPoseEditorTests.RejectsInvalidPoseWithoutConsumingPublication(\"unknown-player\")",
@@ -9295,7 +9315,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T210329422Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T060455254Z/results.xml"
     },
     {
       "id": "OnlineSnapshotPoseEditorTests.RejectsInvalidPoseWithoutConsumingPublication(\"nan-ball\")",
@@ -9308,7 +9328,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T210329422Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T060455254Z/results.xml"
     },
     {
       "id": "OnlineSnapshotPoseEditorTests.RejectsInvalidPoseWithoutConsumingPublication(\"infinite-player\")",
@@ -9321,7 +9341,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T210329422Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T060455254Z/results.xml"
     },
     {
       "id": "OnlineSnapshotPoseEditorTests.RejectsInvalidPoseWithoutConsumingPublication(\"world-bound\")",
@@ -9334,7 +9354,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T210329422Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T060455254Z/results.xml"
     },
     {
       "id": "OnlineSnapshotPoseEditorTests.RejectsInvalidPoseWithoutConsumingPublication(\"static-pose\")",
@@ -9347,7 +9367,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T210329422Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T060455254Z/results.xml"
     },
     {
       "id": "OnlineSnapshotPosePlayModeTests.EncodedSnapshotKeepsMovingPoses(16,False)",
@@ -9423,7 +9443,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220425651Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T060503531Z/results.xml"
     },
     {
       "id": "OnlineShootoutEditorTests.FullRoomFinishesOnlyAfterRealCompletion(\"MatchEnded\",True,True)",
@@ -9436,7 +9456,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220425651Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T060503531Z/results.xml"
     },
     {
       "id": "OnlineShootoutEditorTests.FullRoomFinishesOnlyAfterRealCompletion(\"PenaltyShootoutComplete\",False,False)",
@@ -9449,7 +9469,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220425651Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T060503531Z/results.xml"
     },
     {
       "id": "OnlineShootoutEditorTests.FullRoomFinishesOnlyAfterRealCompletion(\"PenaltyShootoutComplete\",True,True)",
@@ -9462,7 +9482,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220425651Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T060503531Z/results.xml"
     },
     {
       "id": "OnlineShootoutEditorTests.FullRoomFinishesOnlyAfterRealCompletion(\"PenaltyShootoutOrderSelection\",False,False)",
@@ -9475,7 +9495,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220425651Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T060503531Z/results.xml"
     },
     {
       "id": "OnlineShootoutEditorTests.FullRoomFinishesOnlyAfterRealCompletion(\"PenaltyShootoutOrderSelection\",True,False)",
@@ -9488,7 +9508,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220425651Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T060503531Z/results.xml"
     },
     {
       "id": "OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(\"missing-order\")",
@@ -9501,7 +9521,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220425651Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T060503531Z/results.xml"
     },
     {
       "id": "OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(\"duplicate\")",
@@ -9514,7 +9534,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220425651Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T060503531Z/results.xml"
     },
     {
       "id": "OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(\"cross-team\")",
@@ -9527,7 +9547,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220425651Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T060503531Z/results.xml"
     },
     {
       "id": "OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(\"ineligible\")",
@@ -9540,7 +9560,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220425651Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T060503531Z/results.xml"
     },
     {
       "id": "OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(\"unequal\")",
@@ -9553,7 +9573,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220425651Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T060503531Z/results.xml"
     },
     {
       "id": "OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(\"sent-off\")",
@@ -9566,7 +9586,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220425651Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T060503531Z/results.xml"
     },
     {
       "id": "OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(\"score\")",
@@ -9579,7 +9599,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220425651Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T060503531Z/results.xml"
     },
     {
       "id": "OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(\"results\")",
@@ -9592,7 +9612,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220425651Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T060503531Z/results.xml"
     },
     {
       "id": "OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(\"attempts\")",
@@ -9605,7 +9625,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220425651Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T060503531Z/results.xml"
     },
     {
       "id": "OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(\"phase\")",
@@ -9618,7 +9638,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220425651Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T060503531Z/results.xml"
     },
     {
       "id": "OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(\"unknown-shooter\")",
@@ -9631,7 +9651,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220425651Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T060503531Z/results.xml"
     },
     {
       "id": "OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(\"unknown-keeper\")",
@@ -9644,7 +9664,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220425651Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T060503531Z/results.xml"
     },
     {
       "id": "OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(\"missing-eligible\")",
@@ -9657,7 +9677,7 @@
       ],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T220425651Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T060503531Z/results.xml"
     },
     {
       "id": "OnlineShootoutPlayModeTests.FirstKickOutcomeContinues(False,\"goal\",False)",
@@ -10126,6 +10146,485 @@
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
       "windows_evidence": "TestResults/GameplayRegression/Runs/20261115T221402527Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(\"purpose\")",
+      "feature": "OnlineRoomCoinToss",
+      "mode": "editor",
+      "fixture": "OnlineRoomCoinTossEditorTests",
+      "method": "RejectsMalformedCoinWithoutAdvancingGuest",
+      "parameters": [
+        "\"purpose\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T055344805Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(\"stage\")",
+      "feature": "OnlineRoomCoinToss",
+      "mode": "editor",
+      "fixture": "OnlineRoomCoinTossEditorTests",
+      "method": "RejectsMalformedCoinWithoutAdvancingGuest",
+      "parameters": [
+        "\"stage\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T055344805Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(\"negative\")",
+      "feature": "OnlineRoomCoinToss",
+      "mode": "editor",
+      "fixture": "OnlineRoomCoinTossEditorTests",
+      "method": "RejectsMalformedCoinWithoutAdvancingGuest",
+      "parameters": [
+        "\"negative\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T055344805Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(\"oversize\")",
+      "feature": "OnlineRoomCoinToss",
+      "mode": "editor",
+      "fixture": "OnlineRoomCoinTossEditorTests",
+      "method": "RejectsMalformedCoinWithoutAdvancingGuest",
+      "parameters": [
+        "\"oversize\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T055344805Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(\"winner\")",
+      "feature": "OnlineRoomCoinToss",
+      "mode": "editor",
+      "fixture": "OnlineRoomCoinTossEditorTests",
+      "method": "RejectsMalformedCoinWithoutAdvancingGuest",
+      "parameters": [
+        "\"winner\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T055344805Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(\"chooser\")",
+      "feature": "OnlineRoomCoinToss",
+      "mode": "editor",
+      "fixture": "OnlineRoomCoinTossEditorTests",
+      "method": "RejectsMalformedCoinWithoutAdvancingGuest",
+      "parameters": [
+        "\"chooser\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T055344805Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(\"tied-winner\")",
+      "feature": "OnlineRoomCoinToss",
+      "mode": "editor",
+      "fixture": "OnlineRoomCoinTossEditorTests",
+      "method": "RejectsMalformedCoinWithoutAdvancingGuest",
+      "parameters": [
+        "\"tied-winner\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T055344805Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(\"missing-winner\")",
+      "feature": "OnlineRoomCoinToss",
+      "mode": "editor",
+      "fixture": "OnlineRoomCoinTossEditorTests",
+      "method": "RejectsMalformedCoinWithoutAdvancingGuest",
+      "parameters": [
+        "\"missing-winner\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T055344805Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(\"home-stage\")",
+      "feature": "OnlineRoomCoinToss",
+      "mode": "editor",
+      "fixture": "OnlineRoomCoinTossEditorTests",
+      "method": "RejectsMalformedCoinWithoutAdvancingGuest",
+      "parameters": [
+        "\"home-stage\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T055344805Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(\"away-stage\")",
+      "feature": "OnlineRoomCoinToss",
+      "mode": "editor",
+      "fixture": "OnlineRoomCoinTossEditorTests",
+      "method": "RejectsMalformedCoinWithoutAdvancingGuest",
+      "parameters": [
+        "\"away-stage\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T055344805Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(\"result-stage\")",
+      "feature": "OnlineRoomCoinToss",
+      "mode": "editor",
+      "fixture": "OnlineRoomCoinTossEditorTests",
+      "method": "RejectsMalformedCoinWithoutAdvancingGuest",
+      "parameters": [
+        "\"result-stage\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T055344805Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(\"closed\")",
+      "feature": "OnlineRoomCoinToss",
+      "mode": "editor",
+      "fixture": "OnlineRoomCoinTossEditorTests",
+      "method": "RejectsMalformedCoinWithoutAdvancingGuest",
+      "parameters": [
+        "\"closed\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T055344805Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomCoinTossEditorTests.ReplicaClearsOptionalCoinAndRetainsAbsentWorldPoses",
+      "feature": "OnlineRoomCoinToss",
+      "mode": "editor",
+      "fixture": "OnlineRoomCoinTossEditorTests",
+      "method": "ReplicaClearsOptionalCoinAndRetainsAbsentWorldPoses",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T055344805Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomCoinTossPlayModeTests.RealRoomTossTransitions(False,False,False,False)",
+      "feature": "OnlineRoomCoinToss",
+      "mode": "playmode",
+      "fixture": "OnlineRoomCoinTossPlayModeTests",
+      "method": "RealRoomTossTransitions",
+      "parameters": [
+        "False,False,False,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T055400361Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomCoinTossPlayModeTests.RealRoomTossTransitions(False,False,False,True)",
+      "feature": "OnlineRoomCoinToss",
+      "mode": "playmode",
+      "fixture": "OnlineRoomCoinTossPlayModeTests",
+      "method": "RealRoomTossTransitions",
+      "parameters": [
+        "False,False,False,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T055400361Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomCoinTossPlayModeTests.RealRoomTossTransitions(False,False,True,False)",
+      "feature": "OnlineRoomCoinToss",
+      "mode": "playmode",
+      "fixture": "OnlineRoomCoinTossPlayModeTests",
+      "method": "RealRoomTossTransitions",
+      "parameters": [
+        "False,False,True,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T055400361Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomCoinTossPlayModeTests.RealRoomTossTransitions(False,False,True,True)",
+      "feature": "OnlineRoomCoinToss",
+      "mode": "playmode",
+      "fixture": "OnlineRoomCoinTossPlayModeTests",
+      "method": "RealRoomTossTransitions",
+      "parameters": [
+        "False,False,True,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T055400361Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomCoinTossPlayModeTests.RealRoomTossTransitions(False,True,False,False)",
+      "feature": "OnlineRoomCoinToss",
+      "mode": "playmode",
+      "fixture": "OnlineRoomCoinTossPlayModeTests",
+      "method": "RealRoomTossTransitions",
+      "parameters": [
+        "False,True,False,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T055400361Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomCoinTossPlayModeTests.RealRoomTossTransitions(False,True,False,True)",
+      "feature": "OnlineRoomCoinToss",
+      "mode": "playmode",
+      "fixture": "OnlineRoomCoinTossPlayModeTests",
+      "method": "RealRoomTossTransitions",
+      "parameters": [
+        "False,True,False,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T055400361Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomCoinTossPlayModeTests.RealRoomTossTransitions(False,True,True,False)",
+      "feature": "OnlineRoomCoinToss",
+      "mode": "playmode",
+      "fixture": "OnlineRoomCoinTossPlayModeTests",
+      "method": "RealRoomTossTransitions",
+      "parameters": [
+        "False,True,True,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T055400361Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomCoinTossPlayModeTests.RealRoomTossTransitions(False,True,True,True)",
+      "feature": "OnlineRoomCoinToss",
+      "mode": "playmode",
+      "fixture": "OnlineRoomCoinTossPlayModeTests",
+      "method": "RealRoomTossTransitions",
+      "parameters": [
+        "False,True,True,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T055400361Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomCoinTossPlayModeTests.RealRoomTossTransitions(True,False,False,False)",
+      "feature": "OnlineRoomCoinToss",
+      "mode": "playmode",
+      "fixture": "OnlineRoomCoinTossPlayModeTests",
+      "method": "RealRoomTossTransitions",
+      "parameters": [
+        "True,False,False,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T055400361Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomCoinTossPlayModeTests.RealRoomTossTransitions(True,False,False,True)",
+      "feature": "OnlineRoomCoinToss",
+      "mode": "playmode",
+      "fixture": "OnlineRoomCoinTossPlayModeTests",
+      "method": "RealRoomTossTransitions",
+      "parameters": [
+        "True,False,False,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T055400361Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomCoinTossPlayModeTests.RealRoomTossTransitions(True,False,True,False)",
+      "feature": "OnlineRoomCoinToss",
+      "mode": "playmode",
+      "fixture": "OnlineRoomCoinTossPlayModeTests",
+      "method": "RealRoomTossTransitions",
+      "parameters": [
+        "True,False,True,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T055400361Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomCoinTossPlayModeTests.RealRoomTossTransitions(True,False,True,True)",
+      "feature": "OnlineRoomCoinToss",
+      "mode": "playmode",
+      "fixture": "OnlineRoomCoinTossPlayModeTests",
+      "method": "RealRoomTossTransitions",
+      "parameters": [
+        "True,False,True,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T055400361Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomCoinTossPlayModeTests.RealRoomTossTransitions(True,True,False,False)",
+      "feature": "OnlineRoomCoinToss",
+      "mode": "playmode",
+      "fixture": "OnlineRoomCoinTossPlayModeTests",
+      "method": "RealRoomTossTransitions",
+      "parameters": [
+        "True,True,False,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T055400361Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomCoinTossPlayModeTests.RealRoomTossTransitions(True,True,False,True)",
+      "feature": "OnlineRoomCoinToss",
+      "mode": "playmode",
+      "fixture": "OnlineRoomCoinTossPlayModeTests",
+      "method": "RealRoomTossTransitions",
+      "parameters": [
+        "True,True,False,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T055400361Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomCoinTossPlayModeTests.RealRoomTossTransitions(True,True,True,False)",
+      "feature": "OnlineRoomCoinToss",
+      "mode": "playmode",
+      "fixture": "OnlineRoomCoinTossPlayModeTests",
+      "method": "RealRoomTossTransitions",
+      "parameters": [
+        "True,True,True,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T055400361Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomCoinTossPlayModeTests.RealRoomTossTransitions(True,True,True,True)",
+      "feature": "OnlineRoomCoinToss",
+      "mode": "playmode",
+      "fixture": "OnlineRoomCoinTossPlayModeTests",
+      "method": "RealRoomTossTransitions",
+      "parameters": [
+        "True,True,True,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T055400361Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomCoinTossPlayModeTests.RetieWaitsAcrossOverlappingHolds(False)",
+      "feature": "OnlineRoomCoinToss",
+      "mode": "playmode",
+      "fixture": "OnlineRoomCoinTossPlayModeTests",
+      "method": "RetieWaitsAcrossOverlappingHolds",
+      "parameters": [
+        "False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T055819353Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomCoinTossPlayModeTests.RetieWaitsAcrossOverlappingHolds(True)",
+      "feature": "OnlineRoomCoinToss",
+      "mode": "playmode",
+      "fixture": "OnlineRoomCoinTossPlayModeTests",
+      "method": "RetieWaitsAcrossOverlappingHolds",
+      "parameters": [
+        "True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T055819353Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomCoinTossPlayModeTests.OrdinaryHalfTransitions(1,False)",
+      "feature": "OnlineRoomCoinToss",
+      "mode": "playmode",
+      "fixture": "OnlineRoomCoinTossPlayModeTests",
+      "method": "OrdinaryHalfTransitions",
+      "parameters": [
+        "1,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T055913949Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomCoinTossPlayModeTests.OrdinaryHalfTransitions(1,True)",
+      "feature": "OnlineRoomCoinToss",
+      "mode": "playmode",
+      "fixture": "OnlineRoomCoinTossPlayModeTests",
+      "method": "OrdinaryHalfTransitions",
+      "parameters": [
+        "1,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T055913949Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomCoinTossPlayModeTests.OrdinaryHalfTransitions(3,False)",
+      "feature": "OnlineRoomCoinToss",
+      "mode": "playmode",
+      "fixture": "OnlineRoomCoinTossPlayModeTests",
+      "method": "OrdinaryHalfTransitions",
+      "parameters": [
+        "3,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T055913949Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomCoinTossPlayModeTests.OrdinaryHalfTransitions(3,True)",
+      "feature": "OnlineRoomCoinToss",
+      "mode": "playmode",
+      "fixture": "OnlineRoomCoinTossPlayModeTests",
+      "method": "OrdinaryHalfTransitions",
+      "parameters": [
+        "3,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T055913949Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomCoinTossPlayModeTests.LegacyChoiceAndRoomHoldCannotBypassAuthority(False)",
+      "feature": "OnlineRoomCoinToss",
+      "mode": "playmode",
+      "fixture": "OnlineRoomCoinTossPlayModeTests",
+      "method": "LegacyChoiceAndRoomHoldCannotBypassAuthority",
+      "parameters": [
+        "False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T060407632Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomCoinTossPlayModeTests.LegacyChoiceAndRoomHoldCannotBypassAuthority(True)",
+      "feature": "OnlineRoomCoinToss",
+      "mode": "playmode",
+      "fixture": "OnlineRoomCoinTossPlayModeTests",
+      "method": "LegacyChoiceAndRoomHoldCannotBypassAuthority",
+      "parameters": [
+        "True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T060407632Z/results.xml"
     }
   ]
 }

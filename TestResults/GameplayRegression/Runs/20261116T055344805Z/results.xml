@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="13" result="Passed" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 05:53:44Z" end-time="2026-11-16 05:53:45Z" duration="0.3933013">
+  <test-suite type="TestSuite" id="3006" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1697" result="Passed" start-time="2026-11-16 05:53:44Z" end-time="2026-11-16 05:53:45Z" duration="0.393301" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="3000" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="1697" result="Passed" start-time="2026-11-16 05:53:44Z" end-time="2026-11-16 05:53:45Z" duration="0.348379" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17216" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="1926" name="OnlineRoomCoinTossEditorTests" fullname="OnlineRoomCoinTossEditorTests" classname="OnlineRoomCoinTossEditorTests" runstate="Runnable" testcasecount="13" result="Passed" start-time="2026-11-16 05:53:44Z" end-time="2026-11-16 05:53:45Z" duration="0.340523" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineRoomCoinToss" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="1940" name="RejectsMalformedCoinWithoutAdvancingGuest" fullname="OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest" classname="OnlineRoomCoinTossEditorTests" runstate="Runnable" testcasecount="12" result="Passed" start-time="2026-11-16 05:53:44Z" end-time="2026-11-16 05:53:45Z" duration="0.299707" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1928" name="RejectsMalformedCoinWithoutAdvancingGuest(&quot;purpose&quot;)" fullname="OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(&quot;purpose&quot;)" methodname="RejectsMalformedCoinWithoutAdvancingGuest" classname="OnlineRoomCoinTossEditorTests" runstate="Runnable" seed="1424740911" result="Passed" start-time="2026-11-16 05:53:44Z" end-time="2026-11-16 05:53:45Z" duration="0.122177" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1929" name="RejectsMalformedCoinWithoutAdvancingGuest(&quot;stage&quot;)" fullname="OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(&quot;stage&quot;)" methodname="RejectsMalformedCoinWithoutAdvancingGuest" classname="OnlineRoomCoinTossEditorTests" runstate="Runnable" seed="588802299" result="Passed" start-time="2026-11-16 05:53:45Z" end-time="2026-11-16 05:53:45Z" duration="0.007986" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1930" name="RejectsMalformedCoinWithoutAdvancingGuest(&quot;negative&quot;)" fullname="OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(&quot;negative&quot;)" methodname="RejectsMalformedCoinWithoutAdvancingGuest" classname="OnlineRoomCoinTossEditorTests" runstate="Runnable" seed="2043899210" result="Passed" start-time="2026-11-16 05:53:45Z" end-time="2026-11-16 05:53:45Z" duration="0.008029" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1931" name="RejectsMalformedCoinWithoutAdvancingGuest(&quot;oversize&quot;)" fullname="OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(&quot;oversize&quot;)" methodname="RejectsMalformedCoinWithoutAdvancingGuest" classname="OnlineRoomCoinTossEditorTests" runstate="Runnable" seed="1559392432" result="Passed" start-time="2026-11-16 05:53:45Z" end-time="2026-11-16 05:53:45Z" duration="0.008504" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1932" name="RejectsMalformedCoinWithoutAdvancingGuest(&quot;winner&quot;)" fullname="OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(&quot;winner&quot;)" methodname="RejectsMalformedCoinWithoutAdvancingGuest" classname="OnlineRoomCoinTossEditorTests" runstate="Runnable" seed="1282577712" result="Passed" start-time="2026-11-16 05:53:45Z" end-time="2026-11-16 05:53:45Z" duration="0.007474" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1933" name="RejectsMalformedCoinWithoutAdvancingGuest(&quot;chooser&quot;)" fullname="OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(&quot;chooser&quot;)" methodname="RejectsMalformedCoinWithoutAdvancingGuest" classname="OnlineRoomCoinTossEditorTests" runstate="Runnable" seed="60457110" result="Passed" start-time="2026-11-16 05:53:45Z" end-time="2026-11-16 05:53:45Z" duration="0.007771" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1934" name="RejectsMalformedCoinWithoutAdvancingGuest(&quot;tied-winner&quot;)" fullname="OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(&quot;tied-winner&quot;)" methodname="RejectsMalformedCoinWithoutAdvancingGuest" classname="OnlineRoomCoinTossEditorTests" runstate="Runnable" seed="1601320700" result="Passed" start-time="2026-11-16 05:53:45Z" end-time="2026-11-16 05:53:45Z" duration="0.007497" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1935" name="RejectsMalformedCoinWithoutAdvancingGuest(&quot;missing-winner&quot;)" fullname="OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(&quot;missing-winner&quot;)" methodname="RejectsMalformedCoinWithoutAdvancingGuest" classname="OnlineRoomCoinTossEditorTests" runstate="Runnable" seed="1371371761" result="Passed" start-time="2026-11-16 05:53:45Z" end-time="2026-11-16 05:53:45Z" duration="0.008260" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1936" name="RejectsMalformedCoinWithoutAdvancingGuest(&quot;home-stage&quot;)" fullname="OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(&quot;home-stage&quot;)" methodname="RejectsMalformedCoinWithoutAdvancingGuest" classname="OnlineRoomCoinTossEditorTests" runstate="Runnable" seed="1343796034" result="Passed" start-time="2026-11-16 05:53:45Z" end-time="2026-11-16 05:53:45Z" duration="0.019019" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1937" name="RejectsMalformedCoinWithoutAdvancingGuest(&quot;away-stage&quot;)" fullname="OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(&quot;away-stage&quot;)" methodname="RejectsMalformedCoinWithoutAdvancingGuest" classname="OnlineRoomCoinTossEditorTests" runstate="Runnable" seed="1795381774" result="Passed" start-time="2026-11-16 05:53:45Z" end-time="2026-11-16 05:53:45Z" duration="0.019699" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1938" name="RejectsMalformedCoinWithoutAdvancingGuest(&quot;result-stage&quot;)" fullname="OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(&quot;result-stage&quot;)" methodname="RejectsMalformedCoinWithoutAdvancingGuest" classname="OnlineRoomCoinTossEditorTests" runstate="Runnable" seed="2100304026" result="Passed" start-time="2026-11-16 05:53:45Z" end-time="2026-11-16 05:53:45Z" duration="0.020441" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1939" name="RejectsMalformedCoinWithoutAdvancingGuest(&quot;closed&quot;)" fullname="OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(&quot;closed&quot;)" methodname="RejectsMalformedCoinWithoutAdvancingGuest" classname="OnlineRoomCoinTossEditorTests" runstate="Runnable" seed="1347191308" result="Passed" start-time="2026-11-16 05:53:45Z" end-time="2026-11-16 05:53:45Z" duration="0.030130" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-case id="1927" name="ReplicaClearsOptionalCoinAndRetainsAbsentWorldPoses" fullname="OnlineRoomCoinTossEditorTests.ReplicaClearsOptionalCoinAndRetainsAbsentWorldPoses" methodname="ReplicaClearsOptionalCoinAndRetainsAbsentWorldPoses" classname="OnlineRoomCoinTossEditorTests" runstate="Runnable" seed="1793863976" result="Passed" start-time="2026-11-16 05:53:45Z" end-time="2026-11-16 05:53:45Z" duration="0.026961" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Saving results to: TestResults\GameplayRegression\Runs\20261116T055344805Z\results.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 
 /// <summary>Scene-authored first-pick and coin-toss roll-offs. Animation never consumes gameplay randomness.</summary>
-public sealed class DraftOrderPanelController : MonoBehaviour
+public sealed partial class DraftOrderPanelController : MonoBehaviour
 {
     public GameObject visuals;
     public RectTransform panel;
@@ -85,6 +85,7 @@ public sealed class DraftOrderPanelController : MonoBehaviour
 
     public void Roll(RollInputOverride? rollOverride = null)
     {
+        if(OnlineRoomControlled && !onlineRoll)return;
         if (stage is not (Stage.Home or Stage.Away)) return;
         int roll = roomMatch != null
             ? roomMatch.ResolveGameplayDiceRoll("coin_toss", rollOverride, jackpotEnabled: false,
@@ -120,6 +121,7 @@ public sealed class DraftOrderPanelController : MonoBehaviour
 
     public void AdvanceResult(float unscaledTime)
     {
+        if(OnlineRoomControlled && !onlineProgress)return;
         if (stage != Stage.Result || unscaledTime < resultUntil) return;
         if (homeScore == awayScore) { BeginRound(); return; }
         HomeWon = homeScore > awayScore;
@@ -135,6 +137,7 @@ public sealed class DraftOrderPanelController : MonoBehaviour
 
     private void Update()
     {
+        if(OnlineRoomControlled)return;
         AdvanceResult(Time.unscaledTime);
         if (!IsOpen) return;
         Fit();

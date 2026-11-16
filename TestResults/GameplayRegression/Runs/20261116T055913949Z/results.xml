@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="4" result="Passed" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 05:59:13Z" end-time="2026-11-16 05:59:50Z" duration="36.1421529">
+  <test-suite type="TestSuite" id="2748" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1438" result="Passed" start-time="2026-11-16 05:59:13Z" end-time="2026-11-16 05:59:50Z" duration="36.142153" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2745" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1438" result="Passed" start-time="2026-11-16 05:59:14Z" end-time="2026-11-16 05:59:50Z" duration="36.100476" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17216" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1984" name="OnlineRoomCoinTossPlayModeTests" fullname="OnlineRoomCoinTossPlayModeTests" classname="OnlineRoomCoinTossPlayModeTests" runstate="Runnable" testcasecount="22" result="Passed" start-time="2026-11-16 05:59:14Z" end-time="2026-11-16 05:59:50Z" duration="36.094389" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineRoomCoinToss" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="1989" name="OrdinaryHalfTransitions" fullname="OnlineRoomCoinTossPlayModeTests.OrdinaryHalfTransitions" classname="OnlineRoomCoinTossPlayModeTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-11-16 05:59:14Z" end-time="2026-11-16 05:59:50Z" duration="36.084364" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="1985" name="OrdinaryHalfTransitions(1,False)" fullname="OnlineRoomCoinTossPlayModeTests.OrdinaryHalfTransitions(1,False)" methodname="OrdinaryHalfTransitions" classname="OnlineRoomCoinTossPlayModeTests" runstate="Runnable" seed="159733726" result="Passed" start-time="2026-11-16 05:59:14Z" end-time="2026-11-16 05:59:24Z" duration="10.001883" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[TokenKitCatalog] Loading kits JSON from Resources path 'Kits/kit-picker-v1-11-supported' (asset: Assets/Resources/Kits/kit-picker-v1-11-supported.json).
+[TokenKitCatalog] Found kits JSON TextAsset 'kit-picker-v1-11-supported' at Resources path 'Kits/kit-picker-v1-11-supported' (32277 characters).
+[TokenKitCatalog] Parsed 101 kit preset(s) from Resources path 'Kits/kit-picker-v1-11-supported'.
+[TokenKitCatalog] Active kit catalog contains 101 kit preset(s).
+MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584956262878
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Half-time whistle. Switching sides and resetting teams for the next kick-off.
+Sides switched. Home team is now attacking RightToLeft and away team is attacking LeftToRight
+For token: 9. Denier; Hex (2, 0, 3) is already occupied by 9. Meloni!
+For token: 10. Taylor; Hex (2, 0, -3) is already occupied by 10. Buzek!
+For token: 6. Terto; Hex (4, 0, 4) is already occupied by 6. Delpech!
+For token: 8. Gaham; Hex (4, 0, -4) is already occupied by 8. Walton!
+For token: 7. Savvakis; Hex (4, 0, 8) is already occupied by 7. Werdekker!
+For token: 11. Goaley; Hex (4, 0, -8) is already occupied by 11. Gilbert!
+For token: 4. Gortz; Hex (10, 0, -4) is already occupied by 4. Littlewood!
+For token: 5. Willems; Hex (10, 0, 4) is already occupied by 5. Manolis!
+For token: 2. Baez; Hex (10, 0, 8) is already occupied by 2. Aguayo!
+For token: 3. Kanaras; Hex (10, 0, -8) is already occupied by 3. Vladoiu!
+For token: 1. Kuzmic; Hex (16, 0, 0) is already occupied by 1. Aziz!
+[GoalFlow] Token/hex ownership reconciled cleanly after goal reset.
+Post-goal kick-off setup: both teams may reposition tokens in their own half, including the halfway line, except the center spot. The kicker will be selected later. Defenders cannot stand in the center circle. Press Enter twice when both teams are ready.
+]]></output>
+          </test-case>
+          <test-case id="1986" name="OrdinaryHalfTransitions(1,True)" fullname="OnlineRoomCoinTossPlayModeTests.OrdinaryHalfTransitions(1,True)" methodname="OrdinaryHalfTransitions" classname="OnlineRoomCoinTossPlayModeTests" runstate="Runnable" seed="1854843553" result="Passed" start-time="2026-11-16 05:59:24Z" end-time="2026-11-16 05:59:32Z" duration="8.796265" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584956326430
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Half-time whistle. Switching sides and resetting teams for the next kick-off.
+Sides switched. Home team is now attacking LeftToRight and away team is attacking RightToLeft
+For token: 9. Denier; Hex (-2, 0, 3) is already occupied by 9. Meloni!
+For token: 10. Taylor; Hex (-2, 0, -3) is already occupied by 10. Buzek!
+For token: 6. Terto; Hex (-4, 0, -4) is already occupied by 6. Delpech!
+For token: 8. Gaham; Hex (-4, 0, 4) is already occupied by 8. Walton!
+For token: 7. Savvakis; Hex (-4, 0, -8) is already occupied by 7. Werdekker!
+For token: 11. Goaley; Hex (-4, 0, 8) is already occupied by 11. Gilbert!
+For token: 4. Gortz; Hex (-10, 0, 4) is already occupied by 4. Littlewood!
+For token: 5. Willems; Hex (-10, 0, -4) is already occupied by 5. Manolis!
+For token: 2. Baez; Hex (-10, 0, -8) is already occupied by 2. Aguayo!
+For token: 3. Kanaras; Hex (-10, 0, 8) is already occupied by 3. Vladoiu!
+For token: 1. Kuzmic; Hex (-16, 0, 0) is already occupied by 1. Aziz!
+[GoalFlow] Token/hex ownership reconciled cleanly after goal reset.
+Post-goal kick-off setup: both teams may reposition tokens in their own half, including the halfway line, except the center spot. The kicker will be selected later. Defenders cannot stand in the center circle. Press Enter twice when both teams are ready.
+]]></output>
+          </test-case>
+          <test-case id="1987" name="OrdinaryHalfTransitions(3,False)" fullname="OnlineRoomCoinTossPlayModeTests.OrdinaryHalfTransitions(3,False)" methodname="OrdinaryHalfTransitions" classname="OnlineRoomCoinTossPlayModeTests" runstate="Runnable" seed="792704539" result="Passed" start-time="2026-11-16 05:59:32Z" end-time="2026-11-16 05:59:41Z" duration="8.727541" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584956389982
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Half-time whistle. Switching sides and resetting teams for the next kick-off.
+Sides switched. Home team is now attacking RightToLeft and away team is attacking LeftToRight
+For token: 9. Denier; Hex (2, 0, 3) is already occupied by 9. Meloni!
+For token: 10. Taylor; Hex (2, 0, -3) is already occupied by 10. Buzek!
+For token: 6. Terto; Hex (4, 0, 4) is already occupied by 6. Delpech!
+For token: 8. Gaham; Hex (4, 0, -4) is already occupied by 8. Walton!
+For token: 7. Savvakis; Hex (4, 0, 8) is already occupied by 7. Werdekker!
+For token: 11. Goaley; Hex (4, 0, -8) is already occupied by 11. Gilbert!
+For token: 4. Gortz; Hex (10, 0, -4) is already occupied by 4. Littlewood!
+For token: 5. Willems; Hex (10, 0, 4) is already occupied by 5. Manolis!
+For token: 2. Baez; Hex (10, 0, 8) is already occupied by 2. Aguayo!
+For token: 3. Kanaras; Hex (10, 0, -8) is already occupied by 3. Vladoiu!
+For token: 1. Kuzmic; Hex (16, 0, 0) is already occupied by 1. Aziz!
+[GoalFlow] Token/hex ownership reconciled cleanly after goal reset.
+Post-goal kick-off setup: both teams may reposition tokens in their own half, including the halfway line, except the center spot. The kicker will be selected later. Defenders cannot stand in the center circle. Press Enter twice when both teams are ready.
+]]></output>
+          </test-case>
+          <test-case id="1988" name="OrdinaryHalfTransitions(3,True)" fullname="OnlineRoomCoinTossPlayModeTests.OrdinaryHalfTransitions(3,True)" methodname="OrdinaryHalfTransitions" classname="OnlineRoomCoinTossPlayModeTests" runstate="Runnable" seed="901790102" result="Passed" start-time="2026-11-16 05:59:41Z" end-time="2026-11-16 05:59:50Z" duration="8.516388" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584956453534
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Half-time whistle. Switching sides and resetting teams for the next kick-off.
+Sides switched. Home team is now attacking LeftToRight and away team is attacking RightToLeft
+For token: 9. Denier; Hex (-2, 0, 3) is already occupied by 9. Meloni!
+For token: 10. Taylor; Hex (-2, 0, -3) is already occupied by 10. Buzek!
+For token: 6. Terto; Hex (-4, 0, -4) is already occupied by 6. Delpech!
+For token: 8. Gaham; Hex (-4, 0, 4) is already occupied by 8. Walton!
+For token: 7. Savvakis; Hex (-4, 0, -8) is already occupied by 7. Werdekker!
+For token: 11. Goaley; Hex (-4, 0, 8) is already occupied by 11. Gilbert!
+For token: 4. Gortz; Hex (-10, 0, 4) is already occupied by 4. Littlewood!
+For token: 5. Willems; Hex (-10, 0, -4) is already occupied by 5. Manolis!
+For token: 2. Baez; Hex (-10, 0, -8) is already occupied by 2. Aguayo!
+For token: 3. Kanaras; Hex (-10, 0, 8) is already occupied by 3. Vladoiu!
+For token: 1. Kuzmic; Hex (-16, 0, 0) is already occupied by 1. Aziz!
+[GoalFlow] Token/hex ownership reconciled cleanly after goal reset.
+Post-goal kick-off setup: both teams may reposition tokens in their own half, including the halfway line, except the center spot. The kicker will be selected later. Defenders cannot stand in the center circle. Press Enter twice when both teams are ready.
+Saving results to: TestResults\GameplayRegression\Runs\20261116T055913949Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

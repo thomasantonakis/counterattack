@@ -78,9 +78,9 @@ Continue from `OnlineNextSessionPrompt.md`, following AGENTS.md and unity-cli.
 Full Room native handoff, pause/menu/substitutions, required keeper decisions
 and in-flight snapshot poses are implemented with focused Windows evidence.
 Shootout orders, owned rolls/outcomes and early/sudden-death endings now have
-focused real-scene coverage. Room tiebreaker/extra-time coin toss still needs its
-authenticated adapter; the shootout fixtures supply the agreed opening setup.
-Prioritize that coin toss, shared settings and half/end match transitions,
+focused real-scene coverage. Room tiebreaker/extra-time coin toss and half transitions now have 37 focused
+new native passes and 142 affected passes; full contract is Room v7.
+Prioritize regular-match conclusion, shared settings and direct board input,
 then presentation interpolation/transport tuning and deferred paired acceptance.
 Preserve host-only RNG/rules, authenticated semantic commands, guest inactivity,
 receipt/revision checks and reconnect holds. Compile, run feature-focused native

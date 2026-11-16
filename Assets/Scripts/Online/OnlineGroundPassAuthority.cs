@@ -23,6 +23,10 @@ namespace CounterAttack.Online
     [Serializable]
     public sealed class OnlineGroundPassState
     {
+        // Unity's inline serializer materializes null nested objects. Optional
+        // protocol state must preserve absence across replica/view copies.
+        public static OnlineGroundPassState Copy(OnlineGroundPassState value)=>value==null?null:
+            Newtonsoft.Json.JsonConvert.DeserializeObject<OnlineGroundPassState>(Newtonsoft.Json.JsonConvert.SerializeObject(value));
         public string matchId, decisionId, stage, owner, gameState, possessionTeam, lastTouch, pauseRequester, catalogId;
         public string homeDirection,awayDirection,substitutionsReason;
         public bool substitutionsAvailable;
@@ -49,6 +53,8 @@ namespace CounterAttack.Online
         public OnlineHeaderObservation header;
         public OnlineGroundPassPresentation roomPose;
         public OnlineShootoutSnapshot shootout;
+        public OnlineCoinTossSnapshot coin;
+        public MatchOpeningSetup extraTimeOpening;
     }
 
     /// <summary>
@@ -173,6 +179,7 @@ namespace CounterAttack.Online
 
         private OnlineGroundPassState ReadState()
         {
+            match.coinTossPanel?.TickOnline(sharedPause?.ConnectionHeld==true);
             targetActions.Clear();
             additionalActions.Clear();
             var ballHex = match.ball.GetCurrentHex();
@@ -196,6 +203,8 @@ namespace CounterAttack.Online
                 homeEmergencyKeeper=protocol.Compatibility.Catalog==OnlineFullRoomBootstrap.Catalog && match.IsEmergencyGoalkeeperNominationRequiredForTeam(true),
                 awayEmergencyKeeper=protocol.Compatibility.Catalog==OnlineFullRoomBootstrap.Catalog && match.IsEmergencyGoalkeeperNominationRequiredForTeam(false),
                 substitutionsReason=protocol.Compatibility.Catalog==OnlineFullRoomBootstrap.Catalog?match.SubstitutionsAvailabilityReason:null,
+                extraTimeOpening=match.gameData.extraTimeOpeningSetup==null?null:new MatchOpeningSetup{coinTossWinnerIsHome=match.gameData.extraTimeOpeningSetup.coinTossWinnerIsHome,homeHasFirstHalfKickoff=match.gameData.extraTimeOpeningSetup.homeHasFirstHalfKickoff,homeAttacksLeftToRight=match.gameData.extraTimeOpeningSetup.homeAttacksLeftToRight},
+                coin=protocol.Compatibility.Catalog==OnlineFullRoomBootstrap.Catalog?match.coinTossPanel?.CaptureOnline():null,
                 shootout=protocol.Compatibility.Catalog==OnlineFullRoomBootstrap.Catalog?match.OnlineShootoutManager?.CaptureOnlineShootout():null,
                 rolls = match.CaptureOnlineRolls(),
                 header = CaptureHeaderObservation(),
@@ -228,7 +237,7 @@ namespace CounterAttack.Online
                 interceptorZ = interceptor == null ? 0 : interceptor.coordinates.z,
                 movementAvailable = match.movementPhaseManager?.isAvailable == true,
                 movementActive = match.movementPhaseManager?.isActivated == true,
-                playerMoving = match.OnlineShootoutManager?.OnlinePresentationMoving==true
+                playerMoving = match.OnlineBetweenHalves && match.coinTossPanel?.IsOpen!=true || match.OnlineShootoutManager?.OnlinePresentationMoving==true
                     || match.movementPhaseManager?.isPlayerMoving == true
                     || match.movementPhaseManager?.IsResolvingReposition == true
                     || match.goalFlowManager?.isActivated == true || match.kickoffManager?.IsWaitingForMovementToComplete() == true
@@ -250,6 +259,8 @@ namespace CounterAttack.Online
             if (faulted) state.stage = "faulted";
             // Pause/intro need their own shared authority adapter. Never bypass them
             // by accepting a command in this initial, unwired proof slice.
+            else if(state.coin!=null)ReadCoinDecision(state,actions);
+            else if(match.OnlineBetweenHalves){state.stage="match.transition";state.owner="None";state.awaitingRoll=state.awaitingTarget=false;}
             else if (match.IsGameplayInputBlocked) state.stage = "blocked";
             else if(state.shootout!=null)
             {

@@ -1,0 +1,9 @@
+{"name":"OnlineSnapshotPoseEditorTests.RejectsInvalidPoseWithoutConsumingPublication(\"missing-pose\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSnapshotPoseEditorTests.RejectsInvalidPoseWithoutConsumingPublication(\"wrong-match\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSnapshotPoseEditorTests.RejectsInvalidPoseWithoutConsumingPublication(\"missing-player\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSnapshotPoseEditorTests.RejectsInvalidPoseWithoutConsumingPublication(\"duplicate-player\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSnapshotPoseEditorTests.RejectsInvalidPoseWithoutConsumingPublication(\"unknown-player\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSnapshotPoseEditorTests.RejectsInvalidPoseWithoutConsumingPublication(\"nan-ball\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSnapshotPoseEditorTests.RejectsInvalidPoseWithoutConsumingPublication(\"infinite-player\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSnapshotPoseEditorTests.RejectsInvalidPoseWithoutConsumingPublication(\"world-bound\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSnapshotPoseEditorTests.RejectsInvalidPoseWithoutConsumingPublication(\"static-pose\")","status":"Passed","message":"","stackTrace":""}

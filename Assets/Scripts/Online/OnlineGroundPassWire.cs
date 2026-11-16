@@ -94,7 +94,7 @@ namespace CounterAttack.Online
                 roster = new HashSet<string>(ids, StringComparer.Ordinal);
             }
         }
-        public OnlineGroundPassState State => currentJson == null ? null : JsonUtility.FromJson<OnlineGroundPassState>(currentJson);
+        public OnlineGroundPassState State => currentJson == null ? null : JsonConvert.DeserializeObject<OnlineGroundPassState>(currentJson);
 
         public bool ApplyPresentation(OnlineGroundPassPresentation frame)
         {
@@ -130,7 +130,7 @@ namespace CounterAttack.Online
                     var observed = prior.rolls.FirstOrDefault(item => item.sequence == result.sequence);
                     if (observed != null && JsonUtility.ToJson(observed) != JsonUtility.ToJson(result)) return false;
                 }
-            var json = JsonUtility.ToJson(state);
+            var json = JsonConvert.SerializeObject(state);
             if (state.publicationSequence < sequence || state.revision < revision) return false;
             if (state.publicationSequence == sequence) return json == currentJson;
             currentJson = json; sequence = state.publicationSequence; revision = state.revision; rollSequence = state.rollSequence;

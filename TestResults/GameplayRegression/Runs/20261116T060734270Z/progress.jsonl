@@ -1,0 +1,5 @@
+{"name":"OnlineSnapshotPosePlayModeTests.EncodedSnapshotKeepsMovingPoses(16,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSnapshotPosePlayModeTests.EncodedSnapshotKeepsMovingPoses(16,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSnapshotPosePlayModeTests.EncodedSnapshotKeepsMovingPoses(18,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSnapshotPosePlayModeTests.EncodedSnapshotKeepsMovingPoses(18,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineSnapshotPosePlayModeTests.ReconnectDuringFlight","status":"Passed","message":"","stackTrace":""}
