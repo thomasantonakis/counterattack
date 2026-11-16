@@ -86,6 +86,7 @@ public sealed partial class OnlineFullRoomSceneFixture
             if(token.jerseyNumber<=11){Assert.That(token.GetCurrentHex()?.occupyingToken,Is.SameAs(token));Assert.That(token.GetCurrentHex().isAttackOccupied,Is.EqualTo(token.isAttacker));}
         }
         if(branch.StartsWith("menu")){yield return RunMenu(board,guest,mirror,branch);yield break;}
+        if(branch=="context-key-focus"){yield return RunContextKeyFocus(board);yield break;}
         var version=new OnlineCompatibility("ground-wire-v7","ground-rules-v1",OnlineFullRoomBootstrap.Catalog);var protocol=new OnlineMatchProtocol("full-room-scene","home","away","away",version);
         protocol.BindAuthenticatedAccount("home","h",version);protocol.BindAuthenticatedAccount("away","a",version);
         if(!OnlineRoomSession.IsGuest)pause=new OnlineSharedPause(protocol,board.match);

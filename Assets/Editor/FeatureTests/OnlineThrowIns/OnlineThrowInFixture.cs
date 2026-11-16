@@ -7,6 +7,7 @@ public sealed partial class GoalkeeperBoxEntryFixture
 {
     public IEnumerator RunOnlineThrowIn(int side,string branch)
     {
+        bool keys=branch.StartsWith("keys-",System.StringComparison.Ordinal);if(keys)branch=branch.Substring(5);
         var authority=OnlineGroundBoard(side,true,false,out var protocol,out var receiver);
         var header=movement.headerManager;var finalThird=match.finalThirdManager;
         Place(attacker,Hex(0,11));Place(receiver,Hex(0,8));ball.PlaceAtCell(Hex(0,12));
@@ -19,6 +20,7 @@ public sealed partial class GoalkeeperBoxEntryFixture
         void Submit(string action)
         {
             var turn=authority.Capture();string connection=turn.owner=="Home"?"home":"away";
+            if(keys)action=OnlineContextKeyFixture.Pick(turn,action);
             OnlineAccepted(authority,connection,protocol.LastAcceptedSequence(connection=="home"?OnlineTeam.Home:OnlineTeam.Away)+1,action);
         }
         Assert.That(authority.Capture().stage,Is.EqualTo("throw.taker"));

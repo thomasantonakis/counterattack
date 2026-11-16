@@ -582,3 +582,9 @@ See OnlineRoomLaunch/Verification.md. Each new case registered for deferred Mac.
 Native frontend caches room-bootstrap.json but does not yet load full Room.
 Next actual full Scene startup/roster/transport and normal menus. Rules v5;
 exports predate Draft/opening/launch and need refresh before paired execution.
+
+Contextual Room keys now add 63 new passing native cases (45 EditMode, 18
+PlayMode), plus 44 affected shortcut passes. Restart/throw-in actions use their
+normal physical keys through the existing semantic lane; host and guest authored
+UI consumes typing. See OnlineContextKeys/Verification.md. Room v14/wire v7
+remain unchanged. Paired testing stays deferred while independent gaps are fixed.

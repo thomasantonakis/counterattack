@@ -13,7 +13,8 @@ namespace CounterAttack.Online
         public OnlineGroundPassBoard board;
         public bool samplePhysicalInput=true;
         private OnlineGroundPassState state;
-        private static readonly KeyCode[] Keys={KeyCode.P,KeyCode.L,KeyCode.C,KeyCode.F,KeyCode.M,KeyCode.S,KeyCode.R,KeyCode.D,KeyCode.B,KeyCode.N,KeyCode.T,KeyCode.X,KeyCode.Return,KeyCode.KeypadEnter};
+        private static readonly KeyCode[] Keys={KeyCode.P,KeyCode.L,KeyCode.C,KeyCode.F,KeyCode.M,KeyCode.S,KeyCode.R,KeyCode.D,KeyCode.B,KeyCode.N,KeyCode.T,KeyCode.X,
+            KeyCode.Q,KeyCode.K,KeyCode.H,KeyCode.G,KeyCode.V,KeyCode.A,KeyCode.Return,KeyCode.KeypadEnter};
         public void Display(OnlineGroundPassState publication)=>state=publication;
         private bool Submit(string action)=>action!=null && board!=null && board.controls!=null && board.controls.TrySubmitAction(action);
         public bool TryToken(PlayerToken token)
@@ -44,6 +45,8 @@ namespace CounterAttack.Online
             var selected=EventSystem.current?.currentSelectedGameObject;
             return selected!=null && (selected.GetComponentInParent<InputField>()!=null
                 || selected.GetComponentInParent<TMP_InputField>()!=null
+                || selected.GetComponentInParent<Dropdown>()!=null || selected.GetComponentInParent<TMP_Dropdown>()!=null
+                || selected.GetComponentInParent<Toggle>()!=null || selected.GetComponentInParent<Slider>()!=null
                 || (key==KeyCode.Return || key==KeyCode.KeypadEnter) && selected.GetComponentInParent<Selectable>()!=null);
         }
         private static bool PointerOwnedByUI()

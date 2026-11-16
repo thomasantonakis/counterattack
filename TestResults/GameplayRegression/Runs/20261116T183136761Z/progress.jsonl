@@ -1,0 +1,18 @@
+{"name":"OnlineContextKeysPlayModeTests.AuthoredUiConsumesTyping(False)","status":"Failed","message":"  Real dropdown item owns keyboard input\r\n  Expected: not null\r\n  But was:  null\r\n","stackTrace":"at OnlineFullRoomSceneFixture+<RunContextKeyFocus>d__2.MoveNext () [0x001f1] in C:\\Users\\thomas\\Documents\\Projects\\Personal\\counterattack\\Assets\\Editor\\FeatureTests\\OnlineContextKeys\\OnlineFullRoomSceneFixture.ContextFocus.cs:20\r\nat UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\\Library\\PackageCache\\com.unity.test-framework@1405238725ab\\UnityEngine.TestRunner\\NUnitExtensions\\Attributes\\TestEnumerator.cs:44\r\n"}
+{"name":"OnlineContextKeysPlayModeTests.AuthoredUiConsumesTyping(True)","status":"Failed","message":"  Real dropdown item owns keyboard input\r\n  Expected: not null\r\n  But was:  null\r\n","stackTrace":"at OnlineFullRoomSceneFixture+<RunContextKeyFocus>d__2.MoveNext () [0x001f1] in C:\\Users\\thomas\\Documents\\Projects\\Personal\\counterattack\\Assets\\Editor\\FeatureTests\\OnlineContextKeys\\OnlineFullRoomSceneFixture.ContextFocus.cs:20\r\nat UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\\Library\\PackageCache\\com.unity.test-framework@1405238725ab\\UnityEngine.TestRunner\\NUnitExtensions\\Attributes\\TestEnumerator.cs:44\r\n"}
+{"name":"OnlineContextKeysPlayModeTests.RealSetPieceKeys(1,\"ground\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineContextKeysPlayModeTests.RealSetPieceKeys(1,\"high\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineContextKeysPlayModeTests.RealSetPieceKeys(1,\"long\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineContextKeysPlayModeTests.RealSetPieceKeys(1,\"shot\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineContextKeysPlayModeTests.RealSetPieceKeys(1,\"corner-high\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineContextKeysPlayModeTests.RealSetPieceKeys(-1,\"ground\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineContextKeysPlayModeTests.RealSetPieceKeys(-1,\"high\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineContextKeysPlayModeTests.RealSetPieceKeys(-1,\"long\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineContextKeysPlayModeTests.RealSetPieceKeys(-1,\"shot\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineContextKeysPlayModeTests.RealSetPieceKeys(-1,\"corner-high\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineContextKeysPlayModeTests.RealThrowInKeys(1,\"feet\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineContextKeysPlayModeTests.RealThrowInKeys(1,\"head\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineContextKeysPlayModeTests.RealThrowInKeys(1,\"optional\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineContextKeysPlayModeTests.RealThrowInKeys(-1,\"feet\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineContextKeysPlayModeTests.RealThrowInKeys(-1,\"head\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineContextKeysPlayModeTests.RealThrowInKeys(-1,\"optional\")","status":"Passed","message":"","stackTrace":""}
