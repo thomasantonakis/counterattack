@@ -1,0 +1,8 @@
+{"name":"OnlineLooseSnapshotChoicePlayModeTests.CollectedLooseBallSnapshot(1,\"shoot\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineLooseSnapshotChoicePlayModeTests.CollectedLooseBallSnapshot(1,\"decline\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineLooseSnapshotChoicePlayModeTests.CollectedLooseBallSnapshot(1,\"hold\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineLooseSnapshotChoicePlayModeTests.CollectedLooseBallSnapshot(1,\"cancel\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineLooseSnapshotChoicePlayModeTests.CollectedLooseBallSnapshot(-1,\"shoot\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineLooseSnapshotChoicePlayModeTests.CollectedLooseBallSnapshot(-1,\"decline\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineLooseSnapshotChoicePlayModeTests.CollectedLooseBallSnapshot(-1,\"hold\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineLooseSnapshotChoicePlayModeTests.CollectedLooseBallSnapshot(-1,\"cancel\")","status":"Passed","message":"","stackTrace":""}

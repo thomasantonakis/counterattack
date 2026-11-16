@@ -2,7 +2,7 @@ using CounterAttack.Online;
 using System.Linq;
 using System.Collections;
 
-public enum OnlineShotIntent { Select, Confirm, CancelPreview, Target, SelectBlocker, MoveBlocker, Shoot, Save, HeaderSave, Handling, Block, OutsideHands, OutsideBlock }
+public enum OnlineShotIntent { Select, Confirm, CancelPreview, Target, SelectBlocker, MoveBlocker, Shoot, Save, HeaderSave, Handling, Block, OutsideHands, OutsideBlock, DeclineLoose }
 
 public partial class ShotManager
 {
@@ -16,6 +16,7 @@ public partial class ShotManager
         && CanStartShotFromCurrentPossession(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose);
     public bool OnlineCanStartOfferedSnapshot(PlayerToken actor)=>!isActivated && !IsMovingSnapshotBlocker && !OnlineShotContextBlocked
         && !IsSnapshotSuppressedByFinalExtraMovement() && CanStartShotFromCurrentPossession(actor);
+    public bool OnlineLooseSnapshotChoice=>isAvailable && isWaitingForSnapshotDecisionFromLoose && !isActivated && !OnlineShotContextBlocked;
     public string OnlineShotStage => OnlineShotContextBlocked ? "pending" : isWaitingForShotCommitConfirmation && !isActivated ? "confirm" : !isActivated ? null
         : IsMovingSnapshotBlocker ? "resolving" : isWaitingForOutsideBoxGKShotDecision ? "keeper-choice" : isWaitingforBlockerSelection ? "snapshot.select" : isWaitingforBlockerMovement ? "snapshot.target"
         : isWaitingForTargetSelection ? "target" : isWaitingForBlockDiceRoll ? onlineShotBlockVersion==headerSavePresentationVersion ? "pending" : "block"
@@ -37,6 +38,8 @@ public partial class ShotManager
         if(OnlineRoomSession.IsGuest || MatchManager.Instance==null || MatchManager.Instance.IsGameplayInputBlocked || OnlineShotContextBlocked)return false;
         switch(intent)
         {
+            case OnlineShotIntent.DeclineLoose when OnlineLooseSnapshotChoice:
+                DeclineCollectedSnapshot();return true;
             case OnlineShotIntent.OutsideHands when OnlineShotStage=="keeper-choice" && pendingOutsideBoxGKSaveInteraction!=null:
                 SelectOutsideBoxGKHandSave();return true;
             case OnlineShotIntent.OutsideBlock when OnlineShotStage=="keeper-choice" && pendingOutsideBoxGKSaveInteraction!=null:
@@ -87,5 +90,15 @@ public partial class ShotManager
             PreviewShotCommit();
         }
         else IdentifyShotType();
+    }
+    private void DeclineCollectedSnapshot()
+    {
+        isAvailable=false;isActivated=false;isWaitingForSnapshotDecisionFromLoose=false;isWaitingForShotCommitConfirmation=false;
+        if(movementPhaseManager.isActivated)
+        {
+            UnityEngine.Debug.Log($"Ball found itself (during MP) on {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.playerName} who decided to not take the Snapshot");
+            movementPhaseManager.AdvanceMovementPhase();
+        }
+        else UnityEngine.Debug.LogWarning($"Ball found itself (NOT during MP) on {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.playerName} who decided to not take the Snapshot");
     }
 }

@@ -282,6 +282,7 @@ namespace CounterAttack.Online
             else if(match.highPassManager?.isActivated==true) ReadHighPassDecision(state,actions);
             else if (state.ballMoving) state.stage = "resolving";
             else if(match.looseBallManager?.isActivated==true)ReadLooseBallDecision(state,actions);
+            else if(match.shotManager?.OnlineLooseSnapshotChoice==true)ReadCollectedSnapshotDecision(state,actions);
             else if(match.shotManager?.isWaitingForSaveandHoldScenario==true)ReadKeeperDistribution(state,actions);
             else if (match.finalThirdManager?.isActivated == true) ReadFinalThirdDecision(state,actions);
             else if(match.penaltyKickManager?.isActivated==true)ReadPenaltyDecision(state,actions);

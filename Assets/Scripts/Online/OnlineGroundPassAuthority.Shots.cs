@@ -11,6 +11,14 @@ namespace CounterAttack.Online
         public static string ShotTargetAction(int x,int z)=>"shot.target:"+x+":"+z;
         public static string ShotPlayerAction(string id)=>"shot.player:"+id;
         public static string ShotMoveAction(int x,int z)=>"shot.move:"+x+":"+z;
+        private void ReadCollectedSnapshotDecision(OnlineGroundPassState state,List<string> actions)
+        {
+            var actor=match.LastTokenToTouchTheBallOnPurpose;state.stage="shot.loose-choice";state.selectedPlayer=TokenId(actor);
+            state.owner=actor==null?"None":actor.isHomeTeam?"Home":"Away";state.awaitingRoll=state.awaitingTarget=false;
+            if(actor==null)return;
+            if(match.shotManager.OnlineCanSelectShot)AddShotCommand(actions,ShotStartAction,OnlineShotIntent.Select);
+            AddShotCommand(actions,"shot.decline",OnlineShotIntent.DeclineLoose);
+        }
         private void ReadShotDecision(OnlineGroundPassState state,List<string> actions)
         {
             var manager=match.shotManager;var phase=manager.OnlineShotStage;

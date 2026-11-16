@@ -961,20 +961,7 @@ public partial class ShotManager : MonoBehaviour
             }
             if (keyData.key == KeyCode.X)
             {
-                isAvailable = false;
-                isActivated = false;
-                isWaitingForSnapshotDecisionFromLoose = false;
-                isWaitingForShotCommitConfirmation = false;
-                if (movementPhaseManager.isActivated)
-                {
-                    Debug.Log($"Ball found itself (during MP) on {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.playerName} who decided to not take the Snapshot");
-                    movementPhaseManager.AdvanceMovementPhase();
-                }
-                else
-                {
-                    // TODO: this should be "Any other Scenario"
-                    Debug.LogWarning($"Ball found itself (NOT during MP) on {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.playerName} who decided to not take the Snapshot");
-                }
+                DeclineCollectedSnapshot();
                 keyData.Consume(nameof(ShotManager));
                 return;
             }
@@ -4534,6 +4521,7 @@ public partial class ShotManager : MonoBehaviour
         isWaitingForGKDiceRoll = false;
         isWaitingforHandlingTest = false;
         isWaitingForSaveandHoldScenario = preserveSaveAndHoldDecision;
+        isWaitingForSnapshotDecisionFromLoose = false;
         isWaitingForOutsideBoxGKShotDecision = false;
         isWaitingForShotCommitConfirmation = false;
         isWaitingforBlockerMovement = false;

@@ -107,6 +107,9 @@ Movement snapshot offers add 49 native passes and 12 selected affected passes;
 full Room now requires **v12**. Both teams/directions and actual snapshot/save
 continuations are covered. See OnlineMovementSnapshot/Verification.md. Exports
 still precede v11/v12; rebuild before paired use. Mac execution remains deferred.
+Collected loose-ball snapshot choice/reset adds ten new passes and two affected
+legacy passes; current full Room is **v13**. See OnlineLooseSnapshotChoice/Verification.md.
+Refresh exports before paired use; shared-setting consent remains unanswered.
 Preserve host-only RNG/rules, authenticated semantic commands, guest inactivity,
 receipt/revision checks and reconnect holds. Compile, run feature-focused native
 tests and build through the already-open Editor. Commit/push verified batches.

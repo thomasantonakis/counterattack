@@ -49,6 +49,10 @@ S/X, cancellation/holds, continued dribbling and eight complete shot/save
 continuations passed for both teams/directions. See OnlineMovementSnapshot/Verification.md.
 Full Room is now v12; refresh exports before paired use. Next: loose-ball snapshot
 answering, remaining interruption choices and presentation/transport tuning.
+Collected loose-ball snapshots now add ten new native passes and two affected
+legacy passes. A different collector's shoot/decline is published; cancelled
+offers are cleared by shot reset. See OnlineLooseSnapshotChoice/Verification.md.
+Full Room is now v13; exports still need refresh before paired use.
 Controls no longer serialize the complete roster/stats every display update:
 typed detached control decisions have 10 new focused passes and 19 selected
 affected passes. See OnlineControlDecision/Verification.md for memory-measurement

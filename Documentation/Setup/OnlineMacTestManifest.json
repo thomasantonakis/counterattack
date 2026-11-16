@@ -194,6 +194,16 @@
     },
     {
       "mode": "editor",
+      "fixture": "OnlineLooseSnapshotChoiceEditorTests",
+      "categories": [
+        "OnlineLooseSnapshotChoice"
+      ],
+      "definition_sha256": "b6c859238579bd62b874c2fa28c0438f1ea693b10a1ae899c24a8096e95d8651",
+      "route": "native",
+      "source": "Assets/Editor/FeatureTests/OnlineLooseSnapshotChoice/OnlineLooseSnapshotChoiceEditorTests.cs"
+    },
+    {
+      "mode": "editor",
       "fixture": "OnlineMatchProtocolEditorTests",
       "categories": [
         "OnlineMatchProtocol"
@@ -712,6 +722,16 @@
       "definition_sha256": "ba0e45b4930405a1d5341d0ec1078d6249b63ec3be43ffc78637c7ec48db29a9",
       "route": "native",
       "source": "Assets/Tests/PlayMode/Features/OnlineLooseBall/OnlineLooseBallPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineLooseSnapshotChoicePlayModeTests",
+      "categories": [
+        "OnlineLooseSnapshotChoice"
+      ],
+      "definition_sha256": "bf29f40912d5ad93c7940f7a4ba28de15c0a6d05e9919a37b7f2ea8abf94981e",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineLooseSnapshotChoice/OnlineLooseSnapshotChoicePlayModeTests.cs"
     },
     {
       "mode": "playmode",
@@ -13620,6 +13640,136 @@
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
       "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T170645384Z/results.xml"
+    },
+    {
+      "id": "OnlineLooseSnapshotChoiceEditorTests.CollectedSnapshotKeysRequirePublishedChoice(S,\"shot.start\")",
+      "feature": "OnlineLooseSnapshotChoice",
+      "mode": "editor",
+      "fixture": "OnlineLooseSnapshotChoiceEditorTests",
+      "method": "CollectedSnapshotKeysRequirePublishedChoice",
+      "parameters": [
+        "S,\"shot.start\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T171848110Z/results.xml"
+    },
+    {
+      "id": "OnlineLooseSnapshotChoiceEditorTests.CollectedSnapshotKeysRequirePublishedChoice(X,\"shot.decline\")",
+      "feature": "OnlineLooseSnapshotChoice",
+      "mode": "editor",
+      "fixture": "OnlineLooseSnapshotChoiceEditorTests",
+      "method": "CollectedSnapshotKeysRequirePublishedChoice",
+      "parameters": [
+        "X,\"shot.decline\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T171848110Z/results.xml"
+    },
+    {
+      "id": "OnlineLooseSnapshotChoicePlayModeTests.CollectedLooseBallSnapshot(1,\"shoot\")",
+      "feature": "OnlineLooseSnapshotChoice",
+      "mode": "playmode",
+      "fixture": "OnlineLooseSnapshotChoicePlayModeTests",
+      "method": "CollectedLooseBallSnapshot",
+      "parameters": [
+        "1,\"shoot\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T172223780Z/results.xml"
+    },
+    {
+      "id": "OnlineLooseSnapshotChoicePlayModeTests.CollectedLooseBallSnapshot(1,\"decline\")",
+      "feature": "OnlineLooseSnapshotChoice",
+      "mode": "playmode",
+      "fixture": "OnlineLooseSnapshotChoicePlayModeTests",
+      "method": "CollectedLooseBallSnapshot",
+      "parameters": [
+        "1,\"decline\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T172223780Z/results.xml"
+    },
+    {
+      "id": "OnlineLooseSnapshotChoicePlayModeTests.CollectedLooseBallSnapshot(1,\"hold\")",
+      "feature": "OnlineLooseSnapshotChoice",
+      "mode": "playmode",
+      "fixture": "OnlineLooseSnapshotChoicePlayModeTests",
+      "method": "CollectedLooseBallSnapshot",
+      "parameters": [
+        "1,\"hold\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T172223780Z/results.xml"
+    },
+    {
+      "id": "OnlineLooseSnapshotChoicePlayModeTests.CollectedLooseBallSnapshot(1,\"cancel\")",
+      "feature": "OnlineLooseSnapshotChoice",
+      "mode": "playmode",
+      "fixture": "OnlineLooseSnapshotChoicePlayModeTests",
+      "method": "CollectedLooseBallSnapshot",
+      "parameters": [
+        "1,\"cancel\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T172223780Z/results.xml"
+    },
+    {
+      "id": "OnlineLooseSnapshotChoicePlayModeTests.CollectedLooseBallSnapshot(-1,\"shoot\")",
+      "feature": "OnlineLooseSnapshotChoice",
+      "mode": "playmode",
+      "fixture": "OnlineLooseSnapshotChoicePlayModeTests",
+      "method": "CollectedLooseBallSnapshot",
+      "parameters": [
+        "-1,\"shoot\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T172223780Z/results.xml"
+    },
+    {
+      "id": "OnlineLooseSnapshotChoicePlayModeTests.CollectedLooseBallSnapshot(-1,\"decline\")",
+      "feature": "OnlineLooseSnapshotChoice",
+      "mode": "playmode",
+      "fixture": "OnlineLooseSnapshotChoicePlayModeTests",
+      "method": "CollectedLooseBallSnapshot",
+      "parameters": [
+        "-1,\"decline\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T172223780Z/results.xml"
+    },
+    {
+      "id": "OnlineLooseSnapshotChoicePlayModeTests.CollectedLooseBallSnapshot(-1,\"hold\")",
+      "feature": "OnlineLooseSnapshotChoice",
+      "mode": "playmode",
+      "fixture": "OnlineLooseSnapshotChoicePlayModeTests",
+      "method": "CollectedLooseBallSnapshot",
+      "parameters": [
+        "-1,\"hold\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T172223780Z/results.xml"
+    },
+    {
+      "id": "OnlineLooseSnapshotChoicePlayModeTests.CollectedLooseBallSnapshot(-1,\"cancel\")",
+      "feature": "OnlineLooseSnapshotChoice",
+      "mode": "playmode",
+      "fixture": "OnlineLooseSnapshotChoicePlayModeTests",
+      "method": "CollectedLooseBallSnapshot",
+      "parameters": [
+        "-1,\"cancel\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T172223780Z/results.xml"
     }
   ]
 }
