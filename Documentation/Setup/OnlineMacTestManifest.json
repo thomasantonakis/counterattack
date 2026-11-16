@@ -14,6 +14,16 @@
     },
     {
       "mode": "editor",
+      "fixture": "OnlineCompactPresentationEditorTests",
+      "categories": [
+        "OnlineCompactPresentation"
+      ],
+      "definition_sha256": "c71c56852d12f64243e8b7bb56f04188180def2bfbe30243b20fb236705b90ad",
+      "route": "native",
+      "source": "Assets/Editor/FeatureTests/OnlineCompactPresentation/OnlineCompactPresentationEditorTests.cs"
+    },
+    {
+      "mode": "editor",
       "fixture": "OnlineContinuousSessionEditorTests",
       "categories": [
         "OnlineContinuousSession"
@@ -461,6 +471,16 @@
       "definition_sha256": "a66d6a9706fb9f73ccfcd330003b4324b9eed781116539c0905ccffdbecb2507",
       "route": "native",
       "source": "Assets/Tests/PlayMode/Features/OnlineBoardInput/OnlineBoardInputPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineCompactPresentationPlayModeTests",
+      "categories": [
+        "OnlineCompactPresentation"
+      ],
+      "definition_sha256": "518ab948ce684f29cea0a4474290c761467f4b1e97b253f1ee840c45de4e6b73",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineCompactPresentation/OnlineCompactPresentationPlayModeTests.cs"
     },
     {
       "mode": "playmode",
@@ -13770,6 +13790,481 @@
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
       "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T172223780Z/results.xml"
+    },
+    {
+      "id": "OnlineCompactPresentationEditorTests.CompactFrameDoesNotDisturbReliableFragmentAssembly",
+      "feature": "OnlineCompactPresentation",
+      "mode": "editor",
+      "fixture": "OnlineCompactPresentationEditorTests",
+      "method": "CompactFrameDoesNotDisturbReliableFragmentAssembly",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T173656502Z/results.xml"
+    },
+    {
+      "id": "OnlineCompactPresentationEditorTests.CongestedPoseDropsWithoutTriggeringControlRecovery(NoConnection)",
+      "feature": "OnlineCompactPresentation",
+      "mode": "editor",
+      "fixture": "OnlineCompactPresentationEditorTests",
+      "method": "CongestedPoseDropsWithoutTriggeringControlRecovery",
+      "parameters": [
+        "NoConnection"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T173656502Z/results.xml"
+    },
+    {
+      "id": "OnlineCompactPresentationEditorTests.CongestedPoseDropsWithoutTriggeringControlRecovery(LimitExceeded)",
+      "feature": "OnlineCompactPresentation",
+      "mode": "editor",
+      "fixture": "OnlineCompactPresentationEditorTests",
+      "method": "CongestedPoseDropsWithoutTriggeringControlRecovery",
+      "parameters": [
+        "LimitExceeded"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T173656502Z/results.xml"
+    },
+    {
+      "id": "OnlineCompactPresentationEditorTests.CongestedPoseDropsWithoutTriggeringControlRecovery(TimedOut)",
+      "feature": "OnlineCompactPresentation",
+      "mode": "editor",
+      "fixture": "OnlineCompactPresentationEditorTests",
+      "method": "CongestedPoseDropsWithoutTriggeringControlRecovery",
+      "parameters": [
+        "TimedOut"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T173656502Z/results.xml"
+    },
+    {
+      "id": "OnlineCompactPresentationEditorTests.FullRoomPoseBoundaryRoundTripsExactly(-1000.0f)",
+      "feature": "OnlineCompactPresentation",
+      "mode": "editor",
+      "fixture": "OnlineCompactPresentationEditorTests",
+      "method": "FullRoomPoseBoundaryRoundTripsExactly",
+      "parameters": [
+        "-1000.0f"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T173656502Z/results.xml"
+    },
+    {
+      "id": "OnlineCompactPresentationEditorTests.FullRoomPoseBoundaryRoundTripsExactly(1000.0f)",
+      "feature": "OnlineCompactPresentation",
+      "mode": "editor",
+      "fixture": "OnlineCompactPresentationEditorTests",
+      "method": "FullRoomPoseBoundaryRoundTripsExactly",
+      "parameters": [
+        "1000.0f"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T173656502Z/results.xml"
+    },
+    {
+      "id": "OnlineCompactPresentationEditorTests.InvalidPresentationCannotEnterCompactLane(\"kind\")",
+      "feature": "OnlineCompactPresentation",
+      "mode": "editor",
+      "fixture": "OnlineCompactPresentationEditorTests",
+      "method": "InvalidPresentationCannotEnterCompactLane",
+      "parameters": [
+        "\"kind\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T173656502Z/results.xml"
+    },
+    {
+      "id": "OnlineCompactPresentationEditorTests.InvalidPresentationCannotEnterCompactLane(\"nonce\")",
+      "feature": "OnlineCompactPresentation",
+      "mode": "editor",
+      "fixture": "OnlineCompactPresentationEditorTests",
+      "method": "InvalidPresentationCannotEnterCompactLane",
+      "parameters": [
+        "\"nonce\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T173656502Z/results.xml"
+    },
+    {
+      "id": "OnlineCompactPresentationEditorTests.InvalidPresentationCannotEnterCompactLane(\"generation\")",
+      "feature": "OnlineCompactPresentation",
+      "mode": "editor",
+      "fixture": "OnlineCompactPresentationEditorTests",
+      "method": "InvalidPresentationCannotEnterCompactLane",
+      "parameters": [
+        "\"generation\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T173656502Z/results.xml"
+    },
+    {
+      "id": "OnlineCompactPresentationEditorTests.InvalidPresentationCannotEnterCompactLane(\"match\")",
+      "feature": "OnlineCompactPresentation",
+      "mode": "editor",
+      "fixture": "OnlineCompactPresentationEditorTests",
+      "method": "InvalidPresentationCannotEnterCompactLane",
+      "parameters": [
+        "\"match\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T173656502Z/results.xml"
+    },
+    {
+      "id": "OnlineCompactPresentationEditorTests.InvalidPresentationCannotEnterCompactLane(\"frame\")",
+      "feature": "OnlineCompactPresentation",
+      "mode": "editor",
+      "fixture": "OnlineCompactPresentationEditorTests",
+      "method": "InvalidPresentationCannotEnterCompactLane",
+      "parameters": [
+        "\"frame\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T173656502Z/results.xml"
+    },
+    {
+      "id": "OnlineCompactPresentationEditorTests.InvalidPresentationCannotEnterCompactLane(\"publication\")",
+      "feature": "OnlineCompactPresentation",
+      "mode": "editor",
+      "fixture": "OnlineCompactPresentationEditorTests",
+      "method": "InvalidPresentationCannotEnterCompactLane",
+      "parameters": [
+        "\"publication\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T173656502Z/results.xml"
+    },
+    {
+      "id": "OnlineCompactPresentationEditorTests.InvalidPresentationCannotEnterCompactLane(\"actor\")",
+      "feature": "OnlineCompactPresentation",
+      "mode": "editor",
+      "fixture": "OnlineCompactPresentationEditorTests",
+      "method": "InvalidPresentationCannotEnterCompactLane",
+      "parameters": [
+        "\"actor\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T173656502Z/results.xml"
+    },
+    {
+      "id": "OnlineCompactPresentationEditorTests.InvalidPresentationCannotEnterCompactLane(\"duplicate\")",
+      "feature": "OnlineCompactPresentation",
+      "mode": "editor",
+      "fixture": "OnlineCompactPresentationEditorTests",
+      "method": "InvalidPresentationCannotEnterCompactLane",
+      "parameters": [
+        "\"duplicate\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T173656502Z/results.xml"
+    },
+    {
+      "id": "OnlineCompactPresentationEditorTests.InvalidPresentationCannotEnterCompactLane(\"too-many\")",
+      "feature": "OnlineCompactPresentation",
+      "mode": "editor",
+      "fixture": "OnlineCompactPresentationEditorTests",
+      "method": "InvalidPresentationCannotEnterCompactLane",
+      "parameters": [
+        "\"too-many\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T173656502Z/results.xml"
+    },
+    {
+      "id": "OnlineCompactPresentationEditorTests.InvalidPresentationCannotEnterCompactLane(\"nan\")",
+      "feature": "OnlineCompactPresentation",
+      "mode": "editor",
+      "fixture": "OnlineCompactPresentationEditorTests",
+      "method": "InvalidPresentationCannotEnterCompactLane",
+      "parameters": [
+        "\"nan\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T173656502Z/results.xml"
+    },
+    {
+      "id": "OnlineCompactPresentationEditorTests.InvalidPresentationCannotEnterCompactLane(\"range\")",
+      "feature": "OnlineCompactPresentation",
+      "mode": "editor",
+      "fixture": "OnlineCompactPresentationEditorTests",
+      "method": "InvalidPresentationCannotEnterCompactLane",
+      "parameters": [
+        "\"range\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T173656502Z/results.xml"
+    },
+    {
+      "id": "OnlineCompactPresentationEditorTests.LosslessRoundTripFitsOneEosPacket(0,False)",
+      "feature": "OnlineCompactPresentation",
+      "mode": "editor",
+      "fixture": "OnlineCompactPresentationEditorTests",
+      "method": "LosslessRoundTripFitsOneEosPacket",
+      "parameters": [
+        "0,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T173656502Z/results.xml"
+    },
+    {
+      "id": "OnlineCompactPresentationEditorTests.LosslessRoundTripFitsOneEosPacket(32,False)",
+      "feature": "OnlineCompactPresentation",
+      "mode": "editor",
+      "fixture": "OnlineCompactPresentationEditorTests",
+      "method": "LosslessRoundTripFitsOneEosPacket",
+      "parameters": [
+        "32,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T173656502Z/results.xml"
+    },
+    {
+      "id": "OnlineCompactPresentationEditorTests.LosslessRoundTripFitsOneEosPacket(36,False)",
+      "feature": "OnlineCompactPresentation",
+      "mode": "editor",
+      "fixture": "OnlineCompactPresentationEditorTests",
+      "method": "LosslessRoundTripFitsOneEosPacket",
+      "parameters": [
+        "36,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T173656502Z/results.xml"
+    },
+    {
+      "id": "OnlineCompactPresentationEditorTests.LosslessRoundTripFitsOneEosPacket(36,True)",
+      "feature": "OnlineCompactPresentation",
+      "mode": "editor",
+      "fixture": "OnlineCompactPresentationEditorTests",
+      "method": "LosslessRoundTripFitsOneEosPacket",
+      "parameters": [
+        "36,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T173656502Z/results.xml"
+    },
+    {
+      "id": "OnlineCompactPresentationEditorTests.MalformedPacketIsRejected(\"truncated\")",
+      "feature": "OnlineCompactPresentation",
+      "mode": "editor",
+      "fixture": "OnlineCompactPresentationEditorTests",
+      "method": "MalformedPacketIsRejected",
+      "parameters": [
+        "\"truncated\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T173656502Z/results.xml"
+    },
+    {
+      "id": "OnlineCompactPresentationEditorTests.MalformedPacketIsRejected(\"trailing\")",
+      "feature": "OnlineCompactPresentation",
+      "mode": "editor",
+      "fixture": "OnlineCompactPresentationEditorTests",
+      "method": "MalformedPacketIsRejected",
+      "parameters": [
+        "\"trailing\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T173656502Z/results.xml"
+    },
+    {
+      "id": "OnlineCompactPresentationEditorTests.MalformedPacketIsRejected(\"version\")",
+      "feature": "OnlineCompactPresentation",
+      "mode": "editor",
+      "fixture": "OnlineCompactPresentationEditorTests",
+      "method": "MalformedPacketIsRejected",
+      "parameters": [
+        "\"version\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T173656502Z/results.xml"
+    },
+    {
+      "id": "OnlineCompactPresentationEditorTests.MalformedPacketIsRejected(\"magic\")",
+      "feature": "OnlineCompactPresentation",
+      "mode": "editor",
+      "fixture": "OnlineCompactPresentationEditorTests",
+      "method": "MalformedPacketIsRejected",
+      "parameters": [
+        "\"magic\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T173656502Z/results.xml"
+    },
+    {
+      "id": "OnlineCompactPresentationEditorTests.OnlyFullRoomPresentationUsesDroppableDelivery(\"presentation\",True)",
+      "feature": "OnlineCompactPresentation",
+      "mode": "editor",
+      "fixture": "OnlineCompactPresentationEditorTests",
+      "method": "OnlyFullRoomPresentationUsesDroppableDelivery",
+      "parameters": [
+        "\"presentation\",True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T173656502Z/results.xml"
+    },
+    {
+      "id": "OnlineCompactPresentationEditorTests.OnlyFullRoomPresentationUsesDroppableDelivery(\"state\",False)",
+      "feature": "OnlineCompactPresentation",
+      "mode": "editor",
+      "fixture": "OnlineCompactPresentationEditorTests",
+      "method": "OnlyFullRoomPresentationUsesDroppableDelivery",
+      "parameters": [
+        "\"state\",False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T173656502Z/results.xml"
+    },
+    {
+      "id": "OnlineCompactPresentationEditorTests.OnlyFullRoomPresentationUsesDroppableDelivery(\"command\",False)",
+      "feature": "OnlineCompactPresentation",
+      "mode": "editor",
+      "fixture": "OnlineCompactPresentationEditorTests",
+      "method": "OnlyFullRoomPresentationUsesDroppableDelivery",
+      "parameters": [
+        "\"command\",False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T173656502Z/results.xml"
+    },
+    {
+      "id": "OnlineCompactPresentationEditorTests.OnlyFullRoomPresentationUsesDroppableDelivery(\"reply\",False)",
+      "feature": "OnlineCompactPresentation",
+      "mode": "editor",
+      "fixture": "OnlineCompactPresentationEditorTests",
+      "method": "OnlyFullRoomPresentationUsesDroppableDelivery",
+      "parameters": [
+        "\"reply\",False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T173656502Z/results.xml"
+    },
+    {
+      "id": "OnlineCompactPresentationEditorTests.OnlyFullRoomPresentationUsesDroppableDelivery(\"control\",False)",
+      "feature": "OnlineCompactPresentation",
+      "mode": "editor",
+      "fixture": "OnlineCompactPresentationEditorTests",
+      "method": "OnlyFullRoomPresentationUsesDroppableDelivery",
+      "parameters": [
+        "\"control\",False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T173656502Z/results.xml"
+    },
+    {
+      "id": "OnlineCompactPresentationEditorTests.OnlyFullRoomPresentationUsesDroppableDelivery(\"hello\",False)",
+      "feature": "OnlineCompactPresentation",
+      "mode": "editor",
+      "fixture": "OnlineCompactPresentationEditorTests",
+      "method": "OnlyFullRoomPresentationUsesDroppableDelivery",
+      "parameters": [
+        "\"hello\",False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T173656502Z/results.xml"
+    },
+    {
+      "id": "OnlineCompactPresentationEditorTests.ReorderedAndConflictingFramesCannotOverwriteReplica",
+      "feature": "OnlineCompactPresentation",
+      "mode": "editor",
+      "fixture": "OnlineCompactPresentationEditorTests",
+      "method": "ReorderedAndConflictingFramesCannotOverwriteReplica",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T173656502Z/results.xml"
+    },
+    {
+      "id": "OnlineCompactPresentationPlayModeTests.FullRosterSinglePacketGuest(16,False)",
+      "feature": "OnlineCompactPresentation",
+      "mode": "playmode",
+      "fixture": "OnlineCompactPresentationPlayModeTests",
+      "method": "FullRosterSinglePacketGuest",
+      "parameters": [
+        "16,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T173349781Z/results.xml"
+    },
+    {
+      "id": "OnlineCompactPresentationPlayModeTests.FullRosterSinglePacketGuest(16,True)",
+      "feature": "OnlineCompactPresentation",
+      "mode": "playmode",
+      "fixture": "OnlineCompactPresentationPlayModeTests",
+      "method": "FullRosterSinglePacketGuest",
+      "parameters": [
+        "16,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T173349781Z/results.xml"
+    },
+    {
+      "id": "OnlineCompactPresentationPlayModeTests.FullRosterSinglePacketGuest(18,False)",
+      "feature": "OnlineCompactPresentation",
+      "mode": "playmode",
+      "fixture": "OnlineCompactPresentationPlayModeTests",
+      "method": "FullRosterSinglePacketGuest",
+      "parameters": [
+        "18,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T173349781Z/results.xml"
+    },
+    {
+      "id": "OnlineCompactPresentationPlayModeTests.FullRosterSinglePacketGuest(18,True)",
+      "feature": "OnlineCompactPresentation",
+      "mode": "playmode",
+      "fixture": "OnlineCompactPresentationPlayModeTests",
+      "method": "FullRosterSinglePacketGuest",
+      "parameters": [
+        "18,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T173349781Z/results.xml"
+    },
+    {
+      "id": "OnlineCompactPresentationPlayModeTests.OffboardPoseMatchesFullSnapshotBounds",
+      "feature": "OnlineCompactPresentation",
+      "mode": "playmode",
+      "fixture": "OnlineCompactPresentationPlayModeTests",
+      "method": "OffboardPoseMatchesFullSnapshotBounds",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T173710523Z/results.xml"
     }
   ]
 }

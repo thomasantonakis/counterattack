@@ -53,6 +53,17 @@ Collected loose-ball snapshots now add ten new native passes and two affected
 legacy passes. A different collector's shoot/decline is published; cancelled
 offers are cleared by shot reset. See OnlineLooseSnapshotChoice/Verification.md.
 Full Room is now v13; exports still need refresh before paired use.
+Full Room now uses **v14** and opt-in lossless single-packet unreliable poses;
+commands/outcomes/recovery keep reliable delivery. Compact presentation has 37
+new native passes and 28 affected wire/payload passes, including actual 32/36-actor
+guest projection and the full off-board coordinate boundary. See
+OnlineCompactPresentation/Verification.md. Prepared proof framing is unchanged.
+Actual paired unreliable transport, packet loss/jitter and RTT remain deferred.
+Windows normal/Room/prepared exports were refreshed successfully at 17:39–17:40
+UTC with all v11–v14 changes; see OnlineCompactPresentation/Verification.md for
+build IDs and evidence. The hour added 168 individually registered new native
+cases across keeper movement, movement snapshots, collected snapshots and compact
+poses. Existing selected regressions passed separately; no whole suite ran.
 Controls no longer serialize the complete roster/stats every display update:
 typed detached control decisions have 10 new focused passes and 19 selected
 affected passes. See OnlineControlDecision/Verification.md for memory-measurement

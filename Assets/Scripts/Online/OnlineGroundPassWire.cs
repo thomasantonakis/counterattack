@@ -57,15 +57,17 @@ namespace CounterAttack.Online
             && new[]{"hello","command","state","presentation","reply","control","control-reply","done","finish"}.Contains(message.kind)
             && (message.compressedState==null?message.expandedStateBytes==0:message.kind=="state" && message.state==null && message.compressedState.Length>0
                 && message.expandedStateBytes>0 && message.expandedStateBytes<=OnlineFullRoomStateCodec.ExpandedLimit);
-        public static IEnumerable<byte[]> Encode(OnlineGroundPassMessage message)
+        public static IEnumerable<byte[]> Encode(OnlineGroundPassMessage message,bool compactPresentation=false)
         {
             message.version="ground-wire-v7";
+            if(compactPresentation){yield return OnlineCompactPresentation.Encode(message);yield break;}
             if(message.state!=null && message.compressedState!=null)throw new InvalidDataException("Conflicting state encodings");
             var envelope=message.state?.catalogId==OnlineFullRoomBootstrap.Catalog?OnlineFullRoomStateCodec.Compress(message):message;
             foreach(var fragment in new OnlineReliableJsonWire<OnlineGroundPassMessage>(0xCA07,Valid).Encode(envelope))yield return fragment;
         }
         public OnlineGroundPassMessage Receive(byte[] packet,int length,bool allowConnectionRestart=false)
         {
+            if(OnlineCompactPresentation.IsPacket(packet,length))return OnlineCompactPresentation.Decode(packet,length);
             var message=framing.Receive(packet,length,allowConnectionRestart);
             return message?.compressedState==null?message:OnlineFullRoomStateCodec.Expand(message);
         }
@@ -98,7 +100,8 @@ namespace CounterAttack.Online
 
         public bool ApplyPresentation(OnlineGroundPassPresentation frame)
         {
-            bool Finite(float value) => !float.IsNaN(value) && !float.IsInfinity(value) && Math.Abs(value) <= 100;
+            float limit=catalog==OnlineFullRoomBootstrap.Catalog?1000:100;
+            bool Finite(float value) => !float.IsNaN(value) && !float.IsInfinity(value) && Math.Abs(value) <= limit;
             if (frame == null || frame.matchId != matchId || frame.publicationSequence != sequence || frame.frameSequence < 1
                 || frame.frameSequence < presentationFrame || !Finite(frame.ballX) || !Finite(frame.ballY) || !Finite(frame.ballZ)) return false;
             if(frame.players!=null)

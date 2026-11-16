@@ -110,6 +110,14 @@ still precede v11/v12; rebuild before paired use. Mac execution remains deferred
 Collected loose-ball snapshot choice/reset adds ten new passes and two affected
 legacy passes; current full Room is **v13**. See OnlineLooseSnapshotChoice/Verification.md.
 Refresh exports before paired use; shared-setting consent remains unanswered.
+Current full Room is **v14**, with 37 new compact-presentation cases and 28
+affected wire/payload passes. Full poses are lossless single-packet unreliable
+traffic; commands/outcomes/snapshots/recovery stay reliable. See
+OnlineCompactPresentation/Verification.md. Both normal-game clients must rebuild.
+Paired EOS loss/jitter/RTT acceptance remains unexecuted; the Mac run is deferred.
+Windows exports now include v11–v14 (17:39–17:40 UTC); see the compact-presentation
+checklist for exact evidence. The Mac manifest includes all 168 new cases from
+this hour. Use the pull/build/run commands above when the paired run is arranged.
 Preserve host-only RNG/rules, authenticated semantic commands, guest inactivity,
 receipt/revision checks and reconnect holds. Compile, run feature-focused native
 tests and build through the already-open Editor. Commit/push verified batches.
