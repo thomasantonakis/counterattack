@@ -305,6 +305,11 @@ or revert all earlier commits as if they were six migration bug fixes.
 
 ## Remaining limits
 
+- Online live shared-settings ownership (2026-11-16): clarification requested
+  whether weather/assistance/tiebreaker edits require both managers' acceptance
+  or can be applied by the pause requester. Keep the existing agreed settings
+  unchanged until answered. Continue unrelated multiplayer implementation.
+
 - Decision timing review resolved by the user (2026-11-09): Rules opened from Pause
   preserves that pause; Rules opened beside instructions is inspection and does not
   pause gameplay. Mandatory rolls and CPU commands continue through the live overlay.

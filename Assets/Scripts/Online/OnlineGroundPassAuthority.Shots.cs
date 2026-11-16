@@ -22,6 +22,9 @@ namespace CounterAttack.Online
             if(home==null)return;
             switch(phase)
             {
+                case "keeper-choice":
+                    AddShotCommand(actions,"shot.keeper.hands",OnlineShotIntent.OutsideHands);
+                    AddShotCommand(actions,"shot.keeper.block",OnlineShotIntent.OutsideBlock);break;
                 case "confirm":
                     if(manager.OnlineCanSelectShot)AddShotCommand(actions,ShotConfirmAction,OnlineShotIntent.Confirm);
                     AddShotCommand(actions,ShotCancelAction,OnlineShotIntent.CancelPreview);break;

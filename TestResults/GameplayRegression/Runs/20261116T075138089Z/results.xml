@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="4" result="Failed(Child)" total="4" passed="2" failed="2" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 07:51:38Z" end-time="2026-11-16 07:51:58Z" duration="20.5980695">
+  <test-suite type="TestSuite" id="2787" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1470" result="Failed" site="Child" start-time="2026-11-16 07:51:38Z" end-time="2026-11-16 07:51:58Z" duration="20.598070" total="4" passed="2" failed="2" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="2784" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1470" result="Failed" site="Child" start-time="2026-11-16 07:51:38Z" end-time="2026-11-16 07:51:58Z" duration="20.563539" total="4" passed="2" failed="2" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17216" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestFixture" id="1934" name="OnlineOutsideKeeperShotPlayModeTests" fullname="OnlineOutsideKeeperShotPlayModeTests" classname="OnlineOutsideKeeperShotPlayModeTests" runstate="Runnable" testcasecount="4" result="Failed" site="Child" start-time="2026-11-16 07:51:38Z" end-time="2026-11-16 07:51:58Z" duration="20.557661" total="4" passed="2" failed="2" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineOutsideKeeperShot" />
+        </properties>
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="ParameterizedMethod" id="1939" name="ActualOutsideKeeperChoice" fullname="OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice" classname="OnlineOutsideKeeperShotPlayModeTests" runstate="Runnable" testcasecount="4" result="Failed" site="Child" start-time="2026-11-16 07:51:38Z" end-time="2026-11-16 07:51:58Z" duration="20.549647" total="4" passed="2" failed="2" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-case id="1935" name="ActualOutsideKeeperChoice(1,&quot;hands&quot;)" fullname="OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice(1,&quot;hands&quot;)" methodname="ActualOutsideKeeperChoice" classname="OnlineOutsideKeeperShotPlayModeTests" runstate="Runnable" seed="928567077" result="Passed" start-time="2026-11-16 07:51:38Z" end-time="2026-11-16 07:51:39Z" duration="1.759432" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Substitutions are no longer available: Committed to Shot
+Full Power Shot initiated. Proceeding to target selection.
+Shooter is OUTSIDE the penalty box. -1 to shot power.
+[Game Log] Home carrier (Fixture Home) takes a SHOT!
+Goalkeeper can move 1 hex
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Goalkeeper Away keeper has only outside-box save hexes on this shot. Waiting for [D]ive or [B]lock decision.
+Shot interactions found: 0
+Away keeper can only handle this shot outside their own penalty box at (10, 0, 0). Press [D]ive to attempt the save with hands, or [B]lock to act as an outfielder.
+Away keeper chooses to dive with hands outside the box at (10, 0, 0).
+The GK is next up. Shooter must Roll to shoot. Setting isWaitingForShotRoll to true.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Hello from the StartShotRoll
+Goalkeeper Away keeper now attempts a save. Press [R] to roll
+Unknown kit preset ''. Falling back to blue token style.
+]]></output>
+          </test-case>
+          <test-case id="1936" name="ActualOutsideKeeperChoice(1,&quot;block&quot;)" fullname="OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice(1,&quot;block&quot;)" methodname="ActualOutsideKeeperChoice" classname="OnlineOutsideKeeperShotPlayModeTests" runstate="Runnable" seed="2010189961" result="Failed" start-time="2026-11-16 07:51:39Z" end-time="2026-11-16 07:51:48Z" duration="8.948237" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[Unhandled log message: '[Exception] NullReferenceException: Object reference not set to an instance of an object'. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+              <stack-trace><![CDATA[MatchManager.AddGoal (System.String scorer, System.Boolean isHomeTeam, System.Int32 minute, System.Boolean isPenalty, System.String assist, System.String minuteLabel, System.String scorerKey, System.String assistKey) (at Assets/Scripts/Managers/MatchManager.cs:7019)
+MatchManager.AddGoal (PlayerToken scorerToken, System.Int32 minute, System.Boolean isPenalty, PlayerToken assistToken, System.String minuteLabel) (at Assets/Scripts/Managers/MatchManager.cs:6977)
+MatchManager+GameLog.LogEvent (PlayerToken token, MatchManager+ActionType actionType, System.Int32 value, PlayerToken connectedToken, System.String tackleType, System.String shotType, System.String recoveryType, System.String saveType) (at Assets/Scripts/Managers/MatchManager.cs:834)
+ShotManager.LogGoalScoredForCurrentShot (PlayerToken scorer) (at Assets/Scripts/Managers/ShotManager.cs:3943)
+ShotManager+<StartShotRoll>d__257.MoveNext () (at Assets/Scripts/Managers/ShotManager.cs:3607)
+UnityEngine.SetupCoroutine.InvokeMoveNext (System.Collections.IEnumerator enumerator, System.IntPtr returnValueAddress) (at <e92a9d0b0413483c8a76c7d4e8fc80ff>:0)
+
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Substitutions are no longer available: Committed to Shot
+Full Power Shot initiated. Proceeding to target selection.
+Shooter is OUTSIDE the penalty box. -1 to shot power.
+[Game Log] Home carrier (Fixture Home) takes a SHOT!
+Goalkeeper can move 1 hex
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Goalkeeper Away keeper has only outside-box save hexes on this shot. Waiting for [D]ive or [B]lock decision.
+Shot interactions found: 0
+Away keeper can only handle this shot outside their own penalty box at (10, 0, 0). Press [D]ive to attempt the save with hands, or [B]lock to act as an outfielder.
+Away keeper chooses to act as an outfielder, but is not on the shot path or in ZOI and cannot block.
+No more defenders to Deflect! The Home carrier may [R]oll! Good Luck!.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Hello from the StartShotRoll
+Home carrier Shot roll: 2 + Shooting: 6, shooting penalties: -1 (outside box)= 7
+Get IN!! Home carrier, buries it to the top corner! Goal!!!
+[Expected Stats] Home carrier records xG 0.833 on fullPower goal
+[Game Log] Home carrier (Fixture Home) completes an attempt on target
+NullReferenceException: Object reference not set to an instance of an object
+MatchManager.AddGoal (System.String scorer, System.Boolean isHomeTeam, System.Int32 minute, System.Boolean isPenalty, System.String assist, System.String minuteLabel, System.String scorerKey, System.String assistKey) (at Assets/Scripts/Managers/MatchManager.cs:7019)
+MatchManager.AddGoal (PlayerToken scorerToken, System.Int32 minute, System.Boolean isPenalty, PlayerToken assistToken, System.String minuteLabel) (at Assets/Scripts/Managers/MatchManager.cs:6977)
+MatchManager+GameLog.LogEvent (PlayerToken token, MatchManager+ActionType actionType, System.Int32 value, PlayerToken connectedToken, System.String tackleType, System.String shotType, System.String recoveryType, System.String saveType) (at Assets/Scripts/Managers/MatchManager.cs:834)
+ShotManager.LogGoalScoredForCurrentShot (PlayerToken scorer) (at Assets/Scripts/Managers/ShotManager.cs:3943)
+ShotManager+<StartShotRoll>d__257.MoveNext () (at Assets/Scripts/Managers/ShotManager.cs:3607)
+UnityEngine.SetupCoroutine.InvokeMoveNext (System.Collections.IEnumerator enumerator, System.IntPtr returnValueAddress) (at <e92a9d0b0413483c8a76c7d4e8fc80ff>:0)
+
+]]></output>
+          </test-case>
+          <test-case id="1937" name="ActualOutsideKeeperChoice(-1,&quot;hands&quot;)" fullname="OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice(-1,&quot;hands&quot;)" methodname="ActualOutsideKeeperChoice" classname="OnlineOutsideKeeperShotPlayModeTests" runstate="Runnable" seed="513901640" result="Passed" start-time="2026-11-16 07:51:48Z" end-time="2026-11-16 07:51:49Z" duration="0.921294" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Substitutions are no longer available: Committed to Shot
+Full Power Shot initiated. Proceeding to target selection.
+Shooter is OUTSIDE the penalty box. -1 to shot power.
+[Game Log] Home carrier (Fixture Home) takes a SHOT!
+Goalkeeper can move 1 hex
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (-19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Goalkeeper Away keeper has only outside-box save hexes on this shot. Waiting for [D]ive or [B]lock decision.
+Shot interactions found: 0
+Away keeper can only handle this shot outside their own penalty box at (-10, 0, 0). Press [D]ive to attempt the save with hands, or [B]lock to act as an outfielder.
+Away keeper chooses to dive with hands outside the box at (-10, 0, 0).
+The GK is next up. Shooter must Roll to shoot. Setting isWaitingForShotRoll to true.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Hello from the StartShotRoll
+Goalkeeper Away keeper now attempts a save. Press [R] to roll
+Unknown kit preset ''. Falling back to blue token style.
+]]></output>
+          </test-case>
+          <test-case id="1938" name="ActualOutsideKeeperChoice(-1,&quot;block&quot;)" fullname="OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice(-1,&quot;block&quot;)" methodname="ActualOutsideKeeperChoice" classname="OnlineOutsideKeeperShotPlayModeTests" runstate="Runnable" seed="207372365" result="Failed" start-time="2026-11-16 07:51:49Z" end-time="2026-11-16 07:51:58Z" duration="8.886573" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[Unhandled log message: '[Exception] NullReferenceException: Object reference not set to an instance of an object'. Use UnityEngine.TestTools.LogAssert.Expect]]></message>
+              <stack-trace><![CDATA[MatchManager.AddGoal (System.String scorer, System.Boolean isHomeTeam, System.Int32 minute, System.Boolean isPenalty, System.String assist, System.String minuteLabel, System.String scorerKey, System.String assistKey) (at Assets/Scripts/Managers/MatchManager.cs:7019)
+MatchManager.AddGoal (PlayerToken scorerToken, System.Int32 minute, System.Boolean isPenalty, PlayerToken assistToken, System.String minuteLabel) (at Assets/Scripts/Managers/MatchManager.cs:6977)
+MatchManager+GameLog.LogEvent (PlayerToken token, MatchManager+ActionType actionType, System.Int32 value, PlayerToken connectedToken, System.String tackleType, System.String shotType, System.String recoveryType, System.String saveType) (at Assets/Scripts/Managers/MatchManager.cs:834)
+ShotManager.LogGoalScoredForCurrentShot (PlayerToken scorer) (at Assets/Scripts/Managers/ShotManager.cs:3943)
+ShotManager+<StartShotRoll>d__257.MoveNext () (at Assets/Scripts/Managers/ShotManager.cs:3607)
+UnityEngine.SetupCoroutine.InvokeMoveNext (System.Collections.IEnumerator enumerator, System.IntPtr returnValueAddress) (at <e92a9d0b0413483c8a76c7d4e8fc80ff>:0)
+
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Substitutions are no longer available: Committed to Shot
+Full Power Shot initiated. Proceeding to target selection.
+Shooter is OUTSIDE the penalty box. -1 to shot power.
+[Game Log] Home carrier (Fixture Home) takes a SHOT!
+Goalkeeper can move 1 hex
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (-19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Goalkeeper Away keeper has only outside-box save hexes on this shot. Waiting for [D]ive or [B]lock decision.
+Shot interactions found: 0
+Away keeper can only handle this shot outside their own penalty box at (-10, 0, 0). Press [D]ive to attempt the save with hands, or [B]lock to act as an outfielder.
+Away keeper chooses to act as an outfielder, but is not on the shot path or in ZOI and cannot block.
+No more defenders to Deflect! The Home carrier may [R]oll! Good Luck!.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Hello from the StartShotRoll
+Home carrier Shot roll: 2 + Shooting: 6, shooting penalties: -1 (outside box)= 7
+Get IN!! Home carrier, buries it to the top corner! Goal!!!
+[Expected Stats] Home carrier records xG 0.833 on fullPower goal
+[Game Log] Home carrier (Fixture Home) completes an attempt on target
+NullReferenceException: Object reference not set to an instance of an object
+MatchManager.AddGoal (System.String scorer, System.Boolean isHomeTeam, System.Int32 minute, System.Boolean isPenalty, System.String assist, System.String minuteLabel, System.String scorerKey, System.String assistKey) (at Assets/Scripts/Managers/MatchManager.cs:7019)
+MatchManager.AddGoal (PlayerToken scorerToken, System.Int32 minute, System.Boolean isPenalty, PlayerToken assistToken, System.String minuteLabel) (at Assets/Scripts/Managers/MatchManager.cs:6977)
+MatchManager+GameLog.LogEvent (PlayerToken token, MatchManager+ActionType actionType, System.Int32 value, PlayerToken connectedToken, System.String tackleType, System.String shotType, System.String recoveryType, System.String saveType) (at Assets/Scripts/Managers/MatchManager.cs:834)
+ShotManager.LogGoalScoredForCurrentShot (PlayerToken scorer) (at Assets/Scripts/Managers/ShotManager.cs:3943)
+ShotManager+<StartShotRoll>d__257.MoveNext () (at Assets/Scripts/Managers/ShotManager.cs:3607)
+UnityEngine.SetupCoroutine.InvokeMoveNext (System.Collections.IEnumerator enumerator, System.IntPtr returnValueAddress) (at <e92a9d0b0413483c8a76c7d4e8fc80ff>:0)
+
+Saving results to: TestResults\GameplayRegression\Runs\20261116T075138089Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

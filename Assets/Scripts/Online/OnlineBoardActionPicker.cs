@@ -37,6 +37,8 @@ namespace CounterAttack.Online
                 case KeyCode.C:return available("high.start");
                 case KeyCode.F:return available("ftp.start");
                 case KeyCode.M:return available("movement.start");
+                case KeyCode.D:return available("shot.keeper.hands");
+                case KeyCode.B:return available("shot.keeper.block");
                 case KeyCode.S:return available("shot.confirm")??available("shot.start");
                 case KeyCode.R:return Unique(state,action=>action.EndsWith(".roll",StringComparison.Ordinal)
                     || action=="shot.save" || action=="shot.handling" || action=="shot.block"

@@ -92,6 +92,12 @@ Control display now captures only detached input metadata and legal choices,
 avoiding full-roster/statistics JSON copies each host frame. This adds ten focused
 native cases and 19 selected affected passes; see OnlineControlDecision/Verification.md.
 Its memory test reports coarse Mono heap accounting, not actual network latency.
+Outside-box keeper shots now expose the defending team's D/hands and B/block
+choices. Fourteen new native passes cover continuation, eligible/ineligible
+blocks, goals, handball/red card, holds and cancellation in both directions;
+19 affected shot/legacy cases passed. Full Room now requires **v10** on both
+clients. See OnlineOutsideKeeperShot/Verification.md. Shared live-settings consent
+is awaiting the user's answer; continue remaining gameplay and transport work.
 Preserve host-only RNG/rules, authenticated semantic commands, guest inactivity,
 receipt/revision checks and reconnect holds. Compile, run feature-focused native
 tests and build through the already-open Editor. Commit/push verified batches.

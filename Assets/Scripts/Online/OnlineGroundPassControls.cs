@@ -95,6 +95,7 @@ namespace CounterAttack.Online
             "keeper.final-third"=>"Take Final Third moves before distribution",
             "loose.roll"=>"Roll loose ball",
             "shot.save"=>"Roll goalkeeper save", "shot.handling"=>"Roll goalkeeper handling",
+            "shot.keeper.hands"=>"D: Dive with hands outside box (handball if stopped)", "shot.keeper.block"=>"B: Block as an outfielder",
             "shot.start"=>"Select shot / snapshot", "shot.confirm"=>"Commit shot", "shot.cancel"=>"Cancel shot preview", "shot.roll"=>"Roll shooter",
             "shot.block"=>"Roll shot block",
             "kickoff.confirm"=>"Confirm kick-off setup",

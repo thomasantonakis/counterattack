@@ -30,11 +30,18 @@ passes (44 EditMode, eight actual-scene), plus 11 affected passes. Player/hex cl
 real collider raycasts and original action keys use the authenticated semantic
 gateway. Host movement/kickoff and inert guest commands passed in both attacking
 directions. See OnlineBoardInput/Verification.md; full contract is Room v9.
-Next: shared settings commands and motion interpolation/transport tuning.
+Outside-box goalkeeper shots now publish the defending manager's hands/block
+decision instead of getting stuck in `shot.pending`: 14 focused native passes,
+including legal and ineligible blocks, goals, handball/red card, holds/cancellation
+and both directions. See OnlineOutsideKeeperShot/Verification.md. Full Room is
+now v10; wire remains v7. Shared live-setting consent is awaiting the user's
+answer recorded in GameplayReview.md; continue independent gameplay/transport work.
+Next: remaining interruption decisions and motion interpolation/transport tuning.
 Controls no longer serialize the complete roster/stats every display update:
 typed detached control decisions have 10 new focused passes and 19 selected
 affected passes. See OnlineControlDecision/Verification.md for memory-measurement
-limits and retained fixture corrections. Wire framing/full Room v9 are unchanged.
+limits and retained fixture corrections. That optimization did not change wire
+framing or the Room catalog.
 In-flight full snapshots
 now retain actual ball/player poses, with 9 validation and 5 actual-scene passes. Full-match internet acceptance and measured
 latency remain unverified. Paired Mac testing is deferred.

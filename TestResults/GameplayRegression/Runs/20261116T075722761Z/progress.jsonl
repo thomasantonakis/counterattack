@@ -1,0 +1,10 @@
+{"name":"OnlineShotBlockPlayModeTests.OutfieldBlockClaimsAndContinues(1,\"miss\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineShotBlockPlayModeTests.OutfieldBlockClaimsAndContinues(1,\"block\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineShotBlockPlayModeTests.OutfieldBlockClaimsAndContinues(1,\"automatic\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineShotBlockPlayModeTests.OutfieldBlockClaimsAndContinues(1,\"cancel\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineShotBlockPlayModeTests.OutfieldBlockClaimsAndContinues(1,\"hold\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineShotBlockPlayModeTests.OutfieldBlockClaimsAndContinues(-1,\"miss\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineShotBlockPlayModeTests.OutfieldBlockClaimsAndContinues(-1,\"block\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineShotBlockPlayModeTests.OutfieldBlockClaimsAndContinues(-1,\"automatic\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineShotBlockPlayModeTests.OutfieldBlockClaimsAndContinues(-1,\"cancel\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineShotBlockPlayModeTests.OutfieldBlockClaimsAndContinues(-1,\"hold\")","status":"Passed","message":"","stackTrace":""}

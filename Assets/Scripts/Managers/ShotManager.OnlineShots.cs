@@ -2,7 +2,7 @@ using CounterAttack.Online;
 using System.Linq;
 using System.Collections;
 
-public enum OnlineShotIntent { Select, Confirm, CancelPreview, Target, SelectBlocker, MoveBlocker, Shoot, Save, HeaderSave, Handling, Block }
+public enum OnlineShotIntent { Select, Confirm, CancelPreview, Target, SelectBlocker, MoveBlocker, Shoot, Save, HeaderSave, Handling, Block, OutsideHands, OutsideBlock }
 
 public partial class ShotManager
 {
@@ -15,11 +15,12 @@ public partial class ShotManager
         && MatchManager.Instance!=null && !IsSnapshotSuppressedByFinalExtraMovement()
         && CanStartShotFromCurrentPossession(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose);
     public string OnlineShotStage => OnlineShotContextBlocked ? "pending" : isWaitingForShotCommitConfirmation && !isActivated ? "confirm" : !isActivated ? null
-        : IsMovingSnapshotBlocker ? "resolving" : isWaitingforBlockerSelection ? "snapshot.select" : isWaitingforBlockerMovement ? "snapshot.target"
+        : IsMovingSnapshotBlocker ? "resolving" : isWaitingForOutsideBoxGKShotDecision ? "keeper-choice" : isWaitingforBlockerSelection ? "snapshot.select" : isWaitingforBlockerMovement ? "snapshot.target"
         : isWaitingForTargetSelection ? "target" : isWaitingForBlockDiceRoll ? onlineShotBlockVersion==headerSavePresentationVersion ? "pending" : "block"
         : isWaitingForShotRoll ? "roll"
         : isWaitingForGKDiceRoll ? isHeaderAtGoal ? "header.save" : "save" : isWaitingforHandlingTest ? "handling" : "pending";
-    public PlayerToken OnlineShotActor => isWaitingForBlockDiceRoll ? currentShotInteraction?.defender
+    public PlayerToken OnlineShotActor => isWaitingForOutsideBoxGKShotDecision ? pendingOutsideBoxGKSaveInteraction?.defender
+        : isWaitingForBlockDiceRoll ? currentShotInteraction?.defender
         : isWaitingForGKDiceRoll || isWaitingforHandlingTest ? hexGrid.GetDefendingGK()
         : isWaitingforBlockerSelection || isWaitingforBlockerMovement || IsMovingSnapshotBlocker ? tokenMoveforDeflection
         : shooter ?? MatchManager.Instance?.LastTokenToTouchTheBallOnPurpose;
@@ -34,6 +35,10 @@ public partial class ShotManager
         if(OnlineRoomSession.IsGuest || MatchManager.Instance==null || MatchManager.Instance.IsGameplayInputBlocked || OnlineShotContextBlocked)return false;
         switch(intent)
         {
+            case OnlineShotIntent.OutsideHands when OnlineShotStage=="keeper-choice" && pendingOutsideBoxGKSaveInteraction!=null:
+                SelectOutsideBoxGKHandSave();return true;
+            case OnlineShotIntent.OutsideBlock when OnlineShotStage=="keeper-choice" && pendingOutsideBoxGKSaveInteraction!=null:
+                SelectOutsideBoxGKOutfieldBlock();return true;
             case OnlineShotIntent.Block when OnlineShotStage=="block" && currentShotInteraction!=null && !currentShotInteraction.IsGK:
                 onlineShotBlockVersion=headerSavePresentationVersion;StartCoroutine(ResolveOnlineShotBlock(headerSavePresentationVersion));return true;
             case OnlineShotIntent.Select when OnlineCanSelectShot && !isWaitingForShotCommitConfirmation:

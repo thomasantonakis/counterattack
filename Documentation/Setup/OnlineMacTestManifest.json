@@ -224,6 +224,16 @@
     },
     {
       "mode": "editor",
+      "fixture": "OnlineOutsideKeeperShotEditorTests",
+      "categories": [
+        "OnlineOutsideKeeperShot"
+      ],
+      "definition_sha256": "a082d037f407bf78aa7fd9054910ce710f43ce8558d16940ff02b1e211669d46",
+      "route": "native",
+      "source": "Assets/Editor/FeatureTests/OnlineOutsideKeeperShot/OnlineOutsideKeeperShotEditorTests.cs"
+    },
+    {
+      "mode": "editor",
       "fixture": "OnlineRecoveryEditorTests",
       "categories": [
         "OnlineRecovery"
@@ -722,6 +732,16 @@
       "definition_sha256": "7d66be6ad10bc33363ed2c80c3c0671da04add8e329dcb3d32ae711f35acfd2a",
       "route": "native",
       "source": "Assets/Tests/PlayMode/Features/OnlineOpeningSetup/OnlineOpeningScenePlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineOutsideKeeperShotPlayModeTests",
+      "categories": [
+        "OnlineOutsideKeeperShot"
+      ],
+      "definition_sha256": "cb50463e5c66f8162b81fe81e14ac4b10da5b9cdf6afae8644e2bee1e0901b2f",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineOutsideKeeperShot/OnlineOutsideKeeperShotPlayModeTests.cs"
     },
     {
       "mode": "playmode",
@@ -11809,6 +11829,188 @@
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
       "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T074104413Z/results.xml"
+    },
+    {
+      "id": "OnlineOutsideKeeperShotEditorTests.PhysicalChoiceUsesOnlyPublishedAction(D,\"shot.keeper.hands\")",
+      "feature": "OnlineOutsideKeeperShot",
+      "mode": "editor",
+      "fixture": "OnlineOutsideKeeperShotEditorTests",
+      "method": "PhysicalChoiceUsesOnlyPublishedAction",
+      "parameters": [
+        "D,\"shot.keeper.hands\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T075455273Z/results.xml"
+    },
+    {
+      "id": "OnlineOutsideKeeperShotEditorTests.PhysicalChoiceUsesOnlyPublishedAction(B,\"shot.keeper.block\")",
+      "feature": "OnlineOutsideKeeperShot",
+      "mode": "editor",
+      "fixture": "OnlineOutsideKeeperShotEditorTests",
+      "method": "PhysicalChoiceUsesOnlyPublishedAction",
+      "parameters": [
+        "B,\"shot.keeper.block\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T075455273Z/results.xml"
+    },
+    {
+      "id": "OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice(1,\"hands\")",
+      "feature": "OnlineOutsideKeeperShot",
+      "mode": "playmode",
+      "fixture": "OnlineOutsideKeeperShotPlayModeTests",
+      "method": "ActualOutsideKeeperChoice",
+      "parameters": [
+        "1,\"hands\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T075621546Z/results.xml"
+    },
+    {
+      "id": "OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice(1,\"block\")",
+      "feature": "OnlineOutsideKeeperShot",
+      "mode": "playmode",
+      "fixture": "OnlineOutsideKeeperShotPlayModeTests",
+      "method": "ActualOutsideKeeperChoice",
+      "parameters": [
+        "1,\"block\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T075621546Z/results.xml"
+    },
+    {
+      "id": "OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice(1,\"eligible\")",
+      "feature": "OnlineOutsideKeeperShot",
+      "mode": "playmode",
+      "fixture": "OnlineOutsideKeeperShotPlayModeTests",
+      "method": "ActualOutsideKeeperChoice",
+      "parameters": [
+        "1,\"eligible\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T075621546Z/results.xml"
+    },
+    {
+      "id": "OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice(1,\"handball\")",
+      "feature": "OnlineOutsideKeeperShot",
+      "mode": "playmode",
+      "fixture": "OnlineOutsideKeeperShotPlayModeTests",
+      "method": "ActualOutsideKeeperChoice",
+      "parameters": [
+        "1,\"handball\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T075621546Z/results.xml"
+    },
+    {
+      "id": "OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice(1,\"hold\")",
+      "feature": "OnlineOutsideKeeperShot",
+      "mode": "playmode",
+      "fixture": "OnlineOutsideKeeperShotPlayModeTests",
+      "method": "ActualOutsideKeeperChoice",
+      "parameters": [
+        "1,\"hold\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T075621546Z/results.xml"
+    },
+    {
+      "id": "OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice(1,\"cancel\")",
+      "feature": "OnlineOutsideKeeperShot",
+      "mode": "playmode",
+      "fixture": "OnlineOutsideKeeperShotPlayModeTests",
+      "method": "ActualOutsideKeeperChoice",
+      "parameters": [
+        "1,\"cancel\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T075621546Z/results.xml"
+    },
+    {
+      "id": "OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice(-1,\"hands\")",
+      "feature": "OnlineOutsideKeeperShot",
+      "mode": "playmode",
+      "fixture": "OnlineOutsideKeeperShotPlayModeTests",
+      "method": "ActualOutsideKeeperChoice",
+      "parameters": [
+        "-1,\"hands\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T075621546Z/results.xml"
+    },
+    {
+      "id": "OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice(-1,\"block\")",
+      "feature": "OnlineOutsideKeeperShot",
+      "mode": "playmode",
+      "fixture": "OnlineOutsideKeeperShotPlayModeTests",
+      "method": "ActualOutsideKeeperChoice",
+      "parameters": [
+        "-1,\"block\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T075621546Z/results.xml"
+    },
+    {
+      "id": "OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice(-1,\"eligible\")",
+      "feature": "OnlineOutsideKeeperShot",
+      "mode": "playmode",
+      "fixture": "OnlineOutsideKeeperShotPlayModeTests",
+      "method": "ActualOutsideKeeperChoice",
+      "parameters": [
+        "-1,\"eligible\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T075621546Z/results.xml"
+    },
+    {
+      "id": "OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice(-1,\"handball\")",
+      "feature": "OnlineOutsideKeeperShot",
+      "mode": "playmode",
+      "fixture": "OnlineOutsideKeeperShotPlayModeTests",
+      "method": "ActualOutsideKeeperChoice",
+      "parameters": [
+        "-1,\"handball\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T075621546Z/results.xml"
+    },
+    {
+      "id": "OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice(-1,\"hold\")",
+      "feature": "OnlineOutsideKeeperShot",
+      "mode": "playmode",
+      "fixture": "OnlineOutsideKeeperShotPlayModeTests",
+      "method": "ActualOutsideKeeperChoice",
+      "parameters": [
+        "-1,\"hold\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T075621546Z/results.xml"
+    },
+    {
+      "id": "OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice(-1,\"cancel\")",
+      "feature": "OnlineOutsideKeeperShot",
+      "mode": "playmode",
+      "fixture": "OnlineOutsideKeeperShotPlayModeTests",
+      "method": "ActualOutsideKeeperChoice",
+      "parameters": [
+        "-1,\"cancel\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T075621546Z/results.xml"
     }
   ]
 }
