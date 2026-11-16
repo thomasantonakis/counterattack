@@ -50,4 +50,3 @@ public sealed partial class OnlineFullRoomSceneFixture
         Assert.That(board.authorityRoot.activeSelf,Is.False);Assert.That(board.match.gameData.events,Is.Empty);Assert.That(board.match.TimingRollSequence,Is.Zero);Assert.That(board.match.CaptureOnlineDecisionTiming(),Is.Null);
     }
 }
-

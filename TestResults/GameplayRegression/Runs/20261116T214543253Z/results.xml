@@ -1,0 +1,477 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="10" result="Passed" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 21:45:43Z" end-time="2026-11-16 21:46:12Z" duration="28.9259143">
+  <test-suite type="TestSuite" id="2990" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1649" result="Passed" start-time="2026-11-16 21:45:43Z" end-time="2026-11-16 21:46:12Z" duration="28.925914" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2987" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1649" result="Passed" start-time="2026-11-16 21:45:43Z" end-time="2026-11-16 21:46:12Z" duration="28.874706" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12156" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="2447" name="OnlineThrowInPlayModeTests" fullname="OnlineThrowInPlayModeTests" classname="OnlineThrowInPlayModeTests" runstate="Runnable" testcasecount="10" result="Passed" start-time="2026-11-16 21:45:43Z" end-time="2026-11-16 21:46:12Z" duration="28.866453" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineThrowIns" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="2458" name="ThrowInContinues" fullname="OnlineThrowInPlayModeTests.ThrowInContinues" classname="OnlineThrowInPlayModeTests" runstate="Runnable" testcasecount="10" result="Passed" start-time="2026-11-16 21:45:43Z" end-time="2026-11-16 21:46:12Z" duration="28.855386" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="2448" name="ThrowInContinues(1,&quot;feet&quot;)" fullname="OnlineThrowInPlayModeTests.ThrowInContinues(1,&quot;feet&quot;)" methodname="ThrowInContinues" classname="OnlineThrowInPlayModeTests" runstate="Runnable" seed="315489362" result="Passed" start-time="2026-11-16 21:45:43Z" end-time="2026-11-16 21:45:46Z" duration="3.319471" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Throw-in preparation started at (0, 0, 12) for Home. Select the taker.
+Home carrier took the set piece and cannot be the next player to touch the ball.
+Home carrier moved to throw-in hex at (0, 0, 12).
+Substitutions are no longer available: Throw-in mandatory movement
+Movement phase has been reset.
+Throw-in movement restrictions applied. Taker: Home carrier, protected hex: (0, 0, 12), radius: 2.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Trying to Forfeit Movement.
+No more defenders wish to move. Attack gets 2f2 move.
+Advancing Movement Phase
+All defenders have moved. Ready for Movement Phase 2f2.
+Trying to Forfeit Movement.
+No more tokens moving in 2f2 phase. Ending Movement Phase.
+Movement phase has been reset.
+Movement phase is over.
+Throw-in mandatory movement completed. Press [M] for one extra movement phase or [T] to throw now.
+Throw-in ready. Press [P] to throw short to feet or [C] to throw to head.
+Substitutions are no longer available: Committed to StandardPass
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Throw-in option selected: [P] short to feet. Select target hex (up to 6).
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 11) -> (0, 0, 10) -> (0, 0, 9) -> (0, 0, 8)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=8, tokens=none.
+Pass completed to (0, 0, 8)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+]]></output>
+          </test-case>
+          <test-case id="2449" name="ThrowInContinues(1,&quot;head&quot;)" fullname="OnlineThrowInPlayModeTests.ThrowInContinues(1,&quot;head&quot;)" methodname="ThrowInContinues" classname="OnlineThrowInPlayModeTests" runstate="Runnable" seed="1049733134" result="Passed" start-time="2026-11-16 21:45:46Z" end-time="2026-11-16 21:45:49Z" duration="2.705139" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Throw-in preparation started at (0, 0, 12) for Home. Select the taker.
+Home carrier took the set piece and cannot be the next player to touch the ball.
+Home carrier moved to throw-in hex at (0, 0, 12).
+Substitutions are no longer available: Throw-in mandatory movement
+Movement phase has been reset.
+Throw-in movement restrictions applied. Taker: Home carrier, protected hex: (0, 0, 12), radius: 2.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Trying to Forfeit Movement.
+No more defenders wish to move. Attack gets 2f2 move.
+Advancing Movement Phase
+All defenders have moved. Ready for Movement Phase 2f2.
+Trying to Forfeit Movement.
+No more tokens moving in 2f2 phase. Ending Movement Phase.
+Movement phase has been reset.
+Movement phase is over.
+Throw-in mandatory movement completed. Press [M] for one extra movement phase or [T] to throw now.
+Throw-in ready. Press [P] to throw short to feet or [C] to throw to head.
+Throw-to-head auto-targeted: Online receiver.
+Substitutions are no longer available: Committed to Header
+Eligible to head: Online receiver at (0, 0, 8)
+hasEligibleAttackers: True, hasEligibleDefenders: False
+No defenders eligible to head the ball. Offering option to header (H) or bring the ball down (B).
+]]></output>
+          </test-case>
+          <test-case id="2450" name="ThrowInContinues(1,&quot;head-target&quot;)" fullname="OnlineThrowInPlayModeTests.ThrowInContinues(1,&quot;head-target&quot;)" methodname="ThrowInContinues" classname="OnlineThrowInPlayModeTests" runstate="Runnable" seed="1991011095" result="Passed" start-time="2026-11-16 21:45:49Z" end-time="2026-11-16 21:45:52Z" duration="2.684624" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Throw-in preparation started at (0, 0, 12) for Home. Select the taker.
+Home carrier took the set piece and cannot be the next player to touch the ball.
+Home carrier moved to throw-in hex at (0, 0, 12).
+Substitutions are no longer available: Throw-in mandatory movement
+Movement phase has been reset.
+Throw-in movement restrictions applied. Taker: Home carrier, protected hex: (0, 0, 12), radius: 2.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Trying to Forfeit Movement.
+No more defenders wish to move. Attack gets 2f2 move.
+Advancing Movement Phase
+All defenders have moved. Ready for Movement Phase 2f2.
+Trying to Forfeit Movement.
+No more tokens moving in 2f2 phase. Ending Movement Phase.
+Movement phase has been reset.
+Movement phase is over.
+Throw-in mandatory movement completed. Press [M] for one extra movement phase or [T] to throw now.
+Throw-in ready. Press [P] to throw short to feet or [C] to throw to head.
+Throw-in option selected: [C] to head. Click an eligible attacker, then click again to confirm.
+Throw-to-head target selected: Online receiver. Click again to confirm, or choose another eligible attacker.
+Substitutions are no longer available: Committed to Header
+Eligible to head: Online receiver at (0, 0, 8)
+Eligible to head: Second throw target at (2, 0, 9)
+hasEligibleAttackers: True, hasEligibleDefenders: False
+No defenders eligible to head the ball. Offering option to header (H) or bring the ball down (B).
+]]></output>
+          </test-case>
+          <test-case id="2451" name="ThrowInContinues(1,&quot;optional&quot;)" fullname="OnlineThrowInPlayModeTests.ThrowInContinues(1,&quot;optional&quot;)" methodname="ThrowInContinues" classname="OnlineThrowInPlayModeTests" runstate="Runnable" seed="598333123" result="Passed" start-time="2026-11-16 21:45:52Z" end-time="2026-11-16 21:45:54Z" duration="2.830431" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Throw-in preparation started at (0, 0, 12) for Home. Select the taker.
+Home carrier took the set piece and cannot be the next player to touch the ball.
+Home carrier moved to throw-in hex at (0, 0, 12).
+Substitutions are no longer available: Throw-in mandatory movement
+Movement phase has been reset.
+Throw-in movement restrictions applied. Taker: Home carrier, protected hex: (0, 0, 12), radius: 2.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Trying to Forfeit Movement.
+No more defenders wish to move. Attack gets 2f2 move.
+Advancing Movement Phase
+All defenders have moved. Ready for Movement Phase 2f2.
+Trying to Forfeit Movement.
+No more tokens moving in 2f2 phase. Ending Movement Phase.
+Movement phase has been reset.
+Movement phase is over.
+Throw-in mandatory movement completed. Press [M] for one extra movement phase or [T] to throw now.
+Movement phase has been reset.
+Throw-in movement restrictions applied. Taker: Home carrier, protected hex: (0, 0, 12), radius: 2.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Trying to Forfeit Movement.
+No more defenders wish to move. Attack gets 2f2 move.
+Advancing Movement Phase
+All defenders have moved. Ready for Movement Phase 2f2.
+Trying to Forfeit Movement.
+No more tokens moving in 2f2 phase. Ending Movement Phase.
+Movement phase has been reset.
+Movement phase is over.
+Throw-in ready. Press [P] to throw short to feet or [C] to throw to head.
+Substitutions are no longer available: Committed to StandardPass
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Throw-in option selected: [P] short to feet. Select target hex (up to 6).
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 11) -> (0, 0, 10) -> (0, 0, 9) -> (0, 0, 8)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=8, tokens=none.
+Pass completed to (0, 0, 8)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+]]></output>
+          </test-case>
+          <test-case id="2452" name="ThrowInContinues(1,&quot;hold&quot;)" fullname="OnlineThrowInPlayModeTests.ThrowInContinues(1,&quot;hold&quot;)" methodname="ThrowInContinues" classname="OnlineThrowInPlayModeTests" runstate="Runnable" seed="892261161" result="Passed" start-time="2026-11-16 21:45:54Z" end-time="2026-11-16 21:45:58Z" duration="3.191235" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Throw-in preparation started at (0, 0, 12) for Home. Select the taker.
+Home carrier took the set piece and cannot be the next player to touch the ball.
+Home carrier moved to throw-in hex at (0, 0, 12).
+Substitutions are no longer available: Throw-in mandatory movement
+Movement phase has been reset.
+Throw-in movement restrictions applied. Taker: Home carrier, protected hex: (0, 0, 12), radius: 2.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Trying to Forfeit Movement.
+No more defenders wish to move. Attack gets 2f2 move.
+Advancing Movement Phase
+All defenders have moved. Ready for Movement Phase 2f2.
+Trying to Forfeit Movement.
+No more tokens moving in 2f2 phase. Ending Movement Phase.
+Movement phase has been reset.
+Movement phase is over.
+Throw-in mandatory movement completed. Press [M] for one extra movement phase or [T] to throw now.
+Throw-in ready. Press [P] to throw short to feet or [C] to throw to head.
+Substitutions are no longer available: Committed to StandardPass
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Throw-in option selected: [P] short to feet. Select target hex (up to 6).
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 11) -> (0, 0, 10) -> (0, 0, 9) -> (0, 0, 8)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=8, tokens=none.
+Pass completed to (0, 0, 8)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+]]></output>
+          </test-case>
+          <test-case id="2453" name="ThrowInContinues(-1,&quot;feet&quot;)" fullname="OnlineThrowInPlayModeTests.ThrowInContinues(-1,&quot;feet&quot;)" methodname="ThrowInContinues" classname="OnlineThrowInPlayModeTests" runstate="Runnable" seed="1937126902" result="Passed" start-time="2026-11-16 21:45:58Z" end-time="2026-11-16 21:46:00Z" duration="2.823498" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Throw-in preparation started at (0, 0, 12) for Home. Select the taker.
+Home carrier took the set piece and cannot be the next player to touch the ball.
+Home carrier moved to throw-in hex at (0, 0, 12).
+Substitutions are no longer available: Throw-in mandatory movement
+Movement phase has been reset.
+Throw-in movement restrictions applied. Taker: Home carrier, protected hex: (0, 0, 12), radius: 2.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Trying to Forfeit Movement.
+No more defenders wish to move. Attack gets 2f2 move.
+Advancing Movement Phase
+All defenders have moved. Ready for Movement Phase 2f2.
+Trying to Forfeit Movement.
+No more tokens moving in 2f2 phase. Ending Movement Phase.
+Movement phase has been reset.
+Movement phase is over.
+Throw-in mandatory movement completed. Press [M] for one extra movement phase or [T] to throw now.
+Throw-in ready. Press [P] to throw short to feet or [C] to throw to head.
+Substitutions are no longer available: Committed to StandardPass
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Throw-in option selected: [P] short to feet. Select target hex (up to 6).
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 11) -> (0, 0, 10) -> (0, 0, 9) -> (0, 0, 8)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-8, tokens=none.
+Pass completed to (0, 0, 8)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+]]></output>
+          </test-case>
+          <test-case id="2454" name="ThrowInContinues(-1,&quot;head&quot;)" fullname="OnlineThrowInPlayModeTests.ThrowInContinues(-1,&quot;head&quot;)" methodname="ThrowInContinues" classname="OnlineThrowInPlayModeTests" runstate="Runnable" seed="365810978" result="Passed" start-time="2026-11-16 21:46:00Z" end-time="2026-11-16 21:46:03Z" duration="2.640603" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Throw-in preparation started at (0, 0, 12) for Home. Select the taker.
+Home carrier took the set piece and cannot be the next player to touch the ball.
+Home carrier moved to throw-in hex at (0, 0, 12).
+Substitutions are no longer available: Throw-in mandatory movement
+Movement phase has been reset.
+Throw-in movement restrictions applied. Taker: Home carrier, protected hex: (0, 0, 12), radius: 2.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Trying to Forfeit Movement.
+No more defenders wish to move. Attack gets 2f2 move.
+Advancing Movement Phase
+All defenders have moved. Ready for Movement Phase 2f2.
+Trying to Forfeit Movement.
+No more tokens moving in 2f2 phase. Ending Movement Phase.
+Movement phase has been reset.
+Movement phase is over.
+Throw-in mandatory movement completed. Press [M] for one extra movement phase or [T] to throw now.
+Throw-in ready. Press [P] to throw short to feet or [C] to throw to head.
+Throw-to-head auto-targeted: Online receiver.
+Substitutions are no longer available: Committed to Header
+Eligible to head: Online receiver at (0, 0, 8)
+hasEligibleAttackers: True, hasEligibleDefenders: False
+No defenders eligible to head the ball. Offering option to header (H) or bring the ball down (B).
+]]></output>
+          </test-case>
+          <test-case id="2455" name="ThrowInContinues(-1,&quot;head-target&quot;)" fullname="OnlineThrowInPlayModeTests.ThrowInContinues(-1,&quot;head-target&quot;)" methodname="ThrowInContinues" classname="OnlineThrowInPlayModeTests" runstate="Runnable" seed="504791437" result="Passed" start-time="2026-11-16 21:46:03Z" end-time="2026-11-16 21:46:06Z" duration="2.729332" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Throw-in preparation started at (0, 0, 12) for Home. Select the taker.
+Home carrier took the set piece and cannot be the next player to touch the ball.
+Home carrier moved to throw-in hex at (0, 0, 12).
+Substitutions are no longer available: Throw-in mandatory movement
+Movement phase has been reset.
+Throw-in movement restrictions applied. Taker: Home carrier, protected hex: (0, 0, 12), radius: 2.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Trying to Forfeit Movement.
+No more defenders wish to move. Attack gets 2f2 move.
+Advancing Movement Phase
+All defenders have moved. Ready for Movement Phase 2f2.
+Trying to Forfeit Movement.
+No more tokens moving in 2f2 phase. Ending Movement Phase.
+Movement phase has been reset.
+Movement phase is over.
+Throw-in mandatory movement completed. Press [M] for one extra movement phase or [T] to throw now.
+Throw-in ready. Press [P] to throw short to feet or [C] to throw to head.
+Throw-in option selected: [C] to head. Click an eligible attacker, then click again to confirm.
+Throw-to-head target selected: Online receiver. Click again to confirm, or choose another eligible attacker.
+Substitutions are no longer available: Committed to Header
+Eligible to head: Second throw target at (-2, 0, 9)
+Eligible to head: Online receiver at (0, 0, 8)
+hasEligibleAttackers: True, hasEligibleDefenders: False
+No defenders eligible to head the ball. Offering option to header (H) or bring the ball down (B).
+]]></output>
+          </test-case>
+          <test-case id="2456" name="ThrowInContinues(-1,&quot;optional&quot;)" fullname="OnlineThrowInPlayModeTests.ThrowInContinues(-1,&quot;optional&quot;)" methodname="ThrowInContinues" classname="OnlineThrowInPlayModeTests" runstate="Runnable" seed="453243307" result="Passed" start-time="2026-11-16 21:46:06Z" end-time="2026-11-16 21:46:09Z" duration="2.800210" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Throw-in preparation started at (0, 0, 12) for Home. Select the taker.
+Home carrier took the set piece and cannot be the next player to touch the ball.
+Home carrier moved to throw-in hex at (0, 0, 12).
+Substitutions are no longer available: Throw-in mandatory movement
+Movement phase has been reset.
+Throw-in movement restrictions applied. Taker: Home carrier, protected hex: (0, 0, 12), radius: 2.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Trying to Forfeit Movement.
+No more defenders wish to move. Attack gets 2f2 move.
+Advancing Movement Phase
+All defenders have moved. Ready for Movement Phase 2f2.
+Trying to Forfeit Movement.
+No more tokens moving in 2f2 phase. Ending Movement Phase.
+Movement phase has been reset.
+Movement phase is over.
+Throw-in mandatory movement completed. Press [M] for one extra movement phase or [T] to throw now.
+Movement phase has been reset.
+Throw-in movement restrictions applied. Taker: Home carrier, protected hex: (0, 0, 12), radius: 2.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Trying to Forfeit Movement.
+No more defenders wish to move. Attack gets 2f2 move.
+Advancing Movement Phase
+All defenders have moved. Ready for Movement Phase 2f2.
+Trying to Forfeit Movement.
+No more tokens moving in 2f2 phase. Ending Movement Phase.
+Movement phase has been reset.
+Movement phase is over.
+Throw-in ready. Press [P] to throw short to feet or [C] to throw to head.
+Substitutions are no longer available: Committed to StandardPass
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Throw-in option selected: [P] short to feet. Select target hex (up to 6).
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 11) -> (0, 0, 10) -> (0, 0, 9) -> (0, 0, 8)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-8, tokens=none.
+Pass completed to (0, 0, 8)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+]]></output>
+          </test-case>
+          <test-case id="2457" name="ThrowInContinues(-1,&quot;hold&quot;)" fullname="OnlineThrowInPlayModeTests.ThrowInContinues(-1,&quot;hold&quot;)" methodname="ThrowInContinues" classname="OnlineThrowInPlayModeTests" runstate="Runnable" seed="1636590062" result="Passed" start-time="2026-11-16 21:46:09Z" end-time="2026-11-16 21:46:12Z" duration="3.085484" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Throw-in preparation started at (0, 0, 12) for Home. Select the taker.
+Home carrier took the set piece and cannot be the next player to touch the ball.
+Home carrier moved to throw-in hex at (0, 0, 12).
+Substitutions are no longer available: Throw-in mandatory movement
+Movement phase has been reset.
+Throw-in movement restrictions applied. Taker: Home carrier, protected hex: (0, 0, 12), radius: 2.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Trying to Forfeit Movement.
+No more defenders wish to move. Attack gets 2f2 move.
+Advancing Movement Phase
+All defenders have moved. Ready for Movement Phase 2f2.
+Trying to Forfeit Movement.
+No more tokens moving in 2f2 phase. Ending Movement Phase.
+Movement phase has been reset.
+Movement phase is over.
+Throw-in mandatory movement completed. Press [M] for one extra movement phase or [T] to throw now.
+Throw-in ready. Press [P] to throw short to feet or [C] to throw to head.
+Substitutions are no longer available: Committed to StandardPass
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Throw-in option selected: [P] short to feet. Select target hex (up to 6).
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 11) -> (0, 0, 10) -> (0, 0, 9) -> (0, 0, 8)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-8, tokens=none.
+Pass completed to (0, 0, 8)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+Saving results to: TestResults\GameplayRegression\Runs\20261116T214543253Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

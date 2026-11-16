@@ -6,7 +6,7 @@ namespace CounterAttack.Online
     [DefaultExecutionOrder(-31000)]
     public sealed class OnlineFullRoomBootstrap:MonoBehaviour
     {
-        public const string SceneName="OnlineRoom",Catalog="full-room-v15";
+        public const string SceneName="OnlineRoom",Catalog="full-room-v16";
         public OnlineGroundPassBoard board;
         public Renderer replicaBallRenderer;
         public bool Ready {get;private set;}

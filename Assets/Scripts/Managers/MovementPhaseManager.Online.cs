@@ -8,7 +8,7 @@ public partial class MovementPhaseManager
     public bool OnlineBasicMovementAvailable => isActivated && !isPlayerMoving && !IsResolvingReposition
         && !IsResolvingFoulSequence() && !(activeDuelPanel != null && activeDuelPanel.IsOpen)
         && !isWaitingForInterceptionDiceRoll && !isWaitingForTackleRoll && !isWaitingForTackleDecision
-        && !isWaitingForTackleDecisionWithoutMoving && !isWaitingForNutmegDecision
+        && !isWaitingForNutmegDecision
         && !isWaitingForNutmegDecisionWithoutMoving && !lookingForNutmegVictim
         && !isWaitingForSnapshotDecision && !isWaitingForReposition && !isWaitingForGKWallDiveDecision
         && !isDribblerRunning && !finalThirdManager.isActivated && !goalKeeperManager.isActivated

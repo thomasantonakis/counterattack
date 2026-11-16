@@ -1055,6 +1055,16 @@
     },
     {
       "mode": "playmode",
+      "fixture": "OnlineStationaryDefenderPlayModeTests",
+      "categories": [
+        "OnlineStationaryDefender"
+      ],
+      "definition_sha256": "ed8104b1b466d907644139936d319b12ad2b6345a3fe442e13b58d68606b3d83",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineStationaryDefender/OnlineStationaryDefenderPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
       "fixture": "OnlineStoppageActionsPlayModeTests",
       "categories": [
         "OnlineStoppageActions"
@@ -15421,6 +15431,214 @@
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
       "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T184652107Z/results.xml"
+    },
+    {
+      "id": "OnlineStationaryDefenderPlayModeTests.DistantDefenderCannotTackleInPlace(1,False)",
+      "feature": "OnlineStationaryDefender",
+      "mode": "playmode",
+      "fixture": "OnlineStationaryDefenderPlayModeTests",
+      "method": "DistantDefenderCannotTackleInPlace",
+      "parameters": [
+        "1,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T185807545Z/results.xml"
+    },
+    {
+      "id": "OnlineStationaryDefenderPlayModeTests.DistantDefenderCannotTackleInPlace(1,True)",
+      "feature": "OnlineStationaryDefender",
+      "mode": "playmode",
+      "fixture": "OnlineStationaryDefenderPlayModeTests",
+      "method": "DistantDefenderCannotTackleInPlace",
+      "parameters": [
+        "1,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T185807545Z/results.xml"
+    },
+    {
+      "id": "OnlineStationaryDefenderPlayModeTests.DistantDefenderCannotTackleInPlace(-1,False)",
+      "feature": "OnlineStationaryDefender",
+      "mode": "playmode",
+      "fixture": "OnlineStationaryDefenderPlayModeTests",
+      "method": "DistantDefenderCannotTackleInPlace",
+      "parameters": [
+        "-1,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T185807545Z/results.xml"
+    },
+    {
+      "id": "OnlineStationaryDefenderPlayModeTests.DistantDefenderCannotTackleInPlace(-1,True)",
+      "feature": "OnlineStationaryDefender",
+      "mode": "playmode",
+      "fixture": "OnlineStationaryDefenderPlayModeTests",
+      "method": "DistantDefenderCannotTackleInPlace",
+      "parameters": [
+        "-1,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T185807545Z/results.xml"
+    },
+    {
+      "id": "OnlineStationaryDefenderPlayModeTests.KeeperCanMoveInsteadOfChallenge(1,False)",
+      "feature": "OnlineStationaryDefender",
+      "mode": "playmode",
+      "fixture": "OnlineStationaryDefenderPlayModeTests",
+      "method": "KeeperCanMoveInsteadOfChallenge",
+      "parameters": [
+        "1,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T185807545Z/results.xml"
+    },
+    {
+      "id": "OnlineStationaryDefenderPlayModeTests.KeeperCanMoveInsteadOfChallenge(1,True)",
+      "feature": "OnlineStationaryDefender",
+      "mode": "playmode",
+      "fixture": "OnlineStationaryDefenderPlayModeTests",
+      "method": "KeeperCanMoveInsteadOfChallenge",
+      "parameters": [
+        "1,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T185807545Z/results.xml"
+    },
+    {
+      "id": "OnlineStationaryDefenderPlayModeTests.KeeperCanMoveInsteadOfChallenge(-1,False)",
+      "feature": "OnlineStationaryDefender",
+      "mode": "playmode",
+      "fixture": "OnlineStationaryDefenderPlayModeTests",
+      "method": "KeeperCanMoveInsteadOfChallenge",
+      "parameters": [
+        "-1,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T185807545Z/results.xml"
+    },
+    {
+      "id": "OnlineStationaryDefenderPlayModeTests.KeeperCanMoveInsteadOfChallenge(-1,True)",
+      "feature": "OnlineStationaryDefender",
+      "mode": "playmode",
+      "fixture": "OnlineStationaryDefenderPlayModeTests",
+      "method": "KeeperCanMoveInsteadOfChallenge",
+      "parameters": [
+        "-1,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T185807545Z/results.xml"
+    },
+    {
+      "id": "OnlineStationaryDefenderPlayModeTests.OutfielderCanTackleOrMove(1,False,False)",
+      "feature": "OnlineStationaryDefender",
+      "mode": "playmode",
+      "fixture": "OnlineStationaryDefenderPlayModeTests",
+      "method": "OutfielderCanTackleOrMove",
+      "parameters": [
+        "1,False,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T185807545Z/results.xml"
+    },
+    {
+      "id": "OnlineStationaryDefenderPlayModeTests.OutfielderCanTackleOrMove(1,False,True)",
+      "feature": "OnlineStationaryDefender",
+      "mode": "playmode",
+      "fixture": "OnlineStationaryDefenderPlayModeTests",
+      "method": "OutfielderCanTackleOrMove",
+      "parameters": [
+        "1,False,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T185807545Z/results.xml"
+    },
+    {
+      "id": "OnlineStationaryDefenderPlayModeTests.OutfielderCanTackleOrMove(1,True,False)",
+      "feature": "OnlineStationaryDefender",
+      "mode": "playmode",
+      "fixture": "OnlineStationaryDefenderPlayModeTests",
+      "method": "OutfielderCanTackleOrMove",
+      "parameters": [
+        "1,True,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T185807545Z/results.xml"
+    },
+    {
+      "id": "OnlineStationaryDefenderPlayModeTests.OutfielderCanTackleOrMove(1,True,True)",
+      "feature": "OnlineStationaryDefender",
+      "mode": "playmode",
+      "fixture": "OnlineStationaryDefenderPlayModeTests",
+      "method": "OutfielderCanTackleOrMove",
+      "parameters": [
+        "1,True,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T185807545Z/results.xml"
+    },
+    {
+      "id": "OnlineStationaryDefenderPlayModeTests.OutfielderCanTackleOrMove(-1,False,False)",
+      "feature": "OnlineStationaryDefender",
+      "mode": "playmode",
+      "fixture": "OnlineStationaryDefenderPlayModeTests",
+      "method": "OutfielderCanTackleOrMove",
+      "parameters": [
+        "-1,False,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T185807545Z/results.xml"
+    },
+    {
+      "id": "OnlineStationaryDefenderPlayModeTests.OutfielderCanTackleOrMove(-1,False,True)",
+      "feature": "OnlineStationaryDefender",
+      "mode": "playmode",
+      "fixture": "OnlineStationaryDefenderPlayModeTests",
+      "method": "OutfielderCanTackleOrMove",
+      "parameters": [
+        "-1,False,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T185807545Z/results.xml"
+    },
+    {
+      "id": "OnlineStationaryDefenderPlayModeTests.OutfielderCanTackleOrMove(-1,True,False)",
+      "feature": "OnlineStationaryDefender",
+      "mode": "playmode",
+      "fixture": "OnlineStationaryDefenderPlayModeTests",
+      "method": "OutfielderCanTackleOrMove",
+      "parameters": [
+        "-1,True,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T185807545Z/results.xml"
+    },
+    {
+      "id": "OnlineStationaryDefenderPlayModeTests.OutfielderCanTackleOrMove(-1,True,True)",
+      "feature": "OnlineStationaryDefender",
+      "mode": "playmode",
+      "fixture": "OnlineStationaryDefenderPlayModeTests",
+      "method": "OutfielderCanTackleOrMove",
+      "parameters": [
+        "-1,True,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T185807545Z/results.xml"
     }
   ]
 }

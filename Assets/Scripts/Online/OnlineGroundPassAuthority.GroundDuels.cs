@@ -18,7 +18,9 @@ namespace CounterAttack.Online
                 case "choice":
                     if(manager.OnlineCanDive)AddGroundDuel(actions,"duel.dive",OnlineGroundDuelIntent.Dive);
                     if(manager.OnlineCanFootTackle)AddGroundDuel(actions,"duel.tackle",OnlineGroundDuelIntent.Tackle);
-                    AddGroundDuel(actions,"duel.stand",OnlineGroundDuelIntent.Stand);break;
+                    AddGroundDuel(actions,"duel.stand",OnlineGroundDuelIntent.Stand);
+                    if(manager.isWaitingForTackleDecisionWithoutMoving)state.awaitingTarget=AddMovementTargets(actions,manager)>0;
+                    break;
                 case "roll":AddGroundDuel(actions,"duel.roll",OnlineGroundDuelIntent.Roll);break;
                 case "reposition":
                     foreach(var hex in manager.OnlineDuelRepositionTargets)AddGroundDuel(actions,"duel.target:"+hex.coordinates.x+":"+hex.coordinates.z,OnlineGroundDuelIntent.Reposition,target:hex);

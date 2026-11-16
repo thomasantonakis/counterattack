@@ -31,10 +31,20 @@ namespace CounterAttack.Online
             if(manager.isAwaitingHexDestination)
             {
                 state.stage="movement."+phase+".target";
-                foreach(var hex in match.hexGrid.highlightedHexes)
-                    if(hex!=null && hex.GetOccupyingToken()==null && manager.IsHexValidForMovement(hex))
-                        Command(MovementTargetAction(hex.coordinates.x,hex.coordinates.z),OnlineMovementIntent.Move,target:hex);
+                state.awaitingTarget=AddMovementTargets(actions,manager)>0;
+                if(manager.OnlineCanStationaryFootTackle)AddGroundDuel(actions,"duel.tackle",OnlineGroundDuelIntent.Tackle);
             }
+        }
+        private int AddMovementTargets(List<string> actions,MovementPhaseManager manager)
+        {
+            int count=0;if(!manager.OnlineBasicMovementAvailable || !manager.isAwaitingHexDestination)return count;
+            foreach(var hex in match.hexGrid.highlightedHexes)
+                if(hex!=null && hex.GetOccupyingToken()==null && manager.IsHexValidForMovement(hex))
+                {
+                    var destination=hex;AddAdditional(actions,MovementTargetAction(hex.coordinates.x,hex.coordinates.z),()=>
+                    {if(!manager.TryExecuteOnlineMovement(OnlineMovementIntent.Move,target:destination))throw new InvalidOperationException("Accepted movement destination became unavailable");});count++;
+                }
+            return count;
         }
     }
 }

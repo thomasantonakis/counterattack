@@ -21,7 +21,9 @@ public partial class MovementPhaseManager
         && IsOutsideBoxGoalkeeperChallengeCandidate(selectedToken,ball?.GetCurrentHex()?.GetOccupyingToken());
     public bool OnlineCanDive=>OnlineGroundDuelStage=="wall-choice" || OnlineGroundDuelStage=="choice"
         && (OnlineStationaryKeeperChoice || IsCurrentOutsideBoxGoalkeeperChallengeCandidate());
-    public bool OnlineCanFootTackle=>OnlineGroundDuelStage=="choice"
+    public bool OnlineCanStationaryFootTackle=>OnlineBasicMovementAvailable && isWaitingForTackleDecisionWithoutMoving
+        && isAwaitingHexDestination && selectedToken!=null && !selectedToken.isAttacker && !IsThrowInTackleWithoutMovingBlocked(selectedToken);
+    public bool OnlineCanFootTackle=>OnlineCanStationaryFootTackle || OnlineGroundDuelStage=="choice"
         && (!OnlineStationaryKeeperChoice || !IsThrowInTackleWithoutMovingBlocked(selectedToken));
     public PlayerToken[] OnlineNutmegVictims=>lookingForNutmegVictim?nutmeggableDefenders.Where(t=>t!=null && t.isPlaying && !t.isAttacker).ToArray():System.Array.Empty<PlayerToken>();
     public HexCell[] OnlineDuelRepositionTargets=>OnlineGroundDuelStage!="reposition"?System.Array.Empty<HexCell>()
@@ -44,14 +46,14 @@ public partial class MovementPhaseManager
                 HandleNutmegVictimSelection(player);return true;
             case OnlineGroundDuelIntent.Tackle:
                 if(!OnlineCanFootTackle)return false;
-                PrepareOnlineStationaryKeeperChoice();
+                PrepareOnlineStationaryTackleChoice();
                 if(IsCurrentOutsideBoxGoalkeeperChallengeCandidate())goalkeeperChallengeMode=GoalkeeperChallengeMode.OutsideBoxFootTackle;
                 isWaitingForTackleDecision=false;StartTackleDiceRollSequence();return true;
             case OnlineGroundDuelIntent.Stand:
                 if(OnlineGroundDuelStage=="wall-choice")
                 {isWaitingForGKWallDiveDecision=false;isGkWallDiveSequenceActive=false;return true;}
                 if(OnlineGroundDuelStage!="choice")return false;
-                if(OnlineStationaryKeeperChoice){PrepareOnlineStationaryKeeperChoice();AdvanceMovementPhase();return true;}
+                if(OnlineStationaryKeeperChoice){PrepareOnlineStationaryTackleChoice();AdvanceMovementPhase();return true;}
                 isWaitingForTackleDecision=false;ResetTacklePhase();AdvanceMovementPhase();return true;
             case OnlineGroundDuelIntent.Dive:
                 if(!OnlineCanDive)return false;
@@ -62,7 +64,7 @@ public partial class MovementPhaseManager
                 }
                 else
                 {
-                    PrepareOnlineStationaryKeeperChoice();isWaitingForTackleDecision=false;
+                    PrepareOnlineStationaryTackleChoice();isWaitingForTackleDecision=false;
                     goalkeeperChallengeMode=GoalkeeperChallengeMode.OutsideBoxDive;isGkWallDiveInProgress=true;
                     gkWallDiveGoalkeeper=selectedDefender;gkWallDiveHex=ball.GetCurrentHex()?.GetOccupyingToken()?.GetCurrentHex();gkWallDiveSavingPenalty=0;
                 }
@@ -80,9 +82,9 @@ public partial class MovementPhaseManager
             default:return false;
         }
     }
-    private void PrepareOnlineStationaryKeeperChoice()
+    private void PrepareOnlineStationaryTackleChoice()
     {
-        if(!OnlineStationaryKeeperChoice)return;
+        if(!isWaitingForTackleDecisionWithoutMoving)return;
         selectedDefender=selectedToken;RegisterMovedToken(selectedToken);isAwaitingHexDestination=false;
         isWaitingForTackleDecisionWithoutMoving=false;isWaitingForTackleDecision=false;hexGrid.ClearHighlightedHexes();
     }

@@ -597,3 +597,9 @@ Windows exports currently contain v14/690c412 and need refresh before paired use
 Continue stationary defensive tackle/movement choices, loose-ball pickup and
 header nomination shortcuts, then the remaining full-match local audit. The
 son's Mac run stays deferred; each new test is separately registered.
+
+Stationary defensive selection now offers legal foot tackles and movement away;
+outside-box keepers also retain movement alongside dive/foot/stand. Sixteen new
+native cases and 41 selected affected cases passed. See OnlineStationaryDefender/
+Verification.md. Room is now v16, wire v7. Exports still contain v14 and will be
+refreshed with the pickup/header batch. Continue the source input/decision audit.

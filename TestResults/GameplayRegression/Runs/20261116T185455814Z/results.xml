@@ -1,0 +1,435 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="12" result="Failed(Child)" total="12" passed="0" failed="12" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 18:54:55Z" end-time="2026-11-16 18:55:07Z" duration="12.0070973">
+  <test-suite type="TestSuite" id="2985" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1645" result="Failed" site="Child" start-time="2026-11-16 18:54:55Z" end-time="2026-11-16 18:55:07Z" duration="12.007097" total="12" passed="0" failed="12" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="2982" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1645" result="Failed" site="Child" start-time="2026-11-16 18:54:55Z" end-time="2026-11-16 18:55:07Z" duration="11.965388" total="12" passed="0" failed="12" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12156" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestFixture" id="2383" name="OnlineStationaryDefenderPlayModeTests" fullname="OnlineStationaryDefenderPlayModeTests" classname="OnlineStationaryDefenderPlayModeTests" runstate="Runnable" testcasecount="12" result="Failed" site="Child" start-time="2026-11-16 18:54:55Z" end-time="2026-11-16 18:55:07Z" duration="11.950383" total="12" passed="0" failed="12" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineStationaryDefender" />
+        </properties>
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="ParameterizedMethod" id="2397" name="KeeperCanMoveInsteadOfChallenge" fullname="OnlineStationaryDefenderPlayModeTests.KeeperCanMoveInsteadOfChallenge" classname="OnlineStationaryDefenderPlayModeTests" runstate="Runnable" testcasecount="4" result="Failed" site="Child" start-time="2026-11-16 18:54:55Z" end-time="2026-11-16 18:55:00Z" duration="4.482902" total="4" passed="0" failed="4" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-case id="2393" name="KeeperCanMoveInsteadOfChallenge(1,False)" fullname="OnlineStationaryDefenderPlayModeTests.KeeperCanMoveInsteadOfChallenge(1,False)" methodname="KeeperCanMoveInsteadOfChallenge" classname="OnlineStationaryDefenderPlayModeTests" runstate="Runnable" seed="366096163" result="Failed" start-time="2026-11-16 18:54:55Z" end-time="2026-11-16 18:54:57Z" duration="1.597971" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  The defender can move away instead of tackling
+  Expected: True
+  But was:  False
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineStationaryDefender>d__132.MoveNext () [0x0038e] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineStationaryDefender\OnlineStationaryDefenderFixture.cs:26
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=5, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Home keeper to HandleTokenSelection
+A Valid Defender was selected: Home keeper
+Home keeper is adjacent to Away recovering player outside the goalkeeper's penalty box. Press [D]ive, [T]ackle with feet, or [N] to stand there.
+]]></output>
+          </test-case>
+          <test-case id="2394" name="KeeperCanMoveInsteadOfChallenge(1,True)" fullname="OnlineStationaryDefenderPlayModeTests.KeeperCanMoveInsteadOfChallenge(1,True)" methodname="KeeperCanMoveInsteadOfChallenge" classname="OnlineStationaryDefenderPlayModeTests" runstate="Runnable" seed="607884546" result="Failed" start-time="2026-11-16 18:54:57Z" end-time="2026-11-16 18:54:58Z" duration="0.987606" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  The defender can move away instead of tackling
+  Expected: True
+  But was:  False
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineStationaryDefender>d__132.MoveNext () [0x0038e] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineStationaryDefender\OnlineStationaryDefenderFixture.cs:26
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=6, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Away keeper to HandleTokenSelection
+A Valid Defender was selected: Away keeper
+Away keeper is adjacent to Home carrier outside the goalkeeper's penalty box. Press [D]ive, [T]ackle with feet, or [N] to stand there.
+]]></output>
+          </test-case>
+          <test-case id="2395" name="KeeperCanMoveInsteadOfChallenge(-1,False)" fullname="OnlineStationaryDefenderPlayModeTests.KeeperCanMoveInsteadOfChallenge(-1,False)" methodname="KeeperCanMoveInsteadOfChallenge" classname="OnlineStationaryDefenderPlayModeTests" runstate="Runnable" seed="2071208216" result="Failed" start-time="2026-11-16 18:54:58Z" end-time="2026-11-16 18:54:59Z" duration="0.929713" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  The defender can move away instead of tackling
+  Expected: True
+  But was:  False
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineStationaryDefender>d__132.MoveNext () [0x0038e] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineStationaryDefender\OnlineStationaryDefenderFixture.cs:26
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-5, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Home keeper to HandleTokenSelection
+A Valid Defender was selected: Home keeper
+Home keeper is adjacent to Away recovering player outside the goalkeeper's penalty box. Press [D]ive, [T]ackle with feet, or [N] to stand there.
+]]></output>
+          </test-case>
+          <test-case id="2396" name="KeeperCanMoveInsteadOfChallenge(-1,True)" fullname="OnlineStationaryDefenderPlayModeTests.KeeperCanMoveInsteadOfChallenge(-1,True)" methodname="KeeperCanMoveInsteadOfChallenge" classname="OnlineStationaryDefenderPlayModeTests" runstate="Runnable" seed="1694081379" result="Failed" start-time="2026-11-16 18:54:59Z" end-time="2026-11-16 18:55:00Z" duration="0.929175" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  The defender can move away instead of tackling
+  Expected: True
+  But was:  False
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineStationaryDefender>d__132.MoveNext () [0x0038e] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineStationaryDefender\OnlineStationaryDefenderFixture.cs:26
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-6, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Away keeper to HandleTokenSelection
+A Valid Defender was selected: Away keeper
+Away keeper is adjacent to Home carrier outside the goalkeeper's penalty box. Press [D]ive, [T]ackle with feet, or [N] to stand there.
+]]></output>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="2392" name="OutfielderCanTackleOrMove" fullname="OnlineStationaryDefenderPlayModeTests.OutfielderCanTackleOrMove" classname="OnlineStationaryDefenderPlayModeTests" runstate="Runnable" testcasecount="8" result="Failed" site="Child" start-time="2026-11-16 18:55:00Z" end-time="2026-11-16 18:55:07Z" duration="7.446396" total="8" passed="0" failed="8" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-case id="2384" name="OutfielderCanTackleOrMove(1,False,False)" fullname="OnlineStationaryDefenderPlayModeTests.OutfielderCanTackleOrMove(1,False,False)" methodname="OutfielderCanTackleOrMove" classname="OnlineStationaryDefenderPlayModeTests" runstate="Runnable" seed="1794928711" result="Failed" start-time="2026-11-16 18:55:00Z" end-time="2026-11-16 18:55:01Z" duration="0.948736" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: collection containing "duel.tackle"
+  But was:  <empty>
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineStationaryDefender>d__132.MoveNext () [0x00378] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineStationaryDefender\OnlineStationaryDefenderFixture.cs:26
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=6, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Home carrier to HandleTokenSelection
+A Valid Defender was selected: Home carrier
+Home carrier is adjacent to Away recovering player. Press 'T' to tackle or select a hex to move.
+]]></output>
+          </test-case>
+          <test-case id="2385" name="OutfielderCanTackleOrMove(1,False,True)" fullname="OnlineStationaryDefenderPlayModeTests.OutfielderCanTackleOrMove(1,False,True)" methodname="OutfielderCanTackleOrMove" classname="OnlineStationaryDefenderPlayModeTests" runstate="Runnable" seed="1582368418" result="Failed" start-time="2026-11-16 18:55:01Z" end-time="2026-11-16 18:55:02Z" duration="0.953965" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: collection containing "duel.tackle"
+  But was:  <empty>
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineStationaryDefender>d__132.MoveNext () [0x00378] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineStationaryDefender\OnlineStationaryDefenderFixture.cs:26
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=6, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Home carrier to HandleTokenSelection
+A Valid Defender was selected: Home carrier
+Home carrier is adjacent to Away recovering player. Press 'T' to tackle or select a hex to move.
+]]></output>
+          </test-case>
+          <test-case id="2386" name="OutfielderCanTackleOrMove(1,True,False)" fullname="OnlineStationaryDefenderPlayModeTests.OutfielderCanTackleOrMove(1,True,False)" methodname="OutfielderCanTackleOrMove" classname="OnlineStationaryDefenderPlayModeTests" runstate="Runnable" seed="263698237" result="Failed" start-time="2026-11-16 18:55:02Z" end-time="2026-11-16 18:55:03Z" duration="1.102758" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: collection containing "duel.tackle"
+  But was:  <empty>
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineStationaryDefender>d__132.MoveNext () [0x00378] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineStationaryDefender\OnlineStationaryDefenderFixture.cs:26
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Away recovering player to HandleTokenSelection
+A Valid Defender was selected: Away recovering player
+Away recovering player is adjacent to Home carrier. Press 'T' to tackle or select a hex to move.
+]]></output>
+          </test-case>
+          <test-case id="2387" name="OutfielderCanTackleOrMove(1,True,True)" fullname="OnlineStationaryDefenderPlayModeTests.OutfielderCanTackleOrMove(1,True,True)" methodname="OutfielderCanTackleOrMove" classname="OnlineStationaryDefenderPlayModeTests" runstate="Runnable" seed="2035897431" result="Failed" start-time="2026-11-16 18:55:03Z" end-time="2026-11-16 18:55:04Z" duration="0.910478" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: collection containing "duel.tackle"
+  But was:  <empty>
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineStationaryDefender>d__132.MoveNext () [0x00378] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineStationaryDefender\OnlineStationaryDefenderFixture.cs:26
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Away recovering player to HandleTokenSelection
+A Valid Defender was selected: Away recovering player
+Away recovering player is adjacent to Home carrier. Press 'T' to tackle or select a hex to move.
+]]></output>
+          </test-case>
+          <test-case id="2388" name="OutfielderCanTackleOrMove(-1,False,False)" fullname="OnlineStationaryDefenderPlayModeTests.OutfielderCanTackleOrMove(-1,False,False)" methodname="OutfielderCanTackleOrMove" classname="OnlineStationaryDefenderPlayModeTests" runstate="Runnable" seed="491760771" result="Failed" start-time="2026-11-16 18:55:04Z" end-time="2026-11-16 18:55:05Z" duration="0.885613" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: collection containing "duel.tackle"
+  But was:  <empty>
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineStationaryDefender>d__132.MoveNext () [0x00378] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineStationaryDefender\OnlineStationaryDefenderFixture.cs:26
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-6, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Home carrier to HandleTokenSelection
+A Valid Defender was selected: Home carrier
+Home carrier is adjacent to Away recovering player. Press 'T' to tackle or select a hex to move.
+]]></output>
+          </test-case>
+          <test-case id="2389" name="OutfielderCanTackleOrMove(-1,False,True)" fullname="OnlineStationaryDefenderPlayModeTests.OutfielderCanTackleOrMove(-1,False,True)" methodname="OutfielderCanTackleOrMove" classname="OnlineStationaryDefenderPlayModeTests" runstate="Runnable" seed="67683741" result="Failed" start-time="2026-11-16 18:55:05Z" end-time="2026-11-16 18:55:06Z" duration="0.855601" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: collection containing "duel.tackle"
+  But was:  <empty>
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineStationaryDefender>d__132.MoveNext () [0x00378] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineStationaryDefender\OnlineStationaryDefenderFixture.cs:26
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-6, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Home carrier to HandleTokenSelection
+A Valid Defender was selected: Home carrier
+Home carrier is adjacent to Away recovering player. Press 'T' to tackle or select a hex to move.
+]]></output>
+          </test-case>
+          <test-case id="2390" name="OutfielderCanTackleOrMove(-1,True,False)" fullname="OnlineStationaryDefenderPlayModeTests.OutfielderCanTackleOrMove(-1,True,False)" methodname="OutfielderCanTackleOrMove" classname="OnlineStationaryDefenderPlayModeTests" runstate="Runnable" seed="1743318144" result="Failed" start-time="2026-11-16 18:55:06Z" end-time="2026-11-16 18:55:06Z" duration="0.856310" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: collection containing "duel.tackle"
+  But was:  <empty>
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineStationaryDefender>d__132.MoveNext () [0x00378] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineStationaryDefender\OnlineStationaryDefenderFixture.cs:26
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Away recovering player to HandleTokenSelection
+A Valid Defender was selected: Away recovering player
+Away recovering player is adjacent to Home carrier. Press 'T' to tackle or select a hex to move.
+]]></output>
+          </test-case>
+          <test-case id="2391" name="OutfielderCanTackleOrMove(-1,True,True)" fullname="OnlineStationaryDefenderPlayModeTests.OutfielderCanTackleOrMove(-1,True,True)" methodname="OutfielderCanTackleOrMove" classname="OnlineStationaryDefenderPlayModeTests" runstate="Runnable" seed="9847705" result="Failed" start-time="2026-11-16 18:55:06Z" end-time="2026-11-16 18:55:07Z" duration="0.912537" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: collection containing "duel.tackle"
+  But was:  <empty>
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineStationaryDefender>d__132.MoveNext () [0x00378] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineStationaryDefender\OnlineStationaryDefenderFixture.cs:26
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Away recovering player to HandleTokenSelection
+A Valid Defender was selected: Away recovering player
+Away recovering player is adjacent to Home carrier. Press 'T' to tackle or select a hex to move.
+Saving results to: TestResults\GameplayRegression\Runs\20261116T185455814Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>
