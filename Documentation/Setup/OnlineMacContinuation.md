@@ -80,7 +80,9 @@ and in-flight snapshot poses are implemented with focused Windows evidence.
 Shootout orders, owned rolls/outcomes and early/sudden-death endings now have
 focused real-scene coverage. Room tiebreaker/extra-time coin toss and half transitions now have 37 focused
 new native passes and 142 affected passes; full contract is Room v7.
-Prioritize regular-match conclusion, shared settings and direct board input,
+Regular-match conclusion now adds 26 native passes and 35 affected passes;
+rebuild both full-game clients for Room v8.
+Prioritize direct board input and shared settings,
 then presentation interpolation/transport tuning and deferred paired acceptance.
 Preserve host-only RNG/rules, authenticated semantic commands, guest inactivity,
 receipt/revision checks and reconnect holds. Compile, run feature-focused native

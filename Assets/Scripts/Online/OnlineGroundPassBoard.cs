@@ -20,6 +20,7 @@ namespace CounterAttack.Online
         public OnlineRoomMenu menu;
         public OnlineShootoutView shootoutView;
         public OnlineCoinTossView coinView;
+        public OnlineMatchConclusionView conclusionView;
         public Vector3Int[] initialCoordinates;
         public Transform[] displayedTokens;
         public Transform displayedBall;
@@ -87,6 +88,7 @@ namespace CounterAttack.Online
             menu?.Display(state);
             shootoutView?.Display(state);
             coinView?.Display(state);
+            conclusionView?.Display(state);
             foreach (var token in state.tokens)
             {
                 if(liveFullRoom && !OnlineRoomSession.IsGuest)break;

@@ -54,6 +54,7 @@ public class EndGamePanelManager : MonoBehaviour
 
     public static void ShowMatchEndedPanel()
     {
+        if(CounterAttack.Online.OnlineRoomSession.Current?.HasInitialData==true)return;
         EndGamePanelManager manager = ResolveExisting(logIfMissing: true);
         if (manager == null)
         {

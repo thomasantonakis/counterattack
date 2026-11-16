@@ -1,5 +1,11 @@
 # Running gameplay regressions
 
+For regular online full-time results, use EditMode
+`OnlineMatchConclusionEditorTests` (8 cases) and PlayMode
+`OnlineMatchConclusionPlayModeTests` (18 cases), category `OnlineMatchConclusion`,
+in the same-named Editor/PlayMode feature folders. They cover win/draw,
+regulation/extra-time endings, terminal input and safe host/guest Leave.
+
 For Room coin toss/half transitions, use EditMode `OnlineRoomCoinTossEditorTests`
 (13 cases) and PlayMode `OnlineRoomCoinTossPlayModeTests` (24 cases), category
 `OnlineRoomCoinToss`, under the same-named Editor/PlayMode feature folders.

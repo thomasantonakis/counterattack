@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="8" result="Passed" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 06:38:31Z" end-time="2026-11-16 06:38:31Z" duration="0.1460473">
+  <test-suite type="TestSuite" id="3016" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1705" result="Passed" start-time="2026-11-16 06:38:31Z" end-time="2026-11-16 06:38:31Z" duration="0.146047" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="3010" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="1705" result="Passed" start-time="2026-11-16 06:38:31Z" end-time="2026-11-16 06:38:31Z" duration="0.101495" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17216" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="1863" name="OnlineMatchConclusionEditorTests" fullname="OnlineMatchConclusionEditorTests" classname="OnlineMatchConclusionEditorTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-11-16 06:38:31Z" end-time="2026-11-16 06:38:31Z" duration="0.096866" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineMatchConclusion" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="1872" name="OnlyConfirmedRegularResultIsPresented" fullname="OnlineMatchConclusionEditorTests.OnlyConfirmedRegularResultIsPresented" classname="OnlineMatchConclusionEditorTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-11-16 06:38:31Z" end-time="2026-11-16 06:38:31Z" duration="0.089846" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1864" name="OnlyConfirmedRegularResultIsPresented(&quot;complete&quot;,True)" fullname="OnlineMatchConclusionEditorTests.OnlyConfirmedRegularResultIsPresented(&quot;complete&quot;,True)" methodname="OnlyConfirmedRegularResultIsPresented" classname="OnlineMatchConclusionEditorTests" runstate="Runnable" seed="520076067" result="Passed" start-time="2026-11-16 06:38:31Z" end-time="2026-11-16 06:38:31Z" duration="0.022978" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1865" name="OnlyConfirmedRegularResultIsPresented(&quot;pending&quot;,False)" fullname="OnlineMatchConclusionEditorTests.OnlyConfirmedRegularResultIsPresented(&quot;pending&quot;,False)" methodname="OnlyConfirmedRegularResultIsPresented" classname="OnlineMatchConclusionEditorTests" runstate="Runnable" seed="38652418" result="Passed" start-time="2026-11-16 06:38:31Z" end-time="2026-11-16 06:38:31Z" duration="0.000234" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1866" name="OnlyConfirmedRegularResultIsPresented(&quot;live&quot;,False)" fullname="OnlineMatchConclusionEditorTests.OnlyConfirmedRegularResultIsPresented(&quot;live&quot;,False)" methodname="OnlyConfirmedRegularResultIsPresented" classname="OnlineMatchConclusionEditorTests" runstate="Runnable" seed="1361169748" result="Passed" start-time="2026-11-16 06:38:31Z" end-time="2026-11-16 06:38:31Z" duration="0.000243" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1867" name="OnlyConfirmedRegularResultIsPresented(&quot;coin&quot;,False)" fullname="OnlineMatchConclusionEditorTests.OnlyConfirmedRegularResultIsPresented(&quot;coin&quot;,False)" methodname="OnlyConfirmedRegularResultIsPresented" classname="OnlineMatchConclusionEditorTests" runstate="Runnable" seed="1906242679" result="Passed" start-time="2026-11-16 06:38:31Z" end-time="2026-11-16 06:38:31Z" duration="0.000318" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1868" name="OnlyConfirmedRegularResultIsPresented(&quot;shootout&quot;,False)" fullname="OnlineMatchConclusionEditorTests.OnlyConfirmedRegularResultIsPresented(&quot;shootout&quot;,False)" methodname="OnlyConfirmedRegularResultIsPresented" classname="OnlineMatchConclusionEditorTests" runstate="Runnable" seed="1505538751" result="Passed" start-time="2026-11-16 06:38:31Z" end-time="2026-11-16 06:38:31Z" duration="0.000250" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1869" name="OnlyConfirmedRegularResultIsPresented(&quot;catalog&quot;,False)" fullname="OnlineMatchConclusionEditorTests.OnlyConfirmedRegularResultIsPresented(&quot;catalog&quot;,False)" methodname="OnlyConfirmedRegularResultIsPresented" classname="OnlineMatchConclusionEditorTests" runstate="Runnable" seed="679228735" result="Passed" start-time="2026-11-16 06:38:31Z" end-time="2026-11-16 06:38:31Z" duration="0.000248" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1870" name="OnlyConfirmedRegularResultIsPresented(&quot;null&quot;,False)" fullname="OnlineMatchConclusionEditorTests.OnlyConfirmedRegularResultIsPresented(&quot;null&quot;,False)" methodname="OnlyConfirmedRegularResultIsPresented" classname="OnlineMatchConclusionEditorTests" runstate="Runnable" seed="1962963305" result="Passed" start-time="2026-11-16 06:38:31Z" end-time="2026-11-16 06:38:31Z" duration="0.000331" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1871" name="OnlyConfirmedRegularResultIsPresented(&quot;held-complete&quot;,True)" fullname="OnlineMatchConclusionEditorTests.OnlyConfirmedRegularResultIsPresented(&quot;held-complete&quot;,True)" methodname="OnlyConfirmedRegularResultIsPresented" classname="OnlineMatchConclusionEditorTests" runstate="Runnable" seed="471462488" result="Passed" start-time="2026-11-16 06:38:31Z" end-time="2026-11-16 06:38:31Z" duration="0.000239" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Saving results to: TestResults\GameplayRegression\Runs\20261116T063831103Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

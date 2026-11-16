@@ -9,7 +9,9 @@ see OnlineShootout/Verification.md for actual scope/evidence and final UI checks
 Room tiebreaker/extra-time coin toss and real half transitions now have 37 own
 native passes and 142 affected passes, with null-preserving replica copies and
 explicit opening-choice projection. See OnlineRoomCoinToss/Verification.md.
-Regular-match conclusion, shared settings and direct board interaction remain;
+Regular-match conclusion now has 26 own and 35 affected native passes; it keeps
+the scoreboard/Stats intact and closes session context before MainMenu.
+Shared settings and direct board interaction remain;
 local fixtures do not establish complete normal-match internet acceptance. Earlier
 progress paragraphs below are historical checkpoints. Mac remains deferred.
 

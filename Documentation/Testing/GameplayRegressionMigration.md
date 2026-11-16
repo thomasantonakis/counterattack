@@ -1,5 +1,12 @@
 # Gameplay regression migration
 
+Regular online conclusions add 8 EditMode + 18 PlayMode cases under the
+OnlineMatchConclusion feature folders, category OnlineMatchConclusion.
+All 26 new cases and 35 affected cases passed, zero failed/skipped; compilation
+separately clean. The new tests reproduce and fix offline end-panel interference,
+then assert terminal input, shared outcome/totals and no additional exit save.
+Feature Verification.md retains XML and scope. No legacy scenario was retired.
+
 Room coin toss/half transitions add 13 EditMode + 24 PlayMode cases under
 Assets/Editor/FeatureTests/OnlineRoomCoinToss and
 Assets/Tests/PlayMode/Features/OnlineRoomCoinToss, category OnlineRoomCoinToss.

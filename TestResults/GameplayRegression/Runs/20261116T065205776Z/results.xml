@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="3" result="Passed" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 06:52:05Z" end-time="2026-11-16 06:52:08Z" duration="2.830027">
+  <test-suite type="TestSuite" id="4788" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1705" result="Passed" start-time="2026-11-16 06:52:05Z" end-time="2026-11-16 06:52:08Z" duration="2.830027" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="4782" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="1705" result="Passed" start-time="2026-11-16 06:52:05Z" end-time="2026-11-16 06:52:08Z" duration="2.811425" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17216" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="3305" name="EndGamePanelOwnershipEditorTests" fullname="EndGamePanelOwnershipEditorTests" classname="EndGamePanelOwnershipEditorTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-11-16 06:52:05Z" end-time="2026-11-16 06:52:08Z" duration="2.809250" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="ParameterizedMethod" id="3309" name="ResolutionNeverFallsBackToUnrelatedCanvases" fullname="EndGamePanelOwnershipEditorTests.ResolutionNeverFallsBackToUnrelatedCanvases" classname="EndGamePanelOwnershipEditorTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-16 06:52:05Z" end-time="2026-11-16 06:52:05Z" duration="0.041336" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="3307" name="ResolutionNeverFallsBackToUnrelatedCanvases(False)" fullname="EndGamePanelOwnershipEditorTests.ResolutionNeverFallsBackToUnrelatedCanvases(False)" methodname="ResolutionNeverFallsBackToUnrelatedCanvases" classname="EndGamePanelOwnershipEditorTests" runstate="Runnable" seed="747195302" result="Passed" start-time="2026-11-16 06:52:05Z" end-time="2026-11-16 06:52:05Z" duration="0.006348" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3308" name="ResolutionNeverFallsBackToUnrelatedCanvases(True)" fullname="EndGamePanelOwnershipEditorTests.ResolutionNeverFallsBackToUnrelatedCanvases(True)" methodname="ResolutionNeverFallsBackToUnrelatedCanvases" classname="EndGamePanelOwnershipEditorTests" runstate="Runnable" seed="1099997515" result="Passed" start-time="2026-11-16 06:52:05Z" end-time="2026-11-16 06:52:05Z" duration="0.030815" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-case id="3306" name="RoomContainsOnlyMainCanvasPanelWithDesignerDimensions" fullname="EndGamePanelOwnershipEditorTests.RoomContainsOnlyMainCanvasPanelWithDesignerDimensions" methodname="RoomContainsOnlyMainCanvasPanelWithDesignerDimensions" classname="EndGamePanelOwnershipEditorTests" runstate="Runnable" seed="1815673414" result="Passed" start-time="2026-11-16 06:52:05Z" end-time="2026-11-16 06:52:08Z" duration="2.763991" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Saving results to: TestResults\GameplayRegression\Runs\20261116T065205776Z\results.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

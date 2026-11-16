@@ -11,8 +11,9 @@ Shootout orders, real shot/save/deflection outcomes and early/sudden-death
 completion now have 55 native cases; see OnlineShootout/Verification.md.
 Room tiebreaker/extra-time coin toss and half transitions now have 37 own native
 passes and 142 affected passes; see OnlineRoomCoinToss/Verification.md.
-Remaining priorities include regular-match conclusion, shared settings, direct
-board input, motion interpolation/transport tuning and actual
+Regular-match conclusion now has 26 own and 35 affected native passes; see
+OnlineMatchConclusion/Verification.md. Remaining priorities include direct board
+input, shared settings, motion interpolation/transport tuning and actual
 paired internet acceptance/latency measurement. Mac execution remains deferred.
 
 User scope expanded on 2026-11-13: prepare the full game for internet play.

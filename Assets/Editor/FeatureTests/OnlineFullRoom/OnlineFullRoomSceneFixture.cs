@@ -122,6 +122,7 @@ public sealed partial class OnlineFullRoomSceneFixture
         Assert.That(board.authorityRoot.activeSelf,Is.EqualTo(!guest));
         if(guest){board.match.AdvanceOnlineAuthorityTime(5);Assert.That(board.match.OnlineRegulationSeconds,Is.Zero);Assert.That(board.match.TimingRollSequence,Is.Zero);Assert.That(board.match.CaptureOnlineDecisionTiming(),Is.Null);yield break;}
         var hostAuthority=new OnlineGroundPassAuthority(board.match,protocol);var state=hostAuthority.Capture();Assert.That(state.stage,Is.EqualTo("kickoff.setup"));Assert.That(state.tokens.Length,Is.EqualTo(size*2));
+        if(branch.StartsWith("conclusion:")){var parts=branch.Split(':');yield return RunConclusion(board,protocol,data,int.Parse(parts[1]),int.Parse(parts[2]),bool.Parse(parts[3]));yield break;}
         if(branch.StartsWith("ordinary-half:")){yield return RunNormalOnlineHalf(board,protocol,int.Parse(branch.Split(':')[1]));yield break;}
         if(branch.StartsWith("room-coin:")){var parts=branch.Split(':');yield return RunRoomCoin(board,protocol,data,bool.Parse(parts[1]),bool.Parse(parts[2]),bool.Parse(parts[3]),bool.Parse(parts[4]),bool.Parse(parts[5]),parts.Length>6 && bool.Parse(parts[6]));yield break;}
         if(branch.StartsWith("shootout:")){var parts=branch.Split(':');yield return RunShootout(board,protocol,data,bool.Parse(parts[1]),bool.Parse(parts[2]),parts.Length>3?parts[3]:null);yield break;}

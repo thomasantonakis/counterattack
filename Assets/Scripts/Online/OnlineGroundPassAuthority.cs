@@ -261,6 +261,7 @@ namespace CounterAttack.Online
             // by accepting a command in this initial, unwired proof slice.
             else if(state.coin!=null)ReadCoinDecision(state,actions);
             else if(match.OnlineBetweenHalves){state.stage="match.transition";state.owner="None";state.awaitingRoll=state.awaitingTarget=false;}
+            else if(state.matchComplete && state.gameState==MatchManager.GameState.MatchEnded.ToString()){state.stage="match.complete";state.owner="None";state.awaitingRoll=state.awaitingTarget=false;}
             else if (match.IsGameplayInputBlocked) state.stage = "blocked";
             else if(state.shootout!=null)
             {

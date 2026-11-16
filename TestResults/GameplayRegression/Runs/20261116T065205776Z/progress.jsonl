@@ -1,0 +1,3 @@
+{"name":"EndGamePanelOwnershipEditorTests.ResolutionNeverFallsBackToUnrelatedCanvases(False)","status":"Passed","message":"","stackTrace":""}
+{"name":"EndGamePanelOwnershipEditorTests.ResolutionNeverFallsBackToUnrelatedCanvases(True)","status":"Passed","message":"","stackTrace":""}
+{"name":"EndGamePanelOwnershipEditorTests.RoomContainsOnlyMainCanvasPanelWithDesignerDimensions","status":"Passed","message":"","stackTrace":""}

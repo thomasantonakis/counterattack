@@ -1,0 +1,8 @@
+{"name":"OnlineMatchConclusionEditorTests.OnlyConfirmedRegularResultIsPresented(\"complete\",True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMatchConclusionEditorTests.OnlyConfirmedRegularResultIsPresented(\"pending\",False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMatchConclusionEditorTests.OnlyConfirmedRegularResultIsPresented(\"live\",False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMatchConclusionEditorTests.OnlyConfirmedRegularResultIsPresented(\"coin\",False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMatchConclusionEditorTests.OnlyConfirmedRegularResultIsPresented(\"shootout\",False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMatchConclusionEditorTests.OnlyConfirmedRegularResultIsPresented(\"catalog\",False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMatchConclusionEditorTests.OnlyConfirmedRegularResultIsPresented(\"null\",False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMatchConclusionEditorTests.OnlyConfirmedRegularResultIsPresented(\"held-complete\",True)","status":"Passed","message":"","stackTrace":""}

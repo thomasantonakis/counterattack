@@ -23,8 +23,11 @@ Authenticated Room tiebreaker/extra-time coin toss and half transitions now have
 37 new native passes, plus 142 distinct affected passes. This also fixes null
 optional snapshot objects becoming empty live state on guests. See
 OnlineRoomCoinToss/Verification.md; all three Windows exports and local/login
-checks refreshed. Next: regular-match conclusion, shared settings commands,
-direct board interactions and motion interpolation/transport tuning. In-flight full snapshots
+checks refreshed. Regular-match conclusion now has 26 new native passes and 35
+affected passes, including safe host/guest return and preserved scoreboard/Stats.
+See OnlineMatchConclusion/Verification.md; full contract is Room v8. Next: direct
+board interactions, shared settings commands and motion interpolation/transport
+tuning. In-flight full snapshots
 now retain actual ball/player poses, with 9 validation and 5 actual-scene passes. Full-match internet acceptance and measured
 latency remain unverified. Paired Mac testing is deferred.
 See Assets/Editor/FeatureTests/OnlineFullRoom/Verification.md.
