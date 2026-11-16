@@ -609,3 +609,17 @@ new native cases and 89 affected shortcut cases passed, including real attacking
 defensive possession, recovery statistics, dribble continuation and prohibited
 collector/next-touch cases. See OnlinePickupKey/Verification.md. Room remains
 v16/wire v7. Continue header select-all and local input audit, then refresh exports.
+
+Header select-all now uses authenticated A / header.all with existing selection
+and confirmation rules. Eighteen new native cases and 57 selected affected cases
+passed, including optional keeper and over-limit groups for both teams/directions.
+See OnlineHeaderSelectAll/Verification.md. Room is now v17, wire v7. All Windows
+exports refreshed successfully with v15-v17 at 22:07-22:08 UTC. Next: verify the existing urgent publication guarantee and continue the full-match input/room audit. Paired
+Mac testing remains deferred; every new case is registered separately.
+
+Publication audit correction: PublishDecision and WithdrawDecision already
+advance the protocol revision, so the current immediate-send boundary covers
+same-phase decision replacement. Do not add a redundant decision-ID hot path.
+The 250 ms refresh applies to clock/budget updates. Investigate pre-move keeper
+reselection/phase forfeit and movement instead of an initial nutmeg: those source
+choices may still be missing from published online actions.

@@ -89,6 +89,7 @@ namespace CounterAttack.Online
             "high.keeper.stay"=>"Goalkeeper challenges from here", "high.keeper.decline"=>"Decline goalkeeper challenge",
             "header.control"=>"Bring the ball down", "header.control.roll"=>"Roll ball control",
             "header.free"=>"Take a free header", "header.confirm"=>"Confirm header nominations",
+            "header.all"=>"A: Select all eligible jumpers and confirm",
             "header.roll"=>"Roll header challenge", "header.pass"=>"Choose a headed pass",
             "header.backpass.hands"=>"Keeper catches headed back-pass", "header.backpass.feet"=>"Keeper receives at feet",
             "header.backpass.roll"=>"Roll keeper catch",

@@ -55,6 +55,7 @@ namespace CounterAttack.Online
             else if(phase=="backpass.pending")return;
             else if (phase is "attackers" or "defenders")
             {
+                if(manager.OnlineCanSelectAllHeaders)AddHeaderCommand(actions,manager,"header.all",OnlineHeaderIntent.SelectAll);
                 foreach (var player in manager.OnlineHeaderPlayers)
                     AddHeaderCommand(actions, manager, HeaderPlayerAction(TokenId(player), manager.OnlineHeaderNominated(player)), OnlineHeaderIntent.Nominate, player);
                 if (phase == "defenders" || manager.attackerWillJump.Count > 0)

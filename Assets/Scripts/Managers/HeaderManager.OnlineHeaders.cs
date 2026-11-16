@@ -2,7 +2,7 @@ using System.Linq;
 using System.Collections;
 using CounterAttack.Online;
 
-public enum OnlineHeaderIntent { FreeHeader, Nominate, Confirm, Roll, HeadedPass, GoalTarget, PassTarget, KeeperHands, KeeperFeet, KeeperCatch, Interception }
+public enum OnlineHeaderIntent { FreeHeader, Nominate, Confirm, Roll, HeadedPass, GoalTarget, PassTarget, KeeperHands, KeeperFeet, KeeperCatch, Interception, SelectAll }
 
 public partial class HeaderManager
 {
@@ -22,6 +22,9 @@ public partial class HeaderManager
     public PlayerToken[] OnlineHeaderPlayers => (isWaitingForAttackerSelection ? attEligibleToHead : defEligibleToHead)
         .Where(t => t != null).ToArray();
     public bool OnlineHeaderNominated(PlayerToken player) => (isWaitingForAttackerSelection ? attackerWillJump : defenderWillJump).Contains(player);
+    public bool OnlineCanSelectAllHeaders=>isActivated && MatchManager.Instance?.IsOnlineAuthorityControlled==true
+        && (isWaitingForAttackerSelection?attEligibleToHead.Count is >0 and <=2
+            :isWaitingForDefenderSelection && GetEligibleOutfieldHeaderDefenders().Count()<=MAX_OUTFIELD_HEADER_DEFENDERS);
     public HexCell[] OnlineHeaderTargets => (isWaitingForHeaderAtGoal ? GetHeaderAtGoalDecisionTargets()
         : hexGrid.highlightedHexes.Where(h => h != null && !h.isDefenseOccupied && headerTargetThreatByHex.ContainsKey(h))).ToArray();
 
@@ -30,6 +33,8 @@ public partial class HeaderManager
         if (OnlineRoomSession.IsGuest || MatchManager.Instance == null || MatchManager.Instance.IsGameplayInputBlocked || !isActivated) return false;
         switch (intent)
         {
+            case OnlineHeaderIntent.SelectAll when OnlineCanSelectAllHeaders:
+                if(isWaitingForAttackerSelection)SelectAllAvailableAttackers();else SelectAllAvailableDefenders();return true;
             case OnlineHeaderIntent.Interception when isWaitingForInterceptionRoll && !OnlineHeaderInterceptionBusy && interceptingDefender!=null:
                 onlineInterceptionVersion=challengePresentationVersion;
                 StartCoroutine(ResolveOnlineHeaderInterception(challengePresentationVersion));return true;

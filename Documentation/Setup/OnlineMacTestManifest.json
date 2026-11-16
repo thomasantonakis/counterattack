@@ -204,6 +204,16 @@
     },
     {
       "mode": "editor",
+      "fixture": "OnlineHeaderSelectAllEditorTests",
+      "categories": [
+        "OnlineHeaderSelectAll"
+      ],
+      "definition_sha256": "b3ea99379f395199f020e518e18b675560dea7cc1716be8d801b7e3ea4a28c75",
+      "route": "native",
+      "source": "Assets/Editor/FeatureTests/OnlineHeaderSelectAll/OnlineHeaderSelectAllEditorTests.cs"
+    },
+    {
+      "mode": "editor",
       "fixture": "OnlineKeeperGroundChoicesEditorTests",
       "categories": [
         "OnlineKeeperGroundChoices"
@@ -702,6 +712,16 @@
       "definition_sha256": "b0511653361e8890af74de276d79a2326245a1b5c31a160fc29e47be4a46dce3",
       "route": "native",
       "source": "Assets/Tests/PlayMode/Features/OnlineHeaders/OnlineHeaderResultPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineHeaderSelectAllPlayModeTests",
+      "categories": [
+        "OnlineHeaderSelectAll"
+      ],
+      "definition_sha256": "d1c4ba898f2dcbfb6d9a91486468620bb4e75b06e8a42b8a725c709cdd63605b",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineHeaderSelectAll/OnlineHeaderSelectAllPlayModeTests.cs"
     },
     {
       "mode": "playmode",
@@ -16034,6 +16054,236 @@
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
       "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T215246159Z/results.xml"
+    },
+    {
+      "id": "OnlineHeaderSelectAllEditorTests.AmbiguousAIsNotGuessed",
+      "feature": "OnlineHeaderSelectAll",
+      "mode": "editor",
+      "fixture": "OnlineHeaderSelectAllEditorTests",
+      "method": "AmbiguousAIsNotGuessed",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T220137521Z/results.xml"
+    },
+    {
+      "id": "OnlineHeaderSelectAllEditorTests.ASelectsPublishedHeaderAll",
+      "feature": "OnlineHeaderSelectAll",
+      "mode": "editor",
+      "fixture": "OnlineHeaderSelectAllEditorTests",
+      "method": "ASelectsPublishedHeaderAll",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T220137521Z/results.xml"
+    },
+    {
+      "id": "OnlineHeaderSelectAllPlayModeTests.BulkNominationsResolveRealHeader(1,False,False)",
+      "feature": "OnlineHeaderSelectAll",
+      "mode": "playmode",
+      "fixture": "OnlineHeaderSelectAllPlayModeTests",
+      "method": "BulkNominationsResolveRealHeader",
+      "parameters": [
+        "1,False,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T220152170Z/results.xml"
+    },
+    {
+      "id": "OnlineHeaderSelectAllPlayModeTests.BulkNominationsResolveRealHeader(1,False,True)",
+      "feature": "OnlineHeaderSelectAll",
+      "mode": "playmode",
+      "fixture": "OnlineHeaderSelectAllPlayModeTests",
+      "method": "BulkNominationsResolveRealHeader",
+      "parameters": [
+        "1,False,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T220152170Z/results.xml"
+    },
+    {
+      "id": "OnlineHeaderSelectAllPlayModeTests.BulkNominationsResolveRealHeader(1,True,False)",
+      "feature": "OnlineHeaderSelectAll",
+      "mode": "playmode",
+      "fixture": "OnlineHeaderSelectAllPlayModeTests",
+      "method": "BulkNominationsResolveRealHeader",
+      "parameters": [
+        "1,True,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T220152170Z/results.xml"
+    },
+    {
+      "id": "OnlineHeaderSelectAllPlayModeTests.BulkNominationsResolveRealHeader(1,True,True)",
+      "feature": "OnlineHeaderSelectAll",
+      "mode": "playmode",
+      "fixture": "OnlineHeaderSelectAllPlayModeTests",
+      "method": "BulkNominationsResolveRealHeader",
+      "parameters": [
+        "1,True,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T220152170Z/results.xml"
+    },
+    {
+      "id": "OnlineHeaderSelectAllPlayModeTests.BulkNominationsResolveRealHeader(-1,False,False)",
+      "feature": "OnlineHeaderSelectAll",
+      "mode": "playmode",
+      "fixture": "OnlineHeaderSelectAllPlayModeTests",
+      "method": "BulkNominationsResolveRealHeader",
+      "parameters": [
+        "-1,False,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T220152170Z/results.xml"
+    },
+    {
+      "id": "OnlineHeaderSelectAllPlayModeTests.BulkNominationsResolveRealHeader(-1,False,True)",
+      "feature": "OnlineHeaderSelectAll",
+      "mode": "playmode",
+      "fixture": "OnlineHeaderSelectAllPlayModeTests",
+      "method": "BulkNominationsResolveRealHeader",
+      "parameters": [
+        "-1,False,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T220152170Z/results.xml"
+    },
+    {
+      "id": "OnlineHeaderSelectAllPlayModeTests.BulkNominationsResolveRealHeader(-1,True,False)",
+      "feature": "OnlineHeaderSelectAll",
+      "mode": "playmode",
+      "fixture": "OnlineHeaderSelectAllPlayModeTests",
+      "method": "BulkNominationsResolveRealHeader",
+      "parameters": [
+        "-1,True,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T220152170Z/results.xml"
+    },
+    {
+      "id": "OnlineHeaderSelectAllPlayModeTests.BulkNominationsResolveRealHeader(-1,True,True)",
+      "feature": "OnlineHeaderSelectAll",
+      "mode": "playmode",
+      "fixture": "OnlineHeaderSelectAllPlayModeTests",
+      "method": "BulkNominationsResolveRealHeader",
+      "parameters": [
+        "-1,True,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T220152170Z/results.xml"
+    },
+    {
+      "id": "OnlineHeaderSelectAllPlayModeTests.OverLimitRequiresIndividualNominations(1,False,\"attack\")",
+      "feature": "OnlineHeaderSelectAll",
+      "mode": "playmode",
+      "fixture": "OnlineHeaderSelectAllPlayModeTests",
+      "method": "OverLimitRequiresIndividualNominations",
+      "parameters": [
+        "1,False,\"attack\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T220152170Z/results.xml"
+    },
+    {
+      "id": "OnlineHeaderSelectAllPlayModeTests.OverLimitRequiresIndividualNominations(1,False,\"defence\")",
+      "feature": "OnlineHeaderSelectAll",
+      "mode": "playmode",
+      "fixture": "OnlineHeaderSelectAllPlayModeTests",
+      "method": "OverLimitRequiresIndividualNominations",
+      "parameters": [
+        "1,False,\"defence\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T220152170Z/results.xml"
+    },
+    {
+      "id": "OnlineHeaderSelectAllPlayModeTests.OverLimitRequiresIndividualNominations(1,True,\"attack\")",
+      "feature": "OnlineHeaderSelectAll",
+      "mode": "playmode",
+      "fixture": "OnlineHeaderSelectAllPlayModeTests",
+      "method": "OverLimitRequiresIndividualNominations",
+      "parameters": [
+        "1,True,\"attack\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T220152170Z/results.xml"
+    },
+    {
+      "id": "OnlineHeaderSelectAllPlayModeTests.OverLimitRequiresIndividualNominations(1,True,\"defence\")",
+      "feature": "OnlineHeaderSelectAll",
+      "mode": "playmode",
+      "fixture": "OnlineHeaderSelectAllPlayModeTests",
+      "method": "OverLimitRequiresIndividualNominations",
+      "parameters": [
+        "1,True,\"defence\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T220152170Z/results.xml"
+    },
+    {
+      "id": "OnlineHeaderSelectAllPlayModeTests.OverLimitRequiresIndividualNominations(-1,False,\"attack\")",
+      "feature": "OnlineHeaderSelectAll",
+      "mode": "playmode",
+      "fixture": "OnlineHeaderSelectAllPlayModeTests",
+      "method": "OverLimitRequiresIndividualNominations",
+      "parameters": [
+        "-1,False,\"attack\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T220152170Z/results.xml"
+    },
+    {
+      "id": "OnlineHeaderSelectAllPlayModeTests.OverLimitRequiresIndividualNominations(-1,False,\"defence\")",
+      "feature": "OnlineHeaderSelectAll",
+      "mode": "playmode",
+      "fixture": "OnlineHeaderSelectAllPlayModeTests",
+      "method": "OverLimitRequiresIndividualNominations",
+      "parameters": [
+        "-1,False,\"defence\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T220152170Z/results.xml"
+    },
+    {
+      "id": "OnlineHeaderSelectAllPlayModeTests.OverLimitRequiresIndividualNominations(-1,True,\"attack\")",
+      "feature": "OnlineHeaderSelectAll",
+      "mode": "playmode",
+      "fixture": "OnlineHeaderSelectAllPlayModeTests",
+      "method": "OverLimitRequiresIndividualNominations",
+      "parameters": [
+        "-1,True,\"attack\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T220152170Z/results.xml"
+    },
+    {
+      "id": "OnlineHeaderSelectAllPlayModeTests.OverLimitRequiresIndividualNominations(-1,True,\"defence\")",
+      "feature": "OnlineHeaderSelectAll",
+      "mode": "playmode",
+      "fixture": "OnlineHeaderSelectAllPlayModeTests",
+      "method": "OverLimitRequiresIndividualNominations",
+      "parameters": [
+        "-1,True,\"defence\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T220152170Z/results.xml"
     }
   ]
 }

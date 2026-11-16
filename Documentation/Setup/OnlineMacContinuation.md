@@ -132,3 +132,10 @@ OnlineStoppageActions/Verification.md and OnlineContextKeys/Verification.md.
 Pull/rebuild both clients after the remaining batches; the latest exported
 Windows binaries still contain v14. Do not run the paired script until the user
 requests it after independent readiness work is complete.
+
+Current contract is Room v17 / wire v7. Windows normal, Room and prepared exports
+were refreshed with stoppage clocks, stationary defensive choices, pickup V and
+header select-all. Read OnlineHeaderSelectAll/Verification.md for current evidence.
+Use the normal game build/run commands above after pulling; do not run the paired
+verification script until the user requests it. Further independent publication
+latency and full-match audits are continuing on the same branch.

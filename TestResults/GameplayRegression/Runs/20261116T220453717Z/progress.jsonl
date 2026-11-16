@@ -1,0 +1,8 @@
+{"name":"OnlineHeaderResultPlayModeTests.ContestedHeaderCompletesHeadedPass(1,False,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineHeaderResultPlayModeTests.ContestedHeaderCompletesHeadedPass(1,False,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineHeaderResultPlayModeTests.ContestedHeaderCompletesHeadedPass(1,True,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineHeaderResultPlayModeTests.ContestedHeaderCompletesHeadedPass(1,True,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineHeaderResultPlayModeTests.ContestedHeaderCompletesHeadedPass(-1,False,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineHeaderResultPlayModeTests.ContestedHeaderCompletesHeadedPass(-1,False,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineHeaderResultPlayModeTests.ContestedHeaderCompletesHeadedPass(-1,True,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineHeaderResultPlayModeTests.ContestedHeaderCompletesHeadedPass(-1,True,True)","status":"Passed","message":"","stackTrace":""}

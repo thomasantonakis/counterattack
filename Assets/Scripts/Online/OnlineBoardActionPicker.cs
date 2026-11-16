@@ -50,7 +50,7 @@ namespace CounterAttack.Online
                 case KeyCode.V:return OneOf(state,"long.keeper.claim",state?.ballOnBoard==true
                     && (state.stage=="movement.attack.target" || state.stage=="movement.defence.target" || state.stage=="movement.two-for-two.target")
                     ?OnlineGroundPassAuthority.MovementTargetAction(state.ballX,state.ballZ):null);
-                case KeyCode.A:return available("foul.advantage");
+                case KeyCode.A:return OneOf(state,"header.all","foul.advantage");
                 case KeyCode.X:return OneOf(state,"movement.snapshot.decline","dribble.finish","shot.cancel","shot.decline","movement.forfeit",
                     "high.skip","high.keeper.decline","ftp.skip","long.keeper.decline","keeper.stay","set-piece.skip","duel.stay","dribble.decline-nutmeg");
                 case KeyCode.R:return Unique(state,action=>action.EndsWith(".roll",StringComparison.Ordinal)

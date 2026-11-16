@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="2" result="Passed" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 22:01:37Z" end-time="2026-11-16 22:01:37Z" duration="0.0866876">
+  <test-suite type="TestSuite" id="3219" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1875" result="Passed" start-time="2026-11-16 22:01:37Z" end-time="2026-11-16 22:01:37Z" duration="0.086688" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="3213" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="1875" result="Passed" start-time="2026-11-16 22:01:37Z" end-time="2026-11-16 22:01:37Z" duration="0.055193" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12156" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="1967" name="OnlineHeaderSelectAllEditorTests" fullname="OnlineHeaderSelectAllEditorTests" classname="OnlineHeaderSelectAllEditorTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-16 22:01:37Z" end-time="2026-11-16 22:01:37Z" duration="0.051216" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineHeaderSelectAll" />
+        </properties>
+        <test-case id="1969" name="AmbiguousAIsNotGuessed" fullname="OnlineHeaderSelectAllEditorTests.AmbiguousAIsNotGuessed" methodname="AmbiguousAIsNotGuessed" classname="OnlineHeaderSelectAllEditorTests" runstate="Runnable" seed="1994449447" result="Passed" start-time="2026-11-16 22:01:37Z" end-time="2026-11-16 22:01:37Z" duration="0.015655" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1968" name="ASelectsPublishedHeaderAll" fullname="OnlineHeaderSelectAllEditorTests.ASelectsPublishedHeaderAll" methodname="ASelectsPublishedHeaderAll" classname="OnlineHeaderSelectAllEditorTests" runstate="Runnable" seed="276736355" result="Passed" start-time="2026-11-16 22:01:37Z" end-time="2026-11-16 22:01:37Z" duration="0.005129" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Saving results to: TestResults\GameplayRegression\Runs\20261116T220137521Z\results.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>
