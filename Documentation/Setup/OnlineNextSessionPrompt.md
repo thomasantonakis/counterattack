@@ -31,6 +31,10 @@ real collider raycasts and original action keys use the authenticated semantic
 gateway. Host movement/kickoff and inert guest commands passed in both attacking
 directions. See OnlineBoardInput/Verification.md; full contract is Room v9.
 Next: shared settings commands and motion interpolation/transport tuning.
+Controls no longer serialize the complete roster/stats every display update:
+typed detached control decisions have 10 new focused passes and 19 selected
+affected passes. See OnlineControlDecision/Verification.md for memory-measurement
+limits and retained fixture corrections. Wire framing/full Room v9 are unchanged.
 In-flight full snapshots
 now retain actual ball/player poses, with 9 validation and 5 actual-scene passes. Full-match internet acceptance and measured
 latency remain unverified. Paired Mac testing is deferred.

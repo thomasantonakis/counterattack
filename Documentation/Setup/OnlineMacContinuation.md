@@ -88,6 +88,10 @@ Rebuild both full-game clients for Room v9; wire framing remains v7. All 52 case
 are separate deferred entries in the Mac manifest. See OnlineBoardInput/Verification.md.
 Prioritize shared settings, then presentation interpolation/transport tuning and
 deferred paired acceptance. Physical two-machine input and latency remain untested.
+Control display now captures only detached input metadata and legal choices,
+avoiding full-roster/statistics JSON copies each host frame. This adds ten focused
+native cases and 19 selected affected passes; see OnlineControlDecision/Verification.md.
+Its memory test reports coarse Mono heap accounting, not actual network latency.
 Preserve host-only RNG/rules, authenticated semantic commands, guest inactivity,
 receipt/revision checks and reconnect holds. Compile, run feature-focused native
 tests and build through the already-open Editor. Commit/push verified batches.

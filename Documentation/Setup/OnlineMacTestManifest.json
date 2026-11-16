@@ -24,6 +24,16 @@
     },
     {
       "mode": "editor",
+      "fixture": "OnlineControlDecisionEditorTests",
+      "categories": [
+        "OnlineControlDecision"
+      ],
+      "definition_sha256": "ea05c61cd748c76819c080041fc315ea3c7f09e4af19daa01ae8604dac1c7920",
+      "route": "native",
+      "source": "Assets/Editor/FeatureTests/OnlineControlDecision/OnlineControlDecisionEditorTests.cs"
+    },
+    {
+      "mode": "editor",
       "fixture": "OnlineDraftAuthorityEditorTests",
       "categories": [
         "OnlineDraft"
@@ -11673,6 +11683,132 @@
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
       "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T072315142Z/results.xml"
+    },
+    {
+      "id": "OnlineControlDecisionEditorTests.AbsentPublicationAndChoicesAreSafe",
+      "feature": "OnlineControlDecision",
+      "mode": "editor",
+      "fixture": "OnlineControlDecisionEditorTests",
+      "method": "AbsentPublicationAndChoicesAreSafe",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T074104413Z/results.xml"
+    },
+    {
+      "id": "OnlineControlDecisionEditorTests.CaptureAllocationDoesNotScaleWithRosterPayload",
+      "feature": "OnlineControlDecision",
+      "mode": "editor",
+      "fixture": "OnlineControlDecisionEditorTests",
+      "method": "CaptureAllocationDoesNotScaleWithRosterPayload",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T074104413Z/results.xml"
+    },
+    {
+      "id": "OnlineControlDecisionEditorTests.CommandRetainsDisplayedBoundaryAfterPublisherChanges(False)",
+      "feature": "OnlineControlDecision",
+      "mode": "editor",
+      "fixture": "OnlineControlDecisionEditorTests",
+      "method": "CommandRetainsDisplayedBoundaryAfterPublisherChanges",
+      "parameters": [
+        "False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T074104413Z/results.xml"
+    },
+    {
+      "id": "OnlineControlDecisionEditorTests.CommandRetainsDisplayedBoundaryAfterPublisherChanges(True)",
+      "feature": "OnlineControlDecision",
+      "mode": "editor",
+      "fixture": "OnlineControlDecisionEditorTests",
+      "method": "CommandRetainsDisplayedBoundaryAfterPublisherChanges",
+      "parameters": [
+        "True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T074104413Z/results.xml"
+    },
+    {
+      "id": "OnlineControlDecisionEditorTests.PublishedGatesRemainDetached(\"connection\")",
+      "feature": "OnlineControlDecision",
+      "mode": "editor",
+      "fixture": "OnlineControlDecisionEditorTests",
+      "method": "PublishedGatesRemainDetached",
+      "parameters": [
+        "\"connection\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T074104413Z/results.xml"
+    },
+    {
+      "id": "OnlineControlDecisionEditorTests.PublishedGatesRemainDetached(\"pause\")",
+      "feature": "OnlineControlDecision",
+      "mode": "editor",
+      "fixture": "OnlineControlDecisionEditorTests",
+      "method": "PublishedGatesRemainDetached",
+      "parameters": [
+        "\"pause\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T074104413Z/results.xml"
+    },
+    {
+      "id": "OnlineControlDecisionEditorTests.PublishedGatesRemainDetached(\"required\")",
+      "feature": "OnlineControlDecision",
+      "mode": "editor",
+      "fixture": "OnlineControlDecisionEditorTests",
+      "method": "PublishedGatesRemainDetached",
+      "parameters": [
+        "\"required\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T074104413Z/results.xml"
+    },
+    {
+      "id": "OnlineControlDecisionEditorTests.PublishedGatesRemainDetached(\"forced\")",
+      "feature": "OnlineControlDecision",
+      "mode": "editor",
+      "fixture": "OnlineControlDecisionEditorTests",
+      "method": "PublishedGatesRemainDetached",
+      "parameters": [
+        "\"forced\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T074104413Z/results.xml"
+    },
+    {
+      "id": "OnlineControlDecisionEditorTests.PublishedGatesRemainDetached(\"emergency\")",
+      "feature": "OnlineControlDecision",
+      "mode": "editor",
+      "fixture": "OnlineControlDecisionEditorTests",
+      "method": "PublishedGatesRemainDetached",
+      "parameters": [
+        "\"emergency\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T074104413Z/results.xml"
+    },
+    {
+      "id": "OnlineControlDecisionEditorTests.PublishedGatesRemainDetached(\"shootout\")",
+      "feature": "OnlineControlDecision",
+      "mode": "editor",
+      "fixture": "OnlineControlDecisionEditorTests",
+      "method": "PublishedGatesRemainDetached",
+      "parameters": [
+        "\"shootout\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T074104413Z/results.xml"
     }
   ]
 }

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="1" result="Passed" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 07:38:29Z" end-time="2026-11-16 07:38:42Z" duration="13.0747487">
+  <test-suite type="TestSuite" id="2781" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1466" result="Passed" start-time="2026-11-16 07:38:29Z" end-time="2026-11-16 07:38:42Z" duration="13.074749" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2778" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1466" result="Passed" start-time="2026-11-16 07:38:29Z" end-time="2026-11-16 07:38:42Z" duration="13.034809" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17216" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1962" name="OnlineRequiredKeeperPlayModeTests" fullname="OnlineRequiredKeeperPlayModeTests" classname="OnlineRequiredKeeperPlayModeTests" runstate="Runnable" testcasecount="33" result="Passed" start-time="2026-11-16 07:38:29Z" end-time="2026-11-16 07:38:42Z" duration="13.028893" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineRequiredKeeper" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="1997" name="EmergencyKeeperNomination" fullname="OnlineRequiredKeeperPlayModeTests.EmergencyKeeperNomination" classname="OnlineRequiredKeeperPlayModeTests" runstate="Runnable" testcasecount="16" result="Passed" start-time="2026-11-16 07:38:29Z" end-time="2026-11-16 07:38:42Z" duration="13.014219" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="1996" name="EmergencyKeeperNomination(True,&quot;no-subs&quot;,True,True)" fullname="OnlineRequiredKeeperPlayModeTests.EmergencyKeeperNomination(True,&quot;no-subs&quot;,True,True)" methodname="EmergencyKeeperNomination" classname="OnlineRequiredKeeperPlayModeTests" runstate="Runnable" seed="799189885" result="Passed" start-time="2026-11-16 07:38:29Z" end-time="2026-11-16 07:38:42Z" duration="12.985247" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[TokenKitCatalog] Loading kits JSON from Resources path 'Kits/kit-picker-v1-11-supported' (asset: Assets/Resources/Kits/kit-picker-v1-11-supported.json).
+[TokenKitCatalog] Found kits JSON TextAsset 'kit-picker-v1-11-supported' at Resources path 'Kits/kit-picker-v1-11-supported' (32277 characters).
+[TokenKitCatalog] Parsed 101 kit preset(s) from Resources path 'Kits/kit-picker-v1-11-supported'.
+[TokenKitCatalog] Active kit catalog contains 101 kit preset(s).
+MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584967112874
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Substitutions are now available: Owned exhausted-allowance setup
+Kuzmic (Jersey 1) has been sent off. Token deactivated.
+Kuzmic (Jersey 1) has been sent off.
+Substitutions are no longer available: Kuzmic was sent off and no substitutions remain. Click a playing outfield player to dress and act as emergency goalkeeper.
+Kuzmic was sent off and no substitutions remain. Click a playing outfield player to dress and act as emergency goalkeeper.
+Converting Baez (Jersey 2) from outfield player to goalkeeper.
+Baez (Jersey 2) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=5, HighPass=6, Resilience=3
+Substitutions are no longer available: Goalkeeper replacement completed
+Baez (Jersey 2) has been nominated as emergency goalkeeper.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+Saving results to: TestResults\GameplayRegression\Runs\20261116T073829520Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

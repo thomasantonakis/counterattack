@@ -32,11 +32,11 @@ namespace CounterAttack.Online
             if(!CanSubmitAction(action) || Requested==null)return false;
             Gameplay(action);return true;
         }
-        public bool CanManageShootout=>connected && !pending && state?.shootout?.selecting==true && !state.connectionHeld && !state.isSharedPaused;
+        public bool CanManageShootout=>connected && !pending && state?.shootoutSelecting==true && !state.connectionHeld && !state.isSharedPaused;
         public void SwapShootout(int first,int second)=>Control("shootout.swap:"+first+":"+second);
         public void ConfirmShootout()=>Control("shootout.ready");
         public bool CanNominateKeeper=>CanManageRequiredKeeper && (team==OnlineTeam.Home?state.homeEmergencyKeeper:state.awayEmergencyKeeper);
-        private OnlineGroundPassState state;
+        private OnlineControlDecision state;
         private OnlineTeam team;
         private long sequence, controlSequence;
         private bool pending, connected;
@@ -58,7 +58,7 @@ namespace CounterAttack.Online
         public void Display(OnlineGroundPassState publication)
         {
             // Detach the displayed decision from transport/caller mutation.
-            state = OnlineGroundPassState.Copy(publication);
+            state = OnlineControlDecision.Capture(publication);
             if (state != null)
             {
                 sequence = Math.Max(sequence, team == OnlineTeam.Home ? state.homeAcceptedSequence : state.awayAcceptedSequence);
@@ -210,7 +210,7 @@ namespace CounterAttack.Online
         {
             if (!CanAct || state.legalActions?.Contains(action) != true)
             { commandStatus.text = "Action unavailable for this decision"; return; }
-            Emit(OnlineGroundPassMessage.Command(state, checked(++sequence), action));
+            Emit(state.Command(checked(++sequence), action));
         }
 
         private void Control(string action)
