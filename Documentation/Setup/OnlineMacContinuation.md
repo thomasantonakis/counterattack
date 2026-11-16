@@ -103,6 +103,10 @@ including serialized decisions for both teams/directions and actual wall-dive
 continuation. Full Room now requires **v11**; exports still precede that batch.
 See OnlineKeeperGroundChoices/Verification.md. Movement snapshot offers/declines
 and presentation/transport tuning remain independent next work.
+Movement snapshot offers add 49 native passes and 12 selected affected passes;
+full Room now requires **v12**. Both teams/directions and actual snapshot/save
+continuations are covered. See OnlineMovementSnapshot/Verification.md. Exports
+still precede v11/v12; rebuild before paired use. Mac execution remains deferred.
 Preserve host-only RNG/rules, authenticated semantic commands, guest inactivity,
 receipt/revision checks and reconnect holds. Compile, run feature-focused native
 tests and build through the already-open Editor. Commit/push verified batches.

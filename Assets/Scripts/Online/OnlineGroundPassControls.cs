@@ -83,6 +83,7 @@ namespace CounterAttack.Online
             "ground.start"=>"Start ground pass", "long.start"=>"Start long pass", "long.roll"=>"Roll",
             "long.keeper.decline"=>"Keep goalkeeper in position", "long.keeper.claim"=>"Claim long pass",
             "movement.start"=>"Start movement", "movement.forfeit"=>"Finish this team's movement",
+            "movement.snapshot"=>"S: Take offered snapshot", "movement.snapshot.decline"=>"X: Continue without shooting",
             "high.start"=>"Start high pass", "high.roll"=>"Roll high pass", "high.skip"=>"Keep players in position",
             "high.keeper.stay"=>"Goalkeeper challenges from here", "high.keeper.decline"=>"Decline goalkeeper challenge",
             "header.control"=>"Bring the ball down", "header.control.roll"=>"Roll ball control",

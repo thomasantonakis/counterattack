@@ -1,0 +1,875 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="16" result="Passed" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 17:03:46Z" end-time="2026-11-16 17:04:01Z" duration="15.0701116">
+  <test-suite type="TestSuite" id="2886" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1562" result="Passed" start-time="2026-11-16 17:03:46Z" end-time="2026-11-16 17:04:01Z" duration="15.070112" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2883" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1562" result="Passed" start-time="2026-11-16 17:03:46Z" end-time="2026-11-16 17:04:01Z" duration="15.042854" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12156" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="2001" name="OnlineMovementSnapshotPlayModeTests" fullname="OnlineMovementSnapshotPlayModeTests" classname="OnlineMovementSnapshotPlayModeTests" runstate="Runnable" testcasecount="16" result="Passed" start-time="2026-11-16 17:03:46Z" end-time="2026-11-16 17:04:01Z" duration="15.033768" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineMovementSnapshot" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="2018" name="OfferedSnapshot" fullname="OnlineMovementSnapshotPlayModeTests.OfferedSnapshot" classname="OnlineMovementSnapshotPlayModeTests" runstate="Runnable" testcasecount="16" result="Passed" start-time="2026-11-16 17:03:46Z" end-time="2026-11-16 17:04:01Z" duration="15.025793" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="2002" name="OfferedSnapshot(1,&quot;running&quot;,&quot;shoot&quot;)" fullname="OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(1,&quot;running&quot;,&quot;shoot&quot;)" methodname="OfferedSnapshot" classname="OnlineMovementSnapshotPlayModeTests" runstate="Runnable" seed="1998325738" result="Passed" start-time="2026-11-16 17:03:46Z" end-time="2026-11-16 17:03:48Z" duration="1.451288" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=12, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Movement phase has been reset.
+Passing Home carrier to HandleTokenSelection
+Home carrier selected as dribbler. Starting dribble movement.
+Setting remaining Pace to Home carrier's Pace: 3
+Checking for nutmeggable Defenders
+Committing to Movement Phase action. section=AttMP, selectedToken=Home carrier, awaitingHexDestination=True, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Hex 37,16 to AsyncMoveTokenToHexRegularly
+Passing Hex 37,16 to MoveTokenToHex
+isDribblerRunning set to true
+MoveTokenAlongPath: shouldCarryBall: True
+MovingBall with Token
+MovingBall with Token
+Token arrived at hex: Hex 37,16
+Attacking team has possession: True.
+[Game Log] Home carrier (Fixture Home) moves 1 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Home carrier, IsDribbler: True, remainingDribblerPace: 3
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+remainingDribblerPace: 2, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Home carrier Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Calculating Eligible Defenders for Interception
+eligibleDefenders.Count: 0
+No interceptions Available, let the dribbler move if available
+Home carrier is in the opponent penalty Box. Press [S] to take a snapshot!
+Offside assessed (snapshot_available): line x=12, tokens=none.
+Dribbler has 2 remaining Pace, Highlighting 1 Hex, isAwaitingHexDestination
+Home carrier decides to Snapshot!!!!
+Offside assessed (snapshot_committed): line x=12, tokens=none.
+Snapshot initiated. Allow one defender to move 2 hexes.
+[Game Log] Home carrier (Fixture Home) takes a Snapshot!
+]]></output>
+          </test-case>
+          <test-case id="2003" name="OfferedSnapshot(1,&quot;running&quot;,&quot;decline&quot;)" fullname="OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(1,&quot;running&quot;,&quot;decline&quot;)" methodname="OfferedSnapshot" classname="OnlineMovementSnapshotPlayModeTests" runstate="Runnable" seed="1204934352" result="Passed" start-time="2026-11-16 17:03:48Z" end-time="2026-11-16 17:03:49Z" duration="0.914620" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=12, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Movement phase has been reset.
+Passing Home carrier to HandleTokenSelection
+Home carrier selected as dribbler. Starting dribble movement.
+Setting remaining Pace to Home carrier's Pace: 3
+Checking for nutmeggable Defenders
+Committing to Movement Phase action. section=AttMP, selectedToken=Home carrier, awaitingHexDestination=True, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Hex 37,16 to AsyncMoveTokenToHexRegularly
+Passing Hex 37,16 to MoveTokenToHex
+isDribblerRunning set to true
+MoveTokenAlongPath: shouldCarryBall: True
+MovingBall with Token
+MovingBall with Token
+Token arrived at hex: Hex 37,16
+Attacking team has possession: True.
+[Game Log] Home carrier (Fixture Home) moves 1 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Home carrier, IsDribbler: True, remainingDribblerPace: 3
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+remainingDribblerPace: 2, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Home carrier Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Calculating Eligible Defenders for Interception
+eligibleDefenders.Count: 0
+No interceptions Available, let the dribbler move if available
+Home carrier is in the opponent penalty Box. Press [S] to take a snapshot!
+Offside assessed (snapshot_available): line x=12, tokens=none.
+Dribbler has 2 remaining Pace, Highlighting 1 Hex, isAwaitingHexDestination
+Dribbler is running. Forfeiting remaining pace.
+Advancing Movement Phase
+]]></output>
+          </test-case>
+          <test-case id="2004" name="OfferedSnapshot(1,&quot;exhausted&quot;,&quot;shoot&quot;)" fullname="OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(1,&quot;exhausted&quot;,&quot;shoot&quot;)" methodname="OfferedSnapshot" classname="OnlineMovementSnapshotPlayModeTests" runstate="Runnable" seed="1123811991" result="Passed" start-time="2026-11-16 17:03:49Z" end-time="2026-11-16 17:03:50Z" duration="0.887976" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=12, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Movement phase has been reset.
+Passing Home carrier to HandleTokenSelection
+Home carrier selected as dribbler. Starting dribble movement.
+Setting remaining Pace to Home carrier's Pace: 1
+Checking for nutmeggable Defenders
+Committing to Movement Phase action. section=AttMP, selectedToken=Home carrier, awaitingHexDestination=True, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Hex 37,16 to AsyncMoveTokenToHexRegularly
+Passing Hex 37,16 to MoveTokenToHex
+isDribblerRunning set to true
+MoveTokenAlongPath: shouldCarryBall: True
+MovingBall with Token
+MovingBall with Token
+Token arrived at hex: Hex 37,16
+Attacking team has possession: True.
+[Game Log] Home carrier (Fixture Home) moves 1 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Home carrier, IsDribbler: True, remainingDribblerPace: 1
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+remainingDribblerPace: 0, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Home carrier Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Calculating Eligible Defenders for Interception
+eligibleDefenders.Count: 0
+No interceptions Available, let the dribbler move if available
+Home carrier is in the opponent penalty Box. Press [S] to take a snapshot!
+Offside assessed (snapshot_available): line x=12, tokens=none.
+Dribbler has 0 remaining Pace, Adding to Moved and moving Forward.
+Home carrier has exhausted their pace. Dribbling complete.
+isDribblerRunning set to false;
+Home carrier decides to Snapshot!!!!
+Offside assessed (snapshot_committed): line x=12, tokens=none.
+Snapshot initiated. Allow one defender to move 2 hexes.
+[Game Log] Home carrier (Fixture Home) takes a Snapshot!
+]]></output>
+          </test-case>
+          <test-case id="2005" name="OfferedSnapshot(1,&quot;exhausted&quot;,&quot;decline&quot;)" fullname="OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(1,&quot;exhausted&quot;,&quot;decline&quot;)" methodname="OfferedSnapshot" classname="OnlineMovementSnapshotPlayModeTests" runstate="Runnable" seed="1302965404" result="Passed" start-time="2026-11-16 17:03:50Z" end-time="2026-11-16 17:03:51Z" duration="0.865564" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=12, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Movement phase has been reset.
+Passing Home carrier to HandleTokenSelection
+Home carrier selected as dribbler. Starting dribble movement.
+Setting remaining Pace to Home carrier's Pace: 1
+Checking for nutmeggable Defenders
+Committing to Movement Phase action. section=AttMP, selectedToken=Home carrier, awaitingHexDestination=True, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Hex 37,16 to AsyncMoveTokenToHexRegularly
+Passing Hex 37,16 to MoveTokenToHex
+isDribblerRunning set to true
+MoveTokenAlongPath: shouldCarryBall: True
+MovingBall with Token
+MovingBall with Token
+Token arrived at hex: Hex 37,16
+Attacking team has possession: True.
+[Game Log] Home carrier (Fixture Home) moves 1 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Home carrier, IsDribbler: True, remainingDribblerPace: 1
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+remainingDribblerPace: 0, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Home carrier Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Calculating Eligible Defenders for Interception
+eligibleDefenders.Count: 0
+No interceptions Available, let the dribbler move if available
+Home carrier is in the opponent penalty Box. Press [S] to take a snapshot!
+Offside assessed (snapshot_available): line x=12, tokens=none.
+Dribbler has 0 remaining Pace, Adding to Moved and moving Forward.
+Home carrier has exhausted their pace. Dribbling complete.
+isDribblerRunning set to false;
+Attacker decides not to shoot..
+Advancing Movement Phase
+]]></output>
+          </test-case>
+          <test-case id="2006" name="OfferedSnapshot(1,&quot;away-running&quot;,&quot;shoot&quot;)" fullname="OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(1,&quot;away-running&quot;,&quot;shoot&quot;)" methodname="OfferedSnapshot" classname="OnlineMovementSnapshotPlayModeTests" runstate="Runnable" seed="1085884719" result="Passed" start-time="2026-11-16 17:03:51Z" end-time="2026-11-16 17:03:52Z" duration="0.965841" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=12, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Movement phase has been reset.
+Passing Away recovering player to HandleTokenSelection
+Away recovering player selected as dribbler. Starting dribble movement.
+Setting remaining Pace to Away recovering player's Pace: 3
+Checking for nutmeggable Defenders
+Committing to Movement Phase action. section=AttMP, selectedToken=Away recovering player, awaitingHexDestination=True, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Hex 37,16 to AsyncMoveTokenToHexRegularly
+Passing Hex 37,16 to MoveTokenToHex
+isDribblerRunning set to true
+MoveTokenAlongPath: shouldCarryBall: True
+MovingBall with Token
+MovingBall with Token
+Token arrived at hex: Hex 37,16
+Attacking team has possession: True.
+[Game Log] Away recovering player (Fixture Away) moves 1 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Away recovering player, IsDribbler: True, remainingDribblerPace: 3
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+remainingDribblerPace: 2, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Away recovering player Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Calculating Eligible Defenders for Interception
+eligibleDefenders.Count: 0
+No interceptions Available, let the dribbler move if available
+Away recovering player is in the opponent penalty Box. Press [S] to take a snapshot!
+Offside assessed (snapshot_available): line x=12, tokens=none.
+Dribbler has 2 remaining Pace, Highlighting 1 Hex, isAwaitingHexDestination
+Away recovering player decides to Snapshot!!!!
+Offside assessed (snapshot_committed): line x=12, tokens=none.
+Snapshot initiated. Allow one defender to move 2 hexes.
+[Game Log] Away recovering player (Fixture Away) takes a Snapshot!
+]]></output>
+          </test-case>
+          <test-case id="2007" name="OfferedSnapshot(1,&quot;away-running&quot;,&quot;decline&quot;)" fullname="OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(1,&quot;away-running&quot;,&quot;decline&quot;)" methodname="OfferedSnapshot" classname="OnlineMovementSnapshotPlayModeTests" runstate="Runnable" seed="1302722102" result="Passed" start-time="2026-11-16 17:03:52Z" end-time="2026-11-16 17:03:52Z" duration="0.880528" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=12, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Movement phase has been reset.
+Passing Away recovering player to HandleTokenSelection
+Away recovering player selected as dribbler. Starting dribble movement.
+Setting remaining Pace to Away recovering player's Pace: 3
+Checking for nutmeggable Defenders
+Committing to Movement Phase action. section=AttMP, selectedToken=Away recovering player, awaitingHexDestination=True, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Hex 37,16 to AsyncMoveTokenToHexRegularly
+Passing Hex 37,16 to MoveTokenToHex
+isDribblerRunning set to true
+MoveTokenAlongPath: shouldCarryBall: True
+MovingBall with Token
+MovingBall with Token
+Token arrived at hex: Hex 37,16
+Attacking team has possession: True.
+[Game Log] Away recovering player (Fixture Away) moves 1 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Away recovering player, IsDribbler: True, remainingDribblerPace: 3
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+remainingDribblerPace: 2, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Away recovering player Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Calculating Eligible Defenders for Interception
+eligibleDefenders.Count: 0
+No interceptions Available, let the dribbler move if available
+Away recovering player is in the opponent penalty Box. Press [S] to take a snapshot!
+Offside assessed (snapshot_available): line x=12, tokens=none.
+Dribbler has 2 remaining Pace, Highlighting 1 Hex, isAwaitingHexDestination
+Dribbler is running. Forfeiting remaining pace.
+Advancing Movement Phase
+]]></output>
+          </test-case>
+          <test-case id="2008" name="OfferedSnapshot(1,&quot;away-exhausted&quot;,&quot;shoot&quot;)" fullname="OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(1,&quot;away-exhausted&quot;,&quot;shoot&quot;)" methodname="OfferedSnapshot" classname="OnlineMovementSnapshotPlayModeTests" runstate="Runnable" seed="945402265" result="Passed" start-time="2026-11-16 17:03:52Z" end-time="2026-11-16 17:03:53Z" duration="0.877197" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=12, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Movement phase has been reset.
+Passing Away recovering player to HandleTokenSelection
+Away recovering player selected as dribbler. Starting dribble movement.
+Setting remaining Pace to Away recovering player's Pace: 1
+Checking for nutmeggable Defenders
+Committing to Movement Phase action. section=AttMP, selectedToken=Away recovering player, awaitingHexDestination=True, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Hex 37,16 to AsyncMoveTokenToHexRegularly
+Passing Hex 37,16 to MoveTokenToHex
+isDribblerRunning set to true
+MoveTokenAlongPath: shouldCarryBall: True
+MovingBall with Token
+MovingBall with Token
+Token arrived at hex: Hex 37,16
+Attacking team has possession: True.
+[Game Log] Away recovering player (Fixture Away) moves 1 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Away recovering player, IsDribbler: True, remainingDribblerPace: 1
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+remainingDribblerPace: 0, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Away recovering player Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Calculating Eligible Defenders for Interception
+eligibleDefenders.Count: 0
+No interceptions Available, let the dribbler move if available
+Away recovering player is in the opponent penalty Box. Press [S] to take a snapshot!
+Offside assessed (snapshot_available): line x=12, tokens=none.
+Dribbler has 0 remaining Pace, Adding to Moved and moving Forward.
+Away recovering player has exhausted their pace. Dribbling complete.
+isDribblerRunning set to false;
+Away recovering player decides to Snapshot!!!!
+Offside assessed (snapshot_committed): line x=12, tokens=none.
+Snapshot initiated. Allow one defender to move 2 hexes.
+[Game Log] Away recovering player (Fixture Away) takes a Snapshot!
+]]></output>
+          </test-case>
+          <test-case id="2009" name="OfferedSnapshot(1,&quot;away-exhausted&quot;,&quot;decline&quot;)" fullname="OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(1,&quot;away-exhausted&quot;,&quot;decline&quot;)" methodname="OfferedSnapshot" classname="OnlineMovementSnapshotPlayModeTests" runstate="Runnable" seed="121031611" result="Passed" start-time="2026-11-16 17:03:53Z" end-time="2026-11-16 17:03:54Z" duration="0.946729" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=12, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Movement phase has been reset.
+Passing Away recovering player to HandleTokenSelection
+Away recovering player selected as dribbler. Starting dribble movement.
+Setting remaining Pace to Away recovering player's Pace: 1
+Checking for nutmeggable Defenders
+Committing to Movement Phase action. section=AttMP, selectedToken=Away recovering player, awaitingHexDestination=True, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Hex 37,16 to AsyncMoveTokenToHexRegularly
+Passing Hex 37,16 to MoveTokenToHex
+isDribblerRunning set to true
+MoveTokenAlongPath: shouldCarryBall: True
+MovingBall with Token
+MovingBall with Token
+Token arrived at hex: Hex 37,16
+Attacking team has possession: True.
+[Game Log] Away recovering player (Fixture Away) moves 1 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Away recovering player, IsDribbler: True, remainingDribblerPace: 1
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+remainingDribblerPace: 0, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Away recovering player Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Calculating Eligible Defenders for Interception
+eligibleDefenders.Count: 0
+No interceptions Available, let the dribbler move if available
+Away recovering player is in the opponent penalty Box. Press [S] to take a snapshot!
+Offside assessed (snapshot_available): line x=12, tokens=none.
+Dribbler has 0 remaining Pace, Adding to Moved and moving Forward.
+Away recovering player has exhausted their pace. Dribbling complete.
+isDribblerRunning set to false;
+Attacker decides not to shoot..
+Advancing Movement Phase
+]]></output>
+          </test-case>
+          <test-case id="2010" name="OfferedSnapshot(-1,&quot;running&quot;,&quot;shoot&quot;)" fullname="OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(-1,&quot;running&quot;,&quot;shoot&quot;)" methodname="OfferedSnapshot" classname="OnlineMovementSnapshotPlayModeTests" runstate="Runnable" seed="1934901111" result="Passed" start-time="2026-11-16 17:03:54Z" end-time="2026-11-16 17:03:55Z" duration="0.864412" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-12, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Movement phase has been reset.
+Passing Home carrier to HandleTokenSelection
+Home carrier selected as dribbler. Starting dribble movement.
+Setting remaining Pace to Home carrier's Pace: 3
+Checking for nutmeggable Defenders
+Committing to Movement Phase action. section=AttMP, selectedToken=Home carrier, awaitingHexDestination=True, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Hex 13,16 to AsyncMoveTokenToHexRegularly
+Passing Hex 13,16 to MoveTokenToHex
+isDribblerRunning set to true
+MoveTokenAlongPath: shouldCarryBall: True
+MovingBall with Token
+MovingBall with Token
+Token arrived at hex: Hex 13,16
+Attacking team has possession: True.
+[Game Log] Home carrier (Fixture Home) moves 1 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Home carrier, IsDribbler: True, remainingDribblerPace: 3
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+remainingDribblerPace: 2, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Home carrier Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Calculating Eligible Defenders for Interception
+eligibleDefenders.Count: 0
+No interceptions Available, let the dribbler move if available
+Home carrier is in the opponent penalty Box. Press [S] to take a snapshot!
+Offside assessed (snapshot_available): line x=-12, tokens=none.
+Dribbler has 2 remaining Pace, Highlighting 1 Hex, isAwaitingHexDestination
+Home carrier decides to Snapshot!!!!
+Offside assessed (snapshot_committed): line x=-12, tokens=none.
+Snapshot initiated. Allow one defender to move 2 hexes.
+[Game Log] Home carrier (Fixture Home) takes a Snapshot!
+]]></output>
+          </test-case>
+          <test-case id="2011" name="OfferedSnapshot(-1,&quot;running&quot;,&quot;decline&quot;)" fullname="OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(-1,&quot;running&quot;,&quot;decline&quot;)" methodname="OfferedSnapshot" classname="OnlineMovementSnapshotPlayModeTests" runstate="Runnable" seed="1800135533" result="Passed" start-time="2026-11-16 17:03:55Z" end-time="2026-11-16 17:03:56Z" duration="0.901481" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-12, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Movement phase has been reset.
+Passing Home carrier to HandleTokenSelection
+Home carrier selected as dribbler. Starting dribble movement.
+Setting remaining Pace to Home carrier's Pace: 3
+Checking for nutmeggable Defenders
+Committing to Movement Phase action. section=AttMP, selectedToken=Home carrier, awaitingHexDestination=True, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Hex 13,16 to AsyncMoveTokenToHexRegularly
+Passing Hex 13,16 to MoveTokenToHex
+isDribblerRunning set to true
+MoveTokenAlongPath: shouldCarryBall: True
+MovingBall with Token
+MovingBall with Token
+Token arrived at hex: Hex 13,16
+Attacking team has possession: True.
+[Game Log] Home carrier (Fixture Home) moves 1 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Home carrier, IsDribbler: True, remainingDribblerPace: 3
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+remainingDribblerPace: 2, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Home carrier Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Calculating Eligible Defenders for Interception
+eligibleDefenders.Count: 0
+No interceptions Available, let the dribbler move if available
+Home carrier is in the opponent penalty Box. Press [S] to take a snapshot!
+Offside assessed (snapshot_available): line x=-12, tokens=none.
+Dribbler has 2 remaining Pace, Highlighting 1 Hex, isAwaitingHexDestination
+Dribbler is running. Forfeiting remaining pace.
+Advancing Movement Phase
+]]></output>
+          </test-case>
+          <test-case id="2012" name="OfferedSnapshot(-1,&quot;exhausted&quot;,&quot;shoot&quot;)" fullname="OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(-1,&quot;exhausted&quot;,&quot;shoot&quot;)" methodname="OfferedSnapshot" classname="OnlineMovementSnapshotPlayModeTests" runstate="Runnable" seed="311844885" result="Passed" start-time="2026-11-16 17:03:56Z" end-time="2026-11-16 17:03:57Z" duration="0.862059" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-12, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Movement phase has been reset.
+Passing Home carrier to HandleTokenSelection
+Home carrier selected as dribbler. Starting dribble movement.
+Setting remaining Pace to Home carrier's Pace: 1
+Checking for nutmeggable Defenders
+Committing to Movement Phase action. section=AttMP, selectedToken=Home carrier, awaitingHexDestination=True, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Hex 13,16 to AsyncMoveTokenToHexRegularly
+Passing Hex 13,16 to MoveTokenToHex
+isDribblerRunning set to true
+MoveTokenAlongPath: shouldCarryBall: True
+MovingBall with Token
+MovingBall with Token
+Token arrived at hex: Hex 13,16
+Attacking team has possession: True.
+[Game Log] Home carrier (Fixture Home) moves 1 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Home carrier, IsDribbler: True, remainingDribblerPace: 1
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+remainingDribblerPace: 0, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Home carrier Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Calculating Eligible Defenders for Interception
+eligibleDefenders.Count: 0
+No interceptions Available, let the dribbler move if available
+Home carrier is in the opponent penalty Box. Press [S] to take a snapshot!
+Offside assessed (snapshot_available): line x=-12, tokens=none.
+Dribbler has 0 remaining Pace, Adding to Moved and moving Forward.
+Home carrier has exhausted their pace. Dribbling complete.
+isDribblerRunning set to false;
+Home carrier decides to Snapshot!!!!
+Offside assessed (snapshot_committed): line x=-12, tokens=none.
+Snapshot initiated. Allow one defender to move 2 hexes.
+[Game Log] Home carrier (Fixture Home) takes a Snapshot!
+]]></output>
+          </test-case>
+          <test-case id="2013" name="OfferedSnapshot(-1,&quot;exhausted&quot;,&quot;decline&quot;)" fullname="OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(-1,&quot;exhausted&quot;,&quot;decline&quot;)" methodname="OfferedSnapshot" classname="OnlineMovementSnapshotPlayModeTests" runstate="Runnable" seed="131705743" result="Passed" start-time="2026-11-16 17:03:57Z" end-time="2026-11-16 17:03:58Z" duration="0.950822" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-12, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Movement phase has been reset.
+Passing Home carrier to HandleTokenSelection
+Home carrier selected as dribbler. Starting dribble movement.
+Setting remaining Pace to Home carrier's Pace: 1
+Checking for nutmeggable Defenders
+Committing to Movement Phase action. section=AttMP, selectedToken=Home carrier, awaitingHexDestination=True, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Hex 13,16 to AsyncMoveTokenToHexRegularly
+Passing Hex 13,16 to MoveTokenToHex
+isDribblerRunning set to true
+MoveTokenAlongPath: shouldCarryBall: True
+MovingBall with Token
+MovingBall with Token
+Token arrived at hex: Hex 13,16
+Attacking team has possession: True.
+[Game Log] Home carrier (Fixture Home) moves 1 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Home carrier, IsDribbler: True, remainingDribblerPace: 1
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+remainingDribblerPace: 0, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Home carrier Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Calculating Eligible Defenders for Interception
+eligibleDefenders.Count: 0
+No interceptions Available, let the dribbler move if available
+Home carrier is in the opponent penalty Box. Press [S] to take a snapshot!
+Offside assessed (snapshot_available): line x=-12, tokens=none.
+Dribbler has 0 remaining Pace, Adding to Moved and moving Forward.
+Home carrier has exhausted their pace. Dribbling complete.
+isDribblerRunning set to false;
+Attacker decides not to shoot..
+Advancing Movement Phase
+]]></output>
+          </test-case>
+          <test-case id="2014" name="OfferedSnapshot(-1,&quot;away-running&quot;,&quot;shoot&quot;)" fullname="OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(-1,&quot;away-running&quot;,&quot;shoot&quot;)" methodname="OfferedSnapshot" classname="OnlineMovementSnapshotPlayModeTests" runstate="Runnable" seed="2013188553" result="Passed" start-time="2026-11-16 17:03:58Z" end-time="2026-11-16 17:03:59Z" duration="0.886761" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-12, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Movement phase has been reset.
+Passing Away recovering player to HandleTokenSelection
+Away recovering player selected as dribbler. Starting dribble movement.
+Setting remaining Pace to Away recovering player's Pace: 3
+Checking for nutmeggable Defenders
+Committing to Movement Phase action. section=AttMP, selectedToken=Away recovering player, awaitingHexDestination=True, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Hex 13,16 to AsyncMoveTokenToHexRegularly
+Passing Hex 13,16 to MoveTokenToHex
+isDribblerRunning set to true
+MoveTokenAlongPath: shouldCarryBall: True
+MovingBall with Token
+MovingBall with Token
+Token arrived at hex: Hex 13,16
+Attacking team has possession: True.
+[Game Log] Away recovering player (Fixture Away) moves 1 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Away recovering player, IsDribbler: True, remainingDribblerPace: 3
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+remainingDribblerPace: 2, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Away recovering player Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Calculating Eligible Defenders for Interception
+eligibleDefenders.Count: 0
+No interceptions Available, let the dribbler move if available
+Away recovering player is in the opponent penalty Box. Press [S] to take a snapshot!
+Offside assessed (snapshot_available): line x=-12, tokens=none.
+Dribbler has 2 remaining Pace, Highlighting 1 Hex, isAwaitingHexDestination
+Away recovering player decides to Snapshot!!!!
+Offside assessed (snapshot_committed): line x=-12, tokens=none.
+Snapshot initiated. Allow one defender to move 2 hexes.
+[Game Log] Away recovering player (Fixture Away) takes a Snapshot!
+]]></output>
+          </test-case>
+          <test-case id="2015" name="OfferedSnapshot(-1,&quot;away-running&quot;,&quot;decline&quot;)" fullname="OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(-1,&quot;away-running&quot;,&quot;decline&quot;)" methodname="OfferedSnapshot" classname="OnlineMovementSnapshotPlayModeTests" runstate="Runnable" seed="295056584" result="Passed" start-time="2026-11-16 17:03:59Z" end-time="2026-11-16 17:04:00Z" duration="0.873225" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-12, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Movement phase has been reset.
+Passing Away recovering player to HandleTokenSelection
+Away recovering player selected as dribbler. Starting dribble movement.
+Setting remaining Pace to Away recovering player's Pace: 3
+Checking for nutmeggable Defenders
+Committing to Movement Phase action. section=AttMP, selectedToken=Away recovering player, awaitingHexDestination=True, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Hex 13,16 to AsyncMoveTokenToHexRegularly
+Passing Hex 13,16 to MoveTokenToHex
+isDribblerRunning set to true
+MoveTokenAlongPath: shouldCarryBall: True
+MovingBall with Token
+MovingBall with Token
+Token arrived at hex: Hex 13,16
+Attacking team has possession: True.
+[Game Log] Away recovering player (Fixture Away) moves 1 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Away recovering player, IsDribbler: True, remainingDribblerPace: 3
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+remainingDribblerPace: 2, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Away recovering player Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Calculating Eligible Defenders for Interception
+eligibleDefenders.Count: 0
+No interceptions Available, let the dribbler move if available
+Away recovering player is in the opponent penalty Box. Press [S] to take a snapshot!
+Offside assessed (snapshot_available): line x=-12, tokens=none.
+Dribbler has 2 remaining Pace, Highlighting 1 Hex, isAwaitingHexDestination
+Dribbler is running. Forfeiting remaining pace.
+Advancing Movement Phase
+]]></output>
+          </test-case>
+          <test-case id="2016" name="OfferedSnapshot(-1,&quot;away-exhausted&quot;,&quot;shoot&quot;)" fullname="OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(-1,&quot;away-exhausted&quot;,&quot;shoot&quot;)" methodname="OfferedSnapshot" classname="OnlineMovementSnapshotPlayModeTests" runstate="Runnable" seed="2075558241" result="Passed" start-time="2026-11-16 17:04:00Z" end-time="2026-11-16 17:04:01Z" duration="0.923891" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-12, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Movement phase has been reset.
+Passing Away recovering player to HandleTokenSelection
+Away recovering player selected as dribbler. Starting dribble movement.
+Setting remaining Pace to Away recovering player's Pace: 1
+Checking for nutmeggable Defenders
+Committing to Movement Phase action. section=AttMP, selectedToken=Away recovering player, awaitingHexDestination=True, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Hex 13,16 to AsyncMoveTokenToHexRegularly
+Passing Hex 13,16 to MoveTokenToHex
+isDribblerRunning set to true
+MoveTokenAlongPath: shouldCarryBall: True
+MovingBall with Token
+MovingBall with Token
+Token arrived at hex: Hex 13,16
+Attacking team has possession: True.
+[Game Log] Away recovering player (Fixture Away) moves 1 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Away recovering player, IsDribbler: True, remainingDribblerPace: 1
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+remainingDribblerPace: 0, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Away recovering player Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Calculating Eligible Defenders for Interception
+eligibleDefenders.Count: 0
+No interceptions Available, let the dribbler move if available
+Away recovering player is in the opponent penalty Box. Press [S] to take a snapshot!
+Offside assessed (snapshot_available): line x=-12, tokens=none.
+Dribbler has 0 remaining Pace, Adding to Moved and moving Forward.
+Away recovering player has exhausted their pace. Dribbling complete.
+isDribblerRunning set to false;
+Away recovering player decides to Snapshot!!!!
+Offside assessed (snapshot_committed): line x=-12, tokens=none.
+Snapshot initiated. Allow one defender to move 2 hexes.
+[Game Log] Away recovering player (Fixture Away) takes a Snapshot!
+]]></output>
+          </test-case>
+          <test-case id="2017" name="OfferedSnapshot(-1,&quot;away-exhausted&quot;,&quot;decline&quot;)" fullname="OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(-1,&quot;away-exhausted&quot;,&quot;decline&quot;)" methodname="OfferedSnapshot" classname="OnlineMovementSnapshotPlayModeTests" runstate="Runnable" seed="89656632" result="Passed" start-time="2026-11-16 17:04:01Z" end-time="2026-11-16 17:04:01Z" duration="0.914485" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-12, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Movement phase has been reset.
+Passing Away recovering player to HandleTokenSelection
+Away recovering player selected as dribbler. Starting dribble movement.
+Setting remaining Pace to Away recovering player's Pace: 1
+Checking for nutmeggable Defenders
+Committing to Movement Phase action. section=AttMP, selectedToken=Away recovering player, awaitingHexDestination=True, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Hex 13,16 to AsyncMoveTokenToHexRegularly
+Passing Hex 13,16 to MoveTokenToHex
+isDribblerRunning set to true
+MoveTokenAlongPath: shouldCarryBall: True
+MovingBall with Token
+MovingBall with Token
+Token arrived at hex: Hex 13,16
+Attacking team has possession: True.
+[Game Log] Away recovering player (Fixture Away) moves 1 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Away recovering player, IsDribbler: True, remainingDribblerPace: 1
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+remainingDribblerPace: 0, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Away recovering player Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Calculating Eligible Defenders for Interception
+eligibleDefenders.Count: 0
+No interceptions Available, let the dribbler move if available
+Away recovering player is in the opponent penalty Box. Press [S] to take a snapshot!
+Offside assessed (snapshot_available): line x=-12, tokens=none.
+Dribbler has 0 remaining Pace, Adding to Moved and moving Forward.
+Away recovering player has exhausted their pace. Dribbling complete.
+isDribblerRunning set to false;
+Attacker decides not to shoot..
+Advancing Movement Phase
+Saving results to: TestResults\GameplayRegression\Runs\20261116T170346893Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

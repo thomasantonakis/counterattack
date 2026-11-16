@@ -224,6 +224,16 @@
     },
     {
       "mode": "editor",
+      "fixture": "OnlineMovementSnapshotEditorTests",
+      "categories": [
+        "OnlineMovementSnapshot"
+      ],
+      "definition_sha256": "18f71aaec8a56fa95f861e69e085ae9bc1d100796f472164954572e18bcc835b",
+      "route": "native",
+      "source": "Assets/Editor/FeatureTests/OnlineMovementSnapshot/OnlineMovementSnapshotEditorTests.cs"
+    },
+    {
+      "mode": "editor",
       "fixture": "OnlineOpeningEditorTests",
       "categories": [
         "OnlineOpeningSetup"
@@ -742,6 +752,16 @@
       "definition_sha256": "2a67022698a6748663b056e0c6f9ce86be2483200e5072b0bed0a79e0fab3782",
       "route": "native",
       "source": "Assets/Tests/PlayMode/Features/OnlineMovement/OnlineMovementPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineMovementSnapshotPlayModeTests",
+      "categories": [
+        "OnlineMovementSnapshot"
+      ],
+      "definition_sha256": "6a47df3e6d6ad989bbc16f37f01fdf50d77a8c9324fb614de9221d5e00c20a70",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineMovementSnapshot/OnlineMovementSnapshotPlayModeTests.cs"
     },
     {
       "mode": "playmode",
@@ -12965,6 +12985,641 @@
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
       "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T165422719Z/results.xml"
+    },
+    {
+      "id": "OnlineMovementSnapshotEditorTests.AmbiguousDeclinesAreNotGuessed",
+      "feature": "OnlineMovementSnapshot",
+      "mode": "editor",
+      "fixture": "OnlineMovementSnapshotEditorTests",
+      "method": "AmbiguousDeclinesAreNotGuessed",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T170631426Z/results.xml"
+    },
+    {
+      "id": "OnlineMovementSnapshotEditorTests.KeysFollowPublishedContext(S,\"movement.snapshot\")",
+      "feature": "OnlineMovementSnapshot",
+      "mode": "editor",
+      "fixture": "OnlineMovementSnapshotEditorTests",
+      "method": "KeysFollowPublishedContext",
+      "parameters": [
+        "S,\"movement.snapshot\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T170631426Z/results.xml"
+    },
+    {
+      "id": "OnlineMovementSnapshotEditorTests.KeysFollowPublishedContext(X,\"movement.snapshot.decline\")",
+      "feature": "OnlineMovementSnapshot",
+      "mode": "editor",
+      "fixture": "OnlineMovementSnapshotEditorTests",
+      "method": "KeysFollowPublishedContext",
+      "parameters": [
+        "X,\"movement.snapshot.decline\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T170631426Z/results.xml"
+    },
+    {
+      "id": "OnlineMovementSnapshotEditorTests.KeysFollowPublishedContext(X,\"dribble.finish\")",
+      "feature": "OnlineMovementSnapshot",
+      "mode": "editor",
+      "fixture": "OnlineMovementSnapshotEditorTests",
+      "method": "KeysFollowPublishedContext",
+      "parameters": [
+        "X,\"dribble.finish\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T170631426Z/results.xml"
+    },
+    {
+      "id": "OnlineMovementSnapshotEditorTests.KeysFollowPublishedContext(X,\"shot.cancel\")",
+      "feature": "OnlineMovementSnapshot",
+      "mode": "editor",
+      "fixture": "OnlineMovementSnapshotEditorTests",
+      "method": "KeysFollowPublishedContext",
+      "parameters": [
+        "X,\"shot.cancel\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T170631426Z/results.xml"
+    },
+    {
+      "id": "OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(1,\"running\",\"shoot\")",
+      "feature": "OnlineMovementSnapshot",
+      "mode": "playmode",
+      "fixture": "OnlineMovementSnapshotPlayModeTests",
+      "method": "OfferedSnapshot",
+      "parameters": [
+        "1,\"running\",\"shoot\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T170645384Z/results.xml"
+    },
+    {
+      "id": "OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(1,\"running\",\"decline\")",
+      "feature": "OnlineMovementSnapshot",
+      "mode": "playmode",
+      "fixture": "OnlineMovementSnapshotPlayModeTests",
+      "method": "OfferedSnapshot",
+      "parameters": [
+        "1,\"running\",\"decline\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T170645384Z/results.xml"
+    },
+    {
+      "id": "OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(1,\"running\",\"hold\")",
+      "feature": "OnlineMovementSnapshot",
+      "mode": "playmode",
+      "fixture": "OnlineMovementSnapshotPlayModeTests",
+      "method": "OfferedSnapshot",
+      "parameters": [
+        "1,\"running\",\"hold\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T170645384Z/results.xml"
+    },
+    {
+      "id": "OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(1,\"running\",\"cancel\")",
+      "feature": "OnlineMovementSnapshot",
+      "mode": "playmode",
+      "fixture": "OnlineMovementSnapshotPlayModeTests",
+      "method": "OfferedSnapshot",
+      "parameters": [
+        "1,\"running\",\"cancel\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T170645384Z/results.xml"
+    },
+    {
+      "id": "OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(1,\"exhausted\",\"shoot\")",
+      "feature": "OnlineMovementSnapshot",
+      "mode": "playmode",
+      "fixture": "OnlineMovementSnapshotPlayModeTests",
+      "method": "OfferedSnapshot",
+      "parameters": [
+        "1,\"exhausted\",\"shoot\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T170645384Z/results.xml"
+    },
+    {
+      "id": "OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(1,\"exhausted\",\"decline\")",
+      "feature": "OnlineMovementSnapshot",
+      "mode": "playmode",
+      "fixture": "OnlineMovementSnapshotPlayModeTests",
+      "method": "OfferedSnapshot",
+      "parameters": [
+        "1,\"exhausted\",\"decline\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T170645384Z/results.xml"
+    },
+    {
+      "id": "OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(1,\"exhausted\",\"hold\")",
+      "feature": "OnlineMovementSnapshot",
+      "mode": "playmode",
+      "fixture": "OnlineMovementSnapshotPlayModeTests",
+      "method": "OfferedSnapshot",
+      "parameters": [
+        "1,\"exhausted\",\"hold\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T170645384Z/results.xml"
+    },
+    {
+      "id": "OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(1,\"exhausted\",\"cancel\")",
+      "feature": "OnlineMovementSnapshot",
+      "mode": "playmode",
+      "fixture": "OnlineMovementSnapshotPlayModeTests",
+      "method": "OfferedSnapshot",
+      "parameters": [
+        "1,\"exhausted\",\"cancel\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T170645384Z/results.xml"
+    },
+    {
+      "id": "OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(1,\"away-running\",\"shoot\")",
+      "feature": "OnlineMovementSnapshot",
+      "mode": "playmode",
+      "fixture": "OnlineMovementSnapshotPlayModeTests",
+      "method": "OfferedSnapshot",
+      "parameters": [
+        "1,\"away-running\",\"shoot\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T170645384Z/results.xml"
+    },
+    {
+      "id": "OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(1,\"away-running\",\"decline\")",
+      "feature": "OnlineMovementSnapshot",
+      "mode": "playmode",
+      "fixture": "OnlineMovementSnapshotPlayModeTests",
+      "method": "OfferedSnapshot",
+      "parameters": [
+        "1,\"away-running\",\"decline\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T170645384Z/results.xml"
+    },
+    {
+      "id": "OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(1,\"away-running\",\"hold\")",
+      "feature": "OnlineMovementSnapshot",
+      "mode": "playmode",
+      "fixture": "OnlineMovementSnapshotPlayModeTests",
+      "method": "OfferedSnapshot",
+      "parameters": [
+        "1,\"away-running\",\"hold\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T170645384Z/results.xml"
+    },
+    {
+      "id": "OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(1,\"away-running\",\"cancel\")",
+      "feature": "OnlineMovementSnapshot",
+      "mode": "playmode",
+      "fixture": "OnlineMovementSnapshotPlayModeTests",
+      "method": "OfferedSnapshot",
+      "parameters": [
+        "1,\"away-running\",\"cancel\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T170645384Z/results.xml"
+    },
+    {
+      "id": "OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(1,\"away-exhausted\",\"shoot\")",
+      "feature": "OnlineMovementSnapshot",
+      "mode": "playmode",
+      "fixture": "OnlineMovementSnapshotPlayModeTests",
+      "method": "OfferedSnapshot",
+      "parameters": [
+        "1,\"away-exhausted\",\"shoot\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T170645384Z/results.xml"
+    },
+    {
+      "id": "OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(1,\"away-exhausted\",\"decline\")",
+      "feature": "OnlineMovementSnapshot",
+      "mode": "playmode",
+      "fixture": "OnlineMovementSnapshotPlayModeTests",
+      "method": "OfferedSnapshot",
+      "parameters": [
+        "1,\"away-exhausted\",\"decline\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T170645384Z/results.xml"
+    },
+    {
+      "id": "OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(1,\"away-exhausted\",\"hold\")",
+      "feature": "OnlineMovementSnapshot",
+      "mode": "playmode",
+      "fixture": "OnlineMovementSnapshotPlayModeTests",
+      "method": "OfferedSnapshot",
+      "parameters": [
+        "1,\"away-exhausted\",\"hold\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T170645384Z/results.xml"
+    },
+    {
+      "id": "OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(1,\"away-exhausted\",\"cancel\")",
+      "feature": "OnlineMovementSnapshot",
+      "mode": "playmode",
+      "fixture": "OnlineMovementSnapshotPlayModeTests",
+      "method": "OfferedSnapshot",
+      "parameters": [
+        "1,\"away-exhausted\",\"cancel\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T170645384Z/results.xml"
+    },
+    {
+      "id": "OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(-1,\"running\",\"shoot\")",
+      "feature": "OnlineMovementSnapshot",
+      "mode": "playmode",
+      "fixture": "OnlineMovementSnapshotPlayModeTests",
+      "method": "OfferedSnapshot",
+      "parameters": [
+        "-1,\"running\",\"shoot\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T170645384Z/results.xml"
+    },
+    {
+      "id": "OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(-1,\"running\",\"decline\")",
+      "feature": "OnlineMovementSnapshot",
+      "mode": "playmode",
+      "fixture": "OnlineMovementSnapshotPlayModeTests",
+      "method": "OfferedSnapshot",
+      "parameters": [
+        "-1,\"running\",\"decline\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T170645384Z/results.xml"
+    },
+    {
+      "id": "OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(-1,\"running\",\"hold\")",
+      "feature": "OnlineMovementSnapshot",
+      "mode": "playmode",
+      "fixture": "OnlineMovementSnapshotPlayModeTests",
+      "method": "OfferedSnapshot",
+      "parameters": [
+        "-1,\"running\",\"hold\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T170645384Z/results.xml"
+    },
+    {
+      "id": "OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(-1,\"running\",\"cancel\")",
+      "feature": "OnlineMovementSnapshot",
+      "mode": "playmode",
+      "fixture": "OnlineMovementSnapshotPlayModeTests",
+      "method": "OfferedSnapshot",
+      "parameters": [
+        "-1,\"running\",\"cancel\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T170645384Z/results.xml"
+    },
+    {
+      "id": "OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(-1,\"exhausted\",\"shoot\")",
+      "feature": "OnlineMovementSnapshot",
+      "mode": "playmode",
+      "fixture": "OnlineMovementSnapshotPlayModeTests",
+      "method": "OfferedSnapshot",
+      "parameters": [
+        "-1,\"exhausted\",\"shoot\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T170645384Z/results.xml"
+    },
+    {
+      "id": "OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(-1,\"exhausted\",\"decline\")",
+      "feature": "OnlineMovementSnapshot",
+      "mode": "playmode",
+      "fixture": "OnlineMovementSnapshotPlayModeTests",
+      "method": "OfferedSnapshot",
+      "parameters": [
+        "-1,\"exhausted\",\"decline\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T170645384Z/results.xml"
+    },
+    {
+      "id": "OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(-1,\"exhausted\",\"hold\")",
+      "feature": "OnlineMovementSnapshot",
+      "mode": "playmode",
+      "fixture": "OnlineMovementSnapshotPlayModeTests",
+      "method": "OfferedSnapshot",
+      "parameters": [
+        "-1,\"exhausted\",\"hold\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T170645384Z/results.xml"
+    },
+    {
+      "id": "OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(-1,\"exhausted\",\"cancel\")",
+      "feature": "OnlineMovementSnapshot",
+      "mode": "playmode",
+      "fixture": "OnlineMovementSnapshotPlayModeTests",
+      "method": "OfferedSnapshot",
+      "parameters": [
+        "-1,\"exhausted\",\"cancel\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T170645384Z/results.xml"
+    },
+    {
+      "id": "OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(-1,\"away-running\",\"shoot\")",
+      "feature": "OnlineMovementSnapshot",
+      "mode": "playmode",
+      "fixture": "OnlineMovementSnapshotPlayModeTests",
+      "method": "OfferedSnapshot",
+      "parameters": [
+        "-1,\"away-running\",\"shoot\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T170645384Z/results.xml"
+    },
+    {
+      "id": "OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(-1,\"away-running\",\"decline\")",
+      "feature": "OnlineMovementSnapshot",
+      "mode": "playmode",
+      "fixture": "OnlineMovementSnapshotPlayModeTests",
+      "method": "OfferedSnapshot",
+      "parameters": [
+        "-1,\"away-running\",\"decline\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T170645384Z/results.xml"
+    },
+    {
+      "id": "OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(-1,\"away-running\",\"hold\")",
+      "feature": "OnlineMovementSnapshot",
+      "mode": "playmode",
+      "fixture": "OnlineMovementSnapshotPlayModeTests",
+      "method": "OfferedSnapshot",
+      "parameters": [
+        "-1,\"away-running\",\"hold\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T170645384Z/results.xml"
+    },
+    {
+      "id": "OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(-1,\"away-running\",\"cancel\")",
+      "feature": "OnlineMovementSnapshot",
+      "mode": "playmode",
+      "fixture": "OnlineMovementSnapshotPlayModeTests",
+      "method": "OfferedSnapshot",
+      "parameters": [
+        "-1,\"away-running\",\"cancel\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T170645384Z/results.xml"
+    },
+    {
+      "id": "OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(-1,\"away-exhausted\",\"shoot\")",
+      "feature": "OnlineMovementSnapshot",
+      "mode": "playmode",
+      "fixture": "OnlineMovementSnapshotPlayModeTests",
+      "method": "OfferedSnapshot",
+      "parameters": [
+        "-1,\"away-exhausted\",\"shoot\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T170645384Z/results.xml"
+    },
+    {
+      "id": "OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(-1,\"away-exhausted\",\"decline\")",
+      "feature": "OnlineMovementSnapshot",
+      "mode": "playmode",
+      "fixture": "OnlineMovementSnapshotPlayModeTests",
+      "method": "OfferedSnapshot",
+      "parameters": [
+        "-1,\"away-exhausted\",\"decline\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T170645384Z/results.xml"
+    },
+    {
+      "id": "OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(-1,\"away-exhausted\",\"hold\")",
+      "feature": "OnlineMovementSnapshot",
+      "mode": "playmode",
+      "fixture": "OnlineMovementSnapshotPlayModeTests",
+      "method": "OfferedSnapshot",
+      "parameters": [
+        "-1,\"away-exhausted\",\"hold\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T170645384Z/results.xml"
+    },
+    {
+      "id": "OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(-1,\"away-exhausted\",\"cancel\")",
+      "feature": "OnlineMovementSnapshot",
+      "mode": "playmode",
+      "fixture": "OnlineMovementSnapshotPlayModeTests",
+      "method": "OfferedSnapshot",
+      "parameters": [
+        "-1,\"away-exhausted\",\"cancel\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T170645384Z/results.xml"
+    },
+    {
+      "id": "OnlineMovementSnapshotPlayModeTests.RunningPlayerMayContinue(1,\"running\")",
+      "feature": "OnlineMovementSnapshot",
+      "mode": "playmode",
+      "fixture": "OnlineMovementSnapshotPlayModeTests",
+      "method": "RunningPlayerMayContinue",
+      "parameters": [
+        "1,\"running\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T170645384Z/results.xml"
+    },
+    {
+      "id": "OnlineMovementSnapshotPlayModeTests.RunningPlayerMayContinue(1,\"away-running\")",
+      "feature": "OnlineMovementSnapshot",
+      "mode": "playmode",
+      "fixture": "OnlineMovementSnapshotPlayModeTests",
+      "method": "RunningPlayerMayContinue",
+      "parameters": [
+        "1,\"away-running\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T170645384Z/results.xml"
+    },
+    {
+      "id": "OnlineMovementSnapshotPlayModeTests.RunningPlayerMayContinue(-1,\"running\")",
+      "feature": "OnlineMovementSnapshot",
+      "mode": "playmode",
+      "fixture": "OnlineMovementSnapshotPlayModeTests",
+      "method": "RunningPlayerMayContinue",
+      "parameters": [
+        "-1,\"running\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T170645384Z/results.xml"
+    },
+    {
+      "id": "OnlineMovementSnapshotPlayModeTests.RunningPlayerMayContinue(-1,\"away-running\")",
+      "feature": "OnlineMovementSnapshot",
+      "mode": "playmode",
+      "fixture": "OnlineMovementSnapshotPlayModeTests",
+      "method": "RunningPlayerMayContinue",
+      "parameters": [
+        "-1,\"away-running\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T170645384Z/results.xml"
+    },
+    {
+      "id": "OnlineMovementSnapshotPlayModeTests.SnapshotResolvesThroughKeeperHold(1,\"running\")",
+      "feature": "OnlineMovementSnapshot",
+      "mode": "playmode",
+      "fixture": "OnlineMovementSnapshotPlayModeTests",
+      "method": "SnapshotResolvesThroughKeeperHold",
+      "parameters": [
+        "1,\"running\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T170645384Z/results.xml"
+    },
+    {
+      "id": "OnlineMovementSnapshotPlayModeTests.SnapshotResolvesThroughKeeperHold(1,\"exhausted\")",
+      "feature": "OnlineMovementSnapshot",
+      "mode": "playmode",
+      "fixture": "OnlineMovementSnapshotPlayModeTests",
+      "method": "SnapshotResolvesThroughKeeperHold",
+      "parameters": [
+        "1,\"exhausted\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T170645384Z/results.xml"
+    },
+    {
+      "id": "OnlineMovementSnapshotPlayModeTests.SnapshotResolvesThroughKeeperHold(1,\"away-running\")",
+      "feature": "OnlineMovementSnapshot",
+      "mode": "playmode",
+      "fixture": "OnlineMovementSnapshotPlayModeTests",
+      "method": "SnapshotResolvesThroughKeeperHold",
+      "parameters": [
+        "1,\"away-running\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T170645384Z/results.xml"
+    },
+    {
+      "id": "OnlineMovementSnapshotPlayModeTests.SnapshotResolvesThroughKeeperHold(1,\"away-exhausted\")",
+      "feature": "OnlineMovementSnapshot",
+      "mode": "playmode",
+      "fixture": "OnlineMovementSnapshotPlayModeTests",
+      "method": "SnapshotResolvesThroughKeeperHold",
+      "parameters": [
+        "1,\"away-exhausted\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T170645384Z/results.xml"
+    },
+    {
+      "id": "OnlineMovementSnapshotPlayModeTests.SnapshotResolvesThroughKeeperHold(-1,\"running\")",
+      "feature": "OnlineMovementSnapshot",
+      "mode": "playmode",
+      "fixture": "OnlineMovementSnapshotPlayModeTests",
+      "method": "SnapshotResolvesThroughKeeperHold",
+      "parameters": [
+        "-1,\"running\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T170645384Z/results.xml"
+    },
+    {
+      "id": "OnlineMovementSnapshotPlayModeTests.SnapshotResolvesThroughKeeperHold(-1,\"exhausted\")",
+      "feature": "OnlineMovementSnapshot",
+      "mode": "playmode",
+      "fixture": "OnlineMovementSnapshotPlayModeTests",
+      "method": "SnapshotResolvesThroughKeeperHold",
+      "parameters": [
+        "-1,\"exhausted\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T170645384Z/results.xml"
+    },
+    {
+      "id": "OnlineMovementSnapshotPlayModeTests.SnapshotResolvesThroughKeeperHold(-1,\"away-running\")",
+      "feature": "OnlineMovementSnapshot",
+      "mode": "playmode",
+      "fixture": "OnlineMovementSnapshotPlayModeTests",
+      "method": "SnapshotResolvesThroughKeeperHold",
+      "parameters": [
+        "-1,\"away-running\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T170645384Z/results.xml"
+    },
+    {
+      "id": "OnlineMovementSnapshotPlayModeTests.SnapshotResolvesThroughKeeperHold(-1,\"away-exhausted\")",
+      "feature": "OnlineMovementSnapshot",
+      "mode": "playmode",
+      "fixture": "OnlineMovementSnapshotPlayModeTests",
+      "method": "SnapshotResolvesThroughKeeperHold",
+      "parameters": [
+        "-1,\"away-exhausted\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T170645384Z/results.xml"
     }
   ]
 }

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="5" result="Passed" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 17:06:31Z" end-time="2026-11-16 17:06:31Z" duration="0.1027963">
+  <test-suite type="TestSuite" id="3095" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1770" result="Passed" start-time="2026-11-16 17:06:31Z" end-time="2026-11-16 17:06:31Z" duration="0.102796" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="3089" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="1770" result="Passed" start-time="2026-11-16 17:06:31Z" end-time="2026-11-16 17:06:31Z" duration="0.071951" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12156" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="1949" name="OnlineMovementSnapshotEditorTests" fullname="OnlineMovementSnapshotEditorTests" classname="OnlineMovementSnapshotEditorTests" runstate="Runnable" testcasecount="5" result="Passed" start-time="2026-11-16 17:06:31Z" end-time="2026-11-16 17:06:31Z" duration="0.068107" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineMovementSnapshot" />
+        </properties>
+        <test-case id="1955" name="AmbiguousDeclinesAreNotGuessed" fullname="OnlineMovementSnapshotEditorTests.AmbiguousDeclinesAreNotGuessed" methodname="AmbiguousDeclinesAreNotGuessed" classname="OnlineMovementSnapshotEditorTests" runstate="Runnable" seed="605547250" result="Passed" start-time="2026-11-16 17:06:31Z" end-time="2026-11-16 17:06:31Z" duration="0.014193" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="1954" name="KeysFollowPublishedContext" fullname="OnlineMovementSnapshotEditorTests.KeysFollowPublishedContext" classname="OnlineMovementSnapshotEditorTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-11-16 17:06:31Z" end-time="2026-11-16 17:06:31Z" duration="0.034265" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1950" name="KeysFollowPublishedContext(S,&quot;movement.snapshot&quot;)" fullname="OnlineMovementSnapshotEditorTests.KeysFollowPublishedContext(S,&quot;movement.snapshot&quot;)" methodname="KeysFollowPublishedContext" classname="OnlineMovementSnapshotEditorTests" runstate="Runnable" seed="662268516" result="Passed" start-time="2026-11-16 17:06:31Z" end-time="2026-11-16 17:06:31Z" duration="0.004503" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1951" name="KeysFollowPublishedContext(X,&quot;movement.snapshot.decline&quot;)" fullname="OnlineMovementSnapshotEditorTests.KeysFollowPublishedContext(X,&quot;movement.snapshot.decline&quot;)" methodname="KeysFollowPublishedContext" classname="OnlineMovementSnapshotEditorTests" runstate="Runnable" seed="1961191831" result="Passed" start-time="2026-11-16 17:06:31Z" end-time="2026-11-16 17:06:31Z" duration="0.000340" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1952" name="KeysFollowPublishedContext(X,&quot;dribble.finish&quot;)" fullname="OnlineMovementSnapshotEditorTests.KeysFollowPublishedContext(X,&quot;dribble.finish&quot;)" methodname="KeysFollowPublishedContext" classname="OnlineMovementSnapshotEditorTests" runstate="Runnable" seed="2053359079" result="Passed" start-time="2026-11-16 17:06:31Z" end-time="2026-11-16 17:06:31Z" duration="0.000214" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1953" name="KeysFollowPublishedContext(X,&quot;shot.cancel&quot;)" fullname="OnlineMovementSnapshotEditorTests.KeysFollowPublishedContext(X,&quot;shot.cancel&quot;)" methodname="KeysFollowPublishedContext" classname="OnlineMovementSnapshotEditorTests" runstate="Runnable" seed="1744978212" result="Passed" start-time="2026-11-16 17:06:31Z" end-time="2026-11-16 17:06:31Z" duration="0.000221" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Saving results to: TestResults\GameplayRegression\Runs\20261116T170631426Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

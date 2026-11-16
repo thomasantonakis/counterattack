@@ -13,7 +13,7 @@ namespace CounterAttack.Online
         public OnlineGroundPassBoard board;
         public bool samplePhysicalInput=true;
         private OnlineGroundPassState state;
-        private static readonly KeyCode[] Keys={KeyCode.P,KeyCode.L,KeyCode.C,KeyCode.F,KeyCode.M,KeyCode.S,KeyCode.R,KeyCode.D,KeyCode.B,KeyCode.N,KeyCode.T,KeyCode.Return,KeyCode.KeypadEnter};
+        private static readonly KeyCode[] Keys={KeyCode.P,KeyCode.L,KeyCode.C,KeyCode.F,KeyCode.M,KeyCode.S,KeyCode.R,KeyCode.D,KeyCode.B,KeyCode.N,KeyCode.T,KeyCode.X,KeyCode.Return,KeyCode.KeypadEnter};
         public void Display(OnlineGroundPassState publication)=>state=publication;
         private bool Submit(string action)=>action!=null && board!=null && board.controls!=null && board.controls.TrySubmitAction(action);
         public bool TryToken(PlayerToken token)

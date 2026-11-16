@@ -41,7 +41,8 @@ namespace CounterAttack.Online
                 case KeyCode.B:return available("shot.keeper.block");
                 case KeyCode.N:return available("duel.stand");
                 case KeyCode.T:return available("duel.tackle");
-                case KeyCode.S:return available("shot.confirm")??available("shot.start");
+                case KeyCode.S:return available("movement.snapshot")??available("shot.confirm")??available("shot.start");
+                case KeyCode.X:return Unique(state,action=>action=="movement.snapshot.decline" || action=="dribble.finish" || action=="shot.cancel");
                 case KeyCode.R:return Unique(state,action=>action.EndsWith(".roll",StringComparison.Ordinal)
                     || action=="shot.save" || action=="shot.handling" || action=="shot.block"
                     || action=="foul.leniency" || action=="foul.injury" || action=="header.interception");

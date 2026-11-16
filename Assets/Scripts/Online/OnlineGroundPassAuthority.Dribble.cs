@@ -15,6 +15,7 @@ namespace CounterAttack.Online
             {
                 foreach(var hex in manager.OnlineDribbleTargets)AddDribble(actions,MovementTargetAction(hex.coordinates.x,hex.coordinates.z),OnlineDribbleIntent.Move,hex);
                 AddDribble(actions,"dribble.finish",OnlineDribbleIntent.Finish);
+                if(manager.OnlineCanTakeMovementSnapshot)AddMovementSnapshot(actions,"movement.snapshot",OnlineMovementSnapshotIntent.Shoot);
             }
             else if(phase=="nutmeg")
             {

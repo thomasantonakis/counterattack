@@ -43,6 +43,12 @@ real duel continuations, both teams/directions and serialized replica/commands.
 See OnlineKeeperGroundChoices/Verification.md. Full Room is now v11; exports
 still precede this batch and must be refreshed before paired use. Continue the
 movement snapshot offer/decline path and presentation/transport work.
+Movement snapshot offers now add 49 new native passes and 12 selected affected
+passes, including the offline one-mover accounting cases. Running S, exhausted
+S/X, cancellation/holds, continued dribbling and eight complete shot/save
+continuations passed for both teams/directions. See OnlineMovementSnapshot/Verification.md.
+Full Room is now v12; refresh exports before paired use. Next: loose-ball snapshot
+answering, remaining interruption choices and presentation/transport tuning.
 Controls no longer serialize the complete roster/stats every display update:
 typed detached control decisions have 10 new focused passes and 19 selected
 affected passes. See OnlineControlDecision/Verification.md for memory-measurement

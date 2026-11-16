@@ -14,6 +14,8 @@ public partial class ShotManager
     public bool OnlineCanSelectShot=>isAvailable && !isActivated && !IsMovingSnapshotBlocker && !OnlineShotContextBlocked
         && MatchManager.Instance!=null && !IsSnapshotSuppressedByFinalExtraMovement()
         && CanStartShotFromCurrentPossession(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose);
+    public bool OnlineCanStartOfferedSnapshot(PlayerToken actor)=>!isActivated && !IsMovingSnapshotBlocker && !OnlineShotContextBlocked
+        && !IsSnapshotSuppressedByFinalExtraMovement() && CanStartShotFromCurrentPossession(actor);
     public string OnlineShotStage => OnlineShotContextBlocked ? "pending" : isWaitingForShotCommitConfirmation && !isActivated ? "confirm" : !isActivated ? null
         : IsMovingSnapshotBlocker ? "resolving" : isWaitingForOutsideBoxGKShotDecision ? "keeper-choice" : isWaitingforBlockerSelection ? "snapshot.select" : isWaitingforBlockerMovement ? "snapshot.target"
         : isWaitingForTargetSelection ? "target" : isWaitingForBlockDiceRoll ? onlineShotBlockVersion==headerSavePresentationVersion ? "pending" : "block"

@@ -712,20 +712,13 @@ public partial class MovementPhaseManager : MonoBehaviour
                         return;
                     }
 
-                    isWaitingForSnapshotDecision = false;
-                    MarkDribblerMovedAfterSnapshotDecision();
-                    Debug.Log($"{MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.name} decides to Snapshot!!!!");
-                    MatchManager.Instance.EnsureOffsideManager()?.EvaluateAndStore("snapshot_committed");
-                    shotManager.StartShotProcess(selectedToken, "snapshot");
+                    AcceptOfferedMovementSnapshot();
                     return;
                 }
                 if (keyData.key == KeyCode.X)
                 {
                     bool? choosingTeam = IsInstructionExpectingHomeTeam();
-                    CommitToAction();
-                    isWaitingForSnapshotDecision = false;
-                    Debug.Log("Dribbler was running. Decided to forfeit remaining pace and not shoot.");
-                    AdvanceMovementPhase();
+                    DeclineOfferedMovementSnapshot();
                     ConsumeMovementKey(keyData, choosingTeam);
                     return;
                 }
@@ -749,18 +742,13 @@ public partial class MovementPhaseManager : MonoBehaviour
                     return;
                 }
 
-                isWaitingForSnapshotDecision = false;
-                Debug.Log($"Non Dribbler {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.name} decides to Snapshot!!!!");
-                MatchManager.Instance.EnsureOffsideManager()?.EvaluateAndStore("snapshot_committed");
-                shotManager.StartShotProcess(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, "snapshot");
+                AcceptOfferedMovementSnapshot();
                 return;
             }
             if (keyData.key == KeyCode.X)
             {
                 bool? choosingTeam = IsInstructionExpectingHomeTeam();
-                isWaitingForSnapshotDecision = false;
-                Debug.Log($"Attacker decides not to shoot..");
-                if (isMovementPhaseDef) AdvanceMovementPhase();
+                DeclineOfferedMovementSnapshot();
                 ConsumeMovementKey(keyData, choosingTeam);
                 return;
             }
