@@ -1,6 +1,6 @@
 # Auditioned crowd pool selections
 
-Source: the user listened to the imported recordings and supplied these assignments. These listening decisions supersede the earlier filename/metadata shortlist. Most pool names below are proposed implementation identifiers. Applied runtime assignments are Chatter (WallaBase: 7), Chant (12), Cheer (GoalScored: 2) and Groan (MissedChance: 6). Selected incident/transition pools are now assigned as detailed in GameplayAudio.md. Unselected injury/pass and committed-shot anticipation cues remain pending.
+Source: the user listened to the imported recordings and supplied these assignments. These listening decisions supersede the earlier filename/metadata shortlist. Most pool names below are proposed implementation identifiers. Applied runtime assignments are Chatter (WallaBase: 7), Chant (26), Cheer (GoalScored: 2) and Groan (MissedChance: 6). Selected incident/transition pools are now assigned as detailed in GameplayAudio.md. Unselected injury/pass and committed-shot anticipation cues remain pending.
 
 ## Updated mix rules
 
@@ -26,7 +26,7 @@ Injury/pass and committed-shot anticipation decisions remain pending.
 | WallaAccent | 5 | Walla; confirmed occasional overlays above continuous chatter |
 | StandardPass | 1 | Successful Standard Pass?; tentative |
 | DefensiveShotRelief | 1 | Missed Shot / Blocked Shot in favor of us; selected |
-| Chant | 12 | Chant; selected |
+| Chant | 26 | Chant; selected |
 | GoalScored | 2 | Goal Scored; selected |
 | MissedChance | 6 | Missed Chance; selected; _03 prepared from 4.4 seconds onward |
 | KickOff | 3 | Kick Off; selected |
@@ -105,6 +105,37 @@ Injury/pass and committed-shot anticipation decisions remain pending.
 ## Resolved folder labels
 
 `Singing_Walla_01.wav` is actually under `Chants_Singing/Audio/`. `Match Events` resolves to `Match_Events`; the tannoy folder is spelled `Tannoy_Announcements`. Every expanded file was found uniquely on disk.
+
+## Prepared YouTube chant additions (2026-11-16)
+
+All 14 additions are assigned to the runtime Chant pool. Each is a 48 kHz,
+stereo, 24-bit PCM WAV with 350 ms fade-in and fade-out. The full-video sources
+without user-specified ranges use the complete available audio. The music-heavy
+`xQfYcqcacfk` source uses the separated vocals stem; its instrumental backing
+was removed with UVR-MDX-NET-Inst_HQ_3.
+
+| Prepared asset | YouTube source and range | Duration |
+| --- | --- | ---: |
+| `Assets/Audio/Prepared/Chant_vkbrTSNdOVA_05m50_to_07m10.wav` | `vkbrTSNdOVA`, 5:50–7:10 | 80 s |
+| `Assets/Audio/Prepared/Chant_vkbrTSNdOVA_00m25_to_01m09.wav` | `vkbrTSNdOVA`, 0:25–1:09 | 44 s |
+| `Assets/Audio/Prepared/Chant_Ok5Lj1OUmFE_05m40_to_06m20.wav` | `Ok5Lj1OUmFE`, 5:40–6:20 | 40 s |
+| `Assets/Audio/Prepared/Chant_TspYx7EaF5A_Full.wav` | `TspYx7EaF5A`, full video | 80 s |
+| `Assets/Audio/Prepared/Chant_qWYLGNnBuLo_Full.wav` | `qWYLGNnBuLo`, full video | 119.9 s |
+| `Assets/Audio/Prepared/Chant_xQfYcqcacfk_VocalsSeparated.wav` | `xQfYcqcacfk`, full video, vocals stem | 20 s |
+| `Assets/Audio/Prepared/Chant_AV46Q76dJGU_Full.wav` | `AV46Q76dJGU`, full Short | 24 s |
+| `Assets/Audio/Prepared/Chant_QzOcB7RBR7w_Full.wav` | `QzOcB7RBR7w`, full video | 31.5 s |
+| `Assets/Audio/Prepared/Chant_fo0_xqpzzPY_00m08_to_00m26.wav` | `fo0_xqpzzPY`, 0:08–0:26 | 18 s |
+| `Assets/Audio/Prepared/Chant_c_cjRBM5pf8_01m46_to_02m25.wav` | `c_cjRBM5pf8`, 1:46–2:25 | 39 s |
+| `Assets/Audio/Prepared/Chant_ecgpMCsDJVk_00m00_to_01m00.wav` | `ecgpMCsDJVk`, 0:00–1:00 | 60 s |
+| `Assets/Audio/Prepared/Chant_vNf2l9SuHHA_Full.wav` | `vNf2l9SuHHA`, full video | 75 s |
+| `Assets/Audio/Prepared/Chant_vUYytZI6Lvs_Full.wav` | `vUYytZI6Lvs`, full video | 89.7 s |
+| `Assets/Audio/Prepared/Chant_7defDCYKhV4_00m35_to_01m00.wav` | `7defDCYKhV4`, 0:35 to end | 25.07 s |
+
+The first export pass exposed an FFmpeg output-seek/filter ordering issue: some
+files had silent tails or were silent despite full nominal duration. All files
+were regenerated with input-side seeking, then checked with `ffprobe`,
+`volumedetect`, and `silencedetect` at -45 dB for 250 ms. Every final clip has
+nonzero signal and no sustained silent interval.
 
 ## Pending decisions
 

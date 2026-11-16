@@ -775,5 +775,27 @@
     "verifiedWavs": 153,
     "method": "SHA-256 comparison before curation; complete match",
     "usedOriginalClips": 48
+  },
+  "youtubeChantAdditions": {
+    "runtimePoolSizeAfter": 26,
+    "format": "48 kHz stereo 24-bit PCM WAV",
+    "fadeSecondsInAndOut": 0.35,
+    "signalValidation": "ffprobe format/duration plus volumedetect and silencedetect at -45 dB for 250 ms; all outputs contain signal throughout",
+    "clips": [
+      {"path": "Assets/Audio/Prepared/Chant_vkbrTSNdOVA_05m50_to_07m10.wav", "sourceId": "vkbrTSNdOVA", "range": "05:50-07:10", "durationSeconds": 80},
+      {"path": "Assets/Audio/Prepared/Chant_vkbrTSNdOVA_00m25_to_01m09.wav", "sourceId": "vkbrTSNdOVA", "range": "00:25-01:09", "durationSeconds": 44},
+      {"path": "Assets/Audio/Prepared/Chant_Ok5Lj1OUmFE_05m40_to_06m20.wav", "sourceId": "Ok5Lj1OUmFE", "range": "05:40-06:20", "durationSeconds": 40},
+      {"path": "Assets/Audio/Prepared/Chant_TspYx7EaF5A_Full.wav", "sourceId": "TspYx7EaF5A", "range": "full video", "durationSeconds": 80},
+      {"path": "Assets/Audio/Prepared/Chant_qWYLGNnBuLo_Full.wav", "sourceId": "qWYLGNnBuLo", "range": "full video", "durationSeconds": 119.884646},
+      {"path": "Assets/Audio/Prepared/Chant_xQfYcqcacfk_VocalsSeparated.wav", "sourceId": "xQfYcqcacfk", "range": "full video; vocals stem", "durationSeconds": 19.969167, "separationModel": "UVR-MDX-NET-Inst_HQ_3"},
+      {"path": "Assets/Audio/Prepared/Chant_AV46Q76dJGU_Full.wav", "sourceId": "AV46Q76dJGU", "range": "full Short", "durationSeconds": 24},
+      {"path": "Assets/Audio/Prepared/Chant_QzOcB7RBR7w_Full.wav", "sourceId": "QzOcB7RBR7w", "range": "full video", "durationSeconds": 31.532708},
+      {"path": "Assets/Audio/Prepared/Chant_fo0_xqpzzPY_00m08_to_00m26.wav", "sourceId": "fo0_xqpzzPY", "range": "00:08-00:26", "durationSeconds": 18},
+      {"path": "Assets/Audio/Prepared/Chant_c_cjRBM5pf8_01m46_to_02m25.wav", "sourceId": "c_cjRBM5pf8", "range": "01:46-02:25", "durationSeconds": 39},
+      {"path": "Assets/Audio/Prepared/Chant_ecgpMCsDJVk_00m00_to_01m00.wav", "sourceId": "ecgpMCsDJVk", "range": "00:00-01:00", "durationSeconds": 60},
+      {"path": "Assets/Audio/Prepared/Chant_vNf2l9SuHHA_Full.wav", "sourceId": "vNf2l9SuHHA", "range": "full video", "durationSeconds": 75},
+      {"path": "Assets/Audio/Prepared/Chant_vUYytZI6Lvs_Full.wav", "sourceId": "vUYytZI6Lvs", "range": "full video", "durationSeconds": 89.745125},
+      {"path": "Assets/Audio/Prepared/Chant_7defDCYKhV4_00m35_to_01m00.wav", "sourceId": "7defDCYKhV4", "range": "00:35-end", "durationSeconds": 25.070042}
+    ]
   }
 }

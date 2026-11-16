@@ -56,6 +56,16 @@ verification or evidence that pending gameplay event integrations work.
 - [x] Focused PlayMode checks passed 3/3: home/away mix and goal-reaction headroom (2), due-chant retry after a temporary reaction (1).
 - [ ] Listen in a live match; automated playback tests use muted sources.
 
+## YouTube chant expansion (2026-11-16)
+
+- [x] Prepare 14 user-selected clips using the supplied ranges or full source, with 350 ms fades.
+- [x] Separate instrumental backing from the conditional `xQfYcqcacfk` clip and use its vocals stem.
+- [x] Verify each prepared file's PCM format, duration, nonzero signal and absence of sustained silence.
+- [x] Assign all 14 imported AudioClips to the shared Chant pool through the live Unity Editor; pool now has 26 clips.
+- [ ] Listen to the new clips in a live match and confirm the separated stem has no distracting music residue.
+
+No gameplay code changed, so no gameplay tests were run for this content-only pool update. Exact sources, ranges, durations and exported asset paths are recorded in `Documentation/Plans/GameplayAudioPoolSelections.md`.
+
 Native results: `TestResults/GameplayRegression/Runs/20261112T180115578Z/`
 and `TestResults/GameplayRegression/Runs/20261112T180215053Z/`.
 

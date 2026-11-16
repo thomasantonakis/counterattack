@@ -75,12 +75,12 @@ reactions, preparation and goal headroom. Local mute settings remain local.
   and supplied 56 unique selections, expanded from ranges and checked on disk.
   `GameplayAudioPoolSelections.md` and `.json` preserve the exact user assignments,
   notes, actual paths and provisional pool names. These audition choices supersede
-  the earlier filename/metadata shortlist. Chatter (7), Chant (12), Cheer (2) and
+  the earlier filename/metadata shortlist. Chatter (7), Chant (26), Cheer (2) and
   Groan (6, including the prepared crop) are now assigned in the runtime library.
   Continuous Walla and occasional chants are implemented; game-event hooks and
   the other proposed pool types remain pending.
   The selections comprise seven base Walla clips, five confirmed occasional Walla
-  overlays above continuous chatter, 12 chants, and incident/transition/substitution
+  overlays above continuous chatter, 26 chants, and incident/transition/substitution
   cues. Angry_Shout_Swearing_01 plays when a foul is made; stand attribution remains
   to be finalized. Near_Miss_Groan_Applause_03 is prepared from exactly 4.4 seconds
   to the end as a separate WAV under `Assets/Audio/Prepared/`, with the original
@@ -90,6 +90,9 @@ reactions, preparation and goal headroom. Local mute settings remain local.
   do not assign it based on a supplier folder name. Selected match whistles and
   tannoy announcements are now scoped for their listed occasions; unrelated
   interface/dice cues remain deferred.
+  The Chant pool now includes 14 prepared YouTube-derived additions with 350 ms
+  fades; ranges, durations, and signal verification are in
+  `GameplayAudioPoolSelections.md`.
   See `GameplayAudioInventory.md` for a shortlist and `GameplayAudioInventory.json`
   for all 153 WAV paths, durations, formats and embedded descriptions.
 - Separate cues (whistles, dice, interface, swishes) are deferred for now. Keep
