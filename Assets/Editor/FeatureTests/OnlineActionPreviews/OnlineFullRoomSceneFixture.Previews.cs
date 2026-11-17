@@ -62,6 +62,11 @@ public sealed partial class OnlineFullRoomSceneFixture
             Assert.That(authority.Capture().stage,Is.EqualTo("shot.target"));Submit(OnlineGroundPassAuthority.ShotTargetAction(19*side,0));
             deadline=Time.realtimeSinceStartup+10;while(authority.Capture().stage!="shot.roll"){Assert.That(Time.realtimeSinceStartup,Is.LessThan(deadline));yield return null;}
         }
+        if(mode.StartsWith("shot-lob-") || mode.StartsWith("snapshot-lob-"))
+        {
+            string prefix=mode.StartsWith("snapshot")?"snapshot-lob-":"shot-lob-";
+            yield return RunOffTargetCamera(board,protocol,authority,mode.Substring(prefix.Length),1);yield break;
+        }
         if(mode.StartsWith("shot-camera-") || mode.StartsWith("snapshot-camera-"))
         {
             string prefix=mode.StartsWith("snapshot")?"snapshot-camera-":"shot-camera-";

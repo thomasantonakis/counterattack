@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="4" result="Passed" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-17 10:36:41Z" end-time="2026-11-17 10:36:54Z" duration="13.7419771">
+  <test-suite type="TestSuite" id="3241" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1861" result="Passed" start-time="2026-11-17 10:36:41Z" end-time="2026-11-17 10:36:54Z" duration="13.741977" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="3238" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1861" result="Passed" start-time="2026-11-17 10:36:41Z" end-time="2026-11-17 10:36:54Z" duration="13.691022" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12156" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="2073" name="OnlineLongPassPlayModeTests" fullname="OnlineLongPassPlayModeTests" classname="OnlineLongPassPlayModeTests" runstate="Runnable" testcasecount="13" result="Passed" start-time="2026-11-17 10:36:41Z" end-time="2026-11-17 10:36:54Z" duration="13.683237" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineLongPass" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="2078" name="LongPassAuthorityAndReplica" fullname="OnlineLongPassPlayModeTests.LongPassAuthorityAndReplica" classname="OnlineLongPassPlayModeTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-11-17 10:36:41Z" end-time="2026-11-17 10:36:54Z" duration="13.671519" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="2074" name="LongPassAuthorityAndReplica(1,False)" fullname="OnlineLongPassPlayModeTests.LongPassAuthorityAndReplica(1,False)" methodname="LongPassAuthorityAndReplica" classname="OnlineLongPassPlayModeTests" runstate="Runnable" seed="1064090138" result="Passed" start-time="2026-11-17 10:36:41Z" end-time="2026-11-17 10:36:45Z" duration="4.332953" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Long Pass target map is still calculating. Target highlights will draw when ready.
+Long Ball activated. Please select a target hex.
+Clicked hex: (8, 0, -6)
+Long Pass target map is still calculating. Target highlights will draw when ready.
+First click registered. Click the orange target again to confirm the Long Ball.
+Clicked hex: (8, 0, -6)
+Offside assessed (long_ball_target_confirmed): line x=8, tokens=none.
+Long Ball target precompute cancelled. version=4, elapsedMs=10396.4, elapsedFrames=11, processed=0, validTargets=16
+Substitutions are no longer available: Committed to LongBall
+[Game Log] Home carrier (Fixture Home) attempts an aerial pass
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Long Ball confirmed. Waiting for accuracy roll. Please Press R key.
+Performing accuracy roll for Long Pass. Please Press R key.
+Accuracy dice roll: 1
+Passer: Home carrier, HighPass: 4
+Long Ball is NOT accurate, passer roll: 1
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Waiting for Direction roll... Please Press R key.
+Rolled 0: Moving in South direction
+Waiting for Distance roll... Please Press R key.
+Distance Roll: 1 hexes away from target.
+Inaccurate target hex calculated: (8, 0, -7)
+Ball has reached its destination: (8, 0, -7).
+🧤 GK Free Long Ball Move: Click on a highlighted hex to move, or press [X] to skip.
+Landing hex is not in any eligible defender ZOI. No interception needed.
+Ball landed within bounds.
+Attacking team has possession: False.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+]]></output>
+          </test-case>
+          <test-case id="2075" name="LongPassAuthorityAndReplica(1,True)" fullname="OnlineLongPassPlayModeTests.LongPassAuthorityAndReplica(1,True)" methodname="LongPassAuthorityAndReplica" classname="OnlineLongPassPlayModeTests" runstate="Runnable" seed="1366902573" result="Passed" start-time="2026-11-17 10:36:45Z" end-time="2026-11-17 10:36:48Z" duration="3.327871" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Long Pass target map is still calculating. Target highlights will draw when ready.
+Long Ball activated. Please select a target hex.
+Clicked hex: (8, 0, -6)
+Long Pass target map is still calculating. Target highlights will draw when ready.
+First click registered. Click the orange target again to confirm the Long Ball.
+Clicked hex: (8, 0, -6)
+Offside assessed (long_ball_target_confirmed): line x=8, tokens=none.
+Long Ball target precompute cancelled. version=4, elapsedMs=14422.5, elapsedFrames=375, processed=0, validTargets=16
+Substitutions are no longer available: Committed to LongBall
+[Game Log] Home carrier (Fixture Home) attempts an aerial pass
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Long Ball confirmed. Waiting for accuracy roll. Please Press R key.
+Performing accuracy roll for Long Pass. Please Press R key.
+Accuracy dice roll: 5
+Passer: Home carrier, HighPass: 4
+Long Ball is accurate, passer roll: 5
+[Game Log] Home carrier (Fixture Home) accurate places an aerial pass
+Ball has reached its destination: (8, 0, -6).
+🧤 GK Free Long Ball Move: Click on a highlighted hex to move, or press [X] to skip.
+Landing hex is not in any eligible defender ZOI. No interception needed.
+Ball landed within bounds.
+Attacking team has possession: False.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+]]></output>
+          </test-case>
+          <test-case id="2076" name="LongPassAuthorityAndReplica(-1,False)" fullname="OnlineLongPassPlayModeTests.LongPassAuthorityAndReplica(-1,False)" methodname="LongPassAuthorityAndReplica" classname="OnlineLongPassPlayModeTests" runstate="Runnable" seed="1381290210" result="Passed" start-time="2026-11-17 10:36:48Z" end-time="2026-11-17 10:36:52Z" duration="3.177746" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Long Pass target map is still calculating. Target highlights will draw when ready.
+Long Ball activated. Please select a target hex.
+Clicked hex: (-8, 0, -6)
+Long Pass target map is still calculating. Target highlights will draw when ready.
+First click registered. Click the orange target again to confirm the Long Ball.
+Clicked hex: (-8, 0, -6)
+Offside assessed (long_ball_target_confirmed): line x=-8, tokens=none.
+Long Ball target precompute cancelled. version=4, elapsedMs=17254.2, elapsedFrames=731, processed=0, validTargets=16
+Substitutions are no longer available: Committed to LongBall
+[Game Log] Home carrier (Fixture Home) attempts an aerial pass
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Long Ball confirmed. Waiting for accuracy roll. Please Press R key.
+Performing accuracy roll for Long Pass. Please Press R key.
+Accuracy dice roll: 1
+Passer: Home carrier, HighPass: 4
+Long Ball is NOT accurate, passer roll: 1
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Waiting for Direction roll... Please Press R key.
+Rolled 0: Moving in South direction
+Waiting for Distance roll... Please Press R key.
+Distance Roll: 1 hexes away from target.
+Inaccurate target hex calculated: (-8, 0, -7)
+Ball has reached its destination: (-8, 0, -7).
+🧤 GK Free Long Ball Move: Click on a highlighted hex to move, or press [X] to skip.
+Landing hex is not in any eligible defender ZOI. No interception needed.
+Ball landed within bounds.
+Attacking team has possession: False.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+]]></output>
+          </test-case>
+          <test-case id="2077" name="LongPassAuthorityAndReplica(-1,True)" fullname="OnlineLongPassPlayModeTests.LongPassAuthorityAndReplica(-1,True)" methodname="LongPassAuthorityAndReplica" classname="OnlineLongPassPlayModeTests" runstate="Runnable" seed="1020776612" result="Passed" start-time="2026-11-17 10:36:52Z" end-time="2026-11-17 10:36:54Z" duration="2.794395" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Long Pass target map is still calculating. Target highlights will draw when ready.
+Long Ball activated. Please select a target hex.
+Clicked hex: (-8, 0, -6)
+Long Pass target map is still calculating. Target highlights will draw when ready.
+First click registered. Click the orange target again to confirm the Long Ball.
+Clicked hex: (-8, 0, -6)
+Offside assessed (long_ball_target_confirmed): line x=-8, tokens=none.
+Long Ball target precompute cancelled. version=4, elapsedMs=20387.1, elapsedFrames=1103, processed=0, validTargets=16
+Substitutions are no longer available: Committed to LongBall
+[Game Log] Home carrier (Fixture Home) attempts an aerial pass
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Long Ball confirmed. Waiting for accuracy roll. Please Press R key.
+Performing accuracy roll for Long Pass. Please Press R key.
+Accuracy dice roll: 5
+Passer: Home carrier, HighPass: 4
+Long Ball is accurate, passer roll: 5
+[Game Log] Home carrier (Fixture Home) accurate places an aerial pass
+Ball has reached its destination: (-8, 0, -6).
+🧤 GK Free Long Ball Move: Click on a highlighted hex to move, or press [X] to skip.
+Landing hex is not in any eligible defender ZOI. No interception needed.
+Ball landed within bounds.
+Attacking team has possession: False.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Saving results to: TestResults\GameplayRegression\Runs\20261117T103641109Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

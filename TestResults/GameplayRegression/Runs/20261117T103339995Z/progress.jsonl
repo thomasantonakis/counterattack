@@ -1,0 +1,8 @@
+{"name":"OnlineOffTargetLobPlayModeTests.RealLobMiss(False,\"flight\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineOffTargetLobPlayModeTests.RealLobMiss(False,\"reset-flight\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineOffTargetLobPlayModeTests.RealLobMiss(True,\"flight\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineOffTargetLobPlayModeTests.RealLobMiss(True,\"reset-flight\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineOffTargetLobPlayModeTests.RealSnapshotLobMiss(False,\"flight\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineOffTargetLobPlayModeTests.RealSnapshotLobMiss(False,\"reset-flight\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineOffTargetLobPlayModeTests.RealSnapshotLobMiss(True,\"flight\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineOffTargetLobPlayModeTests.RealSnapshotLobMiss(True,\"reset-flight\")","status":"Passed","message":"","stackTrace":""}

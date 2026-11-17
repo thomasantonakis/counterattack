@@ -945,6 +945,16 @@
     },
     {
       "mode": "playmode",
+      "fixture": "OnlineOffTargetLobPlayModeTests",
+      "categories": [
+        "OnlineOffTargetLob"
+      ],
+      "definition_sha256": "af8a65aace6d9ca1a052610bfdf9d1246cde3708143846560ae86ff752b5b644",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineOffTargetLob/OnlineOffTargetLobPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
       "fixture": "OnlineOpeningScenePlayModeTests",
       "categories": [
         "OnlineOpeningScene"
@@ -19259,6 +19269,110 @@
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
       "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T080548173Z/results.xml"
+    },
+    {
+      "id": "OnlineOffTargetLobPlayModeTests.RealLobMiss(False,\"flight\")",
+      "feature": "OnlineOffTargetLob",
+      "mode": "playmode",
+      "fixture": "OnlineOffTargetLobPlayModeTests",
+      "method": "RealLobMiss",
+      "parameters": [
+        "False,\"flight\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T103339995Z/results.xml"
+    },
+    {
+      "id": "OnlineOffTargetLobPlayModeTests.RealLobMiss(False,\"reset-flight\")",
+      "feature": "OnlineOffTargetLob",
+      "mode": "playmode",
+      "fixture": "OnlineOffTargetLobPlayModeTests",
+      "method": "RealLobMiss",
+      "parameters": [
+        "False,\"reset-flight\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T103339995Z/results.xml"
+    },
+    {
+      "id": "OnlineOffTargetLobPlayModeTests.RealLobMiss(True,\"flight\")",
+      "feature": "OnlineOffTargetLob",
+      "mode": "playmode",
+      "fixture": "OnlineOffTargetLobPlayModeTests",
+      "method": "RealLobMiss",
+      "parameters": [
+        "True,\"flight\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T103339995Z/results.xml"
+    },
+    {
+      "id": "OnlineOffTargetLobPlayModeTests.RealLobMiss(True,\"reset-flight\")",
+      "feature": "OnlineOffTargetLob",
+      "mode": "playmode",
+      "fixture": "OnlineOffTargetLobPlayModeTests",
+      "method": "RealLobMiss",
+      "parameters": [
+        "True,\"reset-flight\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T103339995Z/results.xml"
+    },
+    {
+      "id": "OnlineOffTargetLobPlayModeTests.RealSnapshotLobMiss(False,\"flight\")",
+      "feature": "OnlineOffTargetLob",
+      "mode": "playmode",
+      "fixture": "OnlineOffTargetLobPlayModeTests",
+      "method": "RealSnapshotLobMiss",
+      "parameters": [
+        "False,\"flight\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T103339995Z/results.xml"
+    },
+    {
+      "id": "OnlineOffTargetLobPlayModeTests.RealSnapshotLobMiss(False,\"reset-flight\")",
+      "feature": "OnlineOffTargetLob",
+      "mode": "playmode",
+      "fixture": "OnlineOffTargetLobPlayModeTests",
+      "method": "RealSnapshotLobMiss",
+      "parameters": [
+        "False,\"reset-flight\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T103339995Z/results.xml"
+    },
+    {
+      "id": "OnlineOffTargetLobPlayModeTests.RealSnapshotLobMiss(True,\"flight\")",
+      "feature": "OnlineOffTargetLob",
+      "mode": "playmode",
+      "fixture": "OnlineOffTargetLobPlayModeTests",
+      "method": "RealSnapshotLobMiss",
+      "parameters": [
+        "True,\"flight\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T103339995Z/results.xml"
+    },
+    {
+      "id": "OnlineOffTargetLobPlayModeTests.RealSnapshotLobMiss(True,\"reset-flight\")",
+      "feature": "OnlineOffTargetLob",
+      "mode": "playmode",
+      "fixture": "OnlineOffTargetLobPlayModeTests",
+      "method": "RealSnapshotLobMiss",
+      "parameters": [
+        "True,\"reset-flight\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T103339995Z/results.xml"
     }
   ]
 }

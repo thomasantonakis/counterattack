@@ -504,3 +504,13 @@ post-build diagnostic; compilation has zero errors. See
 Assets/Editor/FeatureTests/OnlineOffTargetCamera/Verification.md.
 Next audit: lob/wide off-target continuation cancellation. Paired testing and
 measured internet latency remain deferred until requested.
+
+
+Off-target lob continuation is now cancellation-safe: eight new full-shot and
+snapshot cases passed in both directions after reproducing four stale-flight
+failures. Four focused long-pass cases and 13 report-tool checks passed. All
+eight additions are individually registered for the deferred Mac run. All three
+Windows exports succeeded at 10:38-10:39 UTC November 17, retaining the known
+nonfatal vswhere diagnostic and zero C# compilation errors. See
+Assets/Editor/FeatureTests/OnlineOffTargetLob/Verification.md. Room stays v20 /
+wire v7. Next: wide-miss ball-motion cancellation. Paired testing remains deferred.

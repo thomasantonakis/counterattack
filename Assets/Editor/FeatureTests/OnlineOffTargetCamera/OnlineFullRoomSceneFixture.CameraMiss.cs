@@ -6,7 +6,7 @@ using NUnit.Framework;
 using UnityEngine;
 public sealed partial class OnlineFullRoomSceneFixture
 {
-    private IEnumerator RunOffTargetCamera(OnlineGroundPassBoard board,OnlineMatchProtocol protocol,OnlineGroundPassAuthority authority,string branch)
+    private IEnumerator RunOffTargetCamera(OnlineGroundPassBoard board,OnlineMatchProtocol protocol,OnlineGroundPassAuthority authority,string branch,int firstFace=3)
     {
         var match=board.match;var shot=match.shotManager;var shooter=shot.shooter;var origin=match.ball.GetCurrentHex();var start=match.ball.transform.position;
         Assert.That(shot.enabled,Is.False);Assert.That(match.ball.enabled,Is.False);
@@ -14,7 +14,7 @@ public sealed partial class OnlineFullRoomSceneFixture
         for(;seed<10000;seed++)
         {
             UnityEngine.Random.InitState(seed);var first=match.helperFunctions.DiceRoll();int next=UnityEngine.Random.Range(1,7);
-            if(first._roll==1 && !first._isJackPot && (next==3 || next==4))break;
+            if(first._roll==1 && !first._isJackPot && (next==firstFace || next==firstFace+1))break;
         }
         Assert.That(seed,Is.LessThan(10000));UnityEngine.Random.InitState(seed);
         var state=authority.Capture();Assert.That(state.stage,Is.EqualTo("shot.roll"));
@@ -23,7 +23,7 @@ public sealed partial class OnlineFullRoomSceneFixture
         while(match.TimingRollSequence<2 || Vector3.Distance(start,match.ball.transform.position)<.1f)
         {Assert.That(Time.realtimeSinceStartup,Is.LessThan(deadline),"Real roll must reach the camera miss branch");yield return null;}
         var rolls=match.CaptureOnlineRolls();Assert.That(rolls.Length,Is.EqualTo(2));Assert.That(rolls[0].context,Is.EqualTo("shot_roll"));Assert.That(rolls[0].roll,Is.EqualTo(1));
-        Assert.That(rolls[1].context,Is.EqualTo("shot_off_target_randomizer"));Assert.That(rolls[1].roll,Is.InRange(3,4));
+        Assert.That(rolls[1].context,Is.EqualTo("shot_off_target_randomizer"));Assert.That(rolls[1].roll,Is.InRange(firstFace,firstFace+1));
         if(branch.EndsWith("-hold"))
         {
             var previous=match.ball.transform.position;float stationary=0;deadline=Time.realtimeSinceStartup+3;

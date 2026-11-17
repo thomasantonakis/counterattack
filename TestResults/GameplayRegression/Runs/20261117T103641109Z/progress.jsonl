@@ -1,0 +1,4 @@
+{"name":"OnlineLongPassPlayModeTests.LongPassAuthorityAndReplica(1,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineLongPassPlayModeTests.LongPassAuthorityAndReplica(1,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineLongPassPlayModeTests.LongPassAuthorityAndReplica(-1,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineLongPassPlayModeTests.LongPassAuthorityAndReplica(-1,True)","status":"Passed","message":"","stackTrace":""}

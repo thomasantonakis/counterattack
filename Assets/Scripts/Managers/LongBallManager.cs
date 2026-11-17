@@ -832,7 +832,7 @@ public partial class LongBallManager : MonoBehaviour
             && MatchManager.Instance.currentState != MatchManager.GameState.MatchEnded;
     }
 
-    public IEnumerator HandleLongBallMovement(HexCell targetHex, bool isFromHandling = false)
+    public IEnumerator HandleLongBallMovement(HexCell targetHex, bool isFromHandling = false, System.Func<bool> continuationIsCurrent = null)
     {
         int version = longBallResolutionVersion;
         if (targetHex == null)
@@ -852,7 +852,7 @@ public partial class LongBallManager : MonoBehaviour
         {
             while (elapsedTime < travelDuration)
             {
-                if (!isFromHandling && !IsLongBallResolutionCurrent(version)) yield break;
+                if (continuationIsCurrent != null && !continuationIsCurrent() || !isFromHandling && !IsLongBallResolutionCurrent(version)) yield break;
                 elapsedTime += Time.deltaTime;
                 float progress = elapsedTime / travelDuration;
                 Vector3 flatPosition = Vector3.Lerp(startPosition, targetPosition, progress);
@@ -863,7 +863,7 @@ public partial class LongBallManager : MonoBehaviour
         }
         finally { if (onlineFlightVersion == version) onlineFlightInProgress = false; }
         // Ensure the ball ends exactly on the target hex
-        if (!isFromHandling && !IsLongBallResolutionCurrent(version)) yield break;
+        if (continuationIsCurrent != null && !continuationIsCurrent() || !isFromHandling && !IsLongBallResolutionCurrent(version)) yield break;
         ball.PlaceAtCell(targetHex);
         finalHex = targetHex;
         Debug.Log($"Ball has reached its destination: {targetHex.coordinates}.");

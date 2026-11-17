@@ -4671,6 +4671,8 @@ public partial class ShotManager : MonoBehaviour
 
     private IEnumerator FailedLob()
     {
+        int presentationVersion = headerSavePresentationVersion;
+        bool online = MatchManager.Instance?.IsOnlineAuthorityControlled == true;
         HexCell originHex = GetShotOriginHex();
         int goalSide = GetAttackingGoalSide();
         int targetX = 22 * goalSide;
@@ -4678,7 +4680,9 @@ public partial class ShotManager : MonoBehaviour
                   (targetHex.coordinates.x - originHex.coordinates.x);
         int intercept = targetHex.coordinates.z - Mathf.RoundToInt(slope * targetHex.coordinates.x);
         int intersectionZ = Mathf.RoundToInt(slope * targetX + intercept);
-        yield return StartCoroutine(longBallManager.HandleLongBallMovement(GetOffTargetHex(targetX, intersectionZ), true));
+        yield return StartCoroutine(longBallManager.HandleLongBallMovement(GetOffTargetHex(targetX, intersectionZ), true,
+            continuationIsCurrent: online ? () => IsOnlineShotContinuationCurrent(presentationVersion) : (System.Func<bool>)null));
+        if (online && !IsOnlineShotContinuationCurrent(presentationVersion)) yield break;
         HexCell lastInboundsHex = GetOffTargetHex(18 * goalSide, Mathf.RoundToInt(slope * (18 * goalSide) + intercept));
         yield return StartCoroutine(ResolveOffTargetGoalKick(lastInboundsHex, goalSide));
     }
