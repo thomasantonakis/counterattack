@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using System.Text;
 using System.Collections.Generic;
 
-public class GameDebugMonitor : MonoBehaviour
+public partial class GameDebugMonitor : MonoBehaviour
 {
     public bool IsAIThinking => roomDecisionManager != null && roomDecisionManager.IsThinking;
     private static readonly bool LogFullRoomDecisionCandidates = false;

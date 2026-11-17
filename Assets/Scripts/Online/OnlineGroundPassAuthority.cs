@@ -56,6 +56,7 @@ namespace CounterAttack.Online
         public OnlineGroundPassPresentation roomPose;
         public OnlineShootoutSnapshot shootout;
         public OnlineCoinTossSnapshot coin;
+        public OnlineInstructionObservation instruction;
         public MatchOpeningSetup extraTimeOpening;
     }
 
@@ -349,6 +350,7 @@ namespace CounterAttack.Online
             // Every lane must still obey a Room pause, intro or transport hold.
             if(match.IsGameplayInputBlocked || state.isSharedPaused || state.connectionHeld)actions.Clear();
             state.legalActions = actions.OrderBy(a => a, StringComparer.Ordinal).ToArray();
+            if(state.catalogId==OnlineFullRoomBootstrap.Catalog)state.instruction=OnlineInstructionObservation.Capture(match.OnlineInstructionMonitor,state.owner);
             return state;
         }
 

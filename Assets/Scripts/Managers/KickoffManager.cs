@@ -711,6 +711,11 @@ public partial class KickoffManager : MonoBehaviour
             return string.Empty;
         }
 
+        if(MatchManager.Instance?.IsOnlineAuthorityControlled==true && OnlineStage=="setup")
+        {
+            string phase=flowPhase==KickoffFlowPhase.PostGoalSetup?"Post-goal":"Pre-kickoff";
+            return $"{phase} setup ({OnlineOwner}): select a player, then choose a legal destination in their own half. Defenders stay outside the center circle. Press [Enter] once to confirm this team's setup.";
+        }
         return flowPhase switch
         {
             KickoffFlowPhase.PostGoalSetup => selectedToken != null

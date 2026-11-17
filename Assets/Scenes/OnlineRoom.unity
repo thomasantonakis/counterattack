@@ -184647,6 +184647,7 @@ MonoBehaviour:
   continuousManualSession: 1
   liveFullRoom: 1
   liveScoreboard: {fileID: 1534393747}
+  instructionMonitor: {fileID: 1884634489}
   menu: {fileID: 1572819938}
   shootoutView: {fileID: 1761655696}
   coinView: {fileID: 833548511}

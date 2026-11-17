@@ -17,6 +17,7 @@ namespace CounterAttack.Online
         public bool continuousManualSession;
         public bool liveFullRoom;
         public ScoreboardManager liveScoreboard;
+        public GameDebugMonitor instructionMonitor;
         public OnlineRoomMenu menu;
         public OnlineShootoutView shootoutView;
         public OnlineCoinTossView coinView;
@@ -81,6 +82,7 @@ namespace CounterAttack.Online
         public void Display(OnlineGroundPassState state, string role)
         {
             ResetPresentationMotion(state.connectionHeld || state.isSharedPaused);
+            if(liveFullRoom)instructionMonitor?.DisplayOnlineInstruction(state.instruction,state.connectionHeld || state.isSharedPaused || state.stage=="blocked");
             if (controls != null) controls.Display(state);
             if(liveFullRoom && OnlineRoomSession.IsGuest){match.ApplyOnlineReplicaMatchState(state);liveScoreboard?.RefreshPublishedOnlineState();}
             if (sharedPausePanel != null) sharedPausePanel.SetActive(state.isSharedPaused || liveFullRoom && state.connectionHeld);
@@ -148,6 +150,7 @@ namespace CounterAttack.Online
         private void Update()
         {
             AdvancePresentation(Time.unscaledDeltaTime);
+            if(liveFullRoom)instructionMonitor?.RefreshOnlineInstructionPalette();
             // Personal presentation only. No keys route to rule/input managers.
             if (boardCamera != null)
             {

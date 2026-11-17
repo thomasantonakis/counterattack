@@ -663,3 +663,15 @@ run. See OnlinePublishedHighlights/Verification.md. Room remains v18/wire v7;
 Windows exports refreshed at 05:43-05:44 UTC November 17. Next audit: restore the
 original authored match instruction panel using authority-published text without
 enabling the disabled monitor's AI/logging/input loops. Paired testing deferred.
+
+Room now uses v19 (wire v7) and publishes the authority's original match
+instructions into the existing authored panel on both screens. The monitor's
+Update, AI, logging and key loops stay disabled. Online kickoff wording now
+correctly asks each manager to confirm once. Twenty-three new native cases and
+19 focused clock/payload regressions passed; all new cases are separately
+registered for the deferred Mac run. See OnlineInstructions/Verification.md.
+All Windows profiles refreshed successfully at 06:03-06:04 UTC November 17.
+Continue the original Room presentation audit: committed pass/shot paths and
+risk previews, followed by remaining shared result/menu presentation. Preserve
+the unanswered shared-settings consent and stationary outfield-X rule questions.
+Paired testing and actual internet latency remain deferred until requested.

@@ -1,0 +1,13 @@
+{"name":"OnlineInstructionsEditorTests.BoundedInstructionContract(\"missing\",True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineInstructionsEditorTests.BoundedInstructionContract(\"home\",True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineInstructionsEditorTests.BoundedInstructionContract(\"away\",True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineInstructionsEditorTests.BoundedInstructionContract(\"neutral\",True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineInstructionsEditorTests.BoundedInstructionContract(\"blank\",False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineInstructionsEditorTests.BoundedInstructionContract(\"null-text\",False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineInstructionsEditorTests.BoundedInstructionContract(\"huge\",False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineInstructionsEditorTests.BoundedInstructionContract(\"owner\",False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineInstructionsEditorTests.BoundedInstructionContract(\"missing-owner\",False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineInstructionsEditorTests.BoundedInstructionContract(\"boundary\",True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineInstructionsEditorTests.BoundedInstructionContract(\"unicode\",True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineInstructionsEditorTests.InstructionRefreshCannotMutateOrRevokeAnUnchangedDecision","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineInstructionsEditorTests.InvalidInstructionRefreshKeepsTheLastAcceptedState","status":"Passed","message":"","stackTrace":""}

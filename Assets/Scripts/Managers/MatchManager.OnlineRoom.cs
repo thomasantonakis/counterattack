@@ -4,6 +4,7 @@ using CounterAttack.Online;
 using UnityEngine;
 public partial class MatchManager
 {
+    public GameDebugMonitor OnlineInstructionMonitor {get;set;}
     public bool OnlineBetweenHalves=>isHalfTimeFlowRunning || isTieBreakerTossRunning;
     public bool OnlineMatchComplete=>isMatchComplete && !isHalfTimeFlowRunning && !isTieBreakerTossRunning;
     private PenaltyShootoutManager onlineShootoutManager;

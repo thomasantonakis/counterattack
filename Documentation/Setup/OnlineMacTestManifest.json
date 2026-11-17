@@ -214,6 +214,16 @@
     },
     {
       "mode": "editor",
+      "fixture": "OnlineInstructionsEditorTests",
+      "categories": [
+        "OnlineInstructions"
+      ],
+      "definition_sha256": "69d5a363db68f9bacab176245edb53ba3fbdd45f1af8a6a390a303d40a4705a8",
+      "route": "native",
+      "source": "Assets/Editor/FeatureTests/OnlineInstructions/OnlineInstructionsEditorTests.cs"
+    },
+    {
+      "mode": "editor",
       "fixture": "OnlineKeeperGroundChoicesEditorTests",
       "categories": [
         "OnlineKeeperGroundChoices"
@@ -762,6 +772,16 @@
       "definition_sha256": "acc65da134adfb7747a2be35d39375583e08ac91d3c4fedf8dd0b768eccf20ea",
       "route": "native",
       "source": "Assets/Tests/PlayMode/Features/OnlineHighPass/OnlineHighPassPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineInstructionsPlayModeTests",
+      "categories": [
+        "OnlineInstructions"
+      ],
+      "definition_sha256": "f5da6f46c4df7e7a3b4ac24245bd1c6f6a0068157c987197e30cfcb0b0535768",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineInstructions/OnlineInstructionsPlayModeTests.cs"
     },
     {
       "mode": "playmode",
@@ -18164,6 +18184,301 @@
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
       "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T054019263Z/results.xml"
+    },
+    {
+      "id": "OnlineInstructionsPlayModeTests.LivePassInstructionsAfterKickoff(16)",
+      "feature": "OnlineInstructions",
+      "mode": "playmode",
+      "fixture": "OnlineInstructionsPlayModeTests",
+      "method": "LivePassInstructionsAfterKickoff",
+      "parameters": [
+        "16"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T055859966Z/results.xml"
+    },
+    {
+      "id": "OnlineInstructionsPlayModeTests.LivePassInstructionsAfterKickoff(18)",
+      "feature": "OnlineInstructions",
+      "mode": "playmode",
+      "fixture": "OnlineInstructionsPlayModeTests",
+      "method": "LivePassInstructionsAfterKickoff",
+      "parameters": [
+        "18"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T055859966Z/results.xml"
+    },
+    {
+      "id": "OnlineInstructionsEditorTests.BoundedInstructionContract(\"missing\",True)",
+      "feature": "OnlineInstructions",
+      "mode": "editor",
+      "fixture": "OnlineInstructionsEditorTests",
+      "method": "BoundedInstructionContract",
+      "parameters": [
+        "\"missing\",True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T055715591Z/results.xml"
+    },
+    {
+      "id": "OnlineInstructionsEditorTests.BoundedInstructionContract(\"home\",True)",
+      "feature": "OnlineInstructions",
+      "mode": "editor",
+      "fixture": "OnlineInstructionsEditorTests",
+      "method": "BoundedInstructionContract",
+      "parameters": [
+        "\"home\",True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T055715591Z/results.xml"
+    },
+    {
+      "id": "OnlineInstructionsEditorTests.BoundedInstructionContract(\"away\",True)",
+      "feature": "OnlineInstructions",
+      "mode": "editor",
+      "fixture": "OnlineInstructionsEditorTests",
+      "method": "BoundedInstructionContract",
+      "parameters": [
+        "\"away\",True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T055715591Z/results.xml"
+    },
+    {
+      "id": "OnlineInstructionsEditorTests.BoundedInstructionContract(\"neutral\",True)",
+      "feature": "OnlineInstructions",
+      "mode": "editor",
+      "fixture": "OnlineInstructionsEditorTests",
+      "method": "BoundedInstructionContract",
+      "parameters": [
+        "\"neutral\",True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T055715591Z/results.xml"
+    },
+    {
+      "id": "OnlineInstructionsEditorTests.BoundedInstructionContract(\"blank\",False)",
+      "feature": "OnlineInstructions",
+      "mode": "editor",
+      "fixture": "OnlineInstructionsEditorTests",
+      "method": "BoundedInstructionContract",
+      "parameters": [
+        "\"blank\",False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T055715591Z/results.xml"
+    },
+    {
+      "id": "OnlineInstructionsEditorTests.BoundedInstructionContract(\"null-text\",False)",
+      "feature": "OnlineInstructions",
+      "mode": "editor",
+      "fixture": "OnlineInstructionsEditorTests",
+      "method": "BoundedInstructionContract",
+      "parameters": [
+        "\"null-text\",False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T055715591Z/results.xml"
+    },
+    {
+      "id": "OnlineInstructionsEditorTests.BoundedInstructionContract(\"huge\",False)",
+      "feature": "OnlineInstructions",
+      "mode": "editor",
+      "fixture": "OnlineInstructionsEditorTests",
+      "method": "BoundedInstructionContract",
+      "parameters": [
+        "\"huge\",False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T055715591Z/results.xml"
+    },
+    {
+      "id": "OnlineInstructionsEditorTests.BoundedInstructionContract(\"owner\",False)",
+      "feature": "OnlineInstructions",
+      "mode": "editor",
+      "fixture": "OnlineInstructionsEditorTests",
+      "method": "BoundedInstructionContract",
+      "parameters": [
+        "\"owner\",False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T055715591Z/results.xml"
+    },
+    {
+      "id": "OnlineInstructionsEditorTests.BoundedInstructionContract(\"missing-owner\",False)",
+      "feature": "OnlineInstructions",
+      "mode": "editor",
+      "fixture": "OnlineInstructionsEditorTests",
+      "method": "BoundedInstructionContract",
+      "parameters": [
+        "\"missing-owner\",False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T055715591Z/results.xml"
+    },
+    {
+      "id": "OnlineInstructionsEditorTests.BoundedInstructionContract(\"boundary\",True)",
+      "feature": "OnlineInstructions",
+      "mode": "editor",
+      "fixture": "OnlineInstructionsEditorTests",
+      "method": "BoundedInstructionContract",
+      "parameters": [
+        "\"boundary\",True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T055715591Z/results.xml"
+    },
+    {
+      "id": "OnlineInstructionsEditorTests.BoundedInstructionContract(\"unicode\",True)",
+      "feature": "OnlineInstructions",
+      "mode": "editor",
+      "fixture": "OnlineInstructionsEditorTests",
+      "method": "BoundedInstructionContract",
+      "parameters": [
+        "\"unicode\",True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T055715591Z/results.xml"
+    },
+    {
+      "id": "OnlineInstructionsEditorTests.InstructionRefreshCannotMutateOrRevokeAnUnchangedDecision",
+      "feature": "OnlineInstructions",
+      "mode": "editor",
+      "fixture": "OnlineInstructionsEditorTests",
+      "method": "InstructionRefreshCannotMutateOrRevokeAnUnchangedDecision",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T055715591Z/results.xml"
+    },
+    {
+      "id": "OnlineInstructionsEditorTests.InvalidInstructionRefreshKeepsTheLastAcceptedState",
+      "feature": "OnlineInstructions",
+      "mode": "editor",
+      "fixture": "OnlineInstructionsEditorTests",
+      "method": "InvalidInstructionRefreshKeepsTheLastAcceptedState",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T055715591Z/results.xml"
+    },
+    {
+      "id": "OnlineInstructionsPlayModeTests.AuthoredInstructionsFromAuthority(16,False,False)",
+      "feature": "OnlineInstructions",
+      "mode": "playmode",
+      "fixture": "OnlineInstructionsPlayModeTests",
+      "method": "AuthoredInstructionsFromAuthority",
+      "parameters": [
+        "16,False,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T055411284Z/results.xml"
+    },
+    {
+      "id": "OnlineInstructionsPlayModeTests.AuthoredInstructionsFromAuthority(16,False,True)",
+      "feature": "OnlineInstructions",
+      "mode": "playmode",
+      "fixture": "OnlineInstructionsPlayModeTests",
+      "method": "AuthoredInstructionsFromAuthority",
+      "parameters": [
+        "16,False,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T055411284Z/results.xml"
+    },
+    {
+      "id": "OnlineInstructionsPlayModeTests.AuthoredInstructionsFromAuthority(16,True,False)",
+      "feature": "OnlineInstructions",
+      "mode": "playmode",
+      "fixture": "OnlineInstructionsPlayModeTests",
+      "method": "AuthoredInstructionsFromAuthority",
+      "parameters": [
+        "16,True,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T055411284Z/results.xml"
+    },
+    {
+      "id": "OnlineInstructionsPlayModeTests.AuthoredInstructionsFromAuthority(16,True,True)",
+      "feature": "OnlineInstructions",
+      "mode": "playmode",
+      "fixture": "OnlineInstructionsPlayModeTests",
+      "method": "AuthoredInstructionsFromAuthority",
+      "parameters": [
+        "16,True,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T055411284Z/results.xml"
+    },
+    {
+      "id": "OnlineInstructionsPlayModeTests.AuthoredInstructionsFromAuthority(18,False,False)",
+      "feature": "OnlineInstructions",
+      "mode": "playmode",
+      "fixture": "OnlineInstructionsPlayModeTests",
+      "method": "AuthoredInstructionsFromAuthority",
+      "parameters": [
+        "18,False,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T055411284Z/results.xml"
+    },
+    {
+      "id": "OnlineInstructionsPlayModeTests.AuthoredInstructionsFromAuthority(18,False,True)",
+      "feature": "OnlineInstructions",
+      "mode": "playmode",
+      "fixture": "OnlineInstructionsPlayModeTests",
+      "method": "AuthoredInstructionsFromAuthority",
+      "parameters": [
+        "18,False,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T055411284Z/results.xml"
+    },
+    {
+      "id": "OnlineInstructionsPlayModeTests.AuthoredInstructionsFromAuthority(18,True,False)",
+      "feature": "OnlineInstructions",
+      "mode": "playmode",
+      "fixture": "OnlineInstructionsPlayModeTests",
+      "method": "AuthoredInstructionsFromAuthority",
+      "parameters": [
+        "18,True,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T055411284Z/results.xml"
+    },
+    {
+      "id": "OnlineInstructionsPlayModeTests.AuthoredInstructionsFromAuthority(18,True,True)",
+      "feature": "OnlineInstructions",
+      "mode": "playmode",
+      "fixture": "OnlineInstructionsPlayModeTests",
+      "method": "AuthoredInstructionsFromAuthority",
+      "parameters": [
+        "18,True,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T055411284Z/results.xml"
     }
   ]
 }

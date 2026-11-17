@@ -6,7 +6,7 @@ namespace CounterAttack.Online
     [DefaultExecutionOrder(-31000)]
     public sealed class OnlineFullRoomBootstrap:MonoBehaviour
     {
-        public const string SceneName="OnlineRoom",Catalog="full-room-v18";
+        public const string SceneName="OnlineRoom",Catalog="full-room-v19";
         public OnlineGroundPassBoard board;
         public Renderer replicaBallRenderer;
         public bool Ready {get;private set;}
@@ -22,7 +22,7 @@ namespace CounterAttack.Online
                 foreach(Transform root in board.authorityRoot.transform)root.gameObject.SetActive(true);
                 board.authorityRoot.SetActive(true);
             }
-            MatchManager.Instance=board.match;board.match.InitializeAuthoredOnlineMatch(initial);board.grid.BindAuthoredOnlineCells(board.cells);
+            MatchManager.Instance=board.match;board.match.OnlineInstructionMonitor=board.instructionMonitor;board.instructionMonitor?.DisplayOnlineInstruction(null,true);board.match.InitializeAuthoredOnlineMatch(initial);board.grid.BindAuthoredOnlineCells(board.cells);
             board.match.BeginGameplayEventLoggingSuppression();
             try
             {
