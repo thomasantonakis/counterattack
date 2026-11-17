@@ -104,7 +104,7 @@ public static class DecisionTimingConfig
         [DecisionKind.HighPassDefenderMovement]      = (15f,   15f,   10f),
         [DecisionKind.HighPassAttackingJumpers]      = (15f,   15f,   10f),
         [DecisionKind.HighPassDefensiveJumpers]      = (15f,   15f,   10f),
-        [DecisionKind.HighPassGoalkeeperRush]        = (10f,   10f,    5f),
+        [DecisionKind.HighPassGoalkeeperRush]        = (10f,   10f,    5f),ye
 
         // Long Ball
         [DecisionKind.LongBallTarget]                = (20f,   15f,   10f),
