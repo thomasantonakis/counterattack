@@ -1,5 +1,11 @@
 # Running gameplay regressions
 
+Stadium goal lighting: `StadiumGoalEffectsEditorTests` (category
+`StadiumGoalEffects`) under `Assets/Editor/FeatureTests/StadiumGoalEffects/`.
+Latest focused scope: 14 EditMode passed, zero failed/skipped; compilation clean.
+Native evidence and pending in-match visual review: feature `TASKS.md`.
+This is presentation-only; gameplay suites were not run.
+
 Jersey list height: `KitDropdownHeightPlayModeTests` (category `KitDropdownHeight`)
 under `Assets/Tests/PlayMode/Features/KitDropdownHeight/`. Latest: 10 passed,
 zero failed/skipped; compilation clean. Tests verify actual TMP popups for both

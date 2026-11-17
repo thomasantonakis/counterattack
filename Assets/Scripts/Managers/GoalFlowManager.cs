@@ -280,6 +280,7 @@ public class GoalFlowManager : MonoBehaviour
         bool scoringTeamIsHome = scoringTeamIsHomeOverride ?? (shooterToken != null && shooterToken.isHomeTeam);
         CaptureGoalInstructionContext(shooterToken, scoringTeamIsHome, isOwnGoal);
         instructionPhase = GoalInstructionPhase.Celebration;
+        FindFirstObjectByType<RoomLightingController>()?.BeginGoalEffects(scoringTeamIsHome);
         hexGrid.RemoveHighlightsFromAllHexes();
         string shooterName = shooterToken != null ? shooterToken.name : "Unknown scorer";
         Debug.Log($"GOAL! {shooterName} scores! Starting celebration on goal side {activeGoalSide}.");
@@ -327,6 +328,7 @@ public class GoalFlowManager : MonoBehaviour
         yield return StartCoroutine(MovePlayersToHexes(attackers, attackerResetHexes, false, false, true));
         attackersAreBack = true;
         yield return new WaitUntil(() => defendersAreBack);
+        FindFirstObjectByType<RoomLightingController>()?.EndGoalEffects();
         yield return StartCoroutine(FinalizePostGoalReset(scoringTeamIsHome));
     }
 
@@ -686,6 +688,7 @@ public class GoalFlowManager : MonoBehaviour
 
     private void CleanUpGoalFlow()
     {
+        FindFirstObjectByType<RoomLightingController>()?.EndGoalEffects();
         isActivated = false;
         attackersAreBack = false;
         defendersAreBack = false;
@@ -925,6 +928,7 @@ public class GoalFlowManager : MonoBehaviour
         // Store assigned hexes to prevent double assignments
         HashSet<HexCell> assignedHexes = new HashSet<HexCell>();
         List<Coroutine> movementCoroutines = new List<Coroutine>();
+        float longestReturnDuration = 0;
         for (int i = 0; i < players.Count; i++)
         {
             PlayerToken player = players[i];
@@ -942,6 +946,13 @@ public class GoalFlowManager : MonoBehaviour
                 continue;
             }
             assignedHexes.Add(targetHex); // Mark this hex as taken
+            if (recordPostGoalResetHexes && !isDefense)
+            {
+                Vector3 end = targetHex.transform.position;
+                end.y = player.transform.position.y;
+                longestReturnDuration = Mathf.Max(longestReturnDuration,
+                    Vector3.Distance(player.transform.position, end) / 2f);
+            }
             if (recordPostGoalResetHexes)
             {
                 plannedPostGoalResetHexes[player] = targetHex;
@@ -953,6 +964,8 @@ public class GoalFlowManager : MonoBehaviour
             movementCoroutines.Add(moveCoroutine);
         }
         // Wait for all coroutines to finish before moving forward
+        if (recordPostGoalResetHexes && !isDefense)
+            FindFirstObjectByType<RoomLightingController>()?.BeginGoalReturn(longestReturnDuration);
         foreach (var coroutine in movementCoroutines)
         {
             yield return coroutine;
