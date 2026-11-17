@@ -39,7 +39,7 @@ public sealed partial class OnlineFullRoomSceneFixture
             Assert.That(state.ballMoving,Is.True,"Direct camera animation must use the live presentation lane");Assert.That(state.roomPose,Is.Not.Null);
             Assert.That(Vector3.Distance(new Vector3(state.roomPose.ballX,state.roomPose.ballY,state.roomPose.ballZ),match.ball.transform.position),Is.LessThan(.001f));
         }
-        bool reset=branch.StartsWith("reset");
+        bool reset=branch.StartsWith("reset") || branch=="replace-flight";
         if(branch.StartsWith("pause") || branch.StartsWith("hold"))
         {
             bool transport=branch.StartsWith("hold");
@@ -56,10 +56,28 @@ public sealed partial class OnlineFullRoomSceneFixture
         if(reset)
         {
             typeof(ShotManager).GetMethod("ResetShotProcess",BindingFlags.Instance|BindingFlags.NonPublic).Invoke(shot,null);match.ball.PlaceAtCell(origin);
-            var restored=match.ball.transform.position;float end=Time.realtimeSinceStartup+2.7f;while(Time.realtimeSinceStartup<end)yield return null;
+            var expectedCell=origin;
+            if(branch=="replace-flight")
+            {
+                expectedCell=board.grid.GetHexCellAt(new Vector3Int(origin.coordinates.x,0,origin.coordinates.z+2));
+                Assert.That(expectedCell,Is.Not.Null);
+                match.ball.StartCoroutine(match.ball.MoveToCell(expectedCell,6,allowGKBoxMove:false));
+                var replacementStart=match.ball.transform.position;
+                var rejected=match.ball.MoveToCell(origin,6,allowGKBoxMove:false,continuationIsCurrent:()=>false);
+                Assert.That(rejected.MoveNext(),Is.False,"Already-retired request ends before taking movement ownership");
+                Assert.That(match.ball.IsCellMoveInProgress,Is.True,"Already-retired request cannot take ownership from active motion");
+                Assert.That(Vector3.Distance(match.ball.transform.position,replacementStart),Is.LessThan(.001f));
+            }
+            var restored=branch=="replace-flight"?expectedCell.GetHexCenter()+Vector3.up*match.ball.groundHeightOffset:match.ball.transform.position;float end=Time.realtimeSinceStartup+2.7f;while(Time.realtimeSinceStartup<end)yield return null;
             Assert.That(Vector3.Distance(match.ball.transform.position,restored),Is.LessThan(.001f),"Retired shot coroutine cannot overwrite the next ball position");
             Assert.That(match.teamInAttack,Is.EqualTo(MatchManager.TeamInAttack.Away),"Retired camera miss cannot award a late restart");
             Assert.That(shot.isActivated,Is.False);
+            if(firstFace==5)
+            {
+                Assert.That(match.ball.GetCurrentHex(),Is.SameAs(expectedCell));
+                Assert.That(match.ball.IsCellMoveInProgress,Is.False,"Cancelled motion must release its target without corrupting the replacement");
+                Assert.That(match.ball.isMoving,Is.False);
+            }
         }
         else
         {

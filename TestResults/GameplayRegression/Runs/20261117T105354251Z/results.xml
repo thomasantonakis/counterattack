@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="6" result="Passed" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-17 10:53:54Z" end-time="2026-11-17 10:54:08Z" duration="14.1004262">
+  <test-suite type="TestSuite" id="3256" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1873" result="Passed" start-time="2026-11-17 10:53:54Z" end-time="2026-11-17 10:54:08Z" duration="14.100426" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="3253" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1873" result="Passed" start-time="2026-11-17 10:53:54Z" end-time="2026-11-17 10:54:08Z" duration="14.048005" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12156" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1853" name="OnlineGroundPassPlayModeTests" fullname="OnlineGroundPassPlayModeTests" classname="OnlineGroundPassPlayModeTests" runstate="Runnable" testcasecount="14" result="Passed" start-time="2026-11-17 10:53:54Z" end-time="2026-11-17 10:54:08Z" duration="14.033113" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineGroundPass" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="1860" name="RealGroundPassOutcome" fullname="OnlineGroundPassPlayModeTests.RealGroundPassOutcome" classname="OnlineGroundPassPlayModeTests" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-11-17 10:53:54Z" end-time="2026-11-17 10:54:08Z" duration="14.023668" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="1854" name="RealGroundPassOutcome(1,&quot;safe&quot;)" fullname="OnlineGroundPassPlayModeTests.RealGroundPassOutcome(1,&quot;safe&quot;)" methodname="RealGroundPassOutcome" classname="OnlineGroundPassPlayModeTests" runstate="Runnable" seed="843583649" result="Passed" start-time="2026-11-17 10:53:54Z" end-time="2026-11-17 10:53:56Z" duration="2.606255" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+]]></output>
+          </test-case>
+          <test-case id="1855" name="RealGroundPassOutcome(1,&quot;intercept&quot;)" fullname="OnlineGroundPassPlayModeTests.RealGroundPassOutcome(1,&quot;intercept&quot;)" methodname="RealGroundPassOutcome" classname="OnlineGroundPassPlayModeTests" runstate="Runnable" seed="819290483" result="Passed" start-time="2026-11-17 10:53:57Z" end-time="2026-11-17 10:53:58Z" duration="1.885826" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+8. Away recovering player at (1, 0, 3) with a tackling of 4 can intercept with a roll of 6 at (0, 0, 3). Closest interception hex is (0, 0, 3) (3 steps from the ball).
+Dangerous pass detected. Waiting for 1 dice rolls...
+Ball path interactions: 1
+Starting ball path interaction sequence...
+Selected defender for interception: Away recovering player. Press [R] to roll.
+Dice roll by Away recovering player at (1, 0, 3): 6
+[Expected Stats] Away recovering player records xRecovery 0.167 on standard against Home carrier
+[Game Log] Away recovering player (Fixture Away) attempts an interception
+Pass intercepted by Away recovering player at (1, 0, 3)!
+🔍 Connected Token Found: Home carrier
+[Game Log] Away recovering player (Fixture Away) Intercepts a Standard Pass from Home carrier
+Offside assessment cleared: ground_pass_interception.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Offside assessed (any_other_scenario): line x=0, tokens=none.
+]]></output>
+          </test-case>
+          <test-case id="1856" name="RealGroundPassOutcome(1,&quot;failed_interception&quot;)" fullname="OnlineGroundPassPlayModeTests.RealGroundPassOutcome(1,&quot;failed_interception&quot;)" methodname="RealGroundPassOutcome" classname="OnlineGroundPassPlayModeTests" runstate="Runnable" seed="162191381" result="Passed" start-time="2026-11-17 10:53:58Z" end-time="2026-11-17 10:54:01Z" duration="2.655954" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+8. Away recovering player at (1, 0, 3) with a tackling of 4 can intercept with a roll of 6 at (0, 0, 3). Closest interception hex is (0, 0, 3) (3 steps from the ball).
+Dangerous pass detected. Waiting for 1 dice rolls...
+Ball path interactions: 1
+Starting ball path interaction sequence...
+Selected defender for interception: Away recovering player. Press [R] to roll.
+Dice roll by Away recovering player at (1, 0, 3): 1
+[Expected Stats] Away recovering player records xRecovery 0.167 on standard against Home carrier
+[Game Log] Away recovering player (Fixture Away) attempts an interception
+Away recovering player at (1, 0, 3) failed to intercept.
+Pass successful! No more defenders to roll.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+]]></output>
+          </test-case>
+          <test-case id="1857" name="RealGroundPassOutcome(-1,&quot;safe&quot;)" fullname="OnlineGroundPassPlayModeTests.RealGroundPassOutcome(-1,&quot;safe&quot;)" methodname="RealGroundPassOutcome" classname="OnlineGroundPassPlayModeTests" runstate="Runnable" seed="442811946" result="Passed" start-time="2026-11-17 10:54:01Z" end-time="2026-11-17 10:54:03Z" duration="2.297925" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+]]></output>
+          </test-case>
+          <test-case id="1858" name="RealGroundPassOutcome(-1,&quot;intercept&quot;)" fullname="OnlineGroundPassPlayModeTests.RealGroundPassOutcome(-1,&quot;intercept&quot;)" methodname="RealGroundPassOutcome" classname="OnlineGroundPassPlayModeTests" runstate="Runnable" seed="1180633412" result="Passed" start-time="2026-11-17 10:54:03Z" end-time="2026-11-17 10:54:05Z" duration="1.896033" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+8. Away recovering player at (-1, 0, 3) with a tackling of 4 can intercept with a roll of 6 at (0, 0, 3). Closest interception hex is (0, 0, 3) (3 steps from the ball).
+Dangerous pass detected. Waiting for 1 dice rolls...
+Ball path interactions: 1
+Starting ball path interaction sequence...
+Selected defender for interception: Away recovering player. Press [R] to roll.
+Dice roll by Away recovering player at (-1, 0, 3): 6
+[Expected Stats] Away recovering player records xRecovery 0.167 on standard against Home carrier
+[Game Log] Away recovering player (Fixture Away) attempts an interception
+Pass intercepted by Away recovering player at (-1, 0, 3)!
+🔍 Connected Token Found: Home carrier
+[Game Log] Away recovering player (Fixture Away) Intercepts a Standard Pass from Home carrier
+Offside assessment cleared: ground_pass_interception.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Offside assessed (any_other_scenario): line x=0, tokens=none.
+]]></output>
+          </test-case>
+          <test-case id="1859" name="RealGroundPassOutcome(-1,&quot;failed_interception&quot;)" fullname="OnlineGroundPassPlayModeTests.RealGroundPassOutcome(-1,&quot;failed_interception&quot;)" methodname="RealGroundPassOutcome" classname="OnlineGroundPassPlayModeTests" runstate="Runnable" seed="2011172985" result="Passed" start-time="2026-11-17 10:54:05Z" end-time="2026-11-17 10:54:08Z" duration="2.636278" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+8. Away recovering player at (-1, 0, 3) with a tackling of 4 can intercept with a roll of 6 at (0, 0, 3). Closest interception hex is (0, 0, 3) (3 steps from the ball).
+Dangerous pass detected. Waiting for 1 dice rolls...
+Ball path interactions: 1
+Starting ball path interaction sequence...
+Selected defender for interception: Away recovering player. Press [R] to roll.
+Dice roll by Away recovering player at (-1, 0, 3): 1
+[Expected Stats] Away recovering player records xRecovery 0.167 on standard against Home carrier
+[Game Log] Away recovering player (Fixture Away) attempts an interception
+Away recovering player at (-1, 0, 3) failed to intercept.
+Pass successful! No more defenders to roll.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+Saving results to: TestResults\GameplayRegression\Runs\20261117T105354251Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

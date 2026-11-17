@@ -222,3 +222,17 @@ Windows exports succeeded at 10:38-10:39 UTC November 17, retaining the known
 nonfatal vswhere diagnostic and zero C# compilation errors. See
 Assets/Editor/FeatureTests/OnlineOffTargetLob/Verification.md. Room stays v20 /
 wire v7. Next: wide-miss ball-motion cancellation. Paired testing remains deferred.
+
+
+Wide off-target misses now cancel safely through GroundBallManager and Ball,
+including replacement movement ownership and rejection before ownership. Twelve
+new full-shot/snapshot cases passed in both directions; four strengthened
+replacement reruns and ten affected ground-pass/goalkeeper box-entry cases also
+passed. Compilation clean; 13 report-tool checks passed. All twelve cases have
+individual deferred Mac entries. All three Windows exports succeeded at
+10:57-10:58 UTC November 17 with the known nonfatal vswhere post-build diagnostic.
+See Assets/Editor/FeatureTests/OnlineOffTargetWide/Verification.md. Room stays
+v20 / wire v7. Full-match paired acceptance and actual internet latency remain
+unmeasured and deferred until requested. Continue remaining interruption/result
+presentation audit; preserve unresolved shared-settings and outfield-X rule
+questions in GameplayReview.md.

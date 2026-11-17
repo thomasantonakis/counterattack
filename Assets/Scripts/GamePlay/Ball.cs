@@ -8,6 +8,7 @@ public class Ball : MonoBehaviour
     private HexCell currentCell;
     [SerializeField] private MeshRenderer ballRenderer;
     private HexCell targetCell;
+    private int cellMotionVersion;
     // Includes pauses and the arrival frame: MoveToCell owns position until it clears its target.
     public bool IsCellMoveInProgress => targetCell != null;
     public bool isMoving = false;
@@ -196,7 +197,7 @@ public class Ball : MonoBehaviour
         MatchManager.Instance?.RecordBallMove(previousCell, currentCell, "place_at_cell");
     }
 
-    public IEnumerator MoveToCell(HexCell newHex, int? roll = null, bool allowGKBoxMove = true, bool stopAfterGKBoxMove = false)
+    public IEnumerator MoveToCell(HexCell newHex, int? roll = null, bool allowGKBoxMove = true, bool stopAfterGKBoxMove = false, System.Func<bool> continuationIsCurrent = null)
     {
         if (newHex == null)
         {
@@ -210,6 +211,8 @@ public class Ball : MonoBehaviour
         float speedMultiplier = 3.5f;  // Scaling factor for shot power influence
         float adjustedSpeed = roll.HasValue ? baseSpeed + (roll.Value * speedMultiplier) : baseSpeed;
 
+        if (continuationIsCurrent != null && !continuationIsCurrent()) yield break;
+        int motionVersion = ++cellMotionVersion;
         HexCell startCell = currentCell;
         targetCell = newHex;
         isMoving = true;
@@ -219,6 +222,7 @@ public class Ball : MonoBehaviour
         // Move smoothly towards the target cell
         while (isMoving)
         {
+            if (!IsCellMotionCurrent(motionVersion, continuationIsCurrent)) yield break;
             float step = adjustedSpeed * Time.deltaTime;
             transform.position = Vector3.MoveTowards(transform.position, targetPosition, step);
             bool reachedTarget = Vector3.Distance(transform.position, targetPosition) < 0.001f;
@@ -254,6 +258,7 @@ public class Ball : MonoBehaviour
                     Vector3 pausedPosition = transform.position;
                     HexCell pausedHex = currentHex;
                     yield return StartCoroutine(goalKeeperManager.HandleGKFreeMove());
+                    if (!IsCellMotionCurrent(motionVersion, continuationIsCurrent)) yield break;
                     // ✅ Restore ball's paused position after GK move
                     transform.position = pausedPosition;
                     if (stopAfterGKBoxMove)
@@ -279,10 +284,21 @@ public class Ball : MonoBehaviour
 
             yield return null;  // Wait for the next frame
         }
+        if (!IsCellMotionCurrent(motionVersion, continuationIsCurrent)) yield break;
         currentCell = targetCell;  // Update current cell
         goalKeeperManager?.NotifyBallPosition(currentCell);
         MatchManager.Instance?.RecordBallMove(startCell, currentCell, "move_to_cell", roll);
         targetCell = null;         // Clear target cell
+    }
+
+    private bool IsCellMotionCurrent(int version, System.Func<bool> continuationIsCurrent)
+    {
+        if (version != cellMotionVersion) return false;
+        if (continuationIsCurrent == null || continuationIsCurrent()) return true;
+        // Only the motion that still owns these fields may clear them.
+        isMoving = false;
+        targetCell = null;
+        return false;
     }
 
     public float CalculateMoveDuration(HexCell newHex, int? roll = null)

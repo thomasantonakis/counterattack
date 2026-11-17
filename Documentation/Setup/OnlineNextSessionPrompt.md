@@ -2,6 +2,13 @@
 
 ## Start here
 
+Latest verified continuation (2026-11-17): Room v20 / wire v7. Camera, lobbed and
+wide off-target animations now publish/cancel correctly. Forty new native cases
+and 24 focused affected cases passed across these three features; no whole suite
+or paired Mac acceptance was run. Latest build/evidence details are at the end
+of this document and in each OnlineOffTarget*/Verification.md. The historical
+checkpoints below describe earlier stages; use the latest entry when continuing.
+
 Current checkpoint (2026-11-16): normal Host/Join, persistent native setup, all Draft
 variants, opening coin toss and complete roster launch data are implemented.
 The authored OnlineRoom now uses the actual 1,900-hex pitch, 32/36 drafted actors,
@@ -712,3 +719,17 @@ Windows exports succeeded at 10:38-10:39 UTC November 17, retaining the known
 nonfatal vswhere diagnostic and zero C# compilation errors. See
 Assets/Editor/FeatureTests/OnlineOffTargetLob/Verification.md. Room stays v20 /
 wire v7. Next: wide-miss ball-motion cancellation. Paired testing remains deferred.
+
+
+Wide off-target misses now cancel safely through GroundBallManager and Ball,
+including replacement movement ownership and rejection before ownership. Twelve
+new full-shot/snapshot cases passed in both directions; four strengthened
+replacement reruns and ten affected ground-pass/goalkeeper box-entry cases also
+passed. Compilation clean; 13 report-tool checks passed. All twelve cases have
+individual deferred Mac entries. All three Windows exports succeeded at
+10:57-10:58 UTC November 17 with the known nonfatal vswhere post-build diagnostic.
+See Assets/Editor/FeatureTests/OnlineOffTargetWide/Verification.md. Room stays
+v20 / wire v7. Full-match paired acceptance and actual internet latency remain
+unmeasured and deferred until requested. Continue remaining interruption/result
+presentation audit; preserve unresolved shared-settings and outfield-X rule
+questions in GameplayReview.md.

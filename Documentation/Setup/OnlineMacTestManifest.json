@@ -955,6 +955,16 @@
     },
     {
       "mode": "playmode",
+      "fixture": "OnlineOffTargetWidePlayModeTests",
+      "categories": [
+        "OnlineOffTargetWide"
+      ],
+      "definition_sha256": "6a2ee83d0a77f130955fce272ef1f408e89fb84b017fefc2fbb9044e53b16999",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineOffTargetWide/OnlineOffTargetWidePlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
       "fixture": "OnlineOpeningScenePlayModeTests",
       "categories": [
         "OnlineOpeningScene"
@@ -19373,6 +19383,162 @@
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
       "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T103339995Z/results.xml"
+    },
+    {
+      "id": "OnlineOffTargetWidePlayModeTests.RealSnapshotWideMiss(False,\"flight\")",
+      "feature": "OnlineOffTargetWide",
+      "mode": "playmode",
+      "fixture": "OnlineOffTargetWidePlayModeTests",
+      "method": "RealSnapshotWideMiss",
+      "parameters": [
+        "False,\"flight\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T104551873Z/results.xml"
+    },
+    {
+      "id": "OnlineOffTargetWidePlayModeTests.RealSnapshotWideMiss(False,\"reset-flight\")",
+      "feature": "OnlineOffTargetWide",
+      "mode": "playmode",
+      "fixture": "OnlineOffTargetWidePlayModeTests",
+      "method": "RealSnapshotWideMiss",
+      "parameters": [
+        "False,\"reset-flight\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T104551873Z/results.xml"
+    },
+    {
+      "id": "OnlineOffTargetWidePlayModeTests.RealSnapshotWideMiss(False,\"replace-flight\")",
+      "feature": "OnlineOffTargetWide",
+      "mode": "playmode",
+      "fixture": "OnlineOffTargetWidePlayModeTests",
+      "method": "RealSnapshotWideMiss",
+      "parameters": [
+        "False,\"replace-flight\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T105214505Z/results.xml"
+    },
+    {
+      "id": "OnlineOffTargetWidePlayModeTests.RealSnapshotWideMiss(True,\"flight\")",
+      "feature": "OnlineOffTargetWide",
+      "mode": "playmode",
+      "fixture": "OnlineOffTargetWidePlayModeTests",
+      "method": "RealSnapshotWideMiss",
+      "parameters": [
+        "True,\"flight\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T104551873Z/results.xml"
+    },
+    {
+      "id": "OnlineOffTargetWidePlayModeTests.RealSnapshotWideMiss(True,\"reset-flight\")",
+      "feature": "OnlineOffTargetWide",
+      "mode": "playmode",
+      "fixture": "OnlineOffTargetWidePlayModeTests",
+      "method": "RealSnapshotWideMiss",
+      "parameters": [
+        "True,\"reset-flight\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T104551873Z/results.xml"
+    },
+    {
+      "id": "OnlineOffTargetWidePlayModeTests.RealSnapshotWideMiss(True,\"replace-flight\")",
+      "feature": "OnlineOffTargetWide",
+      "mode": "playmode",
+      "fixture": "OnlineOffTargetWidePlayModeTests",
+      "method": "RealSnapshotWideMiss",
+      "parameters": [
+        "True,\"replace-flight\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T105214505Z/results.xml"
+    },
+    {
+      "id": "OnlineOffTargetWidePlayModeTests.RealWideMiss(False,\"flight\")",
+      "feature": "OnlineOffTargetWide",
+      "mode": "playmode",
+      "fixture": "OnlineOffTargetWidePlayModeTests",
+      "method": "RealWideMiss",
+      "parameters": [
+        "False,\"flight\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T104551873Z/results.xml"
+    },
+    {
+      "id": "OnlineOffTargetWidePlayModeTests.RealWideMiss(False,\"reset-flight\")",
+      "feature": "OnlineOffTargetWide",
+      "mode": "playmode",
+      "fixture": "OnlineOffTargetWidePlayModeTests",
+      "method": "RealWideMiss",
+      "parameters": [
+        "False,\"reset-flight\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T104551873Z/results.xml"
+    },
+    {
+      "id": "OnlineOffTargetWidePlayModeTests.RealWideMiss(False,\"replace-flight\")",
+      "feature": "OnlineOffTargetWide",
+      "mode": "playmode",
+      "fixture": "OnlineOffTargetWidePlayModeTests",
+      "method": "RealWideMiss",
+      "parameters": [
+        "False,\"replace-flight\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T105214505Z/results.xml"
+    },
+    {
+      "id": "OnlineOffTargetWidePlayModeTests.RealWideMiss(True,\"flight\")",
+      "feature": "OnlineOffTargetWide",
+      "mode": "playmode",
+      "fixture": "OnlineOffTargetWidePlayModeTests",
+      "method": "RealWideMiss",
+      "parameters": [
+        "True,\"flight\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T104551873Z/results.xml"
+    },
+    {
+      "id": "OnlineOffTargetWidePlayModeTests.RealWideMiss(True,\"reset-flight\")",
+      "feature": "OnlineOffTargetWide",
+      "mode": "playmode",
+      "fixture": "OnlineOffTargetWidePlayModeTests",
+      "method": "RealWideMiss",
+      "parameters": [
+        "True,\"reset-flight\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T104551873Z/results.xml"
+    },
+    {
+      "id": "OnlineOffTargetWidePlayModeTests.RealWideMiss(True,\"replace-flight\")",
+      "feature": "OnlineOffTargetWide",
+      "mode": "playmode",
+      "fixture": "OnlineOffTargetWidePlayModeTests",
+      "method": "RealWideMiss",
+      "parameters": [
+        "True,\"replace-flight\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T105214505Z/results.xml"
     }
   ]
 }

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="4" result="Passed" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-17 10:54:55Z" end-time="2026-11-17 10:54:59Z" duration="4.1058096">
+  <test-suite type="TestSuite" id="3256" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1873" result="Passed" start-time="2026-11-17 10:54:55Z" end-time="2026-11-17 10:54:59Z" duration="4.105810" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="3253" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1873" result="Passed" start-time="2026-11-17 10:54:55Z" end-time="2026-11-17 10:54:59Z" duration="4.059406" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12156" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="2799" name="GoalkeeperBoxEntryPlayModeTests" fullname="GoalkeeperBoxEntryPlayModeTests" classname="GoalkeeperBoxEntryPlayModeTests" runstate="Runnable" testcasecount="121" result="Passed" start-time="2026-11-17 10:54:55Z" end-time="2026-11-17 10:54:59Z" duration="4.045607" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="ParameterizedMethod" id="2920" name="BoxEntry" fullname="GoalkeeperBoxEntryPlayModeTests.BoxEntry" classname="GoalkeeperBoxEntryPlayModeTests" runstate="Runnable" testcasecount="120" result="Passed" start-time="2026-11-17 10:54:55Z" end-time="2026-11-17 10:54:59Z" duration="4.013907" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="2800" name="BoxEntry(&quot;Right/ground/skip&quot;)" fullname="GoalkeeperBoxEntryPlayModeTests.BoxEntry(&quot;Right/ground/skip&quot;)" methodname="BoxEntry" classname="GoalkeeperBoxEntryPlayModeTests" runstate="Runnable" seed="1987140899" result="Passed" start-time="2026-11-17 10:54:55Z" end-time="2026-11-17 10:54:56Z" duration="1.012637" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Starting Right/ground/skip: source=(11, 0, 0), position=(8.25, 0.50, 0.43), physicalBox=0, target=(12, 0, 0), frame=11.
+⚽ Ball just entered the penalty box! Checking if GK should move.
+⚽ Ball has entered the opponent's penalty box (1) at (12, 0, 0). 🧤 GK gets a free move.
+🛑 GK move triggered! Pausing ball.
+🧤 GK Free Move: Click on a highlighted hex to move, or press [X] to skip.
+Test Framework key press -> X
+GK chooses to not rush out for the High Pass, moving on!
+GK box move not offered: a defending GK box move has already been offered for this penalty-box entry (1).
+]]></output>
+          </test-case>
+          <test-case id="2801" name="BoxEntry(&quot;Right/ground/move&quot;)" fullname="GoalkeeperBoxEntryPlayModeTests.BoxEntry(&quot;Right/ground/move&quot;)" methodname="BoxEntry" classname="GoalkeeperBoxEntryPlayModeTests" runstate="Runnable" seed="768639194" result="Passed" start-time="2026-11-17 10:54:56Z" end-time="2026-11-17 10:54:57Z" duration="1.111176" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Starting Right/ground/move: source=(11, 0, 0), position=(8.25, 0.50, 0.43), physicalBox=0, target=(12, 0, 0), frame=75.
+⚽ Ball just entered the penalty box! Checking if GK should move.
+⚽ Ball has entered the opponent's penalty box (1) at (12, 0, 0). 🧤 GK gets a free move.
+🛑 GK move triggered! Pausing ball.
+🧤 GK Free Move: Click on a highlighted hex to move, or press [X] to skip.
+Test Framework click -> hex: Hex 41,18 @ (16, 0, -1), token: None
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 41,18
+[Game Log] Away keeper (Fixture Away) moves 1 paces
+🧤 Away keeper moved to Hex 41,18
+GK box move not offered: a defending GK box move has already been offered for this penalty-box entry (1).
+]]></output>
+          </test-case>
+          <test-case id="2860" name="BoxEntry(&quot;Left/ground/skip&quot;)" fullname="GoalkeeperBoxEntryPlayModeTests.BoxEntry(&quot;Left/ground/skip&quot;)" methodname="BoxEntry" classname="GoalkeeperBoxEntryPlayModeTests" runstate="Runnable" seed="843981792" result="Passed" start-time="2026-11-17 10:54:57Z" end-time="2026-11-17 10:54:58Z" duration="0.735119" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Starting Left/ground/skip: source=(-11, 0, 0), position=(-8.25, 0.50, 0.43), physicalBox=0, target=(-12, 0, 0), frame=248.
+⚽ Ball just entered the penalty box! Checking if GK should move.
+⚽ Ball has entered the opponent's penalty box (-1) at (-12, 0, 0). 🧤 GK gets a free move.
+🛑 GK move triggered! Pausing ball.
+🧤 GK Free Move: Click on a highlighted hex to move, or press [X] to skip.
+Test Framework key press -> X
+GK chooses to not rush out for the High Pass, moving on!
+GK box move not offered: a defending GK box move has already been offered for this penalty-box entry (-1).
+]]></output>
+          </test-case>
+          <test-case id="2861" name="BoxEntry(&quot;Left/ground/move&quot;)" fullname="GoalkeeperBoxEntryPlayModeTests.BoxEntry(&quot;Left/ground/move&quot;)" methodname="BoxEntry" classname="GoalkeeperBoxEntryPlayModeTests" runstate="Runnable" seed="1495808897" result="Passed" start-time="2026-11-17 10:54:58Z" end-time="2026-11-17 10:54:59Z" duration="1.116017" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Starting Left/ground/move: source=(-11, 0, 0), position=(-8.25, 0.50, 0.43), physicalBox=0, target=(-12, 0, 0), frame=352.
+⚽ Ball just entered the penalty box! Checking if GK should move.
+⚽ Ball has entered the opponent's penalty box (-1) at (-12, 0, 0). 🧤 GK gets a free move.
+🛑 GK move triggered! Pausing ball.
+🧤 GK Free Move: Click on a highlighted hex to move, or press [X] to skip.
+Test Framework click -> hex: Hex 9,18 @ (-16, 0, -1), token: None
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 9,18
+[Game Log] Away keeper (Fixture Away) moves 1 paces
+🧤 Away keeper moved to Hex 9,18
+GK box move not offered: a defending GK box move has already been offered for this penalty-box entry (-1).
+Saving results to: TestResults\GameplayRegression\Runs\20261117T105455625Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

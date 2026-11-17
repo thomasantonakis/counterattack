@@ -4689,11 +4689,15 @@ public partial class ShotManager : MonoBehaviour
     
     private IEnumerator NextToBar()
     {
+        int presentationVersion = headerSavePresentationVersion;
+        bool online = MatchManager.Instance?.IsOnlineAuthorityControlled == true;
         HexCell originHex = GetShotOriginHex();
         int goalSide = GetAttackingGoalSide();
         int targetZ = originHex.coordinates.z >= 0 ? 4 : -5;
         HexCell finalHex = GetOffTargetHex(19 * goalSide, targetZ);
-        yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(finalHex, 4, allowGKBoxMove: false));
+        yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(finalHex, 4, allowGKBoxMove: false,
+            continuationIsCurrent: online ? () => IsOnlineShotContinuationCurrent(presentationVersion) : (System.Func<bool>)null));
+        if (online && !IsOnlineShotContinuationCurrent(presentationVersion)) yield break;
         HexCell lastInboundsHex = GetOffTargetHex(18 * goalSide, targetZ);
         yield return StartCoroutine(ResolveOffTargetGoalKick(lastInboundsHex, goalSide));
     }
