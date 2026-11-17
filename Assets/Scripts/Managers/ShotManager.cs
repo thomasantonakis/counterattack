@@ -3932,6 +3932,8 @@ public partial class ShotManager : MonoBehaviour
 
     private IEnumerator ResolveShotOffTarget()
     {
+        int presentationVersion=headerSavePresentationVersion;
+        bool online=MatchManager.Instance?.IsOnlineAuthorityControlled==true;
         if (IsPenaltyShootoutShot())
         {
             Debug.Log($"{shooter.name} rolled a {shooterRoll}, this means the penalty shootout kick is OFF target.");
@@ -3950,6 +3952,7 @@ public partial class ShotManager : MonoBehaviour
         RecordSnapshotBallStartedIfNeeded();
         DeferShotActionResolutionUntilExternalRestart();
         yield return StartCoroutine(ShootOffTargetRandomizer());
+        if(online && !IsOnlineShotContinuationCurrent(presentationVersion))yield break;
         EndMovementPhaseForShotResolutionIfNeeded(clearStunnedTokens: true);
         ResetShotProcess();
     }
@@ -4693,48 +4696,44 @@ public partial class ShotManager : MonoBehaviour
 
     private IEnumerator oGamosTouKaragkiozi()
     {
-        hexGrid.ClearHighlightedHexes();
-        HexCell originHex = GetShotOriginHex();
-        // Step 1: Get Camera Position & Forward Direction
-        Transform camTransform = Camera.main.transform;
-        Vector3 cameraPosition = camTransform.position;
-        Vector3 cameraForward = camTransform.forward.normalized;
-
-        // Step 2: Define Close-Up Target Position (In Front of Camera)
-        float closeUpDistance = 1f; // Distance in front of the camera where the ball will stop
-        Vector3 closeUpPosition = cameraPosition + (cameraForward * closeUpDistance);
-
-        // Step 3: Move the Ball Towards the Camera (Fast)
-        float moveDuration = 0.4f; // Ball flies toward the camera in 0.4 seconds
-        float elapsedTime = 0f;
-        Vector3 startPos = originHex.GetHexCenter();
-
-        while (elapsedTime < moveDuration)
+        int presentationVersion=headerSavePresentationVersion;
+        bool online=MatchManager.Instance?.IsOnlineAuthorityControlled==true;
+        if(online)onlineCameraPresentationVersion=presentationVersion;
+        int goalSide=0;HexCell finalHex=null;
+        try
         {
-            elapsedTime += Time.deltaTime;
-            float progress = elapsedTime / moveDuration;
-            ball.transform.position = Vector3.Lerp(startPos, closeUpPosition, progress);
-            yield return null; // Wait for the next frame
+            hexGrid.ClearHighlightedHexes();
+            HexCell originHex=GetShotOriginHex();
+            Transform camTransform=Camera.main.transform;
+            Vector3 closeUpPosition=camTransform.position+camTransform.forward.normalized;
+            float elapsedTime=0;const float moveDuration=.4f;
+            Vector3 startPos=originHex.GetHexCenter();
+            while(elapsedTime<moveDuration)
+            {
+                if(online && !IsOnlineShotContinuationCurrent(presentationVersion))yield break;
+                elapsedTime+=Time.deltaTime;
+                ball.transform.position=Vector3.Lerp(startPos,closeUpPosition,elapsedTime/moveDuration);
+                yield return null;
+            }
+            // Shared pause/recovery owns timeScale, including this original hold.
+            yield return new WaitForSeconds(2f);
+            if(online && !IsOnlineShotContinuationCurrent(presentationVersion))yield break;
+            goalSide=GetAttackingGoalSide();finalHex=GetOffTargetHex(22*goalSide,0);
+            if(finalHex!=null)
+            {
+                ball.transform.position=finalHex.GetHexCenter();ball.PlaceAtCell(finalHex);
+            }
+            else Debug.LogWarning($"Final hex at ({22*goalSide}, 0, 0) is null!");
         }
-
-        // Step 4: Hold Ball Near Camera for Dramatic Pause
-        yield return new WaitForSeconds(2f);
-
-        // Step 5: Move Ball behind the goal line.
-        int goalSide = GetAttackingGoalSide();
-        int finalX = 22 * goalSide;
-        HexCell finalHex = GetOffTargetHex(finalX, 0);
-
-        if (finalHex != null)
+        finally
         {
-            ball.transform.position = finalHex.GetHexCenter();
-            ball.PlaceAtCell(finalHex);
-            HexCell lastInboundsHex = GetOffTargetHex(18 * goalSide, 0);
-            yield return StartCoroutine(ResolveOffTargetGoalKick(lastInboundsHex, goalSide));
+            if(online && onlineCameraPresentationVersion==presentationVersion)onlineCameraPresentationVersion=-1;
         }
-        else
+        if(online && !IsOnlineShotContinuationCurrent(presentationVersion))yield break;
+        if(finalHex!=null)
         {
-            Debug.LogWarning($"Final hex at ({finalX}, 0, 0) is null!");
+            HexCell lastInboundsHex=GetOffTargetHex(18*goalSide,0);
+            yield return StartCoroutine(ResolveOffTargetGoalKick(lastInboundsHex,goalSide));
         }
     }
 

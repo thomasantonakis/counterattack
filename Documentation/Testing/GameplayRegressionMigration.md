@@ -674,3 +674,16 @@ Unsaved edits survive remote snapshots and pending replies. The persistent EOS
 lobby/session must still supply that client; Main Menu multiplayer is still a
 placeholder. Continue actual host/join transport, scene handoff, Draft, and Room
 menus/substitutions/shootout ordering. Mac manual execution remains deferred.
+
+
+Online off-target camera misses now publish their real ball motion through the
+existing Room v20 / wire v7 pose lanes and retire stale flight/restart work on
+shot reset. Twenty new native cases passed (14 full-shot, six snapshot), plus ten
+focused shot/possession regressions and 13 report-tool unit tests. Every new case
+has a separate deferred Mac manifest entry. All three Windows exports succeeded
+at 08:32-08:33 UTC November 17; packaged Room/local, Gameplay/local and Room/EOS
+login checks passed at 08:36 UTC. Builds retain the known nonfatal vswhere
+post-build diagnostic; compilation has zero errors. See
+Assets/Editor/FeatureTests/OnlineOffTargetCamera/Verification.md.
+Next audit: lob/wide off-target continuation cancellation. Paired testing and
+measured internet latency remain deferred until requested.

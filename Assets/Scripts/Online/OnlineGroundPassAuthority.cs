@@ -232,7 +232,7 @@ namespace CounterAttack.Online
                 connectionHeld = sharedPause?.ConnectionHeld == true,
                 ballOnBoard = ballHex != null, ballX = ballHex == null ? 0 : ballHex.coordinates.x,
                 ballZ = ballHex == null ? 0 : ballHex.coordinates.z,
-                ballMoving = match.ball.isMoving || match.ball.IsCellMoveInProgress || match.longBallManager?.OnlineFlightInProgress == true || match.highPassManager?.OnlineFlightInProgress==true,
+                ballMoving = match.ball.isMoving || match.ball.IsCellMoveInProgress || match.longBallManager?.OnlineFlightInProgress == true || match.highPassManager?.OnlineFlightInProgress==true || match.shotManager?.OnlineBallPresentationMoving==true,
                 attackHasPossession = match.attackHasPossession,
                 passActive = ground.isActivated || match.longBallManager?.isActivated == true || match.highPassManager?.isActivated==true
                     || HeaderRules?.isActivated==true || match.looseBallManager?.isActivated==true || match.shotManager?.isActivated==true

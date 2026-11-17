@@ -7,6 +7,8 @@ public enum OnlineShotIntent { Select, Confirm, CancelPreview, Target, SelectBlo
 public partial class ShotManager
 {
     private int onlineShotBlockVersion=-1;
+    private int onlineCameraPresentationVersion=-1;
+    public bool OnlineBallPresentationMoving=>onlineCameraPresentationVersion>=0 && IsOnlineShotContinuationCurrent(onlineCameraPresentationVersion);
     private bool IsOnlineShotContinuationCurrent(int version)=>this!=null && version==headerSavePresentationVersion
         && (isActiveAndEnabled || MatchManager.Instance?.IsOnlineAuthorityControlled==true && gameObject.activeInHierarchy);
     private bool OnlineShotContextBlocked=>MatchManager.Instance?.IsWaitingForExtraActionsRoll==true || finalThirdManager?.isActivated==true

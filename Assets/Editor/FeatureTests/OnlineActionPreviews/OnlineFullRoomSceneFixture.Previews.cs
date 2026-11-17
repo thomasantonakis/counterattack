@@ -44,15 +44,28 @@ public sealed partial class OnlineFullRoomSceneFixture
         var receiver=board.tokens.Single(t=>!t.isHomeTeam && t.jerseyNumber==10);Place(receiver,Hex(6*side));
         if(mode=="risk")Place(home[0],Hex(3*side,1));
         string target=OnlineGroundPassAuthority.TargetAction(6*side,0);Submit(target);
-        if(mode.StartsWith("shot"))
+        if(mode.StartsWith("shot") || mode.StartsWith("snapshot"))
         {
             Submit(target);deadline=Time.realtimeSinceStartup+15;
             while(board.match.groundBallManager.isActivated){Assert.That(Time.realtimeSinceStartup,Is.LessThan(deadline));yield return null;}
             Place(receiver,Hex(13*side));board.match.ball.PlaceAtCell(receiver.GetCurrentHex());board.match.SetLastToken(receiver);board.match.UpdatePossessionAfterPass(receiver.GetCurrentHex());
-            board.match.BroadcastSafeEndofMovementPhase(countMovementAction:false,triggerFinalThird:false);
+            bool snapshot=mode.StartsWith("snapshot");
+            if(snapshot)board.match.BroadcastAnyOtherScenario();else board.match.BroadcastSafeEndofMovementPhase(countMovementAction:false,triggerFinalThird:false);
             Submit(OnlineGroundPassAuthority.ShotStartAction);Submit(OnlineGroundPassAuthority.ShotConfirmAction);
+            if(snapshot)
+            {
+                Assert.That(authority.Capture().stage,Is.EqualTo("shot.snapshot.select"));Submit(OnlineGroundPassAuthority.ShotPlayerAction(OnlineRollPublication.ActorId(home[0])));
+                var destination=board.match.shotManager.OnlineSnapshotDestinations.First(h=>Math.Abs(h.coordinates.z)>5);
+                Submit(OnlineGroundPassAuthority.ShotMoveAction(destination.coordinates.x,destination.coordinates.z));deadline=Time.realtimeSinceStartup+10;
+                while(authority.Capture().stage!="shot.target"){Assert.That(Time.realtimeSinceStartup,Is.LessThan(deadline));yield return null;}
+            }
             Assert.That(authority.Capture().stage,Is.EqualTo("shot.target"));Submit(OnlineGroundPassAuthority.ShotTargetAction(19*side,0));
             deadline=Time.realtimeSinceStartup+10;while(authority.Capture().stage!="shot.roll"){Assert.That(Time.realtimeSinceStartup,Is.LessThan(deadline));yield return null;}
+        }
+        if(mode.StartsWith("shot-camera-") || mode.StartsWith("snapshot-camera-"))
+        {
+            string prefix=mode.StartsWith("snapshot")?"snapshot-camera-":"shot-camera-";
+            yield return RunOffTargetCamera(board,protocol,authority,mode.Substring(prefix.Length));yield break;
         }
         if(mode.EndsWith("-expiry"))
         {

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="2" result="Passed" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-17 08:16:38Z" end-time="2026-11-17 08:16:39Z" duration="1.2692228">
+  <test-suite type="TestSuite" id="3223" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1847" result="Passed" start-time="2026-11-17 08:16:38Z" end-time="2026-11-17 08:16:39Z" duration="1.269223" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="3220" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1847" result="Passed" start-time="2026-11-17 08:16:38Z" end-time="2026-11-17 08:16:39Z" duration="1.223587" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12156" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="2692" name="PossessionTimePlayModeTests" fullname="PossessionTimePlayModeTests" classname="PossessionTimePlayModeTests" runstate="Runnable" testcasecount="12" result="Passed" start-time="2026-11-17 08:16:38Z" end-time="2026-11-17 08:16:39Z" duration="1.209769" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="ParameterizedMethod" id="2706" name="OffTargetGoalKickSwitchesTimeBeforeNextCommit" fullname="PossessionTimePlayModeTests.OffTargetGoalKickSwitchesTimeBeforeNextCommit" classname="PossessionTimePlayModeTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-17 08:16:38Z" end-time="2026-11-17 08:16:39Z" duration="1.191195" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="2704" name="OffTargetGoalKickSwitchesTimeBeforeNextCommit(True)" fullname="PossessionTimePlayModeTests.OffTargetGoalKickSwitchesTimeBeforeNextCommit(True)" methodname="OffTargetGoalKickSwitchesTimeBeforeNextCommit" classname="PossessionTimePlayModeTests" runstate="Runnable" seed="79471016" result="Passed" start-time="2026-11-17 08:16:38Z" end-time="2026-11-17 08:16:38Z" duration="0.580973" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Substitutions are no longer available: Committed to StandardPass
+Substitutions are no longer available: Committed to Shot
+Hello from OOM, Hex 43,19, RightGoalLine, inaccuracy
+It's a Goal Kick.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Right Side: Goal kick from center Hex at the 6-yard-box.
+Substitutions are now available: Goal Kick awarded
+OutOfBoundsPush: (16, 0, 0) is occupied by attacker Away keeper; no push needed.
+]]></output>
+          </test-case>
+          <test-case id="2705" name="OffTargetGoalKickSwitchesTimeBeforeNextCommit(False)" fullname="PossessionTimePlayModeTests.OffTargetGoalKickSwitchesTimeBeforeNextCommit(False)" methodname="OffTargetGoalKickSwitchesTimeBeforeNextCommit" classname="PossessionTimePlayModeTests" runstate="Runnable" seed="486930370" result="Passed" start-time="2026-11-17 08:16:38Z" end-time="2026-11-17 08:16:39Z" duration="0.565702" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Substitutions are no longer available: Committed to StandardPass
+Substitutions are no longer available: Committed to Shot
+Hello from OOM, Hex 7,19, LeftGoalLine, inaccuracy
+It's a Goal Kick.
+Possession changed! Home now is the Attacking Team.
+Player tokens updated after possession change.
+Left Side: Goal kick from center Hex at the 6-yard-box.
+Substitutions are now available: Goal Kick awarded
+OutOfBoundsPush: (-16, 0, 0) is occupied by attacker Home keeper; no push needed.
+Saving results to: TestResults\GameplayRegression\Runs\20261117T081638139Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

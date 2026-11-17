@@ -935,6 +935,16 @@
     },
     {
       "mode": "playmode",
+      "fixture": "OnlineOffTargetCameraPlayModeTests",
+      "categories": [
+        "OnlineOffTargetCamera"
+      ],
+      "definition_sha256": "87a844c5e62ac684492093c376f5a17fc305439999f52066440be9f2b34253da",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineOffTargetCamera/OnlineOffTargetCameraPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
       "fixture": "OnlineOpeningScenePlayModeTests",
       "categories": [
         "OnlineOpeningScene"
@@ -18989,6 +18999,266 @@
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
       "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T063709987Z/results.xml"
+    },
+    {
+      "id": "OnlineOffTargetCameraPlayModeTests.RealSnapshotCameraMiss(False,\"flight\")",
+      "feature": "OnlineOffTargetCamera",
+      "mode": "playmode",
+      "fixture": "OnlineOffTargetCameraPlayModeTests",
+      "method": "RealSnapshotCameraMiss",
+      "parameters": [
+        "False,\"flight\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T082239286Z/results.xml"
+    },
+    {
+      "id": "OnlineOffTargetCameraPlayModeTests.RealSnapshotCameraMiss(False,\"reset-flight\")",
+      "feature": "OnlineOffTargetCamera",
+      "mode": "playmode",
+      "fixture": "OnlineOffTargetCameraPlayModeTests",
+      "method": "RealSnapshotCameraMiss",
+      "parameters": [
+        "False,\"reset-flight\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T082239286Z/results.xml"
+    },
+    {
+      "id": "OnlineOffTargetCameraPlayModeTests.RealSnapshotCameraMiss(False,\"hold-hold\")",
+      "feature": "OnlineOffTargetCamera",
+      "mode": "playmode",
+      "fixture": "OnlineOffTargetCameraPlayModeTests",
+      "method": "RealSnapshotCameraMiss",
+      "parameters": [
+        "False,\"hold-hold\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T082239286Z/results.xml"
+    },
+    {
+      "id": "OnlineOffTargetCameraPlayModeTests.RealSnapshotCameraMiss(True,\"flight\")",
+      "feature": "OnlineOffTargetCamera",
+      "mode": "playmode",
+      "fixture": "OnlineOffTargetCameraPlayModeTests",
+      "method": "RealSnapshotCameraMiss",
+      "parameters": [
+        "True,\"flight\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T082239286Z/results.xml"
+    },
+    {
+      "id": "OnlineOffTargetCameraPlayModeTests.RealSnapshotCameraMiss(True,\"reset-flight\")",
+      "feature": "OnlineOffTargetCamera",
+      "mode": "playmode",
+      "fixture": "OnlineOffTargetCameraPlayModeTests",
+      "method": "RealSnapshotCameraMiss",
+      "parameters": [
+        "True,\"reset-flight\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T082239286Z/results.xml"
+    },
+    {
+      "id": "OnlineOffTargetCameraPlayModeTests.RealSnapshotCameraMiss(True,\"hold-hold\")",
+      "feature": "OnlineOffTargetCamera",
+      "mode": "playmode",
+      "fixture": "OnlineOffTargetCameraPlayModeTests",
+      "method": "RealSnapshotCameraMiss",
+      "parameters": [
+        "True,\"hold-hold\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T082239286Z/results.xml"
+    },
+    {
+      "id": "OnlineOffTargetCameraPlayModeTests.RealCameraMiss(False,\"flight\")",
+      "feature": "OnlineOffTargetCamera",
+      "mode": "playmode",
+      "fixture": "OnlineOffTargetCameraPlayModeTests",
+      "method": "RealCameraMiss",
+      "parameters": [
+        "False,\"flight\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T080548173Z/results.xml"
+    },
+    {
+      "id": "OnlineOffTargetCameraPlayModeTests.RealCameraMiss(False,\"pause-flight\")",
+      "feature": "OnlineOffTargetCamera",
+      "mode": "playmode",
+      "fixture": "OnlineOffTargetCameraPlayModeTests",
+      "method": "RealCameraMiss",
+      "parameters": [
+        "False,\"pause-flight\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T080548173Z/results.xml"
+    },
+    {
+      "id": "OnlineOffTargetCameraPlayModeTests.RealCameraMiss(False,\"pause-hold\")",
+      "feature": "OnlineOffTargetCamera",
+      "mode": "playmode",
+      "fixture": "OnlineOffTargetCameraPlayModeTests",
+      "method": "RealCameraMiss",
+      "parameters": [
+        "False,\"pause-hold\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T080548173Z/results.xml"
+    },
+    {
+      "id": "OnlineOffTargetCameraPlayModeTests.RealCameraMiss(False,\"hold-flight\")",
+      "feature": "OnlineOffTargetCamera",
+      "mode": "playmode",
+      "fixture": "OnlineOffTargetCameraPlayModeTests",
+      "method": "RealCameraMiss",
+      "parameters": [
+        "False,\"hold-flight\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T080548173Z/results.xml"
+    },
+    {
+      "id": "OnlineOffTargetCameraPlayModeTests.RealCameraMiss(False,\"hold-hold\")",
+      "feature": "OnlineOffTargetCamera",
+      "mode": "playmode",
+      "fixture": "OnlineOffTargetCameraPlayModeTests",
+      "method": "RealCameraMiss",
+      "parameters": [
+        "False,\"hold-hold\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T080548173Z/results.xml"
+    },
+    {
+      "id": "OnlineOffTargetCameraPlayModeTests.RealCameraMiss(False,\"reset-flight\")",
+      "feature": "OnlineOffTargetCamera",
+      "mode": "playmode",
+      "fixture": "OnlineOffTargetCameraPlayModeTests",
+      "method": "RealCameraMiss",
+      "parameters": [
+        "False,\"reset-flight\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T080548173Z/results.xml"
+    },
+    {
+      "id": "OnlineOffTargetCameraPlayModeTests.RealCameraMiss(False,\"reset-hold\")",
+      "feature": "OnlineOffTargetCamera",
+      "mode": "playmode",
+      "fixture": "OnlineOffTargetCameraPlayModeTests",
+      "method": "RealCameraMiss",
+      "parameters": [
+        "False,\"reset-hold\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T080548173Z/results.xml"
+    },
+    {
+      "id": "OnlineOffTargetCameraPlayModeTests.RealCameraMiss(True,\"flight\")",
+      "feature": "OnlineOffTargetCamera",
+      "mode": "playmode",
+      "fixture": "OnlineOffTargetCameraPlayModeTests",
+      "method": "RealCameraMiss",
+      "parameters": [
+        "True,\"flight\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T080548173Z/results.xml"
+    },
+    {
+      "id": "OnlineOffTargetCameraPlayModeTests.RealCameraMiss(True,\"pause-flight\")",
+      "feature": "OnlineOffTargetCamera",
+      "mode": "playmode",
+      "fixture": "OnlineOffTargetCameraPlayModeTests",
+      "method": "RealCameraMiss",
+      "parameters": [
+        "True,\"pause-flight\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T080548173Z/results.xml"
+    },
+    {
+      "id": "OnlineOffTargetCameraPlayModeTests.RealCameraMiss(True,\"pause-hold\")",
+      "feature": "OnlineOffTargetCamera",
+      "mode": "playmode",
+      "fixture": "OnlineOffTargetCameraPlayModeTests",
+      "method": "RealCameraMiss",
+      "parameters": [
+        "True,\"pause-hold\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T080548173Z/results.xml"
+    },
+    {
+      "id": "OnlineOffTargetCameraPlayModeTests.RealCameraMiss(True,\"hold-flight\")",
+      "feature": "OnlineOffTargetCamera",
+      "mode": "playmode",
+      "fixture": "OnlineOffTargetCameraPlayModeTests",
+      "method": "RealCameraMiss",
+      "parameters": [
+        "True,\"hold-flight\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T080548173Z/results.xml"
+    },
+    {
+      "id": "OnlineOffTargetCameraPlayModeTests.RealCameraMiss(True,\"hold-hold\")",
+      "feature": "OnlineOffTargetCamera",
+      "mode": "playmode",
+      "fixture": "OnlineOffTargetCameraPlayModeTests",
+      "method": "RealCameraMiss",
+      "parameters": [
+        "True,\"hold-hold\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T080548173Z/results.xml"
+    },
+    {
+      "id": "OnlineOffTargetCameraPlayModeTests.RealCameraMiss(True,\"reset-flight\")",
+      "feature": "OnlineOffTargetCamera",
+      "mode": "playmode",
+      "fixture": "OnlineOffTargetCameraPlayModeTests",
+      "method": "RealCameraMiss",
+      "parameters": [
+        "True,\"reset-flight\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T080548173Z/results.xml"
+    },
+    {
+      "id": "OnlineOffTargetCameraPlayModeTests.RealCameraMiss(True,\"reset-hold\")",
+      "feature": "OnlineOffTargetCamera",
+      "mode": "playmode",
+      "fixture": "OnlineOffTargetCameraPlayModeTests",
+      "method": "RealCameraMiss",
+      "parameters": [
+        "True,\"reset-hold\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T080548173Z/results.xml"
     }
   ]
 }

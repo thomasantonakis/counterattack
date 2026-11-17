@@ -1,0 +1,1125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="14" result="Failed(Child)" total="14" passed="0" failed="14" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-17 07:44:55Z" end-time="2026-11-17 07:49:06Z" duration="251.3126939">
+  <test-suite type="TestSuite" id="3223" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1847" result="Failed" site="Child" start-time="2026-11-17 07:44:55Z" end-time="2026-11-17 07:49:06Z" duration="251.312694" total="14" passed="0" failed="14" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="3220" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1847" result="Failed" site="Child" start-time="2026-11-17 07:44:55Z" end-time="2026-11-17 07:49:06Z" duration="251.255992" total="14" passed="0" failed="14" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12156" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestFixture" id="2224" name="OnlineOffTargetCameraPlayModeTests" fullname="OnlineOffTargetCameraPlayModeTests" classname="OnlineOffTargetCameraPlayModeTests" runstate="Runnable" testcasecount="14" result="Failed" site="Child" start-time="2026-11-17 07:44:55Z" end-time="2026-11-17 07:49:06Z" duration="251.245807" total="14" passed="0" failed="14" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineOffTargetCamera" />
+        </properties>
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="ParameterizedMethod" id="2239" name="RealCameraMiss" fullname="OnlineOffTargetCameraPlayModeTests.RealCameraMiss" classname="OnlineOffTargetCameraPlayModeTests" runstate="Runnable" testcasecount="14" result="Failed" site="Child" start-time="2026-11-17 07:44:55Z" end-time="2026-11-17 07:49:06Z" duration="251.231465" total="14" passed="0" failed="14" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-case id="2225" name="RealCameraMiss(False,&quot;flight&quot;)" fullname="OnlineOffTargetCameraPlayModeTests.RealCameraMiss(False,&quot;flight&quot;)" methodname="RealCameraMiss" classname="OnlineOffTargetCameraPlayModeTests" runstate="Runnable" seed="614218326" result="Failed" start-time="2026-11-17 07:44:55Z" end-time="2026-11-17 07:45:16Z" duration="20.787293" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Direct camera animation must use the live presentation lane
+  Expected: True
+  But was:  False
+]]></message>
+              <stack-trace><![CDATA[at OnlineFullRoomSceneFixture+<RunOffTargetCamera>d__37.MoveNext () [0x003c9] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineOffTargetCamera\OnlineFullRoomSceneFixture.CameraMiss.cs:39
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[[TokenKitCatalog] Loading kits JSON from Resources path 'Kits/kit-picker-v1-11-supported' (asset: Assets/Resources/Kits/kit-picker-v1-11-supported.json).
+[TokenKitCatalog] Found kits JSON TextAsset 'kit-picker-v1-11-supported' at Resources path 'Kits/kit-picker-v1-11-supported' (32277 characters).
+[TokenKitCatalog] Parsed 101 kit preset(s) from Resources path 'Kits/kit-picker-v1-11-supported'.
+[TokenKitCatalog] Active kit catalog contains 101 kit preset(s).
+MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584942715028
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+9. Meloni took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+Path: (-1, 0, -1) -> (-1, 0, 0) -> (-2, 0, 0) -> (-3, 0, -1) -> (-3, 0, 0) -> (-4, 0, 0) -> (-5, 0, -1) -> (-5, 0, 0) -> (-6, 0, 0)
+[Game Log] 9. Meloni (Away club) attempts a kick-off pass
+Path: (-1, 0, -1) -> (-1, 0, 0) -> (-2, 0, 0) -> (-3, 0, -1) -> (-3, 0, 0) -> (-4, 0, 0) -> (-5, 0, -1) -> (-5, 0, 0) -> (-6, 0, 0)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-14, tokens=none.
+Pass completed to (-6, 0, 0)
+[Game Log] 9. Meloni (Away club) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Buzek
+Offside assessment cleared: ground_pass_completed.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-14, tokens=none.
+HP target precompute started. version=4, frame=72, ballHex=-13,0, candidateCount=1900
+Long Ball target precompute started. version=4, frame=72, ballHex=-13,0, candidateCount=1900
+Movement phase has been reset.
+HP target precompute cancelled. version=4, elapsedMs=51.3, elapsedFrames=0, processed=0, validTargets=16
+Long Ball target precompute cancelled. version=4, elapsedMs=42.8, elapsedFrames=0, processed=0, validTargets=16
+HP target precompute started. version=6, frame=72, ballHex=-13,0, candidateCount=1900
+Long Ball target precompute started. version=6, frame=72, ballHex=-13,0, candidateCount=1900
+Substitutions are no longer available: Committed to Shot
+HP target precompute cancelled. version=6, elapsedMs=40.4, elapsedFrames=0, processed=0, validTargets=16
+Long Ball target precompute cancelled. version=6, elapsedMs=40.1, elapsedFrames=0, processed=0, validTargets=16
+Full Power Shot initiated. Proceeding to target selection.
+[Game Log] 10. Buzek (Away club) Unknown ShotType
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (-19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Goalkeeper 1. Kuzmic can attempt a save at (-16, 0, 0) with penalty 0
+Shot interactions found: 1
+The GK is next up. Shooter must Roll to shoot. Setting isWaitingForShotRoll to true.
+Hello from the StartShotRoll
+10. Buzek rolled a 1, this means the Shot is OFF target! GoalKick awarded.
+[Expected Stats] 10. Buzek records xG 0.132 on fullPower off target
+[Game Log] 10. Buzek (Away club) sends an attempt off target
+Camera
+]]></output>
+          </test-case>
+          <test-case id="2226" name="RealCameraMiss(False,&quot;pause-flight&quot;)" fullname="OnlineOffTargetCameraPlayModeTests.RealCameraMiss(False,&quot;pause-flight&quot;)" methodname="RealCameraMiss" classname="OnlineOffTargetCameraPlayModeTests" runstate="Runnable" seed="1655028785" result="Failed" start-time="2026-11-17 07:45:16Z" end-time="2026-11-17 07:45:35Z" duration="19.420028" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: String containing "GoalKick" or String containing "FinalThird"
+  But was:  "EndOfMovementPhase"
+]]></message>
+              <stack-trace><![CDATA[at OnlineFullRoomSceneFixture+<RunOffTargetCamera>d__37.MoveNext () [0x007fc] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineOffTargetCamera\OnlineFullRoomSceneFixture.CameraMiss.cs:68
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584942778666
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+9. Meloni took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+Path: (-1, 0, -1) -> (-1, 0, 0) -> (-2, 0, 0) -> (-3, 0, -1) -> (-3, 0, 0) -> (-4, 0, 0) -> (-5, 0, -1) -> (-5, 0, 0) -> (-6, 0, 0)
+[Game Log] 9. Meloni (Away club) attempts a kick-off pass
+Path: (-1, 0, -1) -> (-1, 0, 0) -> (-2, 0, 0) -> (-3, 0, -1) -> (-3, 0, 0) -> (-4, 0, 0) -> (-5, 0, -1) -> (-5, 0, 0) -> (-6, 0, 0)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-14, tokens=none.
+Pass completed to (-6, 0, 0)
+[Game Log] 9. Meloni (Away club) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Buzek
+Offside assessment cleared: ground_pass_completed.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-14, tokens=none.
+HP target precompute started. version=4, frame=212, ballHex=-13,0, candidateCount=1900
+Long Ball target precompute started. version=4, frame=212, ballHex=-13,0, candidateCount=1900
+Movement phase has been reset.
+HP target precompute cancelled. version=4, elapsedMs=29.0, elapsedFrames=0, processed=0, validTargets=16
+Long Ball target precompute cancelled. version=4, elapsedMs=28.7, elapsedFrames=0, processed=0, validTargets=16
+HP target precompute started. version=6, frame=212, ballHex=-13,0, candidateCount=1900
+Long Ball target precompute started. version=6, frame=212, ballHex=-13,0, candidateCount=1900
+Substitutions are no longer available: Committed to Shot
+HP target precompute cancelled. version=6, elapsedMs=30.1, elapsedFrames=0, processed=0, validTargets=16
+Long Ball target precompute cancelled. version=6, elapsedMs=29.9, elapsedFrames=0, processed=0, validTargets=16
+Full Power Shot initiated. Proceeding to target selection.
+[Game Log] 10. Buzek (Away club) Unknown ShotType
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (-19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Goalkeeper 1. Kuzmic can attempt a save at (-16, 0, 0) with penalty 0
+Shot interactions found: 1
+The GK is next up. Shooter must Roll to shoot. Setting isWaitingForShotRoll to true.
+Hello from the StartShotRoll
+10. Buzek rolled a 1, this means the Shot is OFF target! GoalKick awarded.
+[Expected Stats] 10. Buzek records xG 0.132 on fullPower off target
+[Game Log] 10. Buzek (Away club) sends an attempt off target
+Camera
+Hello from OOM, HexCell [-18, 0], LeftGoalLine, inaccuracy
+It's a Goal Kick.
+Possession changed! Home now is the Attacking Team.
+Player tokens updated after possession change.
+Left Side: Goal kick from center Hex at the 6-yard-box.
+Substitutions are now available: Goal Kick awarded
+OutOfBoundsPush: (-16, 0, 0) is occupied by attacker 1. Kuzmic; no push needed.
+⚽ Ball just entered the penalty box! Checking if GK should move.
+]]></output>
+          </test-case>
+          <test-case id="2227" name="RealCameraMiss(False,&quot;pause-hold&quot;)" fullname="OnlineOffTargetCameraPlayModeTests.RealCameraMiss(False,&quot;pause-hold&quot;)" methodname="RealCameraMiss" classname="OnlineOffTargetCameraPlayModeTests" runstate="Runnable" seed="1357795719" result="Failed" start-time="2026-11-17 07:45:35Z" end-time="2026-11-17 07:45:54Z" duration="19.192195" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: String containing "GoalKick" or String containing "FinalThird"
+  But was:  "EndOfMovementPhase"
+]]></message>
+              <stack-trace><![CDATA[at OnlineFullRoomSceneFixture+<RunOffTargetCamera>d__37.MoveNext () [0x007fc] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineOffTargetCamera\OnlineFullRoomSceneFixture.CameraMiss.cs:68
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584942842304
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+9. Meloni took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+Path: (-1, 0, -1) -> (-1, 0, 0) -> (-2, 0, 0) -> (-3, 0, -1) -> (-3, 0, 0) -> (-4, 0, 0) -> (-5, 0, -1) -> (-5, 0, 0) -> (-6, 0, 0)
+[Game Log] 9. Meloni (Away club) attempts a kick-off pass
+Path: (-1, 0, -1) -> (-1, 0, 0) -> (-2, 0, 0) -> (-3, 0, -1) -> (-3, 0, 0) -> (-4, 0, 0) -> (-5, 0, -1) -> (-5, 0, 0) -> (-6, 0, 0)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-14, tokens=none.
+Pass completed to (-6, 0, 0)
+[Game Log] 9. Meloni (Away club) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Buzek
+Offside assessment cleared: ground_pass_completed.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-14, tokens=none.
+HP target precompute started. version=4, frame=410, ballHex=-13,0, candidateCount=1900
+Long Ball target precompute started. version=4, frame=410, ballHex=-13,0, candidateCount=1900
+Movement phase has been reset.
+HP target precompute cancelled. version=4, elapsedMs=29.3, elapsedFrames=0, processed=0, validTargets=16
+Long Ball target precompute cancelled. version=4, elapsedMs=29.1, elapsedFrames=0, processed=0, validTargets=16
+HP target precompute started. version=6, frame=410, ballHex=-13,0, candidateCount=1900
+Long Ball target precompute started. version=6, frame=410, ballHex=-13,0, candidateCount=1900
+Substitutions are no longer available: Committed to Shot
+HP target precompute cancelled. version=6, elapsedMs=30.2, elapsedFrames=0, processed=0, validTargets=16
+Long Ball target precompute cancelled. version=6, elapsedMs=30.1, elapsedFrames=0, processed=0, validTargets=16
+Full Power Shot initiated. Proceeding to target selection.
+[Game Log] 10. Buzek (Away club) Unknown ShotType
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (-19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Goalkeeper 1. Kuzmic can attempt a save at (-16, 0, 0) with penalty 0
+Shot interactions found: 1
+The GK is next up. Shooter must Roll to shoot. Setting isWaitingForShotRoll to true.
+Hello from the StartShotRoll
+10. Buzek rolled a 1, this means the Shot is OFF target! GoalKick awarded.
+[Expected Stats] 10. Buzek records xG 0.132 on fullPower off target
+[Game Log] 10. Buzek (Away club) sends an attempt off target
+Camera
+Hello from OOM, HexCell [-18, 0], LeftGoalLine, inaccuracy
+It's a Goal Kick.
+Possession changed! Home now is the Attacking Team.
+Player tokens updated after possession change.
+Left Side: Goal kick from center Hex at the 6-yard-box.
+Substitutions are now available: Goal Kick awarded
+OutOfBoundsPush: (-16, 0, 0) is occupied by attacker 1. Kuzmic; no push needed.
+⚽ Ball just entered the penalty box! Checking if GK should move.
+]]></output>
+          </test-case>
+          <test-case id="2228" name="RealCameraMiss(False,&quot;hold-flight&quot;)" fullname="OnlineOffTargetCameraPlayModeTests.RealCameraMiss(False,&quot;hold-flight&quot;)" methodname="RealCameraMiss" classname="OnlineOffTargetCameraPlayModeTests" runstate="Runnable" seed="1518849012" result="Failed" start-time="2026-11-17 07:45:54Z" end-time="2026-11-17 07:46:12Z" duration="17.573416" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: String containing "GoalKick" or String containing "FinalThird"
+  But was:  "EndOfMovementPhase"
+]]></message>
+              <stack-trace><![CDATA[at OnlineFullRoomSceneFixture+<RunOffTargetCamera>d__37.MoveNext () [0x007fc] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineOffTargetCamera\OnlineFullRoomSceneFixture.CameraMiss.cs:68
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584942905942
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+9. Meloni took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+Path: (-1, 0, -1) -> (-1, 0, 0) -> (-2, 0, 0) -> (-3, 0, -1) -> (-3, 0, 0) -> (-4, 0, 0) -> (-5, 0, -1) -> (-5, 0, 0) -> (-6, 0, 0)
+[Game Log] 9. Meloni (Away club) attempts a kick-off pass
+Path: (-1, 0, -1) -> (-1, 0, 0) -> (-2, 0, 0) -> (-3, 0, -1) -> (-3, 0, 0) -> (-4, 0, 0) -> (-5, 0, -1) -> (-5, 0, 0) -> (-6, 0, 0)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-14, tokens=none.
+Pass completed to (-6, 0, 0)
+[Game Log] 9. Meloni (Away club) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Buzek
+Offside assessment cleared: ground_pass_completed.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-14, tokens=none.
+HP target precompute started. version=4, frame=634, ballHex=-13,0, candidateCount=1900
+Long Ball target precompute started. version=4, frame=634, ballHex=-13,0, candidateCount=1900
+Movement phase has been reset.
+HP target precompute cancelled. version=4, elapsedMs=28.1, elapsedFrames=0, processed=0, validTargets=16
+Long Ball target precompute cancelled. version=4, elapsedMs=27.8, elapsedFrames=0, processed=0, validTargets=16
+HP target precompute started. version=6, frame=634, ballHex=-13,0, candidateCount=1900
+Long Ball target precompute started. version=6, frame=634, ballHex=-13,0, candidateCount=1900
+Substitutions are no longer available: Committed to Shot
+HP target precompute cancelled. version=6, elapsedMs=32.7, elapsedFrames=0, processed=0, validTargets=16
+Long Ball target precompute cancelled. version=6, elapsedMs=32.6, elapsedFrames=0, processed=0, validTargets=16
+Full Power Shot initiated. Proceeding to target selection.
+[Game Log] 10. Buzek (Away club) Unknown ShotType
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (-19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Goalkeeper 1. Kuzmic can attempt a save at (-16, 0, 0) with penalty 0
+Shot interactions found: 1
+The GK is next up. Shooter must Roll to shoot. Setting isWaitingForShotRoll to true.
+Hello from the StartShotRoll
+10. Buzek rolled a 1, this means the Shot is OFF target! GoalKick awarded.
+[Expected Stats] 10. Buzek records xG 0.132 on fullPower off target
+[Game Log] 10. Buzek (Away club) sends an attempt off target
+Camera
+Hello from OOM, HexCell [-18, 0], LeftGoalLine, inaccuracy
+It's a Goal Kick.
+Possession changed! Home now is the Attacking Team.
+Player tokens updated after possession change.
+Left Side: Goal kick from center Hex at the 6-yard-box.
+Substitutions are now available: Goal Kick awarded
+OutOfBoundsPush: (-16, 0, 0) is occupied by attacker 1. Kuzmic; no push needed.
+⚽ Ball just entered the penalty box! Checking if GK should move.
+]]></output>
+          </test-case>
+          <test-case id="2229" name="RealCameraMiss(False,&quot;hold-hold&quot;)" fullname="OnlineOffTargetCameraPlayModeTests.RealCameraMiss(False,&quot;hold-hold&quot;)" methodname="RealCameraMiss" classname="OnlineOffTargetCameraPlayModeTests" runstate="Runnable" seed="1900226740" result="Failed" start-time="2026-11-17 07:46:12Z" end-time="2026-11-17 07:46:31Z" duration="19.241608" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: String containing "GoalKick" or String containing "FinalThird"
+  But was:  "EndOfMovementPhase"
+]]></message>
+              <stack-trace><![CDATA[at OnlineFullRoomSceneFixture+<RunOffTargetCamera>d__37.MoveNext () [0x007fc] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineOffTargetCamera\OnlineFullRoomSceneFixture.CameraMiss.cs:68
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584942969580
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+9. Meloni took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+Path: (-1, 0, -1) -> (-1, 0, 0) -> (-2, 0, 0) -> (-3, 0, -1) -> (-3, 0, 0) -> (-4, 0, 0) -> (-5, 0, -1) -> (-5, 0, 0) -> (-6, 0, 0)
+[Game Log] 9. Meloni (Away club) attempts a kick-off pass
+Path: (-1, 0, -1) -> (-1, 0, 0) -> (-2, 0, 0) -> (-3, 0, -1) -> (-3, 0, 0) -> (-4, 0, 0) -> (-5, 0, -1) -> (-5, 0, 0) -> (-6, 0, 0)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-14, tokens=none.
+Pass completed to (-6, 0, 0)
+[Game Log] 9. Meloni (Away club) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Buzek
+Offside assessment cleared: ground_pass_completed.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-14, tokens=none.
+HP target precompute started. version=4, frame=829, ballHex=-13,0, candidateCount=1900
+Long Ball target precompute started. version=4, frame=829, ballHex=-13,0, candidateCount=1900
+Movement phase has been reset.
+HP target precompute cancelled. version=4, elapsedMs=30.3, elapsedFrames=0, processed=0, validTargets=16
+Long Ball target precompute cancelled. version=4, elapsedMs=30.1, elapsedFrames=0, processed=0, validTargets=16
+HP target precompute started. version=6, frame=829, ballHex=-13,0, candidateCount=1900
+Long Ball target precompute started. version=6, frame=829, ballHex=-13,0, candidateCount=1900
+Substitutions are no longer available: Committed to Shot
+HP target precompute cancelled. version=6, elapsedMs=31.3, elapsedFrames=0, processed=0, validTargets=16
+Long Ball target precompute cancelled. version=6, elapsedMs=31.2, elapsedFrames=0, processed=0, validTargets=16
+Full Power Shot initiated. Proceeding to target selection.
+[Game Log] 10. Buzek (Away club) Unknown ShotType
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (-19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Goalkeeper 1. Kuzmic can attempt a save at (-16, 0, 0) with penalty 0
+Shot interactions found: 1
+The GK is next up. Shooter must Roll to shoot. Setting isWaitingForShotRoll to true.
+Hello from the StartShotRoll
+10. Buzek rolled a 1, this means the Shot is OFF target! GoalKick awarded.
+[Expected Stats] 10. Buzek records xG 0.132 on fullPower off target
+[Game Log] 10. Buzek (Away club) sends an attempt off target
+Camera
+Hello from OOM, HexCell [-18, 0], LeftGoalLine, inaccuracy
+It's a Goal Kick.
+Possession changed! Home now is the Attacking Team.
+Player tokens updated after possession change.
+Left Side: Goal kick from center Hex at the 6-yard-box.
+Substitutions are now available: Goal Kick awarded
+OutOfBoundsPush: (-16, 0, 0) is occupied by attacker 1. Kuzmic; no push needed.
+⚽ Ball just entered the penalty box! Checking if GK should move.
+]]></output>
+          </test-case>
+          <test-case id="2230" name="RealCameraMiss(False,&quot;reset-flight&quot;)" fullname="OnlineOffTargetCameraPlayModeTests.RealCameraMiss(False,&quot;reset-flight&quot;)" methodname="RealCameraMiss" classname="OnlineOffTargetCameraPlayModeTests" runstate="Runnable" seed="2088567321" result="Failed" start-time="2026-11-17 07:46:31Z" end-time="2026-11-17 07:46:48Z" duration="16.960096" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Retired shot coroutine cannot overwrite the next ball position
+  Expected: less than 0.00100000005f
+  But was:  6.07888365f
+]]></message>
+              <stack-trace><![CDATA[at OnlineFullRoomSceneFixture+<RunOffTargetCamera>d__37.MoveNext () [0x00718] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineOffTargetCamera\OnlineFullRoomSceneFixture.CameraMiss.cs:60
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584943033218
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+9. Meloni took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+Path: (-1, 0, -1) -> (-1, 0, 0) -> (-2, 0, 0) -> (-3, 0, -1) -> (-3, 0, 0) -> (-4, 0, 0) -> (-5, 0, -1) -> (-5, 0, 0) -> (-6, 0, 0)
+[Game Log] 9. Meloni (Away club) attempts a kick-off pass
+Path: (-1, 0, -1) -> (-1, 0, 0) -> (-2, 0, 0) -> (-3, 0, -1) -> (-3, 0, 0) -> (-4, 0, 0) -> (-5, 0, -1) -> (-5, 0, 0) -> (-6, 0, 0)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-14, tokens=none.
+Pass completed to (-6, 0, 0)
+[Game Log] 9. Meloni (Away club) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Buzek
+Offside assessment cleared: ground_pass_completed.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-14, tokens=none.
+HP target precompute started. version=4, frame=1058, ballHex=-13,0, candidateCount=1900
+Long Ball target precompute started. version=4, frame=1058, ballHex=-13,0, candidateCount=1900
+Movement phase has been reset.
+HP target precompute cancelled. version=4, elapsedMs=27.9, elapsedFrames=0, processed=0, validTargets=16
+Long Ball target precompute cancelled. version=4, elapsedMs=27.6, elapsedFrames=0, processed=0, validTargets=16
+HP target precompute started. version=6, frame=1058, ballHex=-13,0, candidateCount=1900
+Long Ball target precompute started. version=6, frame=1058, ballHex=-13,0, candidateCount=1900
+Substitutions are no longer available: Committed to Shot
+HP target precompute cancelled. version=6, elapsedMs=31.8, elapsedFrames=0, processed=0, validTargets=16
+Long Ball target precompute cancelled. version=6, elapsedMs=31.6, elapsedFrames=0, processed=0, validTargets=16
+Full Power Shot initiated. Proceeding to target selection.
+[Game Log] 10. Buzek (Away club) Unknown ShotType
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (-19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Goalkeeper 1. Kuzmic can attempt a save at (-16, 0, 0) with penalty 0
+Shot interactions found: 1
+The GK is next up. Shooter must Roll to shoot. Setting isWaitingForShotRoll to true.
+Hello from the StartShotRoll
+10. Buzek rolled a 1, this means the Shot is OFF target! GoalKick awarded.
+[Expected Stats] 10. Buzek records xG 0.132 on fullPower off target
+[Game Log] 10. Buzek (Away club) sends an attempt off target
+Camera
+Hello from OOM, HexCell [-18, 0], LeftGoalLine, inaccuracy
+It's a Goal Kick.
+Possession changed! Home now is the Attacking Team.
+Player tokens updated after possession change.
+Left Side: Goal kick from center Hex at the 6-yard-box.
+Substitutions are now available: Goal Kick awarded
+OutOfBoundsPush: (-16, 0, 0) is occupied by attacker 1. Kuzmic; no push needed.
+⚽ Ball just entered the penalty box! Checking if GK should move.
+]]></output>
+          </test-case>
+          <test-case id="2231" name="RealCameraMiss(False,&quot;reset-hold&quot;)" fullname="OnlineOffTargetCameraPlayModeTests.RealCameraMiss(False,&quot;reset-hold&quot;)" methodname="RealCameraMiss" classname="OnlineOffTargetCameraPlayModeTests" runstate="Runnable" seed="1879969589" result="Failed" start-time="2026-11-17 07:46:48Z" end-time="2026-11-17 07:47:05Z" duration="17.162714" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Retired shot coroutine cannot overwrite the next ball position
+  Expected: less than 0.00100000005f
+  But was:  4.55412054f
+]]></message>
+              <stack-trace><![CDATA[at OnlineFullRoomSceneFixture+<RunOffTargetCamera>d__37.MoveNext () [0x00718] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineOffTargetCamera\OnlineFullRoomSceneFixture.CameraMiss.cs:60
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584943096856
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+9. Meloni took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+Path: (-1, 0, -1) -> (-1, 0, 0) -> (-2, 0, 0) -> (-3, 0, -1) -> (-3, 0, 0) -> (-4, 0, 0) -> (-5, 0, -1) -> (-5, 0, 0) -> (-6, 0, 0)
+[Game Log] 9. Meloni (Away club) attempts a kick-off pass
+Path: (-1, 0, -1) -> (-1, 0, 0) -> (-2, 0, 0) -> (-3, 0, -1) -> (-3, 0, 0) -> (-4, 0, 0) -> (-5, 0, -1) -> (-5, 0, 0) -> (-6, 0, 0)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-14, tokens=none.
+Pass completed to (-6, 0, 0)
+[Game Log] 9. Meloni (Away club) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Buzek
+Offside assessment cleared: ground_pass_completed.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-14, tokens=none.
+HP target precompute started. version=4, frame=1246, ballHex=-13,0, candidateCount=1900
+Long Ball target precompute started. version=4, frame=1246, ballHex=-13,0, candidateCount=1900
+Movement phase has been reset.
+HP target precompute cancelled. version=4, elapsedMs=28.6, elapsedFrames=0, processed=0, validTargets=16
+Long Ball target precompute cancelled. version=4, elapsedMs=28.3, elapsedFrames=0, processed=0, validTargets=16
+HP target precompute started. version=6, frame=1246, ballHex=-13,0, candidateCount=1900
+Long Ball target precompute started. version=6, frame=1246, ballHex=-13,0, candidateCount=1900
+Substitutions are no longer available: Committed to Shot
+HP target precompute cancelled. version=6, elapsedMs=32.8, elapsedFrames=0, processed=0, validTargets=16
+Long Ball target precompute cancelled. version=6, elapsedMs=32.9, elapsedFrames=0, processed=0, validTargets=16
+Full Power Shot initiated. Proceeding to target selection.
+[Game Log] 10. Buzek (Away club) Unknown ShotType
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (-19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Goalkeeper 1. Kuzmic can attempt a save at (-16, 0, 0) with penalty 0
+Shot interactions found: 1
+The GK is next up. Shooter must Roll to shoot. Setting isWaitingForShotRoll to true.
+Hello from the StartShotRoll
+10. Buzek rolled a 1, this means the Shot is OFF target! GoalKick awarded.
+[Expected Stats] 10. Buzek records xG 0.132 on fullPower off target
+[Game Log] 10. Buzek (Away club) sends an attempt off target
+Camera
+Hello from OOM, HexCell [-18, 0], LeftGoalLine, inaccuracy
+It's a Goal Kick.
+Possession changed! Home now is the Attacking Team.
+Player tokens updated after possession change.
+Left Side: Goal kick from center Hex at the 6-yard-box.
+Substitutions are now available: Goal Kick awarded
+OutOfBoundsPush: (-16, 0, 0) is occupied by attacker 1. Kuzmic; no push needed.
+⚽ Ball just entered the penalty box! Checking if GK should move.
+]]></output>
+          </test-case>
+          <test-case id="2232" name="RealCameraMiss(True,&quot;flight&quot;)" fullname="OnlineOffTargetCameraPlayModeTests.RealCameraMiss(True,&quot;flight&quot;)" methodname="RealCameraMiss" classname="OnlineOffTargetCameraPlayModeTests" runstate="Runnable" seed="1979517839" result="Failed" start-time="2026-11-17 07:47:05Z" end-time="2026-11-17 07:47:19Z" duration="13.882083" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Direct camera animation must use the live presentation lane
+  Expected: True
+  But was:  False
+]]></message>
+              <stack-trace><![CDATA[at OnlineFullRoomSceneFixture+<RunOffTargetCamera>d__37.MoveNext () [0x003c9] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineOffTargetCamera\OnlineFullRoomSceneFixture.CameraMiss.cs:39
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584943160494
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+9. Meloni took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+Path: (1, 0, -1) -> (1, 0, 0) -> (2, 0, 0) -> (3, 0, -1) -> (3, 0, 0) -> (4, 0, 0) -> (5, 0, -1) -> (5, 0, 0) -> (6, 0, 0)
+[Game Log] 9. Meloni (Away club) attempts a kick-off pass
+Path: (1, 0, -1) -> (1, 0, 0) -> (2, 0, 0) -> (3, 0, -1) -> (3, 0, 0) -> (4, 0, 0) -> (5, 0, -1) -> (5, 0, 0) -> (6, 0, 0)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=14, tokens=none.
+Pass completed to (6, 0, 0)
+[Game Log] 9. Meloni (Away club) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Buzek
+Offside assessment cleared: ground_pass_completed.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=14, tokens=none.
+HP target precompute started. version=4, frame=1437, ballHex=13,0, candidateCount=1900
+Long Ball target precompute started. version=4, frame=1437, ballHex=13,0, candidateCount=1900
+Movement phase has been reset.
+HP target precompute cancelled. version=4, elapsedMs=28.5, elapsedFrames=0, processed=0, validTargets=0
+Long Ball target precompute cancelled. version=4, elapsedMs=28.2, elapsedFrames=0, processed=0, validTargets=16
+HP target precompute started. version=6, frame=1437, ballHex=13,0, candidateCount=1900
+Long Ball target precompute started. version=6, frame=1437, ballHex=13,0, candidateCount=1900
+Substitutions are no longer available: Committed to Shot
+HP target precompute cancelled. version=6, elapsedMs=30.1, elapsedFrames=0, processed=0, validTargets=0
+Long Ball target precompute cancelled. version=6, elapsedMs=30.0, elapsedFrames=0, processed=0, validTargets=16
+Full Power Shot initiated. Proceeding to target selection.
+[Game Log] 10. Buzek (Away club) Unknown ShotType
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Goalkeeper 1. Kuzmic can attempt a save at (16, 0, 0) with penalty 0
+Shot interactions found: 1
+The GK is next up. Shooter must Roll to shoot. Setting isWaitingForShotRoll to true.
+Hello from the StartShotRoll
+10. Buzek rolled a 1, this means the Shot is OFF target! GoalKick awarded.
+[Expected Stats] 10. Buzek records xG 0.132 on fullPower off target
+[Game Log] 10. Buzek (Away club) sends an attempt off target
+Camera
+]]></output>
+          </test-case>
+          <test-case id="2233" name="RealCameraMiss(True,&quot;pause-flight&quot;)" fullname="OnlineOffTargetCameraPlayModeTests.RealCameraMiss(True,&quot;pause-flight&quot;)" methodname="RealCameraMiss" classname="OnlineOffTargetCameraPlayModeTests" runstate="Runnable" seed="246265482" result="Failed" start-time="2026-11-17 07:47:19Z" end-time="2026-11-17 07:47:36Z" duration="17.443523" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: String containing "GoalKick" or String containing "FinalThird"
+  But was:  "EndOfMovementPhase"
+]]></message>
+              <stack-trace><![CDATA[at OnlineFullRoomSceneFixture+<RunOffTargetCamera>d__37.MoveNext () [0x007fc] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineOffTargetCamera\OnlineFullRoomSceneFixture.CameraMiss.cs:68
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584943224132
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+9. Meloni took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+Path: (1, 0, -1) -> (1, 0, 0) -> (2, 0, 0) -> (3, 0, -1) -> (3, 0, 0) -> (4, 0, 0) -> (5, 0, -1) -> (5, 0, 0) -> (6, 0, 0)
+[Game Log] 9. Meloni (Away club) attempts a kick-off pass
+Path: (1, 0, -1) -> (1, 0, 0) -> (2, 0, 0) -> (3, 0, -1) -> (3, 0, 0) -> (4, 0, 0) -> (5, 0, -1) -> (5, 0, 0) -> (6, 0, 0)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=14, tokens=none.
+Pass completed to (6, 0, 0)
+[Game Log] 9. Meloni (Away club) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Buzek
+Offside assessment cleared: ground_pass_completed.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=14, tokens=none.
+HP target precompute started. version=4, frame=1583, ballHex=13,0, candidateCount=1900
+Long Ball target precompute started. version=4, frame=1583, ballHex=13,0, candidateCount=1900
+Movement phase has been reset.
+HP target precompute cancelled. version=4, elapsedMs=27.0, elapsedFrames=0, processed=0, validTargets=0
+Long Ball target precompute cancelled. version=4, elapsedMs=26.8, elapsedFrames=0, processed=0, validTargets=16
+HP target precompute started. version=6, frame=1583, ballHex=13,0, candidateCount=1900
+Long Ball target precompute started. version=6, frame=1583, ballHex=13,0, candidateCount=1900
+Substitutions are no longer available: Committed to Shot
+HP target precompute cancelled. version=6, elapsedMs=30.6, elapsedFrames=0, processed=0, validTargets=0
+Long Ball target precompute cancelled. version=6, elapsedMs=30.5, elapsedFrames=0, processed=0, validTargets=16
+Full Power Shot initiated. Proceeding to target selection.
+[Game Log] 10. Buzek (Away club) Unknown ShotType
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Goalkeeper 1. Kuzmic can attempt a save at (16, 0, 0) with penalty 0
+Shot interactions found: 1
+The GK is next up. Shooter must Roll to shoot. Setting isWaitingForShotRoll to true.
+Hello from the StartShotRoll
+10. Buzek rolled a 1, this means the Shot is OFF target! GoalKick awarded.
+[Expected Stats] 10. Buzek records xG 0.132 on fullPower off target
+[Game Log] 10. Buzek (Away club) sends an attempt off target
+Camera
+Hello from OOM, HexCell [18, 0], RightGoalLine, inaccuracy
+It's a Goal Kick.
+Possession changed! Home now is the Attacking Team.
+Player tokens updated after possession change.
+Right Side: Goal kick from center Hex at the 6-yard-box.
+Substitutions are now available: Goal Kick awarded
+OutOfBoundsPush: (16, 0, 0) is occupied by attacker 1. Kuzmic; no push needed.
+⚽ Ball just entered the penalty box! Checking if GK should move.
+]]></output>
+          </test-case>
+          <test-case id="2234" name="RealCameraMiss(True,&quot;pause-hold&quot;)" fullname="OnlineOffTargetCameraPlayModeTests.RealCameraMiss(True,&quot;pause-hold&quot;)" methodname="RealCameraMiss" classname="OnlineOffTargetCameraPlayModeTests" runstate="Runnable" seed="559169621" result="Failed" start-time="2026-11-17 07:47:36Z" end-time="2026-11-17 07:47:55Z" duration="18.824137" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: String containing "GoalKick" or String containing "FinalThird"
+  But was:  "EndOfMovementPhase"
+]]></message>
+              <stack-trace><![CDATA[at OnlineFullRoomSceneFixture+<RunOffTargetCamera>d__37.MoveNext () [0x007fc] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineOffTargetCamera\OnlineFullRoomSceneFixture.CameraMiss.cs:68
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584943287770
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+9. Meloni took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+Path: (1, 0, -1) -> (1, 0, 0) -> (2, 0, 0) -> (3, 0, -1) -> (3, 0, 0) -> (4, 0, 0) -> (5, 0, -1) -> (5, 0, 0) -> (6, 0, 0)
+[Game Log] 9. Meloni (Away club) attempts a kick-off pass
+Path: (1, 0, -1) -> (1, 0, 0) -> (2, 0, 0) -> (3, 0, -1) -> (3, 0, 0) -> (4, 0, 0) -> (5, 0, -1) -> (5, 0, 0) -> (6, 0, 0)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=14, tokens=none.
+Pass completed to (6, 0, 0)
+[Game Log] 9. Meloni (Away club) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Buzek
+Offside assessment cleared: ground_pass_completed.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=14, tokens=none.
+HP target precompute started. version=4, frame=1781, ballHex=13,0, candidateCount=1900
+Long Ball target precompute started. version=4, frame=1781, ballHex=13,0, candidateCount=1900
+Movement phase has been reset.
+HP target precompute cancelled. version=4, elapsedMs=28.2, elapsedFrames=0, processed=0, validTargets=0
+Long Ball target precompute cancelled. version=4, elapsedMs=27.8, elapsedFrames=0, processed=0, validTargets=16
+HP target precompute started. version=6, frame=1781, ballHex=13,0, candidateCount=1900
+Long Ball target precompute started. version=6, frame=1781, ballHex=13,0, candidateCount=1900
+Substitutions are no longer available: Committed to Shot
+HP target precompute cancelled. version=6, elapsedMs=29.8, elapsedFrames=0, processed=0, validTargets=0
+Long Ball target precompute cancelled. version=6, elapsedMs=30.0, elapsedFrames=0, processed=0, validTargets=16
+Full Power Shot initiated. Proceeding to target selection.
+[Game Log] 10. Buzek (Away club) Unknown ShotType
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Goalkeeper 1. Kuzmic can attempt a save at (16, 0, 0) with penalty 0
+Shot interactions found: 1
+The GK is next up. Shooter must Roll to shoot. Setting isWaitingForShotRoll to true.
+Hello from the StartShotRoll
+10. Buzek rolled a 1, this means the Shot is OFF target! GoalKick awarded.
+[Expected Stats] 10. Buzek records xG 0.132 on fullPower off target
+[Game Log] 10. Buzek (Away club) sends an attempt off target
+Camera
+Hello from OOM, HexCell [18, 0], RightGoalLine, inaccuracy
+It's a Goal Kick.
+Possession changed! Home now is the Attacking Team.
+Player tokens updated after possession change.
+Right Side: Goal kick from center Hex at the 6-yard-box.
+Substitutions are now available: Goal Kick awarded
+OutOfBoundsPush: (16, 0, 0) is occupied by attacker 1. Kuzmic; no push needed.
+⚽ Ball just entered the penalty box! Checking if GK should move.
+]]></output>
+          </test-case>
+          <test-case id="2235" name="RealCameraMiss(True,&quot;hold-flight&quot;)" fullname="OnlineOffTargetCameraPlayModeTests.RealCameraMiss(True,&quot;hold-flight&quot;)" methodname="RealCameraMiss" classname="OnlineOffTargetCameraPlayModeTests" runstate="Runnable" seed="1467691283" result="Failed" start-time="2026-11-17 07:47:55Z" end-time="2026-11-17 07:48:13Z" duration="17.322485" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: String containing "GoalKick" or String containing "FinalThird"
+  But was:  "EndOfMovementPhase"
+]]></message>
+              <stack-trace><![CDATA[at OnlineFullRoomSceneFixture+<RunOffTargetCamera>d__37.MoveNext () [0x007fc] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineOffTargetCamera\OnlineFullRoomSceneFixture.CameraMiss.cs:68
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584943351408
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+9. Meloni took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+Path: (1, 0, -1) -> (1, 0, 0) -> (2, 0, 0) -> (3, 0, -1) -> (3, 0, 0) -> (4, 0, 0) -> (5, 0, -1) -> (5, 0, 0) -> (6, 0, 0)
+[Game Log] 9. Meloni (Away club) attempts a kick-off pass
+Path: (1, 0, -1) -> (1, 0, 0) -> (2, 0, 0) -> (3, 0, -1) -> (3, 0, 0) -> (4, 0, 0) -> (5, 0, -1) -> (5, 0, 0) -> (6, 0, 0)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=14, tokens=none.
+Pass completed to (6, 0, 0)
+[Game Log] 9. Meloni (Away club) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Buzek
+Offside assessment cleared: ground_pass_completed.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=14, tokens=none.
+HP target precompute started. version=4, frame=2010, ballHex=13,0, candidateCount=1900
+Long Ball target precompute started. version=4, frame=2010, ballHex=13,0, candidateCount=1900
+Movement phase has been reset.
+HP target precompute cancelled. version=4, elapsedMs=29.2, elapsedFrames=0, processed=0, validTargets=0
+Long Ball target precompute cancelled. version=4, elapsedMs=29.0, elapsedFrames=0, processed=0, validTargets=16
+HP target precompute started. version=6, frame=2010, ballHex=13,0, candidateCount=1900
+Long Ball target precompute started. version=6, frame=2010, ballHex=13,0, candidateCount=1900
+Substitutions are no longer available: Committed to Shot
+HP target precompute cancelled. version=6, elapsedMs=29.6, elapsedFrames=0, processed=0, validTargets=0
+Long Ball target precompute cancelled. version=6, elapsedMs=29.6, elapsedFrames=0, processed=0, validTargets=16
+Full Power Shot initiated. Proceeding to target selection.
+[Game Log] 10. Buzek (Away club) Unknown ShotType
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Goalkeeper 1. Kuzmic can attempt a save at (16, 0, 0) with penalty 0
+Shot interactions found: 1
+The GK is next up. Shooter must Roll to shoot. Setting isWaitingForShotRoll to true.
+Hello from the StartShotRoll
+10. Buzek rolled a 1, this means the Shot is OFF target! GoalKick awarded.
+[Expected Stats] 10. Buzek records xG 0.132 on fullPower off target
+[Game Log] 10. Buzek (Away club) sends an attempt off target
+Camera
+Hello from OOM, HexCell [18, 0], RightGoalLine, inaccuracy
+It's a Goal Kick.
+Possession changed! Home now is the Attacking Team.
+Player tokens updated after possession change.
+Right Side: Goal kick from center Hex at the 6-yard-box.
+Substitutions are now available: Goal Kick awarded
+OutOfBoundsPush: (16, 0, 0) is occupied by attacker 1. Kuzmic; no push needed.
+⚽ Ball just entered the penalty box! Checking if GK should move.
+]]></output>
+          </test-case>
+          <test-case id="2236" name="RealCameraMiss(True,&quot;hold-hold&quot;)" fullname="OnlineOffTargetCameraPlayModeTests.RealCameraMiss(True,&quot;hold-hold&quot;)" methodname="RealCameraMiss" classname="OnlineOffTargetCameraPlayModeTests" runstate="Runnable" seed="1059506892" result="Failed" start-time="2026-11-17 07:48:13Z" end-time="2026-11-17 07:48:32Z" duration="19.351972" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: String containing "GoalKick" or String containing "FinalThird"
+  But was:  "EndOfMovementPhase"
+]]></message>
+              <stack-trace><![CDATA[at OnlineFullRoomSceneFixture+<RunOffTargetCamera>d__37.MoveNext () [0x007fc] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineOffTargetCamera\OnlineFullRoomSceneFixture.CameraMiss.cs:68
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584943415046
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+9. Meloni took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+Path: (1, 0, -1) -> (1, 0, 0) -> (2, 0, 0) -> (3, 0, -1) -> (3, 0, 0) -> (4, 0, 0) -> (5, 0, -1) -> (5, 0, 0) -> (6, 0, 0)
+[Game Log] 9. Meloni (Away club) attempts a kick-off pass
+Path: (1, 0, -1) -> (1, 0, 0) -> (2, 0, 0) -> (3, 0, -1) -> (3, 0, 0) -> (4, 0, 0) -> (5, 0, -1) -> (5, 0, 0) -> (6, 0, 0)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=14, tokens=none.
+Pass completed to (6, 0, 0)
+[Game Log] 9. Meloni (Away club) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Buzek
+Offside assessment cleared: ground_pass_completed.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=14, tokens=none.
+HP target precompute started. version=4, frame=2203, ballHex=13,0, candidateCount=1900
+Long Ball target precompute started. version=4, frame=2203, ballHex=13,0, candidateCount=1900
+Movement phase has been reset.
+HP target precompute cancelled. version=4, elapsedMs=44.3, elapsedFrames=0, processed=0, validTargets=0
+Long Ball target precompute cancelled. version=4, elapsedMs=44.0, elapsedFrames=0, processed=0, validTargets=16
+HP target precompute started. version=6, frame=2203, ballHex=13,0, candidateCount=1900
+Long Ball target precompute started. version=6, frame=2203, ballHex=13,0, candidateCount=1900
+Substitutions are no longer available: Committed to Shot
+HP target precompute cancelled. version=6, elapsedMs=41.3, elapsedFrames=0, processed=0, validTargets=0
+Long Ball target precompute cancelled. version=6, elapsedMs=41.1, elapsedFrames=0, processed=0, validTargets=16
+Full Power Shot initiated. Proceeding to target selection.
+[Game Log] 10. Buzek (Away club) Unknown ShotType
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Goalkeeper 1. Kuzmic can attempt a save at (16, 0, 0) with penalty 0
+Shot interactions found: 1
+The GK is next up. Shooter must Roll to shoot. Setting isWaitingForShotRoll to true.
+Hello from the StartShotRoll
+10. Buzek rolled a 1, this means the Shot is OFF target! GoalKick awarded.
+[Expected Stats] 10. Buzek records xG 0.132 on fullPower off target
+[Game Log] 10. Buzek (Away club) sends an attempt off target
+Camera
+Hello from OOM, HexCell [18, 0], RightGoalLine, inaccuracy
+It's a Goal Kick.
+Possession changed! Home now is the Attacking Team.
+Player tokens updated after possession change.
+Right Side: Goal kick from center Hex at the 6-yard-box.
+Substitutions are now available: Goal Kick awarded
+OutOfBoundsPush: (16, 0, 0) is occupied by attacker 1. Kuzmic; no push needed.
+⚽ Ball just entered the penalty box! Checking if GK should move.
+]]></output>
+          </test-case>
+          <test-case id="2237" name="RealCameraMiss(True,&quot;reset-flight&quot;)" fullname="OnlineOffTargetCameraPlayModeTests.RealCameraMiss(True,&quot;reset-flight&quot;)" methodname="RealCameraMiss" classname="OnlineOffTargetCameraPlayModeTests" runstate="Runnable" seed="2029400411" result="Failed" start-time="2026-11-17 07:48:32Z" end-time="2026-11-17 07:48:49Z" duration="16.618389" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Retired shot coroutine cannot overwrite the next ball position
+  Expected: less than 0.00100000005f
+  But was:  6.06766796f
+]]></message>
+              <stack-trace><![CDATA[at OnlineFullRoomSceneFixture+<RunOffTargetCamera>d__37.MoveNext () [0x00718] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineOffTargetCamera\OnlineFullRoomSceneFixture.CameraMiss.cs:60
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584943478684
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+9. Meloni took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+Path: (1, 0, -1) -> (1, 0, 0) -> (2, 0, 0) -> (3, 0, -1) -> (3, 0, 0) -> (4, 0, 0) -> (5, 0, -1) -> (5, 0, 0) -> (6, 0, 0)
+[Game Log] 9. Meloni (Away club) attempts a kick-off pass
+Path: (1, 0, -1) -> (1, 0, 0) -> (2, 0, 0) -> (3, 0, -1) -> (3, 0, 0) -> (4, 0, 0) -> (5, 0, -1) -> (5, 0, 0) -> (6, 0, 0)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=14, tokens=none.
+Pass completed to (6, 0, 0)
+[Game Log] 9. Meloni (Away club) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Buzek
+Offside assessment cleared: ground_pass_completed.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=14, tokens=none.
+HP target precompute started. version=4, frame=2429, ballHex=13,0, candidateCount=1900
+Long Ball target precompute started. version=4, frame=2429, ballHex=13,0, candidateCount=1900
+Movement phase has been reset.
+HP target precompute cancelled. version=4, elapsedMs=27.0, elapsedFrames=0, processed=0, validTargets=0
+Long Ball target precompute cancelled. version=4, elapsedMs=26.8, elapsedFrames=0, processed=0, validTargets=16
+HP target precompute started. version=6, frame=2429, ballHex=13,0, candidateCount=1900
+Long Ball target precompute started. version=6, frame=2429, ballHex=13,0, candidateCount=1900
+Substitutions are no longer available: Committed to Shot
+HP target precompute cancelled. version=6, elapsedMs=30.5, elapsedFrames=0, processed=0, validTargets=0
+Long Ball target precompute cancelled. version=6, elapsedMs=30.4, elapsedFrames=0, processed=0, validTargets=16
+Full Power Shot initiated. Proceeding to target selection.
+[Game Log] 10. Buzek (Away club) Unknown ShotType
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Goalkeeper 1. Kuzmic can attempt a save at (16, 0, 0) with penalty 0
+Shot interactions found: 1
+The GK is next up. Shooter must Roll to shoot. Setting isWaitingForShotRoll to true.
+Hello from the StartShotRoll
+10. Buzek rolled a 1, this means the Shot is OFF target! GoalKick awarded.
+[Expected Stats] 10. Buzek records xG 0.132 on fullPower off target
+[Game Log] 10. Buzek (Away club) sends an attempt off target
+Camera
+Hello from OOM, HexCell [18, 0], RightGoalLine, inaccuracy
+It's a Goal Kick.
+Possession changed! Home now is the Attacking Team.
+Player tokens updated after possession change.
+Right Side: Goal kick from center Hex at the 6-yard-box.
+Substitutions are now available: Goal Kick awarded
+OutOfBoundsPush: (16, 0, 0) is occupied by attacker 1. Kuzmic; no push needed.
+⚽ Ball just entered the penalty box! Checking if GK should move.
+]]></output>
+          </test-case>
+          <test-case id="2238" name="RealCameraMiss(True,&quot;reset-hold&quot;)" fullname="OnlineOffTargetCameraPlayModeTests.RealCameraMiss(True,&quot;reset-hold&quot;)" methodname="RealCameraMiss" classname="OnlineOffTargetCameraPlayModeTests" runstate="Runnable" seed="498100927" result="Failed" start-time="2026-11-17 07:48:49Z" end-time="2026-11-17 07:49:06Z" duration="17.401220" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Retired shot coroutine cannot overwrite the next ball position
+  Expected: less than 0.00100000005f
+  But was:  4.68070078f
+]]></message>
+              <stack-trace><![CDATA[at OnlineFullRoomSceneFixture+<RunOffTargetCamera>d__37.MoveNext () [0x00718] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineOffTargetCamera\OnlineFullRoomSceneFixture.CameraMiss.cs:60
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584943542322
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+9. Meloni took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+Path: (1, 0, -1) -> (1, 0, 0) -> (2, 0, 0) -> (3, 0, -1) -> (3, 0, 0) -> (4, 0, 0) -> (5, 0, -1) -> (5, 0, 0) -> (6, 0, 0)
+[Game Log] 9. Meloni (Away club) attempts a kick-off pass
+Path: (1, 0, -1) -> (1, 0, 0) -> (2, 0, 0) -> (3, 0, -1) -> (3, 0, 0) -> (4, 0, 0) -> (5, 0, -1) -> (5, 0, 0) -> (6, 0, 0)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=14, tokens=none.
+Pass completed to (6, 0, 0)
+[Game Log] 9. Meloni (Away club) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Buzek
+Offside assessment cleared: ground_pass_completed.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=14, tokens=none.
+HP target precompute started. version=4, frame=2612, ballHex=13,0, candidateCount=1900
+Long Ball target precompute started. version=4, frame=2612, ballHex=13,0, candidateCount=1900
+Movement phase has been reset.
+HP target precompute cancelled. version=4, elapsedMs=34.6, elapsedFrames=0, processed=0, validTargets=0
+Long Ball target precompute cancelled. version=4, elapsedMs=34.5, elapsedFrames=0, processed=0, validTargets=16
+HP target precompute started. version=6, frame=2612, ballHex=13,0, candidateCount=1900
+Long Ball target precompute started. version=6, frame=2612, ballHex=13,0, candidateCount=1900
+Substitutions are no longer available: Committed to Shot
+HP target precompute cancelled. version=6, elapsedMs=47.7, elapsedFrames=0, processed=0, validTargets=0
+Long Ball target precompute cancelled. version=6, elapsedMs=47.3, elapsedFrames=0, processed=0, validTargets=16
+Full Power Shot initiated. Proceeding to target selection.
+[Game Log] 10. Buzek (Away club) Unknown ShotType
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Goalkeeper 1. Kuzmic can attempt a save at (16, 0, 0) with penalty 0
+Shot interactions found: 1
+The GK is next up. Shooter must Roll to shoot. Setting isWaitingForShotRoll to true.
+Hello from the StartShotRoll
+10. Buzek rolled a 1, this means the Shot is OFF target! GoalKick awarded.
+[Expected Stats] 10. Buzek records xG 0.132 on fullPower off target
+[Game Log] 10. Buzek (Away club) sends an attempt off target
+Camera
+Hello from OOM, HexCell [18, 0], RightGoalLine, inaccuracy
+It's a Goal Kick.
+Possession changed! Home now is the Attacking Team.
+Player tokens updated after possession change.
+Right Side: Goal kick from center Hex at the 6-yard-box.
+Substitutions are now available: Goal Kick awarded
+OutOfBoundsPush: (16, 0, 0) is occupied by attacker 1. Kuzmic; no push needed.
+⚽ Ball just entered the penalty box! Checking if GK should move.
+Saving results to: TestResults\GameplayRegression\Runs\20261117T074455111Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

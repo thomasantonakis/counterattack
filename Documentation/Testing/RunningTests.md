@@ -491,3 +491,16 @@ Published guest pitch hints: EditMode `OnlinePublishedHighlightsEditorTests` (14
 Authored online instructions: `Assets/Editor/FeatureTests/OnlineInstructions/` / `OnlineInstructionsEditorTests` (13 EditMode) and `Assets/Tests/PlayMode/Features/OnlineInstructions/` / `OnlineInstructionsPlayModeTests` (ten PlayMode), category `OnlineInstructions`. The authored monitor stays disabled; tests cover exact host/guest text, bounded optional observations, kickoff ownership, live pass continuation and hold recovery. Room catalog v19, wire v7.
 
 Authority action previews: `Assets/Editor/FeatureTests/OnlineActionPreviews/` / `OnlineActionPreviewsEditorTests` (22 EditMode) and `Assets/Tests/PlayMode/Features/OnlineActionPreviews/` / `OnlineActionPreviewsPlayModeTests` (16 PlayMode), category `OnlineActionPreviews`. Source pass/shot colors, assistance visibility, goal markers, streamed motion/hold lifecycle and maximum full-roster/pitch payload are covered. Room v20/wire v7. Exact runs and broader user-only checks are in the feature Verification.md.
+
+
+Online off-target camera misses now publish their real ball motion through the
+existing Room v20 / wire v7 pose lanes and retire stale flight/restart work on
+shot reset. Twenty new native cases passed (14 full-shot, six snapshot), plus ten
+focused shot/possession regressions and 13 report-tool unit tests. Every new case
+has a separate deferred Mac manifest entry. All three Windows exports succeeded
+at 08:32-08:33 UTC November 17; packaged Room/local, Gameplay/local and Room/EOS
+login checks passed at 08:36 UTC. Builds retain the known nonfatal vswhere
+post-build diagnostic; compilation has zero errors. See
+Assets/Editor/FeatureTests/OnlineOffTargetCamera/Verification.md.
+Next audit: lob/wide off-target continuation cancellation. Paired testing and
+measured internet latency remain deferred until requested.
