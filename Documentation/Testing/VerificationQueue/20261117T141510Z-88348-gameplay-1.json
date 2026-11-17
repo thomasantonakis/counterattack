@@ -1,0 +1,1 @@
+{"kind": "online-verification-request-v1", "requestId": "20261117T141510Z-88348-gameplay-1", "runId": "20261117T141510Z-88348", "mode": "gameplay", "sourceCommit": "44e1de471f4efc5624a2c33699e781a337200499", "sourceFingerprint": "524ff4b14d060ac86f79489a6a0af2af4ad697e4ef57ec3737dea269db06f01f", "createdUnix": 1794925250, "expiresUnix": 1794925430, "status": "requested"}
