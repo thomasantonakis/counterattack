@@ -295,3 +295,17 @@ inventory records which originals have actually passed before retirement.
 Review [MorningReview.md](MorningReview.md) for expectation drift decisions and any
 unresolved rules questions. These tests currently target Unity Editor EditMode/PlayMode,
 not standalone player test builds.
+
+F3 action ownership and reposition hover: select only
+`F3RepositionInputPlayModeTests` (category `F3RepositionInput`) under
+`Assets/Tests/PlayMode/Features/F3RepositionInput/`. Final run: 12 passed,
+0 failed/skipped, native XML `TestResults/GameplayRegression/Runs/20261117T173625893Z/results.xml`.
+Compilation completed separately with zero errors. The feature checklist at
+`Assets/Editor/FeatureTests/F3RepositionInput/TASKS.md` records reproductions,
+fixture corrections and exact broader user-run regression fixtures. No full
+EditMode/PlayMode suites were executed for this fix.
+At the user's request, 20 existing affected PlayMode regressions also passed:
+FinalThirdHover (6), LegacyMovementRecoveryAudits (3), tackle_reposition (4),
+lost_foot (6 including legacy duel presentation), and LegacyHighPassBoxSequence
+(1). With the 12 new cases: 32 passed, zero failed/skipped in final runs. Exact
+XML paths and the corrected high-pass fixture setup are recorded in TASKS.md.

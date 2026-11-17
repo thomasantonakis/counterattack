@@ -351,7 +351,7 @@ public partial class MovementPhaseManager : MonoBehaviour
         if (!isActivated) return;
         if (finalThirdManager.isActivated) return;
         if (goalKeeperManager.isActivated) return;
-        if (isPlayerMoving) return;
+        if (isPlayerMoving || IsResolvingReposition) return;
         if (shotManager.isActivated) return;
         if (highPassManager != null && highPassManager.isActivated) return;
         if (IsResolvingFoulSequence()) return;
@@ -535,7 +535,7 @@ public partial class MovementPhaseManager : MonoBehaviour
 
     private void OnHoverReceived(PlayerToken token, HexCell hex)
     {
-        if (isPlayerMoving || (selectedToken != null && selectedToken.IsMoving)) return;
+        if (IsResolvingReposition || isPlayerMoving || (selectedToken != null && selectedToken.IsMoving)) return;
         if (goalKeeperManager != null && goalKeeperManager.isActivated) return;
         if (shotManager != null && shotManager.isActivated)
         {
@@ -3358,6 +3358,7 @@ public partial class MovementPhaseManager : MonoBehaviour
 
     private void RefreshRepositionHighlights()
     {
+        if (IsResolvingReposition) return;
         foreach (HexCell hex in repositionHexes)
         {
             if (hex == null || hex.isDefenseOccupied || hex.isAttackOccupied)
@@ -3386,6 +3387,7 @@ public partial class MovementPhaseManager : MonoBehaviour
             && MatchManager.Instance.difficulty_level < 3
             && isActivated
             && isWaitingForReposition
+            && !IsResolvingReposition
             && repositionHexes != null
             && repositionHexes.Count > 0;
     }
@@ -3414,6 +3416,13 @@ public partial class MovementPhaseManager : MonoBehaviour
             return;
         }
 
+        IsResolvingReposition = true;
+        try { await CompleteRepositionToHex(hex); }
+        finally { IsResolvingReposition = false; }
+    }
+
+    private async Task CompleteRepositionToHex(HexCell hex)
+    {
         Debug.Log($"{repositionWinner.name} repositioning to {hex.name}.");
         HexCell winnerHex = repositionWinner.GetCurrentHex();
         // the check seems to be redundant as before the call of this method, the Possession has been changed if needed
@@ -3432,9 +3441,7 @@ public partial class MovementPhaseManager : MonoBehaviour
         foreach (HexCell needToresetHighlightHex in hexGrid.highlightedHexes) needToresetHighlightHex.ResetHighlight();
         hexGrid.ClearHighlightedHexes();
         hoveredRepositionHex = null;
-        IsResolvingReposition = true;
-        try { await helperFunctions.StartCoroutineAndWait(repositionWinner.JumpToHex(hex)); }
-        finally { IsResolvingReposition = false; }
+        await helperFunctions.StartCoroutineAndWait(repositionWinner.JumpToHex(hex));
         ball.PlaceAtCell(hex); // Move the ball
         if (!isSuccessfulTackleRepositionPending && hex.isInGoal != 0
             && TryHandleMovementGoal(repositionWinner, allowAssist: true,

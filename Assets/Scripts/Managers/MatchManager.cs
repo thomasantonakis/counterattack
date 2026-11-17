@@ -5199,6 +5199,7 @@ public partial class MatchManager : MonoBehaviour
     // Method to trigger the standard pass attempt mode (on key press, like "P")
     public void TriggerStandardPass(PlayerToken pendingSetPieceTaker = null)
     {
+        if (finalThirdManager != null && finalThirdManager.isActivated) return;
         bool isInitialKickoffPass = currentState == GameState.KickoffBlown && pendingSetPieceTaker == null;
         PlayerToken kickoffTaker = isInitialKickoffPass
             ? ball?.GetCurrentHex()?.GetOccupyingToken() ?? LastTokenToTouchTheBallOnPurpose
@@ -5233,6 +5234,7 @@ public partial class MatchManager : MonoBehaviour
 
     public void TriggerQuickThrowPass()
     {
+        if (finalThirdManager != null && finalThirdManager.isActivated) return;
         RecordActionSelection("quick_throw", LastTokenToTouchTheBallOnPurpose, ball?.GetCurrentHex());
         bool preserveAerialPrecompute = ShouldPreserveAerialTargetPrecomputeDuringPreview();
         ClearPendingActionPreviews();
@@ -5249,6 +5251,7 @@ public partial class MatchManager : MonoBehaviour
 
     public void TriggerGoalkeeperKick(PlayerToken explicitGoalkeeper = null, bool commitImmediately = false)
     {
+        if (finalThirdManager != null && finalThirdManager.isActivated) return;
         PlayerToken gkToken = explicitGoalkeeper ?? pendingGoalKickRestartTaker ?? ball.GetCurrentHex()?.GetOccupyingToken();
         if (gkToken == null)
         {
@@ -5281,6 +5284,7 @@ public partial class MatchManager : MonoBehaviour
 
     public void TriggerMovement()
     {
+        if (finalThirdManager != null && finalThirdManager.isActivated) return;
         RecordActionSelection("movement", LastTokenToTouchTheBallOnPurpose, ball?.GetCurrentHex());
         // All these resets are in case it is not comitted
         ClearPendingActionPreviews();
@@ -5299,6 +5303,7 @@ public partial class MatchManager : MonoBehaviour
 
     public void TriggerHighPass(bool isCornerKick = false)
     {
+        if (finalThirdManager != null && finalThirdManager.isActivated) return;
         RecordActionSelection(
             isCornerKick ? "corner" : "high_pass",
             LastTokenToTouchTheBallOnPurpose,
@@ -5331,6 +5336,7 @@ public partial class MatchManager : MonoBehaviour
     
     public void TriggerLongPass()
     {
+        if (finalThirdManager != null && finalThirdManager.isActivated) return;
         RecordActionSelection("long_ball", LastTokenToTouchTheBallOnPurpose, ball?.GetCurrentHex());
         bool preserveAerialPrecompute = ShouldPreserveAerialTargetPrecomputeDuringPreview();
         ClearPendingActionPreviews();
@@ -5345,6 +5351,7 @@ public partial class MatchManager : MonoBehaviour
 
     public void TriggerFTP()
     {
+        if (finalThirdManager != null && finalThirdManager.isActivated) return;
         RecordActionSelection("first_time_pass", LastTokenToTouchTheBallOnPurpose, ball?.GetCurrentHex());
         bool preserveAerialPrecompute = ShouldPreserveAerialTargetPrecomputeDuringPreview();
         ClearPendingActionPreviews();
@@ -5619,12 +5626,16 @@ public partial class MatchManager : MonoBehaviour
             return true;
         }
 
-        BroadcastAnyOtherScenario();
-        FinalThirdManager resolvedFinalThirdManager = FindAnyObjectByType<FinalThirdManager>();
+        // Establish the continuation state, but let F3 reserve input before
+        // exposing the new attack's choices or recording their availability.
+        currentState = GameState.AnyOtherScenario;
+        FinalThirdManager resolvedFinalThirdManager = finalThirdManager != null
+            ? finalThirdManager : FindAnyObjectByType<FinalThirdManager>();
         if (triggerFinalThirdsForAnyOther && resolvedFinalThirdManager != null)
         {
             resolvedFinalThirdManager.TriggerFinalThirdPhase();
         }
+        BroadcastAnyOtherScenario();
 
         return false;
     }
@@ -5724,8 +5735,26 @@ public partial class MatchManager : MonoBehaviour
             sourceHex: ball?.GetCurrentHex());
     }
 
+    public void SuspendOrdinaryActionsForFinalThird()
+    {
+        // Preserve the pending offer and action state; F3 completion recomputes
+        // the continuation. Do not clear the shared F3 movement highlights.
+        if (movementPhaseManager != null) movementPhaseManager.isAvailable = false;
+        if (groundBallManager != null) groundBallManager.isAvailable = false;
+        if (firstTimePassManager != null) firstTimePassManager.isAvailable = false;
+        if (highPassManager != null) highPassManager.isAvailable = false;
+        if (longBallManager != null) longBallManager.isAvailable = false;
+        if (shotManager != null) shotManager.isAvailable = false;
+        isFTPAvailable = false;
+    }
+
     private void RefreshAvailableActions()
     {
+        if (finalThirdManager != null && finalThirdManager.isActivated)
+        {
+            SuspendOrdinaryActionsForFinalThird();
+            return;
+        }
         bool autoCommittedAction = false;
         void AutoCommitMovement(string reason)
         {

@@ -62,6 +62,7 @@ public partial class GroundBallManager : MonoBehaviour
 
     private void OnClickReceived(PlayerToken token, HexCell hex)
     {
+        if (finalThirdManager != null && finalThirdManager.isActivated) return;
         if (isAwaitingTargetSelection)
         {
             RecordGroundPassTargetClick(hex);
@@ -269,6 +270,7 @@ public partial class GroundBallManager : MonoBehaviour
 
     private void OnHoverReceived(PlayerToken token, HexCell hex)
     {
+        if (finalThirdManager != null && finalThirdManager.isActivated) return;
         if (!isActivated || !isAwaitingTargetSelection)
         {
             return;
@@ -298,6 +300,7 @@ public partial class GroundBallManager : MonoBehaviour
 
     private void OnKeyReceived(KeyPressData keyData)
     {
+        if (finalThirdManager != null && finalThirdManager.isActivated) return;
         if (MatchManager.Instance?.TryDispatchTimedRoll(this, keyData, OnKeyReceived) == true) return;
         if (keyData.isConsumed) return;
         if (isAvailable && !isActivated && !freeKickManager.isWaitingForExecution && keyData.key == KeyCode.P)

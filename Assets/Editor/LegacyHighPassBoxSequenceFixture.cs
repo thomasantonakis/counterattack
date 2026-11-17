@@ -8,6 +8,9 @@ public sealed partial class GoalkeeperBoxEntryFixture
         var players = LoadLegacyRoster(); var header = match.shotManager.headerManager;
         Subscribe(high); Subscribe(header); Subscribe(movement); Subscribe(match.finalThirdManager);
         var target = Hex(13, 1);
+        // This scenario exercises a live high-pass continuation, not kickoff.
+        // StartMatch now correctly reserves kickoff for a ground pass.
+        match.BroadcastSafeEndofMovementPhase(countMovementAction: false, triggerFinalThird: false);
         LegacyKey("C"); Assert.That(high.isActivated, Is.True);
         input.TryExecuteSyntheticHexClick(target, "Legacy migration", out _);
         Assert.That(high.currentTargetHex, Is.SameAs(target));
