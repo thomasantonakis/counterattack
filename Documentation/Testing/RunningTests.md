@@ -296,6 +296,23 @@ Review [MorningReview.md](MorningReview.md) for expectation drift decisions and 
 unresolved rules questions. These tests currently target Unity Editor EditMode/PlayMode,
 not standalone player test builds.
 
+Post-match report tabs and leaderboards: use only `PostMatchReportEditorTests`
+(category `PostMatchReport`) in `Assets/Editor/FeatureTests/PostMatchReport/`.
+Latest revised scope: 25 EditMode passed, zero failed/skipped; compilation clean.
+Full-time audio uses only `PostMatchAudioPlayModeTests` under
+`Assets/Tests/PlayMode/Features/PostMatchReport/`: 2 passed, zero failed/skipped.
+Pitch and hover heatmaps use `PostMatchPitchEditorTests` under
+`Assets/Editor/FeatureTests/PostMatchPitch/`: 18 cases passed. Real popup opening,
+selection, complete option visibility and reopening use
+`PostMatchDropdownPlayModeTests` in the PostMatchReport PlayMode folder: 1 passed.
+Affected existing regressions also executed: `EndGamePanelOwnershipEditorTests`
+(3 passed), `PauseMusicPlayModeTests` (1 passed), and
+`GameplayAudioPlaybackPlayModeTests` (7 passed). Total distinct current coverage:
+46 EditMode and 11 PlayMode passed, zero failed/skipped in final runs.
+Each feature TASKS.md records native
+XML, rendered previews, exact scope and broader user-run checks. Gameplay rules,
+recording and save schemas are unchanged; no whole gameplay suites were run.
+
 F3 action ownership and reposition hover: select only
 `F3RepositionInputPlayModeTests` (category `F3RepositionInput`) under
 `Assets/Tests/PlayMode/Features/F3RepositionInput/`. Final run: 12 passed,

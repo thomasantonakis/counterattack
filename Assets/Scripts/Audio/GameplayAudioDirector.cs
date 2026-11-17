@@ -219,7 +219,7 @@ public sealed partial class GameplayAudioDirector : MonoBehaviour
         if (diceWiggleEffects != null && diceWiggleEffects.isPlaying) diceWiggleEffects.Stop();
     }
 
-    public void SetPaused(bool value)
+    public void SetPaused(bool value, bool playTransitionCue = true)
     {
         if (paused == value) return;
         paused = value;
@@ -229,13 +229,13 @@ public sealed partial class GameplayAudioDirector : MonoBehaviour
         {
             Play(music, GameplayAudioPool.PauseMusic, false,
                 GameplayAudioConfig.PoolGain(GameplayAudioPool.PauseMusic) * GameplayAudioPreferences.Local.Gain(GameplayAudioCategory.Music));
-            PlayGameCue(GameplayAudioPool.Pause);
+            if (playTransitionCue) PlayGameCue(GameplayAudioPool.Pause);
         }
         else
         {
             ScheduleChants();
             RestartChatter();
-            PlayGameCue(GameplayAudioPool.Resume);
+            if (playTransitionCue) PlayGameCue(GameplayAudioPool.Resume);
         }
     }
 

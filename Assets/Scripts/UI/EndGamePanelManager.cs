@@ -176,6 +176,9 @@ public class EndGamePanelManager : MonoBehaviour
         HideLiveMatchUi();
         GameplayInputConsumer.Ensure(root, blocksGameplayWhileActive: true);
         root.SetActive(true);
+        EnterReportPause();
+        GetComponent<PostMatchReportController>()?.ShowReport(
+            MatchManager.Instance?.gameData, string.IsNullOrWhiteSpace(recapOverride));
         Canvas.ForceUpdateCanvases();
 
         if (recapScroll != null)
@@ -184,6 +187,14 @@ public class EndGamePanelManager : MonoBehaviour
         }
 
         Debug.Log("[EndGamePanel] Match recap panel shown.");
+    }
+
+    private void EnterReportPause()
+    {
+        MatchManager.Instance?.SetPauseMenuOpen(true);
+        foreach (var director in FindObjectsByType<GameplayAudioDirector>(FindObjectsInactive.Exclude))
+            if (director.gameObject.scene == gameObject.scene)
+                director.SetPaused(true, playTransitionCue: false);
     }
 
     private bool EnsurePanelReferences()
