@@ -57,6 +57,7 @@ namespace CounterAttack.Online
         public OnlineShootoutSnapshot shootout;
         public OnlineCoinTossSnapshot coin;
         public OnlineInstructionObservation instruction;
+        public OnlineHexPreview[] hexPreviews;
         public MatchOpeningSetup extraTimeOpening;
     }
 
@@ -182,6 +183,7 @@ namespace CounterAttack.Online
 
         private OnlineGroundPassState ReadState()
         {
+            match.ball.RefreshGoalTargetPresentation();
             match.coinTossPanel?.TickOnline(sharedPause?.ConnectionHeld==true);
             targetActions.Clear();
             additionalActions.Clear();
@@ -351,6 +353,7 @@ namespace CounterAttack.Online
             if(match.IsGameplayInputBlocked || state.isSharedPaused || state.connectionHeld)actions.Clear();
             state.legalActions = actions.OrderBy(a => a, StringComparer.Ordinal).ToArray();
             if(state.catalogId==OnlineFullRoomBootstrap.Catalog)state.instruction=OnlineInstructionObservation.Capture(match.OnlineInstructionMonitor,state.owner);
+            if(state.catalogId==OnlineFullRoomBootstrap.Catalog)state.hexPreviews=OnlineHexPreview.Capture(match.hexGrid,match.ball.CommittedGoalTarget??(state.hasSelectedTarget?match.hexGrid.GetHexCellAt(new Vector3Int(state.selectedX,0,state.selectedZ)):null));
             return state;
         }
 

@@ -49,6 +49,10 @@ public class HexCell : MonoBehaviour
     [System.NonSerialized] public Dictionary<HexCell, List<HexCell>> HeadingPaths; // Dictionary of heading paths
     private Renderer borderRenderer;
     private string currentHighlightReason;
+    private float currentHighlightDarkness;
+    public string HighlightReason=>currentHighlightReason;
+    public float HighlightDarkness=>currentHighlightDarkness;
+    public bool IsCommittedGoalTarget=>isCommittedGoalTarget;
     private bool isCommittedGoalTarget;
     private float goalTargetOriginalHeight;
     private bool hasInitializedOccupancyHighlightInstance;
@@ -270,6 +274,7 @@ public class HexCell : MonoBehaviour
         // Apply the color to the hex based on the reason
         // Debug.Log($"Highlighting hex {name} for reason: {reason}");
         currentHighlightReason = reason;
+        currentHighlightDarkness = darkness;
         switch (reason)
         {
             case "hover":
@@ -387,6 +392,7 @@ public class HexCell : MonoBehaviour
             return;
         }
         currentHighlightReason = null;
+        currentHighlightDarkness = 0;
         // if (isInGoal != 0 && transform.position.y > 0)
         // {
         //    transform.position -= Vector3.up * 0.03f; // Put it back.

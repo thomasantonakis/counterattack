@@ -10,7 +10,7 @@ using UnityEngine;
 [Category("OnlineFullRoomPayload")]
 public sealed class OnlineFullRoomPayloadEditorTests
 {
-    private static OnlineGroundPassState State(int size,bool populated)
+    internal static OnlineGroundPassState State(int size,bool populated)
     {
         return new OnlineGroundPassState{matchId="payload",catalogId=OnlineFullRoomBootstrap.Catalog,publicationSequence=1,
             homeDirection="LeftToRight",awayDirection="RightToLeft",homeStats=new MatchManager.TeamStats(),awayStats=new MatchManager.TeamStats(),

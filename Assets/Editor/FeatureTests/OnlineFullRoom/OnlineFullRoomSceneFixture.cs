@@ -72,7 +72,7 @@ public sealed partial class OnlineFullRoomSceneFixture
         app=ApplicationManager.Instance;created=app==null;if(created){ApplicationManager.EnsureInstanceExists();app=ApplicationManager.Instance;}
         CaptureGlobals();previousPath=app.LastSavedFileName;previousExplicit=app.HasExplicitSaveContext;previousMode=app.SelectedRoomGameMode;app.SetSelectedRoomGameMode(ApplicationManager.OnlineGameMode);Time.timeScale=1;
         directory=Path.Combine(Path.GetTempPath(),"CounterattackFullRoom",Guid.NewGuid().ToString("N"));Directory.CreateDirectory(directory);
-        var data=Data(size,mirror);yield return Load(data,branch is "replica" or "status"?false:guest);
+        var data=Data(size,mirror);if(branch.StartsWith("action-preview:"))data.gameSettings.playerAssistance=branch.EndsWith(":medium")?2:1;yield return Load(data,branch is "replica" or "status"?false:guest);
         var bootstrap=Object.FindAnyObjectByType<OnlineFullRoomBootstrap>();Assert.That(bootstrap.Ready,Is.True);var board=bootstrap.board;
         Assert.That(board.cells.Length,Is.EqualTo(1900));Assert.That(board.cells.All(c=>c.GetComponent<MeshFilter>()?.sharedMesh!=null),Is.True);
         Assert.That(board.grid.IsGridInitialized(),Is.True);Assert.That(board.tokens.Length,Is.EqualTo(size*2));
@@ -130,6 +130,7 @@ public sealed partial class OnlineFullRoomSceneFixture
         if(branch.StartsWith("ordinary-half:")){yield return RunNormalOnlineHalf(board,protocol,int.Parse(branch.Split(':')[1]));yield break;}
         if(branch.StartsWith("room-coin:")){var parts=branch.Split(':');yield return RunRoomCoin(board,protocol,data,bool.Parse(parts[1]),bool.Parse(parts[2]),bool.Parse(parts[3]),bool.Parse(parts[4]),bool.Parse(parts[5]),parts.Length>6 && bool.Parse(parts[6]));yield break;}
         if(branch.StartsWith("shootout:")){var parts=branch.Split(':');yield return RunShootout(board,protocol,data,bool.Parse(parts[1]),bool.Parse(parts[2]),parts.Length>3?parts[3]:null);yield break;}
+        if(branch.StartsWith("action-preview:")){yield return RunActionPreview(board,protocol,data,branch.Split(':')[1]);yield break;}
         if(branch.StartsWith("instructions:")){yield return RunOnlineInstructions(board,protocol,data,bool.Parse(branch.Split(':')[1]),branch.EndsWith(":live"));yield break;}
         if(branch=="published-highlights"){yield return RunPublishedHighlights(board,protocol,data);yield break;}
         if(branch.StartsWith("motion-smoothing")){yield return RunMotionSmoothing(board,protocol,data,branch.EndsWith("-auto"));yield break;}

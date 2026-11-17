@@ -185,3 +185,17 @@ Continue the original Room presentation audit: committed pass/shot paths and
 risk previews, followed by remaining shared result/menu presentation. Preserve
 the unanswered shared-settings consent and stationary outfield-X rule questions.
 Paired testing and actual internet latency remain deferred until requested.
+
+Room now uses v20 / wire v7 and carries bounded authority-computed path/risk
+previews, shading and raised goal markers. Personal hover is excluded; medium
+assistance does not reveal uncomputed risk. Source-held goal markers survive
+logical target-field differences and clear on actual host/streamed guest ball
+motion, without enabling Ball or other guest rule components. Thirty-eight new
+native cases and 23 focused affected cases passed. Maximum tested state retains
+36 actors, 1,900 previews and 8,192 instruction characters in 222,057 expanded /
+15,639 wire bytes under unchanged limits. All new cases individually registered
+for the deferred Mac run. See OnlineActionPreviews/Verification.md. Windows
+exports refreshed at 07:20-07:22 UTC November 17. Next: audit off-target camera
+shot animation for motion publication and pause/cancellation. High/long aerial
+flight flags and goal-flow motion publication already exist; do not duplicate
+them. Paired acceptance and actual internet latency stay deferred.

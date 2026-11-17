@@ -123,7 +123,7 @@ namespace CounterAttack.Online
                 || state.legalActions == null || state.legalActions.Length > 4096
                 || state.legalActions.Any(a => !OnlineProtocolIds.IsValid(a))) return false;
             if (catalog != null && state.catalogId != catalog || roster != null && !roster.SetEquals(state.tokens.Select(token => token.id))) return false;
-            if(!OnlineRosterPublication.Valid(state) || !OnlineInstructionObservation.Valid(state.instruction))return false;
+            if(!OnlineRosterPublication.Valid(state) || !OnlineInstructionObservation.Valid(state.instruction) || !OnlineHexPreview.Valid(state.hexPreviews))return false;
             if(!string.IsNullOrEmpty(state.selectedPlayer) && !state.tokens.Any(token=>token.id==state.selectedPlayer)) return false;
             if (state.rollSequence < rollSequence || state.rollSequence < 0 || !ValidRolls(state) || !ValidHeader(state)) return false;
             var prior = State;

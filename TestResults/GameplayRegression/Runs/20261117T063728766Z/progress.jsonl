@@ -1,0 +1,12 @@
+{"name":"OnlineActionPreviewsPlayModeTests.GroundPassPreview(16,False,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineActionPreviewsPlayModeTests.GroundPassPreview(16,False,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineActionPreviewsPlayModeTests.GroundPassPreview(16,True,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineActionPreviewsPlayModeTests.GroundPassPreview(16,True,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineActionPreviewsPlayModeTests.GroundPassPreview(18,False,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineActionPreviewsPlayModeTests.GroundPassPreview(18,False,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineActionPreviewsPlayModeTests.GroundPassPreview(18,True,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineActionPreviewsPlayModeTests.GroundPassPreview(18,True,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineActionPreviewsPlayModeTests.MediumTargetDoesNotInventRisk(False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineActionPreviewsPlayModeTests.MediumTargetDoesNotInventRisk(True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineActionPreviewsPlayModeTests.ShotPreview(False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineActionPreviewsPlayModeTests.ShotPreview(True)","status":"Passed","message":"","stackTrace":""}

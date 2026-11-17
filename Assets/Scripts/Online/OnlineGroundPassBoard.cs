@@ -111,6 +111,7 @@ namespace CounterAttack.Online
             // state after reconnect. Restore its captured visual pose after the
             // logical occupancy pass; presentation never invokes movement/rules.
             if(liveFullRoom && OnlineRoomSession.IsGuest && state.roomPose!=null)DisplayPresentation(state.roomPose);
+            boardInput?.SynchronizePreviewMarkerPose();
             if (statusText != null) statusText.text = role + " | " + state.stage + " | " + state.owner
                 + " | Score " + (state.homeStats?.totalGoals ?? 0) + " - " + (state.awayStats?.totalGoals ?? 0)
                 + "\nState " + state.publicationSequence + " | Rolls " + state.rollSequence
@@ -150,6 +151,7 @@ namespace CounterAttack.Online
         private void Update()
         {
             AdvancePresentation(Time.unscaledDeltaTime);
+            boardInput?.AdvancePreviewMarkers();
             if(liveFullRoom)instructionMonitor?.RefreshOnlineInstructionPalette();
             // Personal presentation only. No keys route to rule/input managers.
             if (boardCamera != null)

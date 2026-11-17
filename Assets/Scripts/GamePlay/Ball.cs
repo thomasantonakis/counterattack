@@ -20,6 +20,7 @@ public class Ball : MonoBehaviour
     public float playerHeightOffset = 0.5f;  // Height when ball is on a player
     private MaterialPropertyBlock ballPropertyBlock;
     private HexCell committedGoalTarget;
+    public HexCell CommittedGoalTarget=>committedGoalTarget;
     private Vector3 goalTargetBallPosition;
 
     public void HoldGoalTargetUntilBallMoves(HexCell goalTarget)
@@ -41,7 +42,9 @@ public class Ball : MonoBehaviour
         committedGoalTarget = null;
     }
 
-    private void LateUpdate()
+    private void LateUpdate()=>RefreshGoalTargetPresentation();
+
+    public void RefreshGoalTargetPresentation()
     {
         // Some aerial/save animations move the transform without setting isMoving.
         // Observe actual displacement so dice presentations and player moves keep the target.
