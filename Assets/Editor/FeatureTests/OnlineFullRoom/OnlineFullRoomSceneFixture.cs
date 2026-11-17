@@ -130,6 +130,7 @@ public sealed partial class OnlineFullRoomSceneFixture
         if(branch.StartsWith("ordinary-half:")){yield return RunNormalOnlineHalf(board,protocol,int.Parse(branch.Split(':')[1]));yield break;}
         if(branch.StartsWith("room-coin:")){var parts=branch.Split(':');yield return RunRoomCoin(board,protocol,data,bool.Parse(parts[1]),bool.Parse(parts[2]),bool.Parse(parts[3]),bool.Parse(parts[4]),bool.Parse(parts[5]),parts.Length>6 && bool.Parse(parts[6]));yield break;}
         if(branch.StartsWith("shootout:")){var parts=branch.Split(':');yield return RunShootout(board,protocol,data,bool.Parse(parts[1]),bool.Parse(parts[2]),parts.Length>3?parts[3]:null);yield break;}
+        if(branch.StartsWith("motion-smoothing")){yield return RunMotionSmoothing(board,protocol,data,branch.EndsWith("-auto"));yield break;}
         if(branch=="snapshot-pose"){yield return RunSnapshotPose(board,protocol,data);yield break;}
         if(branch.StartsWith("publication:")){yield return RunPublicationCadence(board,protocol,branch.Split(':')[1]);yield break;}
         if(branch=="transport"){yield return RunTransport(board,protocol,size);yield break;}

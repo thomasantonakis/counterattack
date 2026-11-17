@@ -845,6 +845,16 @@
     },
     {
       "mode": "playmode",
+      "fixture": "OnlineMotionSmoothingPlayModeTests",
+      "categories": [
+        "OnlineMotionSmoothing"
+      ],
+      "definition_sha256": "bddbdcc049409be317a6b63af5940d3d863d8c31eeeba94fbf7622dfdad94332",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineMotionSmoothing/OnlineMotionSmoothingPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
       "fixture": "OnlineMovementPlayModeTests",
       "categories": [
         "OnlineMovement"
@@ -17822,6 +17832,84 @@
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
       "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T233434438Z/results.xml"
+    },
+    {
+      "id": "OnlineMotionSmoothingPlayModeTests.GuestMotionAndReliableCorrections(16,False)",
+      "feature": "OnlineMotionSmoothing",
+      "mode": "playmode",
+      "fixture": "OnlineMotionSmoothingPlayModeTests",
+      "method": "GuestMotionAndReliableCorrections",
+      "parameters": [
+        "16,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T233847714Z/results.xml"
+    },
+    {
+      "id": "OnlineMotionSmoothingPlayModeTests.GuestMotionAndReliableCorrections(16,True)",
+      "feature": "OnlineMotionSmoothing",
+      "mode": "playmode",
+      "fixture": "OnlineMotionSmoothingPlayModeTests",
+      "method": "GuestMotionAndReliableCorrections",
+      "parameters": [
+        "16,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T233847714Z/results.xml"
+    },
+    {
+      "id": "OnlineMotionSmoothingPlayModeTests.GuestMotionAndReliableCorrections(18,False)",
+      "feature": "OnlineMotionSmoothing",
+      "mode": "playmode",
+      "fixture": "OnlineMotionSmoothingPlayModeTests",
+      "method": "GuestMotionAndReliableCorrections",
+      "parameters": [
+        "18,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T233847714Z/results.xml"
+    },
+    {
+      "id": "OnlineMotionSmoothingPlayModeTests.GuestMotionAndReliableCorrections(18,True)",
+      "feature": "OnlineMotionSmoothing",
+      "mode": "playmode",
+      "fixture": "OnlineMotionSmoothingPlayModeTests",
+      "method": "GuestMotionAndReliableCorrections",
+      "parameters": [
+        "18,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T233847714Z/results.xml"
+    },
+    {
+      "id": "OnlineMotionSmoothingPlayModeTests.GuestUpdateAdvancesMotion(16)",
+      "feature": "OnlineMotionSmoothing",
+      "mode": "playmode",
+      "fixture": "OnlineMotionSmoothingPlayModeTests",
+      "method": "GuestUpdateAdvancesMotion",
+      "parameters": [
+        "16"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T234015396Z/results.xml"
+    },
+    {
+      "id": "OnlineMotionSmoothingPlayModeTests.GuestUpdateAdvancesMotion(18)",
+      "feature": "OnlineMotionSmoothing",
+      "mode": "playmode",
+      "fixture": "OnlineMotionSmoothingPlayModeTests",
+      "method": "GuestUpdateAdvancesMotion",
+      "parameters": [
+        "18"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T234015396Z/results.xml"
     }
   ]
 }

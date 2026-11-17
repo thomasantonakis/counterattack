@@ -644,3 +644,13 @@ Continue the remaining frontend/full-match audit and transport verification.
 Paired testing and actual internet latency remain deferred.
 
 Reliable publication timing now has 16 new native passes: same-phase reselection, stale commands, immediate pause/resume, idle heartbeat and 250 ms clock-only refreshes preserving valid commands. No runtime change was needed. See OnlinePublicationCadence/Verification.md. All new cases are separately registered for the deferred Mac run. Next: guest visual motion smoothing and remaining full-match audit.
+
+Full-Room guest pose updates now interpolate over one 50 ms stream interval,
+without extrapolation or a future-frame buffer. Reliable snapshots and holds
+apply immediately; host movement and guest occupancy/rules remain unchanged.
+Six new native cases and ten affected snapshot/compact cases passed. See
+Assets/Editor/FeatureTests/OnlineMotionSmoothing/Verification.md. Windows exports
+refreshed successfully November 17 at 05:32-05:33 UTC. Room stays v18/wire v7;
+all six cases are separately registered for the deferred Mac run. Continue
+published guest pitch highlights and the remaining frontend/full-match audit.
+Actual paired acceptance and internet latency remain deferred.

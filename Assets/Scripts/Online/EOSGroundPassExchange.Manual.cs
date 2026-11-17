@@ -169,7 +169,7 @@ namespace CounterAttack.Online
                             board.controls.SetConnected(!message.state.connectionHeld && message.status != "resync");
                         }
                         else if (message.kind == "presentation")
-                        { if (replica.ApplyPresentation(message.presentation)) board.DisplayPresentation(message.presentation); }
+                        { if (replica.ApplyPresentation(message.presentation)) board.QueuePresentation(message.presentation); }
                         else if (message.kind == "reply" || message.kind == "control-reply") board.controls.Reply(message);
                         else if (message.kind == "finish")
                         {

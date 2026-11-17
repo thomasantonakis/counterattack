@@ -154,3 +154,13 @@ exports and packaged local/login checks refreshed at 23:23-23:26 UTC November 16
 Room remains v18/wire v7. Each new case has a separate deferred Mac manifest entry.
 Continue the remaining frontend/full-match audit and transport verification.
 Paired testing and actual internet latency remain deferred.
+
+Full-Room guest pose updates now interpolate over one 50 ms stream interval,
+without extrapolation or a future-frame buffer. Reliable snapshots and holds
+apply immediately; host movement and guest occupancy/rules remain unchanged.
+Six new native cases and ten affected snapshot/compact cases passed. See
+Assets/Editor/FeatureTests/OnlineMotionSmoothing/Verification.md. Windows exports
+refreshed successfully November 17 at 05:32-05:33 UTC. Room stays v18/wire v7;
+all six cases are separately registered for the deferred Mac run. Continue
+published guest pitch highlights and the remaining frontend/full-match audit.
+Actual paired acceptance and internet latency remain deferred.

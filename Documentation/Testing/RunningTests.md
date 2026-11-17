@@ -474,3 +474,14 @@ Online roster status: `Assets/Editor/FeatureTests/OnlineRosterReplication/`, fix
 Authored online Room menu: `Assets/Editor/FeatureTests/OnlineRoomMenu/`, fixture `OnlineRoomMenuEditorTests` (two EditMode close cases), and `Assets/Tests/PlayMode/Features/OnlineRoomMenu/`, fixture `OnlineRoomMenuPlayModeTests` (six PlayMode ownership/hold/leave cases). Category `OnlineRoomMenu`. Only four affected encoded full Room kickoff cases and 13 lifecycle cases were rerun for this UI/close batch; no complete suite was run.
 
 Online substitutions: `Assets/Tests/PlayMode/Features/OnlineSubstitutions/`, fixture `OnlineSubstitutionsPlayModeTests`, category `OnlineSubstitutions` (18 cases). Full Room snapshot capacity: `Assets/Editor/FeatureTests/OnlineFullRoomPayload/`, fixture `OnlineFullRoomPayloadEditorTests`, category `OnlineFullRoomPayload` (15 cases). These retain failed reproducers and actual final counts in their Verification.md files. Forced keeper/emergency/shootout coverage remains separate; no complete suite was run.
+
+Recent frontend and transport filters (focused PlayMode fixtures only):
+
+- `Assets/Tests/PlayMode/Features/OnlineDraftDrag/`: `OnlineDraftDragPlayModeTests`, category `OnlineDraftDrag`, 68 cases for authenticated authored drag/drop, variants and stale/pending input.
+- `Assets/Tests/PlayMode/Features/OnlinePublicationCadence/`: `OnlinePublicationCadencePlayModeTests`, category `OnlinePublicationCadence`, 16 cases for immediate changed decisions/holds, idle heartbeat and bounded clock refresh without stale commands.
+- `Assets/Tests/PlayMode/Features/OnlineMotionSmoothing/`: `OnlineMotionSmoothingPlayModeTests`, category `OnlineMotionSmoothing`, six cases for guest pose interpolation, reliable corrections, holds and the enabled Update loop.
+
+Each feature's `Assets/Editor/FeatureTests/<feature>/Verification.md` records
+actual run artifacts, fixture corrections and affected filters. These are local
+native checks, not paired internet latency or complete-suite validation. Every
+new case has an individual deferred entry in OnlineMacTestManifest.json.

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 namespace CounterAttack.Online
 {
     // Every object is authored in the proof scene. Guest authorityRoot stays inactive.
-    public sealed class OnlineGroundPassBoard : MonoBehaviour
+    public sealed partial class OnlineGroundPassBoard : MonoBehaviour
     {
         public GameObject authorityRoot;
         public MatchManager match;
@@ -80,6 +80,7 @@ namespace CounterAttack.Online
 
         public void Display(OnlineGroundPassState state, string role)
         {
+            ResetPresentationMotion(state.connectionHeld || state.isSharedPaused);
             if (controls != null) controls.Display(state);
             if(liveFullRoom && OnlineRoomSession.IsGuest){match.ApplyOnlineReplicaMatchState(state);liveScoreboard?.RefreshPublishedOnlineState();}
             if (sharedPausePanel != null) sharedPausePanel.SetActive(state.isSharedPaused || liveFullRoom && state.connectionHeld);
@@ -133,6 +134,7 @@ namespace CounterAttack.Online
 
         public void DisplayPresentation(OnlineGroundPassPresentation frame)
         {
+            presentationMoving=false;
             // Trusted, validated presentation values only; completion never calls rules.
             displayedBall.position = new Vector3(frame.ballX, frame.ballY, frame.ballZ);
             if(frame.players!=null)
@@ -145,6 +147,7 @@ namespace CounterAttack.Online
 
         private void Update()
         {
+            AdvancePresentation(Time.unscaledDeltaTime);
             // Personal presentation only. No keys route to rule/input managers.
             if (boardCamera != null)
             {

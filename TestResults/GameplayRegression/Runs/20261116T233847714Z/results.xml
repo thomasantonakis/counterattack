@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="4" result="Passed" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 23:38:47Z" end-time="2026-11-16 23:39:36Z" duration="48.4335959">
+  <test-suite type="TestSuite" id="3163" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1801" result="Passed" start-time="2026-11-16 23:38:47Z" end-time="2026-11-16 23:39:36Z" duration="48.433596" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="3160" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1801" result="Passed" start-time="2026-11-16 23:38:47Z" end-time="2026-11-16 23:39:36Z" duration="48.397903" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12156" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="2121" name="OnlineMotionSmoothingPlayModeTests" fullname="OnlineMotionSmoothingPlayModeTests" classname="OnlineMotionSmoothingPlayModeTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-11-16 23:38:47Z" end-time="2026-11-16 23:39:36Z" duration="48.381526" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineMotionSmoothing" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="2126" name="GuestMotionAndReliableCorrections" fullname="OnlineMotionSmoothingPlayModeTests.GuestMotionAndReliableCorrections" classname="OnlineMotionSmoothingPlayModeTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-11-16 23:38:47Z" end-time="2026-11-16 23:39:36Z" duration="48.369895" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="2122" name="GuestMotionAndReliableCorrections(16,False)" fullname="OnlineMotionSmoothingPlayModeTests.GuestMotionAndReliableCorrections(16,False)" methodname="GuestMotionAndReliableCorrections" classname="OnlineMotionSmoothingPlayModeTests" runstate="Runnable" seed="1866477295" result="Passed" start-time="2026-11-16 23:38:47Z" end-time="2026-11-16 23:39:00Z" duration="13.027396" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[TokenKitCatalog] Loading kits JSON from Resources path 'Kits/kit-picker-v1-11-supported' (asset: Assets/Resources/Kits/kit-picker-v1-11-supported.json).
+[TokenKitCatalog] Found kits JSON TextAsset 'kit-picker-v1-11-supported' at Resources path 'Kits/kit-picker-v1-11-supported' (32277 characters).
+[TokenKitCatalog] Parsed 101 kit preset(s) from Resources path 'Kits/kit-picker-v1-11-supported'.
+[TokenKitCatalog] Active kit catalog contains 101 kit preset(s).
+MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584929883158
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2123" name="GuestMotionAndReliableCorrections(16,True)" fullname="OnlineMotionSmoothingPlayModeTests.GuestMotionAndReliableCorrections(16,True)" methodname="GuestMotionAndReliableCorrections" classname="OnlineMotionSmoothingPlayModeTests" runstate="Runnable" seed="774994874" result="Passed" start-time="2026-11-16 23:39:00Z" end-time="2026-11-16 23:39:12Z" duration="11.710639" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584930010434
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2124" name="GuestMotionAndReliableCorrections(18,False)" fullname="OnlineMotionSmoothingPlayModeTests.GuestMotionAndReliableCorrections(18,False)" methodname="GuestMotionAndReliableCorrections" classname="OnlineMotionSmoothingPlayModeTests" runstate="Runnable" seed="1900166522" result="Passed" start-time="2026-11-16 23:39:12Z" end-time="2026-11-16 23:39:24Z" duration="11.831935" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584930137710
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2125" name="GuestMotionAndReliableCorrections(18,True)" fullname="OnlineMotionSmoothingPlayModeTests.GuestMotionAndReliableCorrections(18,True)" methodname="GuestMotionAndReliableCorrections" classname="OnlineMotionSmoothingPlayModeTests" runstate="Runnable" seed="1713041417" result="Passed" start-time="2026-11-16 23:39:24Z" end-time="2026-11-16 23:39:36Z" duration="11.755319" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584930264986
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+Saving results to: TestResults\GameplayRegression\Runs\20261116T233847714Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>
