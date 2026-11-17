@@ -1,0 +1,14 @@
+{"name":"OnlinePublishedHighlightsEditorTests.DestinationsMatchClickablePublishedChoices(\"unique\",1)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePublishedHighlightsEditorTests.DestinationsMatchClickablePublishedChoices(\"duplicate\",1)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePublishedHighlightsEditorTests.DestinationsMatchClickablePublishedChoices(\"ambiguous\",0)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePublishedHighlightsEditorTests.DestinationsMatchClickablePublishedChoices(\"noncanonical\",0)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePublishedHighlightsEditorTests.DestinationsMatchClickablePublishedChoices(\"plus\",0)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePublishedHighlightsEditorTests.DestinationsMatchClickablePublishedChoices(\"invalid\",0)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePublishedHighlightsEditorTests.HiddenAndOffboardPlayersNeverSupplyPitchHints(False,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePublishedHighlightsEditorTests.HiddenAndOffboardPlayersNeverSupplyPitchHints(True,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePublishedHighlightsEditorTests.HoldAndPauseClearHints(False,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePublishedHighlightsEditorTests.HoldAndPauseClearHints(True,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePublishedHighlightsEditorTests.HoldAndPauseClearHints(False,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePublishedHighlightsEditorTests.SelectionPrecedence(\"eligible\",\"PaceAvailable\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePublishedHighlightsEditorTests.SelectionPrecedence(\"selected\",\"MovementDestinationHover\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePublishedHighlightsEditorTests.SelectionPrecedence(\"target\",\"passTargetCommitted\")","status":"Passed","message":"","stackTrace":""}

@@ -485,3 +485,5 @@ Each feature's `Assets/Editor/FeatureTests/<feature>/Verification.md` records
 actual run artifacts, fixture corrections and affected filters. These are local
 native checks, not paired internet latency or complete-suite validation. Every
 new case has an individual deferred entry in OnlineMacTestManifest.json.
+
+Published guest pitch hints: EditMode `OnlinePublishedHighlightsEditorTests` (14) and PlayMode `OnlinePublishedHighlightsPlayModeTests` (four), category `OnlinePublishedHighlights`. Tests are in `Assets/Editor/FeatureTests/OnlinePublishedHighlights/` and `Assets/Tests/PlayMode/Features/OnlinePublishedHighlights/`. This is display-only coverage, not a gameplay suite or paired test.

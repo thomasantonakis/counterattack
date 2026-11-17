@@ -654,3 +654,12 @@ refreshed successfully November 17 at 05:32-05:33 UTC. Room stays v18/wire v7;
 all six cases are separately registered for the deferred Mac run. Continue
 published guest pitch highlights and the remaining frontend/full-match audit.
 Actual paired acceptance and internet latency remain deferred.
+
+Guests now see published legal-choice highlights on the authored pitch: eligible
+players/destinations, selected player and selected target. Host source highlights
+are preserved; holds, pauses and withdrawn choices clear hints. Four actual Room
+and 14 isolated cases passed, all 18 individually registered for the deferred Mac
+run. See OnlinePublishedHighlights/Verification.md. Room remains v18/wire v7;
+Windows exports refreshed at 05:43-05:44 UTC November 17. Next audit: restore the
+original authored match instruction panel using authority-published text without
+enabling the disabled monitor's AI/logging/input loops. Paired testing deferred.

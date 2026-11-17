@@ -8,14 +8,14 @@ using UnityEngine.UI;
 namespace CounterAttack.Online
 {
     /// <summary>Both managers use the same published choices and authenticated command lane.</summary>
-    public sealed class OnlineBoardInput:MonoBehaviour
+    public sealed partial class OnlineBoardInput:MonoBehaviour
     {
         public OnlineGroundPassBoard board;
         public bool samplePhysicalInput=true;
         private OnlineGroundPassState state;
         private static readonly KeyCode[] Keys={KeyCode.P,KeyCode.L,KeyCode.C,KeyCode.F,KeyCode.M,KeyCode.S,KeyCode.R,KeyCode.D,KeyCode.B,KeyCode.N,KeyCode.T,KeyCode.X,
             KeyCode.Q,KeyCode.K,KeyCode.H,KeyCode.G,KeyCode.V,KeyCode.A,KeyCode.Return,KeyCode.KeypadEnter};
-        public void Display(OnlineGroundPassState publication)=>state=publication;
+        public void Display(OnlineGroundPassState publication){state=publication;RefreshPublishedHighlights(publication);}
         private bool Submit(string action)=>action!=null && board!=null && board.controls!=null && board.controls.TrySubmitAction(action);
         public bool TryToken(PlayerToken token)
         {

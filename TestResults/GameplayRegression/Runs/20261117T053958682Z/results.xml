@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="14" result="Passed" total="14" passed="14" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-17 05:39:58Z" end-time="2026-11-17 05:39:59Z" duration="0.4679081">
+  <test-suite type="TestSuite" id="3238" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1889" result="Passed" start-time="2026-11-17 05:39:58Z" end-time="2026-11-17 05:39:59Z" duration="0.467908" total="14" passed="14" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="3232" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="1889" result="Passed" start-time="2026-11-17 05:39:58Z" end-time="2026-11-17 05:39:59Z" duration="0.340703" total="14" passed="14" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12156" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="2093" name="OnlinePublishedHighlightsEditorTests" fullname="OnlinePublishedHighlightsEditorTests" classname="OnlinePublishedHighlightsEditorTests" runstate="Runnable" testcasecount="14" result="Passed" start-time="2026-11-17 05:39:58Z" end-time="2026-11-17 05:39:59Z" duration="0.320167" total="14" passed="14" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlinePublishedHighlights" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="2104" name="DestinationsMatchClickablePublishedChoices" fullname="OnlinePublishedHighlightsEditorTests.DestinationsMatchClickablePublishedChoices" classname="OnlinePublishedHighlightsEditorTests" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-11-17 05:39:58Z" end-time="2026-11-17 05:39:59Z" duration="0.190228" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="2098" name="DestinationsMatchClickablePublishedChoices(&quot;unique&quot;,1)" fullname="OnlinePublishedHighlightsEditorTests.DestinationsMatchClickablePublishedChoices(&quot;unique&quot;,1)" methodname="DestinationsMatchClickablePublishedChoices" classname="OnlinePublishedHighlightsEditorTests" runstate="Runnable" seed="1839479627" result="Passed" start-time="2026-11-17 05:39:59Z" end-time="2026-11-17 05:39:59Z" duration="0.051930" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2099" name="DestinationsMatchClickablePublishedChoices(&quot;duplicate&quot;,1)" fullname="OnlinePublishedHighlightsEditorTests.DestinationsMatchClickablePublishedChoices(&quot;duplicate&quot;,1)" methodname="DestinationsMatchClickablePublishedChoices" classname="OnlinePublishedHighlightsEditorTests" runstate="Runnable" seed="230520457" result="Passed" start-time="2026-11-17 05:39:59Z" end-time="2026-11-17 05:39:59Z" duration="0.000124" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2100" name="DestinationsMatchClickablePublishedChoices(&quot;ambiguous&quot;,0)" fullname="OnlinePublishedHighlightsEditorTests.DestinationsMatchClickablePublishedChoices(&quot;ambiguous&quot;,0)" methodname="DestinationsMatchClickablePublishedChoices" classname="OnlinePublishedHighlightsEditorTests" runstate="Runnable" seed="96408151" result="Passed" start-time="2026-11-17 05:39:59Z" end-time="2026-11-17 05:39:59Z" duration="0.000141" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2101" name="DestinationsMatchClickablePublishedChoices(&quot;noncanonical&quot;,0)" fullname="OnlinePublishedHighlightsEditorTests.DestinationsMatchClickablePublishedChoices(&quot;noncanonical&quot;,0)" methodname="DestinationsMatchClickablePublishedChoices" classname="OnlinePublishedHighlightsEditorTests" runstate="Runnable" seed="1324348362" result="Passed" start-time="2026-11-17 05:39:59Z" end-time="2026-11-17 05:39:59Z" duration="0.000119" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2102" name="DestinationsMatchClickablePublishedChoices(&quot;plus&quot;,0)" fullname="OnlinePublishedHighlightsEditorTests.DestinationsMatchClickablePublishedChoices(&quot;plus&quot;,0)" methodname="DestinationsMatchClickablePublishedChoices" classname="OnlinePublishedHighlightsEditorTests" runstate="Runnable" seed="411102641" result="Passed" start-time="2026-11-17 05:39:59Z" end-time="2026-11-17 05:39:59Z" duration="0.000422" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2103" name="DestinationsMatchClickablePublishedChoices(&quot;invalid&quot;,0)" fullname="OnlinePublishedHighlightsEditorTests.DestinationsMatchClickablePublishedChoices(&quot;invalid&quot;,0)" methodname="DestinationsMatchClickablePublishedChoices" classname="OnlinePublishedHighlightsEditorTests" runstate="Runnable" seed="1705815685" result="Passed" start-time="2026-11-17 05:39:59Z" end-time="2026-11-17 05:39:59Z" duration="0.000136" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="2111" name="HiddenAndOffboardPlayersNeverSupplyPitchHints" fullname="OnlinePublishedHighlightsEditorTests.HiddenAndOffboardPlayersNeverSupplyPitchHints" classname="OnlinePublishedHighlightsEditorTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-17 05:39:59Z" end-time="2026-11-17 05:39:59Z" duration="0.005769" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="2109" name="HiddenAndOffboardPlayersNeverSupplyPitchHints(False,True)" fullname="OnlinePublishedHighlightsEditorTests.HiddenAndOffboardPlayersNeverSupplyPitchHints(False,True)" methodname="HiddenAndOffboardPlayersNeverSupplyPitchHints" classname="OnlinePublishedHighlightsEditorTests" runstate="Runnable" seed="63696997" result="Passed" start-time="2026-11-17 05:39:59Z" end-time="2026-11-17 05:39:59Z" duration="0.001791" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2110" name="HiddenAndOffboardPlayersNeverSupplyPitchHints(True,False)" fullname="OnlinePublishedHighlightsEditorTests.HiddenAndOffboardPlayersNeverSupplyPitchHints(True,False)" methodname="HiddenAndOffboardPlayersNeverSupplyPitchHints" classname="OnlinePublishedHighlightsEditorTests" runstate="Runnable" seed="1145359736" result="Passed" start-time="2026-11-17 05:39:59Z" end-time="2026-11-17 05:39:59Z" duration="0.000094" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="2097" name="HoldAndPauseClearHints" fullname="OnlinePublishedHighlightsEditorTests.HoldAndPauseClearHints" classname="OnlinePublishedHighlightsEditorTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-11-17 05:39:59Z" end-time="2026-11-17 05:39:59Z" duration="0.005561" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="2094" name="HoldAndPauseClearHints(False,False)" fullname="OnlinePublishedHighlightsEditorTests.HoldAndPauseClearHints(False,False)" methodname="HoldAndPauseClearHints" classname="OnlinePublishedHighlightsEditorTests" runstate="Runnable" seed="2038938399" result="Passed" start-time="2026-11-17 05:39:59Z" end-time="2026-11-17 05:39:59Z" duration="0.000381" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2095" name="HoldAndPauseClearHints(True,False)" fullname="OnlinePublishedHighlightsEditorTests.HoldAndPauseClearHints(True,False)" methodname="HoldAndPauseClearHints" classname="OnlinePublishedHighlightsEditorTests" runstate="Runnable" seed="665347091" result="Passed" start-time="2026-11-17 05:39:59Z" end-time="2026-11-17 05:39:59Z" duration="0.000165" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2096" name="HoldAndPauseClearHints(False,True)" fullname="OnlinePublishedHighlightsEditorTests.HoldAndPauseClearHints(False,True)" methodname="HoldAndPauseClearHints" classname="OnlinePublishedHighlightsEditorTests" runstate="Runnable" seed="1424029668" result="Passed" start-time="2026-11-17 05:39:59Z" end-time="2026-11-17 05:39:59Z" duration="0.000117" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="2108" name="SelectionPrecedence" fullname="OnlinePublishedHighlightsEditorTests.SelectionPrecedence" classname="OnlinePublishedHighlightsEditorTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-11-17 05:39:59Z" end-time="2026-11-17 05:39:59Z" duration="0.110719" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="2105" name="SelectionPrecedence(&quot;eligible&quot;,&quot;PaceAvailable&quot;)" fullname="OnlinePublishedHighlightsEditorTests.SelectionPrecedence(&quot;eligible&quot;,&quot;PaceAvailable&quot;)" methodname="SelectionPrecedence" classname="OnlinePublishedHighlightsEditorTests" runstate="Runnable" seed="1338479116" result="Passed" start-time="2026-11-17 05:39:59Z" end-time="2026-11-17 05:39:59Z" duration="0.007910" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2106" name="SelectionPrecedence(&quot;selected&quot;,&quot;MovementDestinationHover&quot;)" fullname="OnlinePublishedHighlightsEditorTests.SelectionPrecedence(&quot;selected&quot;,&quot;MovementDestinationHover&quot;)" methodname="SelectionPrecedence" classname="OnlinePublishedHighlightsEditorTests" runstate="Runnable" seed="698214620" result="Passed" start-time="2026-11-17 05:39:59Z" end-time="2026-11-17 05:39:59Z" duration="0.000242" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2107" name="SelectionPrecedence(&quot;target&quot;,&quot;passTargetCommitted&quot;)" fullname="OnlinePublishedHighlightsEditorTests.SelectionPrecedence(&quot;target&quot;,&quot;passTargetCommitted&quot;)" methodname="SelectionPrecedence" classname="OnlinePublishedHighlightsEditorTests" runstate="Runnable" seed="472165361" result="Passed" start-time="2026-11-17 05:39:59Z" end-time="2026-11-17 05:39:59Z" duration="0.000243" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Saving results to: TestResults\GameplayRegression\Runs\20261117T053958682Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>
