@@ -1,0 +1,9 @@
+{
+    "startedUtc":  "2026-11-17T14:18:35.7175377Z",
+    "buildAssemblySha256":  "FCD57AF22FFDC8C5052F074C404C6C9242853BAF8D1E2566A885551E489C3C08",
+    "sourceCommit":  "44e1de471f4efc5624a2c33699e781a337200499",
+    "requestId":  "20261117T141510Z-88348-room-1",
+    "sourceFingerprint":  "524ff4b14d060ac86f79489a6a0af2af4ad697e4ef57ec3737dea269db06f01f",
+    "mode":  "room",
+    "status":  "running"
+}
