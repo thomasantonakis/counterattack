@@ -219,5 +219,59 @@ class VerificationTests(unittest.TestCase):
         self.assertEqual(json.loads(result.stdout), [expected for _, _, expected in requests])
 
 
+    @unittest.skipUnless(sys.platform == "win32", "PowerShell host is Windows-only")
+    def test_large_host_upload_uses_utf8_input_file_and_preserves_report(self):
+        import base64
+        helper = MODULE.parent / "OnlineVerificationHostRequest.ps1"
+        with tempfile.TemporaryDirectory() as folder:
+            capture = Path(folder) / "capture.json"
+            report = {"status": "passed", "evidence": {"digest": "real-digest", "text": "\u03b1\u03b2\u03b3" * 40000}}
+            command = ". '" + str(helper).replace("'", "''") + "'; " + r"""
+$fixture=[Console]::In.ReadToEnd()|ConvertFrom-Json
+$script:capture=$fixture.capture
+function gh {
+ $inputIndex=[Array]::IndexOf($args,'--input')
+ if($inputIndex -lt 0){throw 'Upload body must use --input'}
+ $record=@{arguments=@($args);body=[IO.File]::ReadAllText($args[$inputIndex+1])}
+ [IO.File]::WriteAllText($script:capture,($record|ConvertTo-Json -Depth 8),(New-Object Text.UTF8Encoding($false)))
+ $global:LASTEXITCODE=0
+}
+Publish-OnlineVerificationHostResult -Id fixture-report -Value $fixture.report -Api repos/example/game -QueuePath reports -QueueBranch verification/queue -ArtifactRoot $fixture.folder -Previous $fixture.previous
+"""
+            for previous in (None, {"sha": "existing-file-sha"}):
+                with self.subTest(update=bool(previous)):
+                    data = dict(capture=str(capture), report=report, folder=folder, previous=previous)
+                    result = subprocess.run(["powershell.exe", "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", command], input=json.dumps(data), capture_output=True, text=True)
+                    self.assertEqual(result.returncode, 0, result.stderr)
+                    record = json.loads(capture.read_text(encoding="utf-8-sig"))
+                    self.assertLess(sum(map(len, record["arguments"])), 2000)
+                    body = json.loads(record["body"])
+                    decoded = base64.b64decode(body["content"]).decode("utf-8")
+                    self.assertGreater(len(decoded), 32768)
+                    self.assertEqual(json.loads(decoded), report)
+                    self.assertEqual(body.get("sha"), previous["sha"] if previous else None)
+                    self.assertEqual(body["branch"], "verification/queue")
+                    self.assertFalse((Path(folder) / "fixture-report-host-upload.json").exists())
+
+    @unittest.skipUnless(sys.platform == "win32", "PowerShell host is Windows-only")
+    def test_host_upload_failure_is_reported_and_temporary_body_is_removed(self):
+        helper = MODULE.parent / "OnlineVerificationHostRequest.ps1"
+        with tempfile.TemporaryDirectory() as folder:
+            command = ". '" + str(helper).replace("'", "''") + "'; " + r"""
+$fixture=[Console]::In.ReadToEnd()|ConvertFrom-Json
+function gh { $global:LASTEXITCODE=1 }
+try {
+ Publish-OnlineVerificationHostResult -Id failed-upload -Value @{status='passed'} -Api repos/example/game -QueuePath reports -QueueBranch verification/queue -ArtifactRoot $fixture.folder
+ throw 'Upload failure was not reported'
+} catch {
+ if($_.Exception.Message -ne 'Could not publish Windows verification result'){throw}
+}
+exit 0
+"""
+            result = subprocess.run(["powershell.exe", "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", command], input=json.dumps({"folder": folder}), capture_output=True, text=True)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertFalse((Path(folder) / "failed-upload-host-upload.json").exists())
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -255,3 +255,22 @@ v20 / wire v7. Full-match paired acceptance and actual internet latency remain
 unmeasured and deferred until requested. Continue remaining interruption/result
 presentation audit; preserve unresolved shared-settings and outfield-X rule
 questions in GameplayReview.md.
+
+
+Paired follow-up, 2026-11-17: verification/sons-mac-20261117T141510Z-88348
+passed all 14 selected native cases, all three Mac builds, EOS login and both
+local checks. Both actual Windows-host/Mac-guest probes also passed over
+ForceRelays with matching digests, one host roll, pause revision 2 and inactive
+guest rules. The original verifier marked pairing failed because the Windows
+final report (~53 KB before base64) exceeded the Windows command-line limit.
+Both Windows result files were preserved locally as passed; their complete
+reports have now been republished successfully and checked remotely.
+The original failed Mac report remains unchanged. Explicit reconciliation is
+retained in TestResults/GameplayRegression/Runs/20261117T141054275Z-WindowsVerificationHost/20261117T141510Z-88348-paired-comparison.json.
+Host uploads now use a temporary UTF-8 --input file; 19 tooling tests pass,
+including a >32 KB Unicode payload, create/update SHA behavior and failed-upload
+cleanup. This is a tooling-only repair; Unity source/builds are unchanged.
+No new Mac run is required to establish these two recovered probe passes.
+Normal-game human Host/Join -> team/kit agreement -> Draft -> full Room play,
+actual network interruption/recovery and measured latency remain unverified.
+These paired attempts recorded recoveryGenerations=0; do not claim reconnect.

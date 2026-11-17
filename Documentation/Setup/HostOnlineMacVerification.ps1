@@ -41,12 +41,7 @@ function Decode-Github($file) {
 function Publish-HostResult([string]$id,$value) {
  $endpoint="$api/contents/$queuePath/$id-host.json"
  $old=Read-Github ($endpoint+'?ref='+$queueBranch)
- $json=$value|ConvertTo-Json -Depth 40
- $content=[Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($json+"`n"))
- $arguments=@('api','-X','PUT',$endpoint,'-f',"branch=$queueBranch",'-f',"message=Record Windows verification $id",'-f',"content=$content")
- if($old){$arguments+=@('-f',"sha=$($old.sha)")}
- & gh @arguments | Out-Null
- if($LASTEXITCODE -ne 0){throw 'Could not publish Windows verification result'}
+ Publish-OnlineVerificationHostResult -Id $id -Value $value -Api $api -QueuePath $queuePath -QueueBranch $queueBranch -ArtifactRoot $artifactRoot -Previous $old
 }
 function Read-LocalJson([string]$path) {
  if(Test-Path -LiteralPath $path){return Get-Content -Raw -LiteralPath $path|ConvertFrom-Json}

@@ -19635,6 +19635,28 @@
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
       "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T140512374Z/results.xml"
+    },
+    {
+      "id": "VerificationTests.test_large_host_upload_uses_utf8_input_file_and_preserves_report",
+      "feature": "OnlinePairingRecovery",
+      "mode": "tooling",
+      "fixture": "VerificationTests",
+      "method": "test_large_host_upload_uses_utf8_input_file_and_preserves_report",
+      "parameters": [],
+      "mac_status": "not_applicable_windows_host_only",
+      "windows_status": "passed",
+      "windows_evidence": "Documentation/Testing/OnlinePairingRecovery.md"
+    },
+    {
+      "id": "VerificationTests.test_host_upload_failure_is_reported_and_temporary_body_is_removed",
+      "feature": "OnlinePairingRecovery",
+      "mode": "tooling",
+      "fixture": "VerificationTests",
+      "method": "test_host_upload_failure_is_reported_and_temporary_body_is_removed",
+      "parameters": [],
+      "mac_status": "not_applicable_windows_host_only",
+      "windows_status": "passed",
+      "windows_evidence": "Documentation/Testing/OnlinePairingRecovery.md"
     }
   ]
 }

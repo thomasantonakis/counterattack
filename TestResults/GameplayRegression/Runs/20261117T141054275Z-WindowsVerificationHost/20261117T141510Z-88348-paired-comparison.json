@@ -1,0 +1,49 @@
+{
+  "original_report_status": "failed",
+  "failure": "Windows host final report upload exceeded command-line limit; original Mac report retained unchanged",
+  "comparisons": [
+    {
+      "mode": "room",
+      "host_status": "passed",
+      "guest_command_exit": 0,
+      "host_digest": "459BF9175E6CD1EC9B72D50E4CAEC8F0F83C54A2A321E3BF09F0164499F8EE14",
+      "guest_digest": "459BF9175E6CD1EC9B72D50E4CAEC8F0F83C54A2A321E3BF09F0164499F8EE14",
+      "guest_rules_inactive": true,
+      "host_roll_sequence": 1,
+      "guest_roll_sequence": 1,
+      "host_pause_revision": 2,
+      "guest_pause_revision": 2,
+      "host_relay": "ForceRelays",
+      "recovery_generations": 0,
+      "paired_probe_passed": true,
+      "recovered_remote_status": "passed",
+      "recovered_host_blob_sha": "54738529b38fd185204573f0bf7c792c5c079780"
+    },
+    {
+      "mode": "gameplay",
+      "host_status": "passed",
+      "guest_command_exit": 0,
+      "host_digest": "57E227FC5D9E5B34B50AA77198D3CAA28DDBA08EBD06D11870D8B6A0DE762239",
+      "guest_digest": "57E227FC5D9E5B34B50AA77198D3CAA28DDBA08EBD06D11870D8B6A0DE762239",
+      "guest_rules_inactive": true,
+      "host_roll_sequence": 1,
+      "guest_roll_sequence": 1,
+      "host_pause_revision": 2,
+      "guest_pause_revision": 2,
+      "host_relay": "ForceRelays",
+      "recovery_generations": 0,
+      "paired_probe_passed": true,
+      "recovered_remote_status": "passed",
+      "recovered_host_blob_sha": "2e0eb2134f60201148814563285bbe463343e03b"
+    }
+  ],
+  "limitations": [
+    "Automatic prepared Room/board exchange only; not normal-game full-match acceptance",
+    "No actual disconnect/reconnect in these paired attempts: recoveryGenerations=0",
+    "No measured RTT/latency distribution"
+  ],
+  "schema": "counterattack-paired-reconciliation-v1",
+  "mac_report_branch": "verification/sons-mac-20261117T141510Z-88348",
+  "source_commit": "44e1de471f4efc5624a2c33699e781a337200499",
+  "summary": "Both automatic probes passed on both machines with identical digests; final Windows report upload was repaired after the original Mac verifier finished."
+}
