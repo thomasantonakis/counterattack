@@ -528,3 +528,18 @@ v20 / wire v7. Full-match paired acceptance and actual internet latency remain
 unmeasured and deferred until requested. Continue remaining interruption/result
 presentation audit; preserve unresolved shared-settings and outfield-X rule
 questions in GameplayReview.md.
+
+
+Mac verification follow-up (2026-11-17): original report
+verification/sons-mac-20261117T111338Z-81219 contains 1,736 native passes,
+four ground-cleanup assertion failures and one skipped one-use EOS session test.
+All three Mac builds and both local probes passed; packaged EOS device creation
+failed without an enum in its old message. No pairing occurred: Windows slept
+through the host-request window (confirmed lid/button power events).
+The four fixture expectations are corrected and pass on Windows, without
+changing gameplay. Tooling now supports exact --fixture / explicit --skip-native,
+gates host waits on successful EOS login and expires host requests at the guest
+deadline. EOS failure messages now include result enums. Seventeen tooling checks
+passed. See Documentation/Testing/OnlinePairingRecovery.md for evidence and the
+short retry command. Do not repeat all 127 fixtures by default; do not claim
+paired success or a fixed Mac identity until the short Mac run proves it.

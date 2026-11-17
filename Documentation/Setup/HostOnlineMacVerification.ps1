@@ -2,6 +2,7 @@ param([ValidateRange(1,24)][int]$Hours = 8)
 $ErrorActionPreference='Stop'
 $repoRoot=(git -C $PSScriptRoot rev-parse --show-toplevel).Trim()
 Set-Location -LiteralPath $repoRoot
+. (Join-Path $PSScriptRoot 'OnlineVerificationHostRequest.ps1')
 $source=(git rev-parse HEAD).Trim()
 $trees=@('Assets','Packages','ProjectSettings')|ForEach-Object{(git rev-parse ('HEAD:'+$_)).Trim()}
 $sha256=[Security.Cryptography.SHA256]::Create()
@@ -61,8 +62,7 @@ while([DateTime]::UtcNow -lt $deadline) {
    if($processed.ContainsKey($id)){continue}
    $request=Decode-Github (Read-Github ($file.url))
    if(-not $request -or $request.kind -ne 'online-verification-request-v1' -or $request.requestId -ne $id -or $request.status -ne 'requested'){continue}
-   $age=[DateTimeOffset]::UtcNow.ToUnixTimeSeconds()-[long]$request.createdUnix
-   if($age -lt -30 -or $age -gt 7200){continue}
+   if(-not (Test-OnlineVerificationHostRequestCurrent -Request $request -NowUnix ([DateTimeOffset]::UtcNow.ToUnixTimeSeconds()))){continue}
    $processed[$id]=$true
    $result=@{requestId=$id; sourceCommit=$source; sourceFingerprint=$fingerprint; mode=$request.mode; startedUtc=[DateTime]::UtcNow.ToString('o'); status='running'}
    if($request.sourceFingerprint -ne $fingerprint -or $request.mode -notin @('room','gameplay')) {
@@ -83,8 +83,13 @@ while([DateTime]::UtcNow -lt $deadline) {
    Write-Output "Hosting Mac request $id"
    # Synchronous, serial attempts. The launcher owns and retires its standalone
    # process on failure, and removes only the handoff it published.
-   & powershell.exe @arguments *> (Join-Path $artifactRoot ($id+'.log'))
-   $exitCode=$LASTEXITCODE
+   $exitCode=1
+   try {
+    & powershell.exe @arguments *> (Join-Path $artifactRoot ($id+'.log'))
+    $exitCode=$LASTEXITCODE
+   } catch {
+    $result.launcherError=$_.Exception.Message
+   }
    $result.exitCode=$exitCode
    $result.report=Read-LocalJson (Join-Path $run 'result.json')
    $result.evidence=Read-LocalJson (Join-Path $run 'gameplay-evidence.json')

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="4" result="Passed" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-17 14:05:12Z" end-time="2026-11-17 14:05:21Z" duration="9.3798459">
+  <test-suite type="TestSuite" id="3256" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1873" result="Passed" start-time="2026-11-17 14:05:12Z" end-time="2026-11-17 14:05:21Z" duration="9.379846" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="3253" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1873" result="Passed" start-time="2026-11-17 14:05:12Z" end-time="2026-11-17 14:05:21Z" duration="9.331538" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="9184" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1853" name="OnlineGroundPassPlayModeTests" fullname="OnlineGroundPassPlayModeTests" classname="OnlineGroundPassPlayModeTests" runstate="Runnable" testcasecount="14" result="Passed" start-time="2026-11-17 14:05:12Z" end-time="2026-11-17 14:05:21Z" duration="9.301086" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineGroundPass" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="1865" name="UnauthorizedAndStaleCommandsCannotMutate" fullname="OnlineGroundPassPlayModeTests.UnauthorizedAndStaleCommandsCannotMutate" classname="OnlineGroundPassPlayModeTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-11-17 14:05:12Z" end-time="2026-11-17 14:05:21Z" duration="9.280642" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="1861" name="UnauthorizedAndStaleCommandsCannotMutate(1,False)" fullname="OnlineGroundPassPlayModeTests.UnauthorizedAndStaleCommandsCannotMutate(1,False)" methodname="UnauthorizedAndStaleCommandsCannotMutate" classname="OnlineGroundPassPlayModeTests" runstate="Runnable" seed="1351438091" result="Passed" start-time="2026-11-17 14:05:12Z" end-time="2026-11-17 14:05:18Z" duration="5.657752" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+]]></output>
+          </test-case>
+          <test-case id="1862" name="UnauthorizedAndStaleCommandsCannotMutate(1,True)" fullname="OnlineGroundPassPlayModeTests.UnauthorizedAndStaleCommandsCannotMutate(1,True)" methodname="UnauthorizedAndStaleCommandsCannotMutate" classname="OnlineGroundPassPlayModeTests" runstate="Runnable" seed="253011385" result="Passed" start-time="2026-11-17 14:05:18Z" end-time="2026-11-17 14:05:19Z" duration="1.256853" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+]]></output>
+          </test-case>
+          <test-case id="1863" name="UnauthorizedAndStaleCommandsCannotMutate(-1,False)" fullname="OnlineGroundPassPlayModeTests.UnauthorizedAndStaleCommandsCannotMutate(-1,False)" methodname="UnauthorizedAndStaleCommandsCannotMutate" classname="OnlineGroundPassPlayModeTests" runstate="Runnable" seed="1402282072" result="Passed" start-time="2026-11-17 14:05:19Z" end-time="2026-11-17 14:05:20Z" duration="1.273554" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+]]></output>
+          </test-case>
+          <test-case id="1864" name="UnauthorizedAndStaleCommandsCannotMutate(-1,True)" fullname="OnlineGroundPassPlayModeTests.UnauthorizedAndStaleCommandsCannotMutate(-1,True)" methodname="UnauthorizedAndStaleCommandsCannotMutate" classname="OnlineGroundPassPlayModeTests" runstate="Runnable" seed="1258654982" result="Passed" start-time="2026-11-17 14:05:20Z" end-time="2026-11-17 14:05:21Z" duration="1.032997" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Saving results to: TestResults\GameplayRegression\Runs\20261117T140512374Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

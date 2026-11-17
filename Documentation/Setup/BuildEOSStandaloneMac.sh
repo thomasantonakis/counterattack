@@ -13,7 +13,7 @@ case "$mode" in
     *) printf 'Usage: %s [packets|gameplay|room|game]\n' "$0" >&2; exit 2 ;;
 esac
 pipeline() { unity command "$@" --project-path "$repo_root" --caller codex --skill unity-cli --format json; }
-unity status --project-path "$repo_root" --format json | jq -e '.success and any(.data.instances[]?; .state == "ready")' >/dev/null
+pipeline editor_status | jq -e '.success and .data.result.playMode == "stopped" and (.data.result.compiling | not) and (.data.result.domainReloadInProgress | not)' >/dev/null
 unity recompile --project-path "$repo_root" --format json | jq -e '.success and (.data.failed != true) and (.data.compilationFailed != true) and ((.data.summary.errors // 0) == 0)' >/dev/null
 ready_deadline=$((SECONDS + 90))
 while :; do

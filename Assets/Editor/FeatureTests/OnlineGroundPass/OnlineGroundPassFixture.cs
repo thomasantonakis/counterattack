@@ -125,7 +125,16 @@ public sealed partial class GoalkeeperBoxEntryFixture
         Assert.That(match.gameData.stats.GetPlayerStats(attacker).passesAttempted, Is.EqualTo(0));
         ground.CleanUpPass();
         var stopped = authority.Capture();
-        Assert.That(stopped.legalActions, Is.Empty, "cleanup revokes the target boundary");
+        Assert.That(stopped.legalActions.Any(action => action.StartsWith("ground.")), Is.False,
+            "cleanup revokes ground-pass actions while other families remain available");
+        Assert.That(stopped.legalActions, Does.Contain(OnlineGroundPassAuthority.HighStartAction));
+        Assert.That(stopped.legalActions, Does.Contain(OnlineGroundPassAuthority.LongStartAction));
+        Assert.That(stopped.legalActions, Does.Contain(OnlineGroundPassAuthority.MovementStartAction));
+        Assert.That(authority.Submit("home", confirm).Status, Is.EqualTo(OnlineCommandStatus.StaleRevision),
+            "the retired preview cannot restart a cleaned-up pass");
+        Assert.That(ground.isActivated, Is.False);
+        Assert.That(ball.GetCurrentHex(), Is.SameAs(Hex(0)));
+        Assert.That(match.gameData.stats.GetPlayerStats(attacker).passesAttempted, Is.Zero);
         yield break;
     }
 

@@ -1,0 +1,65 @@
+{
+  "run_id": "20261117T111338Z-81219",
+  "source_commit": "ec3839ff16b3c5529e8cc4e039013d27e05fa936",
+  "started_utc": "2026-11-17T11:13:38.770152+00:00",
+  "completed_utc": "2026-11-17T13:42:30.202667+00:00",
+  "status": "failed",
+  "distinct_final_native_counts": {
+    "Passed": 1736,
+    "Failed": 4,
+    "Skipped": 1,
+    "Inconclusive": 0
+  },
+  "report_branch": "verification/sons-mac-20261117T111338Z-81219",
+  "report_path": "Documentation/Testing/MacReports/20261117T111338Z-81219.json",
+  "failed_or_skipped_stages": [
+    {
+      "name": "playmode:OnlineGroundPassPlayModeTests",
+      "status": "failed",
+      "reason": null,
+      "started_utc": "2026-11-17T11:42:49.989198+00:00",
+      "completed_utc": "2026-11-17T11:43:27.391627+00:00"
+    },
+    {
+      "name": "login:room",
+      "status": "failed",
+      "reason": null,
+      "started_utc": "2026-11-17T13:01:11.459472+00:00",
+      "completed_utc": "2026-11-17T13:01:32.515018+00:00"
+    },
+    {
+      "name": "paired:room:attempt-1",
+      "status": "skipped",
+      "reason": "No matching Windows host became ready before the deadline.",
+      "started_utc": "2026-11-17T13:01:49.606807+00:00",
+      "completed_utc": "2026-11-17T13:11:54.799851+00:00"
+    },
+    {
+      "name": "paired:room:attempt-2",
+      "status": "skipped",
+      "reason": "No matching Windows host became ready before the deadline.",
+      "started_utc": "2026-11-17T13:11:57.033067+00:00",
+      "completed_utc": "2026-11-17T13:22:01.456220+00:00"
+    },
+    {
+      "name": "paired:gameplay:attempt-1",
+      "status": "skipped",
+      "reason": "No matching Windows host became ready before the deadline.",
+      "started_utc": "2026-11-17T13:22:13.618568+00:00",
+      "completed_utc": "2026-11-17T13:32:23.404219+00:00"
+    },
+    {
+      "name": "paired:gameplay:attempt-2",
+      "status": "skipped",
+      "reason": "No matching Windows host became ready before the deadline.",
+      "started_utc": "2026-11-17T13:32:24.035340+00:00",
+      "completed_utc": "2026-11-17T13:42:29.567847+00:00"
+    }
+  ],
+  "windows_sleep": {
+    "sleep_utc": "2026-11-17T12:53:35.7333885Z",
+    "wake_utc": "2026-11-17T13:56:58.9342922Z",
+    "reason": "Button or Lid",
+    "evidence": "Windows System events: Kernel-Power 42, Power-Troubleshooter 1"
+  }
+}

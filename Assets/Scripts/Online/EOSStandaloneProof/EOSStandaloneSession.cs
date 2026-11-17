@@ -78,7 +78,7 @@ internal sealed class EOSStandaloneSession : IDisposable
             yield return null;
         }
         EOSProofCheck.Require(deviceResult.HasValue, "CreateDeviceId callback timed out");
-        EOSProofCheck.Require(deviceResult.Value == Result.Success || deviceResult.Value == Result.DuplicateNotAllowed, "Creating or reusing the local device identity");
+        EOSProofCheck.Require(deviceResult.Value == Result.Success || deviceResult.Value == Result.DuplicateNotAllowed, "Creating or reusing the local device identity: " + deviceResult.Value);
 
         var loginOptions = new LoginOptions
         {
@@ -107,7 +107,7 @@ internal sealed class EOSStandaloneSession : IDisposable
                 yield return null;
             }
             EOSProofCheck.Require(createUserResult.HasValue, "Connect.CreateUser callback timed out");
-            EOSProofCheck.Require(createUserResult.Value == Result.Success, "Creating the test product user");
+            EOSProofCheck.Require(createUserResult.Value == Result.Success, "Creating the test product user: " + createUserResult.Value);
 
             login = null;
             connect.Login(ref loginOptions, null, (ref LoginCallbackInfo info) => login = info);
@@ -120,7 +120,7 @@ internal sealed class EOSStandaloneSession : IDisposable
             EOSProofCheck.Require(login.HasValue, "Connect.Login retry timed out");
         }
 
-        EOSProofCheck.Require(login.Value.ResultCode == Result.Success, "EOS Connect login");
+        EOSProofCheck.Require(login.Value.ResultCode == Result.Success, "EOS Connect login: " + login.Value.ResultCode);
         EOSProofCheck.Require(login.Value.LocalUserId != null, "Authenticated product user ID");
         EOSProofCheck.Require(login.Value.LocalUserId.IsValid(), "Authenticated product user ID validity");
         UserId = login.Value.LocalUserId;

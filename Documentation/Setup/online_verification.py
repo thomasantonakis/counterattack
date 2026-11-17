@@ -189,7 +189,7 @@ class Runner:
                        "started_utc": utc(), "source_commit": self.source, "source_fingerprint": self.fingerprint, "stages": [],
                        "scope": "Implemented online fixtures, Mac builds/local/login, paired automatic Room and prepared-board probes",
                        "limitations": ["Paired automatic probes cover the ground-pass/pause/recovery exchange; other gameplay families have native framework coverage, not paired human acceptance.",
-                                       "Continuous full-roster Room and remaining duel/restart families are not complete."]}
+                                       "Full normal-game human acceptance and latency measurements are not established by these automatic proofs."]}
 
     def save(self):
         target = self.output / "report.json"
@@ -263,9 +263,6 @@ class Runner:
                 time.sleep(2)
 
     def compile(self):
-        envelope = json.loads(checked(["unity", "status", "--project-path", str(self.root), "--format", "json"], self.root))
-        if not envelope.get("success") or not any(i.get("state") == "ready" for i in envelope.get("data", {}).get("instances", [])):
-            raise UnityUnavailable("Open the correct checkout manually in Unity and resolve any modal; CLI is not ready.")
         self.ready()
         result = json.loads(checked(["unity", "recompile", "--project-path", str(self.root), "--format", "json"], self.root))
         data = result.get("data") or {}
@@ -360,7 +357,7 @@ class Runner:
         request = {"kind": "online-verification-request-v1", "requestId": request_id,
                    "runId": self.run_id, "mode": mode, "sourceCommit": self.source,
                    "sourceFingerprint": self.fingerprint,
-                   "createdUnix": created, "status": "requested"}
+                   "createdUnix": created, "expiresUnix": created + self.options.host_wait, "status": "requested"}
         endpoint = REPOSITORY + "/contents/" + QUEUE_PATH + "/" + request_id + ".json"
         self.gh(endpoint, "-X", "PUT", "-f", "branch=" + QUEUE_BRANCH,
                 "-f", "message=Request Windows " + mode + " verification",
@@ -422,6 +419,17 @@ class Runner:
             manifest, plan = load_fixture_manifest(self.root)
             if not plan:
                 raise RuntimeError("No implemented online fixtures discovered")
+            requested = set(getattr(self.options, "fixture", None) or [])
+            if requested:
+                available = {item["fixture"] for item in plan}
+                if requested - available:
+                    raise RuntimeError("Unknown focused fixtures: " + ", ".join(sorted(requested - available)))
+                plan = [item for item in plan if item["fixture"] in requested]
+                self.report["scope"] = "Focused native fixtures plus Mac builds/local/login and paired automatic probes"
+            if getattr(self.options, "skip_native", False):
+                plan = []
+                self.report["scope"] = "Mac builds/local/login and paired automatic probes; native fixtures explicitly omitted"
+                self.report["limitations"].append("This run does not rerun or establish a pass for native fixtures.")
             self.report["fixture_plan"] = plan
             self.report["test_manifest"] = manifest
             self.stage("tooling:verifier", lambda: self.command_stage(
@@ -455,15 +463,18 @@ class Runner:
                 # A timed-out build can still be active; never queue another.
                 if self.report["stages"][-1].get("exit_code") == 124:
                     usable = False
+            login_ok = False
             for mode in ("room", "gameplay"):
                 if not builds.get(mode):
                     self.report["stages"].append({"name": "packaged:" + mode, "status": "skipped", "reason": "Fresh build unavailable; stale exports were not used"})
                     continue
                 if mode == "room":
-                    self.stage("login:room", lambda: self.command_stage(["bash", "Documentation/Setup/RunEOSStandaloneMac.sh", "login", "room"], 180))
+                    login_ok = self.stage("login:room", lambda: self.command_stage(["bash", "Documentation/Setup/RunEOSStandaloneMac.sh", "login", "room"], 180))["status"] == "passed"
                 self.stage("local:" + mode, lambda m=mode: self.command_stage(["bash", "Documentation/Setup/RunEOSStandaloneMac.sh", "local", m], 180))
                 if self.options.no_host:
                     self.report["stages"].append({"name": "paired:" + mode, "status": "skipped", "reason": "Host stage explicitly disabled"})
+                elif not login_ok:
+                    self.report["stages"].append({"name": "paired:" + mode, "status": "skipped", "reason": "Packaged EOS login did not pass; no host request or host wait was started."})
                 else:
                     for attempt in range(1, self.options.attempts + 1):
                         result = self.stage("paired:" + mode + ":attempt-" + str(attempt), lambda m=mode, a=attempt: self.paired(m, a))
@@ -498,11 +509,16 @@ class Runner:
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
+    selection = parser.add_mutually_exclusive_group()
+    selection.add_argument("--skip-native", action="store_true", help="Build/login/local/pair only; do not repeat native fixtures")
+    selection.add_argument("--fixture", action="append", help="Run only the exact named native fixture; repeat for multiple fixtures")
     parser.add_argument("--no-host", action="store_true", help="Record paired probes as skipped")
     parser.add_argument("--host-wait", type=int, default=600)
     parser.add_argument("--attempts", type=int, choices=range(1, 4), default=2)
     parser.add_argument("--test-timeout", type=int, default=1200)
     args = parser.parse_args()
+    if not 1 <= args.host_wait <= 7200:
+        parser.error("--host-wait must be between 1 and 7200 seconds")
     root = Path(__file__).resolve().parents[2]
     return Runner(root, args).run()
 

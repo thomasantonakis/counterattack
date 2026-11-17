@@ -163,5 +163,61 @@ class VerificationTests(unittest.TestCase):
             self.assertIn("Run this verifier on the Mac",(runner.output/"report.json").read_text())
 
 
+    def test_compile_uses_live_legacy_endpoint_without_status_alias(self):
+        with tempfile.TemporaryDirectory() as folder:
+            with mock.patch.object(verification, "checked", return_value="a" * 40):
+                runner = verification.Runner(Path(folder), object())
+            envelope = {"success": True, "data": {"failed": False, "summary": {"errors": 0}}}
+            with mock.patch.object(runner, "ready") as ready, mock.patch.object(runner, "wait_ready"), mock.patch.object(verification, "checked", return_value=json.dumps(envelope)) as checked:
+                runner.compile()
+            ready.assert_called_once()
+            self.assertEqual(checked.call_args.args[0][:2], ["unity", "recompile"])
+
+    def test_skip_native_failed_login_never_queues_hosts_but_keeps_local_checks(self):
+        from types import SimpleNamespace
+        with tempfile.TemporaryDirectory() as folder:
+            options = SimpleNamespace(skip_native=True, fixture=None, no_host=False, attempts=2)
+            with mock.patch.object(verification, "checked", return_value="a" * 40):
+                runner = verification.Runner(Path(folder), options)
+            plan = [{"fixture": "ExampleTests", "route": "native", "mode": "editor"}]
+            def command(args, *unused):
+                return {"status": "failed" if "login" in args else "passed"}
+            with mock.patch.object(verification.sys, "platform", "darwin"), mock.patch.object(verification.shutil, "which", return_value="tool"), mock.patch.object(verification, "checked", return_value="fixture"), mock.patch.object(verification, "load_fixture_manifest", return_value=({}, plan)), mock.patch.object(verification, "publish_report", return_value={"branch":"verification/fixture", "report_path":"report.json"}), mock.patch.object(runner, "assert_source"), mock.patch.object(runner, "compile", return_value={}), mock.patch.object(runner, "ready"), mock.patch.object(runner, "command_stage", side_effect=command), mock.patch.object(runner, "fixture") as native, mock.patch.object(runner, "paired") as paired, contextlib.redirect_stdout(io.StringIO()):
+                self.assertEqual(runner.run(), 1)
+            native.assert_not_called()
+            paired.assert_not_called()
+            stages = {stage["name"]: stage for stage in runner.report["stages"]}
+            self.assertEqual(stages["local:room"]["status"], "passed")
+            self.assertEqual(stages["local:gameplay"]["status"], "passed")
+            self.assertIn("EOS login", stages["paired:room"]["reason"])
+            self.assertEqual(runner.report["fixture_plan"], [])
+            self.assertIn("explicitly omitted", runner.report["scope"])
+
+    def test_exact_fixture_selection_preserves_other_stages_and_scope(self):
+        from types import SimpleNamespace
+        with tempfile.TemporaryDirectory() as folder:
+            options = SimpleNamespace(skip_native=False, fixture=["ChosenTests"], no_host=True, attempts=1)
+            with mock.patch.object(verification, "checked", return_value="a" * 40):
+                runner = verification.Runner(Path(folder), options)
+            plan = [{"fixture": name, "route": "native", "mode": "editor"} for name in ("OtherTests", "ChosenTests")]
+            with mock.patch.object(verification.sys, "platform", "darwin"), mock.patch.object(verification.shutil, "which", return_value="tool"), mock.patch.object(verification, "checked", return_value="fixture"), mock.patch.object(verification, "load_fixture_manifest", return_value=({}, plan)), mock.patch.object(verification, "publish_report", return_value={"branch":"verification/fixture", "report_path":"report.json"}), mock.patch.object(runner, "assert_source"), mock.patch.object(runner, "compile", return_value={}), mock.patch.object(runner, "ready"), mock.patch.object(runner, "command_stage", return_value={}), mock.patch.object(runner, "fixture", return_value={}) as native, contextlib.redirect_stdout(io.StringIO()):
+                self.assertEqual(runner.run(), 2, runner.report) # Explicit no-host remains incomplete.
+            self.assertEqual(native.call_count, 1)
+            self.assertEqual(native.call_args.args[0]["fixture"], "ChosenTests")
+            self.assertIn("Focused native", runner.report["scope"])
+
+    @unittest.skipUnless(sys.platform == "win32", "PowerShell host is Windows-only")
+    def test_host_rejects_expired_cancelled_future_and_malformed_requests(self):
+        helper = MODULE.parent / "OnlineVerificationHostRequest.ps1"
+        baseline = {"kind": "online-verification-request-v1", "status": "requested", "createdUnix": 1000, "expiresUnix": 1600}
+        requests = [(baseline, 1599, True), (baseline, 1600, False), (baseline, 2000, False), (dict(baseline, status="cancelled"), 1100, False), (dict(baseline, createdUnix=1200), 1100, False), (dict(baseline, expiresUnix="invalid"), 1100, False), (dict(baseline, expiresUnix=1000), 1100, False)]
+        legacy = dict(baseline); del legacy["expiresUnix"]
+        requests += [(legacy, 1599, True), (legacy, 1600, False)]
+        command = ". '" + str(helper).replace("'", "''") + "'; $items=[Console]::In.ReadToEnd()|ConvertFrom-Json; @($items | ForEach-Object {Test-OnlineVerificationHostRequestCurrent -Request $_.request -NowUnix $_.now})|ConvertTo-Json -Compress"
+        result = subprocess.run(["powershell.exe", "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", command], input=json.dumps([{"request": request, "now": now} for request, now, _ in requests]), capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(result.stdout), [expected for _, _, expected in requests])
+
+
 if __name__ == "__main__":
     unittest.main()

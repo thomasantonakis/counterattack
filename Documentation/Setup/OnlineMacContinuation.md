@@ -40,6 +40,25 @@ paired acceptance. Pause, substitutions and shootout ordering now have native
 integration coverage; their cross-machine acceptance remains deferred. No actual
 internet latency has been measured.
 
+## Focused follow-up after the first Mac report
+
+The full native run is already retained on
+`verification/sons-mac-20261117T111338Z-81219`. Pull the current development branch
+using the update commands above, then manually open the Mac Editor, save scenes
+and leave Play Mode stopped. When the user arranges the next short paired window:
+
+```sh
+bash Documentation/Setup/VerifyOnlineMac.sh --fixture OnlineGroundPassPlayModeTests --host-wait 180 --attempts 1
+```
+
+This runs only the affected native fixture, rebuilds all three exports, checks
+login/local gameplay and pairs only after EOS login succeeds. It publishes a
+new report without repeating all 127 fixtures. `--skip-native` explicitly omits
+native tests instead; reports identify that reduced scope. The original Mac
+identity failure is not yet diagnosed: new errors include the actual EOS enum.
+Keep the Windows host laptop awake with its lid open. See
+`Documentation/Testing/OnlinePairingRecovery.md` for the original evidence.
+
 ## One-command son's Mac verification
 
 **Deferred until the user requests it.** Do not start a host or wait for reports

@@ -19539,6 +19539,102 @@
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
       "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T105214505Z/results.xml"
+    },
+    {
+      "id": "VerificationTests.test_compile_uses_live_legacy_endpoint_without_status_alias",
+      "feature": "OnlinePairingRecovery",
+      "mode": "tooling",
+      "fixture": "VerificationTests",
+      "method": "test_compile_uses_live_legacy_endpoint_without_status_alias",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "Documentation/Testing/OnlinePairingRecovery.md"
+    },
+    {
+      "id": "VerificationTests.test_skip_native_failed_login_never_queues_hosts_but_keeps_local_checks",
+      "feature": "OnlinePairingRecovery",
+      "mode": "tooling",
+      "fixture": "VerificationTests",
+      "method": "test_skip_native_failed_login_never_queues_hosts_but_keeps_local_checks",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "Documentation/Testing/OnlinePairingRecovery.md"
+    },
+    {
+      "id": "VerificationTests.test_exact_fixture_selection_preserves_other_stages_and_scope",
+      "feature": "OnlinePairingRecovery",
+      "mode": "tooling",
+      "fixture": "VerificationTests",
+      "method": "test_exact_fixture_selection_preserves_other_stages_and_scope",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "Documentation/Testing/OnlinePairingRecovery.md"
+    },
+    {
+      "id": "VerificationTests.test_host_rejects_expired_cancelled_future_and_malformed_requests",
+      "feature": "OnlinePairingRecovery",
+      "mode": "tooling",
+      "fixture": "VerificationTests",
+      "method": "test_host_rejects_expired_cancelled_future_and_malformed_requests",
+      "parameters": [],
+      "mac_status": "not_applicable_windows_host_only",
+      "windows_status": "passed",
+      "windows_evidence": "Documentation/Testing/OnlinePairingRecovery.md"
+    },
+    {
+      "id": "OnlineGroundPassPlayModeTests.UnauthorizedAndStaleCommandsCannotMutate(1,False)",
+      "feature": "OnlinePairingRecovery",
+      "mode": "playmode",
+      "fixture": "OnlineGroundPassPlayModeTests",
+      "method": "UnauthorizedAndStaleCommandsCannotMutate",
+      "parameters": [
+        "1,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T140512374Z/results.xml"
+    },
+    {
+      "id": "OnlineGroundPassPlayModeTests.UnauthorizedAndStaleCommandsCannotMutate(1,True)",
+      "feature": "OnlinePairingRecovery",
+      "mode": "playmode",
+      "fixture": "OnlineGroundPassPlayModeTests",
+      "method": "UnauthorizedAndStaleCommandsCannotMutate",
+      "parameters": [
+        "1,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T140512374Z/results.xml"
+    },
+    {
+      "id": "OnlineGroundPassPlayModeTests.UnauthorizedAndStaleCommandsCannotMutate(-1,False)",
+      "feature": "OnlinePairingRecovery",
+      "mode": "playmode",
+      "fixture": "OnlineGroundPassPlayModeTests",
+      "method": "UnauthorizedAndStaleCommandsCannotMutate",
+      "parameters": [
+        "-1,False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T140512374Z/results.xml"
+    },
+    {
+      "id": "OnlineGroundPassPlayModeTests.UnauthorizedAndStaleCommandsCannotMutate(-1,True)",
+      "feature": "OnlinePairingRecovery",
+      "mode": "playmode",
+      "fixture": "OnlineGroundPassPlayModeTests",
+      "method": "UnauthorizedAndStaleCommandsCannotMutate",
+      "parameters": [
+        "-1,True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T140512374Z/results.xml"
     }
   ]
 }
