@@ -6,6 +6,13 @@ using UnityEngine.UI;
 
 public class EndGamePanelManager : MonoBehaviour
 {
+    private static readonly System.Collections.Generic.HashSet<EndGamePanelManager> visiblePanels = new();
+    public static bool IsVisible => visiblePanels.Any(panel => panel != null && panel.isActiveAndEnabled
+        && (panel.root != null ? panel.root.activeInHierarchy : panel.gameObject.activeInHierarchy));
+
+    private void OnEnable() => visiblePanels.Add(this);
+    private void OnDisable() => visiblePanels.Remove(this);
+
     private const string MainMenuSceneName = "MainMenu";
     private const int StatsRowCount = 21;
     private static readonly string[] StatRowTitles =
