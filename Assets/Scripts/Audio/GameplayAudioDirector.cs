@@ -81,6 +81,9 @@ public sealed partial class GameplayAudioDirector : MonoBehaviour
     {
         if (stadiumActive && MatchManager.Instance != null)
             SetPaused(MatchManager.Instance.IsPauseMenuOpen);
+        if (paused && music != null && !music.isPlaying && GameplayAudioPreferences.Local.Gain(GameplayAudioCategory.Music) > 0f)
+            Play(music, GameplayAudioPool.PauseMusic, false,
+                GameplayAudioConfig.PoolGain(GameplayAudioPool.PauseMusic) * GameplayAudioPreferences.Local.Gain(GameplayAudioCategory.Music));
         ObserveMatchAudioState();
         SyncDiceWiggleWaitAudio();
         AdvanceAudio(Time.unscaledDeltaTime);
@@ -224,7 +227,7 @@ public sealed partial class GameplayAudioDirector : MonoBehaviour
         StopAll();
         if (value)
         {
-            Play(music, GameplayAudioPool.PauseMusic, true,
+            Play(music, GameplayAudioPool.PauseMusic, false,
                 GameplayAudioConfig.PoolGain(GameplayAudioPool.PauseMusic) * GameplayAudioPreferences.Local.Gain(GameplayAudioCategory.Music));
             PlayGameCue(GameplayAudioPool.Pause);
         }
@@ -345,7 +348,7 @@ public sealed partial class GameplayAudioDirector : MonoBehaviour
         }
         if (music != null) music.volume = GameplayAudioConfig.PoolGain(GameplayAudioPool.PauseMusic) * GameplayAudioPreferences.Local.Gain(GameplayAudioCategory.Music);
         if (paused && music != null && !music.isPlaying && GameplayAudioPreferences.Local.Gain(GameplayAudioCategory.Music) > 0f)
-            Play(music, GameplayAudioPool.PauseMusic, true, music.volume);
+            Play(music, GameplayAudioPool.PauseMusic, false, music.volume);
     }
 
     private void StopAll()

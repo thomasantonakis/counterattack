@@ -86,7 +86,11 @@ MonoBehaviour:
   - kind: 11
     clips: []
   - kind: 12
-    clips: []
+    clips:
+    - {fileID: 8300000, guid: f712276a5371042ea9047d990f5c969a, type: 3}
+    - {fileID: 8300000, guid: 9fcc2eee317764209ba9aa979f21f0f9, type: 3}
+    - {fileID: 8300000, guid: c253e97c13ab04c339088efb3cf4ae8a, type: 3}
+    - {fileID: 8300000, guid: 8d22c88ab8b7047919d267e5549491cc, type: 3}
   - kind: 13
     clips:
     - {fileID: 8300000, guid: 0983d124a071e334088c6185d653c3f4, type: 3}

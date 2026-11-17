@@ -52,7 +52,7 @@ public static class GameplayAudioConfig
     {
         GameplayAudioCategory.Stadium => 1f,
         GameplayAudioCategory.Game => 1f,
-        GameplayAudioCategory.Music => 1f,
+        GameplayAudioCategory.Music => 0.5f,
         _ => 0f
     };
 
