@@ -158,8 +158,11 @@ public sealed class DraftOrderPanelController : MonoBehaviour
 
     private void StopWaitAudio()
     {
-        MenuAudioPlayer.StopDiceWiggle();
-        roomAudioDirector?.StopDiceWiggle();
+        if (wigglePlayed)
+        {
+            if (roomMatch != null) roomAudioDirector?.StopDiceWiggle();
+            else MenuAudioPlayer.StopDiceWiggle();
+        }
         wigglePlayed = false;
     }
 

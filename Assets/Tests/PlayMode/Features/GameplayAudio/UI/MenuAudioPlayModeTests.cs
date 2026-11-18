@@ -20,6 +20,7 @@ public sealed class MenuAudioPlayModeTests
     [UnityTest] public IEnumerator PreMatchRollOffUsesDiceCue([Values(false, true)] bool rigged) => Run("RunPreMatchDice", rigged);
     [UnityTest] public IEnumerator PreMatchRollOffAutoRollsAfterFiveSecondsWithWaitWiggle() => Run("RunPreMatchAutoRoll");
     [UnityTest] public IEnumerator DraftRollAndWaitWiggleUseIndependentVoices() => Run("RunIndependentDiceWiggle");
+    [UnityTest] public IEnumerator IdleDraftPanelDoesNotStopCoinTossWiggle() => Run("RunIdleDraftPanelPreservesOtherRollWiggle");
     [UnityTest] public IEnumerator DropdownInputIsDistinctFromProgrammaticRefresh() => Run("RunDropdown");
     [UnityTest] public IEnumerator DisabledButtonsAndRejectedNavigationStaySilent() => Run("RunButtonAndRejectedAction");
     [UnityTest] public IEnumerator NavigationVoiceSurvivesSceneChangeWithoutDuplicates() => Run("RunSceneLifetime");

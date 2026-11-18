@@ -72,6 +72,21 @@ public sealed class MenuAudioPlaybackFixture
         yield return null;
     }
 
+    public IEnumerator RunIdleDraftPanelPreservesOtherRollWiggle()
+    {
+        var idlePanel = Owned("Owned idle coin toss panel").AddComponent<DraftOrderPanelController>();
+        Assert.That(idlePanel.IsOpen, Is.False);
+        Assert.That(player.TryPlay(GameplayAudioPool.DiceWiggle), Is.True);
+        Assert.That(player.wiggleVoice.isPlaying, Is.True);
+        idlePanel.AdvanceRollWait(Time.unscaledTime);
+        Assert.That(player.wiggleVoice.isPlaying, Is.True,
+            "An idle Draft panel must not stop the other panel's wait wiggle.");
+        idlePanel.gameObject.SetActive(false);
+        Assert.That(player.wiggleVoice.isPlaying, Is.True,
+            "Disabling an idle Draft panel must not stop the active roll's wiggle.");
+        yield return null;
+    }
+
     public IEnumerator RunPriorityMute()
     {
         Assert.That(player.TryPlay(GameplayAudioPool.MenuAdvance), Is.True);
@@ -137,6 +152,8 @@ public sealed class MenuAudioPlaybackFixture
         {
             panel.Roll(); Assert.That(player.voice.clip, Is.Null, "Closed roll-off is not a roll request.");
             Assert.That(panel.Open(new GameSettings()), Is.True);
+            panel.AdvanceRollWait(Time.unscaledTime + .26f);
+            Assert.That(player.wiggleVoice.isPlaying, Is.True, "The pending roll starts its wiggle.");
             var before = UnityEngine.Random.state;
             int expected = UnityEngine.Random.Range(1, 7); var after = UnityEngine.Random.state;
             UnityEngine.Random.state = before;
@@ -145,6 +162,8 @@ public sealed class MenuAudioPlaybackFixture
             Assert.That(panel.homeDie.DisplayedRoll, Is.EqualTo(rigged ? 4 : expected));
             Assert.That(UnityEngine.Random.state, Is.EqualTo(rigged ? before : after));
             Assert.That(panel.IsAwaitingAwayRoll, Is.True);
+            Assert.That(player.wiggleVoice.isPlaying, Is.False,
+                "Rolling Home stops Home's wiggle before Away's wait begins.");
             Assert.That(player.voice.isPlaying, Is.True);
             Assert.That(player.library.Get(GameplayAudioPool.Dice), Does.Contain(player.voice.clip));
         }
