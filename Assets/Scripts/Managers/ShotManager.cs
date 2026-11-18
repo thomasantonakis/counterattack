@@ -4001,7 +4001,8 @@ public partial class ShotManager : MonoBehaviour
             details: new Dictionary<string, string>
             {
                 ["gkPenalty"] = gkPenalty.ToString(),
-                ["totalShotPower"] = totalShotPower.ToString()
+                ["totalShotPower"] = totalShotPower.ToString(),
+                ["outsideHands"] = gkEntry.isOutsideBoxGoalkeeperHandSave.ToString()
             });
         bool isJackpot = saveRoll.isJackpot;
         int gkRoll = saveRoll.roll;

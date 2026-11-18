@@ -37,6 +37,7 @@ public partial class HeaderManager : MonoBehaviour
     // public bool isWaitingForSaveandHoldScenario = false;
     public bool iswaitingForChallengeWinnerSelection = false;
     public PlayerToken challengeWinner = null;
+    private string aerialLuckContestId;
     public bool isWaitingForControlOrHeaderDecision = false;
     public bool isWaitingForControlOrHeaderDecisionDef = false;
     public bool isWaitingForControlRoll = false;
@@ -1894,6 +1895,7 @@ public partial class HeaderManager : MonoBehaviour
 
     public void PerformHeaderRoll(RollInputOverride? rollOverride)
     {
+        if (tokenScores.Count == 0) aerialLuckContestId = System.Guid.NewGuid().ToString("N");
         GameplayDiceRollResult headerRoll = MatchManager.Instance.ResolveGameplayDiceRoll(
             "header_challenge",
             rollOverride,
@@ -1906,7 +1908,14 @@ public partial class HeaderManager : MonoBehaviour
                 ["attribute"] = attribute.ToString(),
                 ["attributeLabel"] = attributelabel,
                 ["hasHeadingPenalty"] = hasHeadingPenalty.ToString()
-            });
+            },
+            luckModel: GameplayLuckModel.AerialContest(aerialLuckContestId,
+                MatchManager.Instance.teamInAttack == MatchManager.TeamInAttack.Home ? "Home" : "Away", headerAtGoalDeclared,
+                attackerWillJump.Concat(defenderWillJump).Distinct().Select(token => new GameplayLuckModel.Contender
+                {
+                    tokenKey = MatchManager.GetStableTokenKey(token), attacking = attackerWillJump.Contains(token),
+                    skill = GetHeaderAttribute(token), modifier = GetHeaderPenalty(token)
+                })));
         bool isJackpot = headerRoll.isJackpot;
         int roll = headerRoll.roll;
         int totalScore = GameplayScore.Total(attribute, roll, GetHeaderPenalty(tokenRolling), isJackpot);
@@ -2355,8 +2364,10 @@ public partial class HeaderManager : MonoBehaviour
         GameplayDiceRollResult diceResult = MatchManager.Instance.ResolveGameplayDiceRoll(
             "header_interception",
             rollOverride,
-            actor: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose,
-            sourceHex: ball.GetCurrentHex());
+            actor: interceptingDefender,
+            relatedToken: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose,
+            sourceHex: interceptingDefender != null ? interceptingDefender.GetCurrentHex() : null,
+            targetHex: ball.GetCurrentHex());
         interceptionDiceRoll = diceResult.roll;
         yield return SingleRollResolutionPresentation.Resolve(this, diceResult,
             HeaderInterceptionSucceeded()

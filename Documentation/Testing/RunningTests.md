@@ -326,3 +326,13 @@ FinalThirdHover (6), LegacyMovementRecoveryAudits (3), tackle_reposition (4),
 lost_foot (6 including legacy duel presentation), and LegacyHighPassBoxSequence
 (1). With the 12 new cases: 32 passed, zero failed/skipped in final runs. Exact
 XML paths and the corrected high-pass fixture setup are recorded in TASKS.md.
+
+Post-match luck: `PostMatchLuckEditorTests` (22 cases) and
+`PostMatchLuckPlayModeTests` (12 cases), category `PostMatchLuck`, under the
+corresponding feature folders. Final affected UI checks used the explicit
+`PostMatch` name filter: 65 EditMode passed in `20261118T053028941Z/results.xml`
+and 17 PlayMode passed in `20261118T053211710Z/results.xml`, under the native Runs
+folder. Nine existing movement/recovery and header-save/spill PlayMode regressions
+also passed. Total distinct scope: 91 passed, no failed/skipped final cases;
+compilation clean. No complete suites executed. See PostMatchLuck/TASKS.md for
+exact scope, model/legacy limitations and the rendered preview.

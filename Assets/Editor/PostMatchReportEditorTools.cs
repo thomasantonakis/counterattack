@@ -45,6 +45,7 @@ public static class PostMatchReportEditorTools
         {
             UpgradeControls(root);
             PostMatchPitchEditorTools.Author(root);
+            PostMatchLuckEditorTools.Author(root);
             FitReportPages(root);
             return;
         }
@@ -138,6 +139,7 @@ public static class PostMatchReportEditorTools
         players.SetActive(false);
         UpgradeControls(root);
         PostMatchPitchEditorTools.Author(root);
+        PostMatchLuckEditorTools.Author(root);
         FitReportPages(root);
         EditorUtility.SetDirty(root);
     }

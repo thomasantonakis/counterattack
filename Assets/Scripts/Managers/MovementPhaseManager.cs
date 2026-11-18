@@ -30,6 +30,7 @@ public struct MovementPhaseMovedTokenEntry
 public partial class MovementPhaseManager : MonoBehaviour
 {
     private PlayerToken lastDuelAttacker;
+    private string groundLuckContestId;
     private float lastDuelDribbleProbability = 1f;
     public const int DefaultAttackingMoveLimit = 4;
     public int AttackingMoveLimit => maxAttackerMoves;
@@ -2937,6 +2938,8 @@ public partial class MovementPhaseManager : MonoBehaviour
     {
         PlayerToken attackerToken = ball.GetCurrentHex()?.GetOccupyingToken();
         PlayerToken rollingToken = isDefender ? (isNutmegInProgress ? nutmegVictim : selectedDefender) : attackerToken;
+        if (isDefender) groundLuckContestId = Guid.NewGuid().ToString("N");
+        PlayerToken luckDefender = isNutmegInProgress ? nutmegVictim : selectedDefender;
         GameplayDiceRollResult tackleRoll = MatchManager.Instance.ResolveGameplayDiceRoll(
             isDefender ? "movement_tackle_defender" : "movement_tackle_attacker",
             rollOverride,
@@ -2949,7 +2952,12 @@ public partial class MovementPhaseManager : MonoBehaviour
                 ["isNutmeg"] = isNutmegInProgress.ToString(),
                 ["isGkWallDive"] = (goalkeeperChallengeMode == GoalkeeperChallengeMode.WallDive).ToString(),
                 ["goalkeeperChallengeMode"] = goalkeeperChallengeMode.ToString()
-            });
+            },
+            luckModel: GameplayLuckModel.GroundDuel(groundLuckContestId, attackerToken,
+                GetDefenderGroundDuelSkill(luckDefender),
+                (isNutmegInProgress ? 1 : 0) + (IsGoalkeeperDiveChallengeInProgress() ? gkWallDiveSavingPenalty : 0),
+                IsCurrentTackleDangerous(attackerToken, luckDefender) ? 2 : FOUL_THRESHOLD,
+                CurrentGroundDuelPresentation == GroundDuelPresentationKind.OutsideBoxHands));
         int diceRoll = tackleRoll.isJackpot ? 50 : tackleRoll.roll;
         
         // Random

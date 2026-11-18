@@ -2806,9 +2806,11 @@ public partial class MatchManager : MonoBehaviour
         HexCell sourceHex = null,
         HexCell targetHex = null,
         bool jackpotEnabled = true,
-        Dictionary<string, string> details = null)
+        Dictionary<string, string> details = null,
+        GameplayLuckModel luckModel = null)
     {
         GameplayAudioEvents.PublishIncident(this, GameplayAudioEvents.IncidentKind.DiceRequested);
+        luckModel ??= GameplayLuckModel.Capture(context, actor == null ? null : actor.isHomeTeam ? "Home" : "Away", actor, details);
         TimingRollSequence++;
         DecisionTiming.EndRoll();
         int randomRoll;
@@ -2862,6 +2864,8 @@ public partial class MatchManager : MonoBehaviour
 
         gameplayEvent.dice = new GameplayDiceEvent
         {
+            luck = luckModel,
+            luckJackpotEnabled = jackpotEnabled && helperFunctions != null,
             context = context,
             roll = resolvedRoll,
             isJackpot = resolvedJackpot,

@@ -24,6 +24,8 @@ public sealed class PostMatchReportController : MonoBehaviour
     [SerializeField] private UnityEngine.UI.Button playersTab;
     [SerializeField] private UnityEngine.UI.Button pitchTab;
     [SerializeField] private PostMatchPitchView pitchPage;
+    [SerializeField] private UnityEngine.UI.Button luckTab;
+    [SerializeField] private PostMatchLuckView luckPage;
     [SerializeField] private UnityEngine.UI.Button[] metricButtons;
     [SerializeField] private PostMatchLeaderboard.Metric[] metricKinds;
     [SerializeField] private UnityEngine.UI.Button[] teamButtons;
@@ -46,6 +48,8 @@ public sealed class PostMatchReportController : MonoBehaviour
     private bool reportAvailable = true;
     public bool ShowingPlayers { get; private set; }
     public bool ShowingPitch { get; private set; }
+    public bool ShowingLuck { get; private set; }
+    public void ConfigureLuck(UnityEngine.UI.Button button, PostMatchLuckView view) { luckTab = button; luckPage = view; }
 
     public void ConfigurePitch(UnityEngine.UI.Button button, PostMatchPitchView view)
     { pitchTab = button; pitchPage = view; }
@@ -85,6 +89,7 @@ public sealed class PostMatchReportController : MonoBehaviour
         ShowStats();
         RefreshPlayers();
         if (pitchPage != null) pitchPage.Show(data, team, reset: true);
+        if (luckPage != null) luckPage.Show(data);
     }
 
     private void OnEnable() => Bind();
@@ -96,6 +101,7 @@ public sealed class PostMatchReportController : MonoBehaviour
         Listen(statsTab, ShowStats);
         Listen(playersTab, ShowPlayers);
         Listen(pitchTab, ShowPitch);
+        Listen(luckTab, ShowLuck);
         for (int i = 0; i < (metricButtons?.Length ?? 0); i++)
         {
             if (metricKinds == null || i >= metricKinds.Length) continue;
@@ -132,20 +138,24 @@ public sealed class PostMatchReportController : MonoBehaviour
     }
 
     public void ShowPitch() { if (reportAvailable) SelectTab(2); }
+    public void ShowLuck() { if (reportAvailable) SelectTab(3); }
 
     private void SelectTab(int tab)
     {
         bool players = tab == 1;
         ShowingPlayers = players;
         ShowingPitch = tab == 2;
+        ShowingLuck = tab == 3;
         if (statsPage != null) statsPage.SetActive(tab == 0);
         if (playersPage != null) playersPage.SetActive(players);
         if (pitchPage != null) pitchPage.gameObject.SetActive(ShowingPitch);
-        if (teamButtons?.Length > 0) teamButtons[0].transform.parent.gameObject.SetActive(reportAvailable && tab != 0);
+        if (luckPage != null) luckPage.gameObject.SetActive(ShowingLuck);
+        if (teamButtons?.Length > 0) teamButtons[0].transform.parent.gameObject.SetActive(reportAvailable && (tab == 1 || tab == 2));
         if (previousPage != null) previousPage.transform.parent.gameObject.SetActive(players);
         MarkSelected(statsTab, tab == 0);
         MarkSelected(playersTab, players);
         MarkSelected(pitchTab, tab == 2);
+        MarkSelected(luckTab, tab == 3);
     }
 
     public void SelectMetric(PostMatchLeaderboard.Metric selected)
