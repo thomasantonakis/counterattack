@@ -146,6 +146,34 @@ public sealed class PostMatchPitchEditorTests
         finally { Object.DestroyImmediate(root); }
     }
 
+    [Test]
+    public void PitchMarkersUseBothColorsFromEachTeamKit()
+    {
+        var root = Object.Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>(PostMatchReportEditorTools.PrefabPath));
+        try
+        {
+            var data = Data(Boundary(1, 1, Token("Home:1", -10), Token("Away:1", 10)));
+            data.gameSettings.homeKit = "blue";
+            data.gameSettings.awayKit = "red_white";
+            var report = root.GetComponent<PostMatchReportController>();
+            report.ShowReport(data, true);
+            report.ShowPitch();
+            var markers = root.GetComponentsInChildren<PostMatchPitchMarker>(true).Where(m => m.gameObject.activeSelf).ToArray();
+            Assert.That(markers.Length, Is.EqualTo(2));
+            foreach (var marker in markers)
+            {
+                bool home = marker.disc.rectTransform.anchorMin.x < .5f;
+                var kit = home ? data.gameSettings.homeKit : data.gameSettings.awayKit;
+                var palette = TokenKitCatalog.ResolveInstructionPalette(kit, Color.magenta, Color.green);
+                Assert.That(marker.disc.color, Is.EqualTo(palette.Primary));
+                Assert.That(marker.number.color, Is.EqualTo(palette.Secondary));
+                Assert.That(marker.border, Is.Not.Null);
+                Assert.That(marker.border.effectColor, Is.EqualTo(palette.Secondary));
+            }
+        }
+        finally { Object.DestroyImmediate(root); }
+    }
+
     [TestCase(1, new[] { "Full game", "1st half" })]
     [TestCase(2, new[] { "Full game", "1st half", "2nd half" })]
     [TestCase(3, new[] { "Full game", "1st half", "2nd half", "1st half of extra time", "Regulation", "Extra time" })]

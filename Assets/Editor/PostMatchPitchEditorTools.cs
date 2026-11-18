@@ -70,6 +70,14 @@ public static class PostMatchPitchEditorTools
             if (old != null) Object.DestroyImmediate(old.gameObject);
         }
         var font = page.GetComponentsInChildren<TMP_Text>(true).First(t => t.font != null).font;
+        foreach (var marker in map.GetComponentsInChildren<PostMatchPitchMarker>(true))
+        {
+            var border = marker.GetComponent<UnityEngine.UI.Outline>();
+            if (border == null) border = marker.gameObject.AddComponent<UnityEngine.UI.Outline>();
+            border.effectDistance = new Vector2(2f, 2f);
+            border.useGraphicAlpha = false;
+            marker.border = border;
+        }
         var row = page.transform.Find("PitchFilters");
         if (row == null)
         {

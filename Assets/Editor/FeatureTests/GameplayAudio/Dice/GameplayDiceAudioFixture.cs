@@ -7,7 +7,7 @@ using UnityEngine;
 
 public sealed partial class GoalkeeperBoxEntryFixture
 {
-    public IEnumerator RunDiceWiggleWait()
+    public IEnumerator RunDiceWiggleWait(bool resolveRoll)
     {
         Board(1);
         var library = ScriptableObject.CreateInstance<GameplayAudioLibrary>();
@@ -43,9 +43,16 @@ public sealed partial class GoalkeeperBoxEntryFixture
                 audio.Director.SyncDiceWiggleWaitAudio();
                 Assert.That(wiggleSource.timeSamples, Is.EqualTo(sampleAtStart), "The same active wait must not restart the wiggle.");
 
-                match.DecisionTiming.EndRoll();
-                audio.Director.SyncDiceWiggleWaitAudio();
-                Assert.That(wiggleSource.isPlaying, Is.False, "The wiggle must stop as soon as its roll resolves.");
+                if (resolveRoll)
+                    match.ResolveGameplayDiceRoll("dice_wiggle_wait", new RollInputOverride { hasOverride = true, roll = 3 });
+                else
+                {
+                    match.DecisionTiming.EndRoll();
+                    audio.Director.SyncDiceWiggleWaitAudio();
+                }
+                Assert.That(wiggleSource.isPlaying, Is.False, resolveRoll
+                    ? "The wiggle must stop in the roll entry point, before the next audio update."
+                    : "The wiggle must stop when the pending roll ends.");
                 Assert.That(source.isPlaying, Is.True, "Stopping the wiggle must leave the independent roll voice alone.");
             }
         }

@@ -33,6 +33,7 @@ public sealed partial class GameplayAudioDirector
         SetPaused(cue.Source.IsPauseMenuOpen);
         if (cue.Kind == GameplayAudioEvents.IncidentKind.DiceRequested)
         {
+            StopDiceWiggle();
             PlayGameCue(GameplayAudioPool.Dice);
             return;
         }

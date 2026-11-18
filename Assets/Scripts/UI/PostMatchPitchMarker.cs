@@ -6,6 +6,7 @@ public sealed class PostMatchPitchMarker : MonoBehaviour, IPointerEnterHandler, 
 {
     public TMPro.TMP_Text number;
     public UnityEngine.UI.Image disc;
+    public UnityEngine.UI.Outline border;
     private PostMatchPitchView owner;
     private PostMatchPitchData.Player player;
     public void Bind(PostMatchPitchView view, PostMatchPitchData.Player data) { owner = view; player = data; }

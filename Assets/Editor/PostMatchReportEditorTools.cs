@@ -14,6 +14,30 @@ public static class PostMatchReportEditorTools
     public const string ContentPath = "RecapPanel/RecapScroll/Viewport/Content";
     public const int PageSize = 12;
 
+    public static void UpgradeRatingRowsAndPitchMarkers()
+    {
+        if (EditorApplication.isPlayingOrWillChangePlaymode)
+            throw new InvalidOperationException("Author post-match visuals in Edit Mode only.");
+        var scene = SceneManager.GetActiveScene();
+        if (scene.path != "Assets/Scenes/Room.unity")
+            throw new InvalidOperationException("Open Room normally before upgrading its existing panel.");
+        var asset = PrefabUtility.LoadPrefabContents(PrefabPath);
+        try
+        {
+            PostMatchRatingEditorTools.Author(asset);
+            PostMatchPitchEditorTools.Author(asset);
+            PrefabUtility.SaveAsPrefabAsset(asset, PrefabPath);
+        }
+        finally { PrefabUtility.UnloadPrefabContents(asset); }
+        var canvas = scene.GetRootGameObjects().FirstOrDefault(g => g.name == "MainCanvas");
+        var panel = canvas != null ? canvas.transform.Find("EndGamePanel") : null;
+        if (panel == null) throw new InvalidOperationException("Room's MainCanvas/EndGamePanel is missing.");
+        PostMatchRatingEditorTools.Author(panel.gameObject);
+        PostMatchPitchEditorTools.Author(panel.gameObject);
+        EditorSceneManager.MarkSceneDirty(scene);
+        AssetDatabase.SaveAssets();
+    }
+
     [MenuItem("Tools/Counter Attack/Add Post Match Report Tabs")]
     public static void UpgradePrefabAndLoadedRoom()
     {

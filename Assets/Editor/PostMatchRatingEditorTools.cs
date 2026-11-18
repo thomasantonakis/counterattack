@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public static class PostMatchRatingEditorTools
 {
+    private const int RatingPageSize = 11;
+
     public static void Author(GameObject root)
     {
         var content = root.transform.Find(PostMatchReportEditorTools.ContentPath);
@@ -26,17 +28,7 @@ public static class PostMatchRatingEditorTools
             var headings = PostMatchReportEditorTools.Group("RatingColumns", page, true, 30).transform;
             Cell("Rank", headings, "#", font, 60, false); Cell("Player", headings, "PLAYER", font, 4, true);
             Cell("Team", headings, "TEAM", font, 3, true); Cell("Rating", headings, "RATING", font, 1, true);
-            var rows = new PostMatchRatingView.PlayerRow[8];
-            for(int i=0;i<rows.Length;i++)
-            {
-                var row = PostMatchReportEditorTools.Group("RatingRow" + i, page, true, 34);
-                row.AddComponent<Image>().color = Color.white;
-                var button = row.AddComponent<Button>(); button.targetGraphic = row.GetComponent<Image>();
-                button.navigation = new Navigation { mode = Navigation.Mode.None };
-                rows[i] = new PostMatchRatingView.PlayerRow { button = button,
-                    rank = Cell("Rank", row.transform, "", font, 60, false), player = Cell("Player", row.transform, "", font, 4, true),
-                    team = Cell("Team", row.transform, "", font, 3, true), rating = Cell("Rating", row.transform, "", font, 1, true) };
-            }
+            var rows = EnsureRows(page, font);
             var paging = PostMatchReportEditorTools.Group("RatingPaging", page, true, 40).transform;
             var previous = PostMatchReportEditorTools.Button("RatingPrevious", paging, "Previous", font);
             var label = Text("RatingPage", paging, "", font, 20, 40);
@@ -50,7 +42,44 @@ public static class PostMatchRatingEditorTools
         page.Find("RatingBreakdown").GetComponent<LayoutElement>().preferredHeight = 100;
         page.Find("RatingFormula").GetComponent<LayoutElement>().preferredHeight = 82;
         page.Find("RatingMethod").GetComponent<LayoutElement>().preferredHeight = 70;
+        page.GetComponent<PostMatchRatingView>().Configure(EnsureRows(page, font),
+            page.Find("RatingPaging/RatingPage").GetComponent<TMP_Text>(),
+            page.Find("RatingBreakdown").GetComponent<TMP_Text>(),
+            page.Find("RatingPaging/RatingPrevious").GetComponent<Button>(),
+            page.Find("RatingPaging/RatingNext").GetComponent<Button>());
         root.GetComponent<PostMatchReportController>().ConfigureRatings(tab, page.GetComponent<PostMatchRatingView>());
+    }
+
+    private static PostMatchRatingView.PlayerRow[] EnsureRows(Transform page, TMP_FontAsset font)
+    {
+        var rows = new PostMatchRatingView.PlayerRow[RatingPageSize];
+        for (int i = 0; i < rows.Length; i++)
+        {
+            Transform row = page.Find("RatingRow" + i);
+            if (row == null)
+            {
+                var created = PostMatchReportEditorTools.Group("RatingRow" + i, page, true, 34);
+                var image = created.AddComponent<Image>(); image.color = Color.white;
+                var button = created.AddComponent<Button>(); button.targetGraphic = image;
+                button.navigation = new Navigation { mode = Navigation.Mode.None };
+                Cell("Rank", created.transform, "", font, 60, false);
+                Cell("Player", created.transform, "", font, 4, true);
+                Cell("Team", created.transform, "", font, 3, true);
+                Cell("Rating", created.transform, "", font, 1, true);
+                row = created.transform;
+                var paging = page.Find("RatingPaging");
+                if (paging != null) row.SetSiblingIndex(paging.GetSiblingIndex());
+            }
+            rows[i] = new PostMatchRatingView.PlayerRow
+            {
+                button = row.GetComponent<Button>(),
+                rank = row.Find("Rank").GetComponent<TMP_Text>(),
+                player = row.Find("Player").GetComponent<TMP_Text>(),
+                team = row.Find("Team").GetComponent<TMP_Text>(),
+                rating = row.Find("Rating").GetComponent<TMP_Text>()
+            };
+        }
+        return rows;
     }
     private static TMP_Text Text(string name, Transform parent, string value, TMP_FontAsset font, int size, float height)
     {

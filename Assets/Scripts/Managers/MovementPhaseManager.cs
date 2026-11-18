@@ -1100,7 +1100,11 @@ public partial class MovementPhaseManager : MonoBehaviour
         movedTokens.Add(token);
 
         MovementPhaseMovedTokenSection section = GetCurrentMovedTokenSection();
-        movedTokenEntries.Add(new MovementPhaseMovedTokenEntry(token, section));
+        // A duel can reposition the ball carrier during the opponent's phase.
+        // Keep its eligibility bookkeeping, but only show moves owned by this phase.
+        bool attackingSection = section != MovementPhaseMovedTokenSection.DefMP;
+        if (token.isAttacker == attackingSection)
+            movedTokenEntries.Add(new MovementPhaseMovedTokenEntry(token, section));
     }
 
     private MovementPhaseMovedTokenSection GetCurrentMovedTokenSection()

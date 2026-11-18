@@ -18,5 +18,8 @@ public sealed class GameplayDiceAudioPlayModeTests
         (IEnumerator)Bridge.GetMethod("RunDiceAudio").Invoke(fixture, new object[] { rigged, boundary });
 
     [UnityTest] public IEnumerator WigglePlaysOncePerActiveRollWaitAndStopsWhenItEnds() =>
-        (IEnumerator)Bridge.GetMethod("RunDiceWiggleWait").Invoke(fixture, null);
+        (IEnumerator)Bridge.GetMethod("RunDiceWiggleWait").Invoke(fixture, new object[] { false });
+
+    [UnityTest] public IEnumerator ResolvingRollStopsWiggleBeforeNextAudioUpdate() =>
+        (IEnumerator)Bridge.GetMethod("RunDiceWiggleWait").Invoke(fixture, new object[] { true });
 }

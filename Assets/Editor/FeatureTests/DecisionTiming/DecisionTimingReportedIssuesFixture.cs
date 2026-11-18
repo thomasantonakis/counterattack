@@ -5,6 +5,21 @@ using UnityEngine;
 
 public sealed partial class GoalkeeperBoxEntryFixture
 {
+    public IEnumerator RunOpponentRepositionDoesNotFillDefensiveMovedSlot(int side)
+    {
+        Board(side);
+        Place(attacker, Hex(0)); Place(defender, Hex(2 * side));
+        ball.PlaceAtCell(attacker.currentHex); match.SetLastToken(attacker);
+        Subscribe(movement); movement.ActivateMovementPhase(); movement.CommitToAction(); movement.ForfeitTeamMovementPhase();
+        Assert.That(movement.isMovementPhaseDef, Is.True);
+        int debitBefore = movement.defendersMoved;
+        Invoke(movement, "RegisterMovedToken", attacker);
+        Assert.That(movement.defendersMoved, Is.EqualTo(debitBefore));
+        Assert.That(movement.MovedTokenEntries.Any(e => e.section == MovementPhaseMovedTokenSection.DefMP && e.token == attacker),
+            Is.False, "An attacking ball carrier repositioned during DefMP has not used a defensive move.");
+        yield return null;
+    }
+
     public IEnumerator RunFinalThirdMotionTiming(int side, bool expired, bool defense)
     {
         Board(side); match.isClockRunning = true;

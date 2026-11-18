@@ -71,12 +71,20 @@ public sealed class PostMatchPitchView : MonoBehaviour
     {
         if (markers == null || pitch == null) return;
         var players = PostMatchPitchData.Build(data, team, half, possession);
+        var settings = data?.gameSettings;
+        var homePalette = TokenKitCatalog.ResolveInstructionPalette(settings?.homeKit,
+            new Color(.12f, .45f, .65f), Color.white);
+        var awayPalette = TokenKitCatalog.ResolveInstructionPalette(settings?.awayKit,
+            new Color(.78f, .36f, .12f), Color.white);
         for (int i = 0; i < markers.Length; i++)
         {
             var marker = markers[i]; marker.gameObject.SetActive(i < players.Count);
             if (i >= players.Count) continue;
             var player = players[i]; marker.Bind(this, player); marker.number.text = player.Number.ToString();
-            marker.disc.color = player.Side == "Home" ? new Color(.12f, .45f, .65f) : new Color(.78f, .36f, .12f);
+            var palette = player.Side == "Home" ? homePalette : awayPalette;
+            marker.disc.color = palette.Primary;
+            marker.number.color = palette.Secondary;
+            if (marker.border != null) marker.border.effectColor = palette.Secondary;
             var rect = marker.GetComponent<RectTransform>(); rect.anchorMin = rect.anchorMax = player.Average; rect.anchoredPosition = Vector2.zero;
         }
         status.text = players.Count == 0 ? "No recorded action-boundary positions for this selection."

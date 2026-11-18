@@ -87,7 +87,7 @@ public sealed class PostMatchRatingEditorTests
         try
         {
             var data=new MatchManager.GameData(); data.gameSettings.homeTeamName="Inverness"; data.gameSettings.awayTeamName="Aurora";
-            for(int i=0;i<10;i++) data.stats.playerStats.Add(Entry("Home:"+i,"Player "+i,new MatchManager.PlayerStats {goals=i}));
+            for(int i=0;i<12;i++) data.stats.playerStats.Add(Entry("Home:"+i,"Player "+i,new MatchManager.PlayerStats {goals=i}));
             var report=root.GetComponent<PostMatchReportController>(); int count=root.GetComponentsInChildren<Transform>(true).Length;
             report.ShowReport(data,true); var content=root.transform.Find(PostMatchReportEditorTools.ContentPath);
             content.Find("ReportTabs/RatingsTab").GetComponent<Button>().onClick.Invoke();
@@ -95,9 +95,11 @@ public sealed class PostMatchRatingEditorTests
             Assert.That(content.Find("TeamFilters").gameObject.activeSelf,Is.False);
             var page=content.Find("Ratings"); page.Find("RatingRow1").GetComponent<Button>().onClick.Invoke();
             Assert.That(page.Find("RatingBreakdown").GetComponent<TMP_Text>().text,Does.Contain("Base 6.00"));
+            Assert.That(page.GetComponentsInChildren<PostMatchRatingView>(true).Single(), Is.Not.Null);
+            Assert.That(page.Find("RatingRow10").gameObject.activeSelf, Is.True, "The first page shows eleven ratings.");
             page.Find("RatingPaging/RatingNext").GetComponent<Button>().onClick.Invoke();
             Assert.That(page.Find("RatingPaging/RatingPage").GetComponent<TMP_Text>().text,Does.Contain("Page 2/2"));
-            Assert.That(page.Find("RatingRow0/Rank").GetComponent<TMP_Text>().text,Is.EqualTo("9"));
+            Assert.That(page.Find("RatingRow0/Rank").GetComponent<TMP_Text>().text,Is.EqualTo("12"));
             Assert.That(page.Find("RatingFormula").GetComponent<TMP_Text>().text,Is.EqualTo(PostMatchRatingData.FormulaText));
             report.ShowReport(data,true); report.ShowRatings();
             page.Find("RatingPaging/RatingNext").GetComponent<Button>().onClick.Invoke();
