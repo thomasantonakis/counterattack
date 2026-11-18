@@ -626,7 +626,7 @@ public static class RoomAIActionSequence
             // GroundBallManager labels its target-stage Quick Throw choices as
             // GroundPass, so the active manager state is also authoritative.
             bool quickThrow = action.actionType == RoomActionType.QuickThrow || match.groundBallManager.isQuickThrow;
-            var path = GroundPassCommon.CalculateThickPath(match.hexGrid, origin, landing, match.groundBallManager.ball.ballRadius);
+            var path = GroundPassCommon.CalculateThickPath(match.hexGrid, origin, landing, match.groundBallManager.ball.PhysicalRadius);
             float flight = tokens.Any(t => t.isHomeTeam != passer.isHomeTeam
                     && (quickThrow ? t.GetCurrentHex() == landing : path.Contains(t.GetCurrentHex()))) ? 0f
                 : 1f - ExpectedStatsCalculator.CalculateAtLeastOneRecoveryProbability(
@@ -1580,7 +1580,7 @@ public static class RoomAIActionSequence
                 .ThenBy(Key, StringComparer.Ordinal).Take(3))
             {
                 HexCell target = receiver.GetCurrentHex();
-                var path = GroundPassCommon.CalculateThickPath(match.hexGrid, origin, target, match.groundBallManager.ball.ballRadius);
+                var path = GroundPassCommon.CalculateThickPath(match.hexGrid, origin, target, match.groundBallManager.ball.PhysicalRadius);
                 if (opponents.Any(t => path.Contains(response != null ? response.positions[t] : t.GetCurrentHex()))) continue;
                 float flight = response != null ? RoomAIDefensiveResponse.PassRetention(match, passer, origin, target, response.positions)
                     : 1f - ExpectedStatsCalculator.CalculateAtLeastOneRecoveryProbability(opponents
@@ -1708,7 +1708,7 @@ public static class RoomAIDefensiveResponse
         IReadOnlyDictionary<PlayerToken, HexCell> positions)
     {
         if (match?.groundBallManager?.ball == null) return 0f;
-        var path = GroundPassCommon.CalculateThickPath(match.hexGrid, origin, landing, match.groundBallManager.ball.ballRadius);
+        var path = GroundPassCommon.CalculateThickPath(match.hexGrid, origin, landing, match.groundBallManager.ball.PhysicalRadius);
         var defenders = positions.Where(p => p.Key.isPlaying && !p.Key.isSentOff && p.Key.isHomeTeam != passer.isHomeTeam && p.Value != null).ToList();
         if (defenders.Any(p => path.Contains(p.Value))) return 0f;
         return 1f - ExpectedStatsCalculator.CalculateAtLeastOneRecoveryProbability(defenders
@@ -1765,7 +1765,7 @@ public static class RoomAIDefensiveResponse
                 shotPaths[shooter] = board[shooter].ShootingPaths?.Where(p => p.Key.isInGoal == sign)
                     .SelectMany(p => p.Value).Distinct().ToList() ?? new List<HexCell>();
                 if (shooter != carrier) passPaths[shooter] = GroundPassCommon.CalculateThickPath(match.hexGrid,
-                    board[carrier], board[shooter], match.groundBallManager.ball.ballRadius);
+                    board[carrier], board[shooter], match.groundBallManager.ball.PhysicalRadius);
             }
         }
 

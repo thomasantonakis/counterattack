@@ -15,6 +15,18 @@ public class Ball : MonoBehaviour
     public HexGrid hexGrid;  // Reference to HexGrid to access grid cells
     public GoalKeeperManager goalKeeperManager;
     [SerializeField] public float ballRadius = 0.6474f;
+    // Ground-path geometry follows the rendered ball footprint, not the legacy
+    // center-distance cutoff stored in ballRadius.
+    public float PhysicalRadius
+    {
+        get
+        {
+            MeshFilter mesh = GetComponent<MeshFilter>();
+            return mesh != null && mesh.sharedMesh != null
+                ? mesh.sharedMesh.bounds.extents.x * Mathf.Abs(transform.lossyScale.x)
+                : 0.175f;
+        }
+    }
     private bool playersInstantiated = false;  // New flag to track when players are ready
     public float groundHeightOffset = 0.2f;  // Height when ball is on the ground
     public float playerHeightOffset = 0.5f;  // Height when ball is on a player

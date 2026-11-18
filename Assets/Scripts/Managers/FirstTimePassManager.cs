@@ -682,7 +682,7 @@ public partial class FirstTimePassManager : MonoBehaviour
             return "PaceAvailable";
         }
 
-        List<HexCell> pathHexes = GroundPassCommon.CalculateThickPath(hexGrid, ballHex, currentTargetHex, ball.ballRadius);
+        List<HexCell> pathHexes = GroundPassCommon.CalculateThickPath(hexGrid, ballHex, currentTargetHex, ball.PhysicalRadius);
         if (pathHexes.Contains(destinationHex))
         {
             return "dangerousPass";
@@ -772,7 +772,7 @@ public partial class FirstTimePassManager : MonoBehaviour
             return;
         }
 
-        List<HexCell> pathHexes = GroundPassCommon.CalculateThickPath(hexGrid, ballHex, currentTargetHex, ball.ballRadius);
+        List<HexCell> pathHexes = GroundPassCommon.CalculateThickPath(hexGrid, ballHex, currentTargetHex, ball.PhysicalRadius);
         HighlightHoverPreviewPath(pathHexes, currentTargetHex, isDangerous);
     }
 
@@ -799,7 +799,7 @@ public partial class FirstTimePassManager : MonoBehaviour
             && MatchManager.Instance.difficulty_level >= 2
             && currentTargetHex != null;
         HexCell highlightedPathTarget = showIntendedPath ? currentTargetHex : targetHex;
-        List<HexCell> pathHexes = GroundPassCommon.CalculateThickPath(hexGrid, ballHex, highlightedPathTarget, ball.ballRadius);
+        List<HexCell> pathHexes = GroundPassCommon.CalculateThickPath(hexGrid, ballHex, highlightedPathTarget, ball.PhysicalRadius);
         foreach (HexCell hex in pathHexes)
         {
             if (hex == null)
@@ -983,7 +983,7 @@ public partial class FirstTimePassManager : MonoBehaviour
             return new List<GroundInterceptionCandidate>();
         }
 
-        List<HexCell> pathHexes = GroundPassCommon.CalculateThickPath(hexGrid, ballHex, currentTargetHex, ball.ballRadius);
+        List<HexCell> pathHexes = GroundPassCommon.CalculateThickPath(hexGrid, ballHex, currentTargetHex, ball.PhysicalRadius);
         HashSet<HexCell> blockingDefenderHexes = new HashSet<HexCell>(
             pathHexes.Where(hex => hex != null && hex.isDefenseOccupied)
         );
@@ -1035,7 +1035,7 @@ public partial class FirstTimePassManager : MonoBehaviour
             return new List<GroundBallPathInteraction>();
         }
 
-        List<HexCell> pathHexes = GroundPassCommon.CalculateThickPath(hexGrid, ballHex, currentTargetHex, ball.ballRadius);
+        List<HexCell> pathHexes = GroundPassCommon.CalculateThickPath(hexGrid, ballHex, currentTargetHex, ball.PhysicalRadius);
         HashSet<HexCell> blockingDefenderHexes = new HashSet<HexCell>(
             pathHexes.Where(hex => hex != null && hex.isDefenseOccupied)
         );

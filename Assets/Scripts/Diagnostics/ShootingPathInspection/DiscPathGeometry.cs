@@ -1,10 +1,81 @@
 using System;
 using UnityEngine;
 
-/// <summary>Diagnostic-only XZ geometry. No occupancy, match state, or gameplay path changes.</summary>
+/// <summary>XZ ball-disc geometry shared by ground paths and the diagnostic inspector.</summary>
 public static class DiscPathGeometry
 {
     private const float Epsilon = 0.000001f;
+    private const int SemicircleSteps = 32;
+    public const float MinimumPathOverlapArea = 0.0005f;
+
+    /// <summary>CCW polygon approximating the capsule, with 64 steps around both round ends.</summary>
+    public static Vector2[] BuildCapsulePolygon(Vector2 start, Vector2 end, float radius)
+    {
+        if (radius < 0f) throw new ArgumentOutOfRangeException(nameof(radius));
+        Vector2 direction = (end - start).sqrMagnitude > Epsilon ? (end - start).normalized : Vector2.right;
+        Vector2 left = new Vector2(-direction.y, direction.x);
+        var outline = new Vector2[2 * SemicircleSteps + 2];
+        int count = 0;
+        outline[count++] = start - left * radius;
+        outline[count++] = end - left * radius;
+        for (int i = 1; i <= SemicircleSteps; i++)
+        {
+            float angle = -Mathf.PI * 0.5f + Mathf.PI * i / SemicircleSteps;
+            outline[count++] = end + radius * (Mathf.Cos(angle) * direction + Mathf.Sin(angle) * left);
+        }
+        outline[count++] = start + left * radius;
+        for (int i = 1; i < SemicircleSteps; i++)
+        {
+            float angle = Mathf.PI * 0.5f + Mathf.PI * i / SemicircleSteps;
+            outline[count++] = start + radius * (Mathf.Cos(angle) * direction + Mathf.Sin(angle) * left);
+        }
+        return outline;
+    }
+
+    public static bool CapsuleCoversPathHex(Vector2 start, Vector2 end, float radius,
+        Vector2[] hexPolygon, Vector2[] capsulePolygon)
+    {
+        if (!CapsuleTouchesPolygon(start, end, radius, hexPolygon)) return false;
+        if (radius <= 0f) return true;
+        return ConvexIntersectionArea(hexPolygon, capsulePolygon) >= MinimumPathOverlapArea;
+    }
+
+    public static float ConvexIntersectionArea(Vector2[] polygon, Vector2[] clipper)
+    {
+        if (polygon == null || polygon.Length < 3 || clipper == null || clipper.Length < 3) return 0f;
+        var current = new System.Collections.Generic.List<Vector2>(polygon);
+        var next = new System.Collections.Generic.List<Vector2>(polygon.Length + clipper.Length);
+        for (int edge = 0; edge < clipper.Length; edge++)
+        {
+            if (current.Count == 0) return 0f;
+            next.Clear();
+            Vector2 a = clipper[edge], b = clipper[(edge + 1) % clipper.Length];
+            Vector2 previous = current[current.Count - 1];
+            float previousSide = Cross(b - a, previous - a);
+            foreach (Vector2 point in current)
+            {
+                float side = Cross(b - a, point - a);
+                if ((side >= 0f) != (previousSide >= 0f))
+                {
+                    float fraction = previousSide / (previousSide - side);
+                    next.Add(previous + fraction * (point - previous));
+                }
+                if (side >= 0f) next.Add(point);
+                previous = point;
+                previousSide = side;
+            }
+            var swap = current;
+            current = next;
+            next = swap;
+        }
+        double twiceArea = 0d;
+        for (int i = 0; i < current.Count; i++)
+        {
+            Vector2 a = current[i], b = current[(i + 1) % current.Count];
+            twiceArea += (double)a.x * b.y - (double)a.y * b.x;
+        }
+        return (float)(Math.Abs(twiceArea) * 0.5d);
+    }
 
     public static bool CapsuleTouchesPolygon(Vector2 start, Vector2 end, float radius, Vector2[] polygon)
     {

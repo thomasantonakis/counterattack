@@ -802,7 +802,7 @@ public partial class GroundBallManager : MonoBehaviour
     public void PopulateGroundPathInterceptions(HexCell targetHex, bool highlightPath = true)
     {
         HexCell ballHex = ball.GetCurrentHex();  // Get the current hex of the ball
-        List<HexCell> pathHexes = CalculateThickPath(ballHex, targetHex, ball.ballRadius);
+        List<HexCell> pathHexes = CalculateThickPath(ballHex, targetHex, ball.PhysicalRadius);
         string joined = string.Join(" -> ", pathHexes.Select(hex => hex.coordinates.ToString()));  
         Debug.Log($"Path: {joined}");
         hexGrid.ClearHighlightedHexes();

@@ -51,6 +51,85 @@ public sealed class ShootingPathInspectorEditorTests
 
     private HexCell Cell(int x, int z) => tool.cells.Single(c => c.coordinates == new Vector3Int(x, 0, z));
 
+    private HexGrid OwnedGrid()
+    {
+        var grid = new GameObject("Owned ground path grid").AddComponent<HexGrid>();
+        grid.cells = new HexCell[grid.GridWidth, grid.GridHeight];
+        foreach (HexCell cell in tool.cells)
+            grid.cells[cell.coordinates.x + grid.GridWidth / 2, cell.coordinates.z + grid.GridHeight / 2] = cell;
+        return grid;
+    }
+
+    [TestCase(1, 12, 6, 19, 1)]
+    [TestCase(-1, 12, 6, 19, 1)]
+    [TestCase(1, 12, 0, 18, 0)]
+    [TestCase(-1, 12, 0, 18, 0)]
+    public void SharedGroundPathMatchesPhysicalDiscAcrossAllHexes(int side, int fromX, int fromZ, int toX, int toZ)
+    {
+        HexGrid grid = OwnedGrid();
+        try
+        {
+            HexCell from = Cell(side * fromX, fromZ), to = Cell(side * toX, toZ);
+            Assert.That(tool.referenceBall.PhysicalRadius, Is.EqualTo(tool.PhysicalRadius).Within(0.0001f));
+            var actual = GroundPassCommon.CalculateThickPath(grid, from, to, tool.referenceBall.PhysicalRadius);
+            var expected = tool.CalculatePhysicalPath(from, to);
+            Assert.That(actual.Select(c => c.coordinates), Is.EquivalentTo(expected.Select(c => c.coordinates)));
+            Vector3 direction = to.GetHexCenter() - from.GetHexCenter();
+            Assert.That(actual.Select(c => Vector3.Dot(c.GetHexCenter() - from.GetHexCenter(), direction)),
+                Is.Ordered);
+            Assert.That(actual, Has.No.Member(from));
+            Assert.That(actual, Has.Member(to));
+        }
+        finally { Object.DestroyImmediate(grid.gameObject); }
+    }
+
+    [TestCase(1)]
+    [TestCase(-1)]
+    public void TinyCornerOverlapsDoNotAddFourHexesToTargetOnePath(int side)
+    {
+        HexGrid grid = OwnedGrid();
+        try
+        {
+            HexCell from = Cell(side * 9, 0), to = Cell(side * 19, 3);
+            var path = GroundPassCommon.CalculateThickPath(grid, from, to, tool.referenceBall.PhysicalRadius);
+            Assert.That(path, Has.Count.EqualTo(14));
+            foreach (Vector3Int coordinate in new[]
+            {
+                new Vector3Int(side * 10, 0, 0), new Vector3Int(side * 13, 0, 2),
+                new Vector3Int(side * 15, 0, 1), new Vector3Int(side * 18, 0, 4)
+            })
+                Assert.That(path, Has.No.Member(Cell(coordinate.x, coordinate.z)), coordinate.ToString());
+            Assert.That(path, Has.Member(to));
+
+            Vector3 a = from.GetHexCenter(), b = to.GetHexCenter();
+            Vector2[] capsule = DiscPathGeometry.BuildCapsulePolygon(new Vector2(a.x, a.z), new Vector2(b.x, b.z), tool.PhysicalRadius);
+            float sliver = DiscPathGeometry.ConvexIntersectionArea(
+                Cell(side * 10, 0).GetHexCorners().Select(p => new Vector2(p.x, p.z)).ToArray(), capsule);
+            float retained = DiscPathGeometry.ConvexIntersectionArea(
+                Cell(side * 10, 1).GetHexCorners().Select(p => new Vector2(p.x, p.z)).ToArray(), capsule);
+            Assert.That(sliver, Is.GreaterThan(0f).And.LessThan(DiscPathGeometry.MinimumPathOverlapArea));
+            Assert.That(retained, Is.GreaterThan(DiscPathGeometry.MinimumPathOverlapArea));
+        }
+        finally { Object.DestroyImmediate(grid.gameObject); }
+    }
+
+    [TestCase(1, 8, 2, false)] // Outside the upper post.
+    [TestCase(1, 8, 1, true)]  // Same origin, target 3 is inside.
+    [TestCase(1, 7, 2, true)]  // Centerline meets the upper post.
+    [TestCase(-1, 8, 2, false)]
+    [TestCase(-1, 8, 1, true)]
+    [TestCase(-1, 7, 2, true)]
+    public void GoalMouthUsesCenterlineAndIncludesPostBoundary(int side, int fromZ, int toZ, bool expected)
+    {
+        HexGrid grid = OwnedGrid();
+        try
+        {
+            Assert.That(grid.IsCenterlineWithinGoalMouth(Cell(side * 16, fromZ), Cell(side * 19, toZ)),
+                Is.EqualTo(expected));
+        }
+        finally { Object.DestroyImmediate(grid.gameObject); }
+    }
+
     [TestCase(1)]
     [TestCase(-1)]
     public void PhysicalDiscUsesWholeHexPolygonsAcrossSharedEdges(int side)

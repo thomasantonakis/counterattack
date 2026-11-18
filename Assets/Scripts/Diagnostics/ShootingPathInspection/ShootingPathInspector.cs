@@ -151,7 +151,8 @@ public sealed class ShootingPathInspector : MonoBehaviour
         if (from == null || to == null || polygons == null) return new List<HexCell>();
         Vector3 a = from.GetHexCenter(), b = to.GetHexCenter();
         Vector2 start = new Vector2(a.x, a.z), end = new Vector2(b.x, b.z);
-        return cells.Where(c => c != from && DiscPathGeometry.CapsuleTouchesPolygon(start, end, PhysicalRadius, polygons[c]))
+        Vector2[] capsule = DiscPathGeometry.BuildCapsulePolygon(start, end, PhysicalRadius);
+        return cells.Where(c => c != from && DiscPathGeometry.CapsuleCoversPathHex(start, end, PhysicalRadius, polygons[c], capsule))
             .OrderBy(c => Vector3.Dot(c.GetHexCenter() - a, b - a))
             .ThenBy(c => c.coordinates.x).ThenBy(c => c.coordinates.z).ToList();
     }
@@ -305,7 +306,7 @@ public sealed class ShootingPathInspector : MonoBehaviour
             + "1-8 target (top to bottom) | Click selects and locks | Esc unlocks\n"
             + $"WASD / arrows pan | Scroll zoom | R reset | V path view: {View}\n"
             + (InspectionEnabled ? selection : "Press F8 to inspect shooting paths.")
-            + $"\nBlue: stored/shared | Magenta: stored only | Cyan: physical disc\n"
+            + $"\nBlue: stored/shared | Magenta: stored only | Cyan: physical (min area {DiscPathGeometry.MinimumPathOverlapArea:0.####})\n"
             + $"Capsule width: {visibleBallDiameter:0.####} | Physical radius: {PhysicalRadius:0.####} | Old cutoff: {BallRadius:0.####}\n"
             + $"Shared: {sharedCount} | Stored only: {storedOnlyCount} | Physical only: {physicalOnlyCount}\n"
             + "Locked: mouse row scrubs ball along shot | Token + ball at origin show dribbling scale.";

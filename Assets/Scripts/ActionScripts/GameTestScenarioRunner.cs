@@ -1334,7 +1334,7 @@ public class GameTestScenarioRunner : MonoBehaviour
 
                 try
                 {
-                    List<HexCell> pathHexes = GroundPassCommon.CalculateThickPath(hexgrid, ballHex, targetHex, firstTimePassManager.ball.ballRadius);
+                    List<HexCell> pathHexes = GroundPassCommon.CalculateThickPath(hexgrid, ballHex, targetHex, firstTimePassManager.ball.PhysicalRadius);
                     List<HexCell> relevantInterceptionHexes = GroundPassCommon.GetRelevantInterceptionHexes(pathHexes, targetHex);
 
                     if (GroundPassCommon.BuildOrderedInterceptionCandidates(hexgrid, firstTimePassManager.ball, targetHex).Count != 0)
