@@ -28,7 +28,7 @@ public sealed class Thomas7UH7ReviewEditorTests
         match.currentState = MatchManager.GameState.QuickThrow;
         match.groundBallManager.isQuickThrow = true;
         var target = replay.tokens["Home:4"].GetCurrentHex();
-        var path = GroundPassCommon.CalculateThickPath(match.hexGrid, match.ball.GetCurrentHex(), target, match.ball.ballRadius);
+        var path = GroundPassCommon.CalculateThickPath(match.hexGrid, match.ball.GetCurrentHex(), target, match.ball.PhysicalRadius);
         var blocker = path.First(h => h != null && h.GetOccupyingToken() == null
             && HexGridUtils.GetHexStepDistance(h, target) > 1);
         replay.Move("Away:3", RoomHexCoordinates.FromHex(blocker));
@@ -74,10 +74,10 @@ public sealed class Thomas7UH7ReviewEditorTests
                 && t.currentHex != null && RoomAITacticalSafety.Distance(t.currentHex, snapshot.ball) is > 0 and <= 11)
             .First(t => (bool)usable.Invoke(null, new object[] { snapshot, t })
                 && GroundPassCommon.CalculateThickPath(match.hexGrid, match.ball.GetCurrentHex(),
-                    replay.tokens[t.tokenKey].GetCurrentHex(), match.ball.ballRadius)
+                    replay.tokens[t.tokenKey].GetCurrentHex(), match.ball.PhysicalRadius)
                     .Any(h => h != null && h != match.ball.GetCurrentHex() && h.GetOccupyingToken() == null));
         var landing = replay.tokens[receiver.tokenKey].GetCurrentHex();
-        var block = GroundPassCommon.CalculateThickPath(match.hexGrid, match.ball.GetCurrentHex(), landing, match.ball.ballRadius)
+        var block = GroundPassCommon.CalculateThickPath(match.hexGrid, match.ball.GetCurrentHex(), landing, match.ball.PhysicalRadius)
             .First(h => h != null && h != match.ball.GetCurrentHex() && h.GetOccupyingToken() == null);
         replay.Move("Home:9", RoomHexCoordinates.FromHex(block));
         var blocked = replay.BoardSnapshot();
@@ -148,9 +148,9 @@ public sealed class Thomas7UH7ReviewEditorTests
         pass.isActivated = true;
         pass.isAwaitingTargetSelection = true;
         var target = pass.GetLegalGroundPassTargetsForDecisionPreview().First(hex =>
-            GroundPassCommon.CalculateThickPath(match.hexGrid, match.ball.GetCurrentHex(), hex, match.ball.ballRadius)
+            GroundPassCommon.CalculateThickPath(match.hexGrid, match.ball.GetCurrentHex(), hex, match.ball.PhysicalRadius)
                 .Any(h => h != null && h != match.ball.GetCurrentHex() && h.GetOccupyingToken() == null && h != hex));
-        var path = GroundPassCommon.CalculateThickPath(match.hexGrid, match.ball.GetCurrentHex(), target, match.ball.ballRadius);
+        var path = GroundPassCommon.CalculateThickPath(match.hexGrid, match.ball.GetCurrentHex(), target, match.ball.PhysicalRadius);
         var block = path.First(h => h != null && h != match.ball.GetCurrentHex() && h.GetOccupyingToken() == null && h != target);
         var instruction = new GameplayInstructionSnapshot { manager = nameof(GroundBallManager), expectedTeam = "Away" };
         RoomDecisionContext Context()

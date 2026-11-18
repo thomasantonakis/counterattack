@@ -15,8 +15,8 @@ public static class MenuAudioAuthoring
         if (EditorApplication.isPlayingOrWillChangePlaymode) throw new InvalidOperationException("Requires edit mode.");
         Directory.CreateDirectory("Assets/Audio/UI");
         var kinds = new[] { GameplayAudioPool.MenuHover, GameplayAudioPool.MenuSelect, GameplayAudioPool.MenuAdvance, GameplayAudioPool.MenuBack };
-        var durations = new[] { .065f, .085f, .18f, .16f };
-        var peaks = new[] { .2f, .24f, .30f, .27f };
+        var durations = new[] { .24f, .14f, .42f, .25f };
+        var peaks = new[] { .3353f, .1859f, .2823f, .1568f };
         var library = AssetDatabase.LoadAssetAtPath<GameplayAudioLibrary>(GameplayAudioEditorTools.LibraryPath);
         var pools = library.pools.ToList();
         for (int k = 0; k < kinds.Length; k++)
@@ -45,6 +45,10 @@ public static class MenuAudioAuthoring
             source.ignoreListenerPause = true; source.dopplerLevel = 0f; source.priority = 64;
             var player = root.AddComponent<MenuAudioPlayer>();
             player.library = library; player.voice = source;
+            var wiggle = root.AddComponent<AudioSource>();
+            wiggle.playOnAwake = false; wiggle.loop = false; wiggle.spatialBlend = 0f;
+            wiggle.ignoreListenerPause = true; wiggle.dopplerLevel = 0f; wiggle.priority = 64;
+            player.wiggleVoice = wiggle;
             PrefabUtility.SaveAsPrefabAsset(root, PrefabPath);
         }
         finally { UnityEngine.Object.DestroyImmediate(root); }

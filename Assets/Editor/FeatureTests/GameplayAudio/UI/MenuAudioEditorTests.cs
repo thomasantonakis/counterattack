@@ -32,10 +32,10 @@ public sealed class MenuAudioEditorTests
         Assert.That(policy.Accept(GameplayAudioPool.MenuHover, double.PositiveInfinity, false, default), Is.False);
     }
 
-    [TestCase(GameplayAudioPool.MenuHover, .065f, .2f)]
-    [TestCase(GameplayAudioPool.MenuSelect, .085f, .24f)]
-    [TestCase(GameplayAudioPool.MenuAdvance, .18f, .3f)]
-    [TestCase(GameplayAudioPool.MenuBack, .16f, .27f)]
+    [TestCase(GameplayAudioPool.MenuHover, .24f, .3353f)]
+    [TestCase(GameplayAudioPool.MenuSelect, .14f, .1859f)]
+    [TestCase(GameplayAudioPool.MenuAdvance, .42f, .2823f)]
+    [TestCase(GameplayAudioPool.MenuBack, .25f, .1568f)]
     public void GeneratedClipsAreShortMonoAndHaveQuietBoundaries(GameplayAudioPool pool, float seconds, float peak)
     {
         var library = AssetDatabase.LoadAssetAtPath<GameplayAudioLibrary>(GameplayAudioEditorTools.LibraryPath);
@@ -59,6 +59,8 @@ public sealed class MenuAudioEditorTests
         Assert.That(player.voice, Is.Not.Null); Assert.That(player.library, Is.Not.Null);
         Assert.That(player.voice.playOnAwake || player.voice.loop, Is.False);
         Assert.That(player.voice.spatialBlend, Is.Zero);
-        Assert.That(prefab.GetComponentsInChildren<AudioSource>(true).Length, Is.EqualTo(1));
+        Assert.That(player.wiggleVoice, Is.Not.Null);
+        Assert.That(player.wiggleVoice, Is.Not.SameAs(player.voice));
+        Assert.That(prefab.GetComponentsInChildren<AudioSource>(true).Length, Is.EqualTo(2));
     }
 }
