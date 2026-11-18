@@ -842,7 +842,7 @@ public partial class HighPassManager : MonoBehaviour
             return false;
         }
 
-        List<HexCell> pathHexes = groundBallManager.CalculateThickPath(ballHex, targetHex, ball.ballRadius);
+        List<HexCell> pathHexes = groundBallManager.CalculateThickPath(ballHex, targetHex, ball.PhysicalRadius);
         foreach (HexCell pathHex in pathHexes)
         {
             if (pathHex != null && adjacentDefenderBlockers.Contains(pathHex))
@@ -1098,7 +1098,7 @@ public partial class HighPassManager : MonoBehaviour
         int pathHexCount = 0;
         if (isValid && ballHex != null && targetHex != null && groundBallManager != null)
         {
-            pathHexCount = groundBallManager.CalculateThickPath(ballHex, targetHex, ball.ballRadius)?.Count ?? 0;
+            pathHexCount = groundBallManager.CalculateThickPath(ballHex, targetHex, ball.PhysicalRadius)?.Count ?? 0;
         }
 
         return new GameplayActionPreview
@@ -1174,7 +1174,7 @@ public partial class HighPassManager : MonoBehaviour
         }
 
         List<HexCell> pathHexes = groundBallManager != null
-            ? groundBallManager.CalculateThickPath(ballHex, targetHex, ball.ballRadius)
+            ? groundBallManager.CalculateThickPath(ballHex, targetHex, ball.PhysicalRadius)
             : null;
         if (pathHexes != null)
         {
@@ -1399,7 +1399,7 @@ public partial class HighPassManager : MonoBehaviour
             }
         }
         // Step 2: Calculate the path between the ball and the target hex
-        List<HexCell> pathHexes = groundBallManager.CalculateThickPath(ballHex, targetHex, ball.ballRadius);
+        List<HexCell> pathHexes = groundBallManager.CalculateThickPath(ballHex, targetHex, ball.PhysicalRadius);
         // Step 3: Check if the path is valid by ensuring no defense-occupied hexes touching the kicker block the path
         foreach (HexCell hex in pathHexes)
         {

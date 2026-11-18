@@ -1,5 +1,16 @@
 # Running gameplay regressions
 
+Shooting geometry inspection is an isolated diagnostic scene at
+`Assets/Scenes/ShootingPathInspection.unity`. Its focused filters are
+`DiscPathGeometryEditorTests` (disc versus hex-polygon boundaries) and
+`ShootingPathInspectorEditorTests` (stored/physical/difference views) under
+`Assets/Editor/FeatureTests/ShootingPathInspection/` and
+`ShootingPathInspectorPlayModeTests` under
+`Assets/Tests/PlayMode/Features/ShootingPathInspection/` (category
+`ShootingPathInspection`). The feature's `TASKS.md` records controls, isolation,
+native results and the remaining manual keyboard/mouse check. These checks do
+not constitute full gameplay regression validation.
+
 Stadium goal lighting: `StadiumGoalEffectsEditorTests` (category
 `StadiumGoalEffects`) under `Assets/Editor/FeatureTests/StadiumGoalEffects/`.
 Latest focused scope: 14 EditMode passed, zero failed/skipped; compilation clean.
