@@ -80,10 +80,29 @@ checks/regressions passed). Full Time also suppresses pitch and lineup hover nam
 its independent hover fixture covers hiding existing labels and restoring normal
 inspection after the panel closes.
 
+## Stage 4 — player ratings prototype (implemented for review)
+
+The user selected one visible formula for every position. The Ratings tab shows
+an eight-row selectable list, independent paging, and the selected player's base,
+grouped contributions, raw total and bounded result. The formula is printed in
+the view; no position, minutes or exposure adjustment is claimed.
+
+Base 6.0; goals +0.90; assists +0.60; completed ground/aerial passes +0.02;
+uncompleted passes −0.04; dribbles +0.10; possession losses −0.12; recoveries
++0.12; shot blocks +0.12; saves +0.20; yellow cards −0.30; red cards −0.80.
+Cards are cumulative. Final score is bounded to 1.0–10.0. Players without any
+weighted contributions show NR, and follow rated players in the list.
+
+This reads existing statistics without changing gameplay or storing ratings in
+saves. Recovery aliases (tackles/interceptions/duel wins) get no extra credit.
+Distance, injuries, expected statistics and luck do not affect the prototype.
+Weights remain for discussion and calibration, not a validated performance score.
+Evidence: `Assets/Editor/FeatureTests/PostMatchRatings/TASKS.md`.
+
 ## Later stages
 
-1. Prototype one visible contribution formula for player ratings, as requested;
-   review and calibrate its weights with the user before treating it as final.
+1. Review the implemented prototype with the user and calibrate its weights
+   before treating ratings as final.
 2. Calibrate transparent player contribution ratings using attacking, creation,
    defending, goalkeeping, errors and discipline. Avoid duplicate event rewards,
    account for roles/exposure and explain the score. Keep luck separately visible.

@@ -336,3 +336,13 @@ folder. Nine existing movement/recovery and header-save/spill PlayMode regressio
 also passed. Total distinct scope: 91 passed, no failed/skipped final cases;
 compilation clean. No complete suites executed. See PostMatchLuck/TASKS.md for
 exact scope, model/legacy limitations and the rendered preview.
+
+Player ratings prototype: `PostMatchRatingEditorTests` (9 cases), category
+`PostMatchRatings`, in `Assets/Editor/FeatureTests/PostMatchRatings/`. Final
+affected `PostMatch` filter: 74 EditMode passed in `20261118T063118596Z/results.xml`
+and 17 PlayMode passed in `20261118T063325939Z/results.xml`. With the nine existing
+gameplay regressions already recorded for luck, distinct completed scope is
+100 passed, zero failed/skipped in final runs. No complete suites executed.
+The prototype has no gameplay/statistics/save mutations; calibration and manual
+acceptance remain separate. See its TASKS.md for the formula, limitations,
+retained XML and three rendered previews.
