@@ -136,3 +136,12 @@ feature cases, 14 existing FTP cases and 45 contextual-key cases passed.
 See Assets/Editor/FeatureTests/OnlineFtpPreviewSwitch/Verification.md for native
 artifacts and the before-fix reproduction. Normal exports still need refresh;
 this is not paired human acceptance.
+
+## Pickup/nutmeg reproduction checkpoint
+
+Eight native cases now exercise actual V pickup, continued dribble and encoded
+X/N commands for both teams and directions, with wrong-team and hold guards.
+All passed without production changes: X offers defender steal; N proceeds into
+nutmeg. The original InvalidAuth interruption remains the supported explanation
+for that run's stalled input, while rebuilt paired acceptance is still pending.
+See Assets/Editor/FeatureTests/OnlinePickupNutmeg/Verification.md.

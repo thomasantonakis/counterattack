@@ -1055,6 +1055,16 @@
     },
     {
       "mode": "playmode",
+      "fixture": "OnlinePickupNutmegPlayModeTests",
+      "categories": [
+        "OnlinePickupNutmeg"
+      ],
+      "definition_sha256": "689ab5df2f7433c676a6bb8258a190182ed7bb62a3b138f32af84ea115373c50",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlinePickupNutmeg/OnlinePickupNutmegPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
       "fixture": "OnlinePreMoveChoicesPlayModeTests",
       "categories": [
         "OnlinePreMoveChoices"
@@ -20485,6 +20495,126 @@
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
       "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T152426878Z/results.xml"
+    },
+    {
+      "id": "OnlinePickupNutmegPlayModeTests.PickupDribbleUsesAuthenticatedNutmegKeys(1,False,False)",
+      "feature": "OnlinePickupNutmeg",
+      "mode": "playmode",
+      "fixture": "OnlinePickupNutmegPlayModeTests",
+      "method": "PickupDribbleUsesAuthenticatedNutmegKeys",
+      "parameters": [
+        1,
+        false,
+        false
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T152916567Z/results.xml"
+    },
+    {
+      "id": "OnlinePickupNutmegPlayModeTests.PickupDribbleUsesAuthenticatedNutmegKeys(1,False,True)",
+      "feature": "OnlinePickupNutmeg",
+      "mode": "playmode",
+      "fixture": "OnlinePickupNutmegPlayModeTests",
+      "method": "PickupDribbleUsesAuthenticatedNutmegKeys",
+      "parameters": [
+        1,
+        false,
+        true
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T152916567Z/results.xml"
+    },
+    {
+      "id": "OnlinePickupNutmegPlayModeTests.PickupDribbleUsesAuthenticatedNutmegKeys(1,True,False)",
+      "feature": "OnlinePickupNutmeg",
+      "mode": "playmode",
+      "fixture": "OnlinePickupNutmegPlayModeTests",
+      "method": "PickupDribbleUsesAuthenticatedNutmegKeys",
+      "parameters": [
+        1,
+        true,
+        false
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T152916567Z/results.xml"
+    },
+    {
+      "id": "OnlinePickupNutmegPlayModeTests.PickupDribbleUsesAuthenticatedNutmegKeys(1,True,True)",
+      "feature": "OnlinePickupNutmeg",
+      "mode": "playmode",
+      "fixture": "OnlinePickupNutmegPlayModeTests",
+      "method": "PickupDribbleUsesAuthenticatedNutmegKeys",
+      "parameters": [
+        1,
+        true,
+        true
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T152916567Z/results.xml"
+    },
+    {
+      "id": "OnlinePickupNutmegPlayModeTests.PickupDribbleUsesAuthenticatedNutmegKeys(-1,False,False)",
+      "feature": "OnlinePickupNutmeg",
+      "mode": "playmode",
+      "fixture": "OnlinePickupNutmegPlayModeTests",
+      "method": "PickupDribbleUsesAuthenticatedNutmegKeys",
+      "parameters": [
+        -1,
+        false,
+        false
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T152916567Z/results.xml"
+    },
+    {
+      "id": "OnlinePickupNutmegPlayModeTests.PickupDribbleUsesAuthenticatedNutmegKeys(-1,False,True)",
+      "feature": "OnlinePickupNutmeg",
+      "mode": "playmode",
+      "fixture": "OnlinePickupNutmegPlayModeTests",
+      "method": "PickupDribbleUsesAuthenticatedNutmegKeys",
+      "parameters": [
+        -1,
+        false,
+        true
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T152916567Z/results.xml"
+    },
+    {
+      "id": "OnlinePickupNutmegPlayModeTests.PickupDribbleUsesAuthenticatedNutmegKeys(-1,True,False)",
+      "feature": "OnlinePickupNutmeg",
+      "mode": "playmode",
+      "fixture": "OnlinePickupNutmegPlayModeTests",
+      "method": "PickupDribbleUsesAuthenticatedNutmegKeys",
+      "parameters": [
+        -1,
+        true,
+        false
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T152916567Z/results.xml"
+    },
+    {
+      "id": "OnlinePickupNutmegPlayModeTests.PickupDribbleUsesAuthenticatedNutmegKeys(-1,True,True)",
+      "feature": "OnlinePickupNutmeg",
+      "mode": "playmode",
+      "fixture": "OnlinePickupNutmegPlayModeTests",
+      "method": "PickupDribbleUsesAuthenticatedNutmegKeys",
+      "parameters": [
+        -1,
+        true,
+        true
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T152916567Z/results.xml"
     }
   ]
 }
