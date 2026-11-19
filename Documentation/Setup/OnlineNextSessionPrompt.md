@@ -1,5 +1,10 @@
 # Online next session: four steps to first Room integration
 
+> Fresh-session entry point: read `Documentation/Setup/OnlineMultiplayerHandoff.md`
+> first. It includes current evidence, fullscreen/resizing for Windows/macOS,
+> unfinished Mac hosting, Host/Join navigation and bounded implementation batches.
+> This file is historical supporting evidence.
+
 ## Start here
 
 Human walkthrough checkpoint (2026-11-19): read
