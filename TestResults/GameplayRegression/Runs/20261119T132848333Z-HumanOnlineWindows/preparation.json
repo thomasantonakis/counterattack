@@ -1,0 +1,8 @@
+{
+    "startedUtc":  "2026-11-19T13:28:48.6031129Z",
+    "assemblySha256":  "FCD57AF22FFDC8C5052F074C404C6C9242853BAF8D1E2566A885551E489C3C08",
+    "pid":  2964,
+    "sourceCommit":  "8364215d6cc98d7cc88bdff93679899c468e4fec",
+    "logDirectory":  "C:\\Users\\thomas\\Documents\\Projects\\Personal\\counterattack\\TestResults\\GameplayRegression\\Runs\\20261119T132848333Z-HumanOnlineWindows",
+    "kind":  "normal-game-human-walkthrough"
+}

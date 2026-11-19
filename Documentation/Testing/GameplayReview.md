@@ -334,3 +334,19 @@ or revert all earlier commits as if they were six migration bug fixes.
   keeper dialog's previous lack of a forfeit offer until this is clarified.
   Initial nutmeg X is separate and explicitly blocked by its full source key guard;
   native tests preserve that rule. OnlinePreMoveChoices/Verification.md records coverage.
+
+
+## Resolved roll-panel rule from the human online run, 2026-11-19
+
+Both clients see all rolling panels using original presentation; only the owner
+can manually roll. Once a panel is resolved, begin a shared maximum five-second
+result hold. Each manager's Esc closes only their own panel and acknowledges it.
+Continue when both have closed theirs, or at five seconds, closing any remainder.
+One local early dismissal cannot advance rules; Esc must not also open pause.
+This is separate from the pre-roll auto-roll timeout. Apply to all roll families.
+This is a clarified requirement, not a claim that current live clients implement it.
+
+The FTP precommit M switch advertised at Intermediate assistance is required.
+Do not relax committed-action guards. The movement pickup/dribble X/N report
+coincided with an hour-boundary InvalidAuth; reproduce with live authentication.
+This does not resolve the older initial/stationary nutmeg-X rule questions.

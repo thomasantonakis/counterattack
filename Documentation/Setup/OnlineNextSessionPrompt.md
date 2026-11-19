@@ -2,6 +2,17 @@
 
 ## Start here
 
+Human walkthrough checkpoint (2026-11-19): read
+Documentation/Testing/OnlineHumanWalkthroughReview.md first. Normal-game Host/Join,
+Draft, setup, kickoff/FTP and movement/pickup progressed, but Windows EOS failed
+InvalidAuth exactly one hour after login and the Mac crashed. Collect Mac evidence
+with CollectOnlineMacSessionReport.sh; do not relaunch it before preserving logs.
+Prioritize Connect auth renewal and crash diagnosis. Reproduce the pickup/nutmeg
+X/N decision while authenticated before treating it as a separate input defect.
+Confirmed UI/action gaps and exact shared roll-dismissal rules are in the review.
+The user ended this paired run and authorized independent fixes before restarting.
+
+
 Latest verified continuation (2026-11-17): Room v20 / wire v7. Camera, lobbed and
 wide off-target animations now publish/cancel correctly. Forty new native cases
 and 24 focused affected cases passed across these three features; no whole suite

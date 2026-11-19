@@ -1,0 +1,29 @@
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Substitutions are no longer available: Committed to StandardPass
+Movement phase has been reset.
+First-Time Pass target confirmed. Waiting for FTP movement phases.
+Substitutions are no longer available: Committed to FirstTimePass
+Attacker movement phase started. Move one attacker 1 hex or press [X] to skip.
+Defender movement phase started. Move one defender 1 hex or press [X] to skip.
+FTP interception order: 9. Fruin (blocking: False, at (0, 0, 2))
+Ball path interactions after FTP movement phases: 1.
+Selected FTP defender for interception: 9. Fruin. Press [R] to roll.
+[Game Log] 9. Fruin (Sons' Mac) attempts an interception
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: 9. Mbenga, IsDribbler: False, remainingDribblerPace: 0
+The selected Token is not the dribbler
+Non Dribbler Moved.
+Advancing Movement Phase
+isDribblerRunning set to true because someone picked up the ball.
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: 6. Littlewood, IsDribbler: True, remainingDribblerPace: 4
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+Nutmeg options: 9. Fruin
+remainingDribblerPace: 2, nutmeggableDefenders: 1
+Nutmeg(s) Are available to the dribbler
+6. Littlewood is next to at least one Nutmeggable Defender. Click a Nutmeggable Defender or Press [N] to attempt a Nutmeg, or [X] to allow interceptions.

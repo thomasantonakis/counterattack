@@ -19657,6 +19657,83 @@
       "mac_status": "not_applicable_windows_host_only",
       "windows_status": "passed",
       "windows_evidence": "Documentation/Testing/OnlinePairingRecovery.md"
+    },
+    {
+      "id": "MacSessionDiagnosticsTests.test_latest_room_session_is_selected_and_account_config_is_excluded",
+      "feature": "OnlineMacDiagnostics",
+      "mode": "tooling",
+      "fixture": "MacSessionDiagnosticsTests",
+      "method": "test_latest_room_session_is_selected_and_account_config_is_excluded",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "Documentation/Setup/tests/OnlineMacDiagnostics/Verification.md"
+    },
+    {
+      "id": "MacSessionDiagnosticsTests.test_only_recent_matching_crashes_are_collected_and_capped",
+      "feature": "OnlineMacDiagnostics",
+      "mode": "tooling",
+      "fixture": "MacSessionDiagnosticsTests",
+      "method": "test_only_recent_matching_crashes_are_collected_and_capped",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "Documentation/Setup/tests/OnlineMacDiagnostics/Verification.md"
+    },
+    {
+      "id": "MacSessionDiagnosticsTests.test_log_collection_is_bounded_to_tail_and_redacts_tokens",
+      "feature": "OnlineMacDiagnostics",
+      "mode": "tooling",
+      "fixture": "MacSessionDiagnosticsTests",
+      "method": "test_log_collection_is_bounded_to_tail_and_redacts_tokens",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "Documentation/Setup/tests/OnlineMacDiagnostics/Verification.md"
+    },
+    {
+      "id": "MacSessionDiagnosticsTests.test_missing_evidence_is_reported_without_creating_home_files",
+      "feature": "OnlineMacDiagnostics",
+      "mode": "tooling",
+      "fixture": "MacSessionDiagnosticsTests",
+      "method": "test_missing_evidence_is_reported_without_creating_home_files",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "Documentation/Setup/tests/OnlineMacDiagnostics/Verification.md"
+    },
+    {
+      "id": "MacSessionDiagnosticsTests.test_artifact_limits_crash_head_and_preserves_unicode",
+      "feature": "OnlineMacDiagnostics",
+      "mode": "tooling",
+      "fixture": "MacSessionDiagnosticsTests",
+      "method": "test_artifact_limits_crash_head_and_preserves_unicode",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "Documentation/Setup/tests/OnlineMacDiagnostics/Verification.md"
+    },
+    {
+      "id": "MacSessionDiagnosticsTests.test_publication_failure_keeps_local_report_without_unity_commands",
+      "feature": "OnlineMacDiagnostics",
+      "mode": "tooling",
+      "fixture": "MacSessionDiagnosticsTests",
+      "method": "test_publication_failure_keeps_local_report_without_unity_commands",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "Documentation/Setup/tests/OnlineMacDiagnostics/Verification.md"
+    },
+    {
+      "id": "MacSessionDiagnosticsTests.test_wrong_platform_refuses_before_collection",
+      "feature": "OnlineMacDiagnostics",
+      "mode": "tooling",
+      "fixture": "MacSessionDiagnosticsTests",
+      "method": "test_wrong_platform_refuses_before_collection",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "Documentation/Setup/tests/OnlineMacDiagnostics/Verification.md"
     }
   ]
 }
