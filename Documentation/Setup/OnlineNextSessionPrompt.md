@@ -12,7 +12,8 @@ Its bootstrap matches this Windows run; native SIGSEGV begins in
 EOS_P2P_RemoveNotifyPeerConnectionInterrupted. Commit b414d82 renews Connect
 authentication and retires owned callbacks before platform release. The real
 65-minute Windows expiry soak remains pending; see OnlineSessionLifetime/Verification.md.
-Normal/Room/gameplay exports and a rebuilt Mac acceptance run remain pending. Reproduce the pickup/nutmeg
+Normal/Room/gameplay Windows exports refreshed successfully at source 9c3455b;
+a rebuilt Mac acceptance run remains pending. The isolated auth soak is unchanged. Reproduce the pickup/nutmeg
 X/N decision while authenticated before treating it as a separate input defect.
 Confirmed UI/action gaps and exact shared roll-dismissal rules are in the review.
 The user ended this paired run and authorized independent fixes before restarting.
@@ -82,8 +83,8 @@ new native passes and 28 affected wire/payload passes, including actual 32/36-ac
 guest projection and the full off-board coordinate boundary. See
 OnlineCompactPresentation/Verification.md. Prepared proof framing is unchanged.
 Actual paired unreliable transport, packet loss/jitter and RTT remain deferred.
-Windows normal/Room/prepared exports were refreshed successfully at 17:39–17:40
-UTC with all v11–v14 changes; see OnlineCompactPresentation/Verification.md for
+Windows normal/Room/prepared exports were refreshed successfully at 17:39â€“17:40
+UTC with all v11â€“v14 changes; see OnlineCompactPresentation/Verification.md for
 build IDs and evidence. The hour added 168 individually registered new native
 cases across keeper movement, movement snapshots, collected snapshots and compact
 poses. Existing selected regressions passed separately; no whole suite ran.
@@ -287,7 +288,7 @@ first, then identify the exact external dependency.
   open scenes additively or automate modal dismissal. Framework-controlled
   PlayMode tests are authorized. Preserve designer-owned MatchStats layout.
 
-## Proven baseline — do not rerun by default
+## Proven baseline â€” do not rerun by default
 
 Branch: codex/online-foundation-personal-mac. Latest evidence commit before
 this handoff rewrite: **5038c52**. Shared-pause feature uses wire/handoff **v2**.
@@ -334,7 +335,7 @@ passing OnlineManualControls PlayMode cases). A bounded Windows packaged local
 recovery scenario also passed. Actual EOS interruption/rejoin is unverified;
 do not treat these tests as completion of this step. Step 2 has authored controls
 and a manual host/guest exchange in OnlineGroundPassProof; its paired human run
-is pending. Steps 3–4 now have local startup/action implementations and focused
+is pending. Steps 3â€“4 now have local startup/action implementations and focused
 evidence described at the top of this handoff. The live hierarchy/startup audit is
 recorded in Documentation/Setup/OnlineRoomStartupAudit.md. Continue independent
 Room implementation; lack of Mac access does not block that work.
@@ -408,7 +409,7 @@ offline behavior remains intact at affected, tested seams.
 - Separate reliable committed outcomes, animation presentation and full resync
   snapshots. Reject old/conflicting state and incompatible roster/catalogs.
   Guest animation completion must never advance rules.
-- Connect manual commands and recovery from steps 1–2 to host Room; apply
+- Connect manual commands and recovery from steps 1â€“2 to host Room; apply
   authoritative values/presentation on the inert guest from step 3.
 - Use owned deterministic board/roster fixtures and disposable save paths.
   Prove safe passes, successful/failed interceptions, pause and reconnect with

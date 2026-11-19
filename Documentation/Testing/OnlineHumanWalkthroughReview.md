@@ -145,3 +145,51 @@ All passed without production changes: X offers defender steal; N proceeds into
 nutmeg. The original InvalidAuth interruption remains the supported explanation
 for that run's stalled input, while rebuilt paired acceptance is still pending.
 See Assets/Editor/FeatureTests/OnlinePickupNutmeg/Verification.md.
+
+## Next Mac verification commands (prepared; do not run until requested)
+
+Keep the Mac free while the Windows expiry soak finishes and the remaining
+walkthrough fixes are prepared. When requested, close the old game normally,
+open Terminal in this checkout and update it:
+
+```bash
+cd "$(git rev-parse --show-toplevel)"
+git pull --ff-only
+git merge-base --is-ancestor 9c3455b HEAD
+```
+
+Manually open this same project in Unity, wait for the Pipeline server and clean
+scripts, then run the focused verifier. It rebuilds all three Mac players, checks
+login/local playback and publishes its result branch; it does not wait for a host.
+It runs 63 new lifecycle/FTP/pickup cases rather than the full historical batch.
+
+```bash
+bash Documentation/Setup/VerifyOnlineMac.sh --no-host \
+  --fixture OnlineAuthRenewalEditorTests \
+  --fixture OnlineNativeLifetimeEditorTests \
+  --fixture OnlineAuthSoakArgumentsEditorTests \
+  --fixture OnlineFtpPreviewSwitchPlayModeTests \
+  --fixture OnlinePickupNutmegPlayModeTests
+```
+
+Only when a new human walkthrough is agreed, launch the freshly rebuilt normal
+game (the verification command above already builds it):
+
+```bash
+open Build/OnlineGame/Mac/Counterattack.app
+```
+
+For a build-only refresh through the manually opened Editor, use
+`bash Documentation/Setup/BuildEOSStandaloneMac.sh game` before that open command.
+Paste the verifier's Report pushed branch for retrieval. A focused verifier pass
+is not an hour-boundary paired crash/renewal acceptance pass.
+
+## Refreshed Windows packaged checks
+
+All three Windows exports at source 9c3455b succeeded (normal, Room proof,
+gameplay proof), retaining the known nonfatal vswhere diagnostic. Their managed
+assembly hashes match. Packaged local Room and gameplay checks both passed at
+20261119T153323938Z-Room-local and 20261119T153415149Z-Gameplay-local.
+These local checks do not exercise EOS or establish paired guest isolation.
+The independent 65-minute EOS expiry soak is still running; no expiry-window
+pass is claimed. Nineteen verifier tooling tests also passed.

@@ -48,3 +48,10 @@ coverage is 35 cases; nine existing argument cases and the native host/cancel
 case passed. Remaining acceptance: completed real soak and a rebuilt Mac run.
 
 Final post-cleanup compilation is clean. Repeated final native feature: 35 passed at 20261119T151243870Z/results.xml. Normal/Room/gameplay exports still predate this batch; refresh before paired use.
+
+Windows export refresh after FTP switch/pickup coverage (source 9c3455b):
+normal build_99fc907872cc, Room build_84e8d46ce34a and gameplay build_c66e6cc36a03
+all Succeeded. Reports retained in 20261119T153159Z-normal-Windows-build,
+20261119T153245Z-Room-Windows-build and 20261119T153310Z-Gameplay-Windows-build.
+Each reports one known nonfatal vswhere.exe post-build diagnostic; no C# errors.
+Real expiry soak and rebuilt Mac acceptance still pending.

@@ -1,0 +1,14 @@
+{
+  "source_commit": "9c3455b0365f3aaed725906e9e0f7211922e234f",
+  "assemblies": {
+    "Build/OnlineGame/Windows/Counterattack_Data/Managed/Assembly-CSharp.dll": "cc0b81dc6bad67b6a58d1f049f57d157dc805176c91c5a6c9947489629033b4c",
+    "Build/OnlineRoom/Windows/CounterattackOnlineRoom_Data/Managed/Assembly-CSharp.dll": "cc0b81dc6bad67b6a58d1f049f57d157dc805176c91c5a6c9947489629033b4c",
+    "Build/OnlineGroundPass/Windows/CounterattackOnlineGroundPass_Data/Managed/Assembly-CSharp.dll": "cc0b81dc6bad67b6a58d1f049f57d157dc805176c91c5a6c9947489629033b4c"
+  },
+  "limitations": [
+    "Known nonfatal vswhere.exe post-build diagnostic in all three succeeded exports",
+    "65-minute auth expiry soak pending; isolated export remains untouched",
+    "Mac and paired acceptance pending",
+    "Unrelated designer scene/font/settings edits preserved; builds use this working checkout"
+  ]
+}
