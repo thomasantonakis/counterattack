@@ -15,6 +15,9 @@ EditorBuildSettings:
     path: Assets/Scenes/CreateLoadRoom.unity
     guid: 150d48aa343a245e58273ec6d05ed9f4
   - enabled: 1
+    path: Assets/Scenes/OnlineModeMenu.unity
+    guid: 011f17e1bbbb46041a57c06923b95dc6
+  - enabled: 1
     path: Assets/Scenes/CreateNewGameScene.unity
     guid: b2acf841e3ce64342b24b684bb4c064b
   - enabled: 1

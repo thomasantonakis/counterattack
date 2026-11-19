@@ -4,6 +4,16 @@
   "fixtures": [
     {
       "mode": "editor",
+      "fixture": "OnlineModeNavigationEditorTests",
+      "categories": [
+        "OnlineModeNavigation"
+      ],
+      "definition_sha256": "d6a7408d8cbeafa444053a99eacbfeb56dd8889162a9ec15ea7e1a55c9f1d2a6",
+      "route": "native",
+      "source": "Assets/Editor/FeatureTests/OnlineModeNavigation/OnlineModeNavigationEditorTests.cs"
+    },
+    {
+      "mode": "editor",
       "fixture": "OnlineActionPreviewsEditorTests",
       "categories": [
         "OnlineActionPreviews"
@@ -1325,6 +1335,39 @@
     }
   ],
   "test_additions": [
+    {
+      "id": "OnlineModeNavigationEditorTests.MenuHasAuthoredNavigationAndRejectsInvalidJoin",
+      "feature": "OnlineModeNavigation",
+      "mode": "editor",
+      "fixture": "OnlineModeNavigationEditorTests",
+      "method": "MenuHasAuthoredNavigationAndRejectsInvalidJoin",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T190911294Z/results.xml"
+    },
+    {
+      "id": "OnlineModeNavigationEditorTests.PastedLobbyCodeAllowsSurroundingWhitespace",
+      "feature": "OnlineModeNavigation",
+      "mode": "editor",
+      "fixture": "OnlineModeNavigationEditorTests",
+      "method": "PastedLobbyCodeAllowsSurroundingWhitespace",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T190911294Z/results.xml"
+    },
+    {
+      "id": "OnlineModeNavigationEditorTests.AuthoredControlsFitWideClassicAndPortraitCanvas",
+      "feature": "OnlineModeNavigation",
+      "mode": "editor",
+      "fixture": "OnlineModeNavigationEditorTests",
+      "method": "AuthoredControlsFitWideClassicAndPortraitCanvas",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T190911294Z/results.xml"
+    },
     {
       "id": "OnlineDribblePlayModeTests.DribbleContinuesThroughRecovery(1,\"safe\")",
       "feature": "OnlineDribble",

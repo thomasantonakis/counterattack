@@ -2003,7 +2003,7 @@ public partial class CreateNewGameManager : MonoBehaviour
     public void BackToCreateLoadRoomMenu()
     {
         if(string.Equals(GetRequestedCreateLoadGameMode(),ApplicationManager.OnlineGameMode,StringComparison.OrdinalIgnoreCase))
-        {CounterAttack.Online.OnlineFrontendSession.Current?.Close();SceneManager.LoadScene("MainMenu");return;}
+        {CounterAttack.Online.OnlineFrontendSession.Current?.Close();SceneManager.LoadScene(CounterAttack.Online.OnlineModeMenu.SceneName);return;}
 
         PlayerPrefs.DeleteKey(CreateNewGameReturnSourcePlayerPrefsKey);
         PlayerPrefs.Save();
@@ -2082,7 +2082,7 @@ public partial class CreateNewGameManager : MonoBehaviour
         TMP_Text label = backButton.GetComponentInChildren<TMP_Text>(true);
         if (label != null)
         {
-            label.text = GetRequestedCreateLoadGameMode()==ApplicationManager.OnlineGameMode?"Back to Main Menu":$"Back to {GetSelectedCreateMenuGameMode()} Menu";
+            label.text = GetRequestedCreateLoadGameMode()==ApplicationManager.OnlineGameMode?"Back to Online Menu":$"Back to {GetSelectedCreateMenuGameMode()} Menu";
         }
     }
 

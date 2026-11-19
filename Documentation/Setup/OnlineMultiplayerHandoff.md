@@ -76,23 +76,36 @@ live processes when relevant, never kill Unity.
 
 ## Batch A — fullscreen, resizing and Online navigation
 
-- [ ] Inspect PlayerSettings (resizableWindow currently 0; fullscreen switching
-      enabled), startup overrides and build scripts.
-- [ ] Implement fullscreen startup on Windows/macOS and resizable windowed mode.
-- [ ] Inspect MainMenu/CreateLoadRoom authored hierarchy/styles.
-- [ ] Author matching Host/Join/Back screen, including code entry, status,
-      errors and cancellation. Preserve Singleplayer/Hotseat navigation.
-- [ ] Compile and validate authored layout at multiple aspect ratios; verify
-      actual fullscreen/window switching where each platform is available.
-- [ ] Add dedicated native tests for changed navigation/state behavior.
-      Pure settings/layout do not need gameplay suites.
-- [ ] Build normal Windows player; retain report/provenance and exact Mac commands.
-      Continue independent Windows work if Mac is unavailable.
-- [ ] Commit/push scoped files, update checklist, stop this batch.
+- [x] Inspected PlayerSettings, runtime overrides and normal build scene lists.
+- [x] Enabled resizable windows and added F11 switching for Windows and macOS.
+      Normal launches request Unity's FullScreenWindow mode. Explicit window
+      flags used by standalone proofs still apply.
+- [x] Authored OnlineModeMenu with Main Menu styling, Host, Join, lobby-code
+      entry and Back. Host opens match setup. Join validates the code and
+      opens the existing setup with connection status, errors and cancellation.
+- [x] Windows Editor compiled with zero errors. The focused EditMode fixture
+      passed 3, failed 0, skipped 0. It checked the authored navigation bindings,
+      invalid and pasted lobby codes, and control bounds at wide, 4:3 and
+      portrait aspect ratios.
+- [x] Normal Windows player built successfully and passed standalone checks for
+      borderless fullscreen on startup, F11 both directions, resizing to
+      980 x 720, maximize/restore, and fullscreen relaunch after exiting windowed.
+- [x] Visually checked the Windows Online menu fullscreen and windowed.
+      Pointer clicks showed the invalid-code error, kept that message through
+      F11, and opened Host setup in windowed mode. Setup stayed open after
+      switching back to fullscreen.
+- [ ] Verify native macOS fullscreen startup, F11, resize/zoom and fullscreen
+      relaunch. Use the Mac build and launch commands below.
+- [ ] Verify pointer mapping and state continuity in a live match on both
+      platforms. Paired EOS remains outside the Batch A verification run.
 
-Acceptance: startup fullscreen; user can switch to sizable window and back;
-Host/Join visually matches existing mode menus; normal UI needs no test scene,
-terminal or hosting script.
+Windows output: `Build/OnlineGame/Windows/Counterattack.exe`. Build
+`build_8c69a68a2141` succeeded with the known nonfatal `vswhere.exe`
+diagnostic. The build used the local checkout with its pre-existing asset
+edits. The build report, assembly SHA256 and native window observations are in
+`TestResults/GameplayRegression/Runs/20261119T190928221Z-BatchA-Windows/`.
+Focused native test XML and progress are in
+`TestResults/GameplayRegression/Runs/20261119T190911294Z/`.
 
 ## Batch B — Mac hosting and both roles
 

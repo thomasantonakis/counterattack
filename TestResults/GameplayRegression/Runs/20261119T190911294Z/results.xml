@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="3" result="Passed" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-19 19:09:11Z" end-time="2026-11-19 19:09:11Z" duration="0.5509193">
+  <test-suite type="TestSuite" id="3321" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1962" result="Passed" start-time="2026-11-19 19:09:11Z" end-time="2026-11-19 19:09:11Z" duration="0.550919" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="3315" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="1962" result="Passed" start-time="2026-11-19 19:09:11Z" end-time="2026-11-19 19:09:11Z" duration="0.426435" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="2816" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="2074" name="OnlineModeNavigationEditorTests" fullname="OnlineModeNavigationEditorTests" classname="OnlineModeNavigationEditorTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-11-19 19:09:11Z" end-time="2026-11-19 19:09:11Z" duration="0.415226" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineModeNavigation" />
+        </properties>
+        <test-case id="2077" name="AuthoredControlsFitWideClassicAndPortraitCanvas" fullname="OnlineModeNavigationEditorTests.AuthoredControlsFitWideClassicAndPortraitCanvas" methodname="AuthoredControlsFitWideClassicAndPortraitCanvas" classname="OnlineModeNavigationEditorTests" runstate="Runnable" seed="1401023671" result="Passed" start-time="2026-11-19 19:09:11Z" end-time="2026-11-19 19:09:11Z" duration="0.224810" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="2075" name="MenuHasAuthoredNavigationAndRejectsInvalidJoin" fullname="OnlineModeNavigationEditorTests.MenuHasAuthoredNavigationAndRejectsInvalidJoin" methodname="MenuHasAuthoredNavigationAndRejectsInvalidJoin" classname="OnlineModeNavigationEditorTests" runstate="Runnable" seed="1415850069" result="Passed" start-time="2026-11-19 19:09:11Z" end-time="2026-11-19 19:09:11Z" duration="0.155109" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="2076" name="PastedLobbyCodeAllowsSurroundingWhitespace" fullname="OnlineModeNavigationEditorTests.PastedLobbyCodeAllowsSurroundingWhitespace" methodname="PastedLobbyCodeAllowsSurroundingWhitespace" classname="OnlineModeNavigationEditorTests" runstate="Runnable" seed="1086994341" result="Passed" start-time="2026-11-19 19:09:11Z" end-time="2026-11-19 19:09:11Z" duration="0.000892" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Saving results to: TestResults\GameplayRegression\Runs\20261119T190911294Z\results.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>
