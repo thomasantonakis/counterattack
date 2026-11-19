@@ -5,6 +5,8 @@ using UnityEngine;
 
 public sealed partial class GoalkeeperBoxEntryFixture
 {
+    private Action<GameplayAudioEvents.IncidentCue> stealAudioObserver;
+
     public IEnumerator RunOutsideHandballAudio(bool tie)
     {
         using (var audio = new GoalAudioRig(root.transform))
@@ -249,19 +251,22 @@ public sealed partial class GoalkeeperBoxEntryFixture
             yield return null;
             int count = 0;
             GameplayAudioEvents.IncidentKind actual = default;
+            bool homeTeam = false;
             Action<GameplayAudioEvents.IncidentCue> observe = cue =>
             {
                 if (cue.Kind == GameplayAudioEvents.IncidentKind.DuelWon || cue.Kind == GameplayAudioEvents.IncidentKind.DuelLost)
-                { count++; actual = cue.Kind; Assert.That(cue.HomeTeam, Is.False); }
+                { count++; actual = cue.Kind; homeTeam = cue.HomeTeam; }
             };
+            stealAudioObserver = observe;
             GameplayAudioEvents.IncidentConfirmed += observe;
             try
             {
                 yield return RunMovementStealLegacy(succeeds);
                 Assert.That(count, Is.EqualTo(1));
                 Assert.That(actual, Is.EqualTo(succeeds ? GameplayAudioEvents.IncidentKind.DuelWon : GameplayAudioEvents.IncidentKind.DuelLost));
+                Assert.That(homeTeam, Is.False);
             }
-            finally { GameplayAudioEvents.IncidentConfirmed -= observe; }
+            finally { GameplayAudioEvents.IncidentConfirmed -= observe; stealAudioObserver = null; }
         }
     }
 }

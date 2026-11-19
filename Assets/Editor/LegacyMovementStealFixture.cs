@@ -40,14 +40,18 @@ public sealed partial class GoalkeeperBoxEntryFixture
             Assert.That(match.currentState, Is.EqualTo(MatchManager.GameState.AnyOtherScenario));
             Assert.That(match.teamInAttack, Is.EqualTo(MatchManager.TeamInAttack.Away));
             Assert.That(match.attackHasPossession, Is.True);
-            Assert.That(ground.isAvailable && movement.isAvailable && longBall.isAvailable, Is.True);
+            Assert.That(match.finalThirdManager.isActivated, Is.True);
+            Assert.That(ground.isAvailable || movement.isAvailable || longBall.isAvailable, Is.False,
+                "Final Third setup reserves input before the new attack's choices are offered.");
+            yield return ForfeitLegacyFinalThirds();
+            Assert.That(ground.isAvailable && movement.isAvailable && longBall.isAvailable, Is.True,
+                $"ground={ground.isAvailable}, movement={movement.isAvailable}, long={longBall.isAvailable}, state={match.currentState}, possession={match.attackHasPossession}");
             Assert.That(ftp.isAvailable || high.isAvailable || ftp.isActivated || high.isActivated || longBall.isActivated, Is.False);
             var stats = match.gameData.stats.GetPlayerStats(defender);
             Assert.That(stats.interceptionsAttempted, Is.EqualTo(1)); Assert.That(stats.interceptionsMade, Is.EqualTo(1));
             Assert.That(stats.xRecoveries, Is.EqualTo(1f / 6f).Within(0.0001f));
             Assert.That(match.gameData.stats.awayTeamStats.totalXRecoveries, Is.EqualTo(1f / 6f).Within(0.0001f));
             Assert.That(ground.imposedDistance, Is.EqualTo(6));
-            yield return ForfeitLegacyFinalThirds();
             LegacyKey("P"); ground.CommitToThisAction();
             Assert.That(ground.imposedDistance, Is.EqualTo(6), "Post-steal pass commitment preserves its short range.");
         }

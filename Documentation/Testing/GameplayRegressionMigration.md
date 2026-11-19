@@ -472,3 +472,18 @@ passed across `Runs/20261108T091321442Z/results.xml` (36/3/0),
 `Runs/20261108T092026689Z/results.xml` (1/0/0). These overlap; do not add counts.
 The feature Verification.md explains fixture corrections and exact broader
 user-run coverage. No legacy scenario was retired and no whole suite was run.
+
+### User-run full suites and focused PlayMode repair — 2026-11-19
+
+The user reported a clean full EditMode run. Their PlayMode artifact,
+`/Users/thomasantonakis/Downloads/TestResults_20261119_003542.xml`, recorded
+1,141 cases: 997 passed, 144 failed, 0 skipped. The failures clustered around
+legacy kickoff setup, Final Third input ownership, a leaked incident-audio
+observer, stale crowd/dice presentation expectations, and fixture timing for
+goalkeeper and shot continuations. These were test/fixture corrections; no
+production gameplay code changed. Focused reruns passed for representative
+header, steal, incident audio, crowd audio (4 cases), goalkeeper pickup,
+ground pass, box loose, loose snapshot, box entry, room presentation (2 cases),
+shot corner and free-kick branches. Native focused XML files remain under
+`TestResults/GameplayRegression/Runs/20261119T*/results.xml`. This is not a
+fresh full-suite verdict; the user should run the full PlayMode tab again.

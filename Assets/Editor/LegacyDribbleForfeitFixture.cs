@@ -9,9 +9,10 @@ public sealed partial class GoalkeeperBoxEntryFixture
         Subscribe(ground); Subscribe(movement); Subscribe(match.finalThirdManager);
         LegacyKey("P"); ClickPass(dribbler.currentHex); ClickPass(dribbler.currentHex);
         yield return Until(() => !ground.isActivated && ball.GetCurrentHex() == dribbler.currentHex, "forfeit audit ground pass reaches Yaneva");
+        yield return ForfeitLegacyFinalThirds();
         Assert.That(movement.isAvailable && ftp.isAvailable, Is.True);
         Assert.That(ground.isAvailable || high.isAvailable || longBall.isAvailable, Is.False);
-        yield return ForfeitLegacyFinalThirds(); LegacyKey("M");
+        LegacyKey("M");
         input.TryExecuteSyntheticHexClick(dribbler.currentHex, "Legacy migration", out _);
         yield return LegacyDribbleStep(dribbler, Hex(10, 1));
         yield return LegacyDribbleStep(dribbler, Hex(10, 2));

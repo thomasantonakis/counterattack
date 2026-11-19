@@ -91,8 +91,8 @@ public sealed partial class GoalkeeperBoxEntryFixture
             Assert.That(audio.Director.awayChatter.volume + audio.Director.awayChatterNext.volume,
                 Is.InRange(awayShare * 0.4f * 0.75f, awayShare * 0.5f * 0.75f));
             Assert.That(audio.Director.TryPlayChant(true) && audio.Director.TryPlayChant(false), Is.True);
-            Assert.That(audio.Director.homeChant.volume, Is.EqualTo(homeShare * 0.3f * 0.75f).Within(0.0001f));
-            Assert.That(audio.Director.awayChant.volume, Is.EqualTo(awayShare * 0.3f * 0.75f).Within(0.0001f));
+            Assert.That(audio.Director.homeChant.volume, Is.EqualTo(homeShare * GameplayAudioConfig.ChantIntensity * GameplayAudioConfig.CrowdOutputGain).Within(0.0001f));
+            Assert.That(audio.Director.awayChant.volume, Is.EqualTo(awayShare * GameplayAudioConfig.ChantIntensity * GameplayAudioConfig.CrowdOutputGain).Within(0.0001f));
             Assert.That(audio.Director.PlayGoal("Owned mixed-share goal", homeScored), Is.True);
             audio.Director.AdvanceAudio(GameplayAudioConfig.ChantFadeSeconds);
             Assert.That(audio.Director.homeReaction.volume + audio.Director.homeChatter.volume + audio.Director.homeChatterNext.volume,

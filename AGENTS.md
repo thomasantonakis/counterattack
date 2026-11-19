@@ -1,3 +1,8 @@
+## Standing Authorizations
+
+- The project owner authorizes Codex to perform Git operations for this repository, including committing and pushing to `master` when completing requested work.
+- The project owner authorizes Codex to run Unity CLI commands for this project, subject to the Unity workflow rules below. These authorizations do not bypass sandbox controls that require tool-level escalation.
+
 ## Unity Workflow Rules
 
 - Never edit or whitespace-normalize a scene file on disk while it is loaded in the Editor. Make loaded-scene changes through Unity CLI/Pipeline and save through the Editor. Unity-generated whitespace is not a reason to rewrite a loaded scene to satisfy `git diff --check`; report serializer whitespace instead.

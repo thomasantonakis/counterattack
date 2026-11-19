@@ -94,8 +94,9 @@ public sealed partial class GoalkeeperBoxEntryFixture
         {
             LegacyKey("F");
             Assert.That(match.CanGoalkeeperHandle(homeGK), Is.True);
-            Assert.That(movement.isAvailable && ground.isAvailable && high.isAvailable && longBall.isAvailable, Is.True);
             yield return FinishPickupFinalThirds();
+            Assert.That(movement.isAvailable && ground.isAvailable && high.isAvailable && longBall.isAvailable, Is.True,
+                $"Keeper feet options after Final Thirds: movement={movement.isAvailable}, ground={ground.isAvailable}, high={high.isAvailable}, long={longBall.isAvailable}");
             // Save/load the actual touch snapshot using an in-memory JSON round trip.
             var snapshot = Newtonsoft.Json.JsonConvert.DeserializeObject<RoomRuntimeSnapshot>(
                 Newtonsoft.Json.JsonConvert.SerializeObject(match.CreateRuntimeSnapshot()));
