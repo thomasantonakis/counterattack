@@ -1,0 +1,695 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="20" result="Passed" total="20" passed="20" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-19 15:24:26Z" end-time="2026-11-19 15:25:25Z" duration="58.8820667">
+  <test-suite type="TestSuite" id="3278" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1893" result="Passed" start-time="2026-11-19 15:24:26Z" end-time="2026-11-19 15:25:25Z" duration="58.882067" total="20" passed="20" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="3275" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1893" result="Passed" start-time="2026-11-19 15:24:26Z" end-time="2026-11-19 15:25:25Z" duration="58.834755" total="20" passed="20" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="2816" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1766" name="OnlineFtpPreviewSwitchPlayModeTests" fullname="OnlineFtpPreviewSwitchPlayModeTests" classname="OnlineFtpPreviewSwitchPlayModeTests" runstate="Runnable" testcasecount="20" result="Passed" start-time="2026-11-19 15:24:27Z" end-time="2026-11-19 15:25:25Z" duration="58.809699" total="20" passed="20" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineFtpPreviewSwitch" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="1787" name="MovementSwitchRespectsPreviewCommitmentAndHold" fullname="OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold" classname="OnlineFtpPreviewSwitchPlayModeTests" runstate="Runnable" testcasecount="20" result="Passed" start-time="2026-11-19 15:24:27Z" end-time="2026-11-19 15:25:25Z" duration="58.796994" total="20" passed="20" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="1767" name="MovementSwitchRespectsPreviewCommitmentAndHold(1,False,&quot;unselected&quot;)" fullname="OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(1,False,&quot;unselected&quot;)" methodname="MovementSwitchRespectsPreviewCommitmentAndHold" classname="OnlineFtpPreviewSwitchPlayModeTests" runstate="Runnable" seed="714079474" result="Passed" start-time="2026-11-19 15:24:27Z" end-time="2026-11-19 15:24:30Z" duration="3.622711" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Away recovering player (Fixture Away) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Away recovering player (Fixture Away) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online backline
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+Movement phase has been reset.
+]]></output>
+          </test-case>
+          <test-case id="1768" name="MovementSwitchRespectsPreviewCommitmentAndHold(1,False,&quot;selected&quot;)" fullname="OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(1,False,&quot;selected&quot;)" methodname="MovementSwitchRespectsPreviewCommitmentAndHold" classname="OnlineFtpPreviewSwitchPlayModeTests" runstate="Runnable" seed="578528126" result="Passed" start-time="2026-11-19 15:24:30Z" end-time="2026-11-19 15:24:33Z" duration="2.804257" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Away recovering player (Fixture Away) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Away recovering player (Fixture Away) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online backline
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+Movement phase has been reset.
+]]></output>
+          </test-case>
+          <test-case id="1769" name="MovementSwitchRespectsPreviewCommitmentAndHold(1,False,&quot;committed&quot;)" fullname="OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(1,False,&quot;committed&quot;)" methodname="MovementSwitchRespectsPreviewCommitmentAndHold" classname="OnlineFtpPreviewSwitchPlayModeTests" runstate="Runnable" seed="1872812591" result="Passed" start-time="2026-11-19 15:24:33Z" end-time="2026-11-19 15:24:36Z" duration="2.939306" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Away recovering player (Fixture Away) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Away recovering player (Fixture Away) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online backline
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+First-Time Pass target confirmed. Waiting for FTP movement phases.
+Offside assessed (first_time_pass_target_confirmed): line x=8, tokens=none.
+Substitutions are no longer available: Committed to FirstTimePass
+[Game Log] Online backline (Fixture Away) attempts a ground pass
+Attacker movement phase started. Move one attacker 1 hex or press [X] to skip.
+]]></output>
+          </test-case>
+          <test-case id="1770" name="MovementSwitchRespectsPreviewCommitmentAndHold(1,False,&quot;hold&quot;)" fullname="OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(1,False,&quot;hold&quot;)" methodname="MovementSwitchRespectsPreviewCommitmentAndHold" classname="OnlineFtpPreviewSwitchPlayModeTests" runstate="Runnable" seed="1552255950" result="Passed" start-time="2026-11-19 15:24:36Z" end-time="2026-11-19 15:24:39Z" duration="3.047655" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Away recovering player (Fixture Away) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Away recovering player (Fixture Away) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online backline
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+Movement phase has been reset.
+]]></output>
+          </test-case>
+          <test-case id="1771" name="MovementSwitchRespectsPreviewCommitmentAndHold(1,False,&quot;experienced&quot;)" fullname="OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(1,False,&quot;experienced&quot;)" methodname="MovementSwitchRespectsPreviewCommitmentAndHold" classname="OnlineFtpPreviewSwitchPlayModeTests" runstate="Runnable" seed="79662204" result="Passed" start-time="2026-11-19 15:24:39Z" end-time="2026-11-19 15:24:42Z" duration="2.769285" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Away recovering player (Fixture Away) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Away recovering player (Fixture Away) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online backline
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+Substitutions are no longer available: Committed to FirstTimePass
+FirstTimePassManager activated. Waiting for target selection...
+]]></output>
+          </test-case>
+          <test-case id="1772" name="MovementSwitchRespectsPreviewCommitmentAndHold(1,True,&quot;unselected&quot;)" fullname="OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(1,True,&quot;unselected&quot;)" methodname="MovementSwitchRespectsPreviewCommitmentAndHold" classname="OnlineFtpPreviewSwitchPlayModeTests" runstate="Runnable" seed="944930308" result="Passed" start-time="2026-11-19 15:24:42Z" end-time="2026-11-19 15:24:45Z" duration="2.779407" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+Movement phase has been reset.
+]]></output>
+          </test-case>
+          <test-case id="1773" name="MovementSwitchRespectsPreviewCommitmentAndHold(1,True,&quot;selected&quot;)" fullname="OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(1,True,&quot;selected&quot;)" methodname="MovementSwitchRespectsPreviewCommitmentAndHold" classname="OnlineFtpPreviewSwitchPlayModeTests" runstate="Runnable" seed="206774690" result="Passed" start-time="2026-11-19 15:24:45Z" end-time="2026-11-19 15:24:47Z" duration="2.753268" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+Movement phase has been reset.
+]]></output>
+          </test-case>
+          <test-case id="1774" name="MovementSwitchRespectsPreviewCommitmentAndHold(1,True,&quot;committed&quot;)" fullname="OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(1,True,&quot;committed&quot;)" methodname="MovementSwitchRespectsPreviewCommitmentAndHold" classname="OnlineFtpPreviewSwitchPlayModeTests" runstate="Runnable" seed="693990539" result="Passed" start-time="2026-11-19 15:24:47Z" end-time="2026-11-19 15:24:50Z" duration="2.900039" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+First-Time Pass target confirmed. Waiting for FTP movement phases.
+Offside assessed (first_time_pass_target_confirmed): line x=8, tokens=none.
+Substitutions are no longer available: Committed to FirstTimePass
+[Game Log] Online receiver (Fixture Home) attempts a ground pass
+Attacker movement phase started. Move one attacker 1 hex or press [X] to skip.
+]]></output>
+          </test-case>
+          <test-case id="1775" name="MovementSwitchRespectsPreviewCommitmentAndHold(1,True,&quot;hold&quot;)" fullname="OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(1,True,&quot;hold&quot;)" methodname="MovementSwitchRespectsPreviewCommitmentAndHold" classname="OnlineFtpPreviewSwitchPlayModeTests" runstate="Runnable" seed="2042425299" result="Passed" start-time="2026-11-19 15:24:50Z" end-time="2026-11-19 15:24:53Z" duration="2.968501" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+Movement phase has been reset.
+]]></output>
+          </test-case>
+          <test-case id="1776" name="MovementSwitchRespectsPreviewCommitmentAndHold(1,True,&quot;experienced&quot;)" fullname="OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(1,True,&quot;experienced&quot;)" methodname="MovementSwitchRespectsPreviewCommitmentAndHold" classname="OnlineFtpPreviewSwitchPlayModeTests" runstate="Runnable" seed="355563074" result="Passed" start-time="2026-11-19 15:24:53Z" end-time="2026-11-19 15:24:56Z" duration="2.782315" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+Substitutions are no longer available: Committed to FirstTimePass
+FirstTimePassManager activated. Waiting for target selection...
+]]></output>
+          </test-case>
+          <test-case id="1777" name="MovementSwitchRespectsPreviewCommitmentAndHold(-1,False,&quot;unselected&quot;)" fullname="OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(-1,False,&quot;unselected&quot;)" methodname="MovementSwitchRespectsPreviewCommitmentAndHold" classname="OnlineFtpPreviewSwitchPlayModeTests" runstate="Runnable" seed="553866574" result="Passed" start-time="2026-11-19 15:24:56Z" end-time="2026-11-19 15:24:59Z" duration="3.069440" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Away recovering player (Fixture Away) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Away recovering player (Fixture Away) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online backline
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+Movement phase has been reset.
+]]></output>
+          </test-case>
+          <test-case id="1778" name="MovementSwitchRespectsPreviewCommitmentAndHold(-1,False,&quot;selected&quot;)" fullname="OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(-1,False,&quot;selected&quot;)" methodname="MovementSwitchRespectsPreviewCommitmentAndHold" classname="OnlineFtpPreviewSwitchPlayModeTests" runstate="Runnable" seed="1774789903" result="Passed" start-time="2026-11-19 15:24:59Z" end-time="2026-11-19 15:25:02Z" duration="2.957636" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Away recovering player (Fixture Away) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Away recovering player (Fixture Away) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online backline
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+Movement phase has been reset.
+]]></output>
+          </test-case>
+          <test-case id="1779" name="MovementSwitchRespectsPreviewCommitmentAndHold(-1,False,&quot;committed&quot;)" fullname="OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(-1,False,&quot;committed&quot;)" methodname="MovementSwitchRespectsPreviewCommitmentAndHold" classname="OnlineFtpPreviewSwitchPlayModeTests" runstate="Runnable" seed="1003513922" result="Passed" start-time="2026-11-19 15:25:02Z" end-time="2026-11-19 15:25:05Z" duration="2.958848" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Away recovering player (Fixture Away) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Away recovering player (Fixture Away) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online backline
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+First-Time Pass target confirmed. Waiting for FTP movement phases.
+Offside assessed (first_time_pass_target_confirmed): line x=-8, tokens=none.
+Substitutions are no longer available: Committed to FirstTimePass
+[Game Log] Online backline (Fixture Away) attempts a ground pass
+Attacker movement phase started. Move one attacker 1 hex or press [X] to skip.
+]]></output>
+          </test-case>
+          <test-case id="1780" name="MovementSwitchRespectsPreviewCommitmentAndHold(-1,False,&quot;hold&quot;)" fullname="OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(-1,False,&quot;hold&quot;)" methodname="MovementSwitchRespectsPreviewCommitmentAndHold" classname="OnlineFtpPreviewSwitchPlayModeTests" runstate="Runnable" seed="1284999041" result="Passed" start-time="2026-11-19 15:25:05Z" end-time="2026-11-19 15:25:08Z" duration="3.084908" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Away recovering player (Fixture Away) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Away recovering player (Fixture Away) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online backline
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+Movement phase has been reset.
+]]></output>
+          </test-case>
+          <test-case id="1781" name="MovementSwitchRespectsPreviewCommitmentAndHold(-1,False,&quot;experienced&quot;)" fullname="OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(-1,False,&quot;experienced&quot;)" methodname="MovementSwitchRespectsPreviewCommitmentAndHold" classname="OnlineFtpPreviewSwitchPlayModeTests" runstate="Runnable" seed="616244196" result="Passed" start-time="2026-11-19 15:25:08Z" end-time="2026-11-19 15:25:11Z" duration="2.864310" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Away recovering player (Fixture Away) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Away recovering player (Fixture Away) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online backline
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+Substitutions are no longer available: Committed to FirstTimePass
+FirstTimePassManager activated. Waiting for target selection...
+]]></output>
+          </test-case>
+          <test-case id="1782" name="MovementSwitchRespectsPreviewCommitmentAndHold(-1,True,&quot;unselected&quot;)" fullname="OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(-1,True,&quot;unselected&quot;)" methodname="MovementSwitchRespectsPreviewCommitmentAndHold" classname="OnlineFtpPreviewSwitchPlayModeTests" runstate="Runnable" seed="2116627392" result="Passed" start-time="2026-11-19 15:25:11Z" end-time="2026-11-19 15:25:14Z" duration="2.799897" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+Movement phase has been reset.
+]]></output>
+          </test-case>
+          <test-case id="1783" name="MovementSwitchRespectsPreviewCommitmentAndHold(-1,True,&quot;selected&quot;)" fullname="OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(-1,True,&quot;selected&quot;)" methodname="MovementSwitchRespectsPreviewCommitmentAndHold" classname="OnlineFtpPreviewSwitchPlayModeTests" runstate="Runnable" seed="740769765" result="Passed" start-time="2026-11-19 15:25:14Z" end-time="2026-11-19 15:25:17Z" duration="2.814062" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+Movement phase has been reset.
+]]></output>
+          </test-case>
+          <test-case id="1784" name="MovementSwitchRespectsPreviewCommitmentAndHold(-1,True,&quot;committed&quot;)" fullname="OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(-1,True,&quot;committed&quot;)" methodname="MovementSwitchRespectsPreviewCommitmentAndHold" classname="OnlineFtpPreviewSwitchPlayModeTests" runstate="Runnable" seed="1088871527" result="Passed" start-time="2026-11-19 15:25:17Z" end-time="2026-11-19 15:25:19Z" duration="2.922236" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+First-Time Pass target confirmed. Waiting for FTP movement phases.
+Offside assessed (first_time_pass_target_confirmed): line x=-8, tokens=none.
+Substitutions are no longer available: Committed to FirstTimePass
+[Game Log] Online receiver (Fixture Home) attempts a ground pass
+Attacker movement phase started. Move one attacker 1 hex or press [X] to skip.
+]]></output>
+          </test-case>
+          <test-case id="1785" name="MovementSwitchRespectsPreviewCommitmentAndHold(-1,True,&quot;hold&quot;)" fullname="OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(-1,True,&quot;hold&quot;)" methodname="MovementSwitchRespectsPreviewCommitmentAndHold" classname="OnlineFtpPreviewSwitchPlayModeTests" runstate="Runnable" seed="1162543021" result="Passed" start-time="2026-11-19 15:25:19Z" end-time="2026-11-19 15:25:22Z" duration="3.023724" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+Movement phase has been reset.
+]]></output>
+          </test-case>
+          <test-case id="1786" name="MovementSwitchRespectsPreviewCommitmentAndHold(-1,True,&quot;experienced&quot;)" fullname="OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(-1,True,&quot;experienced&quot;)" methodname="MovementSwitchRespectsPreviewCommitmentAndHold" classname="OnlineFtpPreviewSwitchPlayModeTests" runstate="Runnable" seed="2118323710" result="Passed" start-time="2026-11-19 15:25:22Z" end-time="2026-11-19 15:25:25Z" duration="2.860697" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+Substitutions are no longer available: Committed to FirstTimePass
+FirstTimePassManager activated. Waiting for target selection...
+Saving results to: TestResults\GameplayRegression\Runs\20261119T152426878Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

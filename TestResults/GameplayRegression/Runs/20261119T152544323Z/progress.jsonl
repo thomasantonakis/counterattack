@@ -1,0 +1,14 @@
+{"name":"OnlineFirstTimePassPlayModeTests.RealPassEntersOwnedFtp(1,\"safe\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFirstTimePassPlayModeTests.RealPassEntersOwnedFtp(1,\"move\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFirstTimePassPlayModeTests.RealPassEntersOwnedFtp(1,\"miss\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFirstTimePassPlayModeTests.RealPassEntersOwnedFtp(1,\"hit\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFirstTimePassPlayModeTests.RealPassEntersOwnedFtp(1,\"automatic\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFirstTimePassPlayModeTests.RealPassEntersOwnedFtp(1,\"cancel\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFirstTimePassPlayModeTests.RealPassEntersOwnedFtp(1,\"hold\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFirstTimePassPlayModeTests.RealPassEntersOwnedFtp(-1,\"safe\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFirstTimePassPlayModeTests.RealPassEntersOwnedFtp(-1,\"move\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFirstTimePassPlayModeTests.RealPassEntersOwnedFtp(-1,\"miss\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFirstTimePassPlayModeTests.RealPassEntersOwnedFtp(-1,\"hit\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFirstTimePassPlayModeTests.RealPassEntersOwnedFtp(-1,\"automatic\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFirstTimePassPlayModeTests.RealPassEntersOwnedFtp(-1,\"cancel\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFirstTimePassPlayModeTests.RealPassEntersOwnedFtp(-1,\"hold\")","status":"Passed","message":"","stackTrace":""}
