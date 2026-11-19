@@ -14,7 +14,7 @@ git switch codex/online-foundation-personal-mac
 git pull --ff-only origin codex/online-foundation-personal-mac
 git log -3 --oneline
 repo_root="$(git rev-parse --show-toplevel)"
-unity status --project-path "$repo_root" --format json
+unity command editor_status --project-path "$repo_root" --caller codex --skill unity-cli --format json
 ```
 
 Preserve any existing local edits. Full Room scene checkpoint: `c787232`.
@@ -22,6 +22,9 @@ It contains the actual 1,900-hex pitch, 32/36 drafted actors, real kickoff and
 inert guest score/time/position projection, with 16 focused Windows passes.
 Subsequent native handoff work stays on the same branch; read the current
 `OnlineNextSessionPrompt.md` and feature Verification.md files for evidence.
+
+For the live human check, follow [OnlineHumanWalkthrough.md](OnlineHumanWalkthrough.md)
+with Codex one checkpoint at a time. It includes the Mac pull/build commands.
 
 ## Build and run the normal game
 
