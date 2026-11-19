@@ -340,7 +340,9 @@ namespace CounterAttack.Online
             bool canHigh=match.highPassManager?.isAvailable==true && match.currentState!=MatchManager.GameState.GoalKick;
             if(preview && canHigh)AddAdditional(actions,HighStartAction,()=>match.TriggerHighPass());
             if(preview && match.firstTimePassManager?.isAvailable==true)AddAdditional(actions,"ftp.start",()=>match.TriggerFTP());
-            if(preview && match.movementPhaseManager?.isAvailable == true && !state.movementActive)
+            // FTP target selection remains reversible until its commitment disables movement.
+            bool movementPreview = preview || state.stage == "ftp.target";
+            if(movementPreview && match.movementPhaseManager?.isAvailable == true && !state.movementActive)
                 AddAdditional(actions,MovementStartAction,()=>match.TriggerMovement());
             if(state.movementActive && !match.movementPhaseManager.isCommitted && match.movementPhaseManager.OnlineBasicMovementAvailable)
             {

@@ -126,3 +126,13 @@ Do not overwrite that isolated export or start another real EOS-login probe on
 Windows until it finishes. Other focused non-network native tests/builds can run.
 Do not claim an hour-boundary or rebuilt Mac pass until actual evidence exists.
 Normal/Room/gameplay Windows exports still require refresh before next pairing.
+
+## FTP preview switch checkpoint
+
+Intermediate FTP target previews now publish movement.start, so M uses the same
+authenticated switch as other previews. Movement availability still blocks it
+after commitment, including immediate Experienced commitment. Twenty dedicated
+feature cases, 14 existing FTP cases and 45 contextual-key cases passed.
+See Assets/Editor/FeatureTests/OnlineFtpPreviewSwitch/Verification.md for native
+artifacts and the before-fix reproduction. Normal exports still need refresh;
+this is not paired human acceptance.

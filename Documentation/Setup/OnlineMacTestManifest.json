@@ -724,6 +724,16 @@
     },
     {
       "mode": "playmode",
+      "fixture": "OnlineFtpPreviewSwitchPlayModeTests",
+      "categories": [
+        "OnlineFtpPreviewSwitch"
+      ],
+      "definition_sha256": "5b715dad9a502b714a67d25063171bae64968cc492f2805ecaf2bfdcdf8aa540",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineFtpPreviewSwitch/OnlineFtpPreviewSwitchPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
       "fixture": "OnlineFullRoomPlayModeTests",
       "categories": [
         "OnlineFullRoom",
@@ -20175,6 +20185,306 @@
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
       "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T151243870Z/results.xml"
+    },
+    {
+      "id": "OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(1,False,\"unselected\")",
+      "feature": "OnlineFtpPreviewSwitch",
+      "mode": "playmode",
+      "fixture": "OnlineFtpPreviewSwitchPlayModeTests",
+      "method": "MovementSwitchRespectsPreviewCommitmentAndHold",
+      "parameters": [
+        1,
+        false,
+        "unselected"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T152426878Z/results.xml"
+    },
+    {
+      "id": "OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(1,False,\"selected\")",
+      "feature": "OnlineFtpPreviewSwitch",
+      "mode": "playmode",
+      "fixture": "OnlineFtpPreviewSwitchPlayModeTests",
+      "method": "MovementSwitchRespectsPreviewCommitmentAndHold",
+      "parameters": [
+        1,
+        false,
+        "selected"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T152426878Z/results.xml"
+    },
+    {
+      "id": "OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(1,False,\"committed\")",
+      "feature": "OnlineFtpPreviewSwitch",
+      "mode": "playmode",
+      "fixture": "OnlineFtpPreviewSwitchPlayModeTests",
+      "method": "MovementSwitchRespectsPreviewCommitmentAndHold",
+      "parameters": [
+        1,
+        false,
+        "committed"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T152426878Z/results.xml"
+    },
+    {
+      "id": "OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(1,False,\"hold\")",
+      "feature": "OnlineFtpPreviewSwitch",
+      "mode": "playmode",
+      "fixture": "OnlineFtpPreviewSwitchPlayModeTests",
+      "method": "MovementSwitchRespectsPreviewCommitmentAndHold",
+      "parameters": [
+        1,
+        false,
+        "hold"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T152426878Z/results.xml"
+    },
+    {
+      "id": "OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(1,False,\"experienced\")",
+      "feature": "OnlineFtpPreviewSwitch",
+      "mode": "playmode",
+      "fixture": "OnlineFtpPreviewSwitchPlayModeTests",
+      "method": "MovementSwitchRespectsPreviewCommitmentAndHold",
+      "parameters": [
+        1,
+        false,
+        "experienced"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T152426878Z/results.xml"
+    },
+    {
+      "id": "OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(1,True,\"unselected\")",
+      "feature": "OnlineFtpPreviewSwitch",
+      "mode": "playmode",
+      "fixture": "OnlineFtpPreviewSwitchPlayModeTests",
+      "method": "MovementSwitchRespectsPreviewCommitmentAndHold",
+      "parameters": [
+        1,
+        true,
+        "unselected"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T152426878Z/results.xml"
+    },
+    {
+      "id": "OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(1,True,\"selected\")",
+      "feature": "OnlineFtpPreviewSwitch",
+      "mode": "playmode",
+      "fixture": "OnlineFtpPreviewSwitchPlayModeTests",
+      "method": "MovementSwitchRespectsPreviewCommitmentAndHold",
+      "parameters": [
+        1,
+        true,
+        "selected"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T152426878Z/results.xml"
+    },
+    {
+      "id": "OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(1,True,\"committed\")",
+      "feature": "OnlineFtpPreviewSwitch",
+      "mode": "playmode",
+      "fixture": "OnlineFtpPreviewSwitchPlayModeTests",
+      "method": "MovementSwitchRespectsPreviewCommitmentAndHold",
+      "parameters": [
+        1,
+        true,
+        "committed"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T152426878Z/results.xml"
+    },
+    {
+      "id": "OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(1,True,\"hold\")",
+      "feature": "OnlineFtpPreviewSwitch",
+      "mode": "playmode",
+      "fixture": "OnlineFtpPreviewSwitchPlayModeTests",
+      "method": "MovementSwitchRespectsPreviewCommitmentAndHold",
+      "parameters": [
+        1,
+        true,
+        "hold"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T152426878Z/results.xml"
+    },
+    {
+      "id": "OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(1,True,\"experienced\")",
+      "feature": "OnlineFtpPreviewSwitch",
+      "mode": "playmode",
+      "fixture": "OnlineFtpPreviewSwitchPlayModeTests",
+      "method": "MovementSwitchRespectsPreviewCommitmentAndHold",
+      "parameters": [
+        1,
+        true,
+        "experienced"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T152426878Z/results.xml"
+    },
+    {
+      "id": "OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(-1,False,\"unselected\")",
+      "feature": "OnlineFtpPreviewSwitch",
+      "mode": "playmode",
+      "fixture": "OnlineFtpPreviewSwitchPlayModeTests",
+      "method": "MovementSwitchRespectsPreviewCommitmentAndHold",
+      "parameters": [
+        -1,
+        false,
+        "unselected"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T152426878Z/results.xml"
+    },
+    {
+      "id": "OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(-1,False,\"selected\")",
+      "feature": "OnlineFtpPreviewSwitch",
+      "mode": "playmode",
+      "fixture": "OnlineFtpPreviewSwitchPlayModeTests",
+      "method": "MovementSwitchRespectsPreviewCommitmentAndHold",
+      "parameters": [
+        -1,
+        false,
+        "selected"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T152426878Z/results.xml"
+    },
+    {
+      "id": "OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(-1,False,\"committed\")",
+      "feature": "OnlineFtpPreviewSwitch",
+      "mode": "playmode",
+      "fixture": "OnlineFtpPreviewSwitchPlayModeTests",
+      "method": "MovementSwitchRespectsPreviewCommitmentAndHold",
+      "parameters": [
+        -1,
+        false,
+        "committed"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T152426878Z/results.xml"
+    },
+    {
+      "id": "OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(-1,False,\"hold\")",
+      "feature": "OnlineFtpPreviewSwitch",
+      "mode": "playmode",
+      "fixture": "OnlineFtpPreviewSwitchPlayModeTests",
+      "method": "MovementSwitchRespectsPreviewCommitmentAndHold",
+      "parameters": [
+        -1,
+        false,
+        "hold"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T152426878Z/results.xml"
+    },
+    {
+      "id": "OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(-1,False,\"experienced\")",
+      "feature": "OnlineFtpPreviewSwitch",
+      "mode": "playmode",
+      "fixture": "OnlineFtpPreviewSwitchPlayModeTests",
+      "method": "MovementSwitchRespectsPreviewCommitmentAndHold",
+      "parameters": [
+        -1,
+        false,
+        "experienced"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T152426878Z/results.xml"
+    },
+    {
+      "id": "OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(-1,True,\"unselected\")",
+      "feature": "OnlineFtpPreviewSwitch",
+      "mode": "playmode",
+      "fixture": "OnlineFtpPreviewSwitchPlayModeTests",
+      "method": "MovementSwitchRespectsPreviewCommitmentAndHold",
+      "parameters": [
+        -1,
+        true,
+        "unselected"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T152426878Z/results.xml"
+    },
+    {
+      "id": "OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(-1,True,\"selected\")",
+      "feature": "OnlineFtpPreviewSwitch",
+      "mode": "playmode",
+      "fixture": "OnlineFtpPreviewSwitchPlayModeTests",
+      "method": "MovementSwitchRespectsPreviewCommitmentAndHold",
+      "parameters": [
+        -1,
+        true,
+        "selected"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T152426878Z/results.xml"
+    },
+    {
+      "id": "OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(-1,True,\"committed\")",
+      "feature": "OnlineFtpPreviewSwitch",
+      "mode": "playmode",
+      "fixture": "OnlineFtpPreviewSwitchPlayModeTests",
+      "method": "MovementSwitchRespectsPreviewCommitmentAndHold",
+      "parameters": [
+        -1,
+        true,
+        "committed"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T152426878Z/results.xml"
+    },
+    {
+      "id": "OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(-1,True,\"hold\")",
+      "feature": "OnlineFtpPreviewSwitch",
+      "mode": "playmode",
+      "fixture": "OnlineFtpPreviewSwitchPlayModeTests",
+      "method": "MovementSwitchRespectsPreviewCommitmentAndHold",
+      "parameters": [
+        -1,
+        true,
+        "hold"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T152426878Z/results.xml"
+    },
+    {
+      "id": "OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(-1,True,\"experienced\")",
+      "feature": "OnlineFtpPreviewSwitch",
+      "mode": "playmode",
+      "fixture": "OnlineFtpPreviewSwitchPlayModeTests",
+      "method": "MovementSwitchRespectsPreviewCommitmentAndHold",
+      "parameters": [
+        -1,
+        true,
+        "experienced"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T152426878Z/results.xml"
     }
   ]
 }

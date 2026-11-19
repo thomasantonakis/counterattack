@@ -7,7 +7,12 @@ Documentation/Testing/OnlineHumanWalkthroughReview.md first. Normal-game Host/Jo
 Draft, setup, kickoff/FTP and movement/pickup progressed, but Windows EOS failed
 InvalidAuth exactly one hour after login and the Mac crashed. Collect Mac evidence
 with CollectOnlineMacSessionReport.sh; do not relaunch it before preserving logs.
-Prioritize Connect auth renewal and crash diagnosis. Reproduce the pickup/nutmeg
+Crash collector retrieved from verification/sons-mac-20261119T144722Z-session-93237.
+Its bootstrap matches this Windows run; native SIGSEGV begins in
+EOS_P2P_RemoveNotifyPeerConnectionInterrupted. Commit b414d82 renews Connect
+authentication and retires owned callbacks before platform release. The real
+65-minute Windows expiry soak remains pending; see OnlineSessionLifetime/Verification.md.
+Normal/Room/gameplay exports and a rebuilt Mac acceptance run remain pending. Reproduce the pickup/nutmeg
 X/N decision while authenticated before treating it as a separate input defect.
 Confirmed UI/action gaps and exact shared roll-dismissal rules are in the review.
 The user ended this paired run and authorized independent fixes before restarting.
