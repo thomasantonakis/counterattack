@@ -38,6 +38,27 @@ internal sealed class EOSStandaloneSession : IDisposable
     {if(authRenewal==null || !authRenewal.NotifyExpiring(UserId?.ToString()))throw new InvalidOperationException("Authentication renewal is unavailable");}
 
     private static bool initialized;
+#if UNITY_EDITOR
+    private const string EditorOwnedSdkKey = "Counterattack.OnlineFrontend.OwnedSdk";
+
+    [UnityEditor.InitializeOnLoadMethod]
+    private static void RegisterEditorShutdown()
+    {
+        UnityEditor.EditorApplication.quitting += ShutdownOwnedEditorSdk;
+    }
+
+    private static void ShutdownOwnedEditorSdk()
+    {
+        if (!UnityEditor.SessionState.GetBool(EditorOwnedSdkKey, false)) return;
+        OnlineFrontendSession.RetireActiveSession();
+        UnityEditor.SessionState.EraseBool(EditorOwnedSdkKey);
+        EOSManager.EOSSingleton.LoadEOSLibraries();
+        PlatformInterface.Shutdown();
+    }
+#endif
+#if UNITY_STANDALONE_OSX && !UNITY_EDITOR
+    private static bool ownsSdk;
+#endif
     internal static void EnsureInitialized()
     {
 #if (UNITY_STANDALONE_WIN && !UNITY_EDITOR) || UNITY_EDITOR_WIN
@@ -58,20 +79,32 @@ internal sealed class EOSStandaloneSession : IDisposable
         return;
 #else
         EOSManager.EOSSingleton.LoadEOSLibraries();
+#if UNITY_EDITOR
+        if (UnityEditor.SessionState.GetBool(EditorOwnedSdkKey, false))
+        {
+            initialized = true;
+            return;
+        }
+#endif
         var options = ConfigurationUtility.GetEOSInitializeOptions();
         var result = PlatformInterface.Initialize(ref options.options);
-        EOSProofCheck.Require(result == Result.Success, "EOS native initialization: " + result);
+        EOSProofCheck.Require(result is Result.Success or Result.AlreadyConfigured, "EOS native initialization: " + result);
+#if UNITY_EDITOR
+        if (result == Result.Success) UnityEditor.SessionState.SetBool(EditorOwnedSdkKey, true);
+#elif UNITY_STANDALONE_OSX
+        ownsSdk = result == Result.Success;
+#endif
         initialized = true;
 #endif
     }
 
     internal static void Shutdown()
     {
-        if (!initialized) return;
-#if !UNITY_STANDALONE_WIN || UNITY_EDITOR
+#if UNITY_STANDALONE_OSX && !UNITY_EDITOR
+        if (!ownsSdk) return;
+        ownsSdk = false;
         PlatformInterface.Shutdown();
 #endif
-        initialized = false;
     }
 
     public IEnumerator OpenAndLogin()

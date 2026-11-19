@@ -728,7 +728,7 @@
       "categories": [
         "OnlineFrontendNativeLobby"
       ],
-      "definition_sha256": "5ddb21a1d4f46da4909252e30817d6695237d30a090ebbb2344b8a02c46890a8",
+      "definition_sha256": "b70a3c62f301646b927cc421657c756b3c44961ed8765e055167d17f508a55da",
       "route": "native",
       "source": "Assets/Tests/PlayMode/Features/OnlineFrontendEntry/OnlineFrontendNativeLobbyPlayModeTests.cs"
     },
@@ -1335,6 +1335,17 @@
     }
   ],
   "test_additions": [
+    {
+      "id": "OnlineFrontendNativeLobbyPlayModeTests.CancellingAndHostingAgainCreatesFreshNativeLobby",
+      "feature": "OnlineFrontendNativeLobby",
+      "mode": "playmode",
+      "fixture": "OnlineFrontendNativeLobbyPlayModeTests",
+      "method": "CancellingAndHostingAgainCreatesFreshNativeLobby",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "failed_editor_platform_creation",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T191959956Z/results.xml"
+    },
     {
       "id": "OnlineModeNavigationEditorTests.MenuHasAuthoredNavigationAndRejectsInvalidJoin",
       "feature": "OnlineModeNavigation",

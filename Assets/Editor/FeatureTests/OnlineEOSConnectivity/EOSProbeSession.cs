@@ -67,6 +67,9 @@ internal sealed class EOSProbeSession : IDisposable
         {
             var initializeOptions = ConfigurationUtility.GetEOSInitializeOptions();
             var initializeResult = PlatformInterface.Initialize(ref initializeOptions.options);
+            if (initializeResult == Result.AlreadyConfigured &&
+                SessionState.GetBool("Counterattack.OnlineFrontend.OwnedSdk", false))
+                return;
             if (initializeResult == Result.AlreadyConfigured)
                 Assert.Inconclusive("EOS was initialized outside this probe helper; reopen Unity before isolated probes.");
             Assert.That(initializeResult, Is.EqualTo(Result.Success), "EOS native initialization");

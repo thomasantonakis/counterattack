@@ -109,19 +109,42 @@ Focused native test XML and progress are in
 
 ## Batch B — Mac hosting and both roles
 
-- [ ] Audit normal macOS host lifecycle, native platform ownership, renewal,
-      lobby publication, joins, cancellation and teardown.
-- [ ] Remove OS-based assumptions. Authority follows host/guest, not Windows/Mac.
+- [x] Audited normal entry, native ownership, renewal, lobby publication,
+      joins, cancellation and teardown. The successful initialization of an
+      owned EOS SDK lasts for the process. Each session still releases its
+      platform and callback registrations. Windows players borrow the native
+      plugin platform. macOS players shut down the owned SDK on application exit.
+- [x] Traced role selection through setup and Room. Game authority follows
+      Host (Away) and Guest (Home). OS detection selects the EOS platform adapter.
 - [ ] Prove Mac host + Windows guest through setup -> Draft -> kickoff -> Room,
       with both-origin actions; preserve Windows host + Mac guest.
 - [ ] Add focused role-swapped native coverage and teardown/error cases.
-- [ ] Build both platforms where available. Paired tests only when user is ready;
-      distinguish implemented, locally tested and paired-accepted work.
+- [x] Built the normal Windows player and verified Host, cancel, and Host again
+      through the authored UI in one process. Two distinct EOS lobby codes were
+      observed, and both sessions closed.
+- [ ] Build the normal macOS player and verify the native retry fixture on a
+      fresh Editor. The Mac was unavailable for this run.
 
-Inspect OnlineFrontendSession.cs, EOSStandaloneProof/EOSStandaloneSession.cs,
-EOSGroundPassExchange*.cs, OnlineFullRoomBootstrap.cs and room launch lifetime.
-Discover actual paths with CodeGraph/rg. Existing Mac host scripts are reusable
-tooling, not proof that normal Mac hosting is complete.
+Windows Editor compilation finished with zero errors. The six focused menu
+and offline navigation cases passed. The two native Editor cases failed at EOS
+platform creation in the existing process and need a fresh Editor rerun.
+The standalone Host retry succeeded in a fresh Windows player. Build
+`build_16ae34a5ae22` succeeded with the known nonfatal `vswhere.exe`
+diagnostic. The build used the local checkout with its pre-existing asset edits.
+Evidence is under `TestResults/GameplayRegression/Runs/`.
+
+- `20261119T192109832Z/results.xml` holds the six navigation passes.
+- `20261119T191959956Z/results.xml` holds the two native Editor failures.
+- `20261119T193927506Z-BatchB-Windows/` holds the standalone observations,
+  build report and assembly SHA256.
+
+For the paired check, build both normal players from the same revision with
+separate machine-local EOS identities. Launch the macOS player and use
+Multiplayer > Host > Host in setup. On Windows use Multiplayer > Join with
+the code shared privately by the host. Complete setup and Draft through
+kickoff, perform actions from both authority roles, then verify clean exit
+and the reverse Windows-host/Mac-guest pairing. Do not include lobby codes
+in retained evidence. Build and launch commands for Mac are below.
 
 ## Batch C — shared rolls and match information
 

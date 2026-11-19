@@ -1,0 +1,48 @@
+﻿{
+    "buildId":  "build_16ae34a5ae22",
+    "status":  "completed",
+    "result":  "Succeeded",
+    "elapsedMs":  null,
+    "totalErrors":  1,
+    "totalWarnings":  9,
+    "errors":  [
+                   {
+                       "message":  "FileNotFoundException: While determining the PlatformToolsets that are installed, the vswhere.exe utility could not be found."
+                   }
+               ],
+    "warnings":  [
+                     {
+                         "message":  "Value 0 is out of range for TEnum, setting to 0."
+                     },
+                     {
+                         "message":  "Pipeline: No RuntimePipelineConfig asset found (Project Settings \u003e Pipeline \u003e Runtime). Pipeline will be disabled in Player builds."
+                     },
+                     {
+                         "message":  "warning CS0618: \u0027FindObjectsSortMode\u0027 is obsolete: \u0027FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.\u0027",
+                         "file":  "Assets\\Scripts\\UI\\CreateNewGameManager.cs"
+                     },
+                     {
+                         "message":  "warning CS0618: \u0027Object.FindObjectsByType\u003cT\u003e(FindObjectsInactive, FindObjectsSortMode)\u0027 is obsolete: \u0027FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType\u003cT\u003e() or FindObjectsByType\u003cT\u003e(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.\u0027",
+                         "file":  "Assets\\Scripts\\UI\\CreateNewGameManager.cs"
+                     },
+                     {
+                         "message":  "warning CS0618: \u0027FindObjectsSortMode\u0027 is obsolete: \u0027FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.\u0027",
+                         "file":  "Assets\\Scripts\\UI\\RulesViewer.cs"
+                     },
+                     {
+                         "message":  "warning CS0618: \u0027Object.FindObjectsByType\u003cT\u003e(FindObjectsInactive, FindObjectsSortMode)\u0027 is obsolete: \u0027FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType\u003cT\u003e() or FindObjectsByType\u003cT\u003e(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.\u0027",
+                         "file":  "Assets\\Scripts\\UI\\RulesViewer.cs"
+                     },
+                     {
+                         "message":  "warning CS0618: \u0027FindObjectsSortMode\u0027 is obsolete: \u0027FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.\u0027",
+                         "file":  "Assets\\Scripts\\Online\\OnlineGroundPassAuthority.ThrowIns.cs"
+                     },
+                     {
+                         "message":  "warning CS0618: \u0027Object.FindObjectsByType\u003cT\u003e(FindObjectsSortMode)\u0027 is obsolete: \u0027FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType\u003cT\u003e() or FindObjectsByType\u003cT\u003e(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.\u0027",
+                         "file":  "Assets\\Scripts\\Online\\OnlineGroundPassAuthority.ThrowIns.cs"
+                     },
+                     {
+                         "message":  "Value 0 is out of range for TEnum, setting to 0."
+                     }
+                 ]
+}

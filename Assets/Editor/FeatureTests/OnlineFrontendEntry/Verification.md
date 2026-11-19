@@ -74,3 +74,15 @@ nonfatal vswhere.exe post-build diagnostic. Packaged checks passed:
 Build summaries and native evidence are under TestResults/GameplayRegression/Runs.
 The normal-scene export and these proofs contain the same production C# changes;
 the subsequent added native fixture is Editor/test-only. Full Draft/Room remains.
+
+
+## Batch B host retry
+
+- Run `OnlineFrontendNativeLobbyPlayModeTests` in a fresh Editor with local
+  EOS configuration. The retry case uses the normal menu and verifies two
+  distinct private lobbies can be created and cancelled in one process.
+- Windows standalone retry passed with two closed host sessions using
+  AllowRelays. The running Windows Editor failed both native cases at EOS
+  platform creation. The separate navigation fixture passed all six cases.
+- Run the paired Mac-host/Windows-guest walkthrough from the multiplayer
+  handoff when both machines are available.

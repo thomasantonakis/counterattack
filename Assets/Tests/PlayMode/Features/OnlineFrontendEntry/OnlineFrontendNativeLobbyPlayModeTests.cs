@@ -14,4 +14,7 @@ public sealed class OnlineFrontendNativeLobbyPlayModeTests
     {if(fixture!=null)yield return (IEnumerator)Bridge.GetMethod("Cleanup").Invoke(fixture,null);fixture=null;}
     [UnityTest,Timeout(120000)] public IEnumerator AuthoredHostCreatesAndCancelsPrivateNativeLobby()
         =>(IEnumerator)Bridge.GetMethod("Run").Invoke(fixture,new object[]{"host-cancel"});
+    [UnityTest, Timeout(150000)]
+    public IEnumerator CancellingAndHostingAgainCreatesFreshNativeLobby()
+        =>(IEnumerator)Bridge.GetMethod("Run").Invoke(fixture,new object[]{"host-retry"});
 }

@@ -34,6 +34,20 @@ public sealed class OnlineFrontendEntrySceneFixture
         {
             var menu=new GameObject("Multiplayer entry under test").AddComponent<MainMenuManager>();
             menu.PlayMultiPlayerGame();
+            yield return null; yield return null;
+            Assert.That(SceneManager.GetActiveScene().name, Is.EqualTo(OnlineModeMenu.SceneName));
+            var onlineMenu = Object.FindAnyObjectByType<OnlineModeMenu>();
+            Assert.That(onlineMenu, Is.Not.Null);
+            if (branch == "invalid-join")
+            {
+                onlineMenu.lobbyCode.text = "bad";
+                onlineMenu.Join();
+                Assert.That(OnlineFrontendSession.Current, Is.Null);
+                Assert.That(onlineMenu.status.text, Does.Contain("32-character"));
+                Assert.That(SceneManager.GetActiveScene().name, Is.EqualTo(OnlineModeMenu.SceneName));
+                yield break;
+            }
+            onlineMenu.Host();
         }
         yield return null;yield return null;
         var panel=Object.FindAnyObjectByType<OnlineSetupNetworkPanel>();Assert.That(panel,Is.Not.Null);
@@ -52,39 +66,40 @@ public sealed class OnlineFrontendEntrySceneFixture
         Assert.That(panel.setup.createGameButton.interactable,Is.False);
         Assert.That(PlayerPrefs.GetString(SettingsKey),Is.EqualTo("test-sentinel-unmodified"));
         Assert.That(PlayerPrefs.GetString(ReturnKey),Is.EqualTo("Draft"),"Online entry must not restore or consume an offline draft");
-        if(branch=="invalid-join")
-        {
-            panel.lobbyCode.text="bad";panel.joinButton.onClick.Invoke();
-            Assert.That(OnlineFrontendSession.Current,Is.Null);Assert.That(panel.connectionStatus.text,Does.Contain("32-character"));
-        }
         if(branch=="save-guard")
         {
             panel.setup.SaveGameSettingsToJson();Assert.That(SceneManager.GetActiveScene().name,Is.EqualTo("CreateNewGameScene"));
-            Assert.That(OnlineFrontendSession.Current,Is.Null);Assert.That(panel.connectionStatus.text,Does.Contain("Host or join"));
+            Assert.That(OnlineFrontendSession.Current,Is.Null);Assert.That(panel.connectionStatus.text,Does.Contain("Start an online session"));
         }
-        if(branch=="host-cancel")
+        if (branch == "host-cancel" || branch == "host-retry")
         {
-            bool previousBackground=Application.runInBackground;
-            panel.setup.ApplyOnlineSetupSettings(OnlineSetupAgreementEditorTests.Valid());
-            panel.hostButton.onClick.Invoke();var session=OnlineFrontendSession.Current;
-            Assert.That(session,Is.Not.Null);Assert.That(session.Hosting,Is.True);Assert.That(Application.runInBackground,Is.True);
-            double deadline=Time.realtimeSinceStartupAsDouble+65;
-            while(session.Busy && session.LobbyCode==null && Time.realtimeSinceStartupAsDouble<deadline)yield return null;
-            Assert.That(session.Error,Is.Null,session.Error);Assert.That(session.Busy,Is.True);
-            Assert.That(OnlineFrontendSessionPolicy.ValidLobbyCode(session.LobbyCode),Is.True,"Native private lobby creation must complete");
-            Assert.That(session.Client,Is.Null,"No remote manager has authenticated yet");
-            string directory=session.RunDirectory;panel.leaveButton.onClick.Invoke();
-            deadline=Time.realtimeSinceStartupAsDouble+15;
-            while(OnlineFrontendSession.Current!=null && Time.realtimeSinceStartupAsDouble<deadline)yield return null;
-            Assert.That(OnlineFrontendSession.Current,Is.Null,"Cancel must dispose the lobby/session without waiting for a guest");
-            Assert.That(Application.runInBackground,Is.EqualTo(previousBackground));
-            string report=System.IO.File.ReadAllText(System.IO.Path.Combine(directory,"frontend-session-report.json"));
-            var json=Newtonsoft.Json.Linq.JObject.Parse(report);
-            Assert.That((string)json["status"],Is.EqualTo("closed"));Assert.That((string)json["routingPolicy"],Is.EqualTo("AllowRelays"));
-            string evidence=SessionState.GetString("CounterAttack.FrameworkResultDirectory","");
-            if(!string.IsNullOrEmpty(evidence))System.IO.File.WriteAllText(System.IO.Path.Combine(evidence,"frontend-session-report.json"),report);
-            Assert.That(SceneManager.GetActiveScene().name,Is.EqualTo("CreateNewGameScene"));
-            Assert.That(panel.setup.createGameButton.interactable,Is.False);
+            string firstLobby = null;
+            for (int attempt = 0; attempt < (branch == "host-retry" ? 2 : 1); attempt++)
+            {
+                bool previousBackground=Application.runInBackground;
+                panel.setup.ApplyOnlineSetupSettings(OnlineSetupAgreementEditorTests.Valid());
+                panel.hostButton.onClick.Invoke();var session=OnlineFrontendSession.Current;
+                Assert.That(session,Is.Not.Null);Assert.That(session.Hosting,Is.True);Assert.That(Application.runInBackground,Is.True);
+                double deadline=Time.realtimeSinceStartupAsDouble+65;
+                while(session.Busy && session.LobbyCode==null && Time.realtimeSinceStartupAsDouble<deadline)yield return null;
+                Assert.That(session.Error,Is.Null,session.Error);Assert.That(session.Busy,Is.True);
+                Assert.That(OnlineFrontendSessionPolicy.ValidLobbyCode(session.LobbyCode),Is.True,"Native private lobby creation must complete");
+                Assert.That(session.Client,Is.Null,"No remote manager has authenticated yet");
+                if (attempt == 0) firstLobby = session.LobbyCode;
+                else Assert.That(session.LobbyCode, Is.Not.EqualTo(firstLobby), "Retry must create a fresh lobby");
+                string directory=session.RunDirectory;panel.leaveButton.onClick.Invoke();
+                deadline=Time.realtimeSinceStartupAsDouble+15;
+                while(OnlineFrontendSession.Current!=null && Time.realtimeSinceStartupAsDouble<deadline)yield return null;
+                Assert.That(OnlineFrontendSession.Current,Is.Null,"Cancel must dispose the lobby/session without waiting for a guest");
+                Assert.That(Application.runInBackground,Is.EqualTo(previousBackground));
+                string report=System.IO.File.ReadAllText(System.IO.Path.Combine(directory,"frontend-session-report.json"));
+                var json=Newtonsoft.Json.Linq.JObject.Parse(report);
+                Assert.That((string)json["status"],Is.EqualTo("closed"));Assert.That((string)json["routingPolicy"],Is.EqualTo("AllowRelays"));
+                string evidence=SessionState.GetString("CounterAttack.FrameworkResultDirectory","");
+                if(!string.IsNullOrEmpty(evidence))System.IO.File.WriteAllText(System.IO.Path.Combine(evidence,"frontend-session-report.json"),report);
+                Assert.That(SceneManager.GetActiveScene().name,Is.EqualTo("CreateNewGameScene"));
+                Assert.That(panel.setup.createGameButton.interactable,Is.False);
+            }
         }
         if(branch=="persistent-lifetime")
         {
@@ -98,7 +113,7 @@ public sealed class OnlineFrontendEntrySceneFixture
         if(branch=="back")
         {
             panel.setup.BackToCreateLoadRoomMenu();yield return null;
-            Assert.That(SceneManager.GetActiveScene().name,Is.EqualTo("MainMenu"));
+            Assert.That(SceneManager.GetActiveScene().name,Is.EqualTo(OnlineModeMenu.SceneName));
         }
         Assert.That(app.LastSavedFileName,Is.EqualTo(previousSave));Assert.That(app.HasExplicitSaveContext,Is.EqualTo(previousExplicit));
     }

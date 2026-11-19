@@ -50,6 +50,28 @@ namespace CounterAttack.Online
         private string startedUtc;
         private bool ownsBackground,previousBackground;
         private ulong bytesSent,bytesReceived;
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        private static void RegisterShutdown()
+        {
+#if !UNITY_EDITOR
+            Application.quitting -= ShutdownOnQuit;
+            Application.quitting += ShutdownOnQuit;
+#endif
+        }
+
+#if !UNITY_EDITOR
+        private static void ShutdownOnQuit()
+        {
+            try { RetireActiveSession(); }
+            finally { EOSStandaloneSession.Shutdown(); }
+        }
+#endif
+
+        internal static void RetireActiveSession()
+        {
+            if (Current != null) Current.OnDestroy();
+        }
+
         private void Awake()
         {
             if(Current!=null && Current!=this){Destroy(gameObject);return;}
@@ -97,7 +119,6 @@ namespace CounterAttack.Online
             try{StopRoom();}catch(Exception error){failure??=error;}
             try{(probe as IDisposable)?.Dispose();}catch(Exception error){failure??=error;}
             probe=null;native=null;channel?.TransportLost();
-            try{EOSStandaloneSession.Shutdown();}catch(Exception error){failure??=error;}
             Busy=false;running=null;
             if(failure!=null && !stop){Error=failure.Message;Status="Online connection failed. Leave the session to try again.";Debug.LogWarning("Online session failed: "+failure.Message);}
             else Status="Online session closed";
@@ -299,8 +320,7 @@ namespace CounterAttack.Online
         {
             if(disposed)return;disposed=true;
             try{StopRoom();}catch(Exception error){Debug.LogWarning("Online Room cleanup: "+error.Message);}
-            bool ownedProbe=probe!=null;
-            try{(probe as IDisposable)?.Dispose();if(ownedProbe)EOSStandaloneSession.Shutdown();}catch(Exception error){Debug.LogWarning("Online session cleanup: "+error.Message);}
+            try{(probe as IDisposable)?.Dispose();}catch(Exception error){Debug.LogWarning("Online session cleanup: "+error.Message);}
             probe=null;if(ownsBackground)Application.runInBackground=previousBackground;
             if(Current==this)Current=null;
         }

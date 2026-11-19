@@ -1,0 +1,20 @@
+{
+    "platform":  "WindowsPlayer",
+    "attempts":  [
+                     {
+                         "attempt":  1,
+                         "status":  "closed",
+                         "routing":  "AllowRelays",
+                         "freshLobby":  true,
+                         "role":  "host"
+                     },
+                     {
+                         "attempt":  2,
+                         "status":  "closed",
+                         "routing":  "AllowRelays",
+                         "freshLobby":  true,
+                         "role":  "host"
+                     }
+                 ],
+    "status":  "passed"
+}
