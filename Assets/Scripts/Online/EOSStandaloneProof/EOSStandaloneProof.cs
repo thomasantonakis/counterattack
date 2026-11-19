@@ -19,8 +19,10 @@ public sealed class EOSStandaloneProof : MonoBehaviour
         public string message;
         public string relayControl = "ForceRelays";
         public bool livenessNotificationRegistration;
+        public int authenticationRefreshes,authenticationSoakSeconds;
     }
 
+    private int authenticationRefreshes;
     private IEnumerator Start()
     {
         if (Application.isEditor) yield break;
@@ -41,7 +43,7 @@ public sealed class EOSStandaloneProof : MonoBehaviour
                 ? EOSStandalonePacketProbe.HostProbe(arguments.OutputDirectory, gameplay == null ? null : gameplay.Host)
                 : arguments.Role == "guest"
                     ? EOSStandalonePacketProbe.GuestProbe(File.ReadAllText(arguments.LobbyFile).Trim(), gameplay == null ? null : gameplay.Guest)
-                    : LoginOnly();
+                    : LoginOnly(arguments.AuthenticationSoakSeconds);
         }
         catch (Exception exception) { failure = exception; }
 
@@ -72,7 +74,8 @@ public sealed class EOSStandaloneProof : MonoBehaviour
             message = failure == null ? "Probe completed" : failure is EOSProofFailure
                 ? failure.Message : failure.GetType().Name + ": inspect the local Player.log",
             relayControl = arguments?.Role == "login" || arguments?.Role == "local" ? "not exercised" : "ForceRelays",
-            livenessNotificationRegistration = failure == null && arguments?.Role == "login"
+            livenessNotificationRegistration = failure == null && arguments?.Role == "login",
+            authenticationRefreshes=authenticationRefreshes,authenticationSoakSeconds=arguments?.AuthenticationSoakSeconds??0
         };
         if (arguments != null)
         {
@@ -86,12 +89,32 @@ public sealed class EOSStandaloneProof : MonoBehaviour
 #endif
     }
 
-    private static IEnumerator LoginOnly()
+    private IEnumerator LoginOnly(int soakSeconds)
     {
+        Application.targetFrameRate=30;
         using (var session = new EOSStandaloneSession())
         {
             var login = session.OpenAndLogin();
             while (login.MoveNext()) yield return login.Current;
+            string identity=session.UserId.ToString();
+            session.RequestAuthenticationRenewalForVerification();
+            double deadline=Time.realtimeSinceStartupAsDouble+30;
+            while(session.AuthenticationRefreshes<1)
+            {
+                session.Tick();
+                EOSProofCheck.Require(Time.realtimeSinceStartupAsDouble<deadline,"Native authentication renewal did not complete");
+                yield return null;
+            }
+            deadline=Time.realtimeSinceStartupAsDouble+soakSeconds;
+            while(Time.realtimeSinceStartupAsDouble<deadline)
+            {
+                session.Tick();
+                EOSProofCheck.Require(session.UserId.ToString()==identity,"Authentication soak changed identity");
+                yield return null;
+            }
+            authenticationRefreshes=session.AuthenticationRefreshes;
+            EOSProofCheck.Require(session.UserId.ToString()==identity,"Native authentication renewal changed identity");
+            if(soakSeconds>=3600)EOSProofCheck.Require(authenticationRefreshes>=2,"No native expiry-driven renewal was observed in the hour-long soak");
             CounterAttack.Online.EOSGroundPassExchange.VerifyNativeLivenessRegistration(session);
         }
     }
@@ -102,6 +125,7 @@ public sealed class EOSProofArguments
     public string Role { get; private set; }
     public string OutputDirectory { get; private set; }
     public string LobbyFile { get; private set; }
+    public int AuthenticationSoakSeconds {get;private set;}
 
     public static EOSProofArguments Parse(string[] args)
     {
@@ -123,10 +147,14 @@ public sealed class EOSProofArguments
                 case "-ca-eos-lobby-file":
                     EOSProofCheck.Require(result.LobbyFile == null, "Duplicate lobby-file argument");
                     result.LobbyFile = args[i]; break;
+                case "-ca-eos-auth-soak-seconds":
+                    EOSProofCheck.Require(result.AuthenticationSoakSeconds==0 && int.TryParse(args[i],out int seconds) && seconds is >0 and <=7500,"Invalid authentication soak duration");
+                    result.AuthenticationSoakSeconds=int.Parse(args[i]);break;
                 default: throw new EOSProofFailure("Unknown probe argument");
             }
         }
         EOSProofCheck.Require(result.Role == "host" || result.Role == "guest" || result.Role == "login" || result.Role == "local", "Expected host, guest, login or local role");
+        EOSProofCheck.Require(result.AuthenticationSoakSeconds==0 || result.Role=="login","Authentication soak requires login role");
         EOSProofCheck.Require(!string.IsNullOrWhiteSpace(result.OutputDirectory) && Path.IsPathRooted(result.OutputDirectory), "Expected absolute output directory");
         EOSProofCheck.Require(!File.Exists(Path.Combine(result.OutputDirectory, "result.json")), "Use a fresh run directory");
         if (result.Role == "guest")

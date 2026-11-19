@@ -78,7 +78,7 @@ internal sealed class EOSStandalonePacketProbe
             var deadline = Time.realtimeSinceStartupAsDouble + 25;
             while (!createResult.HasValue && Time.realtimeSinceStartupAsDouble < deadline)
             {
-                session.Platform.Tick();
+                session.Tick();
                 yield return null;
             }
             EOSProofCheck.Require(createResult.HasValue, "CreateLobby callback timed out");
@@ -128,7 +128,7 @@ internal sealed class EOSStandalonePacketProbe
             while ((joinedGuestId == null || requestedGuestId == null) &&
                    Time.realtimeSinceStartupAsDouble < deadline)
             {
-                session.Platform.Tick();
+                session.Tick();
                 yield return null;
             }
             EOSProofCheck.Require(joinedGuestId != null, "A distinct guest did not join the lobby");
@@ -157,7 +157,7 @@ internal sealed class EOSStandalonePacketProbe
             deadline = Time.realtimeSinceStartupAsDouble + 180;
             while (!helloReceived && Time.realtimeSinceStartupAsDouble < deadline)
             {
-                session.Platform.Tick();
+                session.Tick();
                 ProductUserId sender = null;
                 var receivedSocket = new SocketId();
                 var result = p2p.ReceivePacket(ref receiveOptions, ref sender, ref receivedSocket,
@@ -201,7 +201,7 @@ internal sealed class EOSStandalonePacketProbe
             deadline = Time.realtimeSinceStartupAsDouble + 60;
             while (!guestLeft && Time.realtimeSinceStartupAsDouble < deadline)
             {
-                session.Platform.Tick();
+                session.Tick();
                 yield return null;
             }
             EOSProofCheck.Require(guestLeft, "The acknowledged guest did not leave the lobby");
@@ -225,7 +225,7 @@ internal sealed class EOSStandalonePacketProbe
                 deadline = Time.realtimeSinceStartupAsDouble + 30;
                 while (!destroyResult.HasValue && Time.realtimeSinceStartupAsDouble < deadline)
                 {
-                    session.Platform.Tick();
+                    session.Tick();
                     yield return null;
                 }
                 if (destroyResult == Result.Success ||
@@ -261,6 +261,8 @@ internal sealed class EOSStandalonePacketProbe
             {
                 var cleanup = new DestroyLobbyOptions { LocalUserId = session.UserId, LobbyId = lobbyId };
                 lobby.DestroyLobby(ref cleanup, null, (ref DestroyLobbyCallbackInfo _) => { });
+                // Teardown pumps outstanding native callbacks without starting
+                // another renewal or throwing its health error before Dispose.
                 for (var i = 0; i < 20; i++)
                     session.Platform.Tick();
             }
@@ -304,7 +306,7 @@ internal sealed class EOSStandalonePacketProbe
             var deadline = Time.realtimeSinceStartupAsDouble + 25;
             while (!findResult.HasValue && Time.realtimeSinceStartupAsDouble < deadline)
             {
-                session.Platform.Tick();
+                session.Tick();
                 yield return null;
             }
             EOSProofCheck.Require(findResult.HasValue, "P2P lobby search timed out");
@@ -331,7 +333,7 @@ internal sealed class EOSStandalonePacketProbe
             deadline = Time.realtimeSinceStartupAsDouble + 25;
             while (!joinResult.HasValue && Time.realtimeSinceStartupAsDouble < deadline)
             {
-                session.Platform.Tick();
+                session.Tick();
                 yield return null;
             }
             EOSProofCheck.Require(joinResult.HasValue, "Joining P2P host lobby timed out");
@@ -365,7 +367,7 @@ internal sealed class EOSStandalonePacketProbe
             deadline = Time.realtimeSinceStartupAsDouble + 180;
             while (!ackReceived && Time.realtimeSinceStartupAsDouble < deadline)
             {
-                session.Platform.Tick();
+                session.Tick();
                 ProductUserId sender = null;
                 var receivedSocket = new SocketId();
                 var result = p2p.ReceivePacket(ref receive, ref sender, ref receivedSocket,
@@ -399,7 +401,7 @@ internal sealed class EOSStandalonePacketProbe
             deadline = Time.realtimeSinceStartupAsDouble + 25;
             while (!leaveResult.HasValue && Time.realtimeSinceStartupAsDouble < deadline)
             {
-                session.Platform.Tick();
+                session.Tick();
                 yield return null;
             }
             EOSProofCheck.Require(leaveResult.HasValue, "Leaving P2P host lobby timed out");
@@ -422,6 +424,8 @@ internal sealed class EOSStandalonePacketProbe
                 var lobby = session.Platform.GetLobbyInterface();
                 var leave = new LeaveLobbyOptions { LocalUserId = session.UserId, LobbyId = lobbyId };
                 lobby.LeaveLobby(ref leave, null, (ref LeaveLobbyCallbackInfo _) => { });
+                // Teardown pumps outstanding native callbacks without starting
+                // another renewal or throwing its health error before Dispose.
                 for (var i = 0; i < 20; i++)
                     session.Platform.Tick();
             }

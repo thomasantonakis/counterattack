@@ -72,8 +72,8 @@ namespace CounterAttack.Online
                 if (closure != 0) p2p.RemoveNotifyPeerConnectionClosed(closure);
                 throw new EOSProofFailure("Registering authenticated peer liveness notifications");
             }
-            return new TransportSubscription(() => { p2p.RemoveNotifyPeerConnectionInterrupted(interruption);
-                p2p.RemoveNotifyPeerConnectionClosed(closure); manualTransport = false; });
+            return session.OwnNativeSubscription(new TransportSubscription(() => { p2p.RemoveNotifyPeerConnectionInterrupted(interruption);
+                p2p.RemoveNotifyPeerConnectionClosed(closure); manualTransport = false; }));
         }
 
         internal static void VerifyNativeLivenessRegistration(EOSStandaloneSession authenticatedSession)
@@ -121,7 +121,7 @@ namespace CounterAttack.Online
         private void Poll()
         {
             if (pollOverride != null) { pollOverride(); return; }
-            session.Platform.Tick();
+            session.Tick();
             var options = new ReceivePacketOptions { LocalUserId = session.UserId, MaxDataSizeBytes = (uint)receiveBuffer.Length, RequestedChannel = Channel };
             for (var i = 0; i < 128; i++)
             {

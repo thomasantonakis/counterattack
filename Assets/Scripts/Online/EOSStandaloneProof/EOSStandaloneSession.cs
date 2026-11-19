@@ -1,4 +1,5 @@
 using System;
+using CounterAttack.Online;
 using System.Collections;
 using Epic.OnlineServices;
 using Epic.OnlineServices.Connect;
@@ -13,6 +14,28 @@ internal sealed class EOSStandaloneSession : IDisposable
     public PlatformInterface Platform { get; private set; }
     public ProductUserId UserId { get; private set; }
     private bool ownsPlatform;
+    private readonly OnlineNativeSessionLifetime lifetime;
+    private OnlineAuthRenewal authRenewal;
+    public int AuthenticationRefreshes=>authRenewal?.SuccessfulRefreshes??0;
+    internal EOSStandaloneSession()
+    {
+        lifetime=new OnlineNativeSessionLifetime(()=>
+        {
+            try{if(ownsPlatform)Platform?.Release();}
+            finally{Platform=null;UserId=null;}
+        });
+    }
+    internal IDisposable OwnNativeSubscription(IDisposable resource)=>lifetime.Own(resource);
+    internal IDisposable OwnNativeSubscription(Action release)=>lifetime.Own(release);
+    public void Tick()
+    {
+        if(lifetime.IsDisposed || Platform==null)throw new ObjectDisposedException(nameof(EOSStandaloneSession));
+        authRenewal?.Tick();CheckAuthentication();Platform.Tick();authRenewal?.Tick();CheckAuthentication();
+    }
+    private void CheckAuthentication()
+    {if(authRenewal?.Fault!=null)throw new EOSProofFailure(authRenewal.Fault);}
+    internal void RequestAuthenticationRenewalForVerification()
+    {if(authRenewal==null || !authRenewal.NotifyExpiring(UserId?.ToString()))throw new InvalidOperationException("Authentication renewal is unavailable");}
 
     private static bool initialized;
     internal static void EnsureInitialized()
@@ -53,6 +76,7 @@ internal sealed class EOSStandaloneSession : IDisposable
 
     public IEnumerator OpenAndLogin()
     {
+        if(lifetime.IsDisposed)throw new ObjectDisposedException(nameof(EOSStandaloneSession));
         EnsureInitialized();
 
 #if UNITY_STANDALONE_WIN && !UNITY_EDITOR
@@ -124,12 +148,26 @@ internal sealed class EOSStandaloneSession : IDisposable
         EOSProofCheck.Require(login.Value.LocalUserId != null, "Authenticated product user ID");
         EOSProofCheck.Require(login.Value.LocalUserId.IsValid(), "Authenticated product user ID validity");
         UserId = login.Value.LocalUserId;
+        authRenewal=new OnlineAuthRenewal(UserId.ToString(),()=>Time.realtimeSinceStartupAsDouble,complete=>
+        {
+            var refreshOptions=new LoginOptions
+            {
+                Credentials=new Credentials{Type=ExternalCredentialType.DeviceidAccessToken},
+                UserLoginInfo=new UserLoginInfo{DisplayName="Counterattack M0"}
+            };
+            connect.Login(ref refreshOptions,null,(ref LoginCallbackInfo result)=>
+                complete(result.ResultCode==Result.Success,result.LocalUserId?.ToString(),result.ResultCode.ToString()));
+        });
+        var expiryOptions=new AddNotifyAuthExpirationOptions();
+        ulong expiry=connect.AddNotifyAuthExpiration(ref expiryOptions,null,(ref AuthExpirationCallbackInfo info)=>
+            authRenewal?.NotifyExpiring(info.LocalUserId?.ToString()));
+        EOSProofCheck.Require(expiry!=0,"Registering EOS Connect authentication expiration");
+        lifetime.Own(()=>connect.RemoveNotifyAuthExpiration(expiry));
     }
 
     public void Dispose()
     {
-        if (ownsPlatform) Platform?.Release();
-        Platform = null;
-        UserId = null;
+        authRenewal?.Dispose();
+        lifetime.Dispose();
     }
 }

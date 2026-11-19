@@ -107,3 +107,22 @@ Append each new test case separately to OnlineMacTestManifest.json. Prioritize t
 blocking session lifecycle over cosmetics; preserve native scene/prefab authoring
 and avoid designer-owned Stats changes. Restart the focused human walkthrough
 only after the required fixes are verified. Full-match acceptance remains open.
+
+
+## Independent lifecycle fix checkpoint
+
+Connect expiry renewal and owned native notification retirement are implemented.
+The exact Mac crash report was retrieved; its Room bootstrap is identical to this
+Windows match, and its SIGSEGV begins at EOS_P2P_RemoveNotifyPeerConnectionInterrupted.
+35 focused native lifecycle/argument cases passed, nine affected proof-argument
+cases and one real native host/cancel case passed. A fresh isolated Windows auth
+export passed an actual re-login preserving identity (authenticationRefreshes=1).
+
+The 65-minute native auth soak is running from the isolated Build/OnlineAuth
+export, output TestResults/GameplayRegression/Runs/20261119T150630795Z-WindowsAuthSoak.
+It must finish with passed and authenticationRefreshes >= 2; the first refresh
+is deliberately forced, the additional one must come from native expiry notice.
+Do not overwrite that isolated export or start another real EOS-login probe on
+Windows until it finishes. Other focused non-network native tests/builds can run.
+Do not claim an hour-boundary or rebuilt Mac pass until actual evidence exists.
+Normal/Room/gameplay Windows exports still require refresh before next pairing.

@@ -424,6 +424,36 @@
     },
     {
       "mode": "editor",
+      "fixture": "OnlineAuthRenewalEditorTests",
+      "categories": [
+        "OnlineAuthRenewal"
+      ],
+      "definition_sha256": "040f752a0cb05a3140502291da92a36ffc67320659d808be956028be9bfd1f27",
+      "route": "native",
+      "source": "Assets/Editor/FeatureTests/OnlineSessionLifetime/OnlineAuthRenewalEditorTests.cs"
+    },
+    {
+      "mode": "editor",
+      "fixture": "OnlineAuthSoakArgumentsEditorTests",
+      "categories": [
+        "OnlineAuthRenewal"
+      ],
+      "definition_sha256": "e1325e0612dffc4b50ad7984ab8ade2c9c19a6aced397d6d21a528f905a820ad",
+      "route": "native",
+      "source": "Assets/Editor/FeatureTests/OnlineSessionLifetime/OnlineAuthSoakArgumentsEditorTests.cs"
+    },
+    {
+      "mode": "editor",
+      "fixture": "OnlineNativeLifetimeEditorTests",
+      "categories": [
+        "OnlineAuthRenewal"
+      ],
+      "definition_sha256": "56a3c9743120d01a02f1cc57c2bbf19482622bd268b8578644eac79a7bea31f7",
+      "route": "native",
+      "source": "Assets/Editor/FeatureTests/OnlineSessionLifetime/OnlineNativeLifetimeEditorTests.cs"
+    },
+    {
+      "mode": "editor",
       "fixture": "OnlineRoundTripStatisticsEditorTests",
       "categories": [
         "OnlineSessionTransport"
@@ -19734,6 +19764,417 @@
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
       "windows_evidence": "Documentation/Setup/tests/OnlineMacDiagnostics/Verification.md"
+    },
+    {
+      "id": "OnlineAuthRenewalEditorTests.DisposedOwnerIgnoresPendingNativeCallback",
+      "feature": "OnlineSessionLifetime",
+      "mode": "editor",
+      "fixture": "OnlineAuthRenewalEditorTests",
+      "method": "DisposedOwnerIgnoresPendingNativeCallback",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T151243870Z/results.xml"
+    },
+    {
+      "id": "OnlineAuthRenewalEditorTests.DuplicateNoticesCannotIssueConcurrentLogins",
+      "feature": "OnlineSessionLifetime",
+      "mode": "editor",
+      "fixture": "OnlineAuthRenewalEditorTests",
+      "method": "DuplicateNoticesCannotIssueConcurrentLogins",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T151243870Z/results.xml"
+    },
+    {
+      "id": "OnlineAuthRenewalEditorTests.DuplicateReplyCannotOverwriteAcceptedSuccess",
+      "feature": "OnlineSessionLifetime",
+      "mode": "editor",
+      "fixture": "OnlineAuthRenewalEditorTests",
+      "method": "DuplicateReplyCannotOverwriteAcceptedSuccess",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T151243870Z/results.xml"
+    },
+    {
+      "id": "OnlineAuthRenewalEditorTests.ExpiryStartsRefreshOnlyForBoundIdentity",
+      "feature": "OnlineSessionLifetime",
+      "mode": "editor",
+      "fixture": "OnlineAuthRenewalEditorTests",
+      "method": "ExpiryStartsRefreshOnlyForBoundIdentity",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T151243870Z/results.xml"
+    },
+    {
+      "id": "OnlineAuthRenewalEditorTests.FailedCompletionDoesNotThrowThroughNativeCallback",
+      "feature": "OnlineSessionLifetime",
+      "mode": "editor",
+      "fixture": "OnlineAuthRenewalEditorTests",
+      "method": "FailedCompletionDoesNotThrowThroughNativeCallback",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T151243870Z/results.xml"
+    },
+    {
+      "id": "OnlineAuthRenewalEditorTests.FailedLoginRetriesAndPreservesIdentity",
+      "feature": "OnlineSessionLifetime",
+      "mode": "editor",
+      "fixture": "OnlineAuthRenewalEditorTests",
+      "method": "FailedLoginRetriesAndPreservesIdentity",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T151243870Z/results.xml"
+    },
+    {
+      "id": "OnlineAuthRenewalEditorTests.InvalidConstructionIsRejected(\"identity\")",
+      "feature": "OnlineSessionLifetime",
+      "mode": "editor",
+      "fixture": "OnlineAuthRenewalEditorTests",
+      "method": "InvalidConstructionIsRejected",
+      "parameters": [
+        "\"identity\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T151243870Z/results.xml"
+    },
+    {
+      "id": "OnlineAuthRenewalEditorTests.InvalidConstructionIsRejected(\"clock\")",
+      "feature": "OnlineSessionLifetime",
+      "mode": "editor",
+      "fixture": "OnlineAuthRenewalEditorTests",
+      "method": "InvalidConstructionIsRejected",
+      "parameters": [
+        "\"clock\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T151243870Z/results.xml"
+    },
+    {
+      "id": "OnlineAuthRenewalEditorTests.InvalidConstructionIsRejected(\"login\")",
+      "feature": "OnlineSessionLifetime",
+      "mode": "editor",
+      "fixture": "OnlineAuthRenewalEditorTests",
+      "method": "InvalidConstructionIsRejected",
+      "parameters": [
+        "\"login\""
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T151243870Z/results.xml"
+    },
+    {
+      "id": "OnlineAuthRenewalEditorTests.LaterExpirationCanRenewSameSessionAgain",
+      "feature": "OnlineSessionLifetime",
+      "mode": "editor",
+      "fixture": "OnlineAuthRenewalEditorTests",
+      "method": "LaterExpirationCanRenewSameSessionAgain",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T151243870Z/results.xml"
+    },
+    {
+      "id": "OnlineAuthRenewalEditorTests.MissingCallbackRetriesAndLateOldReplyCannotCompleteNewAttempt",
+      "feature": "OnlineSessionLifetime",
+      "mode": "editor",
+      "fixture": "OnlineAuthRenewalEditorTests",
+      "method": "MissingCallbackRetriesAndLateOldReplyCannotCompleteNewAttempt",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T151243870Z/results.xml"
+    },
+    {
+      "id": "OnlineAuthRenewalEditorTests.RepeatedFailuresStopBeforeAuthenticationExpiryWindow",
+      "feature": "OnlineSessionLifetime",
+      "mode": "editor",
+      "fixture": "OnlineAuthRenewalEditorTests",
+      "method": "RepeatedFailuresStopBeforeAuthenticationExpiryWindow",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T151243870Z/results.xml"
+    },
+    {
+      "id": "OnlineAuthRenewalEditorTests.SuccessBeforeDeadlineSuppressesTimeout",
+      "feature": "OnlineSessionLifetime",
+      "mode": "editor",
+      "fixture": "OnlineAuthRenewalEditorTests",
+      "method": "SuccessBeforeDeadlineSuppressesTimeout",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T151243870Z/results.xml"
+    },
+    {
+      "id": "OnlineAuthRenewalEditorTests.SuccessfulLoginWithDifferentIdentityIsRejected",
+      "feature": "OnlineSessionLifetime",
+      "mode": "editor",
+      "fixture": "OnlineAuthRenewalEditorTests",
+      "method": "SuccessfulLoginWithDifferentIdentityIsRejected",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T151243870Z/results.xml"
+    },
+    {
+      "id": "OnlineAuthRenewalEditorTests.SynchronousCompletionCannotLeaveRenewalPending",
+      "feature": "OnlineSessionLifetime",
+      "mode": "editor",
+      "fixture": "OnlineAuthRenewalEditorTests",
+      "method": "SynchronousCompletionCannotLeaveRenewalPending",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T151243870Z/results.xml"
+    },
+    {
+      "id": "OnlineAuthRenewalEditorTests.ThrowingLoginRetriesWithoutPublishingExceptionSecrets",
+      "feature": "OnlineSessionLifetime",
+      "mode": "editor",
+      "fixture": "OnlineAuthRenewalEditorTests",
+      "method": "ThrowingLoginRetriesWithoutPublishingExceptionSecrets",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T151243870Z/results.xml"
+    },
+    {
+      "id": "OnlineAuthSoakArgumentsEditorTests.DuplicateSoakArgumentIsRejected",
+      "feature": "OnlineSessionLifetime",
+      "mode": "editor",
+      "fixture": "OnlineAuthSoakArgumentsEditorTests",
+      "method": "DuplicateSoakArgumentIsRejected",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T151243870Z/results.xml"
+    },
+    {
+      "id": "OnlineAuthSoakArgumentsEditorTests.SoakIsBoundedAndLoginOnly(\"login\",\"1\",True)",
+      "feature": "OnlineSessionLifetime",
+      "mode": "editor",
+      "fixture": "OnlineAuthSoakArgumentsEditorTests",
+      "method": "SoakIsBoundedAndLoginOnly",
+      "parameters": [
+        "\"login\",\"1\",True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T151243870Z/results.xml"
+    },
+    {
+      "id": "OnlineAuthSoakArgumentsEditorTests.SoakIsBoundedAndLoginOnly(\"login\",\"3900\",True)",
+      "feature": "OnlineSessionLifetime",
+      "mode": "editor",
+      "fixture": "OnlineAuthSoakArgumentsEditorTests",
+      "method": "SoakIsBoundedAndLoginOnly",
+      "parameters": [
+        "\"login\",\"3900\",True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T151243870Z/results.xml"
+    },
+    {
+      "id": "OnlineAuthSoakArgumentsEditorTests.SoakIsBoundedAndLoginOnly(\"login\",\"7500\",True)",
+      "feature": "OnlineSessionLifetime",
+      "mode": "editor",
+      "fixture": "OnlineAuthSoakArgumentsEditorTests",
+      "method": "SoakIsBoundedAndLoginOnly",
+      "parameters": [
+        "\"login\",\"7500\",True"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T151243870Z/results.xml"
+    },
+    {
+      "id": "OnlineAuthSoakArgumentsEditorTests.SoakIsBoundedAndLoginOnly(\"host\",\"1\",False)",
+      "feature": "OnlineSessionLifetime",
+      "mode": "editor",
+      "fixture": "OnlineAuthSoakArgumentsEditorTests",
+      "method": "SoakIsBoundedAndLoginOnly",
+      "parameters": [
+        "\"host\",\"1\",False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T151243870Z/results.xml"
+    },
+    {
+      "id": "OnlineAuthSoakArgumentsEditorTests.SoakIsBoundedAndLoginOnly(\"local\",\"1\",False)",
+      "feature": "OnlineSessionLifetime",
+      "mode": "editor",
+      "fixture": "OnlineAuthSoakArgumentsEditorTests",
+      "method": "SoakIsBoundedAndLoginOnly",
+      "parameters": [
+        "\"local\",\"1\",False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T151243870Z/results.xml"
+    },
+    {
+      "id": "OnlineAuthSoakArgumentsEditorTests.SoakIsBoundedAndLoginOnly(\"guest\",\"1\",False)",
+      "feature": "OnlineSessionLifetime",
+      "mode": "editor",
+      "fixture": "OnlineAuthSoakArgumentsEditorTests",
+      "method": "SoakIsBoundedAndLoginOnly",
+      "parameters": [
+        "\"guest\",\"1\",False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T151243870Z/results.xml"
+    },
+    {
+      "id": "OnlineAuthSoakArgumentsEditorTests.SoakIsBoundedAndLoginOnly(\"login\",\"0\",False)",
+      "feature": "OnlineSessionLifetime",
+      "mode": "editor",
+      "fixture": "OnlineAuthSoakArgumentsEditorTests",
+      "method": "SoakIsBoundedAndLoginOnly",
+      "parameters": [
+        "\"login\",\"0\",False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T151243870Z/results.xml"
+    },
+    {
+      "id": "OnlineAuthSoakArgumentsEditorTests.SoakIsBoundedAndLoginOnly(\"login\",\"7501\",False)",
+      "feature": "OnlineSessionLifetime",
+      "mode": "editor",
+      "fixture": "OnlineAuthSoakArgumentsEditorTests",
+      "method": "SoakIsBoundedAndLoginOnly",
+      "parameters": [
+        "\"login\",\"7501\",False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T151243870Z/results.xml"
+    },
+    {
+      "id": "OnlineAuthSoakArgumentsEditorTests.SoakIsBoundedAndLoginOnly(\"login\",\"-1\",False)",
+      "feature": "OnlineSessionLifetime",
+      "mode": "editor",
+      "fixture": "OnlineAuthSoakArgumentsEditorTests",
+      "method": "SoakIsBoundedAndLoginOnly",
+      "parameters": [
+        "\"login\",\"-1\",False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T151243870Z/results.xml"
+    },
+    {
+      "id": "OnlineAuthSoakArgumentsEditorTests.SoakIsBoundedAndLoginOnly(\"login\",\"invalid\",False)",
+      "feature": "OnlineSessionLifetime",
+      "mode": "editor",
+      "fixture": "OnlineAuthSoakArgumentsEditorTests",
+      "method": "SoakIsBoundedAndLoginOnly",
+      "parameters": [
+        "\"login\",\"invalid\",False"
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T151243870Z/results.xml"
+    },
+    {
+      "id": "OnlineNativeLifetimeEditorTests.DisposedLifetimeRejectsNewHandleWithoutCallingIt",
+      "feature": "OnlineSessionLifetime",
+      "mode": "editor",
+      "fixture": "OnlineNativeLifetimeEditorTests",
+      "method": "DisposedLifetimeRejectsNewHandleWithoutCallingIt",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T151243870Z/results.xml"
+    },
+    {
+      "id": "OnlineNativeLifetimeEditorTests.EarlyCallerDisposalRemovesLeaseWithoutDoubleNativeCall",
+      "feature": "OnlineSessionLifetime",
+      "mode": "editor",
+      "fixture": "OnlineNativeLifetimeEditorTests",
+      "method": "EarlyCallerDisposalRemovesLeaseWithoutDoubleNativeCall",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T151243870Z/results.xml"
+    },
+    {
+      "id": "OnlineNativeLifetimeEditorTests.NullSubscriptionsCannotBecomeOwned",
+      "feature": "OnlineSessionLifetime",
+      "mode": "editor",
+      "fixture": "OnlineNativeLifetimeEditorTests",
+      "method": "NullSubscriptionsCannotBecomeOwned",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T151243870Z/results.xml"
+    },
+    {
+      "id": "OnlineNativeLifetimeEditorTests.PlatformReleaseFailureCannotRepeatNativeCleanup",
+      "feature": "OnlineSessionLifetime",
+      "mode": "editor",
+      "fixture": "OnlineNativeLifetimeEditorTests",
+      "method": "PlatformReleaseFailureCannotRepeatNativeCleanup",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T151243870Z/results.xml"
+    },
+    {
+      "id": "OnlineNativeLifetimeEditorTests.ReentrantDisposalCannotReleasePlatformBeforeCallbackCleanup",
+      "feature": "OnlineSessionLifetime",
+      "mode": "editor",
+      "fixture": "OnlineNativeLifetimeEditorTests",
+      "method": "ReentrantDisposalCannotReleasePlatformBeforeCallbackCleanup",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T151243870Z/results.xml"
+    },
+    {
+      "id": "OnlineNativeLifetimeEditorTests.SubscriptionsRetireBeforeNativeReleaseAndLateCleanupIsSafe",
+      "feature": "OnlineSessionLifetime",
+      "mode": "editor",
+      "fixture": "OnlineNativeLifetimeEditorTests",
+      "method": "SubscriptionsRetireBeforeNativeReleaseAndLateCleanupIsSafe",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T151243870Z/results.xml"
+    },
+    {
+      "id": "OnlineNativeLifetimeEditorTests.SubscriptionsRetireInReverseRegistrationOrder",
+      "feature": "OnlineSessionLifetime",
+      "mode": "editor",
+      "fixture": "OnlineNativeLifetimeEditorTests",
+      "method": "SubscriptionsRetireInReverseRegistrationOrder",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T151243870Z/results.xml"
+    },
+    {
+      "id": "OnlineNativeLifetimeEditorTests.ThrowingCleanupStillReleasesOtherHandlesBeforePlatform",
+      "feature": "OnlineSessionLifetime",
+      "mode": "editor",
+      "fixture": "OnlineNativeLifetimeEditorTests",
+      "method": "ThrowingCleanupStillReleasesOtherHandlesBeforePlatform",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T151243870Z/results.xml"
     }
   ]
 }

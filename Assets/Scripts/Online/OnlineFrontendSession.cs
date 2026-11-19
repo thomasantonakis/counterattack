@@ -36,6 +36,7 @@ namespace CounterAttack.Online
         private OnlineSessionChannel channel;
         private OnlineFrontendRecovery recovery;
         private ulong requestNotification,closedNotification;
+        private IDisposable connectionNotifications;
         private bool connectionLost;
         private readonly Queue<byte[]> outgoing=new();
         private readonly byte[] receiveBuffer=new byte[1170];
@@ -127,7 +128,7 @@ namespace CounterAttack.Online
             {
                 while(!disposed)
                 {
-                    session.Platform.Tick();
+                    session.Tick();
                     if(connectionLost){connectionLost=false;recovery.ConnectionLost();}
                     Flush();Poll();PollReturningGuest();recovery.Tick();channel.Tick();Flush();
                     if(channel.Fault!=null)throw new InvalidOperationException(channel.Fault);
@@ -154,7 +155,11 @@ namespace CounterAttack.Online
                     yield return null;
                 }
             }
-            finally{RemoveConnectionNotifications();}
+            finally
+            {
+                try{StopRoom();}
+                finally{RemoveConnectionNotifications();}
+            }
             channel.TransportLost();
         }
         private bool SamePeer(ProductUserId remote,SocketId? remoteSocket)=>remote?.ToString()==peer?.ToString() && remoteSocket?.SocketName==socket.SocketName;
@@ -182,14 +187,18 @@ namespace CounterAttack.Online
             var closed=new AddNotifyPeerConnectionClosedOptions{LocalUserId=native.UserId,SocketId=socket};
             closedNotification=p2p.AddNotifyPeerConnectionClosed(ref closed,null,(ref OnRemoteConnectionClosedInfo info)=>
             {if(SamePeer(info.RemoteUserId,info.SocketId))connectionLost=true;});
-            if(requestNotification==0 || closedNotification==0){RemoveConnectionNotifications();throw new InvalidOperationException("Could not observe online connection recovery");}
+            ulong requestId=requestNotification,closedId=closedNotification;
+            connectionNotifications=native.OwnNativeSubscription(()=>
+            {
+                if(requestId!=0)p2p.RemoveNotifyPeerConnectionRequest(requestId);
+                if(closedId!=0)p2p.RemoveNotifyPeerConnectionClosed(closedId);
+            });
+            if(requestId==0 || closedId==0){RemoveConnectionNotifications();throw new InvalidOperationException("Could not observe online connection recovery");}
         }
         private void RemoveConnectionNotifications()
         {
-            var p2p=native?.Platform?.GetP2PInterface();if(p2p==null)return;
-            if(requestNotification!=0)p2p.RemoveNotifyPeerConnectionRequest(requestNotification);
-            if(closedNotification!=0)p2p.RemoveNotifyPeerConnectionClosed(closedNotification);
-            requestNotification=closedNotification=0;
+            var owned=connectionNotifications;connectionNotifications=null;
+            requestNotification=closedNotification=0;owned?.Dispose();
         }
         private void PollReturningGuest()
         {

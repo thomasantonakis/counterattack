@@ -1,0 +1,9 @@
+{"name":"EOSStandaloneProofEditorTests.ExistingResultCannotBeReusedAsFreshEvidence","status":"Passed","message":"","stackTrace":""}
+{"name":"EOSStandaloneProofEditorTests.ExplicitRoleAndFreshAbsoluteOutputAreAccepted(\"host\")","status":"Passed","message":"","stackTrace":""}
+{"name":"EOSStandaloneProofEditorTests.ExplicitRoleAndFreshAbsoluteOutputAreAccepted(\"login\")","status":"Passed","message":"","stackTrace":""}
+{"name":"EOSStandaloneProofEditorTests.GuestRequiresLobbyFile","status":"Passed","message":"","stackTrace":""}
+{"name":"EOSStandaloneProofEditorTests.InvalidArgumentsFailBeforeNetworkInitialization(\"-ca-eos-role\",\"invalid\")","status":"Passed","message":"","stackTrace":""}
+{"name":"EOSStandaloneProofEditorTests.InvalidArgumentsFailBeforeNetworkInitialization(\"-ca-eos-role\",\"host\",\"-ca-eos-output\",\"relative\")","status":"Passed","message":"","stackTrace":""}
+{"name":"EOSStandaloneProofEditorTests.InvalidArgumentsFailBeforeNetworkInitialization(\"-ca-eos-role\",\"host\",\"-ca-eos-role\",\"guest\")","status":"Passed","message":"","stackTrace":""}
+{"name":"EOSStandaloneProofEditorTests.InvalidArgumentsFailBeforeNetworkInitialization(\"-ca-eos-typo\",\"value\")","status":"Passed","message":"","stackTrace":""}
+{"name":"EOSStandaloneProofEditorTests.InvalidArgumentsFailBeforeNetworkInitialization(\"-ca-eos-role\")","status":"Passed","message":"","stackTrace":""}
