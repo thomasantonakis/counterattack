@@ -11,7 +11,7 @@ Crash collector retrieved from verification/sons-mac-20261119T144722Z-session-93
 Its bootstrap matches this Windows run; native SIGSEGV begins in
 EOS_P2P_RemoveNotifyPeerConnectionInterrupted. Commit b414d82 renews Connect
 authentication and retires owned callbacks before platform release. The real
-65-minute Windows expiry soak remains pending; see OnlineSessionLifetime/Verification.md.
+65-minute Windows expiry soak passed with two refreshes; see OnlineSessionLifetime/Verification.md.
 Normal/Room/gameplay Windows exports refreshed successfully at source 9c3455b;
 a rebuilt Mac acceptance run remains pending. The isolated auth soak is unchanged. Reproduce the pickup/nutmeg
 X/N decision while authenticated before treating it as a separate input defect.
@@ -784,3 +784,10 @@ No new Mac run is required to establish these two recovered probe passes.
 Normal-game human Host/Join -> team/kit agreement -> Draft -> full Room play,
 actual network interruption/recovery and measured latency remain unverified.
 These paired attempts recorded recoveryGenerations=0; do not claim reconnect.
+
+Latest human follow-up: user reached 33 match minutes and reported missing
+Room presentation (rolls/Esc, timer/events/scorers, numbers/hover/cards, cameras,
+celebrations, pointers and substitution UI). Read the second walkthrough section
+of Documentation/Testing/OnlineHumanWalkthroughReview.md before new work.
+Normal online flow uses the Room-derived OnlineRoom scene; visual parity is
+incomplete. Do not claim this report establishes complete gameplay acceptance.

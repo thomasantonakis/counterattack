@@ -193,3 +193,67 @@ assembly hashes match. Packaged local Room and gameplay checks both passed at
 These local checks do not exercise EOS or establish paired guest isolation.
 The independent 65-minute EOS expiry soak is still running; no expiry-window
 pass is claimed. Nineteen verifier tooling tests also passed.
+
+## Second human walkthrough: 33 match minutes (user report)
+
+User reports reaching 33 match minutes and exercising high passes, headers,
+long passes and other actions without a reported gameplay defect. This is
+partial human coverage, not complete gameplay acceptance. The exact new session
+and Mac build have not been attributed from artifacts; do not mix these notes
+with the first run's logs. RigRolls is absent in packaged players, so specific
+outcomes could not be forced.
+
+New and repeated findings, retained individually:
+
+- [ ] F3 feedback/flash does not appear on guest (Sons' Mac).
+- [ ] Token jersey numbers do not render.
+- [ ] Hovering tokens does not show player tags.
+- [ ] Cameras do not move as expected; distinguish local camera controls from
+      shared event-driven camera presentation during implementation.
+- [ ] Roll panels do not appear on guest (repeats first walkthrough).
+- [ ] Esc always opens Pause instead of dismissing a resolved roll panel.
+      Preserve the already agreed per-manager close/dual-ack/5-second limit.
+- [ ] Decision timer panel is missing on guest.
+- [ ] Match events are missing on guest.
+- [ ] Both managers' mouse pointers must be visible, updating live and colored
+      using their respective teams' primary colors. Replicate pointer position
+      as presentation only; never turn remote movement into local clicks.
+- [ ] Hex selection occurs on mouse-down rather than mouse-up; preserve click
+      versus drag semantics and cancellation. This is input behavior coverage.
+- [ ] Hovering CanShootTo/inGoal targets does not turn them orange, preventing
+      the manager from checking the aimed goal-line target.
+- [ ] Substitution menu still appears as a prototype; restore normal Room UI.
+- [ ] Large player card previews are missing. Each manager must independently
+      open/dismiss their own local player card without changing the other screen.
+- [ ] Small card previews work from Stats lineups but not token hover.
+- [ ] Goal celebrations do not render; ball resets as though they completed.
+- [ ] Scorers are not updated on guest. Distinguish scorer data from its display.
+- [ ] Windows normal player cannot maximize: current PlayerSettings has
+      resizableWindow=0; allowFullscreenSwitch=1. Alt+Enter is a temporary
+      fullscreen option; a resizable-window build fix remains pending.
+
+Scene clarification verified from source: normal online frontend deliberately
+loads Assets/Scenes/OnlineRoom.unity (OnlineFullRoomBootstrap.SceneName), not
+Assets/Scenes/Room.unity. OnlineRoom was authored by copying Room, retaining its
+real pitch and real gameplay managers, and binding an authored full roster.
+Host runs real authority; guest applies state without duplicate gameplay/RNG.
+This is the normal multiplayer path, distinct from OnlineRoomProof, but it does
+not yet reproduce all offline Room presentation. Earlier broad Room-parity
+claims must not be read as full visual/UI acceptance.
+
+Prioritize shared rolls/acknowledgment and match information, then token identity,
+hover/cards/aim feedback, cameras/celebrations, and full substitution presentation.
+Local hover/card/camera preferences stay local; shared match facts and event
+presentation need explicit guest projection. Existing state/control tests do not
+establish visual parity. Add dedicated coverage for input/timing/data changes;
+pure styling/layout work needs compilation and visual validation.
+
+## Authentication soak final result
+
+The previously pending isolated native Windows run completed successfully:
+20261119T150630795Z-WindowsAuthSoak/result.json. Started 15:06:34Z,
+completed 16:11:35Z, 3900 seconds, status passed, authenticationRefreshes=2,
+livenessNotificationRegistration=true. This includes the forced initial refresh
+and a further native expiry-window refresh. It is not a paired one-hour match
+or a rebuilt Mac crash acceptance result. The soak controller has finished;
+no host lobby was involved.

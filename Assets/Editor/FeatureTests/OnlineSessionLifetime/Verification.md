@@ -55,3 +55,9 @@ all Succeeded. Reports retained in 20261119T153159Z-normal-Windows-build,
 20261119T153245Z-Room-Windows-build and 20261119T153310Z-Gameplay-Windows-build.
 Each reports one known nonfatal vswhere.exe post-build diagnostic; no C# errors.
 Real expiry soak and rebuilt Mac acceptance still pending.
+
+Final real Windows expiry result: **passed** at
+`TestResults/GameplayRegression/Runs/20261119T150630795Z-WindowsAuthSoak/result.json`,
+3900 seconds, authenticationRefreshes=2, liveness notification registered.
+Completed 2026-11-19T16:11:35Z. This supersedes earlier pending-soak entries;
+paired hour-boundary and rebuilt Mac acceptance remain unverified.
