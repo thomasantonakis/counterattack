@@ -10,6 +10,7 @@ namespace CounterAttack.Online
         public const string SceneName = "Room";
         [Tooltip("Explicit scene-owned authority roots. Never include designer-owned Stats or personal cameras.")]
         public GameObject[] authorityRoots;
+        [SerializeField] private OnlineRoomPointers teamPointers;
         public bool GuestConfigured { get; private set; }
         public OnlineGroundPassBoard Board { get; private set; }
         private bool nativeOnline;
@@ -53,6 +54,12 @@ namespace CounterAttack.Online
             board.usesNativeRoom = true;
             board.localTeam = OnlineRoomSession.IsGuest ? OnlineTeam.Home : OnlineTeam.Away;
             board.boardCamera = Camera.main;
+            if (teamPointers != null)
+            {
+                board.pointers = teamPointers;
+                teamPointers.Bind(board);
+                teamPointers.gameObject.SetActive(true);
+            }
             board.liveScoreboard = GetComponentInRoom<ScoreboardManager>();
             board.instructionMonitor = GetComponentInRoom<GameDebugMonitor>();
             match.OnlineInstructionMonitor = board.instructionMonitor;
@@ -70,6 +77,7 @@ namespace CounterAttack.Online
             board.nativeShootout = GetComponentInRoom<PenaltyShootoutOrderPanelController>();
             match.coinTossPanel?.BindNativeOnlineControls(board.controls);
             Board = board;
+            Debug.Log($"[Online Room] Bound {(OnlineRoomSession.IsGuest ? "guest" : "host")} in {gameObject.scene.path}");
         }
 
         internal void StopRules()

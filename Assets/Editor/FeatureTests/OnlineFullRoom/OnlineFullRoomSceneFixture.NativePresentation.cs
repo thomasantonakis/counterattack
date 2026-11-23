@@ -139,6 +139,7 @@ public sealed partial class OnlineFullRoomSceneFixture
         AssertExpectedTeamPalette(board, home);
         Assert.That(board.boardInput.TryKey(KeyCode.Return), Is.False);
         VerifyLocalPresentation(board);
+        yield return VerifyNativePointer(board);
         var command = OnlineGroundPassMessage.Command(home, 1, OnlineGroundPassAuthority.KickoffConfirmAction).ToCommand();
         Assert.That(authority.Submit("a", command).Status, Is.EqualTo(OnlineCommandStatus.WrongTeam));
         Assert.That(authority.Submit("h", command).Status, Is.EqualTo(OnlineCommandStatus.Accepted));
@@ -156,9 +157,24 @@ public sealed partial class OnlineFullRoomSceneFixture
         ApplyPublication(replica, board, home);
         AssertExpectedTeamPalette(board, home);
         VerifyLocalPresentation(board);
+        yield return VerifyNativePointer(board);
         ApplyPublication(replica, board, away);
         AssertExpectedTeamPalette(board, away);
         Assert.That(board.boardInput.TryKey(KeyCode.Return), Is.False);
+    }
+
+    private static IEnumerator VerifyNativePointer(OnlineGroundPassBoard board)
+    {
+        Assert.That(board.pointers, Is.Not.Null);
+        Assert.That(board.pointers.gameObject.scene.path, Is.EqualTo("Assets/Scenes/Room.unity"));
+        var center = board.match.ball.GetCurrentHex().GetHexCenter();
+        board.pointers.ShowRemote(new OnlineRoomPointer { visible = true, x = center.x, z = center.z, icon = 1 }, 1);
+        yield return null;
+        Assert.That(board.pointers.remoteIcon.gameObject.activeInHierarchy, Is.True);
+        Assert.That(board.pointers.remoteIcon.texture, Is.SameAs(board.pointers.grabIcon));
+        var settings = board.match.gameData.gameSettings;
+        var remoteKit = board.localTeam == OnlineTeam.Home ? settings.awayKit : settings.homeKit;
+        Assert.That(board.pointers.remoteIcon.color, Is.EqualTo(TokenKitCatalog.ResolveInstructionPalette(remoteKit, Color.white, Color.black).Primary));
     }
 
     private static void AssertExpectedTeamPalette(OnlineGroundPassBoard board, OnlineGroundPassState state)

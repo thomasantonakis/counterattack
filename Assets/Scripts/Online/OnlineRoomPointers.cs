@@ -20,6 +20,12 @@ namespace CounterAttack.Online
 
         private void Awake()
         {
+            if (board != null) Bind(board);
+        }
+
+        internal void Bind(OnlineGroundPassBoard source)
+        {
+            board = source;
             overlay = (RectTransform)localMarker.transform.parent;
             var cells = board.cells.Where(cell => !cell.isOutOfBounds).Select(cell => cell.GetHexCenter()).ToArray();
             pitch = Rect.MinMaxRect(cells.Min(point => point.x), cells.Min(point => point.z),
@@ -28,7 +34,7 @@ namespace CounterAttack.Online
 
         public OnlineRoomPointer CaptureLocal()
         {
-            if (held || !Application.isFocused || GameInputManager.IsCameraPointerOverUi)
+            if (board == null || held || !Application.isFocused || GameInputManager.IsCameraPointerOverUi)
                 return new OnlineRoomPointer();
             var pointer = Project(board.boardCamera, pitch, Input.mousePosition);
             pointer.icon = Input.GetMouseButton(1) ? 2 : Input.GetMouseButton(0) ? 1 : 0;
@@ -62,6 +68,7 @@ namespace CounterAttack.Online
 
         private void LateUpdate()
         {
+            if (board == null) return;
             var settings = board.match.gameData?.gameSettings;
             bool home = board.localTeam == OnlineTeam.Home;
             var here = CaptureLocal();
