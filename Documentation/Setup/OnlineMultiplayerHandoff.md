@@ -37,8 +37,9 @@ Both roles use the Room roster, ball, pitch and authored panels. The host owns
 gameplay, and the guest applies published state to those same Room objects.
 OnlineRoom and OnlineRoomProof remain available for historical test fixtures.
 The normal player build uses Room. Catalog full-room-v25 / wire v7.
-Host currently manages Away, guest Home regardless of OS; preserve this unless
-explicitly changing team allocation. Reassess compatibility for payload changes.
+In the normal Online flow, the host manages Home and the guest manages Away on
+both platforms. Historical prepared proof scenes retain their fixture roles.
+Reassess compatibility when team ownership or payloads change.
 
 Verified:
 
@@ -126,8 +127,8 @@ in batches C through E and the second walkthrough review.
       owned EOS SDK lasts for the process. Each session still releases its
       platform and callback registrations. Windows players borrow the native
       plugin platform. macOS players shut down the owned SDK on application exit.
-- [x] Traced role selection through setup and Room. Game authority follows
-      Host (Away) and Guest (Home). OS detection selects the EOS platform adapter.
+- [x] Traced role selection through setup and Room using the earlier Away-host
+      assignment. OS detection selects the EOS platform adapter.
 - [ ] Prove Mac host + Windows guest through setup -> Draft -> kickoff -> Room,
       with both-origin actions; preserve Windows host + Mac guest.
 - [ ] Add focused role-swapped native coverage and teardown/error cases.

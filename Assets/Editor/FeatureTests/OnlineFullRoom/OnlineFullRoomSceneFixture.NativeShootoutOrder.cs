@@ -36,7 +36,7 @@ public sealed partial class OnlineFullRoomSceneFixture
             return pause.Submit("h", command).Status;
         }
 
-        board.controls.Configure(OnlineTeam.Away);
+        ConfigureFixtureTeam(board, OnlineTeam.Away);
         string awayAction = null;
         board.controls.Requested += message =>
         {
@@ -84,7 +84,7 @@ public sealed partial class OnlineFullRoomSceneFixture
         pause = null;
         yield return LoadPresentationGuest(data, protocol.MatchId, nativeRoom: true);
         board = Object.FindAnyObjectByType<OnlineRoomStartup>().Board;
-        board.controls.Configure(OnlineTeam.Home);
+        ConfigureFixtureTeam(board, OnlineTeam.Home);
         var replica = new OnlineGroundPassReplica(protocol.MatchId, board.tokens.Select(OnlineRollPublication.ActorId), OnlineFullRoomBootstrap.Catalog);
         string guestAction = null;
         board.controls.Requested += message => guestAction = message.actionId;
@@ -217,7 +217,7 @@ public sealed partial class OnlineFullRoomSceneFixture
 
         yield return LoadPresentationGuest(data, protocol.MatchId, nativeRoom: true);
         board = Object.FindAnyObjectByType<OnlineRoomStartup>().Board;
-        board.controls.Configure(OnlineTeam.Home);
+        ConfigureFixtureTeam(board, OnlineTeam.Home);
         var replica = new OnlineGroundPassReplica(protocol.MatchId, board.tokens.Select(OnlineRollPublication.ActorId), OnlineFullRoomBootstrap.Catalog);
         foreach (var snapshot in new[] { shooter, paused, save, result, pausedResult })
         {

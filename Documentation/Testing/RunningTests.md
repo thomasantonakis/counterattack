@@ -25,6 +25,12 @@ For regular online full-time results, use EditMode
 in the same-named Editor/PlayMode feature folders. They cover win/draw,
 regulation/extra-time endings, terminal input and safe host/guest Leave.
 
+For host/Home and guest/Away assignment, use `OnlineSeatOwnershipEditorTests`
+and `OnlineSeatOwnershipPlayModeTests`, category `OnlineSeatOwnership`, in the
+same-named feature folders. They cover authenticated setup edits, older-build
+rejection, Draft handoff into the authored Room, kickoff command ownership and
+replica startup.
+
 For Room coin toss/half transitions, use EditMode `OnlineRoomCoinTossEditorTests`
 (13 cases) and PlayMode `OnlineRoomCoinTossPlayModeTests` (24 cases), category
 `OnlineRoomCoinToss`, under the same-named Editor/PlayMode feature folders.

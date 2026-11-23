@@ -11,6 +11,13 @@ namespace CounterAttack.Online
         public const byte Channel=9;
         public const int MaxQueuedPackets=256;
         public const double PeerTimeoutSeconds=15;
+        public const OnlineTeam HostTeam = OnlineTeam.Home;
+        public const OnlineTeam GuestTeam = OnlineTeam.Away;
+
+        public static OnlineMatchProtocol CreateMatchProtocol(string matchId, string hostAccount, string guestAccount,
+            OnlineCompatibility compatibility)
+            => new(matchId, hostAccount, guestAccount, hostAccount, compatibility);
+
         public static RelayControl Route(bool relayOnly)=>relayOnly?RelayControl.ForceRelays:RelayControl.AllowRelays;
         public const string LobbyCodePrompt = "Enter the 8-character lobby code shared by the host.";
         internal const string LobbyCodeAttribute = "COUNTERATTACK_JOIN_CODE";
@@ -58,7 +65,7 @@ namespace CounterAttack.Online
                 text.Append(resource).Append('\n').Append(asset.text.Replace("\r\n","\n").TrimStart('\uFEFF')).Append('\n');
             }
             string digest=BitConverter.ToString(hash.ComputeHash(Encoding.UTF8.GetBytes(text.ToString()))).Replace("-","");
-            return new OnlineCompatibility(OnlineSessionWire.Version,"frontend-rules-v7","catalog-"+digest);
+            return new OnlineCompatibility(OnlineSessionWire.Version,"frontend-rules-v8","catalog-"+digest);
         }
     }
 }
