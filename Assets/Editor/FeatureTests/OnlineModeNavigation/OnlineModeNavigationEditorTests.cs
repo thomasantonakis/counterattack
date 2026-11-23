@@ -30,6 +30,9 @@ public sealed class OnlineModeNavigationEditorTests
             GetButton("WhiteBkg/ButtonsPanel/BackToMainMenuButton", nameof(menu.Back));
             GetButton("ExitButton", nameof(menu.Exit));
             GetButton("WhiteBkg/ButtonsPanel/LoadMatchButton", nameof(menu.Join));
+            Assert.That(GetButton("WhiteBkg/ButtonsPanel/ContinueToMatchSetupButton",
+                nameof(menu.ContinueToMatchSetup)), Is.SameAs(menu.continueButton));
+            Assert.That(menu.joinButton.interactable, Is.False);
             Assert.That(menu.lobbyCode.readOnly,Is.False);
             Assert.That(menu.lobbyCode.targetGraphic.GetComponent<Outline>(),Is.Not.Null);
             Assert.That(menu.hostCode.readOnly,Is.True);
@@ -74,7 +77,7 @@ public sealed class OnlineModeNavigationEditorTests
             hostRow.GetWorldCorners(corners);
             float hostTop = card.InverseTransformPoint(corners[1]).y;
             Assert.That(hostTop, Is.LessThan(headerBottom), "The heading must clear the Host row");
-            CollectionAssert.AreEqual(new[] { "CreateNewMatchButton", "Lobby Code", "LoadMatchButton",
+            CollectionAssert.AreEqual(new[] { "CreateNewMatchButton", "LoadMatchButton", "Lobby Code",
                     "Connection Status", "BackToMainMenuButton" },
                 rows.Cast<Transform>().Where(row => row.gameObject.activeSelf).Select(row => row.name).ToArray());
 
@@ -92,6 +95,41 @@ public sealed class OnlineModeNavigationEditorTests
                     Assert.That(point.x, Is.InRange(0, bounds.x));
                     Assert.That(point.y, Is.InRange(0, bounds.y));
                 }
+            }
+        });
+    }
+
+    [Test]
+    public void HostControlsExpandBelowHostWithoutHidingJoin()
+    {
+        WithMenu(menu =>
+        {
+            var panel = (RectTransform)menu.lobbyCode.transform.parent;
+            var card = (RectTransform)panel.parent;
+            var host = (RectTransform)panel.Find("CreateNewMatchButton");
+            var back = (RectTransform)panel.Find("BackToMainMenuButton");
+            Canvas.ForceUpdateCanvases();
+            LayoutRebuilder.ForceRebuildLayoutImmediate(panel);
+            var hostPosition = host.position;
+            var joinPosition = menu.lobbyCode.transform.position;
+            try
+            {
+                menu.hostCode.gameObject.SetActive(true);
+                menu.copyButton.gameObject.SetActive(true);
+                menu.continueButton.gameObject.SetActive(true);
+                LayoutRebuilder.ForceRebuildLayoutImmediate(panel);
+
+                Assert.That(host.position, Is.EqualTo(hostPosition));
+                Assert.That(menu.lobbyCode.gameObject.activeInHierarchy, Is.True);
+                Assert.That(menu.lobbyCode.transform.position.y, Is.LessThan(joinPosition.y));
+                Assert.That(card.InverseTransformPoint(back.TransformPoint(back.rect.min)).y,
+                    Is.GreaterThanOrEqualTo(card.rect.yMin));
+            }
+            finally
+            {
+                menu.hostCode.gameObject.SetActive(false);
+                menu.copyButton.gameObject.SetActive(false);
+                menu.continueButton.gameObject.SetActive(false);
             }
         });
     }

@@ -12,24 +12,30 @@ namespace CounterAttack.Online
         public TMP_InputField lobbyCode;
         public TMP_Text status;
         public TMP_InputField hostCode;
-        public TMP_Text hostLabel;
         public Button copyButton;
+        public Button continueButton;
         public Button joinButton;
         public OnlineFrontendSession sessionPrefab;
         private OnlineFrontendSession hostedSession;
         private bool proceeding;
+        private string lastHostStatus;
 
         private static string pendingJoinCode;
 
+        private void OnEnable()
+        {
+            lobbyCode.onValueChanged.AddListener(UpdateJoinAvailability);
+            UpdateJoinAvailability(lobbyCode.text);
+        }
+
+        private void OnDisable()
+        {
+            lobbyCode.onValueChanged.RemoveListener(UpdateJoinAvailability);
+        }
+
         public void Host()
         {
-            if(hostedSession!=null)
-            {
-                if(hostedSession.LobbyCode==null)return;
-                proceeding=true;
-                OpenSetup(null);
-                return;
-            }
+            if (hostedSession != null) return;
             if (SessionIsClosing()) return;
             if(sessionPrefab==null)return;
             try
@@ -45,6 +51,13 @@ namespace CounterAttack.Online
             }
         }
 
+        public void ContinueToMatchSetup()
+        {
+            if (hostedSession?.LobbyCode == null || proceeding) return;
+            proceeding = true;
+            OpenSetup(null);
+        }
+
         public void CopyHostCode()
         {
             if(hostedSession?.LobbyCode is { } code)GUIUtility.systemCopyBuffer=code;
@@ -52,18 +65,26 @@ namespace CounterAttack.Online
 
         private void Update()
         {
-            if(hostCode==null || copyButton==null || hostLabel==null)return;
             bool hosting=hostedSession!=null;
             var code=hosting?hostedSession.LobbyCode:null;
             hostCode.gameObject.SetActive(hosting);
             copyButton.gameObject.SetActive(hosting);
-            lobbyCode.gameObject.SetActive(!hosting);
-            if(joinButton!=null)joinButton.gameObject.SetActive(!hosting);
+            continueButton.gameObject.SetActive(hosting);
             copyButton.interactable=code!=null;
-            hostLabel.text=code!=null?"Continue to Match Setup":"Host Match";
+            continueButton.interactable=code!=null;
             if(!hosting)return;
             if(hostCode.text!=(code??string.Empty))hostCode.SetTextWithoutNotify(code??string.Empty);
-            status.text=hostedSession.Error??hostedSession.Status;
+            var hostStatus = hostedSession.Error ?? hostedSession.Status;
+            if (hostStatus != lastHostStatus)
+            {
+                lastHostStatus = hostStatus;
+                status.text = hostStatus;
+            }
+        }
+
+        private void UpdateJoinAvailability(string input)
+        {
+            joinButton.interactable = !string.IsNullOrWhiteSpace(input);
         }
 
         private void OnDestroy()
@@ -99,13 +120,19 @@ namespace CounterAttack.Online
 
         public void Join()
         {
-            if (SessionIsClosing()) return;
             if (!TryReadLobbyCode(lobbyCode.text, out var code))
             {
                 status.text = "Enter the 32-character lobby code shared by the host.";
                 lobbyCode.ActivateInputField();
                 return;
             }
+
+            if (hostedSession != null)
+            {
+                status.text = "Return to the main menu to close your hosted lobby before joining.";
+                return;
+            }
+            if (SessionIsClosing()) return;
 
             OpenSetup(code);
         }
