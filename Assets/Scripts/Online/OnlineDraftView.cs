@@ -21,7 +21,6 @@ namespace CounterAttack.Online
         public Button rollPanelButton;
         private float rollPanelHeight;
         private double rollPromptDeadline;
-        private TMP_Text rollPrompt;
         private bool openingControlsBound;
         public Button previousPageButton,nextPageButton;
         public Button kickoffChoiceButton,leftChoiceButton,rightChoiceButton;
@@ -136,20 +135,17 @@ namespace CounterAttack.Online
         {
             if(!online)return;
             if(Input.GetKeyDown(KeyCode.R) && client?.Capture()?.phase is "roll" or "opening-roll")Act();
-            if (rendered?.phase == "opening-roll" && sourceUi.coinTossPanel != null)
+            var dice = rendered?.phase switch
             {
-                int remaining = Mathf.Max(0, Mathf.CeilToInt((float)(rollPromptDeadline - Time.realtimeSinceStartupAsDouble)));
-                string team = rendered.turn == OnlineTeam.Home ? rendered.settings.homeTeamName : rendered.settings.awayTeamName;
-                string prompt = !client.Connected ? "Reconnecting" : rendered.turn == client.Team
-                    ? $"Press [R] to roll, Autorolling in {remaining}s" : $"{team} rolls in {remaining}s";
-                sourceUi.coinTossPanel.dicePanel.footer.text = prompt;
-            }
-            else if(rollPanelButton!=null && rollPanelButton.gameObject.activeSelf && rendered!=null)
-            {
-                rollPrompt??=rollPanelButton.GetComponentInChildren<TMP_Text>(true);
-                int remaining=Mathf.Max(0,Mathf.CeilToInt((float)(rollPromptDeadline-Time.realtimeSinceStartupAsDouble)));
-                rollPrompt.text=(rendered.turn==client.Team?"Press [R] to roll, ":"")+"autorolling in "+remaining+"\u2033";
-            }
+                "roll" => source.draftOrderPanel,
+                "opening-roll" => sourceUi.coinTossPanel?.dicePanel,
+                _ => null
+            };
+            if (dice == null) return;
+            int remaining = Mathf.Max(0, Mathf.CeilToInt((float)(rollPromptDeadline - Time.realtimeSinceStartupAsDouble)));
+            string team = rendered.turn == OnlineTeam.Home ? rendered.settings.homeTeamName : rendered.settings.awayTeamName;
+            dice.footer.text = !client.Connected ? "Reconnecting" : rendered.turn == client.Team
+                ? $"Press [R] to roll · Auto-roll in {remaining}s" : $"{team} rolls in {remaining}s";
         }
         private void Render()
         {
@@ -233,8 +229,8 @@ namespace CounterAttack.Online
                     string winner=s.homeRoll==s.awayRoll?"Tie. Roll again.":(s.homeRoll>s.awayRoll?s.settings.homeTeamName:s.settings.awayTeamName)+" wins the roll";
                     dice.outcome.text=rollResult?winner:"Round "+s.rollRound+" - Highest roll drafts first";
                     dice.footer.text=string.Empty;
-                    if(s.homeRoll>0)dice.homeDie.Resolve(s.homeRoll,false);else if(s.turn==OnlineTeam.Home)dice.homeDie.Begin(false);else dice.homeDie.Clear();
-                    if(s.awayRoll>0)dice.awayDie.Resolve(s.awayRoll,false);else if(s.turn==OnlineTeam.Away)dice.awayDie.Begin(false);else dice.awayDie.Clear();
+                    CoinTossPanelController.PresentDie(dice.homeDie, s.homeRoll, rolling && s.turn == OnlineTeam.Home);
+                    CoinTossPanelController.PresentDie(dice.awayDie, s.awayRoll, rolling && s.turn == OnlineTeam.Away);
                 }
             }
             string team=s.turn==OnlineTeam.Home?s.settings.homeTeamName:s.settings.awayTeamName;
@@ -246,8 +242,7 @@ namespace CounterAttack.Online
             actionButton.interactable=client.Connected && !client.Pending && ((s.phase is "roll" or "opening-roll") && s.turn==client.Team || s.phase=="review" && (!localReady || client.IsHost && s.homeReady && s.awayReady));
             if(rollPanelButton!=null)
             {
-                rollPanelButton.gameObject.SetActive(rolling);
-                rollPanelButton.interactable=rolling && actionButton.interactable;
+                rollPanelButton.gameObject.SetActive(rolling && actionButton.interactable);
                 actionButton.gameObject.SetActive(s.phase=="review");
             }
             sourceUi.draftMetaText.text=!client.Connected?"Connection interrupted. Draft is held.":s.phase=="room-ready"?"Opening choices agreed. Preparing match...":client.Pending?"Sending selection...":s.phase=="opening-choice"?s.turn==client.Team?"Choose kickoff or your attacking direction.":"Waiting for the other manager's opening choice."
