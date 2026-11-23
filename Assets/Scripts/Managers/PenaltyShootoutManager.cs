@@ -839,6 +839,7 @@ public partial class PenaltyShootoutManager : MonoBehaviour
             previousHex.isAttackOccupied = false;
             previousHex.isDefenseOccupied = false;
             previousHex.ResetHighlight();
+            if (FullOnline) token.SetCurrentHex(null);
         }
 
         Vector3 startPos = token.transform.position;

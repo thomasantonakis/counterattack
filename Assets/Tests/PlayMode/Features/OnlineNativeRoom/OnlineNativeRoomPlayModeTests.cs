@@ -34,6 +34,10 @@ public sealed class OnlineNativeRoomPlayModeTests
     public IEnumerator TeamColorsMatchCommandOwnershipAndLocalUiStaysLocal()
         => (IEnumerator)Bridge.GetMethod("RunNativeInputOwnership").Invoke(fixture, null);
 
+    [UnityTest]
+    public IEnumerator ShootoutRollsAndPause([Values(false, true)] bool homePauses)
+        => (IEnumerator)Bridge.GetMethod("RunNativeShootoutRollsAndPause").Invoke(fixture, new object[] { homePauses });
+
     [UnityTearDown]
     public IEnumerator Cleanup()
     {

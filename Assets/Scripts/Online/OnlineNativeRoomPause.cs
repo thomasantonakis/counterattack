@@ -249,7 +249,10 @@ namespace CounterAttack.Online
                 selectingPlayers = false;
             }
             if (substitutions != null) substitutions.gameObject.SetActive(selectingPlayers || reviewing);
-            view.pausePanel.SetActive((paused || reconnecting || terminalMessage != null) && !editing && !selectingPlayers && !reviewing);
+            bool showPause = (paused || reconnecting || terminalMessage != null) && !editing && !selectingPlayers && !reviewing;
+            if (showPause && !view.pausePanel.activeSelf)
+                view.pausePanel.transform.SetAsLastSibling();
+            view.pausePanel.SetActive(showPause);
             view.editSettingsPanel.SetActive(editing);
             view.resumeButton.interactable = terminalMessage == null && board.controls.CanResume;
             view.editSettings.interactable = terminalMessage == null && paused && !reconnecting && values != null;

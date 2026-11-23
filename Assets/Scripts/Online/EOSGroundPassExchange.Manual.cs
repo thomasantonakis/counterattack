@@ -178,7 +178,10 @@ namespace CounterAttack.Online
                         generation = message.connectionGeneration;
                         if (message.kind == "state")
                         {
-                            EOSProofCheck.Require(replica.Apply(message.state), "Manual guest accepts ordered state");
+                            var incoming = message.state;
+                            EOSProofCheck.Require(replica.Apply(incoming),
+                                $"Manual guest rejected state {incoming?.publicationSequence}, revision {incoming?.revision}, " +
+                                $"phase {incoming?.gameState}/{incoming?.stage}, pause revision {incoming?.sharedPauseRevision}");
                             board.Display(replica.State, board.liveFullRoom?"Online match | Home replica":"Replica Home | Start, enter X/Z, preview then confirm");
                             if (message.status == "resync")
                                 SendCurrent(new OnlineGroundPassMessage { kind = "hello", status = "resync-ack", digest = Digest(message.state) });

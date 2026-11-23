@@ -1504,6 +1504,9 @@ public partial class MatchManager : MonoBehaviour
 
     private bool HasActiveGoalkeeperContinuityGap(bool isHomeTeam)
     {
+        // During a shootout transition a goalkeeper can be between two staging hexes.
+        if (IsOnlineAuthorityControlled && OnlineShootoutManager?.OnlinePresentationMoving == true)
+            return false;
         return GetPlayingTokensForTeam(isHomeTeam).Any(token => token != null && !token.isSentOff)
             && !HasActiveGoalkeeper(isHomeTeam)
             && !IsGoalkeeperReplacementRequired(isHomeTeam)

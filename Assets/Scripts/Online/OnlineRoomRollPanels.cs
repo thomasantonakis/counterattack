@@ -63,7 +63,9 @@ namespace CounterAttack.Online
                 labelColors = labels.Select(label => (Color32)label.color).ToArray(),
                 imageColors = images.Select(image => (Color32)image.color).ToArray(),
                 imageEnabled = images.Select(image=>image.enabled).ToArray(),
-                dice = dice.Select(die => die.ShowsJackpot ? -1 : die.DisplayedRoll).ToArray(),
+                dice = dice.Select(die => die.IsAnimating ? 0 : die.ShowsJackpot ? -1 : die.DisplayedRoll).ToArray(),
+                diceAnimating = dice.Select(die => die.IsAnimating).ToArray(),
+                diceAllowJackpot = dice.Select(die => die.IsAnimating && die.AllowsJackpot).ToArray(),
                 attackColumnX = attackColumn == null ? -1 : attackColumn.anchorMin.x
             };
 
@@ -72,7 +74,11 @@ namespace CounterAttack.Online
                 if (nodes.Length != frame.active.Length || labels.Length != frame.labels.Length
                     || images.Length != frame.imageColors.Length || dice.Length != frame.dice.Length)
                     return;
-                root.SetActive(true);
+                if (!root.activeSelf)
+                {
+                    root.SetActive(true);
+                    root.transform.SetAsLastSibling();
+                }
                 for (int i = 0; i < nodes.Length; i++)
                     if (nodes[i] != root.transform) nodes[i].gameObject.SetActive(frame.active[i]);
                 for (int i = 0; i < labels.Length; i++)
@@ -83,8 +89,15 @@ namespace CounterAttack.Online
                 for (int i = 0; i < dice.Length; i++)
                 {
                     int value = frame.dice[i];
-                    if (value == 0) dice[i].Clear();
-                    else dice[i].Resolve(value == -1 ? 6 : value, value == -1);
+                    var die = dice[i];
+                    if (frame.diceAnimating?[i] == true)
+                    {
+                        bool allowsJackpot = frame.diceAllowJackpot[i];
+                        if (!die.IsAnimating || die.AllowsJackpot != allowsJackpot)
+                            die.Begin(allowsJackpot);
+                    }
+                    else if (value == 0) die.Clear();
+                    else die.Resolve(value == -1 ? 6 : value, value == -1);
                 }
                 for (int i = 0; i < images.Length; i++)
                 {
@@ -211,7 +224,7 @@ namespace CounterAttack.Online
                     }
                     else panel.root.SetActive(false);
                 }
-                panel.SetLocalVisibility(!active || frame.resultId == 0 || frame.resultId != hiddenResult);
+                panel.SetLocalVisibility(!active || !sharedPause && (frame.resultId == 0 || frame.resultId != hiddenResult));
             }
         }
 
@@ -227,7 +240,7 @@ namespace CounterAttack.Online
             if (shown == null || sharedPauseVisible) return false;
             long resultId = shown.resultId;
             int panel = shown.panel;
-            if (resultId == 0 || resultId == hiddenResult) return true;
+            if (resultId == 0 || resultId == hiddenResult) return false;
             if (!board.controls.AcknowledgeRoll(resultId)) return true;
             hiddenResult = resultId;
             panels[panel].SetLocalVisibility(false);

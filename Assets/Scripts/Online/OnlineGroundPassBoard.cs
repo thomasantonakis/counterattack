@@ -95,7 +95,7 @@ namespace CounterAttack.Online
                 camera.SetOnlinePresentationHold(state.connectionHeld || state.isSharedPaused);
             if(liveFullRoom)instructionMonitor?.DisplayOnlineInstruction(state.instruction,state.connectionHeld || state.isSharedPaused || state.stage=="blocked");
             if (controls != null) controls.Display(state);
-            rollPanels?.Apply(state.rollPanel, state.isSharedPaused);
+            rollPanels?.Apply(state.rollPanel, state.isSharedPaused || state.connectionHeld);
             if (liveFullRoom && OnlineRoomSession.IsGuest)
             {
                 match.ApplyOnlineReplicaMatchState(state);

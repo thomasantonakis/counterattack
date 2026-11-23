@@ -182,6 +182,8 @@ namespace CounterAttack.Online
                 IsPaused = false; Requester = null;
             }
             ApplyHold();
+            if (nativeRoom && control.ActionId is RequestAction or ResumeAction)
+                Debug.Log($"[Online Room] {team} {control.ActionId} at {match.currentState}, pause revision {nextRevision}");
             if (!shootout && nextRevision > Revision) lastNonShootoutRevision = nextRevision;
             Revision = nextRevision;
             lastSequence[team] = control.Sequence;
