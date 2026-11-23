@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public sealed class DisplayResolutionBootstrap : MonoBehaviour
 {
@@ -9,9 +10,10 @@ public sealed class DisplayResolutionBootstrap : MonoBehaviour
 
     private readonly Dictionary<RectTransform, AnchorSnapshot> canvasChildAnchors = new();
     private Camera clearCamera;
+    private readonly Dictionary<CanvasScaler, Vector2> canvasScaleReferences = new();
+    private readonly List<CanvasScaler> destroyedScalers = new();
     private int lastScreenWidth;
     private int lastScreenHeight;
-    private Rect currentViewport = new(0f, 0f, 1f, 1f);
     private float nextScreenCheckTime;
 
     private readonly struct AnchorSnapshot
@@ -48,6 +50,7 @@ public sealed class DisplayResolutionBootstrap : MonoBehaviour
         }
 
         instance = this;
+        DisplaySettings.ApplySavedPreset();
         EnsureClearCamera();
         SceneManager.sceneLoaded += HandleSceneLoaded;
     }
@@ -61,43 +64,40 @@ public sealed class DisplayResolutionBootstrap : MonoBehaviour
         }
     }
 
-    private void Start()
-    {
-        ApplyDisplayGuards(force: true);
-    }
-
     private void Update()
     {
-        if (Time.unscaledTime < nextScreenCheckTime)
+        if (Screen.width == lastScreenWidth && Screen.height == lastScreenHeight
+            && Time.unscaledTime < nextScreenCheckTime)
         {
             return;
         }
 
         nextScreenCheckTime = Time.unscaledTime + ScreenCheckIntervalSeconds;
-        ApplyDisplayGuards(force: false);
+        ApplyDisplayGuards();
     }
 
     private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        ApplyDisplayGuards(force: true);
+        ApplyDisplayGuards();
     }
 
-    private void ApplyDisplayGuards(bool force)
+    private void ApplyDisplayGuards()
     {
-        int screenWidth = Mathf.Max(1, Screen.width);
-        int screenHeight = Mathf.Max(1, Screen.height);
-
-        lastScreenWidth = screenWidth;
-        lastScreenHeight = screenHeight;
-        currentViewport = CalculateViewport(screenWidth, screenHeight);
+        lastScreenWidth = Screen.width;
+        lastScreenHeight = Screen.height;
+        Rect viewport = CalculateViewport(lastScreenWidth, lastScreenHeight);
         EnsureClearCamera();
-        ApplyCameraViewport(currentViewport);
-        ApplyCanvasSafeArea(currentViewport);
+        ApplyCameraViewport(viewport);
+        ApplyCanvasSafeArea(viewport);
     }
 
-    private static Rect CalculateViewport(int screenWidth, int screenHeight)
+    public static Rect CalculateViewport(int screenWidth, int screenHeight)
     {
-        return new Rect(0f, 0f, 1f, 1f);
+        float aspect = Mathf.Max(1, screenWidth) / (float)Mathf.Max(1, screenHeight);
+        const float contentAspect = 16f / 9f;
+        float width = Mathf.Min(1f, contentAspect / aspect);
+        float height = Mathf.Min(1f, aspect / contentAspect);
+        return new Rect((1f - width) / 2f, (1f - height) / 2f, width, height);
     }
 
     private static void ApplyCameraViewport(Rect viewport)
@@ -141,13 +141,36 @@ public sealed class DisplayResolutionBootstrap : MonoBehaviour
     private void ApplyCanvasSafeArea(Rect viewport)
     {
         CleanupDestroyedCanvasChildren();
+        foreach (CanvasScaler scaler in canvasScaleReferences.Keys)
+        {
+            if (scaler == null)
+                destroyedScalers.Add(scaler);
+        }
+        foreach (CanvasScaler scaler in destroyedScalers)
+            canvasScaleReferences.Remove(scaler);
+        destroyedScalers.Clear();
 
         Canvas[] canvases = FindObjectsByType<Canvas>(FindObjectsInactive.Include);
         foreach (Canvas canvas in canvases)
         {
-            if (canvas == null || !canvas.isRootCanvas || canvas.renderMode == RenderMode.WorldSpace)
+            if (!canvas.isRootCanvas || canvas.renderMode == RenderMode.WorldSpace
+                || (canvas.renderMode == RenderMode.ScreenSpaceCamera && canvas.worldCamera != null))
             {
                 continue;
+            }
+
+            if (canvas.TryGetComponent(out CanvasScaler scaler)
+                && scaler.uiScaleMode == CanvasScaler.ScaleMode.ScaleWithScreenSize)
+            {
+                if (!canvasScaleReferences.TryGetValue(scaler, out Vector2 reference))
+                {
+                    reference = scaler.referenceResolution;
+                    canvasScaleReferences.Add(scaler, reference);
+                }
+
+                // CanvasScaler sees the whole window. Use a reference that yields the same scale
+                // as comparing the authored reference resolution against just the content area.
+                scaler.referenceResolution = new Vector2(reference.x / viewport.width, reference.y / viewport.height);
             }
 
             ApplyCanvasChildrenSafeArea(canvas.transform, viewport);
