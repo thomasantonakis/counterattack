@@ -6,6 +6,38 @@ using UnityEngine;
 
 public sealed partial class GoalkeeperBoxEntryFixture
 {
+    public IEnumerator RunIntermediateTackleFromBehind(int side)
+    {
+        var authority = OnlineGroundBoard(side, true, false, out var protocol, out _);
+        Assert.That(match.difficulty_level, Is.EqualTo(2));
+        Invoke(grid, "CalculateGoalDistanceAndDangerousTackleCaches");
+        var dribblerHex = attacker.GetCurrentHex();
+        var behind = dribblerHex.GetNeighbors(grid).First(hex =>
+            dribblerHex.IsDangerousTacklingPosition(match.homeTeamDirection, hex));
+        Place(defender, behind);
+        Subscribe(movement);
+        AttachAuthoredPanels();
+        duelPanel.resultSeconds = .1f;
+        using var pause = new OnlineSharedPause(protocol, match);
+        void Submit(string connection, string action)
+        {
+            var team = connection == "home" ? OnlineTeam.Home : OnlineTeam.Away;
+            OnlineAccepted(authority, connection, protocol.LastAcceptedSequence(team) + 1, action);
+        }
+        Submit("home", "movement.start");
+        Submit("home", "movement.forfeit");
+        Submit("away", "movement.player:away:8");
+        Assert.That(movement.GetInstructions(), Does.Contain("FROM BEHIND"));
+        Assert.That(behind.HighlightReason, Is.Not.EqualTo("DangerousTackle"), "The purple hex guide belongs to Beginner assistance");
+        Submit("away", "duel.tackle");
+        RigOnlineLongRoll(2);
+        Submit("away", "duel.roll");
+        RigOnlineLongRoll(3);
+        Submit("home", "duel.roll");
+        yield return Until(() => movement.OnlineFoulStage == "leniency", "a roll of 2 triggers a from-behind foul");
+        Assert.That(movement.GetInstructions(), Does.Contain("straight red card").IgnoreCase);
+    }
+
     public IEnumerator RunOnlineGroundDuel(int side,string kind,string branch)
     {
         var authority=OnlineGroundBoard(side,true,false,out var protocol,out _);
