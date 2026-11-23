@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 public class PlayerSlotDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
+    private PlayerSlotDropHandler highlightedSlot;
     private CanvasGroup canvasGroup;
     private Transform originalParent;
     private int originalSiblingIndex;
@@ -75,6 +76,7 @@ public class PlayerSlotDragHandler : MonoBehaviour, IBeginDragHandler, IDragHand
 
     public void OnDrag(PointerEventData eventData)
     {
+        PlayerSlotDropHandler.TrackDropTarget(ref highlightedSlot, eventData);
         // Update the slot's position to follow the pointer, maintaining the offset
         RectTransformUtility.ScreenPointToWorldPointInRectangle(
             GetComponent<RectTransform>(),
@@ -85,8 +87,11 @@ public class PlayerSlotDragHandler : MonoBehaviour, IBeginDragHandler, IDragHand
         transform.position = globalMousePos + mouseOffset;
     }
 
+    private void OnDisable() => PlayerSlotDropHandler.ClearDropTarget(ref highlightedSlot);
+
     public void OnEndDrag(PointerEventData eventData)
     {
+        PlayerSlotDropHandler.ClearDropTarget(ref highlightedSlot);
         // Reset transparency and raycast settings
         if (canvasGroup != null)
         {

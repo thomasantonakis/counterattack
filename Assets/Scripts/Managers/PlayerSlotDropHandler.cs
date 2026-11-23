@@ -8,7 +8,7 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler, IPointerEnterH
     private DraftManager draftManager;
     private Image dropHighlight;
     private Color originalDropColor;
-    private Transform onlineDropBorder;
+    private Transform dropBorder;
 
     public void OnPointerEnter(PointerEventData eventData)
     {
@@ -16,25 +16,25 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler, IPointerEnterH
         if(source==null || !eventData.dragging)return;
         bool keeper=IsGoalkeeperRosterSlot();
         bool eligible;
-        if(source.TryGetComponent<CounterAttack.Online.OnlineDraftClickTarget>(out var online))
-        {
-            if (!online.CanPreviewDrop(GetComponent<CounterAttack.Online.OnlineDraftClickTarget>())) return;
-            onlineDropBorder ??= transform.Find("Online Drop Border");
-            if (onlineDropBorder != null)
-            {
-                onlineDropBorder.gameObject.SetActive(true);
-                return;
-            }
-            eligible = true;
-        }
-        else if(source.TryGetComponent<PlayerSlotDragHandler>(out var roster))
-            eligible=source!=gameObject && roster.validRosterName==transform.parent.name
-                && source.TryGetComponent<PlayerSlotDropHandler>(out var sourceSlot) && sourceSlot.IsGoalkeeperRosterSlot()==keeper;
-        else if(source.TryGetComponent<FreeDraftTableRowDragHandler>(out var row))
-            eligible=draftManager!=null && draftManager.IsValidTeamPanel(transform.parent.name) && row.IsGoalkeeper==keeper;
+        if (source.TryGetComponent<CounterAttack.Online.OnlineDraftClickTarget>(out var online))
+            eligible = online.CanPreviewDrop(GetComponent<CounterAttack.Online.OnlineDraftClickTarget>());
+        else if (source.TryGetComponent<PlayerSlotDragHandler>(out var roster))
+            eligible = source != gameObject && roster.validRosterName == transform.parent.name
+                && source.TryGetComponent<PlayerSlotDropHandler>(out var sourceSlot) && sourceSlot.IsGoalkeeperRosterSlot() == keeper;
+        else if (source.TryGetComponent<FreeDraftTableRowDragHandler>(out var row))
+            eligible = draftManager != null && draftManager.IsValidTeamPanel(transform.parent.name) && row.IsGoalkeeper == keeper;
         else
-            eligible=!keeper && draftManager!=null && draftManager.IsValidTeamPanel(transform.parent.name) && source.GetComponent<PlayerCardDragHandler>()!=null;
-        if(!eligible || dropHighlight!=null)return;
+            eligible = !keeper && draftManager != null && draftManager.IsValidTeamPanel(transform.parent.name)
+                && source.GetComponent<PlayerCardDragHandler>() != null;
+
+        if (!eligible) return;
+        dropBorder ??= transform.Find("Online Drop Border");
+        if (dropBorder != null)
+        {
+            dropBorder.gameObject.SetActive(true);
+            return;
+        }
+        if (dropHighlight != null) return;
         foreach(var image in GetComponentsInChildren<Image>(true))
             if(image.name=="TopBorder"){dropHighlight=image;break;}
         if(dropHighlight==null)dropHighlight=GetComponent<Image>();
@@ -48,9 +48,25 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler, IPointerEnterH
     private void OnDisable()=>ClearDropHighlight();
     internal void ClearDropHighlight()
     {
-        if (onlineDropBorder != null) onlineDropBorder.gameObject.SetActive(false);
+        if (dropBorder != null) dropBorder.gameObject.SetActive(false);
         if(dropHighlight!=null)dropHighlight.color=originalDropColor;
         dropHighlight=null;
+    }
+
+    internal static void TrackDropTarget(ref PlayerSlotDropHandler current, PointerEventData eventData)
+    {
+        var hit = eventData.pointerCurrentRaycast.gameObject;
+        var target = hit != null ? hit.GetComponentInParent<PlayerSlotDropHandler>() : null;
+        if (target == current) return;
+        ClearDropTarget(ref current);
+        current = target;
+        if (current != null) current.OnPointerEnter(eventData);
+    }
+
+    internal static void ClearDropTarget(ref PlayerSlotDropHandler current)
+    {
+        if (current != null) current.ClearDropHighlight();
+        current = null;
     }
 
     private void Start()

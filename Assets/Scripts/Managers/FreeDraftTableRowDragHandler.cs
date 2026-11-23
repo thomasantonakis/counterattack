@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 public class FreeDraftTableRowDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler
 {
+    private PlayerSlotDropHandler highlightedSlot;
     private const float DoubleClickThreshold = 0.25f;
 
     private DraftManager draftManager;
@@ -117,6 +118,7 @@ public class FreeDraftTableRowDragHandler : MonoBehaviour, IBeginDragHandler, ID
 
     public void OnDrag(PointerEventData eventData)
     {
+        PlayerSlotDropHandler.TrackDropTarget(ref highlightedSlot, eventData);
         Transform draggedTransform = dragProxyRectTransform != null ? dragProxyRectTransform : transform;
         RectTransform draggedRectTransform = dragProxyRectTransform != null ? dragProxyRectTransform : rowRectTransform;
         RectTransformUtility.ScreenPointToWorldPointInRectangle(
@@ -127,8 +129,11 @@ public class FreeDraftTableRowDragHandler : MonoBehaviour, IBeginDragHandler, ID
         draggedTransform.position = globalMousePosition + mouseOffset;
     }
 
+    private void OnDisable() => PlayerSlotDropHandler.ClearDropTarget(ref highlightedSlot);
+
     public void OnEndDrag(PointerEventData eventData)
     {
+        PlayerSlotDropHandler.ClearDropTarget(ref highlightedSlot);
         DestroyDragProxy();
         if (consumed)
         {

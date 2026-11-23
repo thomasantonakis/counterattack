@@ -45,13 +45,7 @@ namespace CounterAttack.Online
         {
             if(selection==null)return;
             if(view==null || !view.DragIsCurrent(selection) || eventData==null){Cancel();return;}
-            var target=eventData.pointerCurrentRaycast.gameObject?.GetComponentInParent<PlayerSlotDropHandler>();
-            if(target!=highlightedSlot)
-            {
-                highlightedSlot?.ClearDropHighlight();
-                highlightedSlot=target;
-                highlightedSlot?.OnPointerEnter(eventData);
-            }
+            PlayerSlotDropHandler.TrackDropTarget(ref highlightedSlot, eventData);
             if(RectTransformUtility.ScreenPointToWorldPointInRectangle(originalParent as RectTransform??draggedRect,eventData.position,eventData.pressEventCamera,out var point))
             {
                 draggedRect.position=point+pointerOffset;
@@ -84,8 +78,7 @@ namespace CounterAttack.Online
                 dragCanvas.sortingOrder=previousSortingOrder;
                 dragCanvas.overrideSorting=previousOverrideSorting;
             }
-            highlightedSlot?.ClearDropHighlight();
-            highlightedSlot=null;
+            PlayerSlotDropHandler.ClearDropTarget(ref highlightedSlot);
             dragCanvas=null;
             draggedRect=null;dragGroup=null;originalParent=null;
         }
