@@ -5,6 +5,8 @@ public sealed partial class CoinTossPanelController
     private bool onlineChoice;
     private bool nativeProjectionVisible;
     private float lastOnlineTick;
+    private string timedRollStage;
+    private float onlineRollRemaining;
     private bool FullOnlineRoom=>dicePanel?.roomMatch?.gameData?.gameSettings?.gameMode==ApplicationManager.OnlineGameMode;
 
     internal void BindNativeOnlineControls(OnlineGroundPassControls controls)
@@ -61,16 +63,16 @@ public sealed partial class CoinTossPanelController
         dicePanel.awayTeam.text = away;
         dicePanel.homeResult.text = toss.homeRoll == 0 ? string.Empty : $"Roll {toss.homeRoll}";
         dicePanel.awayResult.text = toss.awayRoll == 0 ? string.Empty : $"Roll {toss.awayRoll}";
-        if (toss.homeRoll != 0) dicePanel.homeDie.Resolve(toss.homeRoll, false);
-        else dicePanel.homeDie.Clear();
-        if (toss.awayRoll != 0) dicePanel.awayDie.Resolve(toss.awayRoll, false);
-        else dicePanel.awayDie.Clear();
+        PresentDie(dicePanel.homeDie, toss.homeRoll, toss.stage == "home");
+        PresentDie(dicePanel.awayDie, toss.awayRoll, toss.stage == "away");
         dicePanel.outcome.text = choosing ? $"{(toss.winnerHome ? home : away)} wins the toss"
             : toss.stage == "result" && toss.homeRoll == toss.awayRoll ? "Tie · Both managers roll again"
             : "Highest roll chooses";
         dicePanel.footer.text = choosing ? $"{team} manager · {(ownsTurn ? "Click your choice" : "Choosing")}"
             : toss.stage == "result" ? "Waiting for the result"
             : $"{team} manager · {(ownsTurn ? "Press [R] to roll" : "Waiting for roll")}";
+        if (toss.rollSeconds.HasValue && toss.stage is "home" or "away")
+            dicePanel.footer.text += $" · Auto-roll in {toss.rollSeconds.Value}s";
         choices.SetActive(choosing);
         kickoffButton.gameObject.SetActive(toss.canChooseKickoff);
         kickoffButton.interactable = choosing && ownsTurn && toss.canChooseKickoff;
@@ -82,12 +84,43 @@ public sealed partial class CoinTossPanelController
         SetTop(dicePanel.footer.rectTransform, choosing ? 995 : 625);
         dicePanel.Fit();
     }
+    internal static void PresentDie(DuelDieView die, int roll, bool shouldAnimate)
+    {
+        if (shouldAnimate)
+        {
+            if (!die.IsAnimating) die.Begin(false);
+        }
+        else if (roll > 0) die.Resolve(roll, false);
+        else die.Clear();
+    }
+
     public void TickOnline(bool connectionHeld)
     {
-        if(!FullOnlineRoom || OnlineRoomSession.Current?.HasInitialData!=true || OnlineRoomSession.IsGuest || !dicePanel.roomMatch.IsOnlineAuthorityControlled || !IsOpen)return;
+        if(!FullOnlineRoom || OnlineRoomSession.Current?.HasInitialData!=true || OnlineRoomSession.IsGuest || !dicePanel.roomMatch.IsOnlineAuthorityControlled || !IsOpen)
+        {
+            timedRollStage = null;
+            lastOnlineTick = Time.unscaledTime;
+            return;
+        }
         float now=Time.unscaledTime,elapsed=Mathf.Max(0,now-lastOnlineTick);lastOnlineTick=now;
         bool held=connectionHeld || dicePanel.roomMatch.IsPauseMenuOpen;
         dicePanel.TickOnlineResult(now,elapsed,held);
+        if ((Purpose is CoinTossPurpose.FirstHalf or CoinTossPurpose.PenaltyShootout) && dicePanel.OnlineStage is "home" or "away")
+        {
+            string stage = dicePanel.OnlineStage;
+            if (stage != timedRollStage)
+            {
+                timedRollStage = stage;
+                onlineRollRemaining = DecisionTimingConfig.AutomaticRollSeconds;
+            }
+            else if (!held)
+            {
+                onlineRollRemaining = Mathf.Max(0, onlineRollRemaining - elapsed);
+                if (onlineRollRemaining == 0)
+                    dicePanel.TryRollOnline();
+            }
+        }
+        else timedRollStage = null;
         if(held)return;
         onlineChoice=true;try{AdvanceChoices();choices.SetActive(false);}finally{onlineChoice=false;}
     }
@@ -95,6 +128,7 @@ public sealed partial class CoinTossPanelController
     {
         if(!IsOpen)return null;
         return new OnlineCoinTossSnapshot{purpose=Purpose.ToString(),stage=dicePanel.OnlineStage,homeRoll=dicePanel.OnlineHomeScore,awayRoll=dicePanel.OnlineAwayScore,
+            rollSeconds = timedRollStage == dicePanel.OnlineStage ? Mathf.CeilToInt(onlineRollRemaining) : (int?)null,
             hasWinner=Decision!=null,winnerHome=Decision?.WinnerIsHome==true,choosingHome=Decision?.ChoosingHome==true,canChooseKickoff=Decision?.CanChooseKickoff==true};
     }
     public bool TryExecuteOnline(string action)

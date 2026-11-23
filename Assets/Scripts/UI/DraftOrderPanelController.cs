@@ -11,7 +11,9 @@ public sealed partial class DraftOrderPanelController : MonoBehaviour
     private enum Stage { Closed, Home, Away, Result, Choice }
     private Stage stage;
     private int homeScore, awayScore;
-    private float resultUntil;
+    private float resultUntil, rollUntil;
+    private bool rollAutomatically;
+    private int displayedRollSeconds;
     private bool coinToss;
     private string coinTossChoices;
     public bool externalInput;
@@ -39,11 +41,13 @@ public sealed partial class DraftOrderPanelController : MonoBehaviour
         return string.IsNullOrWhiteSpace(name) ? (home ? "Home" : "Away") : name;
     }
 
-    public bool Open(GameSettings settings, bool forCoinToss = false, string tossTitle = "COIN TOSS FLIP", string choicesCopy = "kickoff or direction")
+    public bool Open(GameSettings settings, bool forCoinToss = false, string tossTitle = "COIN TOSS FLIP", string choicesCopy = "kickoff or direction",
+        bool rollAutomatically = false)
     {
         if (!HasSceneBindings || settings == null || IsOpen) return false;
         HomeWon = null;
         coinToss = forCoinToss;
+        this.rollAutomatically = rollAutomatically;
         coinTossChoices = choicesCopy;
         title.text = coinToss ? tossTitle : "ROLL FOR FIRST DRAFT PICK";
         homeTeam.text = TeamName(settings, true);
@@ -68,8 +72,22 @@ public sealed partial class DraftOrderPanelController : MonoBehaviour
         outcome.text = coinToss ? $"Highest roll chooses {coinTossChoices}" : "Highest roll drafts first";
         homeDie.Begin(false);
         awayDie.Clear();
-        stage = Stage.Home;
-        footer.text = $"{homeTeam.text} manager · Press [R] to roll";
+        BeginRoll(Stage.Home);
+    }
+
+    private void BeginRoll(Stage rollingTeam)
+    {
+        stage = rollingTeam;
+        rollUntil = Time.unscaledTime + DecisionTimingConfig.AutomaticRollSeconds;
+        UpdateRollPrompt(rollAutomatically ? Mathf.CeilToInt(DecisionTimingConfig.AutomaticRollSeconds) : -1);
+    }
+
+    private void UpdateRollPrompt(int seconds)
+    {
+        displayedRollSeconds = seconds;
+        string team = stage == Stage.Home ? homeTeam.text : awayTeam.text;
+        string countdown = seconds >= 0 ? $" · Auto-roll in {seconds}s" : string.Empty;
+        footer.text = $"{team} manager · Press [R] to roll{countdown}";
     }
 
     public bool HandleKey(KeyPressData key)
@@ -104,8 +122,7 @@ public sealed partial class DraftOrderPanelController : MonoBehaviour
             homeResult.text = result;
             awayResult.text = "";
             awayDie.Begin(false);
-            stage = Stage.Away;
-            footer.text = $"{awayTeam.text} manager · Press [R] to roll";
+            BeginRoll(Stage.Away);
             return;
         }
         awayScore = roll;
@@ -142,16 +159,30 @@ public sealed partial class DraftOrderPanelController : MonoBehaviour
         if (!IsOpen) return;
         Fit();
         if (externalInput) return;
-        if (Input.GetKeyDown(KeyCode.R)) HandleKey(new KeyPressData(KeyCode.R, false, false, false));
-        if (!(Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
-            || !(Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))) return;
-        for (int i = 1; i <= 6; i++)
+        if (Input.GetKeyDown(KeyCode.R))
         {
-            var number = (KeyCode)((int)KeyCode.Alpha0 + i);
-            var keypad = (KeyCode)((int)KeyCode.Keypad0 + i);
-            if (Input.GetKeyDown(number)) HandleKey(new KeyPressData(number, true, true, false));
-            if (Input.GetKeyDown(keypad)) HandleKey(new KeyPressData(keypad, true, true, false));
+            HandleKey(new KeyPressData(KeyCode.R, false, false, false));
+            return;
         }
+
+        bool rigging = (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
+            && (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift));
+        if (rigging)
+        {
+            for (int i = 1; i <= 6; i++)
+            {
+                var number = (KeyCode)((int)KeyCode.Alpha0 + i);
+                var keypad = (KeyCode)((int)KeyCode.Keypad0 + i);
+                if (!Input.GetKeyDown(number) && !Input.GetKeyDown(keypad)) continue;
+                HandleKey(new KeyPressData(number, true, true, false));
+                return;
+            }
+        }
+
+        if (!rollAutomatically || stage is not (Stage.Home or Stage.Away)) return;
+        int seconds = Mathf.CeilToInt(rollUntil - Time.unscaledTime);
+        if (seconds <= 0) Roll();
+        else if (seconds != displayedRollSeconds) UpdateRollPrompt(seconds);
     }
 
     internal void Fit()

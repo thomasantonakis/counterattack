@@ -53,7 +53,8 @@ public sealed partial class CoinTossPanelController : MonoBehaviour
         SetLabel(rightToLeftButton, shootout ? "3. Right Side" : $"3. {half} Right to Left");
         string title = Purpose == CoinTossPurpose.FirstHalf ? "COIN TOSS FLIP"
             : $"COIN TOSS FLIP · {(shootout ? "PENALTY SHOOTOUT" : "EXTRA TIME")}";
-        bool opened = dicePanel.Open(settings, true, title, shootout ? "first penalty or shootout end" : "kickoff or direction");
+        bool opened = dicePanel.Open(settings, true, title, shootout ? "first penalty or shootout end" : "kickoff or direction",
+            rollAutomatically: purpose == CoinTossPurpose.FirstHalf);
         if (opened && dicePanel.roomMatch != null) ActiveRoomPanel = this;
         if(opened && FullOnlineRoom){lastOnlineTick=Time.unscaledTime;dicePanel.visuals.SetActive(false);}
         return opened;

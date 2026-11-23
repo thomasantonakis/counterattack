@@ -107,6 +107,63 @@ public sealed partial class OnlineFullRoomSceneFixture
         Assert.That(SlotNumber(ActiveMovementSlot(panel)), Is.EqualTo(number));
     }
 
+    public IEnumerator RunNativeTossAnimation(bool shootout)
+    {
+        InitializeFixture();
+        SuppressLegacyRoomRunner();
+        var data = Data(16, false);
+        var protocol = NativePresentationProtocol();
+        yield return LoadNativeRoom(data, false, protocol.MatchId);
+        var board = Object.FindAnyObjectByType<OnlineRoomStartup>().Board;
+        var authority = new OnlineGroundPassAuthority(board.match, protocol);
+        pause = new OnlineSharedPause(protocol, board.match);
+        var panel = board.match.coinTossPanel;
+        Assert.That(panel.OpenForRoom(board.match, shootout ? CoinTossPurpose.PenaltyShootout : CoinTossPurpose.FirstHalf), Is.True);
+        var snapshots = new System.Collections.Generic.List<OnlineGroundPassState>();
+        foreach (bool home in new[] { true, false })
+        {
+            var current = pause.Capture(authority);
+            snapshots.Add(current);
+            board.Display(current, "host");
+            Assert.That(panel.dicePanel.homeDie.IsAnimating, Is.EqualTo(home));
+            Assert.That(panel.dicePanel.awayDie.IsAnimating, Is.EqualTo(!home));
+            Assert.That(current.coin.rollSeconds, Is.EqualTo(5));
+            var holdEnd = Time.realtimeSinceStartup + .3f;
+            pause.SetConnectionHold(true);
+            while (Time.realtimeSinceStartup < holdEnd)
+            {
+                Assert.That(pause.Capture(authority).coin.rollSeconds, Is.EqualTo(5));
+                yield return null;
+            }
+            pause.SetConnectionHold(false);
+            float deadline = Time.realtimeSinceStartup + 7f;
+            while (current.coin.stage == (home ? "home" : "away") && Time.realtimeSinceStartup < deadline)
+            {
+                yield return null;
+                current = pause.Capture(authority);
+            }
+            Assert.That(home ? current.coin.homeRoll : current.coin.awayRoll, Is.InRange(1, 6));
+        }
+        var result = pause.Capture(authority);
+        Assert.That(result.coin.stage, Is.EqualTo("result"));
+        snapshots.Add(result);
+        pause.Dispose();
+        pause = null;
+        yield return LoadPresentationGuest(data, protocol.MatchId, nativeRoom: true);
+        board = Object.FindAnyObjectByType<OnlineRoomStartup>().Board;
+        var replica = new OnlineGroundPassReplica(protocol.MatchId, board.tokens.Select(OnlineRollPublication.ActorId), OnlineFullRoomBootstrap.Catalog);
+        foreach (var snapshot in snapshots)
+        {
+            ApplyPublication(replica, board, snapshot);
+            panel = board.match.coinTossPanel;
+            Assert.That(panel.dicePanel.visuals.activeInHierarchy, Is.True);
+            Assert.That(panel.dicePanel.homeDie.IsAnimating, Is.EqualTo(snapshot.coin.stage == "home"));
+            Assert.That(panel.dicePanel.awayDie.IsAnimating, Is.EqualTo(snapshot.coin.stage == "away"));
+            if (snapshot.coin.rollSeconds.HasValue)
+                Assert.That(panel.dicePanel.footer.text, Does.Contain("Auto-roll in 5s"));
+        }
+    }
+
     private static MovementPhaseMovedTokenSlotView ActiveMovementSlot(MovementPhaseMovedTokensPanel panel)
     {
         Assert.That(panel, Is.Not.Null);

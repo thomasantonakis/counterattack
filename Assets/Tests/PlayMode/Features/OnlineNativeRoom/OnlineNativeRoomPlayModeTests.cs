@@ -38,6 +38,10 @@ public sealed class OnlineNativeRoomPlayModeTests
     public IEnumerator ShootoutRollsAndPause([Values(false, true)] bool homePauses)
         => (IEnumerator)Bridge.GetMethod("RunNativeShootoutRollsAndPause").Invoke(fixture, new object[] { homePauses });
 
+    [UnityTest]
+    public IEnumerator NativeTossAnimation([Values(false, true)] bool shootout)
+        => (IEnumerator)Bridge.GetMethod("RunNativeTossAnimation").Invoke(fixture, new object[] { shootout });
+
     [UnityTearDown]
     public IEnumerator Cleanup()
     {

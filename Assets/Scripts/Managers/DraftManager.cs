@@ -138,7 +138,7 @@ public class DraftManager : MonoBehaviour
     {
         IsDraftOrderPending = true;
         GetDraftUIManager()?.RefreshDraftStateUI();
-        if (draftOrderPanel == null || !draftOrderPanel.Open(currentSettings))
+        if (draftOrderPanel == null || !draftOrderPanel.Open(currentSettings, rollAutomatically: true))
         {
             Debug.LogError("Draft requires its authored first-pick roll panel.");
             yield break;
