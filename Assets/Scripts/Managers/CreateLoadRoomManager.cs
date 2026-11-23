@@ -32,6 +32,7 @@ public class CreateLoadRoomManager : MonoBehaviour
     [SerializeField] private Button loadBrowserCancelButton;
     [SerializeField] private ScrollRect loadBrowserScrollRect;
     [SerializeField] private TextMeshProUGUI loadBrowserStatusText;
+    [SerializeField] private TextMeshProUGUI saveFolderPathText;
 
     private static readonly SaveColumnDefinition[] DefaultColumns =
     {
@@ -76,6 +77,8 @@ public class CreateLoadRoomManager : MonoBehaviour
         }
 
         loadBrowserOverlay.SetActive(true);
+        if (saveFolderPathText != null)
+            saveFolderPathText.text = $"Saved games folder\n{ApplicationManager.Instance.GetSaveFolderPath()}";
         if (loadBrowserStatusText != null) loadBrowserStatusText.text = string.Empty;
         RebuildSaveRows();
         MenuAudioPlayer.Play(GameplayAudioPool.MenuAdvance);
