@@ -39,28 +39,8 @@ public class CameraController : MonoBehaviour
     private int adaptivePreset;
     public bool IsReady { get; private set; }
     private bool onlinePresentationHeld;
-    private bool onlineGoalCue;
-    private Vector3 preGoalPosition;
-    private Quaternion preGoalRotation;
-    private float preGoalShift;
 
     public void SetOnlinePresentationHold(bool held) => onlinePresentationHeld = held;
-
-    public void SetOnlineGoalCue(bool active,Vector3 goal)
-    {
-        if(active==onlineGoalCue)return;
-        onlineGoalCue=active;
-        if(!active)
-        {
-            ApplyPresentationPose(preGoalPosition,preGoalRotation,preGoalShift);
-            return;
-        }
-        preGoalPosition=transform.position;
-        preGoalRotation=transform.rotation;
-        preGoalShift=projectionShift;
-        var position=goal+new Vector3(goal.x>=0?-11f:11f,12f,-12f);
-        ApplyPresentationPose(position,Quaternion.LookRotation(goal-position,Vector3.up),0);
-    }
 
     void Start()
     {
@@ -113,7 +93,7 @@ public class CameraController : MonoBehaviour
         // HandlePresetKeys();
     }
 
-    private bool IsCameraInputBlocked => onlinePresentationHeld || onlineGoalCue || RoomInputOwnership.BlocksCamera
+    private bool IsCameraInputBlocked => onlinePresentationHeld || RoomInputOwnership.BlocksCamera
         || GameInputManager.IsPresentationModalActive && !HeaderChallengePanelController.IsVisible
             && !DuelResolutionPanelController.IsVisible && !StoppageActionsPanelController.IsVisible
         || MatchManager.Instance?.IsPauseMenuOpen == true;

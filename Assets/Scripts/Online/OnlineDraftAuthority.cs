@@ -64,6 +64,7 @@ namespace CounterAttack.Online
         private readonly Func<int> die;
         private readonly Func<double> rollClock;
         private double rollResultDeadline;
+        private double? automaticRollDeadline;
         private readonly GameSettings settings;
         private readonly List<OnlineDraftCard> deck=new(),visible=new();
         private readonly OnlineDraftCard[] home,away;
@@ -118,6 +119,35 @@ namespace CounterAttack.Online
             revision=checked(revision+1);
             return true;
         }
+
+        public bool AdvanceAutomaticRoll()
+        {
+            if(rollClock==null || !protocol.BothConnected || phase is not ("roll" or "opening-roll"))
+            {
+                automaticRollDeadline=null;
+                return false;
+            }
+            automaticRollDeadline??=rollClock()+5;
+            if(rollClock()<automaticRollDeadline.Value)return false;
+            ResolveRoll(turn);
+            revision=checked(revision+1);
+            return true;
+        }
+
+        private void ResolveRoll(OnlineTeam actor)
+        {
+            int result=die();
+            if(result<1 || result>6)throw new InvalidOperationException("Invalid host die result");
+            automaticRollDeadline=null;
+            if(actor==OnlineTeam.Home){homeRoll=result;turn=OnlineTeam.Away;return;}
+            awayRoll=result;
+            if(rollClock==null)CompleteRoll(phase=="opening-roll");
+            else
+            {
+                phase=phase=="opening-roll"?"opening-result":"roll-result";
+                rollResultDeadline=rollClock()+5;
+            }
+        }
         private void CompleteRoll(bool openingRoll)
         {
             if(homeRoll==awayRoll)
@@ -159,18 +189,7 @@ namespace CounterAttack.Online
                 case OnlineDraftIntent.Roll:
                     if(phase is not ("roll" or "opening-roll"))return Reply(OnlineCommandStatus.NotReady);
                     if(actor!=turn)return Reply(OnlineCommandStatus.WrongTeam);
-                    int result=die();if(result<1 || result>6)throw new InvalidOperationException("Invalid host die result");
-                    if(actor==OnlineTeam.Home){homeRoll=result;turn=OnlineTeam.Away;}
-                    else
-                    {
-                        awayRoll=result;
-                        if(rollClock==null)CompleteRoll(phase=="opening-roll");
-                        else
-                        {
-                            phase=phase=="opening-roll"?"opening-result":"roll-result";
-                            rollResultDeadline=rollClock()+5;
-                        }
-                    }
+                    ResolveRoll(actor);
                     break;
                 case OnlineDraftIntent.Pick:
                     if(phase!="pick")return Reply(OnlineCommandStatus.NotReady);

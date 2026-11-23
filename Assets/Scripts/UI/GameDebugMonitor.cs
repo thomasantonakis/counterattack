@@ -207,6 +207,11 @@ public partial class GameDebugMonitor : MonoBehaviour
 
     private void UpdateInstructionText()
     {
+        if (CounterAttack.Online.OnlineRoomSession.Current?.HasInitialData == true)
+        {
+            RefreshOnlineInstructionPalette();
+            return;
+        }
         if (MatchManager.Instance?.IsGameplayInputBlocked == true)
         {
             roomDecisionManager?.SuspendThinking();

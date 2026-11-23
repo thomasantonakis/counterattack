@@ -64,6 +64,7 @@ public sealed partial class OnlineDraftSceneFixture
             var badge=first.paceValueText.transform.parent.Find(first.paceValueText.name+"Badge")
                 .GetComponent<UnityEngine.UI.Image>();
             Assert.That(badge.sprite.name,Is.EqualTo("Disc"));
+            Assert.That(badge.rectTransform.sizeDelta,Is.EqualTo(new Vector2(45,45)));
             Assert.That(badge.color,Is.EqualTo(MatchStatsUI.GetInspectionAttributeColor(first.assignedPlayer.Pace)));
             var click=new UnityEngine.EventSystems.PointerEventData(UnityEngine.EventSystems.EventSystem.current)
                 { button=UnityEngine.EventSystems.PointerEventData.InputButton.Left, clickCount=2 };
@@ -77,9 +78,11 @@ public sealed partial class OnlineDraftSceneFixture
             var candidate=remote.Capture().cards[2].id;
             remote.PublishDrag(candidate,0,.25f,.1f);Flush();
             Assert.That(((RectTransform)view.cards[2].transform).anchoredPosition,Is.Not.EqualTo(positions[2]));
+            Assert.That(view.cards[2].GetComponent<Canvas>().overrideSorting,Is.True);
             Assert.That(client.Capture().away[1],Is.Null);
             remote.PublishDrag(null,0,0,0);Flush();
             Assert.That(((RectTransform)view.cards[2].transform).anchoredPosition,Is.EqualTo(positions[2]));
+            Assert.That(view.cards[2].GetComponent<Canvas>().overrideSorting,Is.False);
             yield break;
         }
         if(branch=="ownership")

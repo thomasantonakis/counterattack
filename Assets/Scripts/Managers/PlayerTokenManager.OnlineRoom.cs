@@ -22,7 +22,14 @@ public partial class PlayerTokenManager
                 token.isAttacker=home==(MatchManager.Instance.teamInAttack==MatchManager.TeamInAttack.Home);
                 string kit=home?(jersey is 1 or 12?data.gameSettings.homeGKKit:data.gameSettings.homeKit):(jersey is 1 or 12?data.gameSettings.awayGKKit:data.gameSettings.awayKit);
                 var style=TokenKitCatalog.ResolveStyle(kit);var visuals=token.GetComponent<PlayerTokenVisuals>();visuals.ApplyStyle(style);
-                foreach(var number in token.GetComponentsInChildren<TextMeshPro>(true)){number.text=jersey is 6 or 9?"<u>"+jersey+"</u>":jersey.ToString();visuals.ApplyNumberStyle(number,style);}
+                foreach(var number in token.GetComponentsInChildren<TextMeshPro>(true))
+                {
+                    number.text=jersey is 6 or 9?"<u>"+jersey+"</u>":jersey.ToString();
+                    number.fontSize=3;
+                    number.alignment=TextAlignmentOptions.Center;
+                    visuals.ApplyNumberStyle(number,style);
+                    number.ForceMeshUpdate(true);
+                }
                 if(jersey<=11)
                 {
                     var hex=hexgrid.GetHexCellAt(formation[jersey-1])??throw new InvalidOperationException("Online formation is outside the authored pitch");

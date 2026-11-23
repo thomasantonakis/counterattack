@@ -97,6 +97,7 @@ namespace CounterAttack.Online
                 {
                     icon.color = marker.color;
                     icon.texture = pointer.icon == 2 ? cameraDragIcon : pointer.icon == 1 ? grabIcon : hoverIcon;
+                    icon.rectTransform.localRotation = Quaternion.Euler(0, 0, pointer.icon == 2 ? -45 : 0);
                 }
             }
             return visible;

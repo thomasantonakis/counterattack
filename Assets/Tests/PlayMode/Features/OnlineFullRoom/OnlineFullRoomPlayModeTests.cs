@@ -12,6 +12,8 @@ public sealed class OnlineFullRoomPlayModeTests
     [UnityTearDown] public IEnumerator Cleanup(){if(fixture!=null)yield return (IEnumerator)Bridge.GetMethod("Cleanup").Invoke(fixture,null);fixture=null;}
     [UnityTest] public IEnumerator ActualFullRoom([Values(false,true)]bool guest,[Values(16,18)]int size,[Values(false,true)]bool mirror)
         =>(IEnumerator)Bridge.GetMethod("Run").Invoke(fixture,new object[]{guest,size,mirror,"initial"});
+    [UnityTest] public IEnumerator BallColorAndVisibleJerseyMeshesAreBound([Values(false,true)]bool guest)
+        =>(IEnumerator)Bridge.GetMethod("Run").Invoke(fixture,new object[]{guest,16,false,"ball-jerseys"});
     [UnityTest] public IEnumerator AuthoredKickoff([Values(16,18)]int size,[Values(false,true)]bool mirror)
         =>(IEnumerator)Bridge.GetMethod("Run").Invoke(fixture,new object[]{false,size,mirror,"kickoff"});
     [UnityTest] public IEnumerator FullGuestProjection([Values(16,18)]int size,[Values(false,true)]bool mirror)

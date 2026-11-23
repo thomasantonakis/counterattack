@@ -32,6 +32,9 @@ public sealed class OnlineModeNavigationEditorTests
             GetButton("WhiteBkg/ButtonsPanel/LoadMatchButton", nameof(menu.Join));
             Assert.That(menu.lobbyCode.readOnly,Is.False);
             Assert.That(menu.lobbyCode.targetGraphic.GetComponent<Outline>(),Is.Not.Null);
+            Assert.That(menu.hostCode.readOnly,Is.True);
+            Assert.That(menu.sessionPrefab,Is.Not.Null);
+            Assert.That(OnlineSetupRules.Validate(OnlineModeMenu.HostDefaults()),Is.Empty);
             menu.lobbyCode.SetTextWithoutNotify("invalid");
             menu.Join();
             Assert.That(menu.status.text, Does.Contain("32-character"));

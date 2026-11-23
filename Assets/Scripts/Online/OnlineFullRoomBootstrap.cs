@@ -35,7 +35,8 @@ namespace CounterAttack.Online
             finally{board.match.EndGameplayEventLoggingSuppression();}
             board.displayedTokens=board.tokens.Select(t=>t.transform).ToArray();
             board.displayedBall.gameObject.SetActive(guest);
-            if (guest && replicaBallRenderer != null)
+            board.match.ball.ApplyConfiguredBallColor();
+            if (replicaBallRenderer != null)
             {
                 board.match.OnGameSettingsLoaded += RefreshReplicaBallColor;
                 RefreshReplicaBallColor();
@@ -56,12 +57,8 @@ namespace CounterAttack.Online
 
         private void RefreshReplicaBallColor()
         {
-            var color = board.match.gameData.gameSettings.ballColor switch
-            {
-                "Orange" => new Color32(230, 121, 36, 255),
-                "Yellow" => new Color32(235, 214, 58, 255),
-                _ => new Color32(244, 246, 250, 255)
-            };
+            board.match.ball.ApplyConfiguredBallColor();
+            var color = Ball.ResolveBallColor(board.match.gameData.gameSettings.ballColor);
             var properties = new MaterialPropertyBlock();
             properties.SetColor("_Color", color);
             properties.SetColor("_BaseColor", color);

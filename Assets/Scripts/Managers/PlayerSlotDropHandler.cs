@@ -3,9 +3,42 @@ using UnityEngine.EventSystems;
 using TMPro;
 using UnityEngine.UI;
 
-public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
+public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler
 {
     private DraftManager draftManager;
+    private Image dropHighlight;
+    private Color originalDropColor;
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        var source=eventData?.pointerDrag;
+        if(source==null || !eventData.dragging)return;
+        bool keeper=IsGoalkeeperRosterSlot();
+        bool eligible;
+        if(source.TryGetComponent<CounterAttack.Online.OnlineDraftClickTarget>(out var online))
+            eligible=online.CanPreviewDrop(GetComponent<CounterAttack.Online.OnlineDraftClickTarget>());
+        else if(source.TryGetComponent<PlayerSlotDragHandler>(out var roster))
+            eligible=source!=gameObject && roster.validRosterName==transform.parent.name
+                && source.TryGetComponent<PlayerSlotDropHandler>(out var sourceSlot) && sourceSlot.IsGoalkeeperRosterSlot()==keeper;
+        else if(source.TryGetComponent<FreeDraftTableRowDragHandler>(out var row))
+            eligible=draftManager!=null && draftManager.IsValidTeamPanel(transform.parent.name) && row.IsGoalkeeper==keeper;
+        else
+            eligible=!keeper && draftManager!=null && draftManager.IsValidTeamPanel(transform.parent.name) && source.GetComponent<PlayerCardDragHandler>()!=null;
+        if(!eligible || dropHighlight!=null)return;
+        dropHighlight=GetComponent<Image>();
+        if(dropHighlight==null)dropHighlight=transform.Find("ContentWrapper")?.GetComponent<Image>();
+        if(dropHighlight==null)return;
+        originalDropColor=dropHighlight.color;
+        dropHighlight.color=Color.Lerp(originalDropColor,new Color(1f,.66f,.2f,1f),.65f);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)=>ClearDropHighlight();
+    private void OnDisable()=>ClearDropHighlight();
+    private void ClearDropHighlight()
+    {
+        if(dropHighlight!=null)dropHighlight.color=originalDropColor;
+        dropHighlight=null;
+    }
 
     private void Start()
     {
@@ -14,6 +47,7 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler
     }
     public void OnDrop(PointerEventData eventData)
     {
+        ClearDropHighlight();
         Debug.Log($"OnDrop called for {gameObject.name}");
         if (eventData == null || eventData.pointerDrag == null)
         {

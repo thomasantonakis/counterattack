@@ -20,6 +20,8 @@ namespace CounterAttack.Online
         private RectTransform remoteDragRect;
         public PlayerCard freeDraftDragPreview;
         private Vector2 remoteDragOrigin;
+        private Canvas remoteDragCanvas;
+        private bool remoteDragSorting;
         private long remoteDragRevision;
         private double nextDragFrame;
 
@@ -70,7 +72,16 @@ namespace CounterAttack.Online
             }
             if(target!=remoteDragRect)ClearRemoteDrag();
             if(target==null || target.parent is not RectTransform parent)return;
-            if(remoteDragRect==null)remoteDragOrigin=target.anchoredPosition;
+            if(remoteDragRect==null)
+            {
+                remoteDragOrigin=target.anchoredPosition;
+                remoteDragCanvas=target.GetComponent<Canvas>();
+                if(remoteDragCanvas!=null)
+                {
+                    remoteDragSorting=remoteDragCanvas.overrideSorting;
+                    remoteDragCanvas.overrideSorting=true;
+                }
+            }
             remoteDragRect=target;
             remoteDragRevision=frame.revision;
             target.anchoredPosition=remoteDragOrigin+Vector2.Scale(parent.rect.size,new Vector2(frame.x,frame.y));
@@ -79,6 +90,8 @@ namespace CounterAttack.Online
         private void ClearRemoteDrag()
         {
             if(remoteDragRect!=null)remoteDragRect.anchoredPosition=remoteDragOrigin;
+            if(remoteDragCanvas!=null)remoteDragCanvas.overrideSorting=remoteDragSorting;
+            remoteDragCanvas=null;
             remoteDragRect=null;
             if(freeDraftDragPreview!=null)freeDraftDragPreview.gameObject.SetActive(false);
             previewedOffer=null;

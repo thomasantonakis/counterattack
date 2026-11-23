@@ -13,6 +13,8 @@ namespace CounterAttack.Online
         private Vector3 pointerOffset;
         private float originalAlpha;
         private bool originalRaycasts;
+        private Canvas dragCanvas;
+        private bool previousOverrideSorting;
         public void OnPointerClick(PointerEventData eventData)
         {
             if(view==null || eventData==null || eventData.dragging || selection!=null || eventData.button!=PointerEventData.InputButton.Left)return;
@@ -27,6 +29,12 @@ namespace CounterAttack.Online
             selection=pending;draggedRect=rect;dragGroup=group;originalParent=rect.parent;originalPosition=rect.anchoredPosition;originalAlpha=group.alpha;originalRaycasts=group.blocksRaycasts;
             RectTransformUtility.ScreenPointToWorldPointInRectangle(originalParent as RectTransform??rect,eventData.position,eventData.pressEventCamera,out var point);pointerOffset=rect.position-point;
             group.alpha=originalAlpha*.6f;group.blocksRaycasts=false;
+            dragCanvas=GetComponent<Canvas>();
+            if(dragCanvas!=null)
+            {
+                previousOverrideSorting=dragCanvas.overrideSorting;
+                dragCanvas.overrideSorting=true;
+            }
             view.PublishDragPosition(selection,rect,originalPosition);
         }
         public void OnDrag(PointerEventData eventData)
@@ -47,6 +55,12 @@ namespace CounterAttack.Online
             var pending=source.selection;source.Restore();view.CompleteDrag(pending,team,index);
         }
         public void OnEndDrag(PointerEventData eventData)=>Cancel();
+        internal bool CanPreviewDrop(OnlineDraftClickTarget target)
+        {
+            return selection!=null && target!=null && !target.card && target.view==view
+                && target.team==view.Client.Team && target.index!=(!card?index:0)
+                && (target.index is 1 or 12)==selection.goalkeeper;
+        }
         private void OnDisable()=>Cancel();
         private void Cancel(){var pending=selection;Restore();if(pending!=null && view!=null)view.CancelDrag(pending);}
         private void Restore()
@@ -54,6 +68,8 @@ namespace CounterAttack.Online
             if(selection==null)return;selection=null;
             if(draggedRect!=null && draggedRect.parent==originalParent)draggedRect.anchoredPosition=originalPosition;
             if(dragGroup!=null){dragGroup.alpha=originalAlpha;dragGroup.blocksRaycasts=originalRaycasts;}
+            if(dragCanvas!=null)dragCanvas.overrideSorting=previousOverrideSorting;
+            dragCanvas=null;
             draggedRect=null;dragGroup=null;originalParent=null;
         }
     }

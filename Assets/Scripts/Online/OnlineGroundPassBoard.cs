@@ -86,14 +86,7 @@ namespace CounterAttack.Online
             ResetPresentationMotion(state.connectionHeld || state.isSharedPaused);
             pointers?.SetHold(state.connectionHeld || state.isSharedPaused);
             if (liveFullRoom && boardCamera != null && boardCamera.TryGetComponent<CameraController>(out var camera))
-            {
                 camera.SetOnlinePresentationHold(state.connectionHeld || state.isSharedPaused);
-                if(camera.IsReady)
-                {
-                    bool celebrating=state.goalMotion && !state.connectionHeld && !RoomInputOwnership.IntroActive;
-                    camera.SetOnlineGoalCue(celebrating,Center(state.ballX,state.ballZ));
-                }
-            }
             if(liveFullRoom)instructionMonitor?.DisplayOnlineInstruction(state.instruction,state.connectionHeld || state.isSharedPaused || state.stage=="blocked");
             if (controls != null) controls.Display(state);
             rollPanels?.Apply(state.rollPanel, state.isSharedPaused);

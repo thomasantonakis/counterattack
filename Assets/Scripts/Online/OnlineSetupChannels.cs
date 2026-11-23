@@ -108,7 +108,8 @@ namespace CounterAttack.Online
         public override void Tick()
         {
             base.Tick();
-            if(Ready && DraftAuthority?.AdvanceRollResult()==true)PublishDraft();
+            if(DraftAuthority==null)return;
+            if(DraftAuthority.AdvanceRollResult() || DraftAuthority.AdvanceAutomaticRoll())PublishDraft();
         }
         private void PublishDraft()
         {

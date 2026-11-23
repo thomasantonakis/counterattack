@@ -164,6 +164,22 @@ public sealed partial class OnlineFullRoomSceneFixture
             Assert.That(board.match.gameData.events, Is.Empty);
             yield break;
         }
+        if (branch == "ball-jerseys")
+        {
+            var renderer=(guest?board.displayedBall:board.match.ball.transform).GetComponent<MeshRenderer>();
+            var block=new MaterialPropertyBlock();
+            renderer.GetPropertyBlock(block);
+            Color expected=new Color32(244,246,250,255);
+            Assert.That(Vector4.Distance(block.GetColor("_BaseColor"),expected),Is.LessThan(.001f));
+            foreach(var token in board.match.playerTokenManager.allTokens)
+            {
+                var number=token.GetComponentInChildren<TMPro.TextMeshPro>();
+                Assert.That(number,Is.Not.Null,token.name);
+                Assert.That(number.mesh.vertexCount,Is.GreaterThan(0),token.name);
+                Assert.That(board.boardCamera.cullingMask & (1<<number.gameObject.layer),Is.Not.Zero,token.name);
+            }
+            yield break;
+        }
         if (branch == "movement-summary")
         {
             var movementVersion=new OnlineCompatibility("ground-wire-v7","ground-rules-v1",OnlineFullRoomBootstrap.Catalog);
@@ -177,6 +193,7 @@ public sealed partial class OnlineFullRoomSceneFixture
             string expected=$"Attacking movement · {movement.AttackingMoveLimit} moves remaining";
             Assert.That(publication.instruction.text,Does.StartWith(expected));
             board.Display(publication,"Movement observer");
+            yield return null;
             Assert.That(board.instructionMonitor.instructionText.text,Does.StartWith(expected));
             Assert.That(board.match.gameData.events,Is.Empty);
             yield break;
@@ -205,7 +222,8 @@ public sealed partial class OnlineFullRoomSceneFixture
             var initialCameraPosition=board.boardCamera.transform.position;
             var initialCameraRotation=board.boardCamera.transform.rotation;
             board.Display(goalState,"Goal camera check");
-            Assert.That(board.boardCamera.transform.position,Is.Not.EqualTo(initialCameraPosition));
+            Assert.That(board.boardCamera.transform.position,Is.EqualTo(initialCameraPosition));
+            Assert.That(board.boardCamera.transform.rotation,Is.EqualTo(initialCameraRotation));
             goalState.goalMotion=false;
             board.Display(goalState,"Restore local camera");
             Assert.That(board.boardCamera.transform.position,Is.EqualTo(initialCameraPosition));

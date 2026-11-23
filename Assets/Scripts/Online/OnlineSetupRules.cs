@@ -14,6 +14,15 @@ namespace CounterAttack.Online
             merged.homeTeamAbbreviation=current.homeTeamAbbreviation;merged.awayTeamAbbreviation=current.awayTeamAbbreviation;
             if(actor==OnlineTeam.Home){merged.homeTeamName=proposed.homeTeamName;merged.homeKit=proposed.homeKit;merged.homeGKKit=proposed.homeGKKit;}
             else{merged.awayTeamName=proposed.awayTeamName;merged.awayKit=proposed.awayKit;merged.awayGKKit=proposed.awayGKKit;}
+            if(ownsShared && proposed.matchType=="International" && current.matchType!="International")
+            {
+                var teams=CreateNewGameManager.LoadWorldCupNationalities().ToArray();
+                string own=actor==OnlineTeam.Home?merged.homeTeamName:merged.awayTeamName;
+                string other=actor==OnlineTeam.Home?proposed.awayTeamName:proposed.homeTeamName;
+                if(other==own || !teams.Contains(other))other=teams.FirstOrDefault(team=>team!=own);
+                if(actor==OnlineTeam.Home)merged.awayTeamName=other;
+                else merged.homeTeamName=other;
+            }
             if(merged.homeTeamName!=current.homeTeamName)merged.homeTeamAbbreviation=null;
             if(merged.awayTeamName!=current.awayTeamName)merged.awayTeamAbbreviation=null;
             return merged;

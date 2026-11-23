@@ -19,6 +19,7 @@ namespace CounterAttack.Online
         public PlayerCard[] cards;
         public Button actionButton,leaveButton;
         public Button rollPanelButton;
+        private float rollPanelHeight;
         public Button previousPageButton,nextPageButton;
         public Button kickoffChoiceButton,leftChoiceButton,rightChoiceButton;
         private OnlineDraftClient client;
@@ -179,6 +180,8 @@ namespace CounterAttack.Online
                 dice.visuals.SetActive(rolling || rollResult || choosing);
                 if(rolling || rollResult || choosing)
                 {
+                    if(rollPanelHeight<=0)rollPanelHeight=dice.panel.rect.height;
+                    dice.panel.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical,rollPanelHeight+(choosing?270:0));
                     dice.title.text=opening?"OPENING COIN TOSS":"ROLL FOR FIRST DRAFT PICK";
                     dice.homeTeam.text=s.settings.homeTeamName;dice.awayTeam.text=s.settings.awayTeamName;
                     var homePalette=TokenKitCatalog.GetInstructionPalette(TokenKitCatalog.ResolveStyle(s.settings.homeKit));
@@ -189,7 +192,7 @@ namespace CounterAttack.Online
                     dice.awayResult.text=s.awayRoll==0?"Waiting for roll":"Roll "+s.awayRoll;
                     string winner=s.homeRoll==s.awayRoll?"Tie. Roll again.":(s.homeRoll>s.awayRoll?s.settings.homeTeamName:s.settings.awayTeamName)+" wins the roll";
                     dice.outcome.text=rollResult || choosing?winner:"Round "+s.rollRound+(opening?" - Highest roll chooses kickoff or direction":" - Highest roll drafts first");
-                    dice.footer.text=choosing?(s.turn==client.Team?"Choose below":"Waiting for the other manager's choice"):rollResult?"":s.turn==client.Team?"Your roll - press R or Roll":"Waiting for the other manager";
+                    dice.footer.text=string.Empty;
                     if(s.homeRoll>0)dice.homeDie.Resolve(s.homeRoll,false);else if(s.turn==OnlineTeam.Home)dice.homeDie.Begin(false);else dice.homeDie.Clear();
                     if(s.awayRoll>0)dice.awayDie.Resolve(s.awayRoll,false);else if(s.turn==OnlineTeam.Away)dice.awayDie.Begin(false);else dice.awayDie.Clear();
                 }
@@ -198,7 +201,7 @@ namespace CounterAttack.Online
             sourceUi.draftTurnText.text=s.phase is "roll" or "opening-roll"?team+" rolls":s.phase=="opening-choice"?team+" chooses":s.phase=="pick"?s.repeatable?"Choose your "+s.selection:team+" picks":"Draft complete";
             sourceUi.draftBatchText.text=s.freeSelection? s.selection+" · Page "+(page+1)+" / "+Mathf.Max(1,(s.available.Length+3)/4):"Batch "+s.batch+" / "+s.totalBatches+" · Home roll "+s.homeRoll+" · Away roll "+s.awayRoll;
             bool localReady=client.Team==OnlineTeam.Home?s.homeReady:s.awayReady;
-            string label=s.phase is "roll" or "opening-roll"?"Roll":client.IsHost && s.homeReady && s.awayReady?"Start match":localReady?"Waiting for other manager":"Confirm roster";
+            string label=s.phase is "roll" or "opening-roll"?"Roll":client.IsHost && s.homeReady && s.awayReady?"Start match":localReady?"Waiting for player":"Confirm roster";
             actionButton.GetComponentInChildren<TMP_Text>(true).text=label;
             actionButton.interactable=client.Connected && !client.Pending && ((s.phase is "roll" or "opening-roll") && s.turn==client.Team || s.phase=="review" && (!localReady || client.IsHost && s.homeReady && s.awayReady));
             if(rollPanelButton!=null)

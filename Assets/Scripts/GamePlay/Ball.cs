@@ -127,7 +127,7 @@ public class Ball : MonoBehaviour
         playersInstantiated = true;  // Set the flag to true when players are ready
     }
 
-    private void ApplyConfiguredBallColor()
+    internal void ApplyConfiguredBallColor()
     {
         if (ballRenderer == null)
         {
@@ -149,7 +149,7 @@ public class Ball : MonoBehaviour
         ballRenderer.SetPropertyBlock(ballPropertyBlock);
     }
 
-    private static Color ResolveBallColor(string configuredColor)
+    internal static Color ResolveBallColor(string configuredColor)
     {
         if (string.IsNullOrWhiteSpace(configuredColor))
         {

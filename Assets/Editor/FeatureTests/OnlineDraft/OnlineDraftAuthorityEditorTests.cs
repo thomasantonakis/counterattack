@@ -46,6 +46,24 @@ public sealed class OnlineDraftAuthorityEditorTests
     }
     private void StartPicks(bool homeWins=true)
     {dice.Enqueue(homeWins?6:1);dice.Enqueue(homeWins?1:6);Assert.That(Submit(OnlineTeam.Home,OnlineDraftIntent.Roll),Is.EqualTo(OnlineCommandStatus.Accepted));Assert.That(Submit(OnlineTeam.Away,OnlineDraftIntent.Roll),Is.EqualTo(OnlineCommandStatus.Accepted));}
+    [Test]
+    public void BothManagersAutoRollAfterFiveSeconds()
+    {
+        double now=0;
+        Create(false,16,()=>now);
+        dice.Enqueue(6);dice.Enqueue(2);
+        Assert.That(draft.AdvanceAutomaticRoll(),Is.False);
+        now=4.99;
+        Assert.That(draft.AdvanceAutomaticRoll(),Is.False);
+        now=5;
+        Assert.That(draft.AdvanceAutomaticRoll(),Is.True);
+        Assert.That(draft.Capture().homeRoll,Is.EqualTo(6));
+        Assert.That(draft.AdvanceAutomaticRoll(),Is.False);
+        now=10;
+        Assert.That(draft.AdvanceAutomaticRoll(),Is.True);
+        Assert.That(draft.Capture().phase,Is.EqualTo("roll-result"));
+        Assert.That(draft.Capture().awayRoll,Is.EqualTo(2));
+    }
     private void Pick()
     {var s=draft.Capture();var roster=s.turn==OnlineTeam.Home?s.home:s.away;int slot=Array.FindIndex(roster,c=>c==null)+1;Assert.That(Submit(s.turn,OnlineDraftIntent.Pick,s.cards.First(card=>card!=null).id,slot),Is.EqualTo(OnlineCommandStatus.Accepted));}
     [Test]

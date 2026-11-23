@@ -686,7 +686,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 1, y: 2}
   m_SizeDelta: {x: 45, y: 45}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5365864014680788641
@@ -828,7 +828,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 1, y: 2}
   m_SizeDelta: {x: 45, y: 45}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6806062190722667943
@@ -999,7 +999,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 1, y: 2}
   m_SizeDelta: {x: 45, y: 45}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2985513044069039832
@@ -1095,7 +1095,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 1, y: 2}
   m_SizeDelta: {x: 45, y: 45}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7254024574681753209
@@ -1269,7 +1269,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 1, y: 2}
   m_SizeDelta: {x: 45, y: 45}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8102304047390579741
@@ -1365,7 +1365,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 1, y: 2}
   m_SizeDelta: {x: 45, y: 45}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4747275484850918772
@@ -1461,7 +1461,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 1, y: 2}
   m_SizeDelta: {x: 45, y: 45}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5204572881798810264
@@ -1722,7 +1722,7 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 32653129992269774, guid: fe9a5ff914ebc4221ae60d5b3203e088, type: 3}
-      insertIndex: 0
+      insertIndex: -1
       addedObject: {fileID: 3114146456059994568}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fe9a5ff914ebc4221ae60d5b3203e088, type: 3}
@@ -1947,7 +1947,7 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 32653129992269774, guid: fe9a5ff914ebc4221ae60d5b3203e088, type: 3}
-      insertIndex: 0
+      insertIndex: -1
       addedObject: {fileID: 5347515998986464225}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fe9a5ff914ebc4221ae60d5b3203e088, type: 3}
@@ -2172,7 +2172,7 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 32653129992269774, guid: fe9a5ff914ebc4221ae60d5b3203e088, type: 3}
-      insertIndex: 0
+      insertIndex: -1
       addedObject: {fileID: 1710038225682887062}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fe9a5ff914ebc4221ae60d5b3203e088, type: 3}
@@ -2397,7 +2397,7 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 32653129992269774, guid: fe9a5ff914ebc4221ae60d5b3203e088, type: 3}
-      insertIndex: 0
+      insertIndex: -1
       addedObject: {fileID: 3140305299229501952}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fe9a5ff914ebc4221ae60d5b3203e088, type: 3}
@@ -2622,7 +2622,7 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 32653129992269774, guid: fe9a5ff914ebc4221ae60d5b3203e088, type: 3}
-      insertIndex: 0
+      insertIndex: -1
       addedObject: {fileID: 163948484594844056}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fe9a5ff914ebc4221ae60d5b3203e088, type: 3}
@@ -2847,7 +2847,7 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 32653129992269774, guid: fe9a5ff914ebc4221ae60d5b3203e088, type: 3}
-      insertIndex: 0
+      insertIndex: -1
       addedObject: {fileID: 837250782396828393}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fe9a5ff914ebc4221ae60d5b3203e088, type: 3}
@@ -3072,7 +3072,7 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 32653129992269774, guid: fe9a5ff914ebc4221ae60d5b3203e088, type: 3}
-      insertIndex: 0
+      insertIndex: -1
       addedObject: {fileID: 2669403018036639310}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fe9a5ff914ebc4221ae60d5b3203e088, type: 3}

@@ -315,6 +315,34 @@ managed assembly SHA256 are in
 
 ## Cost and verification discipline
 
+### Corrections after the 2026-11-23 paired walkthrough
+
+- Host Match creates the lobby on the Online entry card. Copy the code there,
+  then use Continue to Match Setup. The setup mode should read Online.
+- International setup publishes a valid pair of national teams when the
+  host switches modes. Each manager can edit their own team afterward.
+- Unattended Draft and opening rolls use a five-second host deadline.
+  Completed results keep their separate hold. Opening choices expand into a
+  vertical list and roster footer labels use a single fitted line.
+- Dragging raises the online card or roster slot above the roster. Draft
+  drop targets are tinted while eligible. Player-card badge dimensions use
+  the authored Room value of 45 by 45.
+- Room and Online Room share the ball-colour resolver. Online jersey text
+  uses Room's font size and alignment. The camera-drag pointer rotates 45
+  degrees clockwise.
+- The host's local monitor preserves the published movement summary. Goal
+  celebrations retain each manager's active camera.
+
+Windows Editor compilation completed without errors. Focused evidence is
+under `TestResults/GameplayRegression/Runs/`: menu (3) in
+`20261123T110646530Z`, automatic roll (1) in `20261123T110703384Z`,
+International switching (2) in `20261123T110912900Z`, Draft position and
+drag sorting (1) in `20261123T110933412Z`, movement summary (1) in
+`20261123T111003442Z`, goal/camera (2) in `20261123T111051055Z`,
+pointers (2) in `20261123T111144708Z`, and ball/jersey bindings (2) in
+`20261123T111340008Z`. Retest the corrections in packaged Windows and
+macOS players. The paired screenshots report the original issues.
+
 One batch per session and concise outcome. Do not run full suites, repeat the
 historical Mac mega-run, build unchanged outputs repeatedly, idle-poll terminals
 or start another hour soak without a concrete reason. Reuse retained evidence.

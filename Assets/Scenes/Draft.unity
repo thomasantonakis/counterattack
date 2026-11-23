@@ -369,6 +369,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
       insertIndex: -1
       addedObject: {fileID: 20552695}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 20552697}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 20552696}
   m_SourcePrefab: {fileID: 100100000, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
 --- !u!224 &20552692 stripped
 RectTransform:
@@ -407,6 +413,47 @@ MonoBehaviour:
   card: 0
   index: 17
   team: 0
+--- !u!114 &20552696
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 20552693}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!223 &20552697
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 20552693}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 5
+  m_TargetDisplay: 0
 --- !u!1001 &43992669
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -510,6 +557,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 731219833538410463, guid: f1979203b537d41ebbc5857d9569e72f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 43992673}
+    - targetCorrespondingSourceObject: {fileID: 731219833538410463, guid: f1979203b537d41ebbc5857d9569e72f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 43992675}
+    - targetCorrespondingSourceObject: {fileID: 731219833538410463, guid: f1979203b537d41ebbc5857d9569e72f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 43992674}
   m_SourcePrefab: {fileID: 100100000, guid: f1979203b537d41ebbc5857d9569e72f, type: 3}
 --- !u!114 &43992670 stripped
 MonoBehaviour:
@@ -548,6 +601,47 @@ MonoBehaviour:
   card: 1
   index: 2
   team: 0
+--- !u!114 &43992674
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 43992671}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!223 &43992675
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 43992671}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 5
+  m_TargetDisplay: 0
 --- !u!1001 &65047650
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -659,6 +753,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
       insertIndex: -1
       addedObject: {fileID: 65047654}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 65047656}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 65047655}
   m_SourcePrefab: {fileID: 100100000, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
 --- !u!224 &65047651 stripped
 RectTransform:
@@ -697,6 +797,47 @@ MonoBehaviour:
   card: 0
   index: 15
   team: 1
+--- !u!114 &65047655
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 65047652}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!223 &65047656
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 65047652}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 5
+  m_TargetDisplay: 0
 --- !u!1 &82652802
 GameObject:
   m_ObjectHideFlags: 0
@@ -1021,6 +1162,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
       insertIndex: -1
       addedObject: {fileID: 90598168}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 90598170}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 90598169}
   m_SourcePrefab: {fileID: 100100000, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
 --- !u!114 &90598165 stripped
 MonoBehaviour:
@@ -1059,6 +1206,47 @@ MonoBehaviour:
   card: 0
   index: 18
   team: 1
+--- !u!114 &90598169
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 90598166}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!223 &90598170
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 90598166}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 5
+  m_TargetDisplay: 0
 --- !u!1 &97807226
 GameObject:
   m_ObjectHideFlags: 0
@@ -1177,8 +1365,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: -275, y: 38}
-  m_SizeDelta: {x: 255, y: 78}
+  m_AnchoredPosition: {x: 0, y: 226}
+  m_SizeDelta: {x: 700, y: 68}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!95 &130464272
 Animator:
@@ -1517,8 +1705,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 275, y: 38}
-  m_SizeDelta: {x: 255, y: 78}
+  m_AnchoredPosition: {x: 0, y: 74}
+  m_SizeDelta: {x: 700, y: 68}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!95 &150957862
 Animator:
@@ -1974,6 +2162,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
       insertIndex: -1
       addedObject: {fileID: 200391770}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 200391772}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 200391771}
   m_SourcePrefab: {fileID: 100100000, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
 --- !u!224 &200391767 stripped
 RectTransform:
@@ -2012,6 +2206,47 @@ MonoBehaviour:
   card: 0
   index: 2
   team: 0
+--- !u!114 &200391771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 200391768}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!223 &200391772
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 200391768}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 5
+  m_TargetDisplay: 0
 --- !u!1 &201981024
 GameObject:
   m_ObjectHideFlags: 0
@@ -2199,6 +2434,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
       insertIndex: -1
       addedObject: {fileID: 233949584}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 233949586}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 233949585}
   m_SourcePrefab: {fileID: 100100000, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
 --- !u!224 &233949581 stripped
 RectTransform:
@@ -2237,6 +2478,47 @@ MonoBehaviour:
   card: 0
   index: 16
   team: 1
+--- !u!114 &233949585
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 233949582}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!223 &233949586
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 233949582}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 5
+  m_TargetDisplay: 0
 --- !u!1001 &287368655
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2348,6 +2630,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
       insertIndex: -1
       addedObject: {fileID: 287368659}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 287368661}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 287368660}
   m_SourcePrefab: {fileID: 100100000, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
 --- !u!224 &287368656 stripped
 RectTransform:
@@ -2386,6 +2674,47 @@ MonoBehaviour:
   card: 0
   index: 13
   team: 1
+--- !u!114 &287368660
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 287368657}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!223 &287368661
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 287368657}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 5
+  m_TargetDisplay: 0
 --- !u!1001 &297098047
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2820,6 +3149,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4847507887344364896, guid: e3efaeda2b07d482b8d659bf5d4c2d83, type: 3}
       insertIndex: -1
       addedObject: {fileID: 304014290}
+    - targetCorrespondingSourceObject: {fileID: 4847507887344364896, guid: e3efaeda2b07d482b8d659bf5d4c2d83, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 304014292}
+    - targetCorrespondingSourceObject: {fileID: 4847507887344364896, guid: e3efaeda2b07d482b8d659bf5d4c2d83, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 304014291}
   m_SourcePrefab: {fileID: 100100000, guid: e3efaeda2b07d482b8d659bf5d4c2d83, type: 3}
 --- !u!224 &304014287 stripped
 RectTransform:
@@ -2858,6 +3193,47 @@ MonoBehaviour:
   card: 0
   index: 12
   team: 1
+--- !u!114 &304014291
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 304014288}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!223 &304014292
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 304014288}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 5
+  m_TargetDisplay: 0
 --- !u!1 &308846269
 GameObject:
   m_ObjectHideFlags: 0
@@ -3100,6 +3476,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 731219833538410463, guid: f1979203b537d41ebbc5857d9569e72f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 310608783}
+    - targetCorrespondingSourceObject: {fileID: 731219833538410463, guid: f1979203b537d41ebbc5857d9569e72f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 310608785}
+    - targetCorrespondingSourceObject: {fileID: 731219833538410463, guid: f1979203b537d41ebbc5857d9569e72f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 310608784}
   m_SourcePrefab: {fileID: 100100000, guid: f1979203b537d41ebbc5857d9569e72f, type: 3}
 --- !u!114 &310608780 stripped
 MonoBehaviour:
@@ -3138,6 +3520,47 @@ MonoBehaviour:
   card: 1
   index: 1
   team: 0
+--- !u!114 &310608784
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 310608781}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!223 &310608785
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 310608781}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 5
+  m_TargetDisplay: 0
 --- !u!1001 &354090611
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3249,6 +3672,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
       insertIndex: -1
       addedObject: {fileID: 354090615}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 354090617}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 354090616}
   m_SourcePrefab: {fileID: 100100000, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
 --- !u!224 &354090612 stripped
 RectTransform:
@@ -3287,6 +3716,47 @@ MonoBehaviour:
   card: 0
   index: 11
   team: 1
+--- !u!114 &354090616
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 354090613}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!223 &354090617
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 354090613}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 5
+  m_TargetDisplay: 0
 --- !u!1 &361682472
 GameObject:
   m_ObjectHideFlags: 0
@@ -3540,6 +4010,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
       insertIndex: -1
       addedObject: {fileID: 424551189}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 424551191}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 424551190}
   m_SourcePrefab: {fileID: 100100000, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
 --- !u!224 &424551186 stripped
 RectTransform:
@@ -3578,6 +4054,47 @@ MonoBehaviour:
   card: 0
   index: 15
   team: 0
+--- !u!114 &424551190
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 424551187}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!223 &424551191
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 424551187}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 5
+  m_TargetDisplay: 0
 --- !u!1001 &459143277
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4401,6 +4918,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
       insertIndex: -1
       addedObject: {fileID: 513207602}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 513207604}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 513207603}
   m_SourcePrefab: {fileID: 100100000, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
 --- !u!224 &513207599 stripped
 RectTransform:
@@ -4439,6 +4962,47 @@ MonoBehaviour:
   card: 0
   index: 4
   team: 1
+--- !u!114 &513207603
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 513207600}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!223 &513207604
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 513207600}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 5
+  m_TargetDisplay: 0
 --- !u!1001 &541989604
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4550,6 +5114,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
       insertIndex: -1
       addedObject: {fileID: 541989608}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 541989610}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 541989609}
   m_SourcePrefab: {fileID: 100100000, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
 --- !u!224 &541989605 stripped
 RectTransform:
@@ -4588,6 +5158,47 @@ MonoBehaviour:
   card: 0
   index: 11
   team: 0
+--- !u!114 &541989609
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 541989606}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!223 &541989610
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 541989606}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 5
+  m_TargetDisplay: 0
 --- !u!1001 &553954272
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4699,6 +5310,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
       insertIndex: -1
       addedObject: {fileID: 553954276}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 553954278}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 553954277}
   m_SourcePrefab: {fileID: 100100000, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
 --- !u!224 &553954273 stripped
 RectTransform:
@@ -4737,6 +5354,47 @@ MonoBehaviour:
   card: 0
   index: 3
   team: 1
+--- !u!114 &553954277
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 553954274}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!223 &553954278
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 553954274}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 5
+  m_TargetDisplay: 0
 --- !u!1 &565640657
 GameObject:
   m_ObjectHideFlags: 0
@@ -4987,6 +5645,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
       insertIndex: -1
       addedObject: {fileID: 575856007}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 575856009}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 575856008}
   m_SourcePrefab: {fileID: 100100000, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
 --- !u!224 &575856004 stripped
 RectTransform:
@@ -5025,6 +5689,47 @@ MonoBehaviour:
   card: 0
   index: 2
   team: 1
+--- !u!114 &575856008
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 575856005}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!223 &575856009
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 575856005}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 5
+  m_TargetDisplay: 0
 --- !u!1 &576152015
 GameObject:
   m_ObjectHideFlags: 0
@@ -5058,10 +5763,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1361226991}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 8, y: 0}
+  m_SizeDelta: {x: -16, y: -8}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &576152017
 MonoBehaviour:
@@ -5128,8 +5833,8 @@ MonoBehaviour:
   m_fontSizeBase: 64
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_fontSizeMin: 14
+  m_fontSizeMax: 40
   m_fontStyle: 16
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -5141,7 +5846,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_TextWrappingMode: 1
+  m_TextWrappingMode: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -5288,6 +5993,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
       insertIndex: -1
       addedObject: {fileID: 634798771}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 634798773}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 634798772}
   m_SourcePrefab: {fileID: 100100000, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
 --- !u!114 &634798768 stripped
 MonoBehaviour:
@@ -5326,6 +6037,47 @@ MonoBehaviour:
   card: 0
   index: 18
   team: 0
+--- !u!114 &634798772
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 634798769}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!223 &634798773
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 634798769}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 5
+  m_TargetDisplay: 0
 --- !u!1001 &665052799
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5429,6 +6181,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 731219833538410463, guid: f1979203b537d41ebbc5857d9569e72f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 665052803}
+    - targetCorrespondingSourceObject: {fileID: 731219833538410463, guid: f1979203b537d41ebbc5857d9569e72f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 665052805}
+    - targetCorrespondingSourceObject: {fileID: 731219833538410463, guid: f1979203b537d41ebbc5857d9569e72f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 665052804}
   m_SourcePrefab: {fileID: 100100000, guid: f1979203b537d41ebbc5857d9569e72f, type: 3}
 --- !u!224 &665052800 stripped
 RectTransform:
@@ -5467,6 +6225,47 @@ MonoBehaviour:
   card: 1
   index: 3
   team: 0
+--- !u!114 &665052804
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 665052801}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!223 &665052805
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 665052801}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 5
+  m_TargetDisplay: 0
 --- !u!1 &679700591
 GameObject:
   m_ObjectHideFlags: 0
@@ -6024,6 +6823,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4847507887344364896, guid: e3efaeda2b07d482b8d659bf5d4c2d83, type: 3}
       insertIndex: -1
       addedObject: {fileID: 709793642}
+    - targetCorrespondingSourceObject: {fileID: 4847507887344364896, guid: e3efaeda2b07d482b8d659bf5d4c2d83, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 709793644}
+    - targetCorrespondingSourceObject: {fileID: 4847507887344364896, guid: e3efaeda2b07d482b8d659bf5d4c2d83, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 709793643}
   m_SourcePrefab: {fileID: 100100000, guid: e3efaeda2b07d482b8d659bf5d4c2d83, type: 3}
 --- !u!224 &709793639 stripped
 RectTransform:
@@ -6062,6 +6867,47 @@ MonoBehaviour:
   card: 0
   index: 1
   team: 0
+--- !u!114 &709793643
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 709793640}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!223 &709793644
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 709793640}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 5
+  m_TargetDisplay: 0
 --- !u!1 &714016225
 GameObject:
   m_ObjectHideFlags: 0
@@ -6095,10 +6941,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 150957861}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 8, y: 0}
+  m_SizeDelta: {x: -16, y: -8}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &714016227
 MonoBehaviour:
@@ -6165,8 +7011,8 @@ MonoBehaviour:
   m_fontSizeBase: 64
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_fontSizeMin: 14
+  m_fontSizeMax: 40
   m_fontStyle: 16
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -6178,7 +7024,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_TextWrappingMode: 1
+  m_TextWrappingMode: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -6325,6 +7171,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4847507887344364896, guid: e3efaeda2b07d482b8d659bf5d4c2d83, type: 3}
       insertIndex: -1
       addedObject: {fileID: 741350437}
+    - targetCorrespondingSourceObject: {fileID: 4847507887344364896, guid: e3efaeda2b07d482b8d659bf5d4c2d83, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 741350439}
+    - targetCorrespondingSourceObject: {fileID: 4847507887344364896, guid: e3efaeda2b07d482b8d659bf5d4c2d83, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 741350438}
   m_SourcePrefab: {fileID: 100100000, guid: e3efaeda2b07d482b8d659bf5d4c2d83, type: 3}
 --- !u!224 &741350434 stripped
 RectTransform:
@@ -6363,6 +7215,47 @@ MonoBehaviour:
   card: 0
   index: 1
   team: 1
+--- !u!114 &741350438
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 741350435}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!223 &741350439
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 741350435}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 5
+  m_TargetDisplay: 0
 --- !u!1001 &770950395
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6474,6 +7367,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
       insertIndex: -1
       addedObject: {fileID: 770950399}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 770950401}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 770950400}
   m_SourcePrefab: {fileID: 100100000, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
 --- !u!224 &770950396 stripped
 RectTransform:
@@ -6512,6 +7411,47 @@ MonoBehaviour:
   card: 0
   index: 7
   team: 0
+--- !u!114 &770950400
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 770950397}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!223 &770950401
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 770950397}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 5
+  m_TargetDisplay: 0
 --- !u!1001 &792838665
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6623,6 +7563,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
       insertIndex: -1
       addedObject: {fileID: 792838669}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 792838671}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 792838670}
   m_SourcePrefab: {fileID: 100100000, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
 --- !u!224 &792838666 stripped
 RectTransform:
@@ -6661,6 +7607,47 @@ MonoBehaviour:
   card: 0
   index: 8
   team: 1
+--- !u!114 &792838670
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 792838667}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!223 &792838671
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 792838667}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 5
+  m_TargetDisplay: 0
 --- !u!1001 &793171431
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6772,6 +7759,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
       insertIndex: -1
       addedObject: {fileID: 793171435}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 793171437}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 793171436}
   m_SourcePrefab: {fileID: 100100000, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
 --- !u!224 &793171432 stripped
 RectTransform:
@@ -6810,6 +7803,47 @@ MonoBehaviour:
   card: 0
   index: 14
   team: 0
+--- !u!114 &793171436
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 793171433}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!223 &793171437
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 793171433}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 5
+  m_TargetDisplay: 0
 --- !u!1 &803337330
 GameObject:
   m_ObjectHideFlags: 0
@@ -7275,7 +8309,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 731219833538410463, guid: f1979203b537d41ebbc5857d9569e72f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 818985606}
   m_SourcePrefab: {fileID: 100100000, guid: f1979203b537d41ebbc5857d9569e72f, type: 3}
 --- !u!224 &818985603 stripped
 RectTransform:
@@ -7287,12 +8324,41 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: -3883210845264612225, guid: f1979203b537d41ebbc5857d9569e72f, type: 3}
   m_PrefabInstance: {fileID: 818985602}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 818985605}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f2759fd88237b4621949c88fa25e8370, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &818985605 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 731219833538410463, guid: f1979203b537d41ebbc5857d9569e72f, type: 3}
+  m_PrefabInstance: {fileID: 818985602}
+  m_PrefabAsset: {fileID: 0}
+--- !u!223 &818985606
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 818985605}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 5
+  m_TargetDisplay: 0
 --- !u!1001 &855053026
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7404,6 +8470,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
       insertIndex: -1
       addedObject: {fileID: 855053030}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 855053032}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 855053031}
   m_SourcePrefab: {fileID: 100100000, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
 --- !u!224 &855053027 stripped
 RectTransform:
@@ -7442,6 +8514,47 @@ MonoBehaviour:
   card: 0
   index: 9
   team: 0
+--- !u!114 &855053031
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 855053028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!223 &855053032
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 855053028}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 5
+  m_TargetDisplay: 0
 --- !u!1 &864867018
 GameObject:
   m_ObjectHideFlags: 0
@@ -7829,6 +8942,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
       insertIndex: -1
       addedObject: {fileID: 900980886}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 900980888}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 900980887}
   m_SourcePrefab: {fileID: 100100000, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
 --- !u!224 &900980883 stripped
 RectTransform:
@@ -7867,6 +8986,47 @@ MonoBehaviour:
   card: 0
   index: 16
   team: 0
+--- !u!114 &900980887
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 900980884}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!223 &900980888
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 900980884}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 5
+  m_TargetDisplay: 0
 --- !u!1 &954206136
 GameObject:
   m_ObjectHideFlags: 0
@@ -8314,6 +9474,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 731219833538410463, guid: f1979203b537d41ebbc5857d9569e72f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 963581931}
+    - targetCorrespondingSourceObject: {fileID: 731219833538410463, guid: f1979203b537d41ebbc5857d9569e72f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 963581933}
+    - targetCorrespondingSourceObject: {fileID: 731219833538410463, guid: f1979203b537d41ebbc5857d9569e72f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 963581932}
   m_SourcePrefab: {fileID: 100100000, guid: f1979203b537d41ebbc5857d9569e72f, type: 3}
 --- !u!114 &963581928 stripped
 MonoBehaviour:
@@ -8352,6 +9518,47 @@ MonoBehaviour:
   card: 1
   index: 0
   team: 0
+--- !u!114 &963581932
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963581929}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!223 &963581933
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963581929}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 5
+  m_TargetDisplay: 0
 --- !u!1001 &968760039
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8463,6 +9670,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
       insertIndex: -1
       addedObject: {fileID: 968760043}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 968760045}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 968760044}
   m_SourcePrefab: {fileID: 100100000, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
 --- !u!224 &968760040 stripped
 RectTransform:
@@ -8501,6 +9714,47 @@ MonoBehaviour:
   card: 0
   index: 10
   team: 0
+--- !u!114 &968760044
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 968760041}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!223 &968760045
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 968760041}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 5
+  m_TargetDisplay: 0
 --- !u!1 &995502038
 GameObject:
   m_ObjectHideFlags: 0
@@ -9082,6 +10336,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1072050517}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1072050519}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1072050518}
   m_SourcePrefab: {fileID: 100100000, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
 --- !u!224 &1072050514 stripped
 RectTransform:
@@ -9120,6 +10380,47 @@ MonoBehaviour:
   card: 0
   index: 5
   team: 1
+--- !u!114 &1072050518
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1072050515}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!223 &1072050519
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1072050515}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 5
+  m_TargetDisplay: 0
 --- !u!1001 &1089073111
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9231,6 +10532,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1089073115}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1089073117}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1089073116}
   m_SourcePrefab: {fileID: 100100000, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
 --- !u!224 &1089073112 stripped
 RectTransform:
@@ -9269,6 +10576,47 @@ MonoBehaviour:
   card: 0
   index: 4
   team: 0
+--- !u!114 &1089073116
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1089073113}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!223 &1089073117
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1089073113}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 5
+  m_TargetDisplay: 0
 --- !u!1 &1098808227
 GameObject:
   m_ObjectHideFlags: 0
@@ -9592,6 +10940,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1123115994}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1123115996}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1123115995}
   m_SourcePrefab: {fileID: 100100000, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
 --- !u!224 &1123115991 stripped
 RectTransform:
@@ -9630,6 +10984,47 @@ MonoBehaviour:
   card: 0
   index: 14
   team: 1
+--- !u!114 &1123115995
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1123115992}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!223 &1123115996
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1123115992}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 5
+  m_TargetDisplay: 0
 --- !u!1 &1128737620
 GameObject:
   m_ObjectHideFlags: 0
@@ -9663,10 +11058,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 130464271}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 8, y: 0}
+  m_SizeDelta: {x: -16, y: -8}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &1128737622
 MonoBehaviour:
@@ -9733,8 +11128,8 @@ MonoBehaviour:
   m_fontSizeBase: 64
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_fontSizeMin: 14
+  m_fontSizeMax: 40
   m_fontStyle: 16
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -9746,7 +11141,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_TextWrappingMode: 1
+  m_TextWrappingMode: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -10247,6 +11642,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4847507887344364896, guid: e3efaeda2b07d482b8d659bf5d4c2d83, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1215360596}
+    - targetCorrespondingSourceObject: {fileID: 4847507887344364896, guid: e3efaeda2b07d482b8d659bf5d4c2d83, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1215360598}
+    - targetCorrespondingSourceObject: {fileID: 4847507887344364896, guid: e3efaeda2b07d482b8d659bf5d4c2d83, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1215360597}
   m_SourcePrefab: {fileID: 100100000, guid: e3efaeda2b07d482b8d659bf5d4c2d83, type: 3}
 --- !u!224 &1215360593 stripped
 RectTransform:
@@ -10285,6 +11686,47 @@ MonoBehaviour:
   card: 0
   index: 12
   team: 0
+--- !u!114 &1215360597
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1215360594}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!223 &1215360598
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1215360594}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 5
+  m_TargetDisplay: 0
 --- !u!1 &1249140844
 GameObject:
   m_ObjectHideFlags: 0
@@ -10510,6 +11952,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1252280324}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1252280326}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1252280325}
   m_SourcePrefab: {fileID: 100100000, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
 --- !u!224 &1252280321 stripped
 RectTransform:
@@ -10548,6 +11996,47 @@ MonoBehaviour:
   card: 0
   index: 9
   team: 1
+--- !u!114 &1252280325
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1252280322}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!223 &1252280326
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1252280322}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 5
+  m_TargetDisplay: 0
 --- !u!1 &1266094446
 GameObject:
   m_ObjectHideFlags: 0
@@ -11089,8 +12578,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 38}
-  m_SizeDelta: {x: 255, y: 78}
+  m_AnchoredPosition: {x: 0, y: 150}
+  m_SizeDelta: {x: 700, y: 68}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!95 &1361226992
 Animator:
@@ -11524,6 +13013,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1474988008}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1474988010}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1474988009}
   m_SourcePrefab: {fileID: 100100000, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
 --- !u!224 &1474988005 stripped
 RectTransform:
@@ -11562,6 +13057,47 @@ MonoBehaviour:
   card: 0
   index: 6
   team: 1
+--- !u!114 &1474988009
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1474988006}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!223 &1474988010
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1474988006}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 5
+  m_TargetDisplay: 0
 --- !u!1 &1485304609
 GameObject:
   m_ObjectHideFlags: 0
@@ -12227,6 +13763,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1547489497}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1547489499}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1547489498}
   m_SourcePrefab: {fileID: 100100000, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
 --- !u!224 &1547489494 stripped
 RectTransform:
@@ -12265,6 +13807,47 @@ MonoBehaviour:
   card: 0
   index: 10
   team: 1
+--- !u!114 &1547489498
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1547489495}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!223 &1547489499
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1547489495}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 5
+  m_TargetDisplay: 0
 --- !u!1 &1594093195
 GameObject:
   m_ObjectHideFlags: 0
@@ -12298,10 +13881,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1249140845}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 8, y: 0}
+  m_SizeDelta: {x: -16, y: -8}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &1594093197
 MonoBehaviour:
@@ -12367,9 +13950,9 @@ MonoBehaviour:
   m_fontSize: 64
   m_fontSizeBase: 64
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 14
+  m_fontSizeMax: 40
   m_fontStyle: 16
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -12381,7 +13964,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_TextWrappingMode: 1
+  m_TextWrappingMode: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -12539,6 +14122,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1651324419}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1651324421}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1651324420}
   m_SourcePrefab: {fileID: 100100000, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
 --- !u!224 &1651324416 stripped
 RectTransform:
@@ -12577,6 +14166,47 @@ MonoBehaviour:
   card: 0
   index: 13
   team: 0
+--- !u!114 &1651324420
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1651324417}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!223 &1651324421
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1651324417}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 5
+  m_TargetDisplay: 0
 --- !u!1001 &1683196544
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12688,6 +14318,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1683196548}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1683196550}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1683196549}
   m_SourcePrefab: {fileID: 100100000, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
 --- !u!224 &1683196545 stripped
 RectTransform:
@@ -12726,6 +14362,47 @@ MonoBehaviour:
   card: 0
   index: 6
   team: 0
+--- !u!114 &1683196549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1683196546}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!223 &1683196550
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1683196546}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 5
+  m_TargetDisplay: 0
 --- !u!1001 &1711070954
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14180,6 +15857,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1844070648}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1844070650}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1844070649}
   m_SourcePrefab: {fileID: 100100000, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
 --- !u!224 &1844070645 stripped
 RectTransform:
@@ -14218,6 +15901,47 @@ MonoBehaviour:
   card: 0
   index: 7
   team: 1
+--- !u!114 &1844070649
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1844070646}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!223 &1844070650
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1844070646}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 5
+  m_TargetDisplay: 0
 --- !u!1001 &1849292010
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14329,6 +16053,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1849292014}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1849292016}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1849292015}
   m_SourcePrefab: {fileID: 100100000, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
 --- !u!224 &1849292011 stripped
 RectTransform:
@@ -14367,6 +16097,47 @@ MonoBehaviour:
   card: 0
   index: 5
   team: 0
+--- !u!114 &1849292015
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1849292012}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!223 &1849292016
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1849292012}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 5
+  m_TargetDisplay: 0
 --- !u!1 &1867308933
 GameObject:
   m_ObjectHideFlags: 0
@@ -15203,6 +16974,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1938698033}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1938698035}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1938698034}
   m_SourcePrefab: {fileID: 100100000, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
 --- !u!224 &1938698030 stripped
 RectTransform:
@@ -15241,6 +17018,47 @@ MonoBehaviour:
   card: 0
   index: 3
   team: 0
+--- !u!114 &1938698034
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1938698031}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!223 &1938698035
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1938698031}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 5
+  m_TargetDisplay: 0
 --- !u!1001 &1973736651
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15352,6 +17170,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1973736655}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1973736657}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1973736656}
   m_SourcePrefab: {fileID: 100100000, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
 --- !u!224 &1973736652 stripped
 RectTransform:
@@ -15390,6 +17214,47 @@ MonoBehaviour:
   card: 0
   index: 17
   team: 1
+--- !u!114 &1973736656
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1973736653}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!223 &1973736657
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1973736653}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 5
+  m_TargetDisplay: 0
 --- !u!1 &1984769597
 GameObject:
   m_ObjectHideFlags: 0
@@ -15560,10 +17425,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 683035140}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 8, y: 0}
+  m_SizeDelta: {x: -16, y: -8}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &1987631740
 MonoBehaviour:
@@ -15629,9 +17494,9 @@ MonoBehaviour:
   m_fontSize: 64
   m_fontSizeBase: 64
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 14
+  m_fontSizeMax: 40
   m_fontStyle: 16
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -15643,7 +17508,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_TextWrappingMode: 1
+  m_TextWrappingMode: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -16706,6 +18571,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2100979846}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2100979848}
+    - targetCorrespondingSourceObject: {fileID: 438137610918726152, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2100979847}
   m_SourcePrefab: {fileID: 100100000, guid: 454bcfd73974e4c03b10ccc58affc854, type: 3}
 --- !u!224 &2100979843 stripped
 RectTransform:
@@ -16744,6 +18615,47 @@ MonoBehaviour:
   card: 0
   index: 8
   team: 0
+--- !u!114 &2100979847
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2100979844}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!223 &2100979848
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2100979844}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 5
+  m_TargetDisplay: 0
 --- !u!1 &2103280635
 GameObject:
   m_ObjectHideFlags: 0

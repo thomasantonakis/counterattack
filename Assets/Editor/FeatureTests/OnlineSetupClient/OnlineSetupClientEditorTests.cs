@@ -40,6 +40,23 @@ public sealed class OnlineSetupClientEditorTests
     private static string Name(GameSettings s,OnlineTeam team)=>team==OnlineTeam.Home?s.homeTeamName:s.awayTeamName;
     [TestCase(false)]
     [TestCase(true)]
+    public void HostSwitchToInternationalPublishesBothNationalTeams(bool hostAway)
+    {
+        Create(hostAway);
+        var setup=host.ViewSettings();
+        setup.matchType="International";
+        setup.squadSize="18";
+        setup.draft=setup.gkDraft="International";
+        setup.homeTeamName="England";setup.awayTeamName="Germany";
+        host.Edit(setup);Flush();
+        var observed=guest.ViewSettings();
+        Assert.That(observed.matchType,Is.EqualTo("International"));
+        Assert.That(observed.homeTeamName,Is.EqualTo("England"));
+        Assert.That(observed.awayTeamName,Is.EqualTo("Germany"));
+        Assert.That(observed.squadSize,Is.EqualTo("18"));
+    }
+    [TestCase(false)]
+    [TestCase(true)]
     public void UnconfirmedEditsReachBothManagers(bool hostAway)
     {
         Create(hostAway);

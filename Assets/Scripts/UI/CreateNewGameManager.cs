@@ -447,7 +447,10 @@ public partial class CreateNewGameManager : MonoBehaviour
     void SetDropDownOptions()
     {
         bool isSinglePlayerCreateMode = IsSinglePlayerCreateMode();
-        List<string> gameModeOptions = isSinglePlayerCreateMode
+        bool onlineCreateMode = GetRequestedCreateLoadGameMode() == ApplicationManager.OnlineGameMode;
+        List<string> gameModeOptions = onlineCreateMode
+            ? new List<string> { ApplicationManager.OnlineGameMode }
+            : isSinglePlayerCreateMode
             ? new List<string> { ApplicationManager.SinglePlayerGameMode }
             : string.Equals(GetRequestedCreateLoadGameMode(), ApplicationManager.HotSeatGameMode, StringComparison.OrdinalIgnoreCase)
                 ? new List<string> { ApplicationManager.HotSeatGameMode }
