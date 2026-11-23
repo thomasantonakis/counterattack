@@ -1,5 +1,8 @@
 # Online session lifecycle
 
+For the proposed host-owned save and cross-session continuation flow, see the
+[online save and resume implementation plan](OnlineSaveAndResume.md).
+
 Current checkpoint (2026-11-16 local): full drafted Room, shared pause, normal
 and required keeper substitutions, emergency nomination and in-flight snapshot
 poses are implemented. Shootout orders now use authenticated team-owned swaps,
