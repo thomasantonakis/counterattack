@@ -115,6 +115,8 @@ No ranked matchmaking, public game browser, spectators, chat, shared pointers,
 automatic CPU replacement, seamless host migration or asynchronous turns are
 required for the initial online release. These are proposed scope limits.
 
+Live invite-only viewing is covered in the [online spectator implementation plan](OnlineSpectators.md).
+
 ## Confirmed content rules
 
 | Item | Online rule |
