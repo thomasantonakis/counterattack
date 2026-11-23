@@ -7,6 +7,18 @@ Hot Seat and Single Player in Room, then applies host movement, duel, header
 and stoppage publications to a fresh guest. It requires no EOS login. Packaged
 presentation acceptance still uses the Windows and macOS paired walkthrough.
 
+For the paired walkthrough follow-up, use the scoped filters and native result
+links in [Online Room walkthrough follow-up](OnlineRoomWalkthroughFollowUp.md).
+The checks cover authored Draft and setup views, native roll and pause projection,
+shootout staging, team pointers, moved-player numbers and substitutions.
+
+For offline Draft presentation and first-pick rolls, use PlayMode fixture
+`OfflineDraftPresentationPlayModeTests` under
+`Assets/Tests/PlayMode/Features/OfflineDraftPresentation/`. It uses fresh
+temporary saves and checks the dealt card layers, eligible slot hover and drop,
+single-line first-pick footer with kickoff placement, and automatic rolls for
+both teams at first pick and kickoff.
+
 For regular online full-time results, use EditMode
 `OnlineMatchConclusionEditorTests` (8 cases) and PlayMode
 `OnlineMatchConclusionPlayModeTests` (18 cases), category `OnlineMatchConclusion`,
