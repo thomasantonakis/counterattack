@@ -36,6 +36,8 @@ public partial class PenaltyShootoutManager
     public bool TryExecuteOnlineOrder(bool home,string action)
     {
         if(!FullOnline || OnlineRoomSession.IsGuest || !matchManager.IsOnlineAuthorityControlled || matchManager.IsPauseMenuOpen || !OnlineOrderSelection)return false;
+        bool nativeRoom = matchManager.gameObject.scene.name == OnlineRoomStartup.SceneName;
+        if (nativeRoom && (home ? onlineHomeReady : onlineAwayReady)) return false;
         var own=home?homeOrder:awayOrder;
         bool ValidOrder(System.Collections.Generic.List<PlayerToken> order,bool side)=>order.Count>0 && order.Distinct().Count()==order.Count
             && order.All(t=>t!=null && t.isHomeTeam==side && GetEligiblePlayingTokens(side).Contains(t));
@@ -56,7 +58,9 @@ public partial class PenaltyShootoutManager
         if(parts?.Length!=3 || parts[0]!="shootout.swap" || !int.TryParse(parts[1],out int first) || !int.TryParse(parts[2],out int second)
             || first==second || action!="shootout.swap:"+first+":"+second)return false;
         int a=own.FindIndex(t=>t.jerseyNumber==first),b=own.FindIndex(t=>t.jerseyNumber==second);if(a<0 || b<0)return false;
-        (own[a],own[b])=(own[b],own[a]);onlineHomeReady=onlineAwayReady=false;return true;
+        (own[a],own[b])=(own[b],own[a]);
+        if (!nativeRoom) onlineHomeReady=onlineAwayReady=false;
+        return true;
     }
     public void ApplyOnlineShootout(OnlineShootoutSnapshot state,PlayerToken[] roster)
     {

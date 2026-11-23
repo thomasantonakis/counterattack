@@ -10,6 +10,8 @@ namespace CounterAttack.Online
         public readonly long revision,sharedPauseRevision,homeAcceptedSequence,awayAcceptedSequence,homePauseSequence,awayPauseSequence;
         public readonly bool connectionHeld,isSharedPaused,keeperActionBlocked,substitutionsAvailable,shootoutSelecting;
         public readonly bool introPending,homeIntroReady,awayIntroReady;
+        public readonly long substitutionReviewId;
+        public readonly bool homeSubstitutionConfirmed, awaySubstitutionConfirmed;
         public readonly bool homeKeeperReplacement,awayKeeperReplacement,homeForcedKeeperSubstitution,awayForcedKeeperSubstitution,homeEmergencyKeeper,awayEmergencyKeeper;
         public readonly IReadOnlyList<string> legalActions;
         private OnlineControlDecision(OnlineGroundPassState source)
@@ -21,6 +23,9 @@ namespace CounterAttack.Online
             connectionHeld=source.connectionHeld;isSharedPaused=source.isSharedPaused;
             introPending=source.introPending;homeIntroReady=source.homeIntroReady;awayIntroReady=source.awayIntroReady;
             keeperActionBlocked=source.keeperActionBlocked;substitutionsAvailable=source.substitutionsAvailable;
+            substitutionReviewId=source.substitutionReview?.id ?? 0;
+            homeSubstitutionConfirmed=source.substitutionReview?.homeConfirmed==true;
+            awaySubstitutionConfirmed=source.substitutionReview?.awayConfirmed==true;
             shootoutSelecting=source.shootout?.selecting==true;
             homeKeeperReplacement=source.homeKeeperReplacement;awayKeeperReplacement=source.awayKeeperReplacement;
             homeForcedKeeperSubstitution=source.homeForcedKeeperSubstitution;awayForcedKeeperSubstitution=source.awayForcedKeeperSubstitution;

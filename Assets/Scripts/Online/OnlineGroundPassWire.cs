@@ -134,6 +134,8 @@ namespace CounterAttack.Online
                 || !OnlineRoomBannerPublication.Valid(state.banners) || state.finalThirdLabelSide is < -1 or > 1
                 || !OnlineRoomSettings.Valid(state.roomSettings) || state.rollPanel?.Valid() == false)
                 return false;
+            if (state.substitutionReview != null && (!state.isSharedPaused || !state.substitutionReview.IsValid()
+                    || state.substitutionReview.id > state.sharedPauseRevision)) return false;
             if(!string.IsNullOrEmpty(state.selectedPlayer) && !state.tokens.Any(token=>token.id==state.selectedPlayer)) return false;
             if (state.rollSequence < rollSequence || state.rollSequence < 0 || !ValidRolls(state) || !ValidHeader(state)) return false;
             var prior = State;

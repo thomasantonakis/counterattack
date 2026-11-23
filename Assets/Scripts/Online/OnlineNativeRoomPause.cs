@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 namespace CounterAttack.Online
 {
     // Binds the existing Room pause menu to the shared control lane.
-    internal sealed class OnlineNativeRoomPause : MonoBehaviour
+    internal sealed partial class OnlineNativeRoomPause : MonoBehaviour
     {
         private OnlineGroundPassBoard board;
         private PauseMenuManager view;
@@ -54,15 +54,28 @@ namespace CounterAttack.Online
                 foreach (bool home in new[] { true, false })
                     foreach (var row in substitutions.GetRows(home))
                         row.gameObject.SetActive(row == localRow);
-                localRow?.outgoingDropdown.onValueChanged.AddListener(_ => RefreshIncoming());
+                localRow?.outgoingDropdown.onValueChanged.AddListener(_ =>
+                {
+                    if (selectingPlayers) RefreshIncoming();
+                });
                 view.substitutionsButton.onClick.AddListener(() =>
                 {
+                    if (state?.keeperActionBlocked != true)
+                    {
+                        board.controls.OpenSubstitutionReview();
+                        return;
+                    }
                     selectingPlayers = true;
                     RefreshSubstitutions();
                     Refresh();
                 });
-                substitutions.confirmButton.onClick.AddListener(SubmitRosterChoice);
+                substitutions.confirmButton.onClick.AddListener(() =>
+                {
+                    if (state?.substitutionReview != null) board.controls.FinishSubstitutionReview(true);
+                    else SubmitRosterChoice();
+                });
                 substitutions.backButton.onClick.AddListener(() => CloseSubstitutionsOrSettings());
+                BindReviewRows();
             }
             view.pausePanel.SetActive(false);
             view.editSettingsPanel.SetActive(false);
@@ -98,7 +111,8 @@ namespace CounterAttack.Online
                 }
             }
             Refresh();
-            if (selectingPlayers) RefreshSubstitutions();
+            if (state.substitutionReview != null) DisplaySubstitutionReview(state.substitutionReview);
+            else if (selectingPlayers) RefreshSubstitutions();
         }
 
         internal void PresentClosedMatch(string message)
@@ -128,6 +142,11 @@ namespace CounterAttack.Online
 
         private bool CloseSubstitutionsOrSettings()
         {
+            if (state?.substitutionReview != null && terminalMessage == null)
+            {
+                if (substitutions.backButton.interactable) board.controls.FinishSubstitutionReview(false);
+                return true;
+            }
             if (!selectingPlayers) return CloseSettings();
             selectingPlayers = false;
             Refresh();
@@ -139,6 +158,8 @@ namespace CounterAttack.Online
             if (localRow == null || state?.tokens == null) return;
             bool replacement = IsHome ? state.homeKeeperReplacement : state.awayKeeperReplacement;
             bool forcedKeeper = IsHome ? state.homeForcedKeeperSubstitution : state.awayForcedKeeperSubstitution;
+            foreach (var row in reviewRows) row.view.gameObject.SetActive(row.view == localRow);
+            substitutions.backButton.interactable = true;
             string previous = Selected(localRow.outgoingDropdown, outgoing)?.id;
             outgoing = state.tokens.Where(token => token.runtime != null && token.runtime.teamSide == board.localTeam.ToString()
                 && token.runtime.isPlaying && token.onBoard && !token.runtime.isSentOff)
@@ -146,6 +167,7 @@ namespace CounterAttack.Online
                     : !forcedKeeper || token.runtime.isGoalKeeper && token.runtime.requiresSubstitution)
                 .OrderBy(token => token.runtime.jerseyNumber).ToArray();
             SetOptions(localRow.outgoingDropdown, outgoing, previous);
+            localRow.outgoingDropdown.interactable = true;
             localRow.incomingDropdown.interactable = !Nomination;
             substitutions.titleText.text = Nomination ? "Nominate goalkeeper" : "Substitutions";
             var settings = board.match.gameData.gameSettings;
@@ -220,16 +242,22 @@ namespace CounterAttack.Online
         {
             bool paused = state?.isSharedPaused == true;
             bool reconnecting = state?.connectionHeld == true;
-            if (!paused || reconnecting || terminalMessage != null) editing = false;
-            if (!paused || reconnecting || terminalMessage != null) selectingPlayers = false;
-            if (substitutions != null) substitutions.gameObject.SetActive(selectingPlayers);
-            view.pausePanel.SetActive((paused || reconnecting || terminalMessage != null) && !editing && !selectingPlayers);
+            bool reviewing = state?.substitutionReview != null && terminalMessage == null;
+            if (!paused || reconnecting || terminalMessage != null || reviewing)
+            {
+                editing = false;
+                selectingPlayers = false;
+            }
+            if (substitutions != null) substitutions.gameObject.SetActive(selectingPlayers || reviewing);
+            view.pausePanel.SetActive((paused || reconnecting || terminalMessage != null) && !editing && !selectingPlayers && !reviewing);
             view.editSettingsPanel.SetActive(editing);
             view.resumeButton.interactable = terminalMessage == null && board.controls.CanResume;
             view.editSettings.interactable = terminalMessage == null && paused && !reconnecting && values != null;
-            view.substitutionsButton.interactable = localRow != null && terminalMessage == null && (Nomination
-                ? board.controls.CanNominateKeeper : state?.substitutionsAvailable == true
-                    && board.controls.CanManageSubstitutions && board.match.GetSubstitutionsRemaining(IsHome) > 0);
+            view.substitutionsButton.interactable = localRow != null && terminalMessage == null
+                && (Nomination ? board.controls.CanNominateKeeper
+                    : board.match.GetSubstitutionsRemaining(IsHome) > 0 && (state?.keeperActionBlocked == true
+                        ? state.substitutionsAvailable && board.controls.CanManageSubstitutions
+                        : board.controls.CanOpenSubstitutionReview));
             if (view.substitutionsButton.GetComponentInChildren<TMP_Text>(true) is { } label)
                 label.text = Nomination ? "Nominate goalkeeper" : "Substitutions";
             view.pauseSaveStatusText.text = terminalMessage ?? (reconnecting ? "Reconnecting. The match is held."

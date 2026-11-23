@@ -58,6 +58,7 @@ namespace CounterAttack.Online
         public OnlineRoomBannerPublication banners;
         public OnlineRollPanelFrame rollPanel;
         public string[] roomSettings;
+        public OnlineSubstitutionReview substitutionReview;
         public int finalThirdLabelSide;
         public bool finalThirdLabelHome;
         public OnlineRollPublication[] rolls;
@@ -386,6 +387,7 @@ namespace CounterAttack.Online
                 state.awayScorers = OnlineScorerPublication.Capture(match.awayScorers);
                 state.banners = match.OnlineEventBanner?.CaptureOnlinePublication();
                 state.roomSettings = OnlineRoomSettings.Capture(match.gameData.gameSettings);
+                state.substitutionReview = sharedPause?.CaptureSubstitutionReview();
                 state.goalMotion = match.goalFlowManager?.isActivated == true;
                 state.rollPanel = match.OnlineRollPanels?.Capture(state.rollSequence);
                 if (state.rollPanel?.resultId > 0)

@@ -25,13 +25,15 @@ public class PenaltyShootoutOrderPanelController : MonoBehaviour
             onlineBoard = board;
             view = GetComponent<PenaltyShootoutOrderPanelView>();
             view.startButton.onClick.AddListener(board.controls.ConfirmShootout);
+            var label = view.startButton.GetComponentInChildren<TMPro.TMP_Text>(true);
+            if (label != null) label.text = "Confirm order";
         }
         gameObject.SetActive(true);
         bool home = board.localTeam == CounterAttack.Online.OnlineTeam.Home;
         view.startButton.interactable = board.controls.CanManageShootout && !(home ? order.homeReady : order.awayReady);
         var settings = board.match.gameData.gameSettings;
-        view.homeHeaderText.text = settings.homeTeamName;
-        view.awayHeaderText.text = settings.awayTeamName;
+        view.homeHeaderText.text = settings.homeTeamName + (order.homeReady ? " · Confirmed" : "");
+        view.awayHeaderText.text = settings.awayTeamName + (order.awayReady ? " · Confirmed" : "");
         List<PlayerToken> Resolve(string[] ids) => ids.Select(id => board.tokens.FirstOrDefault(
             token => CounterAttack.Online.OnlineRollPublication.ActorId(token) == id)).ToList();
         var homeOrder = Resolve(order.homeOrder);
@@ -39,6 +41,10 @@ public class PenaltyShootoutOrderPanelController : MonoBehaviour
         if (!GetOrder(true).SequenceEqual(homeOrder)) RebuildRows(view.GetRows(true), homeOrder);
         if (!GetOrder(false).SequenceEqual(awayOrder)) RebuildRows(view.GetRows(false), awayOrder);
     }
+
+    internal bool CanDragRow(PenaltyShootoutOrderRowView row) => onlineBoard == null
+        || view.startButton.interactable && row.Token != null
+            && row.Token.isHomeTeam == (onlineBoard.localTeam == CounterAttack.Online.OnlineTeam.Home);
 
     public static bool IsAnyPanelActive => activePanelCount > 0;
 
@@ -104,8 +110,7 @@ public class PenaltyShootoutOrderPanelController : MonoBehaviour
 
         if (onlineBoard != null)
         {
-            if (view.startButton.interactable && row.Token != null && targetRow.Token != null
-                && row.Token.isHomeTeam == (onlineBoard.localTeam == CounterAttack.Online.OnlineTeam.Home))
+            if (CanDragRow(row) && targetRow.Token != null)
                 onlineBoard.controls.SwapShootout(row.Token.jerseyNumber, targetRow.Token.jerseyNumber);
             return;
         }

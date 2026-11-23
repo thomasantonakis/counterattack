@@ -43,6 +43,9 @@ namespace CounterAttack.Online
         private bool holdingTime;
         private readonly DuelResolutionPanelController resultPanel;
         private readonly HeaderChallengePanelController headerResultPanel;
+        private OnlineSubstitutionReview substitutionReview;
+        private long lastNonShootoutRevision;
+        internal OnlineSubstitutionReview CaptureSubstitutionReview() => substitutionReview?.Capture();
         public bool ConnectionHeld { get; private set; }
 
         public bool IsPaused { get; private set; }
@@ -68,7 +71,7 @@ namespace CounterAttack.Online
             OnlineCommandReply Reply(OnlineCommandStatus status) => new(status, Revision);
             if (disposed || faulted) return Reply(OnlineCommandStatus.NotReady);
             SynchronizeRequiredKeeperHold();
-            if(protocol.Compatibility.Catalog==OnlineFullRoomBootstrap.Catalog && match.OnlineShootoutManager?.RefreshOnlineOrders()==true)Revision=checked(Revision+1);
+            RefreshShootoutOrders();
             if (control == null || !control.IsValid) return Reply(OnlineCommandStatus.InvalidCommand);
             if (control.MatchId != protocol.MatchId) return Reply(OnlineCommandStatus.WrongMatch);
             if (!protocol.TryGetTeam(connection, out var team)) return Reply(OnlineCommandStatus.UnknownConnection);
@@ -78,32 +81,55 @@ namespace CounterAttack.Online
                     : Reply(OnlineCommandStatus.SequenceConflict);
             if (control.Sequence <= lastSequence[team]) return Reply(OnlineCommandStatus.StaleSequence);
             if (!protocol.BothConnected) return Reply(OnlineCommandStatus.Disconnected);
-            if (control.Revision != Revision) return Reply(OnlineCommandStatus.StaleRevision);
+            bool full=protocol.Compatibility.Catalog==OnlineFullRoomBootstrap.Catalog;
+            bool nativeRoom=full && match.gameObject.scene.name==OnlineRoomStartup.SceneName;
+            bool rosterReview = control.ActionId.StartsWith(OnlineSubstitutionReview.Prefix, StringComparison.Ordinal);
             bool shootout=control.ActionId.StartsWith("shootout.",StringComparison.Ordinal);
+            bool currentReview = rosterReview && control.ActionId != OnlineSubstitutionReview.OpenAction
+                && substitutionReview != null && control.Revision >= substitutionReview.id && control.Revision <= Revision;
+            bool currentShootout = nativeRoom && shootout && control.Revision >= lastNonShootoutRevision
+                && control.Revision <= Revision;
+            // Changes by the other manager can overlap. A manager still has to see
+            // their latest accepted change before editing or confirming again.
+            acceptedRevision.TryGetValue((team, lastSequence[team]), out long ownRevision);
+            if (control.Revision != Revision && (!(currentReview || currentShootout) || control.Revision < ownRevision))
+                return Reply(OnlineCommandStatus.StaleRevision);
             if (control.DecisionId != (shootout?"shootout-order":"shared-pause")) return Reply(OnlineCommandStatus.WrongDecision);
             bool substitution=ParseSubstitution(control.ActionId,out int outgoing,out int incoming);
             bool nomination=ParseEmergencyKeeper(control.ActionId,out int nominee);
-            bool full=protocol.Compatibility.Catalog==OnlineFullRoomBootstrap.Catalog;
             bool settings = control.ActionId.StartsWith(OnlineRoomSettings.Prefix, StringComparison.Ordinal);
             bool rollAck = control.ActionId.StartsWith(OnlineRoomRollPanels.AcknowledgePrefix, StringComparison.Ordinal);
             bool introAck = control.ActionId == "intro.ready";
             var requiredTeam=default(OnlineTeam);bool required=full && match.TryGetOnlineRequiredKeeperTeam(out requiredTeam);
-            if (control.ActionId != RequestAction && control.ActionId != ResumeAction && !substitution && !nomination && !shootout && !settings && !rollAck && !introAck) return Reply(OnlineCommandStatus.IllegalAction);
+            if (control.ActionId != RequestAction && control.ActionId != ResumeAction && !substitution && !nomination && !shootout && !settings && !rollAck && !introAck && !rosterReview) return Reply(OnlineCommandStatus.IllegalAction);
+            if (rosterReview && (!nativeRoom || !IsPaused || ConnectionHeld || required || !match.AreSubstitutionsAvailable))
+                return Reply(OnlineCommandStatus.NotReady);
+            if (nativeRoom && substitution && !required) return Reply(OnlineCommandStatus.IllegalAction);
             if(introAck && (!full || ConnectionHeld || OnlineRoomSession.Current?.ShowOpeningIntro!=true))return Reply(OnlineCommandStatus.NotReady);
             if(shootout && (!full || IsPaused || ConnectionHeld || match.OnlineShootoutManager?.OnlineOrderSelection!=true))return Reply(OnlineCommandStatus.NotReady);
             if((substitution || nomination) && required && requiredTeam!=team)return Reply(OnlineCommandStatus.WrongTeam);
             // Required team choices do not transfer another manager's user pause.
-            if (IsPaused && Requester != team && !settings && !((substitution || nomination) && required && requiredTeam==team)) return Reply(OnlineCommandStatus.WrongTeam);
+            if (IsPaused && Requester != team && !settings && !rosterReview && !((substitution || nomination) && required && requiredTeam==team)) return Reply(OnlineCommandStatus.WrongTeam);
             if (rollAck && (!full || IsPaused || ConnectionHeld)) return Reply(OnlineCommandStatus.NotReady);
             if (settings && (!full || !IsPaused || ConnectionHeld)) return Reply(OnlineCommandStatus.NotReady);
             if (control.ActionId == RequestAction && (IsPaused || match.IsPauseMenuOpen && !ConnectionHeld)
                 || control.ActionId == ResumeAction && !IsPaused) return Reply(OnlineCommandStatus.NotReady);
             if(substitution && (!IsPaused || ConnectionHeld || !match.AreSubstitutionsAvailable))return Reply(OnlineCommandStatus.NotReady);
             if(nomination && (!IsPaused || ConnectionHeld))return Reply(OnlineCommandStatus.NotReady);
-            if(control.ActionId==ResumeAction && full && match.HasGoalkeeperActionBlockingResume())return Reply(OnlineCommandStatus.NotReady);
+            if(control.ActionId==ResumeAction && full && (match.HasGoalkeeperActionBlockingResume() || substitutionReview != null))
+                return Reply(OnlineCommandStatus.NotReady);
 
             var nextRevision = rollAck || introAck ? Revision : checked(Revision + 1);
-            if(shootout)
+            if (rosterReview)
+            {
+                try
+                {
+                    var result = OnlineSubstitutionReview.Apply(match, team, control.ActionId, nextRevision, ref substitutionReview);
+                    if (result != OnlineCommandStatus.Accepted) return Reply(result);
+                }
+                catch { faulted = true; throw; }
+            }
+            else if(shootout)
             {
                 try{if(!match.OnlineShootoutManager.TryExecuteOnlineOrder(team==OnlineTeam.Home,control.ActionId))return Reply(OnlineCommandStatus.IllegalAction);}
                 catch{faulted=true;throw;}
@@ -156,6 +182,7 @@ namespace CounterAttack.Online
                 IsPaused = false; Requester = null;
             }
             ApplyHold();
+            if (!shootout && nextRevision > Revision) lastNonShootoutRevision = nextRevision;
             Revision = nextRevision;
             lastSequence[team] = control.Sequence;
             receipts[team].Add(control.Sequence, control); order[team].Enqueue(control.Sequence);
@@ -170,14 +197,22 @@ namespace CounterAttack.Online
         public OnlineGroundPassState Capture(OnlineGroundPassAuthority authority)
         {
             SynchronizeRequiredKeeperHold();
-            if(protocol.Compatibility.Catalog==OnlineFullRoomBootstrap.Catalog && match.OnlineShootoutManager?.RefreshOnlineOrders()==true)Revision=checked(Revision+1);
+            RefreshShootoutOrders();
             return authority.Capture(this);
         }
+
+        private void RefreshShootoutOrders()
+        {
+            if (protocol.Compatibility.Catalog == OnlineFullRoomBootstrap.Catalog && match.OnlineShootoutManager?.RefreshOnlineOrders() == true)
+                lastNonShootoutRevision = Revision = checked(Revision + 1);
+        }
+
         private void SynchronizeRequiredKeeperHold()
         {
             if(disposed || faulted || IsPaused || protocol.Compatibility.Catalog!=OnlineFullRoomBootstrap.Catalog || OnlineRoomSession.IsGuest
                 || OnlineRoomSession.Current?.HasInitialData!=true || !match.TryGetOnlineRequiredKeeperTeam(out var team))return;
-            Revision=checked(Revision+1);Requester=team;IsPaused=true;ApplyHold();
+            lastNonShootoutRevision = Revision = checked(Revision + 1);
+            Requester=team;IsPaused=true;ApplyHold();
         }
 
         // A transport hold is independent of requester-owned pause. Releasing

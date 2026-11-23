@@ -172,7 +172,27 @@ namespace CounterAttack.Online
         private bool CanAct => connected && !pending && state != null && !state.connectionHeld && !state.isSharedPaused
             && state.owner == team.ToString();
 
-        internal bool CanResume => CanManageOwnPause && !state.keeperActionBlocked;
+        internal bool CanResume => CanManageOwnPause && !state.keeperActionBlocked && state.substitutionReviewId==0;
+        internal bool CanOpenSubstitutionReview => connected && !pending && state?.isSharedPaused==true
+            && !state.connectionHeld && state.substitutionsAvailable && !state.keeperActionBlocked && state.substitutionReviewId==0;
+        internal bool CanEditSubstitutionReview => connected && !pending && state?.isSharedPaused==true
+            && !state.connectionHeld && state.substitutionReviewId>0
+            && !(team==OnlineTeam.Home ? state.homeSubstitutionConfirmed : state.awaySubstitutionConfirmed);
+
+        internal void OpenSubstitutionReview()
+        {
+            if (CanOpenSubstitutionReview) Control(OnlineSubstitutionReview.OpenAction);
+        }
+
+        internal void SetSubstitutionOrder(int row, int outgoing, int incoming)
+        {
+            if (CanEditSubstitutionReview) Control(OnlineSubstitutionReview.PickAction(state.substitutionReviewId, row, outgoing, incoming));
+        }
+
+        internal void FinishSubstitutionReview(bool confirm)
+        {
+            if (CanEditSubstitutionReview) Control(OnlineSubstitutionReview.ReviewAction(state.substitutionReviewId, confirm));
+        }
 
         private void SetStatus(string message)
         {
@@ -265,7 +285,7 @@ namespace CounterAttack.Online
             if(action.StartsWith("roster.substitute:",StringComparison.Ordinal)
                 && (!CanManageSubstitutions || !state.substitutionsAvailable))return;
             if(action.StartsWith("keeper.nominate:",StringComparison.Ordinal) && !CanNominateKeeper)return;
-            if(action==OnlineSharedPause.ResumeAction && state.keeperActionBlocked)return;
+            if(action==OnlineSharedPause.ResumeAction && !CanResume)return;
             Emit(new OnlineGroundPassMessage { kind = "control", matchId = state.matchId, sequence = checked(++controlSequence),
                 revision = state.sharedPauseRevision, decisionId = shootout?"shootout-order":"shared-pause", actionId = action });
         }

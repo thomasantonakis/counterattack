@@ -30,6 +30,10 @@ public sealed class OnlineNativeRoomPlayModeTests
     public IEnumerator HostResetsToSecondHalfAfterTheWhistle()
         => (IEnumerator)Bridge.GetMethod("RunNativeProjection").Invoke(fixture, new object[] { "half-time" });
 
+    [UnityTest]
+    public IEnumerator TeamColorsMatchCommandOwnershipAndLocalUiStaysLocal()
+        => (IEnumerator)Bridge.GetMethod("RunNativeInputOwnership").Invoke(fixture, null);
+
     [UnityTearDown]
     public IEnumerator Cleanup()
     {

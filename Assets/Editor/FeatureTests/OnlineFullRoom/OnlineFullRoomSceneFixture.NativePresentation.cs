@@ -121,4 +121,85 @@ public sealed partial class OnlineFullRoomSceneFixture
             .GetField("numberText", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(slot);
         return text.text;
     }
+
+    public IEnumerator RunNativeInputOwnership()
+    {
+        InitializeFixture();
+        SuppressLegacyRoomRunner();
+        var data = Data(16, false);
+        var protocol = NativePresentationProtocol();
+        yield return LoadNativeRoom(data, false, protocol.MatchId);
+        var board = Object.FindAnyObjectByType<OnlineRoomStartup>().Board;
+        var authority = new OnlineGroundPassAuthority(board.match, protocol);
+        pause = new OnlineSharedPause(protocol, board.match);
+        var home = pause.Capture(authority);
+        Assert.That(home.owner, Is.EqualTo("Home"));
+        board.controls.Configure(OnlineTeam.Away);
+        board.Display(home, "host");
+        AssertExpectedTeamPalette(board, home);
+        Assert.That(board.boardInput.TryKey(KeyCode.Return), Is.False);
+        VerifyLocalPresentation(board);
+        var command = OnlineGroundPassMessage.Command(home, 1, OnlineGroundPassAuthority.KickoffConfirmAction).ToCommand();
+        Assert.That(authority.Submit("a", command).Status, Is.EqualTo(OnlineCommandStatus.WrongTeam));
+        Assert.That(authority.Submit("h", command).Status, Is.EqualTo(OnlineCommandStatus.Accepted));
+        var away = pause.Capture(authority);
+        Assert.That(away.owner, Is.EqualTo("Away"));
+        board.Display(away, "host");
+        AssertExpectedTeamPalette(board, away);
+        pause.Dispose();
+        pause = null;
+
+        yield return LoadPresentationGuest(data, protocol.MatchId, nativeRoom: true);
+        board = Object.FindAnyObjectByType<OnlineRoomStartup>().Board;
+        board.controls.Configure(OnlineTeam.Home);
+        var replica = new OnlineGroundPassReplica(protocol.MatchId, board.tokens.Select(OnlineRollPublication.ActorId), OnlineFullRoomBootstrap.Catalog);
+        ApplyPublication(replica, board, home);
+        AssertExpectedTeamPalette(board, home);
+        VerifyLocalPresentation(board);
+        ApplyPublication(replica, board, away);
+        AssertExpectedTeamPalette(board, away);
+        Assert.That(board.boardInput.TryKey(KeyCode.Return), Is.False);
+    }
+
+    private static void AssertExpectedTeamPalette(OnlineGroundPassBoard board, OnlineGroundPassState state)
+    {
+        Assert.That(state.instruction?.owner, Is.EqualTo(state.owner));
+        var settings = board.match.gameData.gameSettings;
+        var palette = TokenKitCatalog.ResolveInstructionPalette(state.owner == "Home" ? settings.homeKit : settings.awayKit, Color.white, Color.black);
+        Assert.That(board.instructionMonitor.instructionText.color, Is.EqualTo(palette.Secondary));
+        var background = (Image)typeof(GameDebugMonitor).GetField("instructionPanelImage", BindingFlags.NonPublic | BindingFlags.Instance)
+            .GetValue(board.instructionMonitor);
+        var backgroundColor = palette.Primary;
+        backgroundColor.a = .82f;
+        Assert.That(background.color, Is.EqualTo(backgroundColor));
+    }
+
+    private static void VerifyLocalPresentation(OnlineGroundPassBoard board)
+    {
+        int sent = 0;
+        void Count(OnlineGroundPassMessage _) => sent++;
+        board.controls.Requested += Count;
+        try
+        {
+            var before = board.match.currentState;
+            float timeScale = Time.timeScale;
+            var camera = board.boardCamera.GetComponent<CameraController>();
+            Assert.That(camera.TryHandlePresetKey(new KeyPressData(KeyCode.Alpha2, shift: false, ctrl: false, alt: false)), Is.True);
+            var stats = Object.FindAnyObjectByType<MatchStatsUI>();
+            stats.TogglePanel();
+            board.boardInput.PresentHover(default, false);
+            var input = Object.FindAnyObjectByType<GameInputManager>();
+            input.SetLineupHoverToken(board.tokens[1]);
+            Assert.That(board.boardInput.TryKey(KeyCode.Space), Is.True);
+            Assert.That(RoomInspectionCard.Instance.IsOpen, Is.True);
+            board.controls.Escape();
+            Assert.That(RoomInspectionCard.Instance.IsOpen, Is.False);
+            input.SetLineupHoverToken(null);
+            stats.TogglePanel();
+            Assert.That(board.match.currentState, Is.EqualTo(before));
+            Assert.That(Time.timeScale, Is.EqualTo(timeScale));
+            Assert.That(sent, Is.Zero);
+        }
+        finally { board.controls.Requested -= Count; }
+    }
 }
