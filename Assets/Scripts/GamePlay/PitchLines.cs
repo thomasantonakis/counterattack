@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using CounterAttack.Online;
 using TMPro;
 using UnityEngine;
 
@@ -311,6 +312,16 @@ public class PitchLines : MonoBehaviour
         actionLabels.RemoveAll(label => label == null || label.Text == null || label.Background == null);
     }
 
+    private int onlineFinalThirdSide;
+    private bool onlineFinalThirdHome;
+
+    public void ApplyOnlineFinalThirdLabel(int side, bool home)
+    {
+        onlineFinalThirdSide = side;
+        onlineFinalThirdHome = home;
+        UpdateActionLabelColors();
+    }
+
     private void UpdateActionLabelColors()
     {
         if (actionLabels == null || actionLabels.Count == 0)
@@ -323,8 +334,18 @@ public class PitchLines : MonoBehaviour
 
         int activeSide = 0;
         bool expectingHomeTeam = false;
-        bool hasActiveFinalThirdLabel = finalThirdManager != null
-            && finalThirdManager.TryGetPitchActionLabelState(out activeSide, out expectingHomeTeam);
+        bool hasActiveFinalThirdLabel;
+        if (OnlineRoomSession.IsGuest)
+        {
+            activeSide = onlineFinalThirdSide;
+            expectingHomeTeam = onlineFinalThirdHome;
+            hasActiveFinalThirdLabel = activeSide != 0;
+        }
+        else
+        {
+            hasActiveFinalThirdLabel = finalThirdManager != null
+                && finalThirdManager.TryGetPitchActionLabelState(out activeSide, out expectingHomeTeam);
+        }
 
         TokenKitInstructionPalette activePalette = expectingHomeTeam
             ? homeInstructionPalette

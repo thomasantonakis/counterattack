@@ -33,6 +33,8 @@ namespace CounterAttack.Online
 
         public void Back() => SceneManager.LoadScene("MainMenu");
 
+        public void Exit() => Application.Quit();
+
         public static bool TryReadLobbyCode(string input, out string code)
         {
             code = input?.Trim();

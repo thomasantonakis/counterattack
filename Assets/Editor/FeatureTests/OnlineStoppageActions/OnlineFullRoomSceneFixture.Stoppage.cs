@@ -31,6 +31,9 @@ public sealed partial class OnlineFullRoomSceneFixture
         void Requested(OnlineGroundPassMessage message){var wire=new OnlineGroundPassWire();OnlineGroundPassMessage decoded=null;foreach(var packet in OnlineGroundPassWire.Encode(message))decoded=wire.Receive(packet,packet.Length);accepted=decoded.ToCommand();Assert.That(authority.Submit(own,accepted).Status,Is.EqualTo(OnlineCommandStatus.Accepted));board.controls.Reply(new OnlineGroundPassMessage{status="Accepted"});}
         board.controls.Requested+=Requested;
         try{if(automatic){match.AdvanceOnlineAuthorityTime(DecisionTimingConfig.AutomaticRollSeconds+.1f);Assert.That(accepted,Is.Null,"The host timer rolls without pretending a client command arrived");}else Assert.That(board.boardInput.TryKey(KeyCode.R),Is.True);}finally{board.controls.Requested-=Requested;}
+        Assert.That(continuations, Is.Zero, "The completed roll holds the native continuation");
+        float deadline = Time.realtimeSinceStartup + 5.8f;
+        while (continuations == 0 && Time.realtimeSinceStartup < deadline) yield return null;
         Assert.That(match.IsWaitingForExtraActionsRoll,Is.False);Assert.That(match.extraActionsDetermined,Is.True);Assert.That(match.extraActionsTotal,Is.EqualTo(Mathf.Min(2+face,extra?3:7)));Assert.That(match.extraActionsRemaining,Is.EqualTo(match.extraActionsTotal));Assert.That(continuations,Is.EqualTo(1));
         var after=pause.Capture(authority);Assert.That(after.legalActions,Does.Not.Contain("stoppage.roll"));Assert.That(after.rolls.Last().context,Is.EqualTo("stoppage_extra_actions"));Assert.That(after.rolls.Last().roll,Is.EqualTo(face));
         if(accepted!=null)Assert.That(authority.Submit(own,accepted).Status,Is.EqualTo(OnlineCommandStatus.Duplicate));

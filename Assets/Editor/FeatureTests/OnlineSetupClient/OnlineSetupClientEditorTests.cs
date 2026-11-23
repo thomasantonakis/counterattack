@@ -38,6 +38,24 @@ public sealed class OnlineSetupClientEditorTests
     private void Ready(){Confirm(host);Confirm(guest);Assert.That(host.BothReady && guest.BothReady,Is.True);Assert.That(authority.Capture().configurationRevision,Is.Zero,"unchanged confirmation preserves the other player's agreement");}
     private static void Name(GameSettings s,OnlineTeam team,string value){if(team==OnlineTeam.Home)s.homeTeamName=value;else s.awayTeamName=value;}
     private static string Name(GameSettings s,OnlineTeam team)=>team==OnlineTeam.Home?s.homeTeamName:s.awayTeamName;
+    [TestCase(false)]
+    [TestCase(true)]
+    public void UnconfirmedEditsReachBothManagers(bool hostAway)
+    {
+        Create(hostAway);
+        var hostSelection=host.ViewSettings();
+        Name(hostSelection,host.Team,"Host live");
+        hostSelection.halfDuration=30;
+        host.Edit(hostSelection);
+        var guestSelection=guest.ViewSettings();
+        Name(guestSelection,guest.Team,"Guest live");
+        guest.Edit(guestSelection);
+        Flush();
+        Assert.That(Name(guest.ViewSettings(),host.Team),Is.EqualTo("Host live"));
+        Assert.That(Name(host.ViewSettings(),guest.Team),Is.EqualTo("Guest live"));
+        Assert.That(guest.ViewSettings().halfDuration,Is.EqualTo(30));
+        Assert.That(host.LocalReady || guest.LocalReady,Is.False);
+    }
     [Test] public void ClientFlow([Values(false,true)]bool hostAway,[Values("agree-start","local-edit","remote-edit","pending-edit","reconnect","rejected","role-filter","detached","duplicate-ack","stale-snapshot","wrong-match","revision-conflict")]string branch)
     {
         Create(hostAway);
@@ -57,12 +75,12 @@ public sealed class OnlineSetupClientEditorTests
             var own=host.ViewSettings();Name(own,host.Team,"Host unsent edit");host.Edit(own);
             var theirs=guest.ViewSettings();Name(theirs,guest.Team,"Guest confirmed edit");Name(theirs,host.Team,"Forged opponent");theirs.halfDuration=30;guest.Edit(theirs);
             Assert.That(guest.ViewSettings().halfDuration,Is.EqualTo(45));Assert.That(Name(guest.ViewSettings(),host.Team),Is.Not.EqualTo("Forged opponent"));
-            Confirm(guest);Assert.That(Name(host.ViewSettings(),host.Team),Is.EqualTo("Host unsent edit"));
+            Flush();Confirm(guest);Assert.That(Name(host.ViewSettings(),host.Team),Is.EqualTo("Host unsent edit"));
             Assert.That(Name(host.ViewSettings(),guest.Team),Is.EqualTo("Guest confirmed edit"));Assert.That(authority.Capture().settings.halfDuration,Is.EqualTo(45));return;
         }
         if(branch=="pending-edit")
         {
-            var first=guest.ViewSettings();Name(first,guest.Team,"First selection");guest.Edit(first);Assert.That(guest.Confirm(guest.ViewSettings()),Is.True);
+            var first=guest.ViewSettings();Name(first,guest.Team,"First selection");guest.Edit(first);Assert.That(guest.Pending,Is.True);
             var second=guest.ViewSettings();Name(second,guest.Team,"Second selection");guest.Edit(second);Flush();
             Assert.That(guest.Pending,Is.False);Assert.That(guest.LocalReady,Is.False);Assert.That(Name(guest.ViewSettings(),guest.Team),Is.EqualTo("Second selection"));
             Confirm(guest);Assert.That(Name(authority.Capture().settings,guest.Team),Is.EqualTo("Second selection"));return;
@@ -78,7 +96,7 @@ public sealed class OnlineSetupClientEditorTests
             var draft=guest.ViewSettings();Name(draft,guest.Team,"Keep this draft");guest.Edit(draft);guest.Confirm(guest.ViewSettings());
             var state=authority.Capture();var direct=new OnlineSetupRequest{matchId=state.matchId,sequence=1,revision=state.revision,intent=OnlineSetupIntent.Settings,settings=state.settings};direct.settings.halfDuration=30;
             Assert.That(authority.Submit(hostConnection,direct).Status,Is.EqualTo(OnlineCommandStatus.Accepted));Flush();
-            Assert.That(guest.LastReply,Is.EqualTo(OnlineCommandStatus.StaleRevision));Assert.That(guest.Pending,Is.False);
+            Assert.That(guest.LastReply,Is.EqualTo(OnlineCommandStatus.Accepted));Assert.That(guest.Pending,Is.False);
             Assert.That(Name(guest.ViewSettings(),guest.Team),Is.EqualTo("Keep this draft"));Assert.That(guest.ViewSettings().halfDuration,Is.EqualTo(30));Confirm(guest);return;
         }
         if(branch=="detached")

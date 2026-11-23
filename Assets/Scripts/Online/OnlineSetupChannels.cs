@@ -34,6 +34,13 @@ namespace CounterAttack.Online
         protected OnlineSessionMessage Hello(OnlineSetupState state=null)=>new(){kind="hello",protocol=compatibility.Protocol,rules=compatibility.Rules,catalog=compatibility.Catalog,state=state};
         protected bool Compatible(OnlineSessionMessage message)=>message.protocol==compatibility.Protocol && message.rules==compatibility.Rules && message.catalog==compatibility.Catalog;
         protected static bool ValidNonce(string nonce)=>Guid.TryParseExact(nonce,"N",out var guid) && guid!=Guid.Empty;
+        protected void BindDraftDrag()
+        {
+            Draft.DragPublished+=frame=>
+            {
+                if(Ready)Send(new OnlineSessionMessage{kind="draft-drag",draftDrag=frame});
+            };
+        }
         public bool Receive(string authenticatedAccount,byte[] packet,int length)
         {
             if(authenticatedAccount!=remoteAccount)return false;
@@ -53,11 +60,12 @@ namespace CounterAttack.Online
                     if(accepted && message.status=="ping")Send(new OnlineSessionMessage{kind="heartbeat",status="pong",sequence=message.sequence});
                     else if(accepted)Latency.Replied(message.sequence);
                 }
+                else if(message.kind=="draft-drag")accepted=Ready && Draft?.ReceiveDrag(message.draftDrag)==true;
                 else accepted=Dispatch(message);
             }
             if(accepted)LastReceived=clock();return accepted;
         }
-        public void Tick()
+        public virtual void Tick()
         {
             if(!Ready || clock()<nextHeartbeat)return;
             nextHeartbeat=clock()+1;long sequence=checked(++ping);Latency.Sent(sequence);
@@ -97,6 +105,11 @@ namespace CounterAttack.Online
             if(DraftAuthority!=null)Draft.Apply(DraftAuthority.Capture());
         }
         public void EnableDraft(Func<GameSettings,OnlineDraftAuthority> factory)=>draftFactory=factory??throw new ArgumentNullException(nameof(factory));
+        public override void Tick()
+        {
+            base.Tick();
+            if(Ready && DraftAuthority?.AdvanceRollResult()==true)PublishDraft();
+        }
         private void PublishDraft()
         {
             var setup=Authority.Capture();
@@ -104,7 +117,7 @@ namespace CounterAttack.Online
             {
                 DraftAuthority=draftFactory(setup.settings);
                 if(DraftAuthority==null)return;
-                Draft=new OnlineDraftClient(matchId,protocol.HostTeam);Draft.Requested+=LocalDraft;
+                Draft=new OnlineDraftClient(matchId,protocol.HostTeam);Draft.Requested+=LocalDraft;BindDraftDrag();
             }
             if(DraftAuthority==null)return;
             var snapshot=DraftAuthority.Capture();
@@ -183,7 +196,7 @@ namespace CounterAttack.Online
                 if(Draft==null)
                 {
                     var candidate=new OnlineDraftClient(matchId,Client.Team);if(!candidate.Apply(message.draftState))return false;
-                    Draft=candidate;Draft.Requested+=r=>Send(new OnlineSessionMessage{kind="draft-request",draftRequest=r});
+                    Draft=candidate;Draft.Requested+=r=>Send(new OnlineSessionMessage{kind="draft-request",draftRequest=r});BindDraftDrag();
                 }
                 if(message.kind=="draft-state")return Draft.Apply(message.draftState);
                 return Enum.TryParse<OnlineCommandStatus>(message.status,out var draftStatus) && Draft.Receive(message.sequence,draftStatus,message.draftState);

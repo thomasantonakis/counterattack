@@ -36,9 +36,10 @@ public sealed class RoomMatchIntro : MonoBehaviour
 
     private void Awake()
     {
-        if (CounterAttack.Online.OnlineRoomSession.Current != null) { enabled = false; return; }
+        if (CounterAttack.Online.OnlineRoomSession.Current is { ShowOpeningIntro: false }) { enabled = false; return; }
         Instance = this;
-        IsHoldingMatch = ApplicationManager.Instance != null && ApplicationManager.Instance.ConsumeDraftRoomIntro();
+        IsHoldingMatch = CounterAttack.Online.OnlineRoomSession.Current?.ShowOpeningIntro
+            ?? (ApplicationManager.Instance != null && ApplicationManager.Instance.ConsumeDraftRoomIntro());
         if (introUI != null) introUI.SetActive(false);
         if (IsHoldingMatch) HideHud();
         if (skipButton != null) skipButton.onClick.AddListener(Skip);
@@ -54,7 +55,8 @@ public sealed class RoomMatchIntro : MonoBehaviour
             if (Time.realtimeSinceStartup >= deadline) { Finish(); yield break; }
             yield return null;
         }
-        if (MatchManager.Instance.gameData.runtimeSnapshot != null || introUI == null || teamNames == null || skipButton == null || pathControls == null || pathControls.Length < 3)
+        bool freshOnlineRoom = CounterAttack.Online.OnlineRoomSession.Current?.ShowOpeningIntro == true;
+        if ((!freshOnlineRoom && MatchManager.Instance.gameData.runtimeSnapshot != null) || introUI == null || teamNames == null || skipButton == null || pathControls == null || pathControls.Length < 3)
         { Finish(); yield break; }
         var settings = MatchManager.Instance.gameData.gameSettings;
         if (teamNames != null) teamNames.gameObject.SetActive(false);

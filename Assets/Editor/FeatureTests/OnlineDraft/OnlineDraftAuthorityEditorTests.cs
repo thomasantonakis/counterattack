@@ -14,18 +14,56 @@ public sealed class OnlineDraftAuthorityEditorTests
     {var s=draft.Capture();return new(){matchId=s.matchId,sequence=(actor==OnlineTeam.Home?s.homeSequence:s.awaySequence)+1,revision=s.revision,intent=intent,cardId=card,slot=slot,otherSlot=other};}
     private string Connection(OnlineTeam team)=>team==OnlineTeam.Home?"h":"a";
     private OnlineCommandStatus Submit(OnlineTeam actor,OnlineDraftIntent intent,string card=null,int slot=0,int other=0)=>draft.Submit(Connection(actor),Request(actor,intent,card,slot,other)).Status;
-    private void Create(bool hostAway,int size)
+    private void Create(bool hostAway,int size,Func<double> clock=null)
     {
         var version=new OnlineCompatibility("draft-test","rules","catalog");
         protocol=new("draft-test","home","away",hostAway?"away":"home",version);
         protocol.BindAuthenticatedAccount("home","h",version);protocol.BindAuthenticatedAccount("away","a",version);
         var settings=OnlineSetupAgreementEditorTests.Valid();settings.squadSize=size.ToString();
-        dice.Clear();draft=new(protocol,settings,OnlineDraftCatalog.Load(),_=>0,()=>dice.Dequeue());
+        dice.Clear();draft=new(protocol,settings,OnlineDraftCatalog.Load(),_=>0,()=>dice.Dequeue(),clock);
+    }
+    [TestCase(true)]
+    [TestCase(false)]
+    public void CompletedRollHoldsBeforePicksOrReroll(bool tie)
+    {
+        double now=4;
+        Create(false,16,()=>now);
+        dice.Enqueue(6);dice.Enqueue(tie?6:1);
+        Assert.That(Submit(OnlineTeam.Home,OnlineDraftIntent.Roll),Is.EqualTo(OnlineCommandStatus.Accepted));
+        Assert.That(Submit(OnlineTeam.Away,OnlineDraftIntent.Roll),Is.EqualTo(OnlineCommandStatus.Accepted));
+        var result=draft.Capture();
+        Assert.That(result.phase,Is.EqualTo("roll-result"));
+        Assert.That(result.homeRoll,Is.EqualTo(6));
+        Assert.That(result.awayRoll,Is.EqualTo(tie?6:1));
+        Assert.That(result.cards,Is.Empty);
+        Assert.That(Submit(OnlineTeam.Home,OnlineDraftIntent.Roll),Is.EqualTo(OnlineCommandStatus.NotReady));
+        now=8.999;
+        Assert.That(draft.AdvanceRollResult(),Is.False);
+        now=9;
+        Assert.That(draft.AdvanceRollResult(),Is.True);
+        Assert.That(draft.Capture().phase,Is.EqualTo(tie?"roll":"pick"));
+        Assert.That(draft.AdvanceRollResult(),Is.False);
     }
     private void StartPicks(bool homeWins=true)
     {dice.Enqueue(homeWins?6:1);dice.Enqueue(homeWins?1:6);Assert.That(Submit(OnlineTeam.Home,OnlineDraftIntent.Roll),Is.EqualTo(OnlineCommandStatus.Accepted));Assert.That(Submit(OnlineTeam.Away,OnlineDraftIntent.Roll),Is.EqualTo(OnlineCommandStatus.Accepted));}
     private void Pick()
-    {var s=draft.Capture();var roster=s.turn==OnlineTeam.Home?s.home:s.away;int slot=Array.FindIndex(roster,c=>c==null)+1;Assert.That(Submit(s.turn,OnlineDraftIntent.Pick,s.cards[0].id,slot),Is.EqualTo(OnlineCommandStatus.Accepted));}
+    {var s=draft.Capture();var roster=s.turn==OnlineTeam.Home?s.home:s.away;int slot=Array.FindIndex(roster,c=>c==null)+1;Assert.That(Submit(s.turn,OnlineDraftIntent.Pick,s.cards.First(card=>card!=null).id,slot),Is.EqualTo(OnlineCommandStatus.Accepted));}
+    [Test]
+    public void PickLeavesMiddleOfferEmptyUntilTheNextBatch()
+    {
+        Create(false,16);
+        StartPicks();
+        var before=draft.Capture();
+        Assert.That(Submit(OnlineTeam.Home,OnlineDraftIntent.Pick,before.cards[1].id,2),Is.EqualTo(OnlineCommandStatus.Accepted));
+        Assert.That(draft.Capture().cards.Select(card=>card?.id),
+            Is.EqualTo(new[]{before.cards[0].id,null,before.cards[2].id,before.cards[3].id}));
+        Pick();
+        Pick();
+        Pick();
+        var next=draft.Capture();
+        Assert.That(next.batch,Is.EqualTo(before.batch+1));
+        Assert.That(next.cards,Has.All.Not.Null);
+    }
     [Test] public void RealCatalogDraft([Values(false,true)]bool hostAway,[Values(16,18)]int size,[Values("roll","ties","batch","boundaries","identity","duplicate","snapshot","swap","recovery","complete")]string branch)
     {
         Create(hostAway,size);var initial=draft.Capture();
@@ -49,18 +87,18 @@ public sealed class OnlineDraftAuthorityEditorTests
         if(branch=="boundaries")
         {
             var s=draft.Capture();long revision=s.revision;
-            Assert.That(Submit(OnlineTeam.Home,OnlineDraftIntent.Pick,s.cards[0].id,1),Is.EqualTo(OnlineCommandStatus.IllegalAction));
+            Assert.That(Submit(OnlineTeam.Home,OnlineDraftIntent.Pick,s.cards.First(card=>card!=null).id,1),Is.EqualTo(OnlineCommandStatus.IllegalAction));
             Assert.That(Submit(OnlineTeam.Home,OnlineDraftIntent.Pick,"unknown",2),Is.EqualTo(OnlineCommandStatus.IllegalAction));
-            Assert.That(Submit(OnlineTeam.Away,OnlineDraftIntent.Pick,s.cards[0].id,2),Is.EqualTo(OnlineCommandStatus.WrongTeam));
-            Assert.That(Submit(OnlineTeam.Home,OnlineDraftIntent.Pick,s.cards[0].id,size+1),Is.EqualTo(OnlineCommandStatus.IllegalAction));
+            Assert.That(Submit(OnlineTeam.Away,OnlineDraftIntent.Pick,s.cards.First(card=>card!=null).id,2),Is.EqualTo(OnlineCommandStatus.WrongTeam));
+            Assert.That(Submit(OnlineTeam.Home,OnlineDraftIntent.Pick,s.cards.First(card=>card!=null).id,size+1),Is.EqualTo(OnlineCommandStatus.IllegalAction));
             Assert.That(Submit(OnlineTeam.Home,OnlineDraftIntent.Ready),Is.EqualTo(OnlineCommandStatus.NotReady));Assert.That(draft.Capture().revision,Is.EqualTo(revision));return;
         }
         if(branch=="duplicate")
         {
-            var s=draft.Capture();var r=Request(OnlineTeam.Home,OnlineDraftIntent.Pick,s.cards[0].id,2);
+            var s=draft.Capture();var r=Request(OnlineTeam.Home,OnlineDraftIntent.Pick,s.cards.First(card=>card!=null).id,2);
             Assert.That(draft.Submit("h",r).Status,Is.EqualTo(OnlineCommandStatus.Accepted));
             Assert.That(draft.Submit("h",r).Status,Is.EqualTo(OnlineCommandStatus.Duplicate));
-            r.slot=3;Assert.That(draft.Submit("h",r).Status,Is.EqualTo(OnlineCommandStatus.SequenceConflict));Assert.That(draft.Capture().cards.Length,Is.EqualTo(3));return;
+            r.slot=3;Assert.That(draft.Submit("h",r).Status,Is.EqualTo(OnlineCommandStatus.SequenceConflict));Assert.That(draft.Capture().cards.Count(card=>card!=null),Is.EqualTo(3));return;
         }
         if(branch=="snapshot")
         {

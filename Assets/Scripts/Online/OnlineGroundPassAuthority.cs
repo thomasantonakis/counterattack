@@ -38,7 +38,8 @@ namespace CounterAttack.Online
         public bool isSharedPaused, connectionHeld;
         public bool ballOnBoard, ballMoving, attackHasPossession, passActive, awaitingTarget, awaitingRoll;
         public bool movementAvailable, firstTimePassAvailable, groundPassAvailable;
-        public bool movementActive, playerMoving;
+        public bool movementActive, playerMoving, goalMotion;
+        public bool ShouldStreamPresentation() => ballMoving || playerMoving || goalMotion;
         public string selectedPlayer;
         public int ballX, ballZ, selectedX, selectedZ, interceptorX, interceptorZ;
         public bool hasSelectedTarget, hasInterceptor;
@@ -51,6 +52,12 @@ namespace CounterAttack.Online
         public bool halfExpired,stoppageAwaitingRoll,stoppageDetermined;
         public int stoppageTotal,stoppageRemaining;
         public MatchManager.TeamStats homeStats, awayStats;
+        public MatchManager.GoalEvent[] homeScorers, awayScorers;
+        public OnlineRoomBannerPublication banners;
+        public OnlineRollPanelFrame rollPanel;
+        public string[] roomSettings;
+        public int finalThirdLabelSide;
+        public bool finalThirdLabelHome;
         public OnlineRollPublication[] rolls;
         public OnlineHeaderObservation header;
         public OnlineGroundPassPresentation roomPose;
@@ -353,9 +360,40 @@ namespace CounterAttack.Online
             // Action-switch offers are appended after the primary phase decision.
             // Every lane must still obey a Room pause, intro or transport hold.
             if(match.IsGameplayInputBlocked || state.isSharedPaused || state.connectionHeld)actions.Clear();
-            state.legalActions = actions.OrderBy(a => a, StringComparer.Ordinal).ToArray();
-            if(state.catalogId==OnlineFullRoomBootstrap.Catalog)state.instruction=OnlineInstructionObservation.Capture(match.OnlineInstructionMonitor,state.owner);
+            if (state.catalogId == OnlineFullRoomBootstrap.Catalog)
+            {
+                state.instruction = OnlineInstructionObservation.Capture(match.OnlineInstructionMonitor, state.owner);
+                if(state.movementActive && match.movementPhaseManager is { } movement)
+                {
+                    string section=movement.isMovementPhaseDef?"Defensive movement":movement.isMovementPhase2f2?"Two-for-two movement":"Attacking movement";
+                    int remaining=movement.isMovementPhaseDef?movement.DefendingMoveLimit-movement.defendersMoved
+                        :movement.isMovementPhase2f2?movement.TwoForTwoMoveLimit-movement.attackersMovedIn2f2
+                        :movement.AttackingMoveLimit-movement.attackersMoved;
+                    state.instruction??=new OnlineInstructionObservation{owner=state.owner is "Home" or "Away"?state.owner:"Neutral"};
+                    string summary=$"{section} · {Math.Max(0,remaining)} moves remaining";
+                    string detail=state.instruction.text;
+                    state.instruction.text=string.IsNullOrEmpty(detail)?summary
+                        :summary+"\n"+detail.Substring(0,Math.Min(detail.Length,OnlineInstructionObservation.TextLimit-summary.Length-1));
+                }
+                state.homeScorers = OnlineScorerPublication.Capture(match.homeScorers);
+                state.awayScorers = OnlineScorerPublication.Capture(match.awayScorers);
+                state.banners = match.OnlineEventBanner?.CaptureOnlinePublication();
+                state.roomSettings = OnlineRoomSettings.Capture(match.gameData.gameSettings);
+                state.goalMotion = match.goalFlowManager?.isActivated == true;
+                state.rollPanel = match.OnlineRollPanels?.Capture(state.rollSequence);
+                if (state.rollPanel?.resultId > 0)
+                {
+                    actions.Clear();
+                    state.awaitingRoll = state.awaitingTarget = false;
+                }
+                if (match.finalThirdManager != null && match.finalThirdManager.TryGetPitchActionLabelState(out int side, out bool home))
+                {
+                    state.finalThirdLabelSide = side;
+                    state.finalThirdLabelHome = home;
+                }
+            }
             if(state.catalogId==OnlineFullRoomBootstrap.Catalog)state.hexPreviews=OnlineHexPreview.Capture(match.hexGrid,match.ball.CommittedGoalTarget??(state.hasSelectedTarget?match.hexGrid.GetHexCellAt(new Vector3Int(state.selectedX,0,state.selectedZ)):null));
+            state.legalActions = actions.OrderBy(a => a, StringComparer.Ordinal).ToArray();
             return state;
         }
 

@@ -9,6 +9,7 @@ namespace CounterAttack.Online
         public static OnlineRoomSession Current { get; private set; }
         public static bool IsGuest => Current?.GuestReplica == true;
         public bool GuestReplica { get; }
+        public bool ShowOpeningIntro { get; }
         public string MatchId { get; }
         public bool HasInitialData=>initialData!=null;
         public string InitialPlaySessionId=>initialData?.playSessionId;
@@ -17,13 +18,14 @@ namespace CounterAttack.Online
         private bool disposed;
 
         public OnlineRoomSession(string matchId,bool guestReplica):this(matchId,guestReplica,null,null){}
-        public OnlineRoomSession(string matchId, bool guestReplica,MatchManager.GameData bootstrap,string authoritySavePath=null)
+        public OnlineRoomSession(string matchId, bool guestReplica,MatchManager.GameData bootstrap,string authoritySavePath=null,bool showOpeningIntro=false)
         {
             OnlineProtocolIds.Require(matchId, nameof(matchId));
             if (Current != null) throw new InvalidOperationException("An online Room session is already active");
             if(bootstrap!=null && !guestReplica && (string.IsNullOrEmpty(authoritySavePath) || !System.IO.Path.IsPathFullyQualified(authoritySavePath)))
                 throw new ArgumentException("An online authority requires its own absolute session save path",nameof(authoritySavePath));
             initialData=OnlineRoomLaunchData.Copy(bootstrap);AuthoritySavePath=guestReplica?null:authoritySavePath;
+            ShowOpeningIntro=showOpeningIntro && bootstrap!=null && bootstrap.runtimeSnapshot==null;
             MatchId = matchId; GuestReplica = guestReplica; Current = this;
         }
         public MatchManager.GameData CaptureInitialData()=>OnlineRoomLaunchData.Copy(initialData);

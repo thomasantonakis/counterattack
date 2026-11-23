@@ -21,7 +21,8 @@ namespace CounterAttack.Online
             double nextTimedSnapshot = 0;
             string sentBoundary = null;
             double nextPresentation = 0;
-            long presentationSequence = 0;
+            long presentationSequence = 0, pointerSequence = 0;
+            double nextPointer = 0;
             OnlineGroundPassState finishingSnapshot = null;
             void Publish(OnlineGroundPassState state, string status)
             {
@@ -85,6 +86,8 @@ namespace CounterAttack.Online
                         EOSProofCheck.Require(ready, "Manual handshake before commands");
                         if (message.kind == "command" || message.kind == "control")
                         { if (finishingSnapshot == null) Dispatch(guestConnection, message, false); }
+                        else if (message.kind == "pointer" && board.liveFullRoom)
+                            board.pointers?.ShowRemote(message.pointer, message.sequence);
                         else if (message.kind == "done")
                         {
                             var final = finishingSnapshot ?? pause.Capture(authority);
@@ -111,7 +114,13 @@ namespace CounterAttack.Online
                         sent = state.publicationSequence; sentBoundary = boundary;
                         nextTimedSnapshot = RecoveryNow + .25; nextPublication = RecoveryNow + 1;
                     }
-                    if (ready && !done && (state.ballMoving || state.playerMoving) && RecoveryNow >= nextPresentation)
+                    if (ready && recovery.CanSubmit && !done && board.pointers != null && RecoveryNow >= nextPointer)
+                    {
+                        Send(new OnlineGroundPassMessage { kind = "pointer", pointer = board.pointers.CaptureLocal(),
+                            sequence = ++pointerSequence, connectionGeneration = recovery.Generation, peerNonce = nonce });
+                        nextPointer = RecoveryNow + 0.08;
+                    }
+                    if (ready && !done && state.ShouldStreamPresentation() && RecoveryNow >= nextPresentation)
                     {
                         var position = board.match.ball.transform.position;
                         Send(new OnlineGroundPassMessage { kind = "presentation", peerNonce = nonce, connectionGeneration = recovery.Generation,
@@ -134,7 +143,8 @@ namespace CounterAttack.Online
             using var transport = ObserveManualTransport();
             board.controls.Configure(OnlineTeam.Home); board.controls.SetConnected(false);
             string nonce = Guid.NewGuid().ToString("N");
-            long generation = 0, heartbeat = 0;
+            long generation = 0, heartbeat = 0, pointerSequence = 0;
+            double nextPointer = 0;
             double lastHost = RecoveryNow, nextHeartbeat = 0, nextRejoin = 0;
             void SendCurrent(OnlineGroundPassMessage message)
             { message.peerNonce = nonce; message.connectionGeneration = generation; Send(message); }
@@ -153,6 +163,12 @@ namespace CounterAttack.Online
                     {
                         var message = messages.Dequeue();
                         if (message.peerNonce != nonce || message.connectionGeneration < generation) continue;
+                        if (message.kind == "pointer" && board.liveFullRoom)
+                        {
+                            if (generation > 0 && generation == message.connectionGeneration)
+                                board.pointers?.ShowRemote(message.pointer, message.sequence);
+                            continue;
+                        }
                         lastHost = RecoveryNow;
                         if (message.status == "rejoin-required")
                         {
@@ -187,6 +203,11 @@ namespace CounterAttack.Online
                             transportUnavailable = false; nonce = Guid.NewGuid().ToString("N"); generation = 0; heartbeat = 0; doneSent = false;
                             SendCurrent(new OnlineGroundPassMessage { kind = "hello" }); lastHost = RecoveryNow; nextRejoin = RecoveryNow + 1;
                         }
+                    }
+                    if (generation > 0 && state != null && !state.connectionHeld && board.pointers != null && RecoveryNow >= nextPointer)
+                    {
+                        SendCurrent(new OnlineGroundPassMessage { kind = "pointer", pointer = board.pointers.CaptureLocal(), sequence = ++pointerSequence });
+                        nextPointer = RecoveryNow + 0.08;
                     }
                     if (generation > 0 && RecoveryNow >= nextHeartbeat)
                     { SendCurrent(new OnlineGroundPassMessage { kind = "hello", status = "heartbeat", sequence = ++heartbeat }); nextHeartbeat = RecoveryNow + 1; }

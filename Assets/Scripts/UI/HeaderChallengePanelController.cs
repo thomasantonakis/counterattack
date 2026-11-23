@@ -54,6 +54,7 @@ public sealed class HeaderChallengePanelController : MonoBehaviour
     private static int escapeFrame = -1;
     private static bool escapeHeld;
     public bool IsOpen { get; private set; }
+    public bool IsOnlineResultReady => IsOpen && complete;
     public bool IsResultHeld { get; private set; }
     public static bool IsVisible => Instance != null && Instance.IsOpen;
     public static bool IsHoldingContinuation => IsVisible && !Instance.IsAwaitingRoll;
@@ -306,8 +307,9 @@ public sealed class HeaderChallengePanelController : MonoBehaviour
     }
     private IEnumerator WaitForDismissal()
     {
-        complete = true; closeAt = Time.unscaledTime + resultSeconds;
-        if (onlineAuthorityHeld) onlineSecondsRemaining = resultSeconds;
+        float duration = onlineAuthorityControlled ? Mathf.Min(5f, resultSeconds) : resultSeconds;
+        complete = true; closeAt = Time.unscaledTime + duration;
+        if (onlineAuthorityHeld) onlineSecondsRemaining = duration;
         UpdateFooter();
         while (IsOpen) yield return null;
     }

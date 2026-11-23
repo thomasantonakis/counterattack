@@ -84,23 +84,37 @@ namespace CounterAttack.Online
             bool substitution=ParseSubstitution(control.ActionId,out int outgoing,out int incoming);
             bool nomination=ParseEmergencyKeeper(control.ActionId,out int nominee);
             bool full=protocol.Compatibility.Catalog==OnlineFullRoomBootstrap.Catalog;
+            bool settings = control.ActionId.StartsWith(OnlineRoomSettings.Prefix, StringComparison.Ordinal);
+            bool rollAck = control.ActionId.StartsWith(OnlineRoomRollPanels.AcknowledgePrefix, StringComparison.Ordinal);
             var requiredTeam=default(OnlineTeam);bool required=full && match.TryGetOnlineRequiredKeeperTeam(out requiredTeam);
-            if (control.ActionId != RequestAction && control.ActionId != ResumeAction && !substitution && !nomination && !shootout) return Reply(OnlineCommandStatus.IllegalAction);
+            if (control.ActionId != RequestAction && control.ActionId != ResumeAction && !substitution && !nomination && !shootout && !settings && !rollAck) return Reply(OnlineCommandStatus.IllegalAction);
             if(shootout && (!full || IsPaused || ConnectionHeld || match.OnlineShootoutManager?.OnlineOrderSelection!=true))return Reply(OnlineCommandStatus.NotReady);
             if((substitution || nomination) && required && requiredTeam!=team)return Reply(OnlineCommandStatus.WrongTeam);
             // Required team choices do not transfer another manager's user pause.
-            if (IsPaused && Requester != team && !((substitution || nomination) && required && requiredTeam==team)) return Reply(OnlineCommandStatus.WrongTeam);
+            if (IsPaused && Requester != team && !settings && !((substitution || nomination) && required && requiredTeam==team)) return Reply(OnlineCommandStatus.WrongTeam);
+            if (rollAck && (!full || IsPaused || ConnectionHeld)) return Reply(OnlineCommandStatus.NotReady);
+            if (settings && (!full || !IsPaused || ConnectionHeld)) return Reply(OnlineCommandStatus.NotReady);
             if (control.ActionId == RequestAction && (IsPaused || match.IsPauseMenuOpen && !ConnectionHeld)
                 || control.ActionId == ResumeAction && !IsPaused) return Reply(OnlineCommandStatus.NotReady);
             if(substitution && (!IsPaused || ConnectionHeld || !match.AreSubstitutionsAvailable))return Reply(OnlineCommandStatus.NotReady);
             if(nomination && (!IsPaused || ConnectionHeld))return Reply(OnlineCommandStatus.NotReady);
             if(control.ActionId==ResumeAction && full && match.HasGoalkeeperActionBlockingResume())return Reply(OnlineCommandStatus.NotReady);
 
-            var nextRevision = checked(Revision + 1);
+            var nextRevision = rollAck ? Revision : checked(Revision + 1);
             if(shootout)
             {
                 try{if(!match.OnlineShootoutManager.TryExecuteOnlineOrder(team==OnlineTeam.Home,control.ActionId))return Reply(OnlineCommandStatus.IllegalAction);}
                 catch{faulted=true;throw;}
+            }
+            else if (rollAck)
+            {
+                if (match.OnlineRollPanels?.Acknowledge(team, control.ActionId) != true)
+                    return Reply(OnlineCommandStatus.IllegalAction);
+            }
+            else if (settings)
+            {
+                try { if (!OnlineRoomSettings.TryApplyCommand(match, control.ActionId)) return Reply(OnlineCommandStatus.IllegalAction); }
+                catch { faulted = true; throw; }
             }
             else if(substitution)
             {

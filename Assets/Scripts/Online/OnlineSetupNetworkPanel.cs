@@ -35,6 +35,8 @@ namespace CounterAttack.Online
             joining = joinCode != null;
             hostButton.gameObject.SetActive(!joining);
             joinButton.gameObject.SetActive(false);
+            lobbyCode.gameObject.SetActive(!joining);
+            copyButton.gameObject.SetActive(!joining);
             var leaveLabel = leaveButton.GetComponentInChildren<TMP_Text>();
             if (joining && leaveLabel != null) leaveLabel.text = "Cancel / Back";
             if (!joining && OnlineFrontendSession.Current == null) Show("Host a private session to invite another manager.");
@@ -105,7 +107,11 @@ namespace CounterAttack.Online
             hostButton.interactable=joinButton.interactable=idle && sessionPrefab!=null;
             leaveButton.interactable=joining || !idle;copyButton.interactable=current?.LobbyCode!=null;
             lobbyCode.readOnly=true;
-            if(current?.LobbyCode!=null && lobbyCode.text!=current.LobbyCode)lobbyCode.SetTextWithoutNotify(current.LobbyCode);
+            if(!joining)
+            {
+                var code=current?.LobbyCode??string.Empty;
+                if(lobbyCode.text!=code)lobbyCode.SetTextWithoutNotify(code);
+            }
             if(current?.Client==null)setup.createGameButton.interactable=false;
             if(current==null)
             {

@@ -12,4 +12,6 @@ public sealed class OnlineDraftScenePlayModeTests
     [UnityTearDown] public IEnumerator Cleanup(){if(fixture!=null)yield return (IEnumerator)Bridge.GetMethod("Cleanup").Invoke(fixture,null);fixture=null;}
     [UnityTest] public IEnumerator AuthoredDraft([Values(false,true)]bool hostAway,[Values(false,true)]bool localHost,[Values("pick","ownership","swap","recovery","complete")]string branch)
         =>(IEnumerator)Bridge.GetMethod("Run").Invoke(fixture,new object[]{hostAway,localHost,branch});
+    [UnityTest] public IEnumerator RemainingCardsStayInTheirAuthoredPositions()
+        =>(IEnumerator)Bridge.GetMethod("Run").Invoke(fixture,new object[]{false,true,"fixed-offer-positions"});
 }

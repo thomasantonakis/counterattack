@@ -33,6 +33,7 @@ namespace CounterAttack.Online
         public long connectionGeneration;
         public OnlineGroundPassState state;
         public OnlineGroundPassPresentation presentation;
+        public OnlineRoomPointer pointer;
         public string compressedState;
         public int expandedStateBytes;
         internal OnlineGroundPassMessage WithCompressedState(string payload,int size)
@@ -54,7 +55,11 @@ namespace CounterAttack.Online
         public const int HeaderSize=OnlineReliableJsonWire<OnlineGroundPassMessage>.HeaderSize;
         private readonly OnlineReliableJsonWire<OnlineGroundPassMessage> framing=new(0xCA07,Valid);
         private static bool Valid(OnlineGroundPassMessage message)=>message.version=="ground-wire-v7" && OnlineProtocolIds.IsValid(message.matchId)
-            && new[]{"hello","command","state","presentation","reply","control","control-reply","done","finish"}.Contains(message.kind)
+            && new[]{"hello","command","state","presentation","pointer","reply","control","control-reply","done","finish"}.Contains(message.kind)
+            && (message.kind == "pointer"
+                ? message.pointer?.Valid() == true && message.sequence > 0 && message.connectionGeneration > 0
+                    && Guid.TryParseExact(message.peerNonce, "N", out _) && message.state == null && message.presentation == null
+                : message.pointer == null)
             && (message.compressedState==null?message.expandedStateBytes==0:message.kind=="state" && message.state==null && message.compressedState.Length>0
                 && message.expandedStateBytes>0 && message.expandedStateBytes<=OnlineFullRoomStateCodec.ExpandedLimit);
         public static IEnumerable<byte[]> Encode(OnlineGroundPassMessage message,bool compactPresentation=false)
@@ -124,6 +129,10 @@ namespace CounterAttack.Online
                 || state.legalActions.Any(a => !OnlineProtocolIds.IsValid(a))) return false;
             if (catalog != null && state.catalogId != catalog || roster != null && !roster.SetEquals(state.tokens.Select(token => token.id))) return false;
             if(!OnlineRosterPublication.Valid(state) || !OnlineInstructionObservation.Valid(state.instruction) || !OnlineHexPreview.Valid(state.hexPreviews))return false;
+            if (!OnlineScorerPublication.Valid(state.homeScorers) || !OnlineScorerPublication.Valid(state.awayScorers)
+                || !OnlineRoomBannerPublication.Valid(state.banners) || state.finalThirdLabelSide is < -1 or > 1
+                || !OnlineRoomSettings.Valid(state.roomSettings) || state.rollPanel?.Valid() == false)
+                return false;
             if(!string.IsNullOrEmpty(state.selectedPlayer) && !state.tokens.Any(token=>token.id==state.selectedPlayer)) return false;
             if (state.rollSequence < rollSequence || state.rollSequence < 0 || !ValidRolls(state) || !ValidHeader(state)) return false;
             var prior = State;

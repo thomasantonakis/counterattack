@@ -105,13 +105,14 @@ namespace CounterAttack.Online
             message.matchId = matchId;
             if (sendOverride != null) { sendOverride(message); return; }
             bool compact=OnlineCompactPresentation.Use(board.liveFullRoom,message.kind);
+            bool transient = compact || message.kind == "pointer";
             foreach (var fragment in OnlineGroundPassWire.Encode(message,compact))
             {
                 var send = new SendPacketOptions { LocalUserId = session.UserId, RemoteUserId = remote,
                     SocketId = socket, Channel = Channel, Data = new ArraySegment<byte>(fragment),
-                    AllowDelayedDelivery = !compact, Reliability = compact?PacketReliability.UnreliableUnordered:PacketReliability.ReliableOrdered };
+                    AllowDelayedDelivery = !transient, Reliability = transient ? PacketReliability.UnreliableUnordered : PacketReliability.ReliableOrdered };
                 var result = session.Platform.GetP2PInterface().SendPacket(ref send);
-                if(OnlineCompactPresentation.DropTransient(compact,result))return;
+                if(OnlineCompactPresentation.DropTransient(transient,result))return;
                 if (manualTransport && (result == Result.NoConnection || result == Result.TimedOut || result == Result.LimitExceeded))
                 { MarkTransportUnavailable(); return; }
                 EOSProofCheck.Require(result == Result.Success, "Sending gameplay fragment");

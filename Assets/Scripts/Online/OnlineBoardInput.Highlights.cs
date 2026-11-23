@@ -7,6 +7,7 @@ namespace CounterAttack.Online
         private readonly HashSet<HexCell> publishedHintHexes=new();
         private readonly Dictionary<HexCell,float> publishedPreviewHeights=new();
         private readonly HashSet<HexCell> publishedGoalMarkers=new();
+        private readonly HashSet<HexCell> hostHintHexes=new();
         private Vector3 publishedGoalBallPose;
         private void ClearPublishedHighlights()
         {
@@ -21,8 +22,23 @@ namespace CounterAttack.Online
         private void RefreshPublishedHighlights(OnlineGroundPassState publication)
         {
             ClearPublishedHighlights();
-            if(!isActiveAndEnabled || board==null || !board.liveFullRoom || !OnlineRoomSession.IsGuest)return;
+            ClearHostHints();
+            if(!isActiveAndEnabled || board==null || !board.liveFullRoom)return;
             if(publication==null || publication.connectionHeld || publication.isSharedPaused || publication.stage=="blocked")return;
+            if(!OnlineRoomSession.IsGuest)
+            {
+                foreach(var hint in OnlinePublishedHexHints.Build(publication))
+                {
+                    var hex=board.grid.GetHexCellAt(new Vector3Int(hint.Key.x,0,hint.Key.y));
+                    if(hex==null || hex.isInGoal!=0)continue;
+                    hex.SetOnlineHostHint(hint.Value switch{
+                        "PaceAvailable"=>Color.yellow,
+                        "ReachOverlayAttacker"=>new Color(.18f,.83f,1,1),
+                        _=>new Color(1,.48f,.05f,1)});
+                    hostHintHexes.Add(hex);
+                }
+                return;
+            }
             bool MarkerPermitted(HexCell hex)=>hex.isInGoal==0 || publication.hexPreviews==null
                 || System.Array.Exists(publication.hexPreviews,p=>p.x==hex.coordinates.x && p.z==hex.coordinates.z && p.committedGoal);
             foreach(var hint in OnlinePublishedHexHints.Build(publication))
@@ -53,6 +69,11 @@ namespace CounterAttack.Online
             foreach(var hex in publishedGoalMarkers)if(hex!=null)hex.SetCommittedGoalTarget(false);
             publishedGoalMarkers.Clear();
         }
-        private void OnDisable()=>ClearPublishedHighlights();
+        private void ClearHostHints()
+        {
+            foreach(var hex in hostHintHexes)if(hex!=null)hex.SetOnlineHostHint(null);
+            hostHintHexes.Clear();
+        }
+        private void OnDisable(){SetLocalGoalHover(null);ClearHostHints();ClearPublishedHighlights();}
     }
 }

@@ -22,7 +22,7 @@ public sealed partial class OnlineDraftSceneFixture
     }
     private void PickAnyDragCard()
     {
-        var s=host.Draft.Capture();string id=s.freeSelection?s.available[0]:s.cards[0].id;var roster=s.turn==OnlineTeam.Home?s.home:s.away;
+        var s=host.Draft.Capture();string id=s.freeSelection?s.available[0]:s.cards.First(card=>card!=null).id;var roster=s.turn==OnlineTeam.Home?s.home:s.away;
         Assert.That(Client(s.turn).Request(OnlineDraftIntent.Pick,id,Array.FindIndex(roster,c=>c==null)+1),Is.True);Flush();
     }
     private IEnumerator RunDrag(OnlineDraftView view,OnlineDraftClient client,string branch)
@@ -46,7 +46,7 @@ public sealed partial class OnlineDraftSceneFixture
             Assert.That(client.Capture().phase,Is.EqualTo("pick"));
         }
         if((pool || needsPlayer) && !client.Capture().repeatable && client.Capture().turn!=client.Team)PickAnyDragCard();
-        if(needsPlayer){view.SelectCard(0);view.SelectSlot(client.Team,2);Flush();}
+        if(needsPlayer){view.SelectCard(Math.Max(0,Array.FindIndex(client.Capture().cards,card=>card!=null)));view.SelectSlot(client.Team,2);Flush();}
         if(branch=="ready")
         {
             for(int i=0;i<64 && host.Draft.Capture().phase=="pick";i++)PickAnyDragCard();Assert.That(client.Capture().phase,Is.EqualTo("review"));
@@ -55,7 +55,8 @@ public sealed partial class OnlineDraftSceneFixture
         }
         yield return null;
         var before=client.Capture();var own=client.Team==OnlineTeam.Home?before.home:before.away;
-        var start=pool?view.cards[0].GetComponent<OnlineDraftClickTarget>():slots[branch is "roster" or "kind" or "large" or "ready" or "empty"?1:0].GetComponent<OnlineDraftClickTarget>();
+        int offerIndex=Math.Max(0,Array.FindIndex(before.cards,card=>card!=null));
+        var start=pool?view.cards[offerIndex].GetComponent<OnlineDraftClickTarget>():slots[branch is "roster" or "kind" or "large" or "ready" or "empty"?1:0].GetComponent<OnlineDraftClickTarget>();
         int destination=branch=="last-card"?Array.FindIndex(own,c=>c==null)+1:branch=="large"?18:branch=="keeper"?12:pool?(branch=="gk-card"?1:2):branch is "roster" or "ready"?3:branch=="same"?1:branch=="kind"?1:12;
         var target=(branch=="foreign"?foreign:slots)[destination-1].GetComponent<OnlineDraftClickTarget>();
         var rect=start.GetComponent<RectTransform>();var original=rect.anchoredPosition;var parent=rect.parent;int sibling=rect.GetSiblingIndex();var group=start.GetComponent<CanvasGroup>();Assert.That(group,Is.Not.Null,"Use the authored drag canvas group");float alpha=group.alpha;bool raycasts=group.blocksRaycasts;
@@ -63,7 +64,7 @@ public sealed partial class OnlineDraftSceneFixture
         Action<OnlineDraftRequest> observe=r=>{requests++;request=r;};client.Requested+=observe;
         var canvas=start.GetComponentInParent<Canvas>();var data=new PointerEventData(EventSystem.current){button=PointerEventData.InputButton.Left,pointerDrag=start.gameObject,position=RectTransformUtility.WorldToScreenPoint(canvas.worldCamera,rect.position),dragging=true,pointerPressRaycast=new RaycastResult{gameObject=start.gameObject,module=canvas.GetComponent<GraphicRaycaster>()}};
         bool invalidBegin=branch is "empty" or "roll-blocked";
-        string chosen=pool?(before.freeSelection?before.available[0]:before.cards[0].id):own[start.index-1]?.id;
+        string chosen=pool?(before.freeSelection?before.available[0]:before.cards[offerIndex].id):own[start.index-1]?.id;
         try
         {
             Assert.That(ExecuteEvents.Execute(start.gameObject,data,ExecuteEvents.beginDragHandler),Is.True,"Authored online control must handle BeginDrag");

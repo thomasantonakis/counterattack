@@ -12,4 +12,6 @@ public sealed class OnlineDraftVariantScenePlayModeTests
     [UnityTearDown] public IEnumerator Cleanup(){if(fixture!=null)yield return (IEnumerator)Bridge.GetMethod("Cleanup").Invoke(fixture,null);fixture=null;}
     [UnityTest] public IEnumerator AuthoredPoolSelection([Values("Free Regular","Arcade","FreeGK","International","FullMixed")]string mode,[Values(false,true)]bool localHome)
         =>(IEnumerator)Bridge.GetMethod("RunVariant").Invoke(fixture,new object[]{mode,localHome});
+    [UnityTest] public IEnumerator FreeDraftDragAppearsWhileObserverBrowsesAnotherPage()
+        =>(IEnumerator)Bridge.GetMethod("RunVariant").Invoke(fixture,new object[]{"FreeDragDifferentPage",false});
 }

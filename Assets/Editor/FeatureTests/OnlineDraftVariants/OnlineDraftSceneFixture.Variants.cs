@@ -16,7 +16,7 @@ public sealed partial class OnlineDraftSceneFixture
         var settings=OnlineSetupAgreementEditorTests.Valid();
         if(mode is "FreeGK" or "FullMixed"){settings.gkDraft="Free";if(mode=="FullMixed")settings.draft="Free Regular";}
         else if(mode=="International"){settings.matchType="International";settings.draft=settings.gkDraft="International";settings.squadSize="18";settings.homeTeamName="England";settings.awayTeamName="Germany";}
-        else settings.draft=mode;
+        else settings.draft=mode=="FreeDragDifferentPage"?"Free Regular":mode;
         var version=new OnlineCompatibility(OnlineSessionWire.Version,"draft-variant-scene","catalog");
         var protocol=new OnlineMatchProtocol("draft-variant-scene","home","away",hostAccount,version);protocol.BindAuthenticatedAccount(hostAccount,"host",version);
         host=new(protocol,"host",guestAccount,settings,()=>0);guest=new(protocol.MatchId,hostAccount,version,protocol.HostTeam,()=>0);
@@ -42,6 +42,21 @@ public sealed partial class OnlineDraftSceneFixture
                 {var s=client.Capture();if(s.turn==client.Team)view.actionButton.onClick.Invoke();else Client(s.turn).Request(OnlineDraftIntent.Roll);Flush();}
             }
             var state=client.Capture();Assert.That(state.freeSelection,Is.True);
+            if(mode=="FreeDragDifferentPage")
+            {
+                var sender=Client(state.turn);
+                Assert.That(sender,Is.Not.SameAs(client));
+                string idOffPage=state.available[1];
+                view.ChangePage(1);
+                string visibleName=view.cards[0].assignedPlayer.Name;
+                sender.PublishDrag(idOffPage,0,.2f,.3f,1);Flush();
+                Assert.That(view.freeDraftDragPreview.gameObject.activeInHierarchy,Is.True);
+                Assert.That(view.freeDraftDragPreview.assignedPlayer.Name,Is.EqualTo(OnlineDraftCatalog.Load().Single(card=>card.id==idOffPage).name));
+                Assert.That(view.cards[0].assignedPlayer.Name,Is.EqualTo(visibleName));
+                sender.PublishDrag(null,0,0,0);Flush();
+                Assert.That(view.freeDraftDragPreview.gameObject.activeSelf,Is.False);
+                yield break;
+            }
             if(!state.repeatable && state.turn!=client.Team)
             {bool keeper=state.selection=="goalkeepers";Client(state.turn).Request(OnlineDraftIntent.Pick,state.available[0],keeper?1:2);Flush();}
             state=client.Capture();long revision=state.revision;string first=view.cards[0].assignedPlayer.Name;

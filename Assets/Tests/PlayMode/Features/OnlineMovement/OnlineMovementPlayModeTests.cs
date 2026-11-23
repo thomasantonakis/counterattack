@@ -29,3 +29,15 @@ public sealed class OnlineRoomMovementPlayModeTests
     [UnityTest] public IEnumerator RealRoomControlsMoveAPlayer([Values(1,-1)]int side)
         =>(IEnumerator)Bridge.GetMethod("RunRoomMovement").Invoke(fixture,new object[]{side});
 }
+
+[Category("OnlineMovementSummary")]
+public sealed class OnlineMovementSummaryPlayModeTests
+{
+    private object fixture;
+    private static Type Bridge=>AppDomain.CurrentDomain.GetAssemblies().Single(a=>a.GetName().Name=="Assembly-CSharp-Editor").GetType("OnlineFullRoomSceneFixture",true);
+    [SetUp] public void Setup()=>fixture=Activator.CreateInstance(Bridge);
+    [UnityTearDown] public IEnumerator Cleanup()
+    {if(fixture!=null)yield return (IEnumerator)Bridge.GetMethod("Cleanup").Invoke(fixture,null);fixture=null;}
+    [UnityTest] public IEnumerator SharedInstructionsShowTheMovementPhaseAndCount()
+        =>(IEnumerator)Bridge.GetMethod("Run").Invoke(fixture,new object[]{false,16,false,"movement-summary"});
+}

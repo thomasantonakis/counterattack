@@ -20,7 +20,7 @@ namespace CounterAttack.Online
         private OnlineSetupState state;
         private GameSettings draft;
         private OnlineSetupRequest pending;
-        private long nextSequence,editVersion,pendingEditVersion;
+        private long nextSequence,editVersion,pendingEditVersion,rejectedEditVersion=-1;
         private bool agreed;
         private bool transportAvailable=true;
         public void SetTransportAvailable(bool available)
@@ -58,7 +58,10 @@ namespace CounterAttack.Online
         }
         private void FlushUnready()
         {
-            if(state?.phase=="setup" && Connected && !Pending && Dirty && LocalReady)Send(OnlineSetupIntent.Unready);
+            if(state?.phase!="setup" || !Connected || Pending || !Dirty || rejectedEditVersion==editVersion)return;
+            var candidate=OnlineSetupRules.Normalize(OnlineSetupRules.MergeOwnedSelection(state.settings,draft,Team,IsHost));
+            if(string.IsNullOrEmpty(OnlineSetupRules.Validate(candidate)))Send(OnlineSetupIntent.Edit);
+            else if(LocalReady)Send(OnlineSetupIntent.Unready);
         }
         public bool Confirm(GameSettings proposed)
         {
@@ -73,7 +76,7 @@ namespace CounterAttack.Online
         {
             if(Requested==null)return;
             var request=new OnlineSetupRequest{matchId=matchId,sequence=checked(++nextSequence),revision=state.revision,intent=intent};
-            if(intent==OnlineSetupIntent.Confirm)
+            if(intent is OnlineSetupIntent.Confirm or OnlineSetupIntent.Edit)
             {
                 request.team=new OnlineSetupTeam{name=Team==OnlineTeam.Home?draft.homeTeamName:draft.awayTeamName,
                     kit=Team==OnlineTeam.Home?draft.homeKit:draft.awayKit,goalkeeperKit=Team==OnlineTeam.Home?draft.homeGKKit:draft.awayGKKit};
@@ -87,8 +90,11 @@ namespace CounterAttack.Online
             if(!CanApply(snapshot))return false;
             if(pending?.sequence==sequence)
             {
-                bool committed=pending.intent==OnlineSetupIntent.Confirm && reply is OnlineCommandStatus.Accepted or OnlineCommandStatus.Duplicate;
+                bool committed=(pending.intent is OnlineSetupIntent.Confirm or OnlineSetupIntent.Edit)
+                    && (reply is OnlineCommandStatus.Accepted or OnlineCommandStatus.Duplicate);
                 if(committed && pendingEditVersion==editVersion)draft=null;
+                if(pending.intent==OnlineSetupIntent.Edit && !committed && reply!=OnlineCommandStatus.StaleRevision)
+                    rejectedEditVersion=pendingEditVersion;
                 pending=null;LastReply=reply;
             }
             return Apply(snapshot);

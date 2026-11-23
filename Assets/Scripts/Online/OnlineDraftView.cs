@@ -18,6 +18,7 @@ namespace CounterAttack.Online
         public PlayerSlotDropHandler[] homeSlots,awaySlots;
         public PlayerCard[] cards;
         public Button actionButton,leaveButton;
+        public Button rollPanelButton;
         public Button previousPageButton,nextPageButton;
         public Button kickoffChoiceButton,leftChoiceButton,rightChoiceButton;
         private OnlineDraftClient client;
@@ -37,7 +38,12 @@ namespace CounterAttack.Online
         private void OwnScene()
         {
             foreach(var root in onlineRoots)if(root!=null)root.SetActive(online);
-            if(!online)return;
+            if(!online)
+            {
+                foreach(var button in new[]{rollPanelButton,kickoffChoiceButton,leftChoiceButton,rightChoiceButton})
+                    if(button!=null)button.gameObject.SetActive(false);
+                return;
+            }
             source.enabled=false;sourceUi.enabled=false;
             if(source.draftOrderPanel!=null){source.draftOrderPanel.externalInput=true;source.draftOrderPanel.enabled=false;}
             foreach(var root in offlineRoots)if(root!=null)root.SetActive(false);
@@ -46,6 +52,7 @@ namespace CounterAttack.Online
         {
             if(!online)return;
             actionButton.onClick.AddListener(Act);leaveButton.onClick.AddListener(Leave);
+            if(rollPanelButton!=null)rollPanelButton.onClick.AddListener(Act);
             if(previousPageButton!=null)previousPageButton.onClick.AddListener(()=>ChangePage(-1));
             if(nextPageButton!=null)nextPageButton.onClick.AddListener(()=>ChangePage(1));
             if(kickoffChoiceButton!=null)kickoffChoiceButton.onClick.AddListener(()=>Choose(CoinTossChoice.Kickoff));
@@ -57,16 +64,29 @@ namespace CounterAttack.Online
         }
         public void Configure(OnlineDraftClient owner)
         {
-            if(client!=null)client.Changed-=Render;
-            online=true;OwnScene();client=owner??throw new ArgumentNullException(nameof(owner));client.Changed+=Render;Render();
+            if(client!=null){client.Changed-=Render;client.DragReceived-=RenderRemoteDrag;}
+            ClearRemoteDrag();
+            online=true;OwnScene();client=owner??throw new ArgumentNullException(nameof(owner));client.Changed+=Render;client.DragReceived+=RenderRemoteDrag;Render();
         }
-        public void SelectCard(int index)
+        public void SelectCard(int index,bool quickPick=false)
         {
             var s=client?.Capture();if(activeDrag!=null || s?.phase!="pick" || !client.Connected || client.Pending || !s.repeatable && s.turn!=client.Team)return;
-            var displayed=DisplayedCards(s);if(index<0 || index>=displayed.Length)return;
-            selected=displayed[index].id;selectedSlot=0;Render();
+            var displayed=DisplayedCards(s);if(index<0 || index>=displayed.Length || displayed[index]==null)return;
+            var offer=displayed[index];
+            selected=offer.id;selectedSlot=0;
+            if(quickPick)
+            {
+                var roster=client.Team==OnlineTeam.Home?s.home:s.away;
+                for(int slot=0;slot<roster.Length;slot++)
+                {
+                    if(roster[slot]!=null || GoalkeeperSlot(slot+1)!=offer.goalkeeper)continue;
+                    if(client.Request(OnlineDraftIntent.Pick,offer.id,slot+1))return;
+                    break;
+                }
+            }
+            Render();
         }
-        public void ChangePage(int delta){page=Mathf.Max(0,page+delta);selected=null;Render();}
+        public void ChangePage(int delta){ClearRemoteDrag();page=Mathf.Max(0,page+delta);selected=null;Render();}
         private OnlineDraftCard[] DisplayedCards(OnlineDraftState s)
         {
             if(!s.freeSelection)return s.cards;
@@ -110,6 +130,7 @@ namespace CounterAttack.Online
         {
             if(!online)return;
             var s=client?.Capture();rendered=s;
+            if(s==null || !client.Connected || s.revision!=remoteDragRevision)ClearRemoteDrag();
             actionButton.interactable=false;
             if(s==null){sourceUi.draftTurnText.text="Connecting to Draft...";sourceUi.draftMetaText.text="Waiting for the shared draft state.";return;}
             if(poolSelection!=s.selection){poolSelection=s.selection;page=0;selected=null;selectedSlot=0;}
@@ -127,7 +148,20 @@ namespace CounterAttack.Online
             Roster(homeSlots,s.home);Roster(awaySlots,s.away);
             var displayedCards=DisplayedCards(s);
             for(int i=0;i<cards.Length;i++)
-            {cards[i].gameObject.SetActive(i<displayedCards.Length);if(i<displayedCards.Length){cards[i].UpdatePlayerCard(Player(displayedCards[i]));if(displayedCards[i].goalkeeper)cards[i].playerNameText.text="GK · "+displayedCards[i].name;}}
+            {
+                var offer=i<displayedCards.Length?displayedCards[i]:null;
+                var card=cards[i];
+                var visibility=card.GetComponent<CanvasGroup>();
+                card.gameObject.SetActive(s.phase=="pick" && (offer!=null || visibility!=null));
+                if(visibility!=null && (activeDrag==null || !activeDrag.card || activeDrag.index!=i))
+                {
+                    visibility.alpha=offer==null?0:1;
+                    visibility.blocksRaycasts=offer!=null;
+                }
+                if(offer==null)continue;
+                card.UpdatePlayerCard(Player(offer));
+                if(offer.goalkeeper)card.playerNameText.text="GK · "+offer.name;
+            }
             if(previousPageButton!=null){previousPageButton.gameObject.SetActive(s.freeSelection && s.phase=="pick");previousPageButton.interactable=page>0;}
             if(nextPageButton!=null){nextPageButton.gameObject.SetActive(s.freeSelection && s.phase=="pick");nextPageButton.interactable=(page+1)*4<s.available.Length;}
             foreach(var button in new[]{kickoffChoiceButton,leftChoiceButton,rightChoiceButton})
@@ -135,16 +169,27 @@ namespace CounterAttack.Online
                 if(button==null)continue;button.gameObject.SetActive(s.phase=="opening-choice" && (button!=kickoffChoiceButton || s.openingCanChooseKickoff));
                 button.interactable=client.Connected && !client.Pending && s.turn==client.Team;
             }
+            bool rolling=s.phase is "roll" or "opening-roll";
+            bool rollResult=s.phase is "roll-result" or "opening-result";
+            bool opening=s.phase is "opening-roll" or "opening-result" or "opening-choice";
+            bool choosing=s.phase=="opening-choice";
             var dice=source.draftOrderPanel;
             if(dice!=null)
             {
-                dice.visuals.SetActive(s.phase is "roll" or "opening-roll");
-                if(s.phase is "roll" or "opening-roll")
+                dice.visuals.SetActive(rolling || rollResult || choosing);
+                if(rolling || rollResult || choosing)
                 {
-                    dice.title.text=s.phase=="opening-roll"?"OPENING COIN TOSS":"ROLL FOR FIRST DRAFT PICK";dice.homeTeam.text=s.settings.homeTeamName;dice.awayTeam.text=s.settings.awayTeamName;
-                    dice.homeResult.text=s.homeRoll==0?"Waiting for roll":"Roll "+s.homeRoll;dice.awayResult.text=s.awayRoll==0?"Waiting for roll":"Roll "+s.awayRoll;
-                    dice.outcome.text="Round "+s.rollRound+(s.phase=="opening-roll"?" · Highest roll chooses kickoff or direction":" · Highest roll drafts first");
-                    dice.footer.text=s.turn==client.Team?"Your roll · press R or Roll":"Waiting for the other manager";
+                    dice.title.text=opening?"OPENING COIN TOSS":"ROLL FOR FIRST DRAFT PICK";
+                    dice.homeTeam.text=s.settings.homeTeamName;dice.awayTeam.text=s.settings.awayTeamName;
+                    var homePalette=TokenKitCatalog.GetInstructionPalette(TokenKitCatalog.ResolveStyle(s.settings.homeKit));
+                    var awayPalette=TokenKitCatalog.GetInstructionPalette(TokenKitCatalog.ResolveStyle(s.settings.awayKit));
+                    dice.homeDie.SetTeamColors(homePalette.Primary,homePalette.Secondary);
+                    dice.awayDie.SetTeamColors(awayPalette.Primary,awayPalette.Secondary);
+                    dice.homeResult.text=s.homeRoll==0?"Waiting for roll":"Roll "+s.homeRoll;
+                    dice.awayResult.text=s.awayRoll==0?"Waiting for roll":"Roll "+s.awayRoll;
+                    string winner=s.homeRoll==s.awayRoll?"Tie. Roll again.":(s.homeRoll>s.awayRoll?s.settings.homeTeamName:s.settings.awayTeamName)+" wins the roll";
+                    dice.outcome.text=rollResult || choosing?winner:"Round "+s.rollRound+(opening?" - Highest roll chooses kickoff or direction":" - Highest roll drafts first");
+                    dice.footer.text=choosing?(s.turn==client.Team?"Choose below":"Waiting for the other manager's choice"):rollResult?"":s.turn==client.Team?"Your roll - press R or Roll":"Waiting for the other manager";
                     if(s.homeRoll>0)dice.homeDie.Resolve(s.homeRoll,false);else if(s.turn==OnlineTeam.Home)dice.homeDie.Begin(false);else dice.homeDie.Clear();
                     if(s.awayRoll>0)dice.awayDie.Resolve(s.awayRoll,false);else if(s.turn==OnlineTeam.Away)dice.awayDie.Begin(false);else dice.awayDie.Clear();
                 }
@@ -156,6 +201,12 @@ namespace CounterAttack.Online
             string label=s.phase is "roll" or "opening-roll"?"Roll":client.IsHost && s.homeReady && s.awayReady?"Start match":localReady?"Waiting for other manager":"Confirm roster";
             actionButton.GetComponentInChildren<TMP_Text>(true).text=label;
             actionButton.interactable=client.Connected && !client.Pending && ((s.phase is "roll" or "opening-roll") && s.turn==client.Team || s.phase=="review" && (!localReady || client.IsHost && s.homeReady && s.awayReady));
+            if(rollPanelButton!=null)
+            {
+                rollPanelButton.gameObject.SetActive(rolling);
+                rollPanelButton.interactable=rolling && actionButton.interactable;
+                actionButton.gameObject.SetActive(s.phase=="review");
+            }
             sourceUi.draftMetaText.text=!client.Connected?"Connection interrupted. Draft is held.":s.phase=="room-ready"?"Opening choices agreed. Preparing match...":client.Pending?"Sending selection...":s.phase=="opening-choice"?s.turn==client.Team?"Choose kickoff or your attacking direction.":"Waiting for the other manager's opening choice."
                 :activeDrag!=null?"Drop onto one of your own roster slots.":selected!=null?"Select a destination slot in your roster.":selectedSlot>0?"Select another own slot to swap with number "+selectedSlot+"."
                 :s.phase=="pick"?"Select a card, then your preferred slot. Select two own slots to swap.":s.phase=="review"?"Review your roster and confirm. Changes clear both confirmations.":"Each manager rolls for their own team.";
@@ -165,6 +216,6 @@ namespace CounterAttack.Online
             {"HighPass",c.highPass.ToString()},{"Resilience",c.resilience.ToString()},{"Shooting",(c.goalkeeper?c.saving:c.shooting).ToString()},{"Tackling",(c.goalkeeper?c.handling:c.tackling).ToString()},{"Aerial",c.aerial.ToString()},{"Saving",c.saving.ToString()},{"Handling",c.handling.ToString()}};
         private static Player Player(OnlineDraftCard c)=>new(Fields(c));
         private static Goalkeeper Goalkeeper(OnlineDraftCard c)=>new(Fields(c));
-        private void OnDestroy(){if(client!=null)client.Changed-=Render;if(session!=null)session.DraftAvailable-=Configure;}
+        private void OnDestroy(){if(client!=null){client.Changed-=Render;client.DragReceived-=RenderRemoteDrag;}if(session!=null)session.DraftAvailable-=Configure;}
     }
 }

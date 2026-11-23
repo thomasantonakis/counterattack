@@ -24,7 +24,7 @@ public sealed class OnlineRoomLaunchEditorTests
         authority=new(protocol,s,OnlineDraftCatalog.Load(),_=>0,()=>rolls.Dequeue());
         rolls.Enqueue(6);rolls.Enqueue(1);Submit(OnlineTeam.Home,OnlineDraftIntent.Roll);Submit(OnlineTeam.Away,OnlineDraftIntent.Roll);
         for(int i=0;i<40 && authority.Capture().phase=="pick";i++)
-        {var state=authority.Capture();var roster=state.turn==OnlineTeam.Home?state.home:state.away;Submit(state.turn,OnlineDraftIntent.Pick,state.cards[0].id,Array.FindIndex(roster,c=>c==null)+1);}
+        {var state=authority.Capture();var roster=state.turn==OnlineTeam.Home?state.home:state.away;Submit(state.turn,OnlineDraftIntent.Pick,state.cards.First(card=>card!=null).id,Array.FindIndex(roster,c=>c==null)+1);}
         Submit(OnlineTeam.Home,OnlineDraftIntent.Ready);Submit(OnlineTeam.Away,OnlineDraftIntent.Ready);Submit(protocol.HostTeam,OnlineDraftIntent.Start);
         rolls.Enqueue(1);rolls.Enqueue(6);Submit(OnlineTeam.Home,OnlineDraftIntent.Roll);Submit(OnlineTeam.Away,OnlineDraftIntent.Roll);
         Submit(OnlineTeam.Away,OnlineDraftIntent.Choose,choice:CoinTossChoice.Kickoff);Submit(OnlineTeam.Home,OnlineDraftIntent.Choose,choice:CoinTossChoice.LeftToRight);

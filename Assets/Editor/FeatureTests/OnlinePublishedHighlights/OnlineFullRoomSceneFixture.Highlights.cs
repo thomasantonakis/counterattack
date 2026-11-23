@@ -20,6 +20,13 @@ public sealed partial class OnlineFullRoomSceneFixture
         var highlight=typeof(HexCell).GetField("currentHighlightReason",BindingFlags.Instance|BindingFlags.NonPublic);
         string Reason(HexCell cell)=>(string)highlight.GetValue(cell);
         string hostReason=Reason(target);board.Display(state,"Authority display");Assert.That(Reason(target),Is.EqualTo(hostReason),"Source host highlights retain their own rule presentation");
+        target.ResetHighlight();
+        var material=target.hexRenderer.material;
+        string fill=material.HasProperty("_BaseColor")?"_BaseColor":"_Color";
+        Assert.That(Vector4.Distance(material.GetColor(fill),new Color(.18f,.83f,1,1)),Is.LessThan(.001f),"A blank native highlight shows the local host fallback");
+        Assert.That(Reason(target),Is.Null,"The fallback does not become a source highlight");
+        target.HighlightHex("ShotTargetHover");
+        Assert.That(Vector4.Distance(material.GetColor(fill),new Color(1,.48f,.05f,1)),Is.LessThan(.001f),"Native orange retains priority");
         pause.Dispose();pause=null;yield return EditorSceneManager.LoadSceneAsyncInPlayMode("Assets/Scenes/MainMenu.unity",new LoadSceneParameters(LoadSceneMode.Single));session.Dispose();session=null;MatchManager.Instance=null;
         yield return Load(data,true);board=Object.FindAnyObjectByType<OnlineFullRoomBootstrap>().board;
         var replica=new OnlineGroundPassReplica(state.matchId,board.tokens.Select(OnlineRollPublication.ActorId),OnlineFullRoomBootstrap.Catalog);Assert.That(replica.Apply(state),Is.True);

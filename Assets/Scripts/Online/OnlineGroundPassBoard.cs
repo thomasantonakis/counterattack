@@ -23,6 +23,8 @@ namespace CounterAttack.Online
         public OnlineCoinTossView coinView;
         public OnlineMatchConclusionView conclusionView;
         public OnlineBoardInput boardInput;
+        public OnlineRoomPointers pointers;
+        public OnlineRoomRollPanels rollPanels;
         public Vector3Int[] initialCoordinates;
         public Transform[] displayedTokens;
         public Transform displayedBall;
@@ -82,10 +84,28 @@ namespace CounterAttack.Online
         public void Display(OnlineGroundPassState state, string role)
         {
             ResetPresentationMotion(state.connectionHeld || state.isSharedPaused);
+            pointers?.SetHold(state.connectionHeld || state.isSharedPaused);
+            if (liveFullRoom && boardCamera != null && boardCamera.TryGetComponent<CameraController>(out var camera))
+            {
+                camera.SetOnlinePresentationHold(state.connectionHeld || state.isSharedPaused);
+                if(camera.IsReady)
+                {
+                    bool celebrating=state.goalMotion && !state.connectionHeld && !RoomInputOwnership.IntroActive;
+                    camera.SetOnlineGoalCue(celebrating,Center(state.ballX,state.ballZ));
+                }
+            }
             if(liveFullRoom)instructionMonitor?.DisplayOnlineInstruction(state.instruction,state.connectionHeld || state.isSharedPaused || state.stage=="blocked");
             if (controls != null) controls.Display(state);
-            if(liveFullRoom && OnlineRoomSession.IsGuest){match.ApplyOnlineReplicaMatchState(state);liveScoreboard?.RefreshPublishedOnlineState();}
-            if (sharedPausePanel != null) sharedPausePanel.SetActive(state.isSharedPaused || liveFullRoom && state.connectionHeld);
+            rollPanels?.Apply(state.rollPanel, state.isSharedPaused);
+            if (liveFullRoom && OnlineRoomSession.IsGuest)
+            {
+                match.ApplyOnlineReplicaMatchState(state);
+                liveScoreboard?.RefreshPublishedOnlineState();
+                match.OnlineEventBanner?.ApplyOnlinePublication(state.banners);
+                match.OnlinePitchLines?.ApplyOnlineFinalThirdLabel(state.finalThirdLabelSide, state.finalThirdLabelHome);
+            }
+            if (sharedPausePanel != null) sharedPausePanel.SetActive(
+                liveFullRoom && state.connectionHeld || state.isSharedPaused && menu?.UsesRoomPause(state) != true);
             var requester = state.isSharedPaused && state.pauseRequester == localTeam.ToString();
             if (requesterPauseMessage != null) requesterPauseMessage.SetActive(requester);
             if (passivePauseMessage != null) passivePauseMessage.SetActive(state.isSharedPaused && !requester);

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 namespace CounterAttack.Online
 {
-    public enum OnlineSetupIntent { Team, Settings, Ready, Unready, Start, Confirm }
+    public enum OnlineSetupIntent { Team, Settings, Ready, Unready, Start, Confirm, Edit }
     [Serializable] public sealed class OnlineSetupTeam { public string name,kit,goalkeeperKit; }
     [Serializable] public sealed class OnlineSetupRequest
     {
@@ -59,7 +59,7 @@ namespace CounterAttack.Online
             if(!protocol.BothConnected)return Reply(OnlineCommandStatus.Disconnected);
             if(request.revision!=revision)return Reply(OnlineCommandStatus.StaleRevision);
             if(started)return Reply(OnlineCommandStatus.NotReady);
-            if(request.intent==OnlineSetupIntent.Confirm)
+            if(request.intent is OnlineSetupIntent.Confirm or OnlineSetupIntent.Edit)
             {
                 if(request.team==null)return Reply(OnlineCommandStatus.InvalidCommand);
                 if(request.settings!=null && actor!=protocol.HostTeam)return Reply(OnlineCommandStatus.WrongTeam);
@@ -80,7 +80,7 @@ namespace CounterAttack.Online
                 next.homeKit=settings.homeKit;next.awayKit=settings.awayKit;next.homeGKKit=settings.homeGKKit;next.awayGKKit=settings.awayGKKit;
                 next.homeTeamAbbreviation=settings.homeTeamAbbreviation;next.awayTeamAbbreviation=settings.awayTeamAbbreviation;
             }
-            if(request.intent==OnlineSetupIntent.Confirm)
+            if(request.intent is OnlineSetupIntent.Confirm or OnlineSetupIntent.Edit)
             {
                 next=OnlineSetupRules.MergeOwnedSelection(settings,request.settings??settings,actor,request.settings!=null);
                 if(actor==OnlineTeam.Home){next.homeTeamName=request.team.name;next.homeKit=request.team.kit;next.homeGKKit=request.team.goalkeeperKit;}

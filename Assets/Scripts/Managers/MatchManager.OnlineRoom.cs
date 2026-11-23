@@ -5,6 +5,9 @@ using UnityEngine;
 public partial class MatchManager
 {
     public GameDebugMonitor OnlineInstructionMonitor {get;set;}
+    public MatchEventBannerController OnlineEventBanner { get; set; }
+    public PitchLines OnlinePitchLines { get; set; }
+    public OnlineRoomRollPanels OnlineRollPanels { get; set; }
     public bool OnlineBetweenHalves=>isHalfTimeFlowRunning || isTieBreakerTossRunning;
     public bool OnlineMatchComplete=>isMatchComplete && !isHalfTimeFlowRunning && !isTieBreakerTossRunning;
     private PenaltyShootoutManager onlineShootoutManager;
@@ -52,6 +55,10 @@ public partial class MatchManager
             emergencyGoalkeeperNominationRequired=state.homeEmergencyKeeper || state.awayEmergencyKeeper;emergencyGoalkeeperNominationTeamIsHome=state.homeEmergencyKeeper;
             emergencyGoalkeeperNominationReason=state.keeperActionReason;
             InitializeSubstitutionCountsFromStats();
+            homeScorers = OnlineScorerPublication.Capture(state.homeScorers).ToList();
+            awayScorers = OnlineScorerPublication.Capture(state.awayScorers).ToList();
+            matchStatsUI?.UpdateScorersDisplay();
+            OnlineRoomSettings.Apply(this, state.roomSettings);
         }
         BeginGameplayEventLoggingSuppression();
         try

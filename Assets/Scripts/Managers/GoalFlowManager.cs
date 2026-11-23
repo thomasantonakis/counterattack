@@ -99,7 +99,11 @@ public class GoalFlowManager : MonoBehaviour
     {
         HexGrid hexGriditem = this.hexGrid;
         yield return new WaitUntil(() => hexGriditem != null && hexGriditem.IsGridInitialized());  // Check if grid is ready
-        // Initialize hex lists (Replace with actual predefined lists)
+        BindPitchPositions();
+    }
+
+    internal void BindPitchPositions()
+    {
         celebrationTopLeft = GenerateTopLeftHexList();
         celebrationTopRight = GenerateTopRightHexList();
         celebrationBottomLeft = GenerateBottomLeftHexList();

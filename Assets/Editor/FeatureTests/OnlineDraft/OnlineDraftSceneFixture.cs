@@ -28,7 +28,7 @@ public sealed partial class OnlineDraftSceneFixture
     }
     private OnlineDraftClient Client(OnlineTeam team)=>host.Draft.Team==team?host.Draft:guest.Draft;
     private void Pick()
-    {var s=host.Draft.Capture();var roster=s.turn==OnlineTeam.Home?s.home:s.away;Assert.That(Client(s.turn).Request(OnlineDraftIntent.Pick,s.cards[0].id,System.Array.FindIndex(roster,c=>c==null)+1),Is.True);Flush();}
+    {var s=host.Draft.Capture();var roster=s.turn==OnlineTeam.Home?s.home:s.away;Assert.That(Client(s.turn).Request(OnlineDraftIntent.Pick,s.cards.First(card=>card!=null).id,System.Array.FindIndex(roster,c=>c==null)+1),Is.True);Flush();}
     public IEnumerator Run(bool hostAway,bool localHost,string branch)
     {
         Assert.That(OnlineFrontendSession.Current,Is.Null);
@@ -55,13 +55,41 @@ public sealed partial class OnlineDraftSceneFixture
         if(client.Team==OnlineTeam.Home){Assert.That(view.actionButton.interactable,Is.True);view.actionButton.onClick.Invoke();Flush();Client(OnlineTeam.Away).Request(OnlineDraftIntent.Roll);Flush();}
         else{Assert.That(view.actionButton.interactable,Is.False);Client(OnlineTeam.Home).Request(OnlineDraftIntent.Roll);Flush();Assert.That(view.actionButton.interactable,Is.True);view.actionButton.onClick.Invoke();Flush();}
         Assert.That(view.source.draftOrderPanel.visuals.activeSelf,Is.False);Assert.That(view.cards.All(c=>c.gameObject.activeInHierarchy),Is.True);
+        if(branch=="fixed-offer-positions")
+        {
+            Canvas.ForceUpdateCanvases();
+            var positions=view.cards.Select(c=>((RectTransform)c.transform).anchoredPosition).ToArray();
+            string[] offered=view.cards.Select(c=>c.assignedPlayer.Name).ToArray();
+            var first=view.cards[0];
+            var badge=first.paceValueText.transform.parent.Find(first.paceValueText.name+"Badge")
+                .GetComponent<UnityEngine.UI.Image>();
+            Assert.That(badge.sprite.name,Is.EqualTo("Disc"));
+            Assert.That(badge.color,Is.EqualTo(MatchStatsUI.GetInspectionAttributeColor(first.assignedPlayer.Pace)));
+            var click=new UnityEngine.EventSystems.PointerEventData(UnityEngine.EventSystems.EventSystem.current)
+                { button=UnityEngine.EventSystems.PointerEventData.InputButton.Left, clickCount=2 };
+            view.cards[1].GetComponent<OnlineDraftClickTarget>().OnPointerClick(click);Flush();
+            yield return null;Canvas.ForceUpdateCanvases();
+            Assert.That(client.Capture().home[1]?.name,Is.EqualTo(offered[1]));
+            Assert.That(view.cards.Select(c=>((RectTransform)c.transform).anchoredPosition),Is.EqualTo(positions));
+            Assert.That(view.cards[1].GetComponent<CanvasGroup>().alpha,Is.Zero);
+            foreach(int index in new[]{0,2,3})Assert.That(view.cards[index].assignedPlayer.Name,Is.EqualTo(offered[index]));
+            var remote=Client(OnlineTeam.Away);
+            var candidate=remote.Capture().cards[2].id;
+            remote.PublishDrag(candidate,0,.25f,.1f);Flush();
+            Assert.That(((RectTransform)view.cards[2].transform).anchoredPosition,Is.Not.EqualTo(positions[2]));
+            Assert.That(client.Capture().away[1],Is.Null);
+            remote.PublishDrag(null,0,0,0);Flush();
+            Assert.That(((RectTransform)view.cards[2].transform).anchoredPosition,Is.EqualTo(positions[2]));
+            yield break;
+        }
         if(branch=="ownership")
         {
             var before=client.Capture();view.SelectSlot(client.Team==OnlineTeam.Home?OnlineTeam.Away:OnlineTeam.Home,2);Flush();
             Assert.That(client.Capture().revision,Is.EqualTo(before.revision));
         }
         if(client.Team==OnlineTeam.Away)Pick();
-        var beforePick=client.Capture();string chosen=beforePick.cards[0].id;view.SelectCard(0);view.SelectSlot(client.Team,2);Flush();
+        var beforePick=client.Capture();int offerIndex=System.Array.FindIndex(beforePick.cards,card=>card!=null);
+        string chosen=beforePick.cards[offerIndex].id;view.SelectCard(offerIndex);view.SelectSlot(client.Team,2);Flush();
         var selected=client.Capture();var own=client.Team==OnlineTeam.Home?selected.home:selected.away;
         Assert.That(own[1].id,Is.EqualTo(chosen));
         var slots=client.Team==OnlineTeam.Home?view.homeSlots:view.awaySlots;

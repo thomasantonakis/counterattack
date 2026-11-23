@@ -36,7 +36,7 @@ Normal online flow loads Assets/Scenes/OnlineRoom.unity, authored from Room,
 using real gameplay managers, full pitch and drafted roster. It is distinct
 from OnlineRoomProof and from unchanged offline Room. Host executes rules;
 guest projects state. Presentation parity is incomplete. Avoid another copied
-scene per fix; reuse authored UI/prefabs. Catalog full-room-v20 / wire v7.
+scene per fix; reuse authored UI/prefabs. Catalog full-room-v24 / wire v7.
 Host currently manages Away, guest Home regardless of OS; preserve this unless
 explicitly changing team allocation. Reassess compatibility for payload changes.
 
@@ -107,6 +107,18 @@ edits. The build report, assembly SHA256 and native window observations are in
 Focused native test XML and progress are in
 `TestResults/GameplayRegression/Runs/20261119T190911294Z/`.
 
+### Online menu style follow-up
+
+The Online screen now uses the authored Hot Seat card prefab and its tilted
+frame, typography and Exit button. The lobby-code field and inline feedback
+sit inside the card with Host Match, Join Match and Back to Main Menu.
+The focused layout and navigation fixture passed 3, failed 0, skipped 0
+in `TestResults/GameplayRegression/Runs/20261119T200746769Z/`.
+
+Room presentation is the active priority. Paired laptop testing and any further
+Online menu redesign are deferred. The requested Room visuals are still tracked
+in batches C through E and the second walkthrough review.
+
 ## Batch B — Mac hosting and both roles
 
 - [x] Audited normal entry, native ownership, renewal, lobby publication,
@@ -145,6 +157,47 @@ the code shared privately by the host. Complete setup and Draft through
 kickoff, perform actions from both authority roles, then verify clean exit
 and the reverse Windows-host/Mac-guest pairing. Do not include lobby codes
 in retained evidence. Build and launch commands for Mac are below.
+
+## Online Room presentation update
+
+The normal Online Room uses the authored Room roll, pause, Settings and
+substitution panels. Either authenticated manager can edit shared Settings
+during a shared pause. Only the original requester can resume. Substitutions
+still submit one eligible pair at a time for the local manager's team.
+
+The guest receives both scorer lists, the decision timer, match-event banners,
+and the active Final Third label. Jersey numbers use Room's render order.
+Each manager has their own camera controls and sees team-coloured pointers
+over the pitch. Goal-flow positions initialize on the host, and celebrations
+use the existing movement stream.
+
+The roll projection uses the authored duel/single-roll, header, and stoppage
+panels. A completed result reserves Escape for local dismissal and holds new
+gameplay actions until both acknowledgements or the existing result deadline.
+The active player still owns the manual roll. Coin toss retains its existing
+dedicated online projection.
+
+The Online Multiplayer entry uses the Hot Seat card, stadium backdrop and
+typography, with Host Match, lobby code, Join Match and Back inside the card.
+The Windows screenshot is retained in
+`TestResults/GameplayRegression/Runs/20261119T200804724Z-OnlineCard-Windows/`.
+
+Windows Editor compilation completed with zero errors. The focused runs passed
+21 cases with zero failures or skips. The test manifest records per-case native
+XML evidence. The four shared roll cases are in `20261122T083702138Z/results.xml`
+and the existing automatic stoppage case is in `20261122T083846969Z/results.xml`
+under `TestResults/GameplayRegression/Runs/`.
+
+Windows player build `build_45b34b34ff85` succeeded from the local working tree
+at `Build/OnlineGame/Windows/Counterattack.exe`. Unity reported the known
+nonfatal `vswhere.exe` diagnostic and nine warnings. The build report and
+assembly SHA256 are in
+`TestResults/GameplayRegression/Runs/20261122T064115Z-FinalOnlineRoom-Windows/`.
+
+Paired testing and additional Online menu design remain deferred.
+The local tests cover state and view behaviour. Full visual parity across an
+entire match is still open, especially reconnects during roll review and other
+roll-family walkthroughs.
 
 ## Batch C — shared rolls and match information
 
@@ -191,6 +244,74 @@ in retained evidence. Build and launch commands for Mac are below.
 - [ ] Appropriate populated setup defaults for names/jerseys/settings.
 - [ ] Audit pause/settings/substitution/shootout ordering. Preserve unresolved
       gameplay rules recorded in GameplayReview.md.
+
+## Local presentation and sync follow-up
+
+Room and Online Room share the ball top-face material. The transparent SVG
+is the source for the pattern texture, and the existing match ball colour
+fills the open patches. A top-down Windows Editor render confirmed black
+pattern pixels and yellow patches on the actual ball mesh.
+
+Online Room uses three original transparent pointer textures. Hover uses a
+pointing hand, left-button hold uses a grabbing hand, and right-button hold
+uses a camera with four arrows. Both views tint the textures by team kit.
+
+Create New Game publishes valid owned edits before confirmation. Ready and
+Start remain explicit. The setup client fixture passed 26 cases, including
+concurrent unconfirmed edits with the host on either team
+(`20261122T093451726Z/results.xml`).
+
+Draft sends a visual drag preview in session wire v2. Pick and swap still
+commit through the normal authoritative request on drop. The transport
+fixture passed 18 cases including preview and cancellation for both roles
+(`20261122T093507100Z/results.xml`). Normal Draft preserves empty offer
+positions until the next batch. The shared Draft card prefab has the Room
+disc sprite and rating colours. The native scene case verified the positions,
+badge colour, double-click quick-pick and remote preview
+(`20261122T095441518Z/results.xml`). Free Draft uses an authored preview
+card when dragging, including when the other manager is on a different
+catalogue page (`20261122T094040439Z/results.xml`).
+
+Online Room feeds token hovers into the existing local name/card display.
+Space opens or closes the large local card, and Escape closes the card
+before it can request a pause. Both role cases passed
+(`20261122T094221656Z/results.xml`). The pointer states passed on both
+roles (`20261122T093706136Z/results.xml`). Fresh Online Room launches use
+the authored intro. Escape skips the local intro and is reserved for that
+input (`20261122T094853777Z/results.xml`).
+
+Board clicks submit on mouse-up after the drag threshold and UI checks.
+The local shot-target hover uses an orange fill without replacing the
+underlying highlight. The host fallback supplies missing legal hints while
+native highlights retain priority. The host/guest hint case passed
+(`20261122T095723287Z/results.xml`).
+
+The host clock publishes both completed Draft rolls for five seconds before
+picks or opening choices. The Draft roll panel uses the two team palettes,
+contains Roll and the opening choices, and has no duplicate footer Roll.
+Leave is anchored bottom-left and Confirm/Start bottom-right. The Draft
+channel fixture passed 19 cases, including both result holds
+(`20261122T095227461Z/results.xml`).
+
+The Join paste field on the Online card and the read-only Host code field in
+Create New Game use light backgrounds and blue outlines. The host copies the
+code where EOS creates the lobby. Guests paste it on the entry card.
+The menu fixture passed three cases (`20261122T100254507Z/results.xml`).
+
+The shared Room instructions show the active movement section and remaining
+moves. The authored Room display case passed (`20261122T100424682Z/results.xml`).
+The goal celebration publication cues each camera and restores its own pose
+afterward. Both scoring sides passed (`20261122T100314953Z/results.xml`).
+
+Paired acceptance still needs the full roll-family and reconnect walkthroughs,
+including reconnect during a resolved roll, and confirmation of the observer's
+movement summary and event framing over EOS. Compare the white hex borders
+against Room and review setup defaults across draft modes in the walkthrough.
+Both players need a build from the same source with frontend session wire v2.
+Windows build `build_924e636a4ab0` succeeded from the local working tree.
+The output is `Build/OnlineGame/Windows/Counterattack.exe`. Its report and
+managed assembly SHA256 are in
+`TestResults/GameplayRegression/Runs/20261122T122935Z-OnlinePresentation-Windows/`.
 
 ## Cost and verification discipline
 

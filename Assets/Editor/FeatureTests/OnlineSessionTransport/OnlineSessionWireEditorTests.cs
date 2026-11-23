@@ -38,14 +38,14 @@ public sealed class OnlineSessionWireEditorTests
     }
     [Test] public void RejectsHeader([Values("size","count","index","empty-id","magic")]string mutation)
     {
-        var packet=Raw("{\"version\":\"session-wire-v1\",\"kind\":\"hello\",\"matchId\":\"frontend-session\"}");
+        var packet=Raw("{\"version\":\""+OnlineSessionWire.Version+"\",\"kind\":\"hello\",\"matchId\":\"frontend-session\"}");
         switch(mutation){case "size":packet[6]=0;packet[7]=0;packet[8]=0;packet[9]=0;break;
             case "count":packet[4]=2;break;case "index":packet[2]=1;break;case "empty-id":Array.Clear(packet,10,16);break;case "magic":packet[0]=0;break;}
         Assert.Throws<InvalidDataException>(()=>new OnlineSessionWire().Receive(packet,packet.Length));
     }
     [Test] public void RejectsContract([Values("json","version","kind","match")]string mutation)
     {
-        var packet=Raw(mutation=="json"?"{bad":"{\"version\":\""+(mutation=="version"?"old":"session-wire-v1")+"\",\"kind\":\""+(mutation=="kind"?"execute-method":"hello")+"\",\"matchId\":\""+(mutation=="match"?"":"frontend-session")+"\"}");
+        var packet=Raw(mutation=="json"?"{bad":"{\"version\":\""+(mutation=="version"?"old":OnlineSessionWire.Version)+"\",\"kind\":\""+(mutation=="kind"?"execute-method":"hello")+"\",\"matchId\":\""+(mutation=="match"?"":"frontend-session")+"\"}");
         Assert.Throws<InvalidDataException>(()=>new OnlineSessionWire().Receive(packet,packet.Length));
     }
     [Test] public void OversizeIsRejectedBeforeSending()

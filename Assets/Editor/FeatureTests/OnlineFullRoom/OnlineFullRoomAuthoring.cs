@@ -68,7 +68,7 @@ public static class OnlineFullRoomAuthoring
                 var visuals=obj.GetComponent<PlayerTokenVisuals>()??obj.AddComponent<PlayerTokenVisuals>();var style=TokenKitCatalog.ResolveStyle(home?"088":"021");visuals.ApplyStyle(style);
                 var number=(GameObject)PrefabUtility.InstantiatePrefab(manager.textPrefab,obj.transform);number.name="Authored jersey number";
                 number.transform.localPosition=new Vector3(0,1.06f,0);number.transform.localRotation=Quaternion.Euler(90,0,0);
-                var text=number.GetComponent<TextMeshPro>();text.text=jersey.ToString();visuals.ApplyNumberStyle(text,style);
+                var text=number.GetComponent<TextMeshPro>();text.text=jersey.ToString();visuals.ApplyNumberStyle(text,style);number.GetComponent<MeshRenderer>().sortingOrder=10;
                 board.tokens[index]=token;board.displayedTokens[index]=obj.transform;
             }
             var ball=UnityEngine.Object.Instantiate(board.match.ball.gameObject,render.transform);ball.name="Replica ball";

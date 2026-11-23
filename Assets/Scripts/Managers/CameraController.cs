@@ -38,6 +38,29 @@ public class CameraController : MonoBehaviour
     private float projectionShift;
     private int adaptivePreset;
     public bool IsReady { get; private set; }
+    private bool onlinePresentationHeld;
+    private bool onlineGoalCue;
+    private Vector3 preGoalPosition;
+    private Quaternion preGoalRotation;
+    private float preGoalShift;
+
+    public void SetOnlinePresentationHold(bool held) => onlinePresentationHeld = held;
+
+    public void SetOnlineGoalCue(bool active,Vector3 goal)
+    {
+        if(active==onlineGoalCue)return;
+        onlineGoalCue=active;
+        if(!active)
+        {
+            ApplyPresentationPose(preGoalPosition,preGoalRotation,preGoalShift);
+            return;
+        }
+        preGoalPosition=transform.position;
+        preGoalRotation=transform.rotation;
+        preGoalShift=projectionShift;
+        var position=goal+new Vector3(goal.x>=0?-11f:11f,12f,-12f);
+        ApplyPresentationPose(position,Quaternion.LookRotation(goal-position,Vector3.up),0);
+    }
 
     void Start()
     {
@@ -90,10 +113,10 @@ public class CameraController : MonoBehaviour
         // HandlePresetKeys();
     }
 
-    private static bool IsCameraInputBlocked => RoomInputOwnership.BlocksCamera
+    private bool IsCameraInputBlocked => onlinePresentationHeld || onlineGoalCue || RoomInputOwnership.BlocksCamera
         || GameInputManager.IsPresentationModalActive && !HeaderChallengePanelController.IsVisible
             && !DuelResolutionPanelController.IsVisible && !StoppageActionsPanelController.IsVisible
-        || MatchManager.Instance != null && MatchManager.Instance.IsGameplayInputBlocked;
+        || MatchManager.Instance?.IsPauseMenuOpen == true;
 
     private void OnEnable()
     {
@@ -119,9 +142,7 @@ public class CameraController : MonoBehaviour
 
     private void OnKeyReceived(KeyPressData keyData)
     {
-        if (keyData == null
-            || keyData.isConsumed
-            || (MatchManager.Instance != null && MatchManager.Instance.IsGameplayInputBlocked))
+        if (keyData == null || keyData.isConsumed || IsCameraInputBlocked)
         {
             return;
         }
@@ -142,8 +163,7 @@ public class CameraController : MonoBehaviour
     // Shared with modal input routing, so camera presets do not reach gameplay subscribers.
     public bool TryHandlePresetKey(KeyPressData keyData)
     {
-        if (keyData == null || keyData.isConsumed || keyData.ctrl
-            || (MatchManager.Instance != null && MatchManager.Instance.IsGameplayInputBlocked)
+        if (keyData == null || keyData.isConsumed || keyData.ctrl || IsCameraInputBlocked
             || !TryGetPresetIndex(keyData.key, out int presetIndex)) return false;
 
         if (keyData.shift) SaveCurrentCameraToPreset(presetIndex);

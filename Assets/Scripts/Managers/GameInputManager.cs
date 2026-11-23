@@ -295,6 +295,12 @@ public class GameInputManager : MonoBehaviour
     public static bool IsPresentationModalActive => IsModalUiActive() || IsDiceRollModalVisible;
     public static bool IsCameraPointerOverUi => IsPointerOverUi(previewOnlyForResolution: IsDiceRollModalVisible);
 
+    internal void PresentOnlineHover(PlayerToken token, HexCell hex)
+    {
+        ApplyHoverTarget(token, hex, previewOnly: true);
+        UpdateHoverNameLabel();
+    }
+
     private void OnDisable()
     {
         lineupHoverToken = null;

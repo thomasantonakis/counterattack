@@ -3,12 +3,112 @@
   "purpose": "Single maintained test file for the sons Mac; append a separate test_additions entry for each new or parameterized case. Refresh fixture definition hashes when tests change. Run only when the user requests.",
   "fixtures": [
     {
+      "mode": "playmode",
+      "fixture": "OnlineMovementSummaryPlayModeTests",
+      "categories": [
+        "OnlineMovementSummary"
+      ],
+      "definition_sha256": "b52d0b2d29815e774c373bd08bed477dcc9e9008ef5f27d6c56112f57799a59a",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineMovement/OnlineMovementPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineTeamPointersPlayModeTests",
+      "categories": [
+        "OnlineTeamPointers"
+      ],
+      "definition_sha256": "620e2c3763afe6c9a71b4711ad62f30303d3dec5d7a20a8d4f270f4acfa3970c",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineTeamPointers/OnlineTeamPointersPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineSharedRollPanelPlayModeTests",
+      "categories": [
+        "OnlineSharedRollPanel"
+      ],
+      "definition_sha256": "010dc3388853c1364583d46e927bc03e6f8455cc733d90702738ed700e5df670",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineSharedRollPanels/OnlineSharedRollPanelPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineLocalCameraPlayModeTests",
+      "categories": [
+        "OnlineLocalCamera"
+      ],
+      "definition_sha256": "8c1bd332f4675767a956362cec3443bc699745284378e759755b02cf3bd667f6",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineLocalCamera/OnlineLocalCameraPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineScorersPlayModeTests",
+      "categories": [
+        "OnlineScorers"
+      ],
+      "definition_sha256": "213e878f2542ca608d02585d9ba60904110e9289ad91f5c4974c5212ed25267c",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineScorers/OnlineScorersPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineRoomBannersPlayModeTests",
+      "categories": [
+        "OnlineRoomBanners"
+      ],
+      "definition_sha256": "4be0e049643199b7a7be1bb04f5517a77c6fa01b3e5a9eae33bbdd3bb8a334a9",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineRoomBanners/OnlineRoomBannersPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineF3LabelsPlayModeTests",
+      "categories": [
+        "OnlineF3Labels"
+      ],
+      "definition_sha256": "e85ebd2b1bfdbab2126f70ccac18b49c0f4f5c99e60904bf5842b50105b36850",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineF3Labels/OnlineF3LabelsPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineSharedSettingsPlayModeTests",
+      "categories": [
+        "OnlineSharedSettings"
+      ],
+      "definition_sha256": "007fe926f3209ebbe04400c570552eea10e5bd8df0ed8dae37504f4578112868",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineSharedSettings/OnlineSharedSettingsPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineAuthoredSubstitutionsPlayModeTests",
+      "categories": [
+        "OnlineAuthoredSubstitutions"
+      ],
+      "definition_sha256": "e7ca6092b456bd5170e20f0a97c77a6bdd9082896c72409a63646c72ed3c56f2",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineAuthoredSubstitutions/OnlineAuthoredSubstitutionsPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
+      "fixture": "OnlineGoalCelebrationPlayModeTests",
+      "categories": [
+        "OnlineGoalCelebration"
+      ],
+      "definition_sha256": "6077c02f42a86fffd5f8ff596527b4aaead09f19fd1d7fa5d559c74a03804aef",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlineGoalCelebrations/OnlineGoalCelebrationPlayModeTests.cs"
+    },
+    {
       "mode": "editor",
       "fixture": "OnlineModeNavigationEditorTests",
       "categories": [
         "OnlineModeNavigation"
       ],
-      "definition_sha256": "d6a7408d8cbeafa444053a99eacbfeb56dd8889162a9ec15ea7e1a55c9f1d2a6",
+      "definition_sha256": "9a2c9525c8ee87a365039c84b4fa028aed46fa021813ee7f6081b57759301398",
       "route": "native",
       "source": "Assets/Editor/FeatureTests/OnlineModeNavigation/OnlineModeNavigationEditorTests.cs"
     },
@@ -78,7 +178,7 @@
       "categories": [
         "OnlineDraft"
       ],
-      "definition_sha256": "90da816090364d6364a0178b3651fb771cc63addc6ab2ebe1d2be23a62a727e6",
+      "definition_sha256": "153bf1303fb7fa0fa7ecfb4ce3b392c512acc0276556116f0d9b0895aea70482",
       "route": "native",
       "source": "Assets/Editor/FeatureTests/OnlineDraft/OnlineDraftAuthorityEditorTests.cs"
     },
@@ -88,7 +188,7 @@
       "categories": [
         "OnlineDraftTransport"
       ],
-      "definition_sha256": "78c8ffbe30c221f6f372ef2d29578e199e4cc9148d538744122a6bee63322849",
+      "definition_sha256": "55d5f0ce7634d862246c9404dbdb2d55ad066c997f37dc7d8b96d9681719fb7f",
       "route": "native",
       "source": "Assets/Editor/FeatureTests/OnlineDraft/OnlineDraftChannelEditorTests.cs"
     },
@@ -508,7 +608,7 @@
       "categories": [
         "OnlineSetupClient"
       ],
-      "definition_sha256": "01757e00a06137088ff17764217a952b3f532dcec6bacad6daad270193317ab9",
+      "definition_sha256": "af38b80cabe9bc3b3dde217e843b187e672522cfe444d04a2f842fb7f8735cf9",
       "route": "native",
       "source": "Assets/Editor/FeatureTests/OnlineSetupClient/OnlineSetupClientEditorTests.cs"
     },
@@ -628,7 +728,7 @@
       "categories": [
         "OnlineDraftScene"
       ],
-      "definition_sha256": "2ecc97ede43957f07187e813dece4e0522453cdaac3849cc2a7d083bd34256eb",
+      "definition_sha256": "d416fcc99adfc473dd3703e5942b382dfb6bfacc0473a8a88279bc55b155e0cb",
       "route": "native",
       "source": "Assets/Tests/PlayMode/Features/OnlineDraft/OnlineDraftScenePlayModeTests.cs"
     },
@@ -648,7 +748,7 @@
       "categories": [
         "OnlineDraftVariantScene"
       ],
-      "definition_sha256": "445d87e32e9f3a107f1ff2066786ebf5ac6d588a678a54c2ae4250e9d253fe03",
+      "definition_sha256": "583512047caac12399ee3f327d0dec91f0efaf3dffd950fbd8fabed2b7fff996",
       "route": "native",
       "source": "Assets/Tests/PlayMode/Features/OnlineDraftVariants/OnlineDraftVariantScenePlayModeTests.cs"
     },
@@ -1336,6 +1436,380 @@
   ],
   "test_additions": [
     {
+      "id": "OnlineMovementSummaryPlayModeTests.SharedInstructionsShowTheMovementPhaseAndCount",
+      "feature": "OnlineMovement",
+      "mode": "playmode",
+      "fixture": "OnlineMovementSummaryPlayModeTests",
+      "method": "SharedInstructionsShowTheMovementPhaseAndCount",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261122T100424682Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupClientEditorTests.UnconfirmedEditsReachBothManagers(False)",
+      "feature": "OnlineSetupClient",
+      "mode": "editmode",
+      "fixture": "OnlineSetupClientEditorTests",
+      "method": "UnconfirmedEditsReachBothManagers",
+      "parameters": [
+        false
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261122T093451726Z/results.xml"
+    },
+    {
+      "id": "OnlineSetupClientEditorTests.UnconfirmedEditsReachBothManagers(True)",
+      "feature": "OnlineSetupClient",
+      "mode": "editmode",
+      "fixture": "OnlineSetupClientEditorTests",
+      "method": "UnconfirmedEditsReachBothManagers",
+      "parameters": [
+        true
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261122T093451726Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftAuthorityEditorTests.PickLeavesMiddleOfferEmptyUntilTheNextBatch",
+      "feature": "OnlineDraft",
+      "mode": "editmode",
+      "fixture": "OnlineDraftAuthorityEditorTests",
+      "method": "PickLeavesMiddleOfferEmptyUntilTheNextBatch",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261122T092751003Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftChannelEditorTests.HostTickReleasesBothDraftAndOpeningResults",
+      "feature": "OnlineDraft",
+      "mode": "editmode",
+      "fixture": "OnlineDraftChannelEditorTests",
+      "method": "HostTickReleasesBothDraftAndOpeningResults",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261122T095227461Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftChannelEditorTests.LivePreviewCrossesTheChannelBeforeAnyPick(False)",
+      "feature": "OnlineDraft",
+      "mode": "editmode",
+      "fixture": "OnlineDraftChannelEditorTests",
+      "method": "LivePreviewCrossesTheChannelBeforeAnyPick",
+      "parameters": [
+        false
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261122T095227461Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftChannelEditorTests.LivePreviewCrossesTheChannelBeforeAnyPick(True)",
+      "feature": "OnlineDraft",
+      "mode": "editmode",
+      "fixture": "OnlineDraftChannelEditorTests",
+      "method": "LivePreviewCrossesTheChannelBeforeAnyPick",
+      "parameters": [
+        true
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261122T095227461Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftScenePlayModeTests.RemainingCardsStayInTheirAuthoredPositions",
+      "feature": "OnlineDraft",
+      "mode": "playmode",
+      "fixture": "OnlineDraftScenePlayModeTests",
+      "method": "RemainingCardsStayInTheirAuthoredPositions",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261122T095441518Z/results.xml"
+    },
+    {
+      "id": "OnlineDraftVariantScenePlayModeTests.FreeDraftDragAppearsWhileObserverBrowsesAnotherPage",
+      "feature": "OnlineDraftVariants",
+      "mode": "playmode",
+      "fixture": "OnlineDraftVariantScenePlayModeTests",
+      "method": "FreeDraftDragAppearsWhileObserverBrowsesAnotherPage",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261122T094040439Z/results.xml"
+    },
+    {
+      "id": "OnlineTeamPointersPlayModeTests.RoomIntroReservesEscapeOnBothRoles(False)",
+      "feature": "OnlineTeamPointers",
+      "mode": "playmode",
+      "fixture": "OnlineTeamPointersPlayModeTests",
+      "method": "RoomIntroReservesEscapeOnBothRoles",
+      "parameters": [
+        false
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261122T094853777Z/results.xml"
+    },
+    {
+      "id": "OnlineTeamPointersPlayModeTests.RoomIntroReservesEscapeOnBothRoles(True)",
+      "feature": "OnlineTeamPointers",
+      "mode": "playmode",
+      "fixture": "OnlineTeamPointersPlayModeTests",
+      "method": "RoomIntroReservesEscapeOnBothRoles",
+      "parameters": [
+        true
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261122T094853777Z/results.xml"
+    },
+    {
+      "id": "OnlineTeamPointersPlayModeTests.PitchHoverFeedsLocalPlayerInspection(False)",
+      "feature": "OnlineTeamPointers",
+      "mode": "playmode",
+      "fixture": "OnlineTeamPointersPlayModeTests",
+      "method": "PitchHoverFeedsLocalPlayerInspection",
+      "parameters": [
+        false
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261122T094221656Z/results.xml"
+    },
+    {
+      "id": "OnlineTeamPointersPlayModeTests.PitchHoverFeedsLocalPlayerInspection(True)",
+      "feature": "OnlineTeamPointers",
+      "mode": "playmode",
+      "fixture": "OnlineTeamPointersPlayModeTests",
+      "method": "PitchHoverFeedsLocalPlayerInspection",
+      "parameters": [
+        true
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261122T094221656Z/results.xml"
+    },
+    {
+      "id": "OnlineTeamPointersPlayModeTests.RemotePointerTracksPitchAcrossCameraPresetsWithoutGameplayInput(False)",
+      "feature": "OnlineTeamPointers",
+      "mode": "playmode",
+      "fixture": "OnlineTeamPointersPlayModeTests",
+      "method": "RemotePointerTracksPitchAcrossCameraPresetsWithoutGameplayInput",
+      "parameters": [
+        false
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T205135807Z/results.xml"
+    },
+    {
+      "id": "OnlineTeamPointersPlayModeTests.RemotePointerTracksPitchAcrossCameraPresetsWithoutGameplayInput(True)",
+      "feature": "OnlineTeamPointers",
+      "mode": "playmode",
+      "fixture": "OnlineTeamPointersPlayModeTests",
+      "method": "RemotePointerTracksPitchAcrossCameraPresetsWithoutGameplayInput",
+      "parameters": [
+        true
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T205135807Z/results.xml"
+    },
+    {
+      "id": "OnlineSharedRollPanelPlayModeTests.SingleRollAndHeaderUseTheOriginalGuestPanels(False)",
+      "feature": "OnlineSharedRollPanels",
+      "mode": "playmode",
+      "fixture": "OnlineSharedRollPanelPlayModeTests",
+      "method": "SingleRollAndHeaderUseTheOriginalGuestPanels",
+      "parameters": [
+        false
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261122T083702138Z/results.xml"
+    },
+    {
+      "id": "OnlineSharedRollPanelPlayModeTests.SingleRollAndHeaderUseTheOriginalGuestPanels(True)",
+      "feature": "OnlineSharedRollPanels",
+      "mode": "playmode",
+      "fixture": "OnlineSharedRollPanelPlayModeTests",
+      "method": "SingleRollAndHeaderUseTheOriginalGuestPanels",
+      "parameters": [
+        true
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261122T083702138Z/results.xml"
+    },
+    {
+      "id": "OnlineSharedRollPanelPlayModeTests.StoppagePanelReplicatesAndWaitsForBothManagersOrTimeout(False)",
+      "feature": "OnlineSharedRollPanels",
+      "mode": "playmode",
+      "fixture": "OnlineSharedRollPanelPlayModeTests",
+      "method": "StoppagePanelReplicatesAndWaitsForBothManagersOrTimeout",
+      "parameters": [
+        false
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261122T083702138Z/results.xml"
+    },
+    {
+      "id": "OnlineSharedRollPanelPlayModeTests.StoppagePanelReplicatesAndWaitsForBothManagersOrTimeout(True)",
+      "feature": "OnlineSharedRollPanels",
+      "mode": "playmode",
+      "fixture": "OnlineSharedRollPanelPlayModeTests",
+      "method": "StoppagePanelReplicatesAndWaitsForBothManagersOrTimeout",
+      "parameters": [
+        true
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261122T083702138Z/results.xml"
+    },
+    {
+      "id": "OnlineLocalCameraPlayModeTests.AuthoredCameraPresetsAreLocalAndRespectPresentationHold(False)",
+      "feature": "OnlineLocalCamera",
+      "mode": "playmode",
+      "fixture": "OnlineLocalCameraPlayModeTests",
+      "method": "AuthoredCameraPresetsAreLocalAndRespectPresentationHold",
+      "parameters": [
+        false
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T201252854Z/results.xml"
+    },
+    {
+      "id": "OnlineLocalCameraPlayModeTests.AuthoredCameraPresetsAreLocalAndRespectPresentationHold(True)",
+      "feature": "OnlineLocalCamera",
+      "mode": "playmode",
+      "fixture": "OnlineLocalCameraPlayModeTests",
+      "method": "AuthoredCameraPresetsAreLocalAndRespectPresentationHold",
+      "parameters": [
+        true
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T201252854Z/results.xml"
+    },
+    {
+      "id": "OnlineScorersPlayModeTests.BothTeamsScorersReachTheAuthoredGuestPanel",
+      "feature": "OnlineScorers",
+      "mode": "playmode",
+      "fixture": "OnlineScorersPlayModeTests",
+      "method": "BothTeamsScorersReachTheAuthoredGuestPanel",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T202305120Z/results.xml"
+    },
+    {
+      "id": "OnlineRoomBannersPlayModeTests.PublishedEventsAndTimerUseTheGuestRoomBannerWithoutReplay",
+      "feature": "OnlineRoomBanners",
+      "mode": "playmode",
+      "fixture": "OnlineRoomBannersPlayModeTests",
+      "method": "PublishedEventsAndTimerUseTheGuestRoomBannerWithoutReplay",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T202619251Z/results.xml"
+    },
+    {
+      "id": "OnlineF3LabelsPlayModeTests.ActiveFinalThirdLabelFlashesOnGuestPitch(False)",
+      "feature": "OnlineF3Labels",
+      "mode": "playmode",
+      "fixture": "OnlineF3LabelsPlayModeTests",
+      "method": "ActiveFinalThirdLabelFlashesOnGuestPitch",
+      "parameters": [
+        false
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T202826594Z/results.xml"
+    },
+    {
+      "id": "OnlineF3LabelsPlayModeTests.ActiveFinalThirdLabelFlashesOnGuestPitch(True)",
+      "feature": "OnlineF3Labels",
+      "mode": "playmode",
+      "fixture": "OnlineF3LabelsPlayModeTests",
+      "method": "ActiveFinalThirdLabelFlashesOnGuestPitch",
+      "parameters": [
+        true
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T202826594Z/results.xml"
+    },
+    {
+      "id": "OnlineSharedSettingsPlayModeTests.BothManagersEditAuthoredSettingsDuringSharedPause",
+      "feature": "OnlineSharedSettings",
+      "mode": "playmode",
+      "fixture": "OnlineSharedSettingsPlayModeTests",
+      "method": "BothManagersEditAuthoredSettingsDuringSharedPause",
+      "parameters": [],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T203727702Z/results.xml"
+    },
+    {
+      "id": "OnlineAuthoredSubstitutionsPlayModeTests.OwnTeamSubstitutionUsesRoomPanelAndReplicates(False)",
+      "feature": "OnlineAuthoredSubstitutions",
+      "mode": "playmode",
+      "fixture": "OnlineAuthoredSubstitutionsPlayModeTests",
+      "method": "OwnTeamSubstitutionUsesRoomPanelAndReplicates",
+      "parameters": [
+        false
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T204538557Z/results.xml"
+    },
+    {
+      "id": "OnlineAuthoredSubstitutionsPlayModeTests.OwnTeamSubstitutionUsesRoomPanelAndReplicates(True)",
+      "feature": "OnlineAuthoredSubstitutions",
+      "mode": "playmode",
+      "fixture": "OnlineAuthoredSubstitutionsPlayModeTests",
+      "method": "OwnTeamSubstitutionUsesRoomPanelAndReplicates",
+      "parameters": [
+        true
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T204538557Z/results.xml"
+    },
+    {
+      "id": "OnlineGoalCelebrationPlayModeTests.AuthoredGoalFlowMovesScorerAndPublishesCelebrationMotion(False)",
+      "feature": "OnlineGoalCelebrations",
+      "mode": "playmode",
+      "fixture": "OnlineGoalCelebrationPlayModeTests",
+      "method": "AuthoredGoalFlowMovesScorerAndPublishesCelebrationMotion",
+      "parameters": [
+        false
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T204718886Z/results.xml"
+    },
+    {
+      "id": "OnlineGoalCelebrationPlayModeTests.AuthoredGoalFlowMovesScorerAndPublishesCelebrationMotion(True)",
+      "feature": "OnlineGoalCelebrations",
+      "mode": "playmode",
+      "fixture": "OnlineGoalCelebrationPlayModeTests",
+      "method": "AuthoredGoalFlowMovesScorerAndPublishesCelebrationMotion",
+      "parameters": [
+        true
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T204718886Z/results.xml"
+    },
+    {
       "id": "OnlineFrontendNativeLobbyPlayModeTests.CancellingAndHostingAgainCreatesFreshNativeLobby",
       "feature": "OnlineFrontendNativeLobby",
       "mode": "playmode",
@@ -1355,7 +1829,7 @@
       "parameters": [],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T190911294Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T200746769Z/results.xml"
     },
     {
       "id": "OnlineModeNavigationEditorTests.PastedLobbyCodeAllowsSurroundingWhitespace",
@@ -1366,7 +1840,7 @@
       "parameters": [],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T190911294Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T200746769Z/results.xml"
     },
     {
       "id": "OnlineModeNavigationEditorTests.AuthoredControlsFitWideClassicAndPortraitCanvas",
@@ -1377,7 +1851,7 @@
       "parameters": [],
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T190911294Z/results.xml"
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261119T200746769Z/results.xml"
     },
     {
       "id": "OnlineDribblePlayModeTests.DribbleContinuesThroughRecovery(1,\"safe\")",

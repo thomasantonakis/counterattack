@@ -14,7 +14,11 @@ namespace CounterAttack.Online
         private float originalAlpha;
         private bool originalRaycasts;
         public void OnPointerClick(PointerEventData eventData)
-        {if(view==null || eventData==null || eventData.dragging || selection!=null || eventData.button!=PointerEventData.InputButton.Left)return;if(card)view.SelectCard(index);else view.SelectSlot(team,index);}
+        {
+            if(view==null || eventData==null || eventData.dragging || selection!=null || eventData.button!=PointerEventData.InputButton.Left)return;
+            if(card)view.SelectCard(index,eventData.clickCount==2);
+            else view.SelectSlot(team,index);
+        }
         public void OnBeginDrag(PointerEventData eventData)
         {
             if(view==null || eventData==null || eventData.button!=PointerEventData.InputButton.Left || selection!=null)return;
@@ -23,12 +27,17 @@ namespace CounterAttack.Online
             selection=pending;draggedRect=rect;dragGroup=group;originalParent=rect.parent;originalPosition=rect.anchoredPosition;originalAlpha=group.alpha;originalRaycasts=group.blocksRaycasts;
             RectTransformUtility.ScreenPointToWorldPointInRectangle(originalParent as RectTransform??rect,eventData.position,eventData.pressEventCamera,out var point);pointerOffset=rect.position-point;
             group.alpha=originalAlpha*.6f;group.blocksRaycasts=false;
+            view.PublishDragPosition(selection,rect,originalPosition);
         }
         public void OnDrag(PointerEventData eventData)
         {
             if(selection==null)return;
             if(view==null || !view.DragIsCurrent(selection) || eventData==null){Cancel();return;}
-            if(RectTransformUtility.ScreenPointToWorldPointInRectangle(originalParent as RectTransform??draggedRect,eventData.position,eventData.pressEventCamera,out var point))draggedRect.position=point+pointerOffset;
+            if(RectTransformUtility.ScreenPointToWorldPointInRectangle(originalParent as RectTransform??draggedRect,eventData.position,eventData.pressEventCamera,out var point))
+            {
+                draggedRect.position=point+pointerOffset;
+                view.PublishDragPosition(selection,draggedRect,originalPosition);
+            }
         }
         public void OnDrop(PointerEventData eventData)
         {

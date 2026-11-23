@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
+using CounterAttack.Online;
 using TMPro;
 using UnityEngine;
 
-public class MatchEventBannerController : MonoBehaviour
+public partial class MatchEventBannerController : MonoBehaviour
 {
     [Serializable]
     public class Artwork
@@ -56,9 +57,12 @@ public class MatchEventBannerController : MonoBehaviour
     private void Update()
     {
         var match=MatchManager.Instance;
-        bool replicaOrClosedOnline=CounterAttack.Online.OnlineRoomSession.IsGuest
-            || match?.gameData?.gameSettings?.gameMode==ApplicationManager.OnlineGameMode && !match.IsOnlineAuthorityControlled;
-        SetTimingStatus(replicaOrClosedOnline?null:match?.DecisionTiming);
+        if (!OnlineRoomSession.IsGuest)
+        {
+            bool closedOnline = match?.gameData?.gameSettings?.gameMode == ApplicationManager.OnlineGameMode
+                && !match.IsOnlineAuthorityControlled;
+            SetTimingStatus(closedOnline ? null : match?.DecisionTiming);
+        }
         Advance(Time.unscaledDeltaTime);
     }
 
@@ -136,8 +140,10 @@ public class MatchEventBannerController : MonoBehaviour
     public void Enqueue(MatchBannerEvent kind, string description)
     {
         if (visibility == null || caption == null || icon == null) return;
+        if (OnlineRoomSession.Current?.HasInitialData == true && !OnlineRoomSession.IsGuest)
+            RetainOnlineEvent(kind, description);
         pending.Enqueue((kind, description));
-        SetTimingStatus(lastTiming);
+        if (!OnlineRoomSession.IsGuest) SetTimingStatus(lastTiming);
         if (!showing) ShowNext();
     }
 
@@ -175,7 +181,7 @@ public class MatchEventBannerController : MonoBehaviour
         {
             showing = false;
             visibility.alpha = 0;
-            SetTimingStatus(lastTiming);
+            if (!OnlineRoomSession.IsGuest) SetTimingStatus(lastTiming);
         }
     }
 

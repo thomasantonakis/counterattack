@@ -62,6 +62,8 @@ namespace CounterAttack.Online
     {
         private readonly OnlineMatchProtocol protocol;
         private readonly Func<int> die;
+        private readonly Func<double> rollClock;
+        private double rollResultDeadline;
         private readonly GameSettings settings;
         private readonly List<OnlineDraftCard> deck=new(),visible=new();
         private readonly OnlineDraftCard[] home,away;
@@ -72,9 +74,10 @@ namespace CounterAttack.Online
         private bool homeReady,awayReady;
         private readonly Dictionary<(OnlineTeam,long),(string body,long revision)> receipts=new();
         private readonly Queue<(OnlineTeam,long)> receiptOrder=new();
-        public OnlineDraftAuthority(OnlineMatchProtocol protocol,GameSettings agreed,OnlineDraftCard[] catalog,Func<int,int> nextIndex=null,Func<int> roll=null)
+        public OnlineDraftAuthority(OnlineMatchProtocol protocol,GameSettings agreed,OnlineDraftCard[] catalog,Func<int,int> nextIndex=null,Func<int> roll=null,Func<double> rollClock=null)
         {
             this.protocol=protocol??throw new ArgumentNullException(nameof(protocol));
+            this.rollClock=rollClock;
             settings=OnlineSetupRules.Normalize(agreed);string error=OnlineSetupRules.Validate(settings);
             if(!string.IsNullOrEmpty(error))throw new ArgumentException(error,nameof(agreed));
             var all=Copy(catalog??throw new ArgumentNullException(nameof(catalog)));
@@ -108,6 +111,28 @@ namespace CounterAttack.Online
         {"TableTopia"=>keeper?settings.includeTabletopiaGK:settings.includeTabletopia,"Not TableTopia"=>keeper?settings.includeNonTabletopiaGK:settings.includeNonTabletopia,"World Cup"=>keeper?settings.includeInternationalsGK:settings.includeInternationals,_=>true};
         private void Observe()
         {if(connections==protocol.ConnectionRevision)return;connections=protocol.ConnectionRevision;if(phase is "roll" or "pick" or "review")homeReady=awayReady=false;revision++;}
+        public bool AdvanceRollResult()
+        {
+            if(phase is not ("roll-result" or "opening-result") || !protocol.BothConnected || rollClock()<rollResultDeadline)return false;
+            CompleteRoll(phase=="opening-result");
+            revision=checked(revision+1);
+            return true;
+        }
+        private void CompleteRoll(bool openingRoll)
+        {
+            if(homeRoll==awayRoll)
+            {
+                homeRoll=awayRoll=0;round++;turn=OnlineTeam.Home;phase=openingRoll?"opening-roll":"roll";
+            }
+            else if(openingRoll)
+            {
+                opening=new CoinTossDecision(homeRoll>awayRoll);turn=opening.WinnerIsHome?OnlineTeam.Home:OnlineTeam.Away;phase="opening-choice";
+            }
+            else
+            {
+                first=turn=homeRoll>awayRoll?OnlineTeam.Home:OnlineTeam.Away;phase="pick";if(!FreeSelection)Deal();
+            }
+        }
         public OnlineDraftState Capture()
         {
             Observe();return Copy(new OnlineDraftState{matchId=protocol.MatchId,revision=revision,connectionRevision=connections,homeSequence=homeSequence,awaySequence=awaySequence,
@@ -139,9 +164,12 @@ namespace CounterAttack.Online
                     else
                     {
                         awayRoll=result;
-                        if(homeRoll==awayRoll){homeRoll=awayRoll=0;round++;turn=OnlineTeam.Home;}
-                        else if(phase=="opening-roll"){opening=new CoinTossDecision(homeRoll>awayRoll);turn=opening.WinnerIsHome?OnlineTeam.Home:OnlineTeam.Away;phase="opening-choice";}
-                        else{first=turn=homeRoll>awayRoll?OnlineTeam.Home:OnlineTeam.Away;phase="pick";if(!FreeSelection)Deal();}
+                        if(rollClock==null)CompleteRoll(phase=="opening-roll");
+                        else
+                        {
+                            phase=phase=="opening-roll"?"opening-result":"roll-result";
+                            rollResultDeadline=rollClock()+5;
+                        }
                     }
                     break;
                 case OnlineDraftIntent.Pick:
@@ -149,7 +177,7 @@ namespace CounterAttack.Online
                     if(!Repeatable && actor!=turn)return Reply(OnlineCommandStatus.WrongTeam);
                     int index=request.slot-1;
                     if(index<0 || index>=roster.Length || !goalkeeperPhase && index is 0 or 11)return Reply(OnlineCommandStatus.IllegalAction);
-                    var card=(FreeSelection?pool:visible).FirstOrDefault(c=>c.id==request.cardId);if(card==null)return Reply(OnlineCommandStatus.IllegalAction);
+                    var card=(FreeSelection?pool:visible).FirstOrDefault(c=>c!=null && c.id==request.cardId);if(card==null)return Reply(OnlineCommandStatus.IllegalAction);
                     if(goalkeeperPhase && index is not (0 or 11))index=roster[0]==null?0:11;
                     if(roster[index]!=null)
                     {int destination=-1;for(int n=1;n<=roster.Length;n++){int candidate=(index+n)%roster.Length;if((candidate is 0 or 11)==goalkeeperPhase && roster[candidate]==null){destination=candidate;break;}}index=destination;}
@@ -162,9 +190,9 @@ namespace CounterAttack.Online
                         else if(!Repeatable)turn=Other(turn);
                         break;
                     }
-                    visible.Remove(card);picks++;turn=Other(turn);
-                    if(visible.Count==0)
-                    {if(deck.Count==0)phase="review";else{Deal();turn=batch%2==1?first:Other(first);}}
+                    visible[visible.IndexOf(card)]=null;picks++;turn=Other(turn);
+                    if(visible.All(offer=>offer==null))
+                    {visible.Clear();if(deck.Count==0)phase="review";else{Deal();turn=batch%2==1?first:Other(first);}}
                     break;
                 case OnlineDraftIntent.Swap:
                     int from=request.slot-1,to=request.otherSlot-1;

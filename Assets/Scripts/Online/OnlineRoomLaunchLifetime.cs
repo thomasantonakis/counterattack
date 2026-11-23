@@ -15,7 +15,7 @@ namespace CounterAttack.Online
             if(ApplicationManager.Instance==null)throw new InvalidOperationException("Online Room requires the existing application context");
             if(!Path.IsPathFullyQualified(directory))throw new ArgumentException("An absolute online run directory is required",nameof(directory));
             SavePath=Path.Combine(directory,guest?"room-replica.json":"room-authority.json");
-            Session=new OnlineRoomSession(matchId,guest,data,SavePath);
+            Session=new OnlineRoomSession(matchId,guest,data,SavePath,showOpeningIntro:true);
             try
             {
                 Directory.CreateDirectory(directory);

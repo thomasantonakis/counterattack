@@ -19,6 +19,17 @@ namespace CounterAttack.Online
         private string[] targetOptions = Array.Empty<string>();
         public event Action<OnlineGroundPassMessage> Requested;
         public Func<bool> LocalEscapeHandler {get;set;}
+        internal Func<bool> RollEscapeHandler { get; set; }
+        internal bool AcknowledgeRoll(long result)
+        {
+            if (!connected || pending || state == null || state.connectionHeld || state.isSharedPaused || Requested == null)
+                return false;
+            Control(OnlineRoomRollPanels.AcknowledgePrefix + result.ToString(CultureInfo.InvariantCulture));
+            return true;
+        }
+        internal bool CanEditSettings => connected && !pending && state?.isSharedPaused == true && !state.connectionHeld;
+        internal void ChangeSetting(OnlineRoomSettings.Field field, string value)
+        { if (CanEditSettings) Control(OnlineRoomSettings.Action(field, value)); }
         public bool CanManageOwnPause=>connected && !pending && state?.isSharedPaused==true && !state.connectionHeld && state.pauseRequester==team.ToString();
         private bool OwnRequiredKeeper=>state!=null && (team==OnlineTeam.Home
             ?state.homeKeeperReplacement || state.homeForcedKeeperSubstitution || state.homeEmergencyKeeper
@@ -208,7 +219,16 @@ namespace CounterAttack.Online
         public void NominateKeeper(int jersey)
         {if(jersey is >=1 and <=18)Control(OnlineSharedPause.EmergencyKeeperAction(jersey));}
         public void Escape()
-        { if(LocalEscapeHandler?.Invoke()==true)return; if (state?.isSharedPaused == true) Resume(); else Pause(); }
+        {
+            if(RoomInputOwnership.ReservePauseEscape)
+            {
+                if(RoomInputOwnership.IntroActive)RoomMatchIntro.Instance.Skip();
+                return;
+            }
+            if(RoomInputOwnership.CardOpen){RoomInspectionCard.Instance.Close();return;}
+            if(RollEscapeHandler?.Invoke()==true || LocalEscapeHandler?.Invoke()==true)return;
+            if (state?.isSharedPaused == true) Resume(); else Pause();
+        }
         private void Update()
         { if (Input.GetKeyDown(KeyCode.Escape)) Escape(); }
 

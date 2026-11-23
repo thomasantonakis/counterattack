@@ -16,6 +16,8 @@ namespace CounterAttack.Online
             leaveButton.onClick.AddListener(Leave);
             WireSubstitutionControls();
             WireNominationControls();
+            WireRoomPause();
+            WireAuthoredSubstitutions();
         }
         public void Display(OnlineGroundPassState state)
         {
@@ -24,9 +26,10 @@ namespace CounterAttack.Online
             status.text=connectionHeld?"Reconnecting. The match is held.":own?"You paused the match. Resume when ready.":"The other manager paused the match. They can resume it.";
             if(!connectionHeld && state.keeperActionBlocked)status.text=state.keeperActionReason;
             var data=board.match.gameData.gameSettings;
-            settings.text=$"{data.homeTeamName}  —  {data.awayTeamName}\nWeather: {data.weatherConditions}\nBall: {data.ballColor}\nAssistance: {AssistanceLabel(data.playerAssistance)}\nTiebreaker: {data.tiebreaker}";
+            settings.text=$"{data.homeTeamName}  â€”  {data.awayTeamName}\nWeather: {data.weatherConditions}\nBall: {data.ballColor}\nAssistance: {AssistanceLabel(data.playerAssistance)}\nTiebreaker: {data.tiebreaker}";
             DisplaySubstitutions(state);
             DisplayNomination(state);
+            PresentRoomPause(state);
             RefreshButtons();
         }
         private static string AssistanceLabel(int value)=>value==1?"Novice":value==2?"Intermediate":"Experienced";
@@ -37,6 +40,8 @@ namespace CounterAttack.Online
             resumeButton.interactable=!connectionHeld && board.controls.resumeButton.interactable;
             RefreshSubstitutionButtons();
             RefreshNominationButtons();
+            RefreshRoomPause();
+            RefreshAuthoredSubstitutions();
         }
         public void Leave()
         {

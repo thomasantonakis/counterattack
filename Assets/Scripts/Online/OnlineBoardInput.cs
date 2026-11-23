@@ -13,6 +13,12 @@ namespace CounterAttack.Online
         public OnlineGroundPassBoard board;
         public bool samplePhysicalInput=true;
         private OnlineGroundPassState state;
+        private GameInputManager roomPresentation;
+        private Vector2 pressPosition;
+        private bool pressArmed;
+        private HexCell localGoalHover;
+        private static readonly KeyCode[] CameraPresets = { KeyCode.Alpha1, KeyCode.Alpha2, KeyCode.Alpha3, KeyCode.Alpha4,
+            KeyCode.Keypad1, KeyCode.Keypad2, KeyCode.Keypad3, KeyCode.Keypad4 };
         private static readonly KeyCode[] Keys={KeyCode.P,KeyCode.L,KeyCode.C,KeyCode.F,KeyCode.M,KeyCode.S,KeyCode.R,KeyCode.D,KeyCode.B,KeyCode.N,KeyCode.T,KeyCode.X,
             KeyCode.Q,KeyCode.K,KeyCode.H,KeyCode.G,KeyCode.V,KeyCode.A,KeyCode.Return,KeyCode.KeypadEnter};
         public void Display(OnlineGroundPassState publication){state=publication;RefreshPublishedHighlights(publication);}
@@ -60,12 +66,71 @@ namespace CounterAttack.Online
         }
         private void Update()
         {
-            if(!samplePhysicalInput || board==null || !board.liveFullRoom || RoomInputOwnership.BlocksHover)return;
+            if(!samplePhysicalInput || board==null || !board.liveFullRoom)return;
+            if(RoomInputOwnership.CardOpen && Input.GetKeyDown(KeyCode.Space))
+            { RoomInspectionCard.Instance.Close();return; }
+            if(RoomInputOwnership.BlocksHover)
+            { pressArmed=false;PresentHover(default,false);return; }
             if(Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)
                 || Input.GetKey(KeyCode.LeftCommand) || Input.GetKey(KeyCode.RightCommand)
-                || Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt))return;
+                || Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt))
+            { pressArmed=false;PresentHover(default,false);return; }
+            if (board.boardCamera != null && board.boardCamera.TryGetComponent<CameraController>(out var camera))
+            {
+                bool shift = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+                foreach (var key in CameraPresets)
+                    if (Input.GetKeyDown(key) && !KeyboardOwnedByUI(key))
+                        camera.TryHandlePresetKey(new KeyPressData(key, shift, ctrl: false, alt: false));
+            }
             foreach(var key in Keys)if(Input.GetKeyDown(key) && !KeyboardOwnedByUI(key)){TryKey(key);break;}
-            if(Input.GetMouseButtonDown(0) && board.boardCamera!=null && !PointerOwnedByUI())TryRay(board.boardCamera.ScreenPointToRay(Input.mousePosition));
+            if(board.boardCamera==null)return;
+            bool overUi=PointerOwnedByUI();
+            var ray=board.boardCamera.ScreenPointToRay(Input.mousePosition);
+            var token=PresentHover(ray,!overUi && !GameInputManager.IsPresentationModalActive);
+            if(Input.GetKeyDown(KeyCode.Space) && token!=null && !KeyboardOwnedByUI(KeyCode.Space))
+            { RoomInspectionCard.Instance?.Toggle(token);pressArmed=false;return; }
+            if(Input.GetMouseButtonDown(0))
+            { pressArmed=!overUi && !Input.GetMouseButton(1);pressPosition=Input.mousePosition; }
+            float threshold=roomPresentation!=null?roomPresentation.dragThreshold:10f;
+            if(overUi || Input.GetMouseButton(1) || (pressPosition-(Vector2)Input.mousePosition).sqrMagnitude>threshold*threshold)
+                pressArmed=false;
+            if(Input.GetMouseButtonUp(0))
+            { if(pressArmed)TryRay(ray);pressArmed=false; }
+        }
+
+        public PlayerToken PresentHover(Ray ray,bool allow)
+        {
+            if(roomPresentation==null)
+                roomPresentation=FindAnyObjectByType<GameInputManager>(FindObjectsInactive.Include);
+            PlayerToken token=null;
+            HexCell hex=null;
+            if(allow && board!=null)
+            {
+                foreach(var hit in Physics.RaycastAll(ray,1000f,~0,QueryTriggerInteraction.Ignore).OrderBy(hit=>hit.distance))
+                {
+                    token=hit.collider.GetComponentInParent<PlayerToken>();
+                    if(token!=null && board.tokens.Contains(token)){hex=token.currentHex;break;}
+                    token=null;
+                    hex=hit.collider.GetComponentInParent<HexCell>();
+                    if(hex==null || !board.cells.Contains(hex)){hex=null;continue;}
+                    token=hex.occupyingToken;
+                    break;
+                }
+            }
+            if(token!=null && token.IsMoving)token=null;
+            roomPresentation?.PresentOnlineHover(token,hex);
+            var action=hex!=null && hex.isInGoal!=0?OnlineBoardActionPicker.Hex(state,hex.coordinates.x,hex.coordinates.z):null;
+            SetLocalGoalHover(action!=null && action.StartsWith("shot.target:",System.StringComparison.Ordinal)
+                && board.controls?.CanSubmitAction(action)==true?hex:null);
+            return token;
+        }
+
+        private void SetLocalGoalHover(HexCell hex)
+        {
+            if(localGoalHover==hex)return;
+            if(localGoalHover!=null)localGoalHover.SetLocalGoalHover(false);
+            localGoalHover=hex;
+            if(localGoalHover!=null)localGoalHover.SetLocalGoalHover(true);
         }
     }
 }

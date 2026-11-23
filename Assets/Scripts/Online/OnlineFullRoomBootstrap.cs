@@ -6,7 +6,7 @@ namespace CounterAttack.Online
     [DefaultExecutionOrder(-31000)]
     public sealed class OnlineFullRoomBootstrap:MonoBehaviour
     {
-        public const string SceneName="OnlineRoom",Catalog="full-room-v20";
+        public const string SceneName="OnlineRoom",Catalog="full-room-v24";
         public OnlineGroundPassBoard board;
         public Renderer replicaBallRenderer;
         public bool Ready {get;private set;}
@@ -17,6 +17,9 @@ namespace CounterAttack.Online
             if(Ready)throw new InvalidOperationException("Full Room already initialized");
             bool guest=OnlineRoomSession.IsGuest;board.liveFullRoom=true;board.continuousManualSession=true;board.localTeam=guest?OnlineTeam.Home:OnlineTeam.Away;
             board.match.gameData=OnlineRoomLaunchData.Copy(initial);
+            board.match.OnlineEventBanner = FindAnyObjectByType<MatchEventBannerController>();
+            board.match.OnlinePitchLines = FindAnyObjectByType<PitchLines>();
+            board.match.OnlineRollPanels = board.rollPanels;
             if(!guest)
             {
                 foreach(Transform root in board.authorityRoot.transform)root.gameObject.SetActive(true);
@@ -32,13 +35,37 @@ namespace CounterAttack.Online
             finally{board.match.EndGameplayEventLoggingSuppression();}
             board.displayedTokens=board.tokens.Select(t=>t.transform).ToArray();
             board.displayedBall.gameObject.SetActive(guest);
-            if(replicaBallRenderer!=null)
+            if (guest && replicaBallRenderer != null)
             {
-                var color=initial.gameSettings.ballColor=="Orange"?new Color32(230,121,36,255):initial.gameSettings.ballColor=="Yellow"?new Color32(235,214,58,255):new Color32(244,246,250,255);
-                var properties=new MaterialPropertyBlock();properties.SetColor("_Color",color);properties.SetColor("_BaseColor",color);replicaBallRenderer.SetPropertyBlock(properties);
+                board.match.OnGameSettingsLoaded += RefreshReplicaBallColor;
+                RefreshReplicaBallColor();
             }
-            if(!guest)board.match.kickoffManager.StartPreKickoffPhase();
+            if (!guest)
+            {
+                board.match.goalFlowManager?.BindPitchPositions();
+                board.match.kickoffManager.StartPreKickoffPhase();
+            }
             Ready=true;
+        }
+
+        private void OnDestroy()
+        {
+            if (board != null && board.match != null)
+                board.match.OnGameSettingsLoaded -= RefreshReplicaBallColor;
+        }
+
+        private void RefreshReplicaBallColor()
+        {
+            var color = board.match.gameData.gameSettings.ballColor switch
+            {
+                "Orange" => new Color32(230, 121, 36, 255),
+                "Yellow" => new Color32(235, 214, 58, 255),
+                _ => new Color32(244, 246, 250, 255)
+            };
+            var properties = new MaterialPropertyBlock();
+            properties.SetColor("_Color", color);
+            properties.SetColor("_BaseColor", color);
+            replicaBallRenderer.SetPropertyBlock(properties);
         }
     }
 }

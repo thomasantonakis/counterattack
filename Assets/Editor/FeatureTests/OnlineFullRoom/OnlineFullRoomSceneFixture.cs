@@ -55,15 +55,15 @@ public sealed partial class OnlineFullRoomSceneFixture
         void Submit(OnlineTeam actor,OnlineDraftIntent intent,string card=null,int slot=0,CoinTossChoice choice=CoinTossChoice.Kickoff)
         {var s=d.Capture();Assert.That(d.Submit(actor==OnlineTeam.Home?"h":"a",new OnlineDraftRequest{matchId=s.matchId,sequence=(actor==OnlineTeam.Home?s.homeSequence:s.awaySequence)+1,revision=s.revision,intent=intent,cardId=card,slot=slot,choice=choice}).Status,Is.EqualTo(OnlineCommandStatus.Accepted));}
         Submit(OnlineTeam.Home,OnlineDraftIntent.Roll);Submit(OnlineTeam.Away,OnlineDraftIntent.Roll);
-        while(d.Capture().phase=="pick"){var s=d.Capture();Submit(s.turn,OnlineDraftIntent.Pick,s.cards[0].id,Array.FindIndex(s.turn==OnlineTeam.Home?s.home:s.away,c=>c==null)+1);}
+        while(d.Capture().phase=="pick"){var s=d.Capture();Submit(s.turn,OnlineDraftIntent.Pick,s.cards.First(card=>card!=null).id,Array.FindIndex(s.turn==OnlineTeam.Home?s.home:s.away,c=>c==null)+1);}
         Submit(OnlineTeam.Home,OnlineDraftIntent.Ready);Submit(OnlineTeam.Away,OnlineDraftIntent.Ready);Submit(OnlineTeam.Away,OnlineDraftIntent.Start);
         Submit(OnlineTeam.Home,OnlineDraftIntent.Roll);Submit(OnlineTeam.Away,OnlineDraftIntent.Roll);Submit(OnlineTeam.Home,OnlineDraftIntent.Choose,choice:mirror?CoinTossChoice.RightToLeft:CoinTossChoice.LeftToRight);
         return OnlineRoomLaunchData.Create(d.Capture());
     }
-    private IEnumerator Load(MatchManager.GameData data,bool guest)
+    private IEnumerator Load(MatchManager.GameData data,bool guest,bool showIntro=false)
     {
         string path=Path.Combine(directory,guest?"replica.json":"authority.json");File.WriteAllText(path,JsonConvert.SerializeObject(data));
-        session=new OnlineRoomSession("full-room-scene",guest,data,path);app.SetActiveSaveFilePath(path);
+        session=new OnlineRoomSession("full-room-scene",guest,data,path,showOpeningIntro:showIntro);app.SetActiveSaveFilePath(path);
         yield return EditorSceneManager.LoadSceneAsyncInPlayMode(OnlineFullRoomAuthoring.ScenePath,new LoadSceneParameters(LoadSceneMode.Single));yield return null;
     }
     public IEnumerator Run(bool guest,int size,bool mirror,string branch)
@@ -72,7 +72,9 @@ public sealed partial class OnlineFullRoomSceneFixture
         app=ApplicationManager.Instance;created=app==null;if(created){ApplicationManager.EnsureInstanceExists();app=ApplicationManager.Instance;}
         CaptureGlobals();previousPath=app.LastSavedFileName;previousExplicit=app.HasExplicitSaveContext;previousMode=app.SelectedRoomGameMode;app.SetSelectedRoomGameMode(ApplicationManager.OnlineGameMode);Time.timeScale=1;
         directory=Path.Combine(Path.GetTempPath(),"CounterattackFullRoom",Guid.NewGuid().ToString("N"));Directory.CreateDirectory(directory);
-        var data=Data(size,mirror);if(branch.StartsWith("action-preview:"))data.gameSettings.playerAssistance=branch.EndsWith(":medium")?2:1;yield return Load(data,branch is "replica" or "status"?false:guest);
+        var data=Data(size,mirror);
+        if(branch.StartsWith("action-preview:"))data.gameSettings.playerAssistance=branch.EndsWith(":medium")?2:1;
+        yield return Load(data,branch is "replica" or "status" or "scorers" or "banners" or "f3-label" or "settings"?false:guest,branch=="room-intro");
         var bootstrap=Object.FindAnyObjectByType<OnlineFullRoomBootstrap>();Assert.That(bootstrap.Ready,Is.True);var board=bootstrap.board;
         Assert.That(board.cells.Length,Is.EqualTo(1900));Assert.That(board.cells.All(c=>c.GetComponent<MeshFilter>()?.sharedMesh!=null),Is.True);
         Assert.That(board.grid.IsGridInitialized(),Is.True);Assert.That(board.tokens.Length,Is.EqualTo(size*2));
@@ -87,13 +89,230 @@ public sealed partial class OnlineFullRoomSceneFixture
         }
         if(branch.StartsWith("menu")){yield return RunMenu(board,guest,mirror,branch);yield break;}
         if(branch=="context-key-focus"){yield return RunContextKeyFocus(board);yield break;}
+        if (branch == "room-intro")
+        {
+            Assert.That(RoomInputOwnership.IntroActive,Is.True);
+            board.controls.Escape();
+            Assert.That(RoomInputOwnership.IntroActive,Is.False);
+            Assert.That(RoomInputOwnership.ReservePauseEscape,Is.True);
+            Assert.That(board.match.gameData.events,Is.Empty);
+            yield break;
+        }
+        if (branch == "team-hover")
+        {
+            var input=board.boardInput;
+            var token=board.match.playerTokenManager.allTokens.First(t=>t.currentHex!=null);
+            Physics.SyncTransforms();
+            var ray=new Ray(token.transform.position+Vector3.up*10,Vector3.down);
+            var hovered=input.PresentHover(ray,true);
+            Assert.That(hovered,Is.SameAs(token));
+            var presentation=Object.FindAnyObjectByType<GameInputManager>(FindObjectsInactive.Include);
+            Assert.That(presentation.InspectionHoverToken,Is.SameAs(token));
+            Assert.That(RoomInspectionCard.Instance,Is.Not.Null);
+            RoomInspectionCard.Instance.Toggle(hovered);
+            Assert.That(RoomInspectionCard.Instance.LockedPlayer,Is.SameAs(token));
+            board.controls.Escape();
+            Assert.That(RoomInspectionCard.Instance.IsOpen,Is.False);
+            input.PresentHover(ray,false);
+            Assert.That(presentation.InspectionHoverToken,Is.Null);
+            Assert.That(board.match.gameData.events,Is.Empty);
+            yield break;
+        }
+        if (branch == "team-pointers")
+        {
+            var pointers = board.pointers;
+            Assert.That(pointers, Is.Not.Null);
+            Assert.That(pointers.localMarker.raycastTarget || pointers.remoteMarker.raycastTarget, Is.False);
+            var camera = board.boardCamera;
+            var framing = camera.GetComponent<CameraController>();
+            var point = new Vector3(2, 0, -1);
+            var bounds = Rect.MinMaxRect(-25, -15, 25, 15);
+            foreach (int preset in new[] { 1, 2 })
+            {
+                framing.SetCameraToPreset(preset);
+                var sample = OnlineRoomPointers.Project(camera, bounds, camera.WorldToScreenPoint(point));
+                Assert.That(sample.visible, Is.True);
+                Assert.That(sample.x, Is.EqualTo(point.x).Within(0.001f));
+                Assert.That(sample.z, Is.EqualTo(point.z).Within(0.001f));
+            }
+            Assert.That(OnlineRoomPointers.Project(camera, bounds, new Vector2(-10, -10)).visible, Is.False);
+            var wire = new OnlineGroundPassWire();
+            OnlineGroundPassMessage received = null;
+            foreach (var packet in OnlineGroundPassWire.Encode(new OnlineGroundPassMessage
+                { kind = "pointer", matchId = "full-room-scene", sequence = 2, connectionGeneration = 1,
+                    peerNonce = System.Guid.NewGuid().ToString("N"), pointer = new OnlineRoomPointer { visible = true, x = point.x, z = point.z, icon = 2 } }))
+                received = wire.Receive(packet, packet.Length) ?? received;
+            Assert.That(received?.pointer, Is.Not.Null);
+            pointers.ShowRemote(received.pointer, received.sequence);
+            pointers.ShowRemote(new OnlineRoomPointer(), 1);
+            yield return null;
+            Assert.That(pointers.remoteMarker.gameObject.activeSelf, Is.True);
+            Assert.That(pointers.remoteIcon.texture, Is.EqualTo(pointers.cameraDragIcon));
+            Assert.That(pointers.remoteIcon.raycastTarget, Is.False);
+            pointers.ShowRemote(new OnlineRoomPointer { visible = true, x = point.x, z = point.z, icon = 1 }, 3);
+            yield return null;
+            Assert.That(pointers.remoteIcon.texture, Is.EqualTo(pointers.grabIcon));
+            pointers.ShowRemote(new OnlineRoomPointer { visible = true, x = point.x, z = point.z }, 4);
+            yield return null;
+            Assert.That(pointers.remoteIcon.texture, Is.EqualTo(pointers.hoverIcon));
+            var settings = board.match.gameData.gameSettings;
+            var remoteKit = guest ? settings.awayKit : settings.homeKit;
+            Assert.That(pointers.remoteMarker.color, Is.EqualTo(TokenKitCatalog.ResolveInstructionPalette(remoteKit, Color.white, Color.black).Primary));
+            pointers.SetHold(true);
+            yield return null;
+            Assert.That(pointers.remoteMarker.gameObject.activeSelf, Is.False);
+            Assert.That(board.match.gameData.events, Is.Empty);
+            yield break;
+        }
+        if (branch == "movement-summary")
+        {
+            var movementVersion=new OnlineCompatibility("ground-wire-v7","ground-rules-v1",OnlineFullRoomBootstrap.Catalog);
+            var movementProtocol=new OnlineMatchProtocol("full-room-scene","home","away","away",movementVersion);
+            movementProtocol.BindAuthenticatedAccount("home","h",movementVersion);
+            movementProtocol.BindAuthenticatedAccount("away","a",movementVersion);
+            var authority=new OnlineGroundPassAuthority(board.match,movementProtocol);
+            var movement=board.match.movementPhaseManager;
+            movement.ActivateMovementPhase();
+            var publication=authority.Capture();
+            string expected=$"Attacking movement · {movement.AttackingMoveLimit} moves remaining";
+            Assert.That(publication.instruction.text,Does.StartWith(expected));
+            board.Display(publication,"Movement observer");
+            Assert.That(board.instructionMonitor.instructionText.text,Does.StartWith(expected));
+            Assert.That(board.match.gameData.events,Is.Empty);
+            yield break;
+        }
+        if (branch == "goal-celebration")
+        {
+            var versionForGoal = new OnlineCompatibility("ground-wire-v7", "ground-rules-v1", OnlineFullRoomBootstrap.Catalog);
+            var goalProtocol = new OnlineMatchProtocol("full-room-scene", "home", "away", "away", versionForGoal);
+            goalProtocol.BindAuthenticatedAccount("home", "h", versionForGoal);
+            goalProtocol.BindAuthenticatedAccount("away", "a", versionForGoal);
+            var authority = new OnlineGroundPassAuthority(board.match, goalProtocol);
+            var scorer = board.tokens.First(token => token.isHomeTeam == mirror && token.jerseyNumber == 9);
+            var goal = board.cells.First(cell => cell.isInGoal == (mirror ? -1 : 1));
+            var opening = scorer.transform.position;
+            board.match.goalFlowManager.StartGoalFlow(scorer, goal);
+            float deadline = Time.realtimeSinceStartup + 5f;
+            while (Vector3.Distance(scorer.transform.position, opening) <= 0.01f && Time.realtimeSinceStartup < deadline)
+                yield return null;
+            Assert.That(Vector3.Distance(scorer.transform.position, opening), Is.GreaterThan(0.01f));
+            var goalState = authority.Capture();
+            Assert.That(goalState.stage, Is.EqualTo("goal.resolving"));
+            Assert.That(goalState.instruction.text, Does.Contain("GOAL FOR"));
+            Assert.That(goalState.ShouldStreamPresentation(), Is.True);
+            var pose = goalState.roomPose.players.Single(player => player.id == OnlineRollPublication.ActorId(scorer));
+            Assert.That(new Vector3(pose.x, pose.y, pose.z), Is.EqualTo(scorer.transform.position));
+            var initialCameraPosition=board.boardCamera.transform.position;
+            var initialCameraRotation=board.boardCamera.transform.rotation;
+            board.Display(goalState,"Goal camera check");
+            Assert.That(board.boardCamera.transform.position,Is.Not.EqualTo(initialCameraPosition));
+            goalState.goalMotion=false;
+            board.Display(goalState,"Restore local camera");
+            Assert.That(board.boardCamera.transform.position,Is.EqualTo(initialCameraPosition));
+            Assert.That(board.boardCamera.transform.rotation,Is.EqualTo(initialCameraRotation));
+            yield break;
+        }
+        if (branch == "local-camera")
+        {
+            var camera = board.boardCamera.GetComponent<CameraController>();
+            Assert.That(camera.IsReady, Is.True);
+            foreach (var token in board.tokens)
+            {
+                var number = token.transform.Find("Authored jersey number").GetComponent<TMPro.TextMeshPro>();
+                var renderer = number.GetComponent<MeshRenderer>();
+                number.ForceMeshUpdate();
+                Assert.That(renderer.enabled, Is.True);
+                Assert.That(renderer.sortingOrder, Is.EqualTo(10));
+                Assert.That(number.GetParsedText(), Is.EqualTo(token.jerseyNumber.ToString()));
+            }
+            if (guest) Assert.That(board.match.IsGameplayInputBlocked, Is.True);
+            var opening = camera.transform.position;
+            var change = new KeyPressData(KeyCode.Alpha3, false, false, false);
+            Assert.That(camera.TryHandlePresetKey(change), Is.True);
+            Assert.That(change.isConsumed, Is.True);
+            Assert.That(Vector3.Distance(camera.transform.position, opening), Is.GreaterThan(0.1f));
+            var changed = camera.transform.position;
+            camera.SetOnlinePresentationHold(true);
+            Assert.That(camera.TryHandlePresetKey(new KeyPressData(KeyCode.Alpha4, false, false, false)), Is.False);
+            Assert.That(camera.transform.position, Is.EqualTo(changed));
+            camera.SetOnlinePresentationHold(false);
+            Assert.That(camera.TryHandlePresetKey(new KeyPressData(KeyCode.Alpha4, false, false, false)), Is.True);
+            Assert.That(board.match.gameData.events, Is.Empty);
+            yield break;
+        }
+
         var version=new OnlineCompatibility("ground-wire-v7","ground-rules-v1",OnlineFullRoomBootstrap.Catalog);var protocol=new OnlineMatchProtocol("full-room-scene","home","away","away",version);
         protocol.BindAuthenticatedAccount("home","h",version);protocol.BindAuthenticatedAccount("away","a",version);
         if(!OnlineRoomSession.IsGuest)pause=new OnlineSharedPause(protocol,board.match);
-        if(branch is "replica" or "status")
+        if(branch is "replica" or "status" or "scorers" or "banners" or "f3-label" or "settings")
         {
             if(branch=="status")PrepareRosterStatus(board);
-            var authority=new OnlineGroundPassAuthority(board.match,protocol);var published=authority.Capture();
+            if (branch == "scorers")
+            {
+                board.match.AddGoal("Home striker", true, 12, false, "Home winger");
+                board.match.AddGoal("Home striker", true, 45, true, minuteLabel: "45+2'");
+                board.match.AddGoal("Away striker", false, 32, false);
+                Assert.That(board.match.matchStatsUI.homeScorersText.text, Does.Contain("Home striker"));
+                Assert.That(board.match.matchStatsUI.awayScorersText.text, Does.Contain("Away striker"));
+            }
+            if (branch == "banners")
+            {
+                var timing = new DecisionTimingService();
+                timing.BeginDecision("next-action", DecisionKind.SelectNextAction, "Home", 1);
+                timing.Select("next-action");
+                timing.Advance(DecisionTimingConfig.GetBudget(DecisionKind.SelectNextAction, 1) * 0.75f);
+                MatchEventAnnouncements.Publish(MatchBannerEvent.YellowCard, "Home defender");
+                MatchEventAnnouncements.Publish(MatchBannerEvent.Foul, "Away free kick");
+                board.match.OnlineEventBanner.SetTimingStatus(timing);
+                Assert.That(board.match.OnlineEventBanner.IsTimingVisible, Is.True);
+            }
+            if (branch == "settings")
+            {
+                OnlineCommandStatus Control(string connection, long sequence, long revision, string action) => pause.Submit(connection,
+                    new OnlineMatchCommand("full-room-scene", sequence, revision, "shared-pause", action)).Status;
+                Assert.That(Control("h", 1, pause.Revision, "settings:2:Snow"), Is.EqualTo(OnlineCommandStatus.NotReady));
+                Assert.That(Control("h", 1, pause.Revision, OnlineSharedPause.RequestAction), Is.EqualTo(OnlineCommandStatus.Accepted));
+
+                board.controls.Configure(OnlineTeam.Away);
+                var view = Object.FindAnyObjectByType<PauseMenuManager>(FindObjectsInactive.Include);
+                var settingsAuthority = new OnlineGroundPassAuthority(board.match, protocol);
+                board.Display(pause.Capture(settingsAuthority), "Pause settings");
+                Assert.That(view.pausePanel.activeInHierarchy, Is.True);
+                view.editSettings.onClick.Invoke();
+                Assert.That(view.editSettingsPanel.activeInHierarchy, Is.True);
+                Assert.That(view.editWeatherDropdown.interactable, Is.True);
+                board.controls.Requested += message =>
+                    Assert.That(pause.Submit("a", message.ToCommand()).Status, Is.EqualTo(OnlineCommandStatus.Accepted));
+                view.editWeatherDropdown.value = view.editWeatherDropdown.options.FindIndex(option => option.text == "Snow");
+                Assert.That(board.match.gameData.gameSettings.weatherConditions, Is.EqualTo("Snow"));
+                Assert.That(board.match.gameData.gameSettings.ballColor, Is.EqualTo("Orange"));
+                Assert.That(Control("h", 2, pause.Revision - 1, "settings:1:3"), Is.EqualTo(OnlineCommandStatus.StaleRevision));
+                Assert.That(Control("h", 2, pause.Revision, "settings:1:3"), Is.EqualTo(OnlineCommandStatus.Accepted));
+                Assert.That(pause.Requester, Is.EqualTo(OnlineTeam.Home));
+                Assert.That(Control("a", 2, pause.Revision, OnlineSharedPause.ResumeAction), Is.EqualTo(OnlineCommandStatus.WrongTeam));
+            }
+            int labelSide = mirror ? 1 : -1;
+            if (branch == "f3-label")
+            {
+                var origin = board.cells.First(cell => cell.isInFinalThird == -labelSide
+                    && cell.isInGoal == 0 && !cell.isOutOfBounds && cell.occupyingToken == null);
+                board.match.ball.PlaceAtCell(origin);
+                board.match.finalThirdManager.TriggerFinalThirdPhase();
+                yield return null;
+            }
+            var authority=new OnlineGroundPassAuthority(board.match,protocol);var published=branch == "settings" ? pause.Capture(authority) : authority.Capture();
+            if (branch == "f3-label")
+                Assert.That(published.finalThirdLabelSide, Is.EqualTo(labelSide));
+            if (branch is "scorers" or "banners" or "f3-label" or "settings")
+            {
+                var wire = new OnlineGroundPassWire();
+                OnlineGroundPassMessage received = null;
+                foreach (var packet in OnlineGroundPassWire.Encode(new OnlineGroundPassMessage
+                    { kind = "state", matchId = published.matchId, state = published }))
+                    received = wire.Receive(packet, packet.Length) ?? received;
+                Assert.That(received?.state, Is.Not.Null);
+                published = received.state;
+            }
             Assert.That(published.tokens.Length,Is.EqualTo(size*2));
             published.homeStats.totalGoals=2;published.awayStats.totalGoals=1;published.regulationSeconds=123;published.half=1;
             var moved=published.tokens.First(t=>t.id=="home:2");moved.x=mirror?12:-12;moved.z=4;
@@ -103,12 +322,73 @@ public sealed partial class OnlineFullRoomSceneFixture
             yield return Load(data,true);board=Object.FindAnyObjectByType<OnlineFullRoomBootstrap>().board;
             var replica=new OnlineGroundPassReplica("full-room-scene",board.tokens.Select(OnlineRollPublication.ActorId),OnlineFullRoomBootstrap.Catalog);
             Assert.That(replica.Apply(published),Is.True);board.Display(replica.State,"Full Room replica");
+            if (branch == "settings")
+            {
+                var view = Object.FindAnyObjectByType<PauseMenuManager>(FindObjectsInactive.Include);
+                Assert.That(view.pausePanel.activeInHierarchy, Is.True);
+                view.editSettings.onClick.Invoke();
+                Assert.That(view.editSettingsPanel.activeInHierarchy, Is.True);
+                Assert.That(board.match.gameData.gameSettings.weatherConditions, Is.EqualTo("Snow"));
+                Assert.That(board.match.gameData.gameSettings.ballColor, Is.EqualTo("Orange"));
+                Assert.That(board.match.gameData.gameSettings.playerAssistance, Is.EqualTo(3));
+                Assert.That(view.editWeatherDropdown.captionText.text, Is.EqualTo("Snow"));
+                Assert.That(view.editBallColorDropdown.captionText.text, Is.EqualTo("Orange"));
+                Assert.That(view.editPlayerAssistanceDropdown.captionText.text, Is.EqualTo("Experienced"));
+                board.controls.Escape();
+                Assert.That(view.editSettingsPanel.activeInHierarchy, Is.False);
+                Assert.That(view.pausePanel.activeInHierarchy, Is.True);
+            }
             var token=board.tokens.Single(t=>t.isHomeTeam && t.jerseyNumber==2);
             Assert.That(token.GetCurrentHex().coordinates,Is.EqualTo(new Vector3Int(moved.x,0,moved.z)));Assert.That(token.transform.position.x,Is.EqualTo(board.grid.GetHexCenterForCoordinates(token.GetCurrentHex().coordinates).x).Within(.001));
             Assert.That(board.match.gameData.stats.homeTeamStats.totalGoals,Is.EqualTo(2));Assert.That(board.match.OnlineRegulationSeconds,Is.EqualTo(123));
             Assert.That(board.liveScoreboard.homeScoreText.text,Is.EqualTo("2"));Assert.That(board.liveScoreboard.awayScoreText.text,Is.EqualTo("1"));
             Assert.That(board.authorityRoot.activeSelf,Is.False);Assert.That(board.match.gameData.events,Is.Empty);Assert.That(board.match.TimingRollSequence,Is.Zero);
             Assert.That(board.match.CaptureOnlineDecisionTiming(),Is.Null,"Replica projection must not create an authority clock");
+            if (branch == "scorers")
+            {
+                Assert.That(board.match.homeScorers.Select(goal => goal.scorer), Is.EqualTo(new[] { "Home striker", "Home striker" }));
+                Assert.That(board.match.homeScorers[0].assist, Is.EqualTo("Home winger"));
+                Assert.That(board.match.homeScorers[1].isPenalty, Is.True);
+                Assert.That(board.match.homeScorers[1].minuteLabel, Is.EqualTo("45+2'"));
+                Assert.That(board.match.awayScorers.Single().scorer, Is.EqualTo("Away striker"));
+                Assert.That(board.match.matchStatsUI.homeScorersText.text, Does.Contain("Home striker"));
+                Assert.That(board.match.matchStatsUI.homeScorersText.text, Does.Contain("45+2"));
+                Assert.That(board.match.matchStatsUI.awayScorersText.text, Does.Contain("Away striker"));
+            }
+            if (branch == "f3-label")
+            {
+                var pitch = board.match.OnlinePitchLines;
+                MeshRenderer Background(string name) => pitch.GetComponentsInChildren<MeshRenderer>(true)
+                    .Single(renderer => renderer.name == "Background" && renderer.transform.parent.name == name);
+                var active = Background(labelSide > 0 ? "NorthEast F3" : "NorthWest F3");
+                var inactive = Background(labelSide > 0 ? "NorthWest F3" : "NorthEast F3");
+                var block = new MaterialPropertyBlock();
+                Color Read(MeshRenderer renderer)
+                {
+                    renderer.GetPropertyBlock(block);
+                    return block.GetColor("_BaseColor");
+                }
+                Color before = Read(active);
+                Assert.That(before, Is.Not.EqualTo(Read(inactive)));
+                float stop = Time.realtimeSinceStartup + 2f;
+                while (Read(active) == before && Time.realtimeSinceStartup < stop) yield return null;
+                Assert.That(Read(active), Is.Not.EqualTo(before), "The replicated label alternates team colors");
+            }
+            if (branch == "banners")
+            {
+                var banner = board.match.OnlineEventBanner;
+                Assert.That(banner.IsTimingVisible, Is.True);
+                Assert.That(banner.timingCaption.text, Does.Contain("remaining"));
+                Assert.That(banner.timingDetail.text, Does.Contain("Home"));
+                Assert.That(banner.CurrentEvent, Is.EqualTo(MatchBannerEvent.YellowCard));
+                Assert.That(banner.detail.text, Is.EqualTo("Home defender"));
+                Assert.That(banner.PendingCount, Is.EqualTo(1));
+                board.Display(replica.State, "Repeated publication");
+                Assert.That(banner.PendingCount, Is.EqualTo(1));
+                banner.Advance(5f);
+                Assert.That(banner.CurrentEvent, Is.EqualTo(MatchBannerEvent.Foul));
+                Assert.That(banner.IsTimingVisible, Is.True);
+            }
             if(branch=="status")
             {
                 AssertRosterStatus(board,data,mirror);
@@ -126,6 +406,16 @@ public sealed partial class OnlineFullRoomSceneFixture
         if(branch.StartsWith("compact-pose")){yield return RunCompactPresentation(board,protocol,data,branch=="compact-pose-boundary");yield break;}
         if(branch.StartsWith("board-input:")){yield return RunBoardInput(board,protocol,data,branch.Substring("board-input:".Length));yield break;}
         if(branch.StartsWith("conclusion:")){var parts=branch.Split(':');yield return RunConclusion(board,protocol,data,int.Parse(parts[1]),int.Parse(parts[2]),bool.Parse(parts[3]));yield break;}
+        if (branch is "shared-duel-panel" or "shared-header-panel")
+        {
+            yield return RunSharedDuelOrHeader(board, protocol, data, branch == "shared-header-panel");
+            yield break;
+        }
+        if (branch.StartsWith("shared-roll:"))
+        {
+            yield return RunSharedRollPresentation(board, protocol, data, branch.EndsWith(":timeout"));
+            yield break;
+        }
         if(branch.StartsWith("stoppage:")){var parts=branch.Split(':');yield return RunStoppage(board,protocol,data,bool.Parse(parts[1]),bool.Parse(parts[2]),int.Parse(parts[3]),parts.Length>4);yield break;}
         if(branch.StartsWith("ordinary-half:")){yield return RunNormalOnlineHalf(board,protocol,int.Parse(branch.Split(':')[1]));yield break;}
         if(branch.StartsWith("room-coin:")){var parts=branch.Split(':');yield return RunRoomCoin(board,protocol,data,bool.Parse(parts[1]),bool.Parse(parts[2]),bool.Parse(parts[3]),bool.Parse(parts[4]),bool.Parse(parts[5]),parts.Length>6 && bool.Parse(parts[6]));yield break;}
@@ -139,7 +429,7 @@ public sealed partial class OnlineFullRoomSceneFixture
         if(branch=="transport"){yield return RunTransport(board,protocol,size);yield break;}
         if(branch.StartsWith("required-keeper:")){var parts=branch.Split(':');yield return RunRequiredKeeper(board,protocol,data,bool.Parse(parts[1]),parts[2],bool.Parse(parts[3]));yield break;}
         if(branch.StartsWith("substitution-limit-")){yield return RunSubstitutionLimit(board,protocol,data,branch.EndsWith("home"));yield break;}
-        if(branch.StartsWith("substitution-")){yield return RunSubstitution(board,protocol,data,branch.EndsWith("home"),branch.Contains("-ui-"),branch.Contains("-keeper-"));yield break;}
+        if(branch.StartsWith("substitution-")){yield return RunSubstitution(board,protocol,data,branch.EndsWith("home"),branch.Contains("-ui-") || branch.Contains("-authored-"),branch.Contains("-keeper-"),branch.Contains("-authored-"));yield break;}
         if(branch=="kickoff")
         {
             long homeSeq=0,awaySeq=0;
@@ -174,7 +464,7 @@ public sealed partial class OnlineFullRoomSceneFixture
         Assert.That(board.match.GetSubstitutionsUsed(!home),Is.Zero);Assert.That(board.match.GetSubstitutionsRemaining(!home),Is.EqualTo(MatchManager.ExtraTimeMaxSubstitutionsPerTeam));
         Assert.That(board.match.gameData.events,Is.Empty);Assert.That(board.match.CaptureOnlineDecisionTiming(),Is.Null);
     }
-    private IEnumerator RunSubstitution(OnlineGroundPassBoard board,OnlineMatchProtocol protocol,MatchManager.GameData data,bool home,bool ui,bool keeper)
+    private IEnumerator RunSubstitution(OnlineGroundPassBoard board,OnlineMatchProtocol protocol,MatchManager.GameData data,bool home,bool ui,bool keeper,bool authored)
     {
         int offNumber=keeper?1:2,onNumber=keeper?12:13;
         var manager=board.match.playerTokenManager;var outgoing=board.tokens.Single(t=>t.isHomeTeam==home && t.jerseyNumber==offNumber);var incoming=board.tokens.Single(t=>t.isHomeTeam==home && t.jerseyNumber==onNumber);
@@ -200,8 +490,31 @@ public sealed partial class OnlineFullRoomSceneFixture
             {
                 var menu=board.menu;Assert.That(menu.substitutionButton.interactable,Is.True);menu.substitutionButton.onClick.Invoke();Assert.That(menu.substitutionPanel.activeSelf,Is.True);
                 board.controls.Escape();Assert.That(menu.substitutionPanel.activeSelf,Is.False);Assert.That(pause.IsPaused,Is.True);Assert.That(status,Is.Null,"Escape closes personal selection without resuming shared play");menu.substitutionButton.onClick.Invoke();
-                menu.outgoingPlayer.value=menu.outgoingPlayer.options.FindIndex(o=>o.text.StartsWith(offNumber+". "));menu.incomingPlayer.value=menu.incomingPlayer.options.FindIndex(o=>o.text.StartsWith(onNumber+". "));
-                Assert.That(menu.substitutionCommitButton.interactable,Is.True);menu.substitutionCommitButton.onClick.Invoke();Assert.That(status,Is.EqualTo(OnlineCommandStatus.Accepted));Assert.That(menu.substitutionPanel.activeSelf,Is.False);
+                if (authored)
+                {
+                    yield return null;
+                    var roomView = Object.FindAnyObjectByType<SubstitutionMenuView>();
+                    Assert.That(roomView, Is.Not.Null);
+                    var ownRow = roomView.GetRows(home).Single(row => row.gameObject.activeInHierarchy);
+                    Assert.That(roomView.GetRows(!home).Any(row => row.gameObject.activeInHierarchy), Is.False);
+                    Assert.That(roomView.GetPlayingRows(home).Any(row => row.text.Contains(outgoing.playerName)), Is.True);
+                    ownRow.outgoingDropdown.value = ownRow.outgoingDropdown.options.FindIndex(option => option.text.StartsWith(offNumber + ". "));
+                    yield return null;
+                    ownRow.incomingDropdown.value = ownRow.incomingDropdown.options.FindIndex(option => option.text.StartsWith(onNumber + ". "));
+                    Assert.That(roomView.confirmButton.interactable, Is.True);
+                    roomView.confirmButton.onClick.Invoke();
+                    yield return null;
+                    Assert.That(roomView.gameObject.activeSelf, Is.False);
+                }
+                else
+                {
+                    menu.outgoingPlayer.value=menu.outgoingPlayer.options.FindIndex(o=>o.text.StartsWith(offNumber+". "));
+                    menu.incomingPlayer.value=menu.incomingPlayer.options.FindIndex(o=>o.text.StartsWith(onNumber+". "));
+                    Assert.That(menu.substitutionCommitButton.interactable,Is.True);
+                    menu.substitutionCommitButton.onClick.Invoke();
+                }
+                Assert.That(status,Is.EqualTo(OnlineCommandStatus.Accepted));
+                Assert.That(menu.substitutionPanel.activeSelf,Is.False);
             }
             finally{board.controls.Requested-=Requested;}
         }

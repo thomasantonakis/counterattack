@@ -429,6 +429,24 @@ public class HexCell : MonoBehaviour
         ResetHighlight();
     }
 
+    private bool localGoalHover;
+    private Color currentFillColor;
+    private Color? onlineHostHint;
+
+    internal void SetOnlineHostHint(Color? color)
+    {
+        if (onlineHostHint == color) return;
+        onlineHostHint = color;
+        ApplyHexFillColor(currentFillColor);
+    }
+
+    internal void SetLocalGoalHover(bool visible)
+    {
+        if (localGoalHover == visible) return;
+        localGoalHover = visible;
+        ApplyHexFillColor(currentFillColor);
+    }
+
     private void ApplyHexFillColor(Color fillColor)
     {
         if (hexRenderer == null)
@@ -436,10 +454,15 @@ public class HexCell : MonoBehaviour
             return;
         }
 
+        currentFillColor = fillColor;
         // Target selection survives path, challenge, and goalkeeper highlight cleanup.
-        if (isCommittedGoalTarget)
+        if (isCommittedGoalTarget || localGoalHover)
         {
             fillColor = new Color(1f, 0.48f, 0.05f, 1f);
+        }
+        else if (onlineHostHint.HasValue && string.IsNullOrEmpty(currentHighlightReason))
+        {
+            fillColor = onlineHostHint.Value;
         }
 
         Material runtimeMaterial = Application.isPlaying ? hexRenderer.material : hexRenderer.sharedMaterial;

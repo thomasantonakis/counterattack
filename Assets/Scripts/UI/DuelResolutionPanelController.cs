@@ -699,7 +699,7 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
         // A running dribbler's recovery foul continues directly into the existing checks.
         // Keep the resolved recovery die visible; only the final injury result starts dismissal.
         if (continueWithScatter && PrepareScatterContinuation(manager, scatterOwner != null ? scatterOwner : manager)) return EmptyPresentation();
-        if (continueWhileResultVisible)
+        if (continueWhileResultVisible && !onlineAuthorityControlled)
         {
             resultAllowsContinuation = true;
             BeginResultCountdown();
@@ -872,8 +872,9 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
     {
         stage = Stage.Complete;
         IsResultHeld = false;
-        closeAt = Time.unscaledTime + resultSeconds;
-        if (onlineAuthorityHeld) onlineSecondsRemaining = resultSeconds;
+        float duration = onlineAuthorityControlled ? Mathf.Min(5f, resultSeconds) : resultSeconds;
+        closeAt = Time.unscaledTime + duration;
+        if (onlineAuthorityHeld) onlineSecondsRemaining = duration;
         UpdateFooter();
     }
 
