@@ -60,7 +60,7 @@ public class MovementPhaseMovedTokenSlotView : MonoBehaviour
         ghost = selectedStyle != null;
         if (ghost)
         {
-            TokenFaceUiRenderer.Render(faceImage, numberText, selectedStyle, jerseyNumber, plainNumberFontSize, verticalNumberFontSize);
+            TokenFaceUiRenderer.Render(faceImage, numberText, selectedStyle, jerseyNumber, plainNumberFontSize, verticalNumberFontSize, preserveNumberPosition: true);
             ghostNumberColor = numberText != null ? numberText.color : Color.white;
         }
         else if (activeDisc != null) { activeDisc.color = primaryColor; activeDisc.enabled = true; }
@@ -95,7 +95,8 @@ public class MovementPhaseMovedTokenSlotView : MonoBehaviour
             style,
             jerseyNumber,
             plainNumberFontSize,
-            verticalNumberFontSize);
+            verticalNumberFontSize,
+            preserveNumberPosition: true);
     }
 
     public void Clear()

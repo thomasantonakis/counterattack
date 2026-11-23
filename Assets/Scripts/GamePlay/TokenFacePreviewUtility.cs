@@ -56,7 +56,7 @@ public static class TokenFacePreviewUtility
         return texture;
     }
 
-    public static void ApplyNumberStyle(TMP_Text numberText, TokenStyleDefinition style, float plainFontSize, float verticalFontSize)
+    public static void ApplyNumberStyle(TMP_Text numberText, TokenStyleDefinition style, float plainFontSize, float verticalFontSize, bool preservePosition = false)
     {
         if (numberText == null || style == null)
         {
@@ -73,7 +73,7 @@ public static class TokenFacePreviewUtility
             style.family == TokenStyleFamily.SingleStriped ||
             style.family == TokenStyleFamily.Roma;
         numberText.fontSize = usesPlainNumberSizing ? plainFontSize : verticalFontSize;
-        ApplyNumberOffset(numberText, style);
+        if (!preservePosition) ApplyNumberOffset(numberText, style);
     }
 
     private static Texture2D BuildFaceTexture(TokenStyleDefinition style, int textureSize)
