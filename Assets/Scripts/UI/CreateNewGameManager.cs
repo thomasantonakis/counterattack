@@ -861,7 +861,7 @@ public partial class CreateNewGameManager : MonoBehaviour
         dropdown.SetValueWithoutNotify(defaultIndex >= 0 ? defaultIndex : 0);
         dropdown.RefreshShownValue();
 
-        if (IsAlwaysVisibleKitDropdown(dropdown))
+        if (IsAlwaysVisibleKitDropdown(dropdown) || GetRequestedCreateLoadGameMode() == ApplicationManager.OnlineGameMode)
         {
             ConfigureInternationalOutfieldKitListHeight(dropdown);
         }
@@ -881,11 +881,8 @@ public partial class CreateNewGameManager : MonoBehaviour
         }
 
         RectTransform template = dropdown.template as RectTransform;
-        float currentHeight = template.rect.height;
         float itemHeight = item.rect.height;
-        float contentHeight = itemHeight * dropdown.options.Count;
-        float templatePadding = Mathf.Max(0f, currentHeight - itemHeight * 8f);
-        template.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, contentHeight + templatePadding);
+        template.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, itemHeight * Mathf.Min(8,dropdown.options.Count) + 8f);
     }
 
     private void RefreshInternationalTeamKitOptions()
@@ -2245,6 +2242,8 @@ public partial class CreateNewGameManager : MonoBehaviour
 
         if (IsInternationalMatchSelected())
         {
+            SelectDropdownOption(homeInternationalTeamDropdown, settings.homeTeamName);
+            SelectDropdownOption(awayInternationalTeamDropdown, settings.awayTeamName);
             SyncInternationalTeamInputFields();
             SetInternationalDraftDropdownOptions();
         }
@@ -2513,7 +2512,16 @@ public partial class CreateNewGameManager : MonoBehaviour
     }
 
     // Update checkboxes and squad size options when match type changes
+    internal bool IsApplyingMatchType { get; private set; }
+
     void OnMatchTypeChanged()
+    {
+        IsApplyingMatchType=true;
+        try { RefreshMatchTypeControls(); }
+        finally { IsApplyingMatchType=false; }
+    }
+
+    private void RefreshMatchTypeControls()
     {
         bool isInternationalMatch = matchTypeDropdown.value == 1;
         if (isInternationalMatch)

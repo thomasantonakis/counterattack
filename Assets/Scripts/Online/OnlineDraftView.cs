@@ -20,6 +20,8 @@ namespace CounterAttack.Online
         public Button actionButton,leaveButton;
         public Button rollPanelButton;
         private float rollPanelHeight;
+        private double rollPromptDeadline;
+        private TMP_Text rollPrompt;
         public Button previousPageButton,nextPageButton;
         public Button kickoffChoiceButton,leftChoiceButton,rightChoiceButton;
         private OnlineDraftClient client;
@@ -126,11 +128,21 @@ namespace CounterAttack.Online
         {
             if(!online)return;
             if(Input.GetKeyDown(KeyCode.R) && client?.Capture()?.phase is "roll" or "opening-roll")Act();
+            if(rollPanelButton!=null && rollPanelButton.gameObject.activeSelf && rendered!=null)
+            {
+                rollPrompt??=rollPanelButton.GetComponentInChildren<TMP_Text>(true);
+                int remaining=Mathf.Max(0,Mathf.CeilToInt((float)(rollPromptDeadline-Time.realtimeSinceStartupAsDouble)));
+                rollPrompt.text=(rendered.turn==client.Team?"Press [R] to roll, ":"")+"autorolling in "+remaining+"\u2033";
+            }
         }
         private void Render()
         {
             if(!online)return;
-            var s=client?.Capture();rendered=s;
+            var s=client?.Capture();
+            if(s!=null && (rendered==null || s.phase!=rendered.phase || s.turn!=rendered.turn
+                || s.rollRound!=rendered.rollRound || s.connectionRevision!=rendered.connectionRevision))
+                rollPromptDeadline=Time.realtimeSinceStartupAsDouble+5;
+            rendered=s;
             if(s==null || !client.Connected || s.revision!=remoteDragRevision)ClearRemoteDrag();
             actionButton.interactable=false;
             if(s==null){sourceUi.draftTurnText.text="Connecting to Draft...";sourceUi.draftMetaText.text="Waiting for the shared draft state.";return;}

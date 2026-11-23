@@ -3,7 +3,7 @@ Shader "CounterAttack/Ball Top Face"
     Properties
     {
         _BaseColor ("Ball colour", Color) = (1, 1, 1, 1)
-        _FacePattern ("Face pattern", 2D) = "black" {}
+        _FacePattern ("Face pattern", 2D) = "white" {}
         _FaceBounds ("Mesh XZ centre and size", Vector) = (0, 0, 1, 1)
     }
     SubShader
@@ -46,9 +46,12 @@ Shader "CounterAttack/Ball Top Face"
             half4 Frag(Varyings input) : SV_Target
             {
                 half light = lerp(0.72, 1.0, saturate(normalize(input.normalOS).y));
-                half4 pattern = tex2D(_FacePattern, saturate(input.faceUV));
-                half opacity = pattern.a * smoothstep(0.05, 0.55, normalize(input.normalOS).y);
-                return half4(lerp(_BaseColor.rgb * light, pattern.rgb, opacity), 1.0);
+                half3 pattern = tex2D(_FacePattern, saturate(input.faceUV)).rgb;
+                half luminance = dot(pattern, half3(0.2126, 0.7152, 0.0722));
+                half inside = all(input.faceUV >= 0) && all(input.faceUV <= 1) ? 1 : 0;
+                half opacity = (1 - smoothstep(0.15, 0.85, luminance)) * inside
+                    * smoothstep(0.05, 0.55, normalize(input.normalOS).y);
+                return half4(lerp(_BaseColor.rgb * light, half3(0.015, 0.015, 0.015), opacity), 1.0);
             }
             ENDCG
         }

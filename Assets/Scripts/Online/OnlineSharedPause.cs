@@ -86,8 +86,10 @@ namespace CounterAttack.Online
             bool full=protocol.Compatibility.Catalog==OnlineFullRoomBootstrap.Catalog;
             bool settings = control.ActionId.StartsWith(OnlineRoomSettings.Prefix, StringComparison.Ordinal);
             bool rollAck = control.ActionId.StartsWith(OnlineRoomRollPanels.AcknowledgePrefix, StringComparison.Ordinal);
+            bool introAck = control.ActionId == "intro.ready";
             var requiredTeam=default(OnlineTeam);bool required=full && match.TryGetOnlineRequiredKeeperTeam(out requiredTeam);
-            if (control.ActionId != RequestAction && control.ActionId != ResumeAction && !substitution && !nomination && !shootout && !settings && !rollAck) return Reply(OnlineCommandStatus.IllegalAction);
+            if (control.ActionId != RequestAction && control.ActionId != ResumeAction && !substitution && !nomination && !shootout && !settings && !rollAck && !introAck) return Reply(OnlineCommandStatus.IllegalAction);
+            if(introAck && (!full || ConnectionHeld || OnlineRoomSession.Current?.ShowOpeningIntro!=true))return Reply(OnlineCommandStatus.NotReady);
             if(shootout && (!full || IsPaused || ConnectionHeld || match.OnlineShootoutManager?.OnlineOrderSelection!=true))return Reply(OnlineCommandStatus.NotReady);
             if((substitution || nomination) && required && requiredTeam!=team)return Reply(OnlineCommandStatus.WrongTeam);
             // Required team choices do not transfer another manager's user pause.
@@ -100,7 +102,7 @@ namespace CounterAttack.Online
             if(nomination && (!IsPaused || ConnectionHeld))return Reply(OnlineCommandStatus.NotReady);
             if(control.ActionId==ResumeAction && full && match.HasGoalkeeperActionBlockingResume())return Reply(OnlineCommandStatus.NotReady);
 
-            var nextRevision = rollAck ? Revision : checked(Revision + 1);
+            var nextRevision = rollAck || introAck ? Revision : checked(Revision + 1);
             if(shootout)
             {
                 try{if(!match.OnlineShootoutManager.TryExecuteOnlineOrder(team==OnlineTeam.Home,control.ActionId))return Reply(OnlineCommandStatus.IllegalAction);}
@@ -110,6 +112,10 @@ namespace CounterAttack.Online
             {
                 if (match.OnlineRollPanels?.Acknowledge(team, control.ActionId) != true)
                     return Reply(OnlineCommandStatus.IllegalAction);
+            }
+            else if(introAck)
+            {
+                OnlineRoomSession.Current.AcknowledgeIntro(team);
             }
             else if (settings)
             {

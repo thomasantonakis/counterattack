@@ -25,7 +25,9 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler, IPointerEnterH
         else
             eligible=!keeper && draftManager!=null && draftManager.IsValidTeamPanel(transform.parent.name) && source.GetComponent<PlayerCardDragHandler>()!=null;
         if(!eligible || dropHighlight!=null)return;
-        dropHighlight=GetComponent<Image>();
+        foreach(var image in GetComponentsInChildren<Image>(true))
+            if(image.name=="TopBorder"){dropHighlight=image;break;}
+        if(dropHighlight==null)dropHighlight=GetComponent<Image>();
         if(dropHighlight==null)dropHighlight=transform.Find("ContentWrapper")?.GetComponent<Image>();
         if(dropHighlight==null)return;
         originalDropColor=dropHighlight.color;
@@ -34,7 +36,7 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler, IPointerEnterH
 
     public void OnPointerExit(PointerEventData eventData)=>ClearDropHighlight();
     private void OnDisable()=>ClearDropHighlight();
-    private void ClearDropHighlight()
+    internal void ClearDropHighlight()
     {
         if(dropHighlight!=null)dropHighlight.color=originalDropColor;
         dropHighlight=null;

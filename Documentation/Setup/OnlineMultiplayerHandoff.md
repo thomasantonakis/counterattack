@@ -35,8 +35,8 @@ Git commit/push authorized; preserve unrelated working changes.
 Normal online flow loads Assets/Scenes/OnlineRoom.unity, authored from Room,
 using real gameplay managers, full pitch and drafted roster. It is distinct
 from OnlineRoomProof and from unchanged offline Room. Host executes rules;
-guest projects state. Presentation parity is incomplete. Avoid another copied
-scene per fix; reuse authored UI/prefabs. Catalog full-room-v24 / wire v7.
+guest projects state. Presentation parity is incomplete. Reuse authored UI
+and prefabs across both entry points. Catalog full-room-v25 / wire v7.
 Host currently manages Away, guest Home regardless of OS; preserve this unless
 explicitly changing team allocation. Reassess compatibility for payload changes.
 
@@ -342,6 +342,35 @@ drag sorting (1) in `20261123T110933412Z`, movement summary (1) in
 pointers (2) in `20261123T111144708Z`, and ball/jersey bindings (2) in
 `20261123T111340008Z`. Retest the corrections in packaged Windows and
 macOS players. The paired screenshots report the original issues.
+
+### Follow-up from the next paired walkthrough
+
+- The ball face uses the supplied black-and-white image as an opacity mask.
+  White pixels reveal the selected colour. The five Online pause actions
+  have equal spacing, with unused save rows hidden.
+- Guest Room projects the authored moved-token panel, including moved
+  players, active slot and forfeited sections. Expanded Duel frames carry
+  the expansion and attached recovery layout so each viewport can fit it.
+- Fresh Online matches wait for both intro acknowledgements. Skip closes
+  the local intro. Acknowledgement follows either Skip or natural completion.
+  An explicit Leave presents a terminal message to the other manager.
+- The pitch border retains the selected dark hex colour through startup.
+  Jersey text uses the overlay shader and is checked using camera pixels.
+- Draft offers keep rating badges behind the values. Coin-toss actions have
+  readable button contrast, and the roll prompt shows the remaining time.
+  Setup reapplies national teams and publishes both kits on a match-type switch.
+
+Use matching full-room-v25 builds for the next paired check. The desktop
+High preset has anti-aliasing disabled. Resolution controls are a separate
+local graphics option and are not part of this pass.
+
+Focused Editor evidence is under `TestResults/GameplayRegression/Runs/`:
+guest movement panel `20261123T115800733Z`, two-party intro
+`20261123T115907749Z`, expanded roll layouts `20261123T120110800Z`,
+Draft badge order and sorting `20261123T120230308Z`, jersey camera pixels,
+ball colours and startup borders `20261123T120701902Z`, explicit departure
+presentation `20261123T120737424Z`, and International publication
+`20261123T120804207Z`.
 
 One batch per session and concise outcome. Do not run full suites, repeat the
 historical Mac mega-run, build unchanged outputs repeatedly, idle-poll terminals

@@ -14,14 +14,19 @@ namespace CounterAttack.Online
             merged.homeTeamAbbreviation=current.homeTeamAbbreviation;merged.awayTeamAbbreviation=current.awayTeamAbbreviation;
             if(actor==OnlineTeam.Home){merged.homeTeamName=proposed.homeTeamName;merged.homeKit=proposed.homeKit;merged.homeGKKit=proposed.homeGKKit;}
             else{merged.awayTeamName=proposed.awayTeamName;merged.awayKit=proposed.awayKit;merged.awayGKKit=proposed.awayGKKit;}
-            if(ownsShared && proposed.matchType=="International" && current.matchType!="International")
+            if(ownsShared && proposed.matchType!=current.matchType)
             {
-                var teams=CreateNewGameManager.LoadWorldCupNationalities().ToArray();
-                string own=actor==OnlineTeam.Home?merged.homeTeamName:merged.awayTeamName;
+                string own=actor==OnlineTeam.Home?proposed.homeTeamName:proposed.awayTeamName;
                 string other=actor==OnlineTeam.Home?proposed.awayTeamName:proposed.homeTeamName;
-                if(other==own || !teams.Contains(other))other=teams.FirstOrDefault(team=>team!=own);
+                if(proposed.matchType=="International")
+                {
+                    var teams=CreateNewGameManager.LoadWorldCupNationalities().ToArray();
+                    if(other==own || !teams.Contains(other))other=teams.FirstOrDefault(team=>team!=own);
+                }
                 if(actor==OnlineTeam.Home)merged.awayTeamName=other;
                 else merged.homeTeamName=other;
+                merged.homeKit=proposed.homeKit;merged.awayKit=proposed.awayKit;
+                merged.homeGKKit=proposed.homeGKKit;merged.awayGKKit=proposed.awayGKKit;
             }
             if(merged.homeTeamName!=current.homeTeamName)merged.homeTeamAbbreviation=null;
             if(merged.awayTeamName!=current.awayTeamName)merged.awayTeamAbbreviation=null;

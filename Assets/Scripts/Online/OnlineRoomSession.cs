@@ -10,6 +10,15 @@ namespace CounterAttack.Online
         public static bool IsGuest => Current?.GuestReplica == true;
         public bool GuestReplica { get; }
         public bool ShowOpeningIntro { get; }
+        public bool HomeIntroReady { get; private set; }
+        public bool AwayIntroReady { get; private set; }
+        public bool IntroPending => ShowOpeningIntro && !(HomeIntroReady && AwayIntroReady);
+
+        internal void AcknowledgeIntro(OnlineTeam team)
+        {
+            if(team==OnlineTeam.Home)HomeIntroReady=true;
+            else AwayIntroReady=true;
+        }
         public string MatchId { get; }
         public bool HasInitialData=>initialData!=null;
         public string InitialPlaySessionId=>initialData?.playSessionId;

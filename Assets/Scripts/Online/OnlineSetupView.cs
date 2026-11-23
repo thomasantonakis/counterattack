@@ -37,7 +37,7 @@ namespace CounterAttack.Online
         {if(!client.Confirm(selections) && status!=null)status.text="Review your selections before confirming.";}
         private void Edited()
         {
-            if(applying || client==null)return;
+            if(applying || client==null || setup.IsApplyingMatchType)return;
             client.Edit(setup.CaptureOnlineSetupDraft());
         }
         private IEnumerable<TMP_Dropdown> Dropdowns()=>new[]{setup.gameModeDropdown,setup.numberOfHalvesDropdown,setup.tiebreakerDropdown,

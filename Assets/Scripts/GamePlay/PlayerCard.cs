@@ -68,7 +68,11 @@ public class PlayerCard : MonoBehaviour, UnityEngine.EventSystems.IPointerClickH
         {
             var badge = value.transform.parent.Find(value.name + "Badge");
             if (badge != null && badge.TryGetComponent<Image>(out var image) && int.TryParse(value.text, out var rating))
+            {
+                if (badge.GetSiblingIndex() > value.transform.GetSiblingIndex())
+                    badge.SetSiblingIndex(value.transform.GetSiblingIndex());
                 image.color = MatchStatsUI.GetInspectionAttributeColor(rating);
+            }
         }
     }
 

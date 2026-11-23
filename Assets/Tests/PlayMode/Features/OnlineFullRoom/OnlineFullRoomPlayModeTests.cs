@@ -14,6 +14,8 @@ public sealed class OnlineFullRoomPlayModeTests
         =>(IEnumerator)Bridge.GetMethod("Run").Invoke(fixture,new object[]{guest,size,mirror,"initial"});
     [UnityTest] public IEnumerator BallColorAndVisibleJerseyMeshesAreBound([Values(false,true)]bool guest)
         =>(IEnumerator)Bridge.GetMethod("Run").Invoke(fixture,new object[]{guest,16,false,"ball-jerseys"});
+    [UnityTest] public IEnumerator PeerDepartureShowsClearExitOnEitherRole([Values(false,true)]bool guest)
+        =>(IEnumerator)Bridge.GetMethod("Run").Invoke(fixture,new object[]{guest,16,false,"peer-left"});
     [UnityTest] public IEnumerator AuthoredKickoff([Values(16,18)]int size,[Values(false,true)]bool mirror)
         =>(IEnumerator)Bridge.GetMethod("Run").Invoke(fixture,new object[]{false,size,mirror,"kickoff"});
     [UnityTest] public IEnumerator FullGuestProjection([Values(16,18)]int size,[Values(false,true)]bool mirror)

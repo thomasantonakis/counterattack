@@ -6,9 +6,10 @@ namespace CounterAttack.Online
     [DefaultExecutionOrder(-31000)]
     public sealed class OnlineFullRoomBootstrap:MonoBehaviour
     {
-        public const string SceneName="OnlineRoom",Catalog="full-room-v24";
+        public const string SceneName="OnlineRoom",Catalog="full-room-v25";
         public OnlineGroundPassBoard board;
         public Renderer replicaBallRenderer;
+        public Shader jerseyOverlayShader;
         public bool Ready {get;private set;}
         public void Awake()
         {if(OnlineRoomSession.Current?.HasInitialData==true)Initialize(OnlineRoomSession.Current.CaptureInitialData());}
@@ -29,7 +30,7 @@ namespace CounterAttack.Online
             board.match.BeginGameplayEventLoggingSuppression();
             try
             {
-                board.tokens=board.match.playerTokenManager.BindAuthoredOnlineRoster(board.tokens,board.match.gameData);
+                board.tokens=board.match.playerTokenManager.BindAuthoredOnlineRoster(board.tokens,board.match.gameData,jerseyOverlayShader);
                 board.match.ball.PlaceAtCell(board.grid.GetHexCellAt(Vector3Int.zero));
             }
             finally{board.match.EndGameplayEventLoggingSuppression();}

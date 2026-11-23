@@ -127,6 +127,16 @@ public sealed partial class OnlineFullRoomSceneFixture
         Assert.That(published.rollPanel?.panel, Is.EqualTo(header ? 1 : 0));
         Assert.That(published.rollPanel.resultId, Is.GreaterThan(0));
         Assert.That(published.legalActions, Is.Empty);
+        OnlineRollPanelFrame expandedFoul=null,recovery=null;
+        float expectedRecoveryY=0;
+        if(!header)
+        {
+            view.duel.SetExpandedLayout(true);
+            expandedFoul=view.Capture(published.rollSequence);
+            view.duel.SetLooseRecoveryLayout(true);
+            recovery=view.Capture(published.rollSequence);
+            expectedRecoveryY=((RectTransform)view.duel.looseRecoveryContent.transform).anchoredPosition.y;
+        }
         pause.Dispose(); pause = null;
         yield return EditorSceneManager.LoadSceneAsyncInPlayMode("Assets/Scenes/MainMenu.unity", new LoadSceneParameters(LoadSceneMode.Single));
         session.Dispose(); session = null; MatchManager.Instance = null;
@@ -144,7 +154,20 @@ public sealed partial class OnlineFullRoomSceneFixture
         Assert.That(view.duel.visuals.activeInHierarchy, Is.EqualTo(!header));
         Assert.That(view.header.visuals.activeInHierarchy, Is.EqualTo(header));
         Assert.That(header ? view.header.outcome.text : view.duel.outcome.text, Is.EqualTo(header ? "Header won" : "Check passed"));
-        if (!header) Assert.That(view.duel.singlePlayer.die.DisplayedRoll, Is.EqualTo(4));
+        if (!header)
+        {
+            Assert.That(view.duel.singlePlayer.die.DisplayedRoll, Is.EqualTo(4));
+            float compactHeight=view.duel.panel.rect.height;
+            view.Apply(expandedFoul,false);
+            Assert.That(view.duel.foulChecks.activeInHierarchy,Is.True);
+            Assert.That(view.duel.panel.rect.height,Is.GreaterThan(compactHeight));
+            view.Apply(recovery,false);
+            Assert.That(view.duel.looseRecoveryContent.activeInHierarchy,Is.True);
+            Assert.That(((RectTransform)view.duel.looseRecoveryContent.transform).anchoredPosition.y,Is.EqualTo(expectedRecoveryY));
+            Assert.That(view.duel.panel.rect.height,Is.GreaterThan(compactHeight));
+            view.Apply(published.rollPanel,false);
+            Assert.That(view.duel.panel.rect.height,Is.EqualTo(compactHeight));
+        }
         Assert.That(board.match.TimingRollSequence, Is.Zero);
     }
 }

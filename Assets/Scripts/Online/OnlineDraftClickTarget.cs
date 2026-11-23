@@ -15,6 +15,7 @@ namespace CounterAttack.Online
         private bool originalRaycasts;
         private Canvas dragCanvas;
         private bool previousOverrideSorting;
+        private PlayerSlotDropHandler highlightedSlot;
         public void OnPointerClick(PointerEventData eventData)
         {
             if(view==null || eventData==null || eventData.dragging || selection!=null || eventData.button!=PointerEventData.InputButton.Left)return;
@@ -41,6 +42,13 @@ namespace CounterAttack.Online
         {
             if(selection==null)return;
             if(view==null || !view.DragIsCurrent(selection) || eventData==null){Cancel();return;}
+            var target=eventData.pointerCurrentRaycast.gameObject?.GetComponentInParent<PlayerSlotDropHandler>();
+            if(target!=highlightedSlot)
+            {
+                highlightedSlot?.ClearDropHighlight();
+                highlightedSlot=target;
+                highlightedSlot?.OnPointerEnter(eventData);
+            }
             if(RectTransformUtility.ScreenPointToWorldPointInRectangle(originalParent as RectTransform??draggedRect,eventData.position,eventData.pressEventCamera,out var point))
             {
                 draggedRect.position=point+pointerOffset;
@@ -69,6 +77,8 @@ namespace CounterAttack.Online
             if(draggedRect!=null && draggedRect.parent==originalParent)draggedRect.anchoredPosition=originalPosition;
             if(dragGroup!=null){dragGroup.alpha=originalAlpha;dragGroup.blocksRaycasts=originalRaycasts;}
             if(dragCanvas!=null)dragCanvas.overrideSorting=previousOverrideSorting;
+            highlightedSlot?.ClearDropHighlight();
+            highlightedSlot=null;
             dragCanvas=null;
             draggedRect=null;dragGroup=null;originalParent=null;
         }

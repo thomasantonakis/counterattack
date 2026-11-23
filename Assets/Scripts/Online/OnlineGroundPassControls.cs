@@ -226,11 +226,20 @@ namespace CounterAttack.Online
                 return;
             }
             if(RoomInputOwnership.CardOpen){RoomInspectionCard.Instance.Close();return;}
+            if(state?.introPending==true)return;
             if(RollEscapeHandler?.Invoke()==true || LocalEscapeHandler?.Invoke()==true)return;
             if (state?.isSharedPaused == true) Resume(); else Pause();
         }
+        private double nextIntroReceipt;
         private void Update()
-        { if (Input.GetKeyDown(KeyCode.Escape)) Escape(); }
+        {
+            if (Input.GetKeyDown(KeyCode.Escape)) Escape();
+            if(state?.introPending!=true || RoomMatchIntro.Instance==null || RoomInputOwnership.IntroActive
+                || (team==OnlineTeam.Home?state.homeIntroReady:state.awayIntroReady)
+                || Time.realtimeSinceStartupAsDouble<nextIntroReceipt)return;
+            nextIntroReceipt=Time.realtimeSinceStartupAsDouble+1;
+            Control("intro.ready");
+        }
 
         private void Gameplay(string action)
         {

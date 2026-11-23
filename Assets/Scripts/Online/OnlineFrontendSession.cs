@@ -153,7 +153,12 @@ namespace CounterAttack.Online
                     if(connectionLost){connectionLost=false;recovery.ConnectionLost();}
                     Flush();Poll();PollReturningGuest();recovery.Tick();channel.Tick();Flush();
                     if(channel.Fault!=null)throw new InvalidOperationException(channel.Fault);
-                    if(channel.PeerLeft){Status="The other manager left the session.";break;}
+                    if(channel.PeerLeft)
+                    {
+                        Status="The other manager left the session.";
+                        roomBoard?.menu?.PresentPeerDeparture();
+                        break;
+                    }
                     if(stop)break;
                     if(recovery.Expired)throw new TimeoutException("The other manager did not reconnect within five minutes.");
                     if(roomLifetime!=null)

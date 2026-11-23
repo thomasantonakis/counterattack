@@ -7,7 +7,7 @@ using UnityEngine;
 public partial class PlayerTokenManager
 {
     public PlayerToken[] AuthoredOnlineRoster {get;private set;}
-    public PlayerToken[] BindAuthoredOnlineRoster(PlayerToken[] authored,MatchManager.GameData data)
+    public PlayerToken[] BindAuthoredOnlineRoster(PlayerToken[] authored,MatchManager.GameData data,Shader numberShader=null)
     {
         var active=new List<PlayerToken>();allTokens.Clear();benchTokens.Clear();
         foreach(bool home in new[]{true,false})
@@ -28,6 +28,7 @@ public partial class PlayerTokenManager
                     number.fontSize=3;
                     number.alignment=TextAlignmentOptions.Center;
                     visuals.ApplyNumberStyle(number,style);
+                    if(numberShader!=null)number.fontMaterial.shader=numberShader;
                     number.ForceMeshUpdate(true);
                 }
                 if(jersey<=11)

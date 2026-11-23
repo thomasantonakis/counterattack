@@ -62,6 +62,7 @@ namespace CounterAttack.Online
                 }).ToArray(),
                 labelColors = labels.Select(label => (Color32)label.color).ToArray(),
                 imageColors = images.Select(image => (Color32)image.color).ToArray(),
+                imageEnabled = images.Select(image=>image.enabled).ToArray(),
                 dice = dice.Select(die => die.ShowsJackpot ? -1 : die.DisplayedRoll).ToArray(),
                 attackColumnX = attackColumn == null ? -1 : attackColumn.anchorMin.x
             };
@@ -79,12 +80,16 @@ namespace CounterAttack.Online
                     labels[i].text = frame.labels[i];
                     labels[i].color = frame.labelColors[i];
                 }
-                for (int i = 0; i < images.Length; i++) images[i].color = frame.imageColors[i];
                 for (int i = 0; i < dice.Length; i++)
                 {
                     int value = frame.dice[i];
                     if (value == 0) dice[i].Clear();
                     else dice[i].Resolve(value == -1 ? 6 : value, value == -1);
+                }
+                for (int i = 0; i < images.Length; i++)
+                {
+                    images[i].color=frame.imageColors[i];
+                    if(frame.imageEnabled!=null)images[i].enabled=frame.imageEnabled[i];
                 }
                 if (attackColumn != null && frame.attackColumnX >= 0)
                 {
@@ -130,7 +135,7 @@ namespace CounterAttack.Online
             {
                 activeResult = 0;
                 resultPanel = -1;
-                return index < 0 ? null : panels[index].Capture(index, 0);
+                return index < 0 ? null : CapturePanel(index,0);
             }
 
             if (resultPanel != index || resultSequence != rollSequence)
@@ -140,7 +145,14 @@ namespace CounterAttack.Online
                 resultSequence = rollSequence;
                 homeAcknowledged = awayAcknowledged = false;
             }
-            return panels[index].Capture(index, activeResult);
+            return CapturePanel(index,activeResult);
+        }
+
+        private OnlineRollPanelFrame CapturePanel(int index,long result)
+        {
+            var frame=panels[index].Capture(index,result);
+            if(index==0){frame.duelExpanded=duel.OnlineExpanded;frame.recoveryAttached=duel.OnlineRecoveryAttached;}
+            return frame;
         }
 
         internal bool Acknowledge(OnlineTeam team, string action)
@@ -169,11 +181,22 @@ namespace CounterAttack.Online
                 bool active = frame?.panel == index;
                 if (OnlineRoomSession.IsGuest)
                 {
-                    if (active) panel.Display(frame);
+                    if (active)
+                    {
+                        if(index==0)duel.ApplyOnlineLayout(frame.duelExpanded,frame.recoveryAttached);
+                        panel.Display(frame);
+                    }
                     else panel.root.SetActive(false);
                 }
                 panel.SetLocalVisibility(!active || frame.resultId == 0 || frame.resultId != hiddenResult);
             }
+        }
+
+        internal void HideAfterDeparture()
+        {
+            shown=null;
+            if(panels==null)return;
+            foreach(var panel in panels)panel.root.SetActive(false);
         }
 
         private bool HandleEscape()

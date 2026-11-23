@@ -184834,6 +184834,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CounterAttack.Online.OnlineFullRoomBootstrap
   board: {fileID: 514236676}
   replicaBallRenderer: {fileID: 1473022481}
+  jerseyOverlayShader: {fileID: 4800000, guid: dd89cf5b9246416f84610a006f916af7, type: 3}
 --- !u!4 &514236678
 Transform:
   m_ObjectHideFlags: 0
@@ -229813,7 +229814,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -532}
+  m_AnchoredPosition: {x: 0, y: -304}
   m_SizeDelta: {x: 488, y: 68}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &639807336
@@ -245658,7 +245659,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -380}
+  m_AnchoredPosition: {x: 0, y: -152}
   m_SizeDelta: {x: 488, y: 68}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &682286318
@@ -609096,7 +609097,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -152}
+  m_AnchoredPosition: {x: 0, y: -76}
   m_SizeDelta: {x: 488, y: 68}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1670406883
@@ -706823,7 +706824,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -456}
+  m_AnchoredPosition: {x: 0, y: -228}
   m_SizeDelta: {x: 488, y: 68}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1934764843

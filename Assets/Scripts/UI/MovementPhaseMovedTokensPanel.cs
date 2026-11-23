@@ -1,6 +1,21 @@
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
+using CounterAttack.Online;
+
+[System.Serializable]
+public sealed class OnlineMovementPanelFrame
+{
+    public int section;
+    public bool attackingForfeited,defendingForfeited,nextBlocked;
+    public string selected;
+    public string[] attacking,defending,twoForTwo;
+
+    public static bool Valid(OnlineMovementPanelFrame value)=>value==null || value.section is >=1 and <=3
+        && ValidRow(value.attacking) && ValidRow(value.defending) && ValidRow(value.twoForTwo)
+        && (value.selected==null || OnlineProtocolIds.IsValid(value.selected));
+    private static bool ValidRow(string[] row)=>row!=null && row.Length<=36 && row.All(OnlineProtocolIds.IsValid);
+}
 
 public class MovementPhaseMovedTokensPanel : MonoBehaviour
 {
@@ -22,7 +37,57 @@ public class MovementPhaseMovedTokensPanel : MonoBehaviour
 
     private void Update()
     {
+        if(OnlineRoomSession.IsGuest)return;
         Refresh(force: false);
+    }
+
+    public static OnlineMovementPanelFrame CaptureOnline(MovementPhaseManager movement)
+    {
+        if(movement==null || !movement.isActivated || movement.finalThirdManager?.isActivated==true)return null;
+        string[] Row(MovementPhaseMovedTokenSection section)=>movement.MovedTokenEntries
+            .Where(entry=>entry.section==section && entry.token!=null)
+            .Select(entry=>OnlineRollPublication.ActorId(entry.token)).ToArray();
+        return new OnlineMovementPanelFrame
+        {
+            section=movement.isMovementPhaseAttack?1:movement.isMovementPhaseDef?2:3,
+            attackingForfeited=movement.AttackingMovementForfeited,defendingForfeited=movement.DefensiveMovementForfeited,
+            selected=movement.selectedToken==null?null:OnlineRollPublication.ActorId(movement.selectedToken),
+            nextBlocked=movement.shotManager?.isActivated==true || movement.shotManager?.isWaitingForSnapshotDecisionFromLoose==true
+                || movement.selectedToken!=null && movement.MovedTokenEntries.Any(entry=>entry.token==movement.selectedToken),
+            attacking=Row(MovementPhaseMovedTokenSection.AttMP),defending=Row(MovementPhaseMovedTokenSection.DefMP),
+            twoForTwo=Row(MovementPhaseMovedTokenSection.Att2f2)
+        };
+    }
+
+    public void ApplyOnline(OnlineMovementPanelFrame frame,PlayerToken[] roster)
+    {
+        SetVisible(frame!=null);
+        if(frame==null){ClearAllSlots();return;}
+        PlayerToken Resolve(string id)=>id==null?null:roster.FirstOrDefault(token=>OnlineRollPublication.ActorId(token)==id);
+        var settings=MatchManager.Instance?.gameData?.gameSettings;
+        bool attackHome=MatchManager.Instance?.teamInAttack==MatchManager.TeamInAttack.Home;
+        void Draw(MovementPhaseMovedTokenSlotView[] slots,string[] moved,int section,bool forfeited)
+        {
+            string kit=(section==2?!attackHome:attackHome)?settings?.homeKit:settings?.awayKit;
+            var palette=TokenKitCatalog.ResolveInstructionPalette(kit,Color.white,Color.black);
+            for(int i=0;i<slots.Length;i++)
+            {
+                var slot=slots[i];
+                if(slot==null)continue;
+                var token=i<moved.Length?Resolve(moved[i]):null;
+                if(token!=null)slot.Render(ResolveStyle(token),token.jerseyNumber);
+                else if(forfeited)slot.RenderForfeit(palette.Primary,palette.Secondary);
+                else if(frame.section==section && !frame.nextBlocked && i==moved.Length)
+                {
+                    var selection=Resolve(frame.selected);
+                    slot.RenderActive(palette.Primary,ResolveStyle(selection),selection?.jerseyNumber??0,TokenKitCatalog.ResolveStyle(kit));
+                }
+                else slot.Clear();
+            }
+        }
+        Draw(attackingMovementSlots,frame.attacking,1,frame.attackingForfeited);
+        Draw(defensiveMovementSlots,frame.defending,2,frame.defendingForfeited);
+        Draw(attackingTwoForTwoSlots,frame.twoForTwo,3,false);
     }
 
     private void Refresh(bool force)

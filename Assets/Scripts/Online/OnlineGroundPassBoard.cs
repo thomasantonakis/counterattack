@@ -28,6 +28,7 @@ namespace CounterAttack.Online
         public Vector3Int[] initialCoordinates;
         public Transform[] displayedTokens;
         public Transform displayedBall;
+        private MovementPhaseMovedTokensPanel movementPanel;
         public Camera boardCamera;
         public Text statusText;
         public GameObject localStatsPanel;
@@ -93,6 +94,8 @@ namespace CounterAttack.Online
             if (liveFullRoom && OnlineRoomSession.IsGuest)
             {
                 match.ApplyOnlineReplicaMatchState(state);
+                if(movementPanel==null)movementPanel=FindAnyObjectByType<MovementPhaseMovedTokensPanel>(FindObjectsInactive.Include);
+                movementPanel?.ApplyOnline(state.movementPanel,tokens);
                 liveScoreboard?.RefreshPublishedOnlineState();
                 match.OnlineEventBanner?.ApplyOnlinePublication(state.banners);
                 match.OnlinePitchLines?.ApplyOnlineFinalThirdLabel(state.finalThirdLabelSide, state.finalThirdLabelHome);

@@ -9,6 +9,7 @@ namespace CounterAttack.Online
         public Button pauseButton,resumeButton,leaveButton;
         public Text status,settings;
         private bool connectionHeld;
+        private bool peerDeparted;
         private void Awake()
         {
             pauseButton.onClick.AddListener(board.controls.Pause);
@@ -21,6 +22,7 @@ namespace CounterAttack.Online
         }
         public void Display(OnlineGroundPassState state)
         {
+            if(peerDeparted)return;
             connectionHeld=state.connectionHeld;
             bool own=state.pauseRequester==board.localTeam.ToString();
             status.text=connectionHeld?"Reconnecting. The match is held.":own?"You paused the match. Resume when ready.":"The other manager paused the match. They can resume it.";
@@ -34,6 +36,19 @@ namespace CounterAttack.Online
         }
         private static string AssistanceLabel(int value)=>value==1?"Novice":value==2?"Intermediate":"Experienced";
         private void Update()=>RefreshButtons();
+        public void PresentPeerDeparture()
+        {
+            peerDeparted=true;connectionHeld=true;
+            hasPresentedPause=false;settingsOpen=false;
+            if(substitutionPanel!=null)substitutionPanel.SetActive(false);
+            if(nominationPanel!=null)nominationPanel.SetActive(false);
+            board.controls.SetConnected(false);
+            board.rollPanels?.HideAfterDeparture();
+            if(board.sharedPausePanel!=null)board.sharedPausePanel.SetActive(true);
+            status.text="The other manager left the match. Return to the main menu.";
+            leaveButton.interactable=true;
+            RefreshButtons();
+        }
         private void RefreshButtons()
         {
             pauseButton.interactable=!connectionHeld && board.controls.pauseButton.interactable;

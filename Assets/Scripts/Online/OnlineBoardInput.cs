@@ -87,8 +87,9 @@ namespace CounterAttack.Online
             bool overUi=PointerOwnedByUI();
             var ray=board.boardCamera.ScreenPointToRay(Input.mousePosition);
             var token=PresentHover(ray,!overUi && !GameInputManager.IsPresentationModalActive);
-            if(Input.GetKeyDown(KeyCode.Space) && token!=null && !KeyboardOwnedByUI(KeyCode.Space))
-            { RoomInspectionCard.Instance?.Toggle(token);pressArmed=false;return; }
+            var inspectionToken=roomPresentation?.InspectionHoverToken??token;
+            if(Input.GetKeyDown(KeyCode.Space) && inspectionToken!=null && !KeyboardOwnedByUI(KeyCode.Space))
+            { RoomInspectionCard.Instance?.Toggle(inspectionToken);pressArmed=false;return; }
             if(Input.GetMouseButtonDown(0))
             { pressArmed=!overUi && !Input.GetMouseButton(1);pressPosition=Input.mousePosition; }
             float threshold=roomPresentation!=null?roomPresentation.dragThreshold:10f;

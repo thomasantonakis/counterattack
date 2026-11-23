@@ -1038,6 +1038,18 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
         FitAndClamp();
     }
 
+    internal bool OnlineExpanded => expanded;
+    internal bool OnlineRecoveryAttached => looseRecoveryMode && looseRecoveryContent!=null
+        && Mathf.Approximately(((RectTransform)looseRecoveryContent.transform).anchoredPosition.y,-recoveryAttachedTop);
+
+    internal void ApplyOnlineLayout(bool showExpanded,bool recoveryAttached)
+    {
+        expanded=showExpanded;
+        if(looseRecoveryContent==null)return;
+        var recovery=(RectTransform)looseRecoveryContent.transform;
+        recovery.anchoredPosition=new Vector2(recovery.anchoredPosition.x,-(recoveryAttached?recoveryAttachedTop:recoveryStandaloneTop));
+    }
+
     public void ResetPanelPosition()
     {
         if (panel == null || panel.parent is not RectTransform bounds) return;

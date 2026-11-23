@@ -95,6 +95,20 @@ public sealed partial class OnlineFullRoomSceneFixture
             board.controls.Escape();
             Assert.That(RoomInputOwnership.IntroActive,Is.False);
             Assert.That(RoomInputOwnership.ReservePauseEscape,Is.True);
+            Assert.That(session.IntroPending,Is.True,"A local Skip must not release the match");
+            if(!guest)
+            {
+                var introVersion=new OnlineCompatibility("ground-wire-v7","ground-rules-v1",OnlineFullRoomBootstrap.Catalog);
+                var introProtocol=new OnlineMatchProtocol("full-room-scene","home","away","away",introVersion);
+                introProtocol.BindAuthenticatedAccount("home","h",introVersion);
+                introProtocol.BindAuthenticatedAccount("away","a",introVersion);
+                using var introPause=new OnlineSharedPause(introProtocol,board.match);
+                Assert.That(introPause.Submit("a",new OnlineMatchCommand("full-room-scene",1,introPause.Revision,"shared-pause","intro.ready")).Status,Is.EqualTo(OnlineCommandStatus.Accepted));
+                Assert.That(session.IntroPending,Is.True);
+                Assert.That(board.match.IsGameplayInputBlocked,Is.True);
+                Assert.That(introPause.Submit("h",new OnlineMatchCommand("full-room-scene",1,introPause.Revision,"shared-pause","intro.ready")).Status,Is.EqualTo(OnlineCommandStatus.Accepted));
+                Assert.That(session.IntroPending,Is.False);
+            }
             Assert.That(board.match.gameData.events,Is.Empty);
             yield break;
         }
@@ -164,8 +178,21 @@ public sealed partial class OnlineFullRoomSceneFixture
             Assert.That(board.match.gameData.events, Is.Empty);
             yield break;
         }
+        if (branch == "peer-left")
+        {
+            board.menu.PresentPeerDeparture();
+            Assert.That(board.sharedPausePanel.activeInHierarchy,Is.True);
+            Assert.That(board.menu.status.text,Does.Contain("other manager left the match"));
+            Assert.That(board.menu.leaveButton.interactable,Is.True);
+            Assert.That(board.menu.pauseButton.interactable,Is.False);
+            yield break;
+        }
         if (branch == "ball-jerseys")
         {
+            var darkHex=board.cells.First(cell=>cell.isDark && !cell.isOutOfBounds);
+            var borderMaterial=darkHex.GetComponent<MeshRenderer>().material;
+            var border=borderMaterial.HasProperty("_BorderColor")?borderMaterial.GetColor("_BorderColor"):borderMaterial.color;
+            Assert.That(Vector4.Distance(border,darkHex.originalColor),Is.LessThan(.001f),"Startup border must match dark fill before any settings edit");
             var renderer=(guest?board.displayedBall:board.match.ball.transform).GetComponent<MeshRenderer>();
             var block=new MaterialPropertyBlock();
             renderer.GetPropertyBlock(block);
@@ -177,6 +204,40 @@ public sealed partial class OnlineFullRoomSceneFixture
                 Assert.That(number,Is.Not.Null,token.name);
                 Assert.That(number.mesh.vertexCount,Is.GreaterThan(0),token.name);
                 Assert.That(board.boardCamera.cullingMask & (1<<number.gameObject.layer),Is.Not.Zero,token.name);
+            }
+            var camera=board.boardCamera;
+            var sample=board.match.playerTokenManager.allTokens.First(token=>token.jerseyNumber==9)
+                .GetComponentInChildren<TMPro.TextMeshPro>();
+            var numberRenderer=sample.GetComponent<MeshRenderer>();
+            Assert.That(numberRenderer.sharedMaterial.shader.name,Is.EqualTo("TextMeshPro/Distance Field Overlay"));
+            var previousTarget=camera.targetTexture;
+            var previousActive=RenderTexture.active;
+            var target=new RenderTexture(1600,900,24);
+            var crop=new Texture2D(40,40,TextureFormat.RGB24,false);
+            try
+            {
+                camera.targetTexture=target;
+                Vector3 center=camera.WorldToScreenPoint(sample.transform.position);
+                var rect=new Rect(Mathf.Clamp(center.x-20,0,1560),Mathf.Clamp(center.y-20,0,860),40,40);
+                Color32[] Render()
+                {
+                    camera.Render();
+                    RenderTexture.active=target;
+                    crop.ReadPixels(rect,0,0);
+                    crop.Apply();
+                    return crop.GetPixels32();
+                }
+                var withNumber=Render();
+                File.WriteAllBytes("Temp/OnlineJersey"+(guest?"Guest":"Host")+".png",crop.EncodeToPNG());
+                numberRenderer.enabled=false;
+                var withoutNumber=Render();
+                Assert.That(withNumber.Where((pixel,i)=>!pixel.Equals(withoutNumber[i])).Count(),Is.GreaterThan(8));
+            }
+            finally
+            {
+                numberRenderer.enabled=true;
+                camera.targetTexture=previousTarget;RenderTexture.active=previousActive;
+                Object.Destroy(target);Object.Destroy(crop);
             }
             yield break;
         }
@@ -196,6 +257,18 @@ public sealed partial class OnlineFullRoomSceneFixture
             yield return null;
             Assert.That(board.instructionMonitor.instructionText.text,Does.StartWith(expected));
             Assert.That(board.match.gameData.events,Is.Empty);
+            Assert.That(publication.movementPanel,Is.Not.Null);
+            yield return EditorSceneManager.LoadSceneAsyncInPlayMode("Assets/Scenes/MainMenu.unity",new LoadSceneParameters(LoadSceneMode.Single));
+            session.Dispose();session=null;MatchManager.Instance=null;
+            yield return Load(data,true);
+            var guestBoard=Object.FindAnyObjectByType<OnlineFullRoomBootstrap>().board;
+            var movedPanel=Object.FindAnyObjectByType<MovementPhaseMovedTokensPanel>();
+            guestBoard.Display(publication,"Guest movement panel");
+            yield return null;
+            Assert.That(movedPanel.GetComponent<CanvasGroup>().alpha,Is.EqualTo(1f));
+            publication.movementPanel=null;
+            guestBoard.Display(publication,"Movement complete");
+            Assert.That(movedPanel.GetComponent<CanvasGroup>().alpha,Is.Zero);
             yield break;
         }
         if (branch == "goal-celebration")

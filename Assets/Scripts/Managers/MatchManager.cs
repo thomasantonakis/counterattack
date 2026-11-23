@@ -1298,7 +1298,8 @@ public partial class MatchManager : MonoBehaviour
     public bool IsWaitingForExtraActionsRoll => isWaitingForExtraActionsRoll;
     public int CurrentHalf => currentHalf;
     public bool IsPauseMenuOpen => isPauseMenuOpen;
-    public bool IsGameplayInputBlocked => CounterAttack.Online.OnlineRoomSession.IsGuest || isPauseMenuOpen || RoomInputOwnership.IntroActive;
+    public bool IsGameplayInputBlocked => CounterAttack.Online.OnlineRoomSession.IsGuest
+        || CounterAttack.Online.OnlineRoomSession.Current?.IntroPending==true || isPauseMenuOpen || RoomInputOwnership.IntroActive;
     public bool AreSubstitutionsAvailable => areSubstitutionsAvailable;
     public string SubstitutionsAvailabilityReason => substitutionsAvailabilityReason;
     public bool IsStopPlayRestartPending => pendingStopPlayRestart != PendingStopPlayRestartKind.None;

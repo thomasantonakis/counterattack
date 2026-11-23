@@ -142,20 +142,18 @@ public class HexGrid : MonoBehaviour
                 // Swap the clear palette so the board feels darker and damp without changing the border shell.
                 lightColor = clearDarkColor;
                 darkColor = clearLightColor;
-                borderColor = clearLightColor;
                 break;
             case "snow":
             case "snowy":
                 lightColor = snowLightColor;
                 darkColor = snowDarkColor;
-                borderColor = clearDarkColor;
                 break;
             default:
                 lightColor = clearLightColor;
                 darkColor = clearDarkColor;
-                borderColor = clearDarkColor;
                 break;
         }
+        borderColor=darkColor;
     }
 
     private void RefreshExistingCellColors()

@@ -48,6 +48,8 @@ public class HexCell : MonoBehaviour
     [System.NonSerialized] public Dictionary<HexCell, List<HexCell>> ShootingPaths; // Dictionary of shooting paths
     [System.NonSerialized] public Dictionary<HexCell, List<HexCell>> HeadingPaths; // Dictionary of heading paths
     private Renderer borderRenderer;
+    private bool renderersInitialized;
+    private Color? requestedBorderColor;
     private string currentHighlightReason;
     private float currentHighlightDarkness;
     public string HighlightReason=>currentHighlightReason;
@@ -86,6 +88,8 @@ public class HexCell : MonoBehaviour
         }
 
         ApplyFillScale();
+        renderersInitialized=true;
+        if(requestedBorderColor.HasValue)SetBorderColor(requestedBorderColor.Value);
         RefreshOccupancyHighlightDisplay();
     }
 
@@ -191,6 +195,8 @@ public class HexCell : MonoBehaviour
 
     public void SetBorderColor(Color borderColor)
     {
+        requestedBorderColor=borderColor;
+        if(Application.isPlaying && !renderersInitialized)return;
         if (borderRenderer == null)
         {
             borderRenderer = GetComponent<MeshRenderer>();

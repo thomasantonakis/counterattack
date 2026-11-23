@@ -65,6 +65,7 @@ public sealed partial class OnlineDraftSceneFixture
                 .GetComponent<UnityEngine.UI.Image>();
             Assert.That(badge.sprite.name,Is.EqualTo("Disc"));
             Assert.That(badge.rectTransform.sizeDelta,Is.EqualTo(new Vector2(45,45)));
+            Assert.That(badge.transform.GetSiblingIndex(),Is.LessThan(first.paceValueText.transform.GetSiblingIndex()));
             Assert.That(badge.color,Is.EqualTo(MatchStatsUI.GetInspectionAttributeColor(first.assignedPlayer.Pace)));
             var click=new UnityEngine.EventSystems.PointerEventData(UnityEngine.EventSystems.EventSystem.current)
                 { button=UnityEngine.EventSystems.PointerEventData.InputButton.Left, clickCount=2 };

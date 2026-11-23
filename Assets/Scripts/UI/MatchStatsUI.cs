@@ -339,13 +339,15 @@ public class MatchStatsUI : MonoBehaviour
     {
         if (RoomInputOwnership.IntroActive) return;
         if (RoomInputOwnership.CardOpen) return;
-        if (MatchManager.Instance != null && MatchManager.Instance.IsGameplayInputBlocked)
+        bool online = CounterAttack.Online.OnlineRoomSession.Current?.HasInitialData == true;
+        if (!online && MatchManager.Instance != null && MatchManager.Instance.IsGameplayInputBlocked)
         {
             UpdateLineupHoverFromStatsText();
             return;
         }
 
-        if (!GameInputManager.IsPresentationModalActive && Input.GetKeyUp(KeyCode.E))
+        if ((online || !GameInputManager.IsPresentationModalActive) && Input.GetKeyUp(KeyCode.E)
+            && (!online || !CounterAttack.Online.OnlineBoardInput.KeyboardOwnedByUI(KeyCode.E)))
         {
             TogglePanel();
         }
@@ -1205,8 +1207,9 @@ public class MatchStatsUI : MonoBehaviour
         {
             SetHoverCardActive(outfieldCard, false);
             goalkeeperCard.UpdateFromToken(token, nationalityLabel);
-            ApplyPreviewCardTheme(goalkeeperCard.gameObject, true, nationalityLabel);
             SetHoverCardActive(goalkeeperCard, true);
+            LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)goalkeeperCard.transform);
+            ApplyPreviewCardTheme(goalkeeperCard.gameObject, true, nationalityLabel);
             return;
         }
 
@@ -1214,8 +1217,9 @@ public class MatchStatsUI : MonoBehaviour
         {
             SetHoverCardActive(goalkeeperCard, false);
             outfieldCard.UpdateFromToken(token, nationalityLabel);
-            ApplyPreviewCardTheme(outfieldCard.gameObject, false, nationalityLabel);
             SetHoverCardActive(outfieldCard, true);
+            LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)outfieldCard.transform);
+            ApplyPreviewCardTheme(outfieldCard.gameObject, false, nationalityLabel);
             return;
         }
 
@@ -1542,6 +1546,15 @@ public class MatchStatsUI : MonoBehaviour
 
 
         badge.sprite = previewValueBadgeSprite;
+        if(badge.transform.GetSiblingIndex()>valueText.transform.GetSiblingIndex())
+            badge.transform.SetSiblingIndex(valueText.transform.GetSiblingIndex());
+        var parentRect=(RectTransform)parent;
+        float diameter=Mathf.Min(45f,parentRect.rect.height*.85f);
+        if(diameter>0)
+        {
+            badge.rectTransform.sizeDelta=Vector2.one*diameter;
+            badge.rectTransform.position=valueText.rectTransform.TransformPoint(valueText.rectTransform.rect.center);
+        }
         badge.preserveAspect = true;
         badge.color = GetPreviewValueBadgeColor(parsedValue);
         badge.raycastTarget = false;

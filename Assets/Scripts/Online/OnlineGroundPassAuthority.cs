@@ -39,6 +39,8 @@ namespace CounterAttack.Online
         public bool ballOnBoard, ballMoving, attackHasPossession, passActive, awaitingTarget, awaitingRoll;
         public bool movementAvailable, firstTimePassAvailable, groundPassAvailable;
         public bool movementActive, playerMoving, goalMotion;
+        public OnlineMovementPanelFrame movementPanel;
+        public bool introPending,homeIntroReady,awayIntroReady;
         public bool ShouldStreamPresentation() => ballMoving || playerMoving || goalMotion;
         public string selectedPlayer;
         public int ballX, ballZ, selectedX, selectedZ, interceptorX, interceptorZ;
@@ -363,6 +365,11 @@ namespace CounterAttack.Online
             if (state.catalogId == OnlineFullRoomBootstrap.Catalog)
             {
                 state.instruction = OnlineInstructionObservation.Capture(match.OnlineInstructionMonitor, state.owner);
+                var roomSession=OnlineRoomSession.Current;
+                state.introPending=roomSession?.IntroPending==true;
+                state.homeIntroReady=roomSession?.HomeIntroReady==true;
+                state.awayIntroReady=roomSession?.AwayIntroReady==true;
+                state.movementPanel=MovementPhaseMovedTokensPanel.CaptureOnline(match.movementPhaseManager);
                 if(state.movementActive && match.movementPhaseManager is { } movement)
                 {
                     string section=movement.isMovementPhaseDef?"Defensive movement":movement.isMovementPhase2f2?"Two-for-two movement":"Attacking movement";
