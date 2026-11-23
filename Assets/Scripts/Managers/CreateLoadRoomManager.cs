@@ -15,6 +15,7 @@ public class CreateLoadRoomManager : MonoBehaviour
     private const string MainMenuSceneName = "MainMenu";
     private const string CreatedAtColumn = "CreatedAt";
     private const string LastActivityAtColumn = "LastActivityAt";
+    [SerializeField] private MenuConfirmation quitConfirmation;
 
     [Header("Create / Load")]
     [SerializeField] private TextMeshProUGUI headerText;
@@ -89,8 +90,7 @@ public class CreateLoadRoomManager : MonoBehaviour
     
     public void ExitGameFromCreateLoadRoom()
     {
-        Debug.Log("Game Quit!");
-        Application.Quit(); // This will close the application
+        quitConfirmation.ShowQuit();
     }
 
     private void ResolveSelectedGameMode()

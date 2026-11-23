@@ -22,7 +22,7 @@ public class PauseMenuManager : MonoBehaviour
     public Button substitutionsButton;
     public Button editSettings;
     public Button backToMainMenuButton;
-    public Button quitButton;
+    [SerializeField] private MenuConfirmation leaveMatchConfirmation;
 
     [Header("Save UI")]
     public TextMeshProUGUI pauseSaveStatusText;
@@ -82,7 +82,6 @@ public class PauseMenuManager : MonoBehaviour
         saveMatchAsButton.onClick.AddListener(OnSaveMatchAsButtonClicked);
         editSettings.onClick.AddListener(OnEditSettingsButtonClicked);
         backToMainMenuButton.onClick.AddListener(OnBackToMainMenuButtonClicked);
-        quitButton.onClick.AddListener(OnQuitButtonClicked);
         substitutionMenuManager = GetComponent<SubstitutionMenuManager>();
         if (substitutionMenuManager == null)
         {
@@ -112,6 +111,13 @@ public class PauseMenuManager : MonoBehaviour
 
     void Update()
     {
+        if (leaveMatchConfirmation != null && leaveMatchConfirmation.gameObject.activeSelf)
+        {
+            if (Input.GetKeyUp(KeyCode.Escape))
+                leaveMatchConfirmation.Close();
+            return;
+        }
+
         if (RoomInputOwnership.ReservePauseEscape) return;
         if (CoinTossPanelController.IsRoomVisible || HeaderChallengePanelController.ReservePauseEscape() || DuelResolutionPanelController.ReservePauseEscape() || StoppageActionsPanelController.ReservePauseEscape()) return;
         // Toggle the pause menu when the Escape key is pressed
@@ -199,12 +205,6 @@ public class PauseMenuManager : MonoBehaviour
     {
         LogUiClick("pause_menu", "back_to_main_menu_button", "back_to_main_menu");
         BackToMainMenuInGame();
-    }
-
-    private void OnQuitButtonClicked()
-    {
-        LogUiClick("pause_menu", "quit_button", "quit_game");
-        QuitMatch();
     }
 
     private void OnSaveAsSaveButtonClicked()
@@ -411,14 +411,7 @@ public class PauseMenuManager : MonoBehaviour
 
     public void SaveMatch()
     {
-        RefreshSaveButtonAvailability();
-        if (!isSaveAvailable)
-        {
-            ShowPauseSaveStatus(saveUnavailableReason, isError: true);
-            return;
-        }
-
-        if (RoomSaveService.SaveInPlace(MatchManager.Instance, out string savedPath, out string message))
+        if (TrySaveMatch(out string message))
         {
             Debug.Log(message);
             ShowPauseSaveStatus(message, isError: false);
@@ -428,6 +421,16 @@ public class PauseMenuManager : MonoBehaviour
 
         Debug.LogWarning(message);
         ShowPauseSaveStatus(message, isError: true);
+    }
+
+    private bool TrySaveMatch(out string message)
+    {
+        RefreshSaveButtonAvailability();
+        if (isSaveAvailable)
+            return RoomSaveService.SaveInPlace(MatchManager.Instance, out _, out message);
+
+        message = saveUnavailableReason;
+        return false;
     }
 
     public void SaveMatchAs()
@@ -1470,17 +1473,33 @@ public class PauseMenuManager : MonoBehaviour
 
     public void BackToMainMenuInGame()
     {
-        // Implement your logic for "Save Match As" functionality
-        Debug.Log("Back To Main Menu Scene!");
-        MatchManager.Instance?.SetPauseMenuOpen(false);
-        MenuAudioPlayer.Play(GameplayAudioPool.MenuBack);
-        SceneManager.LoadScene("MainMenu");  // Adjust to your actual Main Menu scene name
+        RefreshSaveButtonAvailability();
+        if (!isSaveAvailable)
+        {
+            LeaveMatch();
+            return;
+        }
+
+        leaveMatchConfirmation.Show(SaveAndLeaveMatch, LeaveMatch);
     }
 
-    public void QuitMatch()
+    private void SaveAndLeaveMatch()
     {
-        // Implement your logic for quitting the match (return to main menu)
-        Debug.Log("Game Quit!");
-        Application.Quit(); // This will close the application
+        if (!TrySaveMatch(out string message))
+        {
+            Debug.LogWarning(message);
+            leaveMatchConfirmation.ShowError(message);
+            return;
+        }
+
+        Debug.Log(message);
+        LeaveMatch();
+    }
+
+    private void LeaveMatch()
+    {
+        MatchManager.Instance?.SetPauseMenuOpen(false);
+        MenuAudioPlayer.Play(GameplayAudioPool.MenuBack);
+        SceneManager.LoadScene("MainMenu");
     }
 }

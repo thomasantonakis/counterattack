@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 public class MainMenuManager : MonoBehaviour
 {
     private const string CreateLoadRoomSceneName = "CreateLoadRoom";
+    [SerializeField] private MenuConfirmation quitConfirmation;
 
     public void PlaySinglePlayerGame()
     {
@@ -42,8 +43,7 @@ public class MainMenuManager : MonoBehaviour
 
     public void ExitGameFromMainMenu()
     {
-        Debug.Log("Game Quit!");
-        Application.Quit(); // This will close the application
+        quitConfirmation.ShowQuit();
     }
 
     private static void OpenCreateLoadRoom(string gameMode)

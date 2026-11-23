@@ -26,7 +26,7 @@ namespace CounterAttack.Editor
                 throw new InvalidOperationException("Open Room alone in edit mode.");
             var p = Object.FindAnyObjectByType<PauseMenuManager>();
             var buttons = new List<Button> { p.saveAsSaveButton, p.saveAsCancelButton, p.overwriteCancelButton,
-                p.overwriteReplaceButton, p.saveTacticalNoteButton, p.cancelTacticalNoteButton, p.quitButton, p.editSettingsBackButton };
+                p.overwriteReplaceButton, p.saveTacticalNoteButton, p.cancelTacticalNoteButton, p.backToMainMenuButton, p.editSettingsBackButton };
             var subs = Object.FindAnyObjectByType<SubstitutionMenuView>(FindObjectsInactive.Include);
             buttons.Add(subs.backButton); buttons.Add(subs.confirmButton);
             buttons.Add(Object.FindAnyObjectByType<PenaltyShootoutOrderPanelView>(FindObjectsInactive.Include).startButton);
