@@ -18,4 +18,8 @@ public sealed class LegacyHighPassMovementPlayModeTests
     [UnityTest]
     public IEnumerator HighPassMovementThenUnchallengedChoice([Values(false, true)] bool ballControl)
         => (IEnumerator)Bridge.GetMethod("RunHighPassMovementLegacy").Invoke(board, new object[] { ballControl });
+
+    [UnityTest]
+    public IEnumerator HighPassFlightMatchesLongBall([Values(30, 120)] int frameRate)
+        => (IEnumerator)Bridge.GetMethod("CompareHighPassAndLongBallFlight").Invoke(board, new object[] { frameRate });
 }

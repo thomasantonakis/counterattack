@@ -1,8 +1,45 @@
 using System.Collections;
 using NUnit.Framework;
+using UnityEngine;
 
 public sealed partial class GoalkeeperBoxEntryFixture
 {
+    public IEnumerator CompareHighPassAndLongBallFlight(int frameRate)
+    {
+        Board(1);
+        var target = Hex(3, 4);
+        var highPass = (IEnumerator)Invoke(high, "HandleHighPassMovement", target);
+        var longPass = longBall.HandleLongBallMovement(target);
+        var highPassPosition = ball.transform.position;
+        var longPassPosition = highPassPosition;
+        Time.timeScale = 1f;
+        Time.captureDeltaTime = 1f / frameRate;
+
+        try
+        {
+            // Sample through the descent, before either pass enters its landing logic.
+            for (int frame = 0; frame < frameRate * 7 / 4; frame++)
+            {
+                yield return null;
+                ball.transform.position = highPassPosition;
+                Assert.That(highPass.MoveNext(), Is.True, $"High Pass at frame {frame}");
+                highPassPosition = ball.transform.position;
+
+                ball.transform.position = longPassPosition;
+                Assert.That(longPass.MoveNext(), Is.True, $"Long Ball at frame {frame}");
+                longPassPosition = ball.transform.position;
+
+                Assert.That(Vector3.Distance(highPassPosition, longPassPosition), Is.LessThan(0.001f),
+                    $"Ball flight at frame {frame} with {frameRate} FPS");
+            }
+        }
+        finally
+        {
+            (highPass as System.IDisposable)?.Dispose();
+            (longPass as System.IDisposable)?.Dispose();
+        }
+    }
+
     public IEnumerator RunHighPassMovementLegacy(bool ballControl)
     {
         var players = LoadLegacyRoster(); var header = match.shotManager.headerManager;

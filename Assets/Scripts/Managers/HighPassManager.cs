@@ -1794,24 +1794,26 @@ public partial class HighPassManager : MonoBehaviour
         }
         Vector3 startPosition = ball.transform.position;
         Vector3 targetPosition = targetHex.GetHexCenter();
-        float height = 10f;
-        int steps = 90;
+        const float travelDuration = 2f;
+        const float height = 10f;
+        float elapsedTime = 0f;
         onlineFlightVersion=onlineVersion;onlineFlightInProgress=true;
         try
         {
-            for (int i = 0; i <= steps; i++)
+            while (elapsedTime < travelDuration)
             {
                 if(!IsOnlineHighResolutionCurrent(onlineVersion,online))yield break;
                 while(online && MatchManager.Instance.IsPauseMenuOpen)
                 {yield return null;if(!IsOnlineHighResolutionCurrent(onlineVersion,online))yield break;}
-                float t = i / (float)steps;
-                Vector3 flatPosition = Vector3.Lerp(startPosition, targetPosition, t);
-                flatPosition.y += height * Mathf.Sin(Mathf.PI * t);
+                elapsedTime += Time.deltaTime;
+                float progress = elapsedTime / travelDuration;
+                Vector3 flatPosition = Vector3.Lerp(startPosition, targetPosition, progress);
+                flatPosition.y += height * Mathf.Sin(Mathf.PI * progress);
                 if (float.IsNaN(flatPosition.x) || float.IsInfinity(flatPosition.x)
                     || float.IsNaN(flatPosition.y) || float.IsInfinity(flatPosition.y)
                     || float.IsNaN(flatPosition.z) || float.IsInfinity(flatPosition.z))
                 {
-                    Debug.LogError($"❌ Invalid flatPosition at i={i}: {flatPosition}");
+                    Debug.LogError($"❌ Invalid High Pass position at progress {progress}: {flatPosition}");
                     yield break;
                 }
                 ball.transform.position = flatPosition;
