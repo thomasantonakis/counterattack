@@ -48,9 +48,11 @@ public sealed partial class OnlineFullRoomSceneFixture
     private readonly UnityEngine.Random.State random=UnityEngine.Random.state;
     private readonly float scale=Time.timeScale;
     private ApplicationManager app;private bool created,previousExplicit;private string previousPath,previousMode;
-    private MatchManager.GameData Data(int size,bool mirror)
+    private MatchManager.GameData Data(int size,bool mirror,bool useFrontendSeats=false)
     {
-        var v=new OnlineCompatibility(OnlineSessionWire.Version,"full-room-draft","catalog");var p=new OnlineMatchProtocol("full-room-scene","home","away","away",v);
+        var v=new OnlineCompatibility(OnlineSessionWire.Version,"full-room-draft","catalog");
+        var p=useFrontendSeats?OnlineFrontendSessionPolicy.CreateMatchProtocol("full-room-scene","home","away",v)
+            :new OnlineMatchProtocol("full-room-scene","home","away","away",v);
         p.BindAuthenticatedAccount("home","h",v);p.BindAuthenticatedAccount("away","a",v);
         var settings=OnlineSetupAgreementEditorTests.Valid();settings.squadSize=size.ToString();int roll=0;
         var d=new OnlineDraftAuthority(p,settings,OnlineDraftCatalog.Load(),_=>0,()=>++roll%2==1?6:1);
@@ -58,7 +60,7 @@ public sealed partial class OnlineFullRoomSceneFixture
         {var s=d.Capture();Assert.That(d.Submit(actor==OnlineTeam.Home?"h":"a",new OnlineDraftRequest{matchId=s.matchId,sequence=(actor==OnlineTeam.Home?s.homeSequence:s.awaySequence)+1,revision=s.revision,intent=intent,cardId=card,slot=slot,choice=choice}).Status,Is.EqualTo(OnlineCommandStatus.Accepted));}
         Submit(OnlineTeam.Home,OnlineDraftIntent.Roll);Submit(OnlineTeam.Away,OnlineDraftIntent.Roll);
         while(d.Capture().phase=="pick"){var s=d.Capture();Submit(s.turn,OnlineDraftIntent.Pick,s.cards.First(card=>card!=null).id,Array.FindIndex(s.turn==OnlineTeam.Home?s.home:s.away,c=>c==null)+1);}
-        Submit(OnlineTeam.Home,OnlineDraftIntent.Ready);Submit(OnlineTeam.Away,OnlineDraftIntent.Ready);Submit(OnlineTeam.Away,OnlineDraftIntent.Start);
+        Submit(OnlineTeam.Home,OnlineDraftIntent.Ready);Submit(OnlineTeam.Away,OnlineDraftIntent.Ready);Submit(p.HostTeam,OnlineDraftIntent.Start);
         Submit(OnlineTeam.Home,OnlineDraftIntent.Roll);Submit(OnlineTeam.Away,OnlineDraftIntent.Roll);Submit(OnlineTeam.Home,OnlineDraftIntent.Choose,choice:mirror?CoinTossChoice.RightToLeft:CoinTossChoice.LeftToRight);
         return OnlineRoomLaunchData.Create(d.Capture());
     }
@@ -801,7 +803,7 @@ public sealed partial class OnlineFullRoomSceneFixture
         else
         {
             var version = new OnlineCompatibility("ground-wire-v7", "ground-rules-v1", OnlineFullRoomBootstrap.Catalog);
-            var protocol = new OnlineMatchProtocol("native-room-scene", "home", "away", "away", version);
+            var protocol = OnlineFrontendSessionPolicy.CreateMatchProtocol("native-room-scene", "home", "away", version);
             protocol.BindAuthenticatedAccount("home", "h", version);
             protocol.BindAuthenticatedAccount("away", "a", version);
             var authority = new OnlineGroundPassAuthority(board.match, protocol);
@@ -810,10 +812,10 @@ public sealed partial class OnlineFullRoomSceneFixture
             Assert.That(initial.stage, Is.EqualTo("kickoff.setup"));
             Assert.That(initial.tokens, Has.Length.EqualTo(32));
             var pauseView = Object.FindAnyObjectByType<PauseMenuManager>(FindObjectsInactive.Include);
-            board.controls.Configure(OnlineTeam.Away);
+            board.controls.Configure(board.localTeam);
             board.controls.Requested += message =>
             {
-                var receipt = nativePause.Submit("a", message.ToCommand());
+                var receipt = nativePause.Submit("h", message.ToCommand());
                 Assert.That(receipt.Status, Is.EqualTo(OnlineCommandStatus.Accepted));
                 board.controls.Reply(new OnlineGroundPassMessage { status = receipt.Status.ToString() });
                 board.Display(nativePause.Capture(authority), "host");

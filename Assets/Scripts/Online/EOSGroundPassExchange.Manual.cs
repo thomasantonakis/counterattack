@@ -11,11 +11,11 @@ namespace CounterAttack.Online
         {
             EOSProofCheck.Require(board.controls != null, "Authored manual controls required");
             using var transport = ObserveManualTransport();
-            board.controls.Configure(OnlineTeam.Away);
+            board.controls.Configure(protocol.HostTeam);
             var version = protocol.Compatibility;
             var recovery = new OnlinePeerRecovery(protocol, version, pause, peerAccount, () => RecoveryNow);
             string nonce = null;
-            string guestConnection = "guest-home";
+            string guestConnection = GuestConnection;
             string snapshotDigest = null;
             double nextPublication = 0;
             double nextTimedSnapshot = 0;
@@ -37,7 +37,7 @@ namespace CounterAttack.Online
                     connectionGeneration = recovery.Generation, peerNonce = nonce };
                 if (local) board.controls.Reply(response); else Send(response);
             }
-            void Local(OnlineGroundPassMessage command) => Dispatch("host-away", command, true);
+            void Local(OnlineGroundPassMessage command) => Dispatch(HostConnection, command, true);
             board.controls.Requested += Local;
             try
             {
@@ -100,7 +100,7 @@ namespace CounterAttack.Online
                     var state = finishingSnapshot ?? pause.Capture(authority);
                     if (ready && finishingSnapshot == null && CompletedManualAction(state))
                     { finishingSnapshot = state; board.controls.SetConnected(false); }
-                    board.Display(state, board.liveFullRoom?"Online match | Away authority":"Authority Away | enter target X/Z; Home chooses the pass");
+                    board.Display(state, board.liveFullRoom?$"Online match | {protocol.HostTeam} authority":"Authority Away | enter target X/Z; Home chooses the pass");
                     var boundary = state.revision + ":" + state.sharedPauseRevision + ":" + state.connectionHeld
                         + ":" + state.stage + ":" + state.owner + ":" + state.rollSequence;
                     // Commit/hold/owner changes go immediately. Budget and clock
@@ -141,7 +141,8 @@ namespace CounterAttack.Online
         {
             EOSProofCheck.Require(board.controls != null && board.GuestRulesInactive, "Guest manual controls require inactive gameplay rules");
             using var transport = ObserveManualTransport();
-            board.controls.Configure(OnlineTeam.Home); board.controls.SetConnected(false);
+            var localTeam = board.usesNativeRoom ? board.localTeam : OnlineTeam.Home;
+            board.controls.Configure(localTeam); board.controls.SetConnected(false);
             string nonce = Guid.NewGuid().ToString("N");
             long generation = 0, heartbeat = 0, pointerSequence = 0;
             double nextPointer = 0;
@@ -182,7 +183,7 @@ namespace CounterAttack.Online
                             EOSProofCheck.Require(replica.Apply(incoming),
                                 $"Manual guest rejected state {incoming?.publicationSequence}, revision {incoming?.revision}, " +
                                 $"phase {incoming?.gameState}/{incoming?.stage}, pause revision {incoming?.sharedPauseRevision}");
-                            board.Display(replica.State, board.liveFullRoom?"Online match | Home replica":"Replica Home | Start, enter X/Z, preview then confirm");
+                            board.Display(replica.State, board.liveFullRoom?$"Online match | {localTeam} replica":"Replica Home | Start, enter X/Z, preview then confirm");
                             if (message.status == "resync")
                                 SendCurrent(new OnlineGroundPassMessage { kind = "hello", status = "resync-ack", digest = Digest(message.state) });
                             board.controls.SetConnected(!message.state.connectionHeld && message.status != "resync");

@@ -1,5 +1,7 @@
 # Continuous online gameplay integration
 
+The [online Full Time report plan](OnlineFullTimeReport.md) covers integrating the authored report from `master` and providing complete report data to both managers.
+
 Current checkpoint (2026-11-15): normal native frontend/Draft handoff loads the
 actual authored OnlineRoom, with full drafted rosters, real grid/managers,
 replicated match/roster state, shared pause, normal substitutions and required

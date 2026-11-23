@@ -37,6 +37,56 @@ public sealed partial class OnlineFullRoomSceneFixture
         yield return nativeRoom ? LoadNativeRoom(data, true, matchId) : Load(data, true);
     }
 
+    private static void ConfigureFixtureTeam(OnlineGroundPassBoard board, OnlineTeam team)
+    {
+        board.localTeam = team;
+        board.controls.Configure(team);
+    }
+
+    public IEnumerator RunNativeSeatOwnership(bool homeKicksOff)
+    {
+        InitializeFixture();
+        SuppressLegacyRoomRunner();
+        var data = Data(16, !homeKicksOff, useFrontendSeats: true);
+        data.openingSetup.homeHasFirstHalfKickoff = homeKicksOff;
+        var version = new OnlineCompatibility("ground-wire-v7", "ground-rules-v1", OnlineFullRoomBootstrap.Catalog);
+        var protocol = OnlineFrontendSessionPolicy.CreateMatchProtocol("native-seat-ownership", "host-account", "guest-account", version);
+        Assert.That(protocol.BindAuthenticatedAccount("host-account", "host", version), Is.True);
+        Assert.That(protocol.BindAuthenticatedAccount("guest-account", "guest", version), Is.True);
+        yield return LoadNativeRoom(data, false, protocol.MatchId);
+
+        var board = Object.FindAnyObjectByType<OnlineRoomStartup>().Board;
+        Assert.That(board.localTeam, Is.EqualTo(OnlineTeam.Home));
+        var authority = new OnlineGroundPassAuthority(board.match, protocol);
+        pause = new OnlineSharedPause(protocol, board.match);
+        var home = pause.Capture(authority);
+        Assert.That(home.owner, Is.EqualTo("Home"));
+        Assert.That(Confirm("guest", home, 1), Is.EqualTo(OnlineCommandStatus.WrongTeam));
+        Assert.That(Confirm("host", home, 1), Is.EqualTo(OnlineCommandStatus.Accepted));
+        var away = pause.Capture(authority);
+        Assert.That(away.owner, Is.EqualTo("Away"));
+        Assert.That(Confirm("host", away, 2), Is.EqualTo(OnlineCommandStatus.WrongTeam));
+        Assert.That(Confirm("guest", away, 2), Is.EqualTo(OnlineCommandStatus.Accepted));
+        var taker = pause.Capture(authority);
+        Assert.That(taker.stage, Is.EqualTo("kickoff.taker"));
+        Assert.That(taker.owner, Is.EqualTo(homeKicksOff ? "Home" : "Away"));
+
+        pause.Dispose();
+        pause = null;
+        yield return LoadPresentationGuest(data, protocol.MatchId, nativeRoom: true);
+        var guest = Object.FindAnyObjectByType<OnlineRoomStartup>();
+        Assert.That(guest.Board.localTeam, Is.EqualTo(OnlineTeam.Away));
+        Assert.That(guest.GuestConfigured, Is.True);
+        Assert.That(guest.Board.match.kickoffManager.gameObject.activeSelf, Is.False);
+        var replica = new OnlineGroundPassReplica(protocol.MatchId, guest.Board.tokens.Select(OnlineRollPublication.ActorId), version.Catalog);
+        ApplyPublication(replica, guest.Board, taker);
+        Assert.That(guest.Board.match.teamInAttack, Is.EqualTo(data.openingSetup.KickoffTeam));
+
+        OnlineCommandStatus Confirm(string connection, OnlineGroundPassState state, long sequence)
+            => authority.Submit(connection, new OnlineMatchCommand(protocol.MatchId, sequence, state.revision,
+                state.decisionId, OnlineGroundPassAuthority.KickoffConfirmAction)).Status;
+    }
+
     public IEnumerator RunNativeProjection(string presentation)
     {
         InitializeFixture();
@@ -191,7 +241,7 @@ public sealed partial class OnlineFullRoomSceneFixture
         pause = new OnlineSharedPause(protocol, board.match);
         var home = pause.Capture(authority);
         Assert.That(home.owner, Is.EqualTo("Home"));
-        board.controls.Configure(OnlineTeam.Away);
+        ConfigureFixtureTeam(board, OnlineTeam.Away);
         board.Display(home, "host");
         AssertExpectedTeamPalette(board, home);
         Assert.That(board.boardInput.TryKey(KeyCode.Return), Is.False);
@@ -209,7 +259,7 @@ public sealed partial class OnlineFullRoomSceneFixture
 
         yield return LoadPresentationGuest(data, protocol.MatchId, nativeRoom: true);
         board = Object.FindAnyObjectByType<OnlineRoomStartup>().Board;
-        board.controls.Configure(OnlineTeam.Home);
+        ConfigureFixtureTeam(board, OnlineTeam.Home);
         var replica = new OnlineGroundPassReplica(protocol.MatchId, board.tokens.Select(OnlineRollPublication.ActorId), OnlineFullRoomBootstrap.Catalog);
         ApplyPublication(replica, board, home);
         AssertExpectedTeamPalette(board, home);

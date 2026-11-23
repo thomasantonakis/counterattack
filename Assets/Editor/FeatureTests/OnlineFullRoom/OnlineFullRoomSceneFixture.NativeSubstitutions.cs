@@ -32,7 +32,7 @@ public sealed partial class OnlineFullRoomSceneFixture
             var command = new OnlineMatchCommand(protocol.MatchId, ++homeSequence, revision ?? pause.Revision, "shared-pause", action);
             return pause.Submit("h", command).Status;
         }
-        board.controls.Configure(OnlineTeam.Away);
+        ConfigureFixtureTeam(board, OnlineTeam.Away);
         board.controls.Requested += message =>
         {
             var receipt = pause.Submit("a", message.ToCommand());
@@ -101,7 +101,7 @@ public sealed partial class OnlineFullRoomSceneFixture
         pause = null;
         yield return LoadPresentationGuest(data, protocol.MatchId, nativeRoom: true);
         board = Object.FindAnyObjectByType<OnlineRoomStartup>().Board;
-        board.controls.Configure(OnlineTeam.Home);
+        ConfigureFixtureTeam(board, OnlineTeam.Home);
         roster = Object.FindAnyObjectByType<SubstitutionMenuView>(FindObjectsInactive.Include);
         var replica = new OnlineGroundPassReplica(protocol.MatchId, board.tokens.Select(OnlineRollPublication.ActorId), OnlineFullRoomBootstrap.Catalog);
         ApplyPublication(replica, board, opened);

@@ -52,7 +52,7 @@ namespace CounterAttack.Online
             board.liveFullRoom = true;
             board.continuousManualSession = true;
             board.usesNativeRoom = true;
-            board.localTeam = OnlineRoomSession.IsGuest ? OnlineTeam.Home : OnlineTeam.Away;
+            board.localTeam = OnlineRoomSession.IsGuest ? OnlineFrontendSessionPolicy.GuestTeam : OnlineFrontendSessionPolicy.HostTeam;
             board.boardCamera = Camera.main;
             if (teamPointers != null)
             {

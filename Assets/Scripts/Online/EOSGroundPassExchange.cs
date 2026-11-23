@@ -32,6 +32,8 @@ namespace CounterAttack.Online
         private bool manualTransport, transportUnavailable, peerLeft;
         private bool ContinuousManualSession=>board.continuousManualSession || Environment.GetCommandLineArgs().Contains("-ca-online-continuous");
         private string SessionCatalog=>board.liveFullRoom?OnlineFullRoomBootstrap.Catalog:OnlineManualSessionPolicy.Catalog(ContinuousManualSession);
+        private string HostConnection => board.usesNativeRoom ? "host-home" : "host-away";
+        private string GuestConnection => board.usesNativeRoom ? "guest-away" : "guest-home";
         private void PrepareHostBoard()
         {
             if(!board.liveFullRoom){board.InitializeAuthority();return;}
@@ -227,9 +229,13 @@ namespace CounterAttack.Online
             SetPeer(session, remote, socket, lobby);
             PrepareHostBoard();
             var version = new OnlineCompatibility("ground-wire-v7", "ground-rules-v1", SessionCatalog);
-            var protocol = new OnlineMatchProtocol(matchId, remote.ToString(), session.UserId.ToString(), session.UserId.ToString(), version);
-            EOSProofCheck.Require(protocol.BindAuthenticatedAccount(remote.ToString(), "guest-home", version), "Binding guest Home identity");
-            EOSProofCheck.Require(protocol.BindAuthenticatedAccount(session.UserId.ToString(), "host-away", version), "Binding host Away identity");
+            string hostAccount = session.UserId.ToString();
+            string guestAccount = remote.ToString();
+            var protocol = board.usesNativeRoom
+                ? OnlineFrontendSessionPolicy.CreateMatchProtocol(matchId, hostAccount, guestAccount, version)
+                : new OnlineMatchProtocol(matchId, guestAccount, hostAccount, hostAccount, version);
+            EOSProofCheck.Require(protocol.BindAuthenticatedAccount(guestAccount, GuestConnection, version), "Binding guest identity");
+            EOSProofCheck.Require(protocol.BindAuthenticatedAccount(hostAccount, HostConnection, version), "Binding host identity");
             var authority = new OnlineGroundPassAuthority(board.match, protocol);
             using var pause = new OnlineSharedPause(protocol, board.match);
             if (board.liveFullRoom || Environment.GetCommandLineArgs().Contains("-ca-online-manual"))

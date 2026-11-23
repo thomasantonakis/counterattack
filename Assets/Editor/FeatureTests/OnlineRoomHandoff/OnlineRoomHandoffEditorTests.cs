@@ -61,7 +61,7 @@ public sealed class OnlineRoomHandoffEditorTests
         var current=OnlineFrontendSessionPolicy.Compatibility();
         var previous=new OnlineCompatibility(current.Protocol,"frontend-rules-v5",current.Catalog);
         var protocol=new OnlineMatchProtocol("handoff-version","home","away","away",current);
-        Assert.That(current.Rules,Is.EqualTo("frontend-rules-v6"));
+        Assert.That(current.Rules,Is.Not.EqualTo(previous.Rules));
         Assert.That(protocol.BindAuthenticatedAccount("home","old-guest",previous),Is.False);
         Assert.That(protocol.BindAuthenticatedAccount("home","new-guest",current),Is.True);
     }

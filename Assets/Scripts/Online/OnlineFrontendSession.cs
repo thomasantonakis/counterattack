@@ -141,13 +141,13 @@ namespace CounterAttack.Online
             var compatibility=OnlineFrontendSessionPolicy.Compatibility();string match="online-"+lobby;
             if(Hosting)
             {
-                var protocol=new OnlineMatchProtocol(match,remote.ToString(),session.UserId.ToString(),session.UserId.ToString(),compatibility);
+                var protocol=OnlineFrontendSessionPolicy.CreateMatchProtocol(match,session.UserId.ToString(),remote.ToString(),compatibility);
                 protocol.BindAuthenticatedAccount(session.UserId.ToString(),"frontend-host",compatibility);
                 var hostChannel=new OnlineSetupHostChannel(protocol,"frontend-host",remote.ToString(),initial,()=>Time.realtimeSinceStartupAsDouble);
                 hostChannel.EnableDraft(s=>new OnlineDraftAuthority(protocol,s,OnlineDraftCatalog.Load(),rollClock:()=>Time.realtimeSinceStartupAsDouble));
                 channel=hostChannel;
             }
-            else channel=new OnlineSetupGuestChannel(match,remote.ToString(),compatibility,OnlineTeam.Away,()=>Time.realtimeSinceStartupAsDouble);
+            else channel=new OnlineSetupGuestChannel(match,remote.ToString(),compatibility,OnlineFrontendSessionPolicy.HostTeam,()=>Time.realtimeSinceStartupAsDouble);
             channel.Outgoing+=Queue;
             channel.Client.DraftAgreed+=OnAgreed;
             ClientAvailable?.Invoke(channel.Client);
