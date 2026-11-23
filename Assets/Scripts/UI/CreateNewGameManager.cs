@@ -1343,10 +1343,14 @@ public partial class CreateNewGameManager : MonoBehaviour
         isRefreshingInternationalTeamUi = true;
         try
         {
-            EnsureDifferentInternationalTeams(changedDropdown, otherDropdown);
+            if (onlineSetupConfirmation != null)
+                RefreshOwnedInternationalKits(changedDropdown);
+            else
+            {
+                EnsureDifferentInternationalTeams(changedDropdown, otherDropdown);
+                ForceInternationalOutfieldKitsToTeamDefaults();
+            }
             SyncInternationalTeamInputFields();
-            RefreshInternationalTeamKitOptions();
-            ForceInternationalOutfieldKitsToTeamDefaults();
         }
         finally
         {

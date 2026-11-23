@@ -7,7 +7,7 @@ using UnityEditor.SceneManagement;
 [Category("OnlineSetupView")]
 public sealed class OnlineSetupViewEditorTests
 {
-    [Test] public void AuthoredView([Values(false,true)]bool hostAway,[Values(false,true)]bool localHost,[Values("ownership","confirm","edit","invalid","remote-update","start","focused-name","mode-round-trip")]string branch)
+    [Test] public void AuthoredView([Values(false,true)]bool hostAway,[Values(false,true)]bool localHost,[Values("ownership","confirm","edit","invalid","remote-update","start","focused-name","mode-round-trip","international-owned-team")]string branch)
     {
         var scene=EditorSceneManager.OpenPreviewScene("Assets/Scenes/CreateNewGameScene.unity");
         try
@@ -49,7 +49,7 @@ public sealed class OnlineSetupViewEditorTests
                 allowInput.SetValue(own, false);
                 return;
             }
-            if (branch=="mode-round-trip")
+            if (branch is "mode-round-trip" or "international-owned-team")
             {
                 var regular = authority.Capture().settings;
                 var international = OnlineSetupRules.Copy(regular);
@@ -90,6 +90,26 @@ public sealed class OnlineSetupViewEditorTests
                 Assert.That(ui.homeInternationalTeamDropdown.captionText.text, Is.EqualTo("France"));
                 Assert.That(ui.awayInternationalTeamDropdown.captionText.text, Is.EqualTo("Argentina"));
                 Assert.That(client.Dirty, Is.False);
+                if (branch == "international-owned-team")
+                {
+                    client.SetTransportAvailable(true);
+                    var owned = team == OnlineTeam.Home ? ui.homeInternationalTeamDropdown : ui.awayInternationalTeamDropdown;
+                    var otherTeam = team == OnlineTeam.Home ? ui.awayInternationalTeamDropdown : ui.homeInternationalTeamDropdown;
+                    string unchanged = otherTeam.captionText.text;
+                    string prior = owned.captionText.text;
+                    int same = owned.options.FindIndex(option => option.text == unchanged);
+                    owned.value = same;
+                    Assert.That(owned.captionText.text, Is.EqualTo(prior));
+                    Assert.That(otherTeam.captionText.text, Is.EqualTo(unchanged));
+                    int distinct = owned.options.FindIndex(option => option.text == "Japan");
+                    Assert.That(distinct, Is.GreaterThanOrEqualTo(0));
+                    owned.value = distinct;
+                    var updated = authority.Capture().settings;
+                    Assert.That(team == OnlineTeam.Home ? updated.homeTeamName : updated.awayTeamName, Is.EqualTo("Japan"));
+                    Assert.That(otherTeam.captionText.text, Is.EqualTo(unchanged));
+                    Assert.That(owned.captionText.text, Is.EqualTo("Japan"));
+                    return;
+                }
                 Switch(regular);
                 var observed = ui.CaptureOnlineSetupDraft();
                 Assert.That(observed.matchType, Is.EqualTo("Regular"));

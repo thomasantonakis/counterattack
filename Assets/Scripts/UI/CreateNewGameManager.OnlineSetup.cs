@@ -14,6 +14,34 @@ public partial class CreateNewGameManager
         bool sameRegularMode = !IsInternationalMatchSelected() && !IsInternationalSettings(settings);
         ApplyExistingSettingsToUi(settings, sameRegularMode && localName != null && localName.isFocused ? localName : null);
     }
+    private void RefreshOwnedInternationalKits(TMPro.TMP_Dropdown changedTeam)
+    {
+        bool home = changedTeam == homeInternationalTeamDropdown;
+        var localKit = home ? homeKitDropdown : awayKitDropdown;
+        var localKeeper = home ? homeGKKitDropdown : awayGKKitDropdown;
+        var remoteKit = GetSelectedKitPreset(home ? awayKitDropdown : homeKitDropdown);
+        var remoteKeeper = GetSelectedKitPreset(home ? awayGKKitDropdown : homeGKKitDropdown);
+        RefreshInternationalTeamKitOptions();
+
+        var kits = GetPresetListForDropdown(localKit);
+        foreach (var kit in kits)
+        {
+            var homeKit = home ? kit : remoteKit;
+            var awayKit = home ? remoteKit : kit;
+            var keeper = FindCompatibleGoalkeeperKit(homeKit, awayKit, remoteKeeper);
+            if (keeper == null) continue;
+            var similarity = TokenKitCatalog.GetSimilarityBreakdown(homeKit?.Id, awayKit?.Id);
+            if (!string.IsNullOrEmpty(ValidateSelectedKits(homeKit, awayKit, home ? keeper : remoteKeeper,
+                home ? remoteKeeper : keeper, similarity))) continue;
+            PopulateKitDropdown(localKit, kit.Id);
+            SetKitDropdownSelectionWithoutNotify(localKeeper, keeper.Id);
+            return;
+        }
+
+        PopulateKitDropdown(localKit, GetPreferredInternationalKitId(GetInternationalTeamKitOptions(
+            GetSelectedInternationalTeamName(changedTeam))));
+    }
+
     private bool RouteOnlineSetupConfirmation()
     {
         if(onlineSetupConfirmation==null)return false;

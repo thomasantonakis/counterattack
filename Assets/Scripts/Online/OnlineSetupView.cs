@@ -15,6 +15,7 @@ namespace CounterAttack.Online
         private readonly List<Action> release=new();
         private bool applying;
         private long renderedRevision=-1;
+        private bool duplicateNationalTeam;
         public void Configure(OnlineSetupClient owner)
         {
             Unbind();client=owner??throw new ArgumentNullException(nameof(owner));
@@ -38,7 +39,16 @@ namespace CounterAttack.Online
         private void Edited()
         {
             if(applying || client==null || setup.IsApplyingMatchType)return;
-            client.Edit(setup.CaptureOnlineSetupDraft());
+            duplicateNationalTeam = false;
+            var proposed = setup.CaptureOnlineSetupDraft();
+            if (proposed.matchType == "International" && proposed.homeTeamName == proposed.awayTeamName
+                && client.Capture()?.settings.matchType == "International")
+            {
+                duplicateNationalTeam = true;
+                RefreshSelections();
+                return;
+            }
+            client.Edit(proposed);
         }
         private IEnumerable<TMP_Dropdown> Dropdowns()=>new[]{setup.gameModeDropdown,setup.numberOfHalvesDropdown,setup.tiebreakerDropdown,
             setup.playerAssistanceDropdown,setup.matchTypeDropdown,setup.squadSizeDropdown,setup.draftDropdown,setup.gkDraftDropdown,setup.refereeDropdown,
@@ -76,7 +86,7 @@ namespace CounterAttack.Online
             var label=setup.createGameButton?.GetComponentInChildren<TMP_Text>(true);
             if(label!=null)label.text=client.IsHost && client.BothReady && !client.Dirty?"Start Draft":client.LocalReady && !client.Dirty?"Waiting for other manager":"Confirm selections";
             if(status==null)return;
-            status.text=editing && !valid?error:state?.phase=="draft-ready"?"Both managers agreed. Preparing Draft...":!client.Connected?"Waiting for the other manager.":client.Pending?"Sending your selection..."
+            status.text=editing && duplicateNationalTeam?"Choose a different national team.":editing && !valid?error:state?.phase=="draft-ready"?"Both managers agreed. Preparing Draft...":!client.Connected?"Waiting for the other manager.":client.Pending?"Sending your selection..."
                 :client.LastReply is OnlineCommandStatus.IllegalAction or OnlineCommandStatus.StaleRevision?"Selections changed. Review and confirm again."
                 :client.BothReady?client.IsHost?"Both managers agreed. You can start Draft.":"Both managers agreed. Waiting for the host to start Draft."
                 :client.LocalReady && !client.Dirty?"Your selections are confirmed. Waiting for the other manager.":"Review your team name and kits, then confirm your selections.";
@@ -86,7 +96,7 @@ namespace CounterAttack.Online
             foreach(var action in release)action();release.Clear();
             if(client!=null && setup!=null)setup.UnbindOnlineSetupConfirmation();
             if(client!=null && status!=null)status.gameObject.SetActive(false);
-            client=null;renderedRevision=-1;
+            client=null;renderedRevision=-1;duplicateNationalTeam=false;
         }
         private void OnDestroy()=>Unbind();
     }
