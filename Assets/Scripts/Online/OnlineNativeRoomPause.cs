@@ -22,6 +22,7 @@ namespace CounterAttack.Online
         private OnlineGroundPassTokenState[] outgoing = Array.Empty<OnlineGroundPassTokenState>();
         private OnlineGroundPassTokenState[] incoming = Array.Empty<OnlineGroundPassTokenState>();
         private bool selectingPlayers;
+        private string defaultSubstitutionConfirmLabel;
         private bool IsHome => board.localTeam == OnlineTeam.Home;
         private bool Nomination => IsHome ? state?.homeEmergencyKeeper == true : state?.awayEmergencyKeeper == true;
 
@@ -50,6 +51,7 @@ namespace CounterAttack.Online
             view.substitutionsButton.interactable = false;
             if (substitutions != null)
             {
+                defaultSubstitutionConfirmLabel = substitutions.confirmButton.GetComponentInChildren<TMP_Text>(true)?.text;
                 localRow = substitutions.GetRows(IsHome).FirstOrDefault();
                 foreach (bool home in new[] { true, false })
                     foreach (var row in substitutions.GetRows(home))
@@ -156,6 +158,8 @@ namespace CounterAttack.Online
         private void RefreshSubstitutions()
         {
             if (localRow == null || state?.tokens == null) return;
+            if (substitutions.confirmButton.GetComponentInChildren<TMP_Text>(true) is { } confirmLabel)
+                confirmLabel.text = defaultSubstitutionConfirmLabel;
             bool replacement = IsHome ? state.homeKeeperReplacement : state.awayKeeperReplacement;
             bool forcedKeeper = IsHome ? state.homeForcedKeeperSubstitution : state.awayForcedKeeperSubstitution;
             foreach (var row in reviewRows) row.view.gameObject.SetActive(row.view == localRow);
@@ -177,10 +181,10 @@ namespace CounterAttack.Online
             substitutions.awaySubsRemainingText.text = $"{board.match.GetSubstitutionsRemaining(false)} substitutions left";
             foreach (bool home in new[] { true, false })
             {
-                var roster = board.tokens.Where(token => token.isHomeTeam == home && !token.isSentOff)
+                var roster = board.tokens.Where(token => token.isHomeTeam == home)
                     .OrderBy(token => token.jerseyNumber).ToArray();
-                DisplayRoster(substitutions.GetPlayingRows(home), roster.Where(token => token.isPlaying).ToArray());
-                DisplayRoster(substitutions.GetBenchRows(home), roster.Where(token => !token.isPlaying).ToArray());
+                DisplayRoster(substitutions.GetPlayingRows(home), roster.Where(token => token.isPlaying || token.isSentOff).ToArray());
+                DisplayRoster(substitutions.GetBenchRows(home), roster.Where(token => !token.isPlaying && !token.isSentOff).ToArray());
             }
             RefreshIncoming();
         }
@@ -194,6 +198,7 @@ namespace CounterAttack.Online
                 label.gameObject.SetActive(token != null);
                 if (token == null) continue;
                 label.text = $"{token.jerseyNumber}. {token.playerName}" + (token.IsGoalKeeper ? " (GK)" : "");
+                if (token.isSentOff) label.text += " · Sent off";
                 substitutions.SetRosterStatus(label, SubstitutionMenuManager.RosterStatusColor(token));
             }
         }

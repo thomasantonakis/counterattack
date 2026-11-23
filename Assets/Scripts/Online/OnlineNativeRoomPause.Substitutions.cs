@@ -55,11 +55,11 @@ namespace CounterAttack.Online
             substitutions.awayTeamTitleText.text = settings.awayTeamName;
             foreach (bool home in new[] { true, false })
             {
-                var roster = board.tokens.Where(token => token.isHomeTeam == home && !token.isSentOff)
+                var roster = board.tokens.Where(token => token.isHomeTeam == home)
                     .OrderBy(token => token.jerseyNumber).ToArray();
-                var playing = roster.Where(token => token.isPlaying && token.currentHex != null).ToArray();
-                var bench = roster.Where(token => !token.isPlaying && !token.wasSubbedOff).ToArray();
-                DisplayRoster(substitutions.GetPlayingRows(home), playing);
+                var playing = roster.Where(token => token.isPlaying && token.currentHex != null && !token.isSentOff).ToArray();
+                var bench = roster.Where(token => !token.isPlaying && !token.wasSubbedOff && !token.isSentOff).ToArray();
+                DisplayRoster(substitutions.GetPlayingRows(home), playing.Concat(roster.Where(token => token.isSentOff)).ToArray());
                 DisplayRoster(substitutions.GetBenchRows(home), bench);
                 var orders = review.Orders(home);
                 int remaining = board.match.GetSubstitutionsRemaining(home);
@@ -85,6 +85,8 @@ namespace CounterAttack.Online
                 }
             }
             bool localHasOrders = review.HasOrders(IsHome);
+            if (substitutions.confirmButton.GetComponentInChildren<TMP_Text>(true) is { } confirmLabel)
+                confirmLabel.text = review.Confirmed(IsHome) ? "Waiting for other manager" : defaultSubstitutionConfirmLabel;
             substitutions.confirmButton.interactable = board.controls.CanEditSubstitutionReview && localHasOrders
                 && review.Orders(IsHome).All(order => !order.HasSelection || order.IsComplete);
             substitutions.backButton.interactable = board.controls.CanEditSubstitutionReview

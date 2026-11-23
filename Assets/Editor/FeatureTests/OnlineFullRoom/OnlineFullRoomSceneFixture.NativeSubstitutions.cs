@@ -17,6 +17,7 @@ public sealed partial class OnlineFullRoomSceneFixture
         var board = Object.FindAnyObjectByType<OnlineRoomStartup>().Board;
         var authority = new OnlineGroundPassAuthority(board.match, protocol);
         pause = new OnlineSharedPause(protocol, board.match);
+        board.tokens.Single(token => token.isHomeTeam && token.jerseyNumber == 11).MarkSentOff();
         board.match.SetSubstitutionsAvailable(true, "Test stoppage");
         bool both = scenario != "solo";
         long homeSequence = 0;
@@ -46,10 +47,14 @@ public sealed partial class OnlineFullRoomSceneFixture
         Assert.That(menu.substitutionsButton.interactable, Is.True, "The other manager can open substitutions too");
         menu.substitutionsButton.onClick.Invoke();
         var opened = Publish();
+        AssertSentOffLineup(board);
         long reviewId = opened.substitutionReview.id;
         Assert.That(roster.gameObject.activeInHierarchy, Is.True);
         Assert.That(roster.GetRows(false)[0].outgoingDropdown.interactable, Is.True);
         Assert.That(roster.GetRows(true)[0].outgoingDropdown.interactable, Is.False);
+        Assert.That(roster.GetPlayingRows(true).Any(label => label.gameObject.activeSelf && label.text.StartsWith("11.") && label.text.Contains("Sent off")), Is.True);
+        Assert.That(roster.GetRows(true)[0].outgoingDropdown.options.Any(option => option.text.StartsWith("11.")), Is.False);
+        Assert.That(roster.GetRows(true)[0].incomingDropdown.options.Any(option => option.text.StartsWith("11.")), Is.False);
 
         var away = roster.GetRows(false)[0];
         SelectJersey(away.outgoingDropdown, 2);
@@ -74,6 +79,7 @@ public sealed partial class OnlineFullRoomSceneFixture
             Assert.That(firstConfirmed.substitutionReview.awayConfirmed, Is.True);
             Assert.That(roster.gameObject.activeInHierarchy, Is.True);
             Assert.That(roster.confirmButton.interactable, Is.False);
+            Assert.That(roster.confirmButton.GetComponentInChildren<TMP_Text>(true).text, Is.EqualTo("Waiting for other manager"));
             Assert.That(board.match.GetSubstitutionsUsed(false), Is.Zero, "Both ordered teams must confirm before anything moves");
             if (scenario == "cancel")
             {
@@ -99,8 +105,10 @@ public sealed partial class OnlineFullRoomSceneFixture
         roster = Object.FindAnyObjectByType<SubstitutionMenuView>(FindObjectsInactive.Include);
         var replica = new OnlineGroundPassReplica(protocol.MatchId, board.tokens.Select(OnlineRollPublication.ActorId), OnlineFullRoomBootstrap.Catalog);
         ApplyPublication(replica, board, opened);
+        AssertSentOffLineup(board);
         Assert.That(roster.gameObject.activeInHierarchy, Is.True);
         Assert.That(roster.GetRows(true)[0].outgoingDropdown.interactable, Is.True);
+        Assert.That(roster.GetPlayingRows(true).Any(label => label.gameObject.activeSelf && label.text.StartsWith("11.") && label.text.Contains("Sent off")), Is.True);
         Assert.That(roster.GetRows(false)[0].outgoingDropdown.interactable, Is.False);
         OnlineGroundPassMessage choice = null;
         board.controls.Requested += message => choice = message;
@@ -126,6 +134,16 @@ public sealed partial class OnlineFullRoomSceneFixture
         ApplyPublication(replica, board, completed);
         Assert.That(roster.gameObject.activeSelf, Is.False);
         Assert.That(board.tokens.Single(token => !token.isHomeTeam && token.jerseyNumber == 13).isPlaying, Is.True);
+    }
+
+    private static void AssertSentOffLineup(OnlineGroundPassBoard board)
+    {
+        var stats = Object.FindAnyObjectByType<MatchStatsUI>();
+        var flags = System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance;
+        typeof(MatchStatsUI).GetMethod("UpdateStatsUI", flags).Invoke(stats, null);
+        var rows = (TMP_Text[])typeof(MatchStatsUI).GetField("homeLineupTexts", flags).GetValue(stats);
+        string player = board.tokens.Single(token => token.isHomeTeam && token.jerseyNumber == 11).playerName;
+        Assert.That(rows.Where(row => row != null).Select(row => row.text), Has.Some.Contains($"<s>{player}</s>"));
     }
 
     private static OnlineMatchProtocol NativePresentationProtocol()
