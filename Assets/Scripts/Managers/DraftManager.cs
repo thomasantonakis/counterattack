@@ -771,7 +771,6 @@ public class DraftManager : MonoBehaviour
             GameObject playerCard = Instantiate(playerCardPrefab, draftPanel.transform);
             PlayerCard cardScript = playerCard.GetComponent<PlayerCard>();
             cardScript.UpdatePlayerCard(player);
-            DraftPlayerCardStyler.ApplyOutfield(playerCard);
         }
     }
 
@@ -1459,7 +1458,6 @@ public class DraftManager : MonoBehaviour
             GameObject newCard = Instantiate(playerCardPrefab, draftPanel.transform);
             PlayerCard playerCard = newCard.GetComponent<PlayerCard>();
             playerCard.UpdatePlayerCard(nextPlayer);
-            DraftPlayerCardStyler.ApplyOutfield(newCard);
             dealtCards.Add(newCard);
             // Debug.Log($"Dealt card for player: {nextPlayer.Name}");
         }
