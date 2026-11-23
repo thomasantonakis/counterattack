@@ -4,6 +4,8 @@ using UnityEngine.UI;
 using TMPro;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 public class CreateLoadRoomManager : MonoBehaviour
 {
@@ -11,6 +13,8 @@ public class CreateLoadRoomManager : MonoBehaviour
     private const string CreateNewGameSceneName = "CreateNewGameScene";
     private const string RoomSceneName = "Room";
     private const string MainMenuSceneName = "MainMenu";
+    private const string CreatedAtColumn = "CreatedAt";
+    private const string LastActivityAtColumn = "LastActivityAt";
 
     [Header("Create / Load")]
     [SerializeField] private TextMeshProUGUI headerText;
@@ -30,11 +34,11 @@ public class CreateLoadRoomManager : MonoBehaviour
 
     private static readonly SaveColumnDefinition[] DefaultColumns =
     {
-        new("Teams", "Teams", 520f),
+        new("Teams", "Saved Game Name", 520f),
         new("Score", "Score", 192f),
         new("Clock", "Time", 192f),
-        new("CreatedAt", "Created at", 256f),
-        new("LastActivityAt", "Last activity", 256f),
+        new(CreatedAtColumn, "Created at", 256f),
+        new(LastActivityAtColumn, "Last activity", 256f),
         new("MatchDuration", "Duration", 192f),
         new("Tie", "Tie", 128f),
         new("Delete", "Delete", 160f),
@@ -42,6 +46,8 @@ public class CreateLoadRoomManager : MonoBehaviour
     };
 
     private string selectedGameMode = ApplicationManager.HotSeatGameMode;
+    private string sortColumn = LastActivityAtColumn;
+    private bool sortDescending = true;
 
     private void Awake()
     {
@@ -225,12 +231,31 @@ public class CreateLoadRoomManager : MonoBehaviour
             ? $"No eligible {GetModeDisplayName()} save files found."
             : string.Empty;
 
-        foreach (RoomSaveSummary summary in summaries)
+        foreach (RoomSaveSummary summary in SortSaves(summaries))
         {
             CreateSaveRow(summary, columnLayouts);
         }
 
         RebuildRowsLayout();
+    }
+
+    public void SortByCreatedDate() => ChangeSort(CreatedAtColumn);
+
+    public void SortByModifiedDate() => ChangeSort(LastActivityAtColumn);
+
+    private void ChangeSort(string column)
+    {
+        sortDescending = sortColumn != column || !sortDescending;
+        sortColumn = column;
+        RebuildSaveRows();
+    }
+
+    private IEnumerable<RoomSaveSummary> SortSaves(IEnumerable<RoomSaveSummary> summaries)
+    {
+        Func<RoomSaveSummary, DateTime> date = sortColumn == CreatedAtColumn
+            ? summary => summary.CreatedSortUtc
+            : summary => summary.LastActivitySortUtc;
+        return sortDescending ? summaries.OrderByDescending(date) : summaries.OrderBy(date);
     }
 
     private void CreateSaveRow(RoomSaveSummary summary, IReadOnlyList<SaveColumnLayout> columnLayouts)
@@ -258,7 +283,11 @@ public class CreateLoadRoomManager : MonoBehaviour
                 delete.onClick.AddListener(() => DeleteSave(summary));
             }
             else if (column.TryGetComponent(out TextMeshProUGUI label))
+            {
+                if (columnLayout.Definition.Key == "Teams")
+                    label.richText = false;
                 label.text = GetColumnValue(summary, columnLayout.Definition.Key);
+            }
         }
         row.SetActive(true);
     }
@@ -408,7 +437,9 @@ public class CreateLoadRoomManager : MonoBehaviour
 
             if (column.TryGetComponent(out TextMeshProUGUI label))
             {
-                label.text = columnLayout.Definition.Header;
+                label.text = Application.isPlaying && columnLayout.Definition.Key == sortColumn
+                    ? $"{columnLayout.Definition.Header} {(sortDescending ? "▼" : "▲")}"
+                    : columnLayout.Definition.Header;
             }
         }
     }
@@ -477,7 +508,7 @@ public class CreateLoadRoomManager : MonoBehaviour
         {
             foreach (SaveColumnDefinition columnDefinition in DefaultColumns)
             {
-                if (columnDefinition.Key == "LastActivityAt")
+                if (columnDefinition.Key == LastActivityAtColumn)
                 {
                     definition = columnDefinition;
                     return true;
@@ -514,16 +545,16 @@ public class CreateLoadRoomManager : MonoBehaviour
     {
         return columnKey switch
         {
-            "Teams" => summary.Teams,
+            "Teams" => Path.GetFileNameWithoutExtension(summary.FileName),
             "Clock" => summary.Clock,
             "Score" => summary.Score,
             "HalfLength" => summary.HalfLength,
             "Halves" => summary.Halves,
             "MatchDuration" => summary.MatchDuration,
             "Tie" => summary.Tie,
-            "CreatedAt" => FormatUtc(summary.CreatedUtc),
+            CreatedAtColumn => FormatUtc(summary.CreatedUtc),
             "CreatedUtc" => FormatUtc(summary.CreatedUtc),
-            "LastActivityAt" => FormatUtc(summary.LastActivityUtc),
+            LastActivityAtColumn => FormatUtc(summary.LastActivityUtc),
             "LastActivityUtc" => FormatUtc(summary.LastActivityUtc),
             "LastSavedAt" => FormatUtc(summary.LastSavedUtc),
             "LastSavedUtc" => FormatUtc(summary.LastSavedUtc),
