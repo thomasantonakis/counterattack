@@ -9,6 +9,7 @@
 ## Git authorization
 
 - The repository owner has authorized Codex to run necessary Git commands in this project, including add, commit, fetch, pull and push, without asking again. Keep commits limited to task-related files and preserve unrelated local edits. Tool-enforced sandbox or credential prompts may still apply.
+- Follow [CONTRIBUTING.md](CONTRIBUTING.md) for every repository change. Start on a feature branch from the intended target, push the feature branch, and always open a PR. Use `codex/online-foundation-personal-mac` as the base for work that depends on the online foundation and `master` for independent changes. Keep both target branches free of direct pushes. Complete the online compatibility section when targeting the online branch.
 
 ## Unity Workflow Rules
 
