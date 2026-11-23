@@ -800,6 +800,7 @@ public class RoomRuntimeSnapshot
     public bool attackHasPossession;
     public string homeTeamDirection;
     public string awayTeamDirection;
+    public RoomMovementOpeningSnapshot movementOpening;
     public RoomClockSnapshot clock = new();
     public RoomHexCoordinates ball;
     public List<RoomTokenSnapshot> tokens = new();
@@ -810,6 +811,16 @@ public class RoomRuntimeSnapshot
     public List<MatchManager.GoalEvent> homeScorers = new();
     public List<MatchManager.GoalEvent> awayScorers = new();
     public List<string> gameLog = new();
+}
+
+[Serializable]
+public class RoomMovementOpeningSnapshot
+{
+    public RoomTokenReference previewToken;
+    public List<RoomTokenReference> stunnedTokens;
+    public List<RoomTokenReference> stunnedForNext;
+    public List<RoomTokenReference> attackingJumpers;
+    public List<RoomTokenReference> defendingJumpers;
 }
 
 [Serializable]

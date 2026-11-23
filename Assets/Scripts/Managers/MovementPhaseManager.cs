@@ -97,6 +97,7 @@ public partial class MovementPhaseManager : MonoBehaviour
     public bool isWaitingForNutmegDecisionWithoutMoving = false;
     public bool isWaitingForGKWallDiveDecision = false;
     public bool committedMovementConsumesExtraAction = true;
+    private bool automaticallyCommitted;
     // public bool isWaitingForSnapshotDecisionFromLoose = false;
     public bool lookingForNutmegVictim = false;
     public bool isNutmegInProgress = false;
@@ -213,6 +214,17 @@ public partial class MovementPhaseManager : MonoBehaviour
     {
         return isWaitingForYellowCardRoll || isWaitingForInjuryRoll || isWaitingForFoulDecision;
     }
+
+    internal bool CanSaveAutomaticOpening => automaticallyCommitted && isActivated && isCommitted
+        && isMovementPhaseAttack && isAwaitingTokenSelection
+        && attackersMoved == 0 && movedTokens.Count == 0
+        && !isPlayerMoving && !isDribblerRunning && !tokenPickedUpBall
+        && !isWaitingForSnapshotDecision && !isWaitingForNutmegDecision
+        && !lookingForNutmegVictim && !isNutmegInProgress
+        && !isWaitingForInterceptionDiceRoll && !isWaitingForTackleRoll
+        && !isWaitingForGKWallDiveDecision && !IsGoalkeeperDiveChallengeInProgress()
+        && !isWaitingForReposition && !IsResolvingReposition && !IsResolvingFoulSequence()
+        && !IsThrowInMovementRestricted();
 
     public bool TryDeferDuelDoubleInjury(PlayerToken token)
     {
@@ -1071,12 +1083,23 @@ public partial class MovementPhaseManager : MonoBehaviour
         );
         // TODO: add one action taken to the counter with an identifier
         isCommitted = true;  // Set the committed flag to true
+        automaticallyCommitted = commitSource == "auto";
         committedMovementConsumesExtraAction = consumesExtraAction;
         MatchManager.Instance.currentState = MatchManager.GameState.MovementPhase;  // Update game state
         MatchManager.Instance.CommitToAction(
             consumesExtraAction ? MatchManager.MatchActionKind.MovementPhase : MatchManager.MatchActionKind.None,
             commitSource,
             commitReason);
+    }
+
+    internal void RestoreAutomaticOpening(PlayerToken previewToken)
+    {
+        ActivateMovementPhase();
+        isCommitted = true;
+        automaticallyCommitted = true;
+        committedMovementConsumesExtraAction = true;
+        if (previewToken != null)
+            HandleTokenSelection(previewToken);
     }
 
     private bool IsSnapshotSuppressedByFinalExtraMovement()
@@ -4053,6 +4076,7 @@ public partial class MovementPhaseManager : MonoBehaviour
         isAvailable = false;
         isBallPickable = false;
         isCommitted = false;
+        automaticallyCommitted = false;
         isDribblerRunning = false;
         isPlayerMoving = false;
         tokenPickedUpBall = false;

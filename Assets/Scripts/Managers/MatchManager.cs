@@ -4927,7 +4927,7 @@ public partial class MatchManager : MonoBehaviour
         hasUnresolvedCommittedExtraAction = false;
         committedExtraActionNumber = 0;
         currentCommittedActionKind = MatchActionKind.None;
-        ClearAvailableActionsForHalfBreak();
+        ClearOrdinaryActionAvailability();
 
         if (TryDeferHalfEndUntilGoalCelebration())
         {
@@ -5045,7 +5045,7 @@ public partial class MatchManager : MonoBehaviour
         EndGamePanelManager.ShowMatchEndedPanel();
     }
 
-    private void ClearAvailableActionsForHalfBreak()
+    private void ClearOrdinaryActionAvailability()
     {
         if (movementPhaseManager != null) movementPhaseManager.isAvailable = false;
         if (groundBallManager != null) groundBallManager.isAvailable = false;
@@ -5977,13 +5977,14 @@ public partial class MatchManager : MonoBehaviour
             return false;
         }
 
-        if (HasActiveRuntimeAction())
+        bool savingMovementOpening = CanSaveMovementOpening;
+        if (HasActiveRuntimeAction(savingMovementOpening))
         {
             reason = "Cannot save while an action or set-piece flow is active. Wait for the next stable choice point.";
             return false;
         }
 
-        if (!IsStableSaveState(currentState))
+        if (!savingMovementOpening && !IsStableSaveState(currentState))
         {
             reason = $"Cannot save from {currentState}. Wait for a stable action-choice point.";
             return false;
@@ -6015,6 +6016,7 @@ public partial class MatchManager : MonoBehaviour
             attackHasPossession = attackHasPossession,
             homeTeamDirection = homeTeamDirection.ToString(),
             awayTeamDirection = awayTeamDirection.ToString(),
+            movementOpening = CanSaveMovementOpening ? CaptureMovementOpening() : null,
             clock = new RoomClockSnapshot
             {
                 currentHalf = currentHalf,
@@ -6090,10 +6092,30 @@ public partial class MatchManager : MonoBehaviour
             || state == GameState.MatchEnded;
     }
 
-    private bool HasActiveRuntimeAction()
+    private bool CanSaveMovementOpening => currentState == GameState.MovementPhase
+        && currentCommittedActionKind == MatchActionKind.MovementPhase
+        && movementPhaseManager?.CanSaveAutomaticOpening == true;
+
+    private RoomMovementOpeningSnapshot CaptureMovementOpening()
+    {
+        var header = movementPhaseManager.headerManager;
+        return new RoomMovementOpeningSnapshot
+        {
+            previewToken = CreateTokenReference(movementPhaseManager.selectedToken),
+            stunnedTokens = movementPhaseManager.stunnedTokens.Select(CreateTokenReference).ToList(),
+            stunnedForNext = movementPhaseManager.stunnedforNext.Select(CreateTokenReference).ToList(),
+            attackingJumpers = header?.attackerWillJump.Select(CreateTokenReference).ToList(),
+            defendingJumpers = header?.defenderWillJump.Select(CreateTokenReference).ToList()
+        };
+    }
+
+    private bool HasActiveRuntimeAction(bool savingMovementOpening)
     {
         return movementPhaseManager?.goalKeeperManager?.IsWaitingForPickupChoice == true
-            || (movementPhaseManager != null && movementPhaseManager.isActivated)
+            || (!savingMovementOpening && movementPhaseManager?.isActivated == true)
+            || (savingMovementOpening && (looseBallManager?.isActivated == true
+                || movementPhaseManager.headerManager?.isActivated == true
+                || isWaitingForExtraActionsRoll || IsStopPlayRestartPending))
             || (groundBallManager != null && groundBallManager.isActivated)
             || (firstTimePassManager != null && firstTimePassManager.isActivated)
             || (highPassManager != null && highPassManager.isActivated)
@@ -6192,7 +6214,7 @@ public partial class MatchManager : MonoBehaviour
             RestoreTouchReferences(snapshot.touchReferences);
             RestoreOffsideSnapshot(snapshot.offside);
             RestoreSubstitutionSnapshot(snapshot.substitutions);
-            RebuildManagersAfterRuntimeRestore();
+            RebuildManagersAfterRuntimeRestore(snapshot.movementOpening);
             TimingRollSequence = snapshot.timingRollSequence;
             timingCompletedActions = totalCompletedActions;
             DecisionTiming.Restore(snapshot.decisionTiming);
@@ -6492,7 +6514,7 @@ public partial class MatchManager : MonoBehaviour
                 && BuildTokenKey(token.isHomeTeam, token.jerseyNumber) == reference.tokenKey);
     }
 
-    private void RebuildManagersAfterRuntimeRestore()
+    private void RebuildManagersAfterRuntimeRestore(RoomMovementOpeningSnapshot movementOpening)
     {
         ClearPendingActionPreviews();
         movementPhaseManager?.ResetMovementPhase();
@@ -6502,18 +6524,44 @@ public partial class MatchManager : MonoBehaviour
         longBallManager?.CleanUpLongBall();
         ApplyPendingGroundBallDistance();
 
-        if (currentState == GameState.KickOffSetup)
+        if (movementOpening != null && currentState == GameState.MovementPhase && movementPhaseManager != null)
+        {
+            ClearOrdinaryActionAvailability();
+            RestoreMovementOpening(movementOpening);
+        }
+        else if (currentState == GameState.KickOffSetup)
         {
             kickoffManager?.StartPreKickoffPhase();
         }
         else if (currentState == GameState.MatchEnded)
         {
-            ClearAvailableActionsForHalfBreak();
+            ClearOrdinaryActionAvailability();
         }
         else if (currentState != GameState.HalfTime)
         {
             RefreshAvailableActionsForCurrentState();
         }
+    }
+
+    private void RestoreMovementOpening(RoomMovementOpeningSnapshot opening)
+    {
+        void RestoreTokens(List<PlayerToken> tokens, List<RoomTokenReference> references)
+        {
+            tokens.Clear();
+            if (references != null)
+                tokens.AddRange(references.Select(ResolveTokenReference).Where(token => token != null));
+        }
+
+        RestoreTokens(movementPhaseManager.stunnedTokens, opening.stunnedTokens);
+        RestoreTokens(movementPhaseManager.stunnedforNext, opening.stunnedForNext);
+        if (movementPhaseManager.headerManager is HeaderManager header)
+        {
+            RestoreTokens(header.attackerWillJump, opening.attackingJumpers);
+            RestoreTokens(header.defenderWillJump, opening.defendingJumpers);
+        }
+        // The clock snapshot already contains the commitment and stoppage counters.
+        // Recreate the movement choice without committing the match action again.
+        movementPhaseManager.RestoreAutomaticOpening(ResolveTokenReference(opening.previewToken));
     }
 
     private void RefreshAerialTargetPrecomputations()
