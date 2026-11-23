@@ -58,7 +58,9 @@ namespace CounterAttack.Online
                 coin.rightToLeftButton.onClick.AddListener(() => Choose(CoinTossChoice.RightToLeft));
                 openingControlsBound = true;
             }
-            foreach(var root in offlineRoots)if(root!=null)root.SetActive(false);
+            foreach (var root in offlineRoots)
+                if (root != null && root != source.homeAveragePanel && root != source.awayAveragePanel)
+                    root.SetActive(false);
         }
         private void Start()
         {
@@ -173,6 +175,8 @@ namespace CounterAttack.Online
                 }
             }
             Roster(homeSlots,s.home);Roster(awaySlots,s.away);
+            source.UpdateTeamAverages(homeSlots[0].transform.parent, source.homeAveragePanel.transform, s.home.Length);
+            source.UpdateTeamAverages(awaySlots[0].transform.parent, source.awayAveragePanel.transform, s.away.Length);
             var displayedCards=DisplayedCards(s);
             for(int i=0;i<cards.Length;i++)
             {

@@ -2736,7 +2736,8 @@ public class DraftManager : MonoBehaviour
             // Debug.Log($"Instantiated player slot #{i} with jersey number {i}");
         }
         
-        CreateAverageSlot(averagePanel, rosterPanel.name.Contains("Home") ? "Home" : "Away");
+        if (averagePanel.transform.childCount == 0)
+            CreateAverageSlot(averagePanel, rosterPanel.name.Contains("Home") ? "Home" : "Away");
     }
 
     void CreateAverageSlot(GameObject averagePanel, string teamType)
@@ -2775,6 +2776,9 @@ public class DraftManager : MonoBehaviour
     }
 
     public void UpdateTeamAverages(Transform rosterPanel, Transform averagePanel)
+        => UpdateTeamAverages(rosterPanel, averagePanel, squadSize);
+
+    public void UpdateTeamAverages(Transform rosterPanel, Transform averagePanel, int rosterSize)
     {
         // Debug.Log("Updating Slot with Card");
         // The sums and counts for calculating averages
@@ -2788,7 +2792,7 @@ public class DraftManager : MonoBehaviour
         int startXISumTackling = 0, teamAverageSumTackling = 0;
 
         // Loop through the roster panel and calculate averages
-        for (int i = 1; i <= squadSize; i++)
+        for (int i = 1; i <= rosterSize; i++)
         {
             // Debug.Log($"Get from {rosterPanel}, slot number {i}");
             Transform slot = rosterPanel.GetChild(i-1);
