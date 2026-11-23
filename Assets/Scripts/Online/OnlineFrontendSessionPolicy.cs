@@ -12,7 +12,41 @@ namespace CounterAttack.Online
         public const int MaxQueuedPackets=256;
         public const double PeerTimeoutSeconds=15;
         public static RelayControl Route(bool relayOnly)=>relayOnly?RelayControl.ForceRelays:RelayControl.AllowRelays;
-        public static bool ValidLobbyCode(string code)=>code!=null && code.Length==32 && code.All(c=>c is >= '0' and <= '9' or >= 'a' and <= 'z' or >= 'A' and <= 'Z');
+        public const string LobbyCodePrompt = "Enter the 8-character lobby code shared by the host.";
+        internal const string LobbyCodeAttribute = "COUNTERATTACK_JOIN_CODE";
+
+        public static bool ValidLobbyCode(string code) =>
+            code != null && code.Length == 8 &&
+            code.All(c => c is >= '0' and <= '9' or >= 'a' and <= 'f' or >= 'A' and <= 'F');
+
+        public static bool TryNormalizeLobbyCode(string input, out string code)
+        {
+            code = input?.Trim();
+            if (!ValidLobbyCode(code))
+            {
+                code = null;
+                return false;
+            }
+
+            code = code.ToUpperInvariant();
+            return true;
+        }
+
+        public static string GenerateLobbyCode()
+        {
+            var bytes = new byte[4];
+            using var random = RandomNumberGenerator.Create();
+            random.GetBytes(bytes);
+            return BitConverter.ToString(bytes).Replace("-", "");
+        }
+
+        public static void RequireUniqueLobbyCodeMatch(uint matches)
+        {
+            if (matches == 0)
+                throw new InvalidOperationException("No active lobby found for that code. Check the code and try again.");
+            if (matches > 1)
+                throw new InvalidOperationException("That code matches multiple lobbies. Ask the host to create a new lobby.");
+        }
         public static OnlineCompatibility Compatibility()
         {
             using var hash=SHA256.Create();var text=new StringBuilder();

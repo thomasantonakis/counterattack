@@ -25,6 +25,7 @@ namespace CounterAttack.Online
         private OnlineDraftClient announcedDraft;
         public OnlineSetupClient Client=>channel?.Client;
         public string LobbyCode {get;private set;}
+        private string lobbyId;
         public string Status {get;private set;}="Not connected";
         public string RunDirectory {get;private set;}
         public string Error {get;private set;}
@@ -86,9 +87,10 @@ namespace CounterAttack.Online
         }
         public void Join(string lobbyCode,bool forceRelay=false)
         {
-            if(!OnlineFrontendSessionPolicy.ValidLobbyCode(lobbyCode))throw new ArgumentException("Enter the 32-character lobby code",nameof(lobbyCode));
+            if (!OnlineFrontendSessionPolicy.TryNormalizeLobbyCode(lobbyCode, out var code))
+                throw new ArgumentException(OnlineFrontendSessionPolicy.LobbyCodePrompt, nameof(lobbyCode));
             if(Busy || running!=null)throw new InvalidOperationException("An online session is already running");
-            Begin(false,lobbyCode,forceRelay);
+            Begin(false,code,forceRelay);
         }
         private void Begin(bool hosting,string code,bool forceRelay)
         {
@@ -96,9 +98,11 @@ namespace CounterAttack.Online
             Hosting=hosting;LobbyCode=code;relayOnly=forceRelay;stop=false;Busy=true;Error=null;
             startedUtc=DateTime.UtcNow.ToString("O");
             RunDirectory=Path.Combine(Application.persistentDataPath,"OnlineSessions",Guid.NewGuid().ToString("N"));Directory.CreateDirectory(RunDirectory);
-            Status=hosting?"Creating a private online session...":"Joining the online session...";
+            Status=hosting?"Creating an online session...":"Joining the online session...";
             var route=OnlineFrontendSessionPolicy.Route(forceRelay);
-            probe=hosting?EOSStandalonePacketProbe.HostProbe(RunDirectory,Exchange,route):EOSStandalonePacketProbe.GuestProbe(code,Exchange,route);
+            probe = hosting
+                ? EOSStandalonePacketProbe.HostProbe(RunDirectory, Exchange, route, OnLobbyCodePublished)
+                : EOSStandalonePacketProbe.GuestProbe(code, Exchange, route, searchByCode: true);
             running=StartCoroutine(Run());
         }
         private IEnumerator Run()
@@ -127,7 +131,7 @@ namespace CounterAttack.Online
         }
         private IEnumerator Exchange(EOSStandaloneSession session,ProductUserId remote,SocketId socketId,string lobby)
         {
-            native=session;peer=remote;socket=socketId;LobbyCode=lobby;
+            native=session;peer=remote;socket=socketId;lobbyId=lobby;
             var compatibility=OnlineFrontendSessionPolicy.Compatibility();string match="online-"+lobby;
             if(Hosting)
             {
@@ -170,7 +174,7 @@ namespace CounterAttack.Online
                             {
                                 roomBoard=bootstrap.board;
                                 var exchange=new EOSGroundPassExchange(roomBoard,RunDirectory);
-                                gameplay=Hosting?exchange.Host(native,peer,socket,LobbyCode):exchange.Guest(native,peer,socket,LobbyCode);
+                                gameplay=Hosting?exchange.Host(native,peer,socket,lobbyId):exchange.Guest(native,peer,socket,lobbyId);
                             }
                         }
                         if(gameplay!=null && !gameplay.MoveNext()){Status="Online match finished.";break;}
@@ -191,7 +195,7 @@ namespace CounterAttack.Online
         private bool SamePeer(ProductUserId remote,SocketId? remoteSocket)=>remote?.ToString()==peer?.ToString() && remoteSocket?.SocketName==socket.SocketName;
         private bool ReservedPeerIsMember()
         {
-            var lobby=native.Platform.GetLobbyInterface();var copy=new CopyLobbyDetailsHandleOptions{LocalUserId=native.UserId,LobbyId=LobbyCode};
+            var lobby=native.Platform.GetLobbyInterface();var copy=new CopyLobbyDetailsHandleOptions{LocalUserId=native.UserId,LobbyId=lobbyId};
             if(lobby.CopyLobbyDetailsHandle(ref copy,out var details)!=Result.Success || details==null)return false;
             try
             {
@@ -236,8 +240,8 @@ namespace CounterAttack.Online
                 var result=p2p.ReceivePacket(ref receive,ref sender,ref receivedSocket,out var channelId,new ArraySegment<byte>(receiveBuffer),out var size);
                 if(result==Result.NotFound)return;
                 if(result!=Result.Success)throw new IOException("Receiving reconnect handshake failed: "+result);
-                if(!SamePeer(sender,receivedSocket) || channelId!=7 || System.Text.Encoding.ASCII.GetString(receiveBuffer,0,(int)size)!="ca-m0-hello:"+LobbyCode || !ReservedPeerIsMember())continue;
-                recovery.ConnectionLost();var ack=System.Text.Encoding.ASCII.GetBytes("ca-m0-ack:"+LobbyCode);
+                if(!SamePeer(sender,receivedSocket) || channelId!=7 || System.Text.Encoding.ASCII.GetString(receiveBuffer,0,(int)size)!="ca-m0-hello:"+lobbyId || !ReservedPeerIsMember())continue;
+                recovery.ConnectionLost();var ack=System.Text.Encoding.ASCII.GetBytes("ca-m0-ack:"+lobbyId);
                 var send=new SendPacketOptions{LocalUserId=native.UserId,RemoteUserId=peer,SocketId=socket,Channel=7,Data=new ArraySegment<byte>(ack),AllowDelayedDelivery=false,Reliability=PacketReliability.ReliableOrdered};
                 p2p.SendPacket(ref send);
             }
@@ -285,15 +289,17 @@ namespace CounterAttack.Online
                 roomLaunch=OnlineRoomLaunchData.Create(Draft.Capture());
                 File.WriteAllText(Path.Combine(RunDirectory,"room-bootstrap.json"),Newtonsoft.Json.JsonConvert.SerializeObject(roomLaunch,Newtonsoft.Json.Formatting.Indented));
                 RoomPrepared?.Invoke(OnlineRoomLaunchData.Copy(roomLaunch));
-                roomLifetime=new OnlineRoomLaunchLifetime("ground-"+LobbyCode,!Hosting,roomLaunch,RunDirectory);
+                roomLifetime=new OnlineRoomLaunchLifetime("ground-"+lobbyId,!Hosting,roomLaunch,RunDirectory);
                 UnityEngine.SceneManagement.SceneManager.LoadScene(OnlineFullRoomBootstrap.SceneName);
             }
-            if(!Busy || !Hosting || LobbyCode!=null || RunDirectory==null)return;
-            string path=Path.Combine(RunDirectory,"lobby-id.txt");
-            if(!File.Exists(path))return;
-            try{var code=File.ReadAllText(path).Trim();if(OnlineFrontendSessionPolicy.ValidLobbyCode(code)){LobbyCode=code;Status="Share the lobby code with the other manager.";}}
-            catch(IOException){}
         }
+
+        private void OnLobbyCodePublished(string code)
+        {
+            LobbyCode = code;
+            Status = "Share the lobby code with the other manager.";
+        }
+
         private void OnAgreed(GameSettings settings)
         {
             if(agreedSettings!=null)return;agreedSettings=OnlineSetupRules.Copy(settings);Status="Both managers agreed. Preparing Draft...";

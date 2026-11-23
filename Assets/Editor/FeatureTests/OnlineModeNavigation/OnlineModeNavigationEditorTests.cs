@@ -40,7 +40,7 @@ public sealed class OnlineModeNavigationEditorTests
             Assert.That(OnlineSetupRules.Validate(OnlineModeMenu.HostDefaults()),Is.Empty);
             menu.lobbyCode.SetTextWithoutNotify("invalid");
             menu.Join();
-            Assert.That(menu.status.text, Does.Contain("32-character"));
+            Assert.That(menu.status.text, Does.Contain("8-character"));
             Assert.That(SceneManager.GetActiveScene().path, Is.EqualTo(MenuPath));
             Assert.That(OnlineFrontendSession.Current, Is.Null);
             Assert.That(OnlineModeMenu.TakeJoinCode(), Is.Null);
@@ -50,8 +50,8 @@ public sealed class OnlineModeNavigationEditorTests
     [Test]
     public void PastedLobbyCodeAllowsSurroundingWhitespace()
     {
-        const string expected = "ABCDEFabcdef01234567890123456789";
-        Assert.That(OnlineModeMenu.TryReadLobbyCode("  " + expected + "\r\n", out var code), Is.True);
+        const string expected = "7A3F9C2B";
+        Assert.That(OnlineModeMenu.TryReadLobbyCode("  " + expected.ToLowerInvariant() + "\r\n", out var code), Is.True);
         Assert.That(code, Is.EqualTo(expected));
     }
 

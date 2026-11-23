@@ -122,7 +122,7 @@ namespace CounterAttack.Online
         {
             if (!TryReadLobbyCode(lobbyCode.text, out var code))
             {
-                status.text = "Enter the 32-character lobby code shared by the host.";
+                status.text = OnlineFrontendSessionPolicy.LobbyCodePrompt;
                 lobbyCode.ActivateInputField();
                 return;
             }
@@ -143,8 +143,7 @@ namespace CounterAttack.Online
 
         public static bool TryReadLobbyCode(string input, out string code)
         {
-            code = input?.Trim();
-            return OnlineFrontendSessionPolicy.ValidLobbyCode(code);
+            return OnlineFrontendSessionPolicy.TryNormalizeLobbyCode(input, out code);
         }
 
         public static string TakeJoinCode()

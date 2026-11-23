@@ -43,7 +43,7 @@ public sealed class OnlineFrontendEntrySceneFixture
                 onlineMenu.lobbyCode.text = "bad";
                 onlineMenu.Join();
                 Assert.That(OnlineFrontendSession.Current, Is.Null);
-                Assert.That(onlineMenu.status.text, Does.Contain("32-character"));
+                Assert.That(onlineMenu.status.text, Does.Contain("8-character"));
                 Assert.That(SceneManager.GetActiveScene().name, Is.EqualTo(OnlineModeMenu.SceneName));
                 yield break;
             }
@@ -83,7 +83,7 @@ public sealed class OnlineFrontendEntrySceneFixture
                 double deadline=Time.realtimeSinceStartupAsDouble+65;
                 while(session.Busy && session.LobbyCode==null && Time.realtimeSinceStartupAsDouble<deadline)yield return null;
                 Assert.That(session.Error,Is.Null,session.Error);Assert.That(session.Busy,Is.True);
-                Assert.That(OnlineFrontendSessionPolicy.ValidLobbyCode(session.LobbyCode),Is.True,"Native private lobby creation must complete");
+                Assert.That(OnlineFrontendSessionPolicy.ValidLobbyCode(session.LobbyCode),Is.True,"Native lobby creation must complete");
                 Assert.That(session.Client,Is.Null,"No remote manager has authenticated yet");
                 if (attempt == 0) firstLobby = session.LobbyCode;
                 else Assert.That(session.LobbyCode, Is.Not.EqualTo(firstLobby), "Retry must create a fresh lobby");

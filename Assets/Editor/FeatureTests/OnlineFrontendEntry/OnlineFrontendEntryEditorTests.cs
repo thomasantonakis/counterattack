@@ -12,11 +12,9 @@ using UnityEngine.SceneManagement;
 public sealed class OnlineFrontendEntryEditorTests
 {
     [TestCase(null,false)] [TestCase("",false)] [TestCase("short",false)]
-    [TestCase("0123456789012345678901234567890-",false)]
-    [TestCase("01234567890123456789012345678901",true)]
-    [TestCase("ABCDEFabcdef01234567890123456789",true)]
-    [TestCase("012345678901234567890123456789012",false)]
-    [TestCase("0123456789012345678901234567890é",false)]
+    [TestCase("01234567890123456789012345678901",false)]
+    [TestCase("7A3F9C2B",true)] [TestCase("7a3f9c2b",true)]
+    [TestCase("7A3F9C2-",false)] [TestCase("7A3F9C2G",false)] [TestCase("7A3F9C2é",false)]
     public void LobbyCodeIsValidatedBeforeNativeLogin(string code,bool valid)
         =>Assert.That(OnlineFrontendSessionPolicy.ValidLobbyCode(code),Is.EqualTo(valid));
 

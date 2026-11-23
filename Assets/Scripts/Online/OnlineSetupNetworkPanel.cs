@@ -39,7 +39,7 @@ namespace CounterAttack.Online
             copyButton.gameObject.SetActive(!joining);
             var leaveLabel = leaveButton.GetComponentInChildren<TMP_Text>();
             if (joining && leaveLabel != null) leaveLabel.text = "Cancel / Back";
-            if (!joining && OnlineFrontendSession.Current == null) Show("Host a private session to invite another manager.");
+            if (!joining && OnlineFrontendSession.Current == null) Show("Host a session and share its lobby code.");
             if (joining && OnlineFrontendSession.Current == null)
             {
                 lobbyCode.SetTextWithoutNotify(joinCode);
@@ -60,8 +60,11 @@ namespace CounterAttack.Online
         public void Join()
         {
             if(!online || OnlineFrontendSession.Current!=null)return;
-            string code=(lobbyCode.text??"").Trim();
-            if(!OnlineFrontendSessionPolicy.ValidLobbyCode(code)){Show("Enter the 32-character lobby code shared by the host.");return;}
+            if (!OnlineFrontendSessionPolicy.TryNormalizeLobbyCode(lobbyCode.text, out var code))
+            {
+                Show(OnlineFrontendSessionPolicy.LobbyCodePrompt);
+                return;
+            }
             startError=null;
             pendingGuestSelection=setup.CaptureOnlineSetupDraft();
             try{var session=Instantiate(sessionPrefab);Bind(session);session.Join(code,relayOnly!=null && relayOnly.isOn);}
@@ -115,7 +118,7 @@ namespace CounterAttack.Online
             if(current?.Client==null)setup.createGameButton.interactable=false;
             if(current==null)
             {
-                if(!ReferenceEquals(bound,null)){view.Unbind();bound=null;GuardLocalSave();Show(startError ?? "Host a private session to invite another manager.");}
+                if(!ReferenceEquals(bound,null)){view.Unbind();bound=null;GuardLocalSave();Show(startError ?? "Host a session and share its lobby code.");}
                 return;
             }
             if (current.Error != null) { Show(current.Error); return; }

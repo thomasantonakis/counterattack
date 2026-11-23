@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using CounterAttack.Online;
 using Epic.OnlineServices;
 using Epic.OnlineServices.Lobby;
 using Epic.OnlineServices.P2P;
@@ -10,6 +12,7 @@ using UnityEngine;
 internal sealed class EOSStandalonePacketProbe
 {
     private const byte ProbeChannel = 7;
+    private const string LobbyBucket = "counterattack-m0-p2p";
 
     private static IEnumerator Login(EOSStandaloneSession session)
     {
@@ -33,8 +36,51 @@ internal sealed class EOSStandalonePacketProbe
         EOSProofCheck.Require(configured == policy, "EOS relay control setting");
     }
 
+    private static AttributeData JoinCodeAttribute(string code) =>
+        new AttributeData { Key = OnlineFrontendSessionPolicy.LobbyCodeAttribute, Value = code };
+
+    private static IEnumerator<object> PublishJoinCode(EOSStandaloneSession session, LobbyInterface lobby,
+        Utf8String lobbyId, string code)
+    {
+        var options = new UpdateLobbyModificationOptions { LocalUserId = session.UserId, LobbyId = lobbyId };
+        EOSProofCheck.Require(lobby.UpdateLobbyModification(ref options, out var modification) == Result.Success,
+            "Preparing the EOS lobby code");
+        try
+        {
+            var attribute = new LobbyModificationAddAttributeOptions
+            {
+                Attribute = JoinCodeAttribute(code),
+                Visibility = LobbyAttributeVisibility.Public
+            };
+            EOSProofCheck.Require(modification.AddAttribute(ref attribute) == Result.Success, "Adding the EOS lobby code");
+            var permission = new LobbyModificationSetPermissionLevelOptions
+            {
+                PermissionLevel = LobbyPermissionLevel.Publicadvertised
+            };
+            EOSProofCheck.Require(modification.SetPermissionLevel(ref permission) == Result.Success,
+                "Making the lobby discoverable by code");
+
+            Result? result = null;
+            var update = new UpdateLobbyOptions { LobbyModificationHandle = modification };
+            lobby.UpdateLobby(ref update, null, (ref UpdateLobbyCallbackInfo info) => result = info.ResultCode);
+            var deadline = Time.realtimeSinceStartupAsDouble + 25;
+            while (!result.HasValue && Time.realtimeSinceStartupAsDouble < deadline)
+            {
+                session.Tick();
+                yield return null;
+            }
+            EOSProofCheck.Require(result.HasValue, "Publishing the EOS lobby code timed out");
+            EOSProofCheck.Require(result == Result.Success, "Publishing the EOS lobby code");
+        }
+        finally
+        {
+            modification.Release();
+        }
+    }
+
     internal static IEnumerator HostProbe(string outputDirectory,
-        Func<EOSStandaloneSession, ProductUserId, SocketId, string, IEnumerator> exchange = null, RelayControl relayControl=RelayControl.ForceRelays)
+        Func<EOSStandaloneSession, ProductUserId, SocketId, string, IEnumerator> exchange = null, RelayControl relayControl=RelayControl.ForceRelays,
+        Action<string> onCodePublished = null)
     {
         var lobbyIdFile = Path.Combine(outputDirectory, "lobby-id.txt");
 
@@ -66,7 +112,7 @@ internal sealed class EOSStandalonePacketProbe
                 PermissionLevel = LobbyPermissionLevel.Joinviapresence,
                 PresenceEnabled = false,
                 AllowInvites = false,
-                BucketId = "counterattack-m0-p2p",
+                BucketId = LobbyBucket,
                 DisableHostMigration = true,
                 EnableRTCRoom = false
             };
@@ -122,6 +168,15 @@ internal sealed class EOSStandalonePacketProbe
                         requestedGuestId = info.RemoteUserId.ToString();
                 });
             EOSProofCheck.Require(connectionNotification > 0UL, "P2P connection request notification");
+
+            if (onCodePublished != null)
+            {
+                var code = OnlineFrontendSessionPolicy.GenerateLobbyCode();
+                using var publish = PublishJoinCode(session, lobby, lobbyId, code);
+                while (publish.MoveNext())
+                    yield return publish.Current;
+                onCodePublished(code);
+            }
 
             File.WriteAllText(lobbyIdFile, lobbyIdText);
             deadline = Time.realtimeSinceStartupAsDouble + 900;
@@ -272,11 +327,14 @@ internal sealed class EOSStandalonePacketProbe
         }
     }
 
-    internal static IEnumerator GuestProbe(string inputLobbyId,
-        Func<EOSStandaloneSession, ProductUserId, SocketId, string, IEnumerator> exchange = null, RelayControl relayControl=RelayControl.ForceRelays)
+    internal static IEnumerator GuestProbe(string inputLobby,
+        Func<EOSStandaloneSession, ProductUserId, SocketId, string, IEnumerator> exchange = null,
+        RelayControl relayControl = RelayControl.ForceRelays, bool searchByCode = false)
     {
-        var lobbyId = inputLobbyId;
-        EOSProofCheck.Require(lobbyId != null && lobbyId.Length == 32, "Expected a 32-character lobby ID");
+        string lobbyId = searchByCode ? null : inputLobby;
+        EOSProofCheck.Require(searchByCode ? OnlineFrontendSessionPolicy.ValidLobbyCode(inputLobby) :
+            inputLobby != null && inputLobby.Length == 32,
+            searchByCode ? OnlineFrontendSessionPolicy.LobbyCodePrompt : "Expected a 32-character lobby ID");
 
         var session = new EOSStandaloneSession();
         LobbySearch search = null;
@@ -296,26 +354,73 @@ internal sealed class EOSStandalonePacketProbe
             EOSProofCheck.Require(lobby != null, "EOS Lobby interface");
             EOSProofCheck.Require(p2p != null, "EOS P2P interface");
             RequireRelayControl(p2p,relayControl);
-            var createSearch = new CreateLobbySearchOptions { MaxResults = 1 };
-            EOSProofCheck.Require(lobby.CreateLobbySearch(ref createSearch, out search) == Result.Success, "Creating a P2P lobby-ID search");
-            var setId = new LobbySearchSetLobbyIdOptions { LobbyId = lobbyId };
-            EOSProofCheck.Require(search.SetLobbyId(ref setId) == Result.Success, "Setting the P2P lobby ID");
-            Result? findResult = null;
-            var find = new LobbySearchFindOptions { LocalUserId = session.UserId };
-            search.Find(ref find, null, (ref LobbySearchFindCallbackInfo info) => findResult = info.ResultCode);
-            var deadline = Time.realtimeSinceStartupAsDouble + 25;
-            while (!findResult.HasValue && Time.realtimeSinceStartupAsDouble < deadline)
+            var createSearch = new CreateLobbySearchOptions { MaxResults = searchByCode ? 2U : 1U };
+            EOSProofCheck.Require(lobby.CreateLobbySearch(ref createSearch, out search) == Result.Success,
+                "Creating an EOS lobby search");
+            if (searchByCode)
             {
-                session.Tick();
-                yield return null;
+                var parameter = new LobbySearchSetParameterOptions
+                {
+                    Parameter = JoinCodeAttribute(inputLobby),
+                    ComparisonOp = ComparisonOp.Equal
+                };
+                EOSProofCheck.Require(search.SetParameter(ref parameter) == Result.Success, "Searching by the lobby code");
+                var bucket = new LobbySearchSetParameterOptions
+                {
+                    Parameter = new AttributeData { Key = LobbyInterface.SEARCH_BUCKET_ID, Value = LobbyBucket },
+                    ComparisonOp = ComparisonOp.Equal
+                };
+                EOSProofCheck.Require(search.SetParameter(ref bucket) == Result.Success, "Scoping the lobby-code search");
             }
-            EOSProofCheck.Require(findResult.HasValue, "P2P lobby search timed out");
-            EOSProofCheck.Require(findResult.Value == Result.Success, "Finding the P2P host lobby");
-            var count = new LobbySearchGetSearchResultCountOptions();
-            EOSProofCheck.Require(search.GetSearchResultCount(ref count) == 1U, "Exact P2P lobby-ID result");
+            else
+            {
+                var setId = new LobbySearchSetLobbyIdOptions { LobbyId = lobbyId };
+                EOSProofCheck.Require(search.SetLobbyId(ref setId) == Result.Success, "Setting the P2P lobby ID");
+            }
+
+            var deadline = Time.realtimeSinceStartupAsDouble + 25;
+            var retryUntil = Time.realtimeSinceStartupAsDouble + 5;
+            uint matches;
+            do
+            {
+                Result? findResult = null;
+                var find = new LobbySearchFindOptions { LocalUserId = session.UserId };
+                search.Find(ref find, null, (ref LobbySearchFindCallbackInfo info) => findResult = info.ResultCode);
+                while (!findResult.HasValue && Time.realtimeSinceStartupAsDouble < deadline)
+                {
+                    session.Tick();
+                    yield return null;
+                }
+                EOSProofCheck.Require(findResult.HasValue, "EOS lobby search timed out");
+                EOSProofCheck.Require(findResult.Value == Result.Success, "Finding the EOS host lobby");
+                var count = new LobbySearchGetSearchResultCountOptions();
+                matches = search.GetSearchResultCount(ref count);
+                if (matches != 0 || !searchByCode || Time.realtimeSinceStartupAsDouble >= retryUntil)
+                    break;
+
+                var retryAt = Time.realtimeSinceStartupAsDouble + 1;
+                while (Time.realtimeSinceStartupAsDouble < retryAt)
+                {
+                    session.Tick();
+                    yield return null;
+                }
+            } while (Time.realtimeSinceStartupAsDouble < deadline);
+
+            if (searchByCode)
+                OnlineFrontendSessionPolicy.RequireUniqueLobbyCodeMatch(matches);
+            else
+                EOSProofCheck.Require(matches == 1U, "Exact P2P lobby-ID result");
             var index = new LobbySearchCopySearchResultByIndexOptions { LobbyIndex = 0 };
             EOSProofCheck.Require(search.CopySearchResultByIndex(ref index, out details) == Result.Success, "Copying P2P host lobby details");
             EOSProofCheck.Require(details != null, "P2P host lobby details");
+            if (searchByCode)
+            {
+                var copyInfo = new LobbyDetailsCopyInfoOptions();
+                EOSProofCheck.Require(details.CopyInfo(ref copyInfo, out var info) == Result.Success,
+                    "Reading the resolved EOS lobby ID");
+                lobbyId = info?.LobbyId?.ToString();
+                EOSProofCheck.Require(!string.IsNullOrEmpty(lobbyId), "Resolved EOS lobby ID is missing");
+            }
             var owner = new LobbyDetailsGetLobbyOwnerOptions();
             hostId = details.GetLobbyOwner(ref owner);
             EOSProofCheck.Require(hostId != null, "P2P host product user ID");
