@@ -1,6 +1,7 @@
 ## Standing Authorizations
 
-- The project owner authorizes Codex to perform Git operations for this repository, including committing and pushing to `master` when completing requested work.
+- The project owner authorizes Codex to perform Git operations for this repository, including committing, pushing feature branches and opening PRs when completing requested work.
+- Follow [CONTRIBUTING.md](CONTRIBUTING.md) for every repository change. Start on a feature branch from the intended target, push the feature branch, and always open a PR. Use `codex/online-foundation-personal-mac` as the base for work that depends on the online foundation and `master` for independent changes. Keep both target branches free of direct pushes. Complete the online compatibility section when targeting the online branch.
 - The project owner authorizes Codex to run Unity CLI commands for this project, subject to the Unity workflow rules below. These authorizations do not bypass sandbox controls that require tool-level escalation.
 
 ## Unity Workflow Rules
