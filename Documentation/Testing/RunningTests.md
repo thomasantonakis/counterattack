@@ -1,5 +1,12 @@
 # Running gameplay regressions
 
+For the normal Online match scene, use PlayMode fixture
+OnlineNativeRoomPlayModeTests under
+Assets/Tests/PlayMode/Features/OnlineNativeRoom/. It checks both Online roles,
+Hot Seat and Single Player in Room, then applies host movement, duel, header
+and stoppage publications to a fresh guest. It requires no EOS login. Packaged
+presentation acceptance still uses the Windows and macOS paired walkthrough.
+
 For regular online full-time results, use EditMode
 `OnlineMatchConclusionEditorTests` (8 cases) and PlayMode
 `OnlineMatchConclusionPlayModeTests` (18 cases), category `OnlineMatchConclusion`,

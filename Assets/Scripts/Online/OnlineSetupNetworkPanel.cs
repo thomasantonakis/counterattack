@@ -66,7 +66,8 @@ namespace CounterAttack.Online
                 return;
             }
             startError=null;
-            pendingGuestSelection=setup.CaptureOnlineSetupDraft();
+            // Menu-driven joins open setup with placeholder values.
+            pendingGuestSelection=joining?null:setup.CaptureOnlineSetupDraft();
             try{var session=Instantiate(sessionPrefab);Bind(session);session.Join(code,relayOnly!=null && relayOnly.isOn);}
             catch(Exception connectionError){startError=connectionError.Message;Show(startError);bound?.Close();}
         }

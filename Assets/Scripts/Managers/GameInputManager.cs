@@ -284,6 +284,7 @@ public class GameInputManager : MonoBehaviour
 
     void Update()
     {
+        if (CounterAttack.Online.OnlineRoomSession.Current?.HasInitialData == true) return;
         // cameraController.HandleCameraInput();
         ProcessInputs();
     }

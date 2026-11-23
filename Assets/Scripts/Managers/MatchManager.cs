@@ -3720,7 +3720,16 @@ public partial class MatchManager : MonoBehaviour
 
     private void Awake()
     {
-        if (CounterAttack.Online.OnlineRoomSession.IsGuest) return;
+        if (CounterAttack.Online.OnlineRoomSession.IsGuest)
+        {
+            if (gameObject.scene.name == CounterAttack.Online.OnlineRoomStartup.SceneName
+                && CounterAttack.Online.OnlineRoomSession.Current.HasInitialData)
+            {
+                Instance = this;
+                InitializeAuthoredOnlineMatch(CounterAttack.Online.OnlineRoomSession.Current.CaptureInitialData());
+            }
+            return;
+        }
         Debug.Log("MatchManager Awake() - Starting Initialization");
         Debug.Log($"⚠️ MatchManager Awake() - Entity ID: {GetEntityId()}");
 
@@ -3951,8 +3960,11 @@ public partial class MatchManager : MonoBehaviour
         //     // Here you could manage inputs like the player selecting a pass target (by clicking a hex)
         //     // You can also trigger transitions between game states based on player actions
         // }
-        AdvanceDecisionTiming(Time.unscaledDeltaTime);
-        UpdateMatchClock();
+        if (CounterAttack.Online.OnlineRoomSession.Current?.HasInitialData != true)
+        {
+            AdvanceDecisionTiming(Time.unscaledDeltaTime);
+            UpdateMatchClock();
+        }
         FlushLiveLogIfDue();
     }
 
@@ -3974,6 +3986,7 @@ public partial class MatchManager : MonoBehaviour
         if (Instance == this)
         {
             FlushLiveLogBeforeExit();
+            Instance = null;
         }
     }
 

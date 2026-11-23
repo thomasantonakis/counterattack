@@ -59,7 +59,7 @@ public class MovementPhaseMovedTokensPanel : MonoBehaviour
         };
     }
 
-    public void ApplyOnline(OnlineMovementPanelFrame frame,PlayerToken[] roster)
+    public void ApplyOnline(OnlineMovementPanelFrame frame,PlayerToken[] roster,bool held = false)
     {
         SetVisible(frame!=null);
         if(frame==null){ClearAllSlots();return;}
@@ -74,6 +74,7 @@ public class MovementPhaseMovedTokensPanel : MonoBehaviour
             {
                 var slot=slots[i];
                 if(slot==null)continue;
+                slot.SetReplicaHold(held);
                 var token=i<moved.Length?Resolve(moved[i]):null;
                 if(token!=null)slot.Render(ResolveStyle(token),token.jerseyNumber);
                 else if(forfeited)slot.RenderForfeit(palette.Primary,palette.Secondary);

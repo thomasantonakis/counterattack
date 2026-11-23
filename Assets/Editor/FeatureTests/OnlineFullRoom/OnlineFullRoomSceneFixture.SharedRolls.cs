@@ -11,7 +11,7 @@ using Object = UnityEngine.Object;
 public sealed partial class OnlineFullRoomSceneFixture
 {
     private IEnumerator RunSharedRollPresentation(OnlineGroundPassBoard board, OnlineMatchProtocol protocol,
-        MatchManager.GameData data, bool timeout)
+        MatchManager.GameData data, bool timeout, bool nativeRoom = false)
     {
         var match = board.match;
         match.teamInAttack = MatchManager.TeamInAttack.Away;
@@ -76,10 +76,8 @@ public sealed partial class OnlineFullRoomSceneFixture
         var closed = pause.Capture(authority);
         Assert.That(closed.rollPanel, Is.Null);
         pause.Dispose(); pause = null;
-        yield return EditorSceneManager.LoadSceneAsyncInPlayMode("Assets/Scenes/MainMenu.unity", new LoadSceneParameters(LoadSceneMode.Single));
-        session.Dispose(); session = null; MatchManager.Instance = null;
-        yield return Load(data, true);
-        board = Object.FindAnyObjectByType<OnlineFullRoomBootstrap>().board;
+        yield return LoadPresentationGuest(data, protocol.MatchId, nativeRoom);
+        board = nativeRoom ? Object.FindAnyObjectByType<OnlineRoomStartup>().Board : Object.FindAnyObjectByType<OnlineFullRoomBootstrap>().board;
         var replica = new OnlineGroundPassReplica(awaiting.matchId, board.tokens.Select(OnlineRollPublication.ActorId), OnlineFullRoomBootstrap.Catalog);
         foreach (var publication in new[] { awaiting, resolved, closed })
         {
@@ -97,7 +95,7 @@ public sealed partial class OnlineFullRoomSceneFixture
         Assert.That(board.match.TimingRollSequence, Is.Zero);
     }
     private IEnumerator RunSharedDuelOrHeader(OnlineGroundPassBoard board, OnlineMatchProtocol protocol,
-        MatchManager.GameData data, bool header)
+        MatchManager.GameData data, bool header, bool nativeRoom = false)
     {
         var match = board.match;
         var view = board.rollPanels;
@@ -138,10 +136,8 @@ public sealed partial class OnlineFullRoomSceneFixture
             expectedRecoveryY=((RectTransform)view.duel.looseRecoveryContent.transform).anchoredPosition.y;
         }
         pause.Dispose(); pause = null;
-        yield return EditorSceneManager.LoadSceneAsyncInPlayMode("Assets/Scenes/MainMenu.unity", new LoadSceneParameters(LoadSceneMode.Single));
-        session.Dispose(); session = null; MatchManager.Instance = null;
-        yield return Load(data, true);
-        board = Object.FindAnyObjectByType<OnlineFullRoomBootstrap>().board;
+        yield return LoadPresentationGuest(data, protocol.MatchId, nativeRoom);
+        board = nativeRoom ? Object.FindAnyObjectByType<OnlineRoomStartup>().Board : Object.FindAnyObjectByType<OnlineFullRoomBootstrap>().board;
         var wire = new OnlineGroundPassWire();
         OnlineGroundPassMessage decoded = null;
         foreach (var packet in OnlineGroundPassWire.Encode(new OnlineGroundPassMessage

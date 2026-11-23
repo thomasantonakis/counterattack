@@ -13,11 +13,31 @@ public class MovementPhaseMovedTokenSlotView : MonoBehaviour
     private float pulseTime;
     private bool ghost;
     private Color ghostNumberColor;
+    private bool replicaPresentation;
+    private bool replicaHeld;
+
+    internal void SetReplicaHold(bool held)
+    {
+        replicaPresentation = true;
+        replicaHeld = held;
+    }
 
     private void Update()
     {
         if (State != PresentationState.Active) return;
-        if (MatchManager.Instance?.IsGameplayInputBlocked != true) pulseTime += Time.deltaTime;
+        if (replicaPresentation)
+        {
+            if (!replicaHeld) pulseTime += Time.unscaledDeltaTime;
+        }
+        else if (MatchManager.Instance?.IsGameplayInputBlocked != true)
+        {
+            pulseTime += Time.deltaTime;
+        }
+        ApplyPulse();
+    }
+
+    private void ApplyPulse()
+    {
         float alpha = Mathf.Lerp(0.2f, 0.65f, (1f - Mathf.Cos(pulseTime * Mathf.PI * 2f / pulseSeconds)) * 0.5f);
         if (ghost)
         {
@@ -32,8 +52,10 @@ public class MovementPhaseMovedTokenSlotView : MonoBehaviour
 
     public void RenderActive(Color primaryColor, TokenStyleDefinition selectedStyle, int jerseyNumber, TokenStyleDefinition teamStyle = null)
     {
+        float previousPulse = replicaPresentation && State == PresentationState.Active ? pulseTime : 0f;
         Clear();
         State = PresentationState.Active;
+        pulseTime = previousPulse;
         selectedStyle ??= teamStyle;
         ghost = selectedStyle != null;
         if (ghost)
@@ -42,6 +64,7 @@ public class MovementPhaseMovedTokenSlotView : MonoBehaviour
             ghostNumberColor = numberText != null ? numberText.color : Color.white;
         }
         else if (activeDisc != null) { activeDisc.color = primaryColor; activeDisc.enabled = true; }
+        if (replicaPresentation) ApplyPulse();
     }
 
     public void RenderForfeit(Color primaryColor, Color secondaryColor)

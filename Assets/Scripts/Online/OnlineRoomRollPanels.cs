@@ -114,6 +114,29 @@ namespace CounterAttack.Online
 
         private void Awake()
         {
+            if (board != null) Initialize();
+        }
+
+        internal void BindRoom(OnlineGroundPassBoard source, DuelResolutionPanelController duelPanel,
+            HeaderChallengePanelController headerPanel, StoppageActionsPanelController stoppagePanel)
+        {
+            board = source;
+            duel = duelPanel;
+            header = headerPanel;
+            stoppage = stoppagePanel;
+            duelOverlay = GetOverlay(duel.visuals);
+            headerOverlay = GetOverlay(header.visuals);
+            stoppageOverlay = GetOverlay(stoppage.visuals);
+            Initialize();
+        }
+
+        private static CanvasGroup GetOverlay(GameObject visuals)
+        {
+            return visuals.TryGetComponent(out CanvasGroup overlay) ? overlay : visuals.AddComponent<CanvasGroup>();
+        }
+
+        private void Initialize()
+        {
             panels = new[]
             {
                 new Panel(duel.visuals, duelOverlay, () => duel.IsOpen, () => duel.IsComplete,

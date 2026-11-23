@@ -154,7 +154,7 @@ public sealed partial class DraftOrderPanelController : MonoBehaviour
         }
     }
 
-    private void Fit()
+    internal void Fit()
     {
         if (panel == null || panel.parent is not RectTransform bounds) return;
         panel.localScale = Vector3.one * Mathf.Max(.001f,

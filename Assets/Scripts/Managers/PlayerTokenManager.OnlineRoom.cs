@@ -7,6 +7,12 @@ using UnityEngine;
 public partial class PlayerTokenManager
 {
     public PlayerToken[] AuthoredOnlineRoster {get;private set;}
+    public PlayerToken[] CaptureOnlineRoomRoster()
+    {
+        AuthoredOnlineRoster = allTokens.Concat(benchTokens).ToArray();
+        return AuthoredOnlineRoster;
+    }
+
     public PlayerToken[] BindAuthoredOnlineRoster(PlayerToken[] authored,MatchManager.GameData data,Shader numberShader=null)
     {
         var active=new List<PlayerToken>();allTokens.Clear();benchTokens.Clear();

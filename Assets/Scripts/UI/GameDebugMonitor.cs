@@ -98,6 +98,7 @@ public partial class GameDebugMonitor : MonoBehaviour
 
     void Update()
     {
+        if (CounterAttack.Online.OnlineRoomSession.Current?.HasInitialData == true) return;
         UpdateInstructionText();
         if (isVisible)
         {
@@ -111,6 +112,7 @@ public partial class GameDebugMonitor : MonoBehaviour
 
     void Start()
     {
+        if (CounterAttack.Online.OnlineRoomSession.IsGuest) return;
         LinkRoomSceneComponents();
         CacheInstructionPanelImage();
         RefreshInstructionPalettes();

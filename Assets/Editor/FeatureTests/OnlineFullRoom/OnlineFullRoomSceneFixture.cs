@@ -18,6 +18,8 @@ public sealed partial class OnlineFullRoomSceneFixture
     private MatchManager previousMatch;
     private object previousBall;
     private bool previousIntro;
+    private bool? previousFrameworkFlag;
+    private bool? previousFormationFlag;
     private readonly Dictionary<FieldInfo,object> logValues=new();
     private readonly Dictionary<FieldInfo,DictionaryEntry[]> logMaps=new();
     private readonly Dictionary<FieldInfo,string[]> logSets=new();
@@ -66,12 +68,16 @@ public sealed partial class OnlineFullRoomSceneFixture
         session=new OnlineRoomSession("full-room-scene",guest,data,path,showOpeningIntro:showIntro);app.SetActiveSaveFilePath(path);
         yield return EditorSceneManager.LoadSceneAsyncInPlayMode(OnlineFullRoomAuthoring.ScenePath,new LoadSceneParameters(LoadSceneMode.Single));yield return null;
     }
-    public IEnumerator Run(bool guest,int size,bool mirror,string branch)
+    private void InitializeFixture()
     {
         Assert.That(OnlineRoomSession.Current,Is.Null);Assert.That(OnlineFrontendSession.Current,Is.Null);
         app=ApplicationManager.Instance;created=app==null;if(created){ApplicationManager.EnsureInstanceExists();app=ApplicationManager.Instance;}
         CaptureGlobals();previousPath=app.LastSavedFileName;previousExplicit=app.HasExplicitSaveContext;previousMode=app.SelectedRoomGameMode;app.SetSelectedRoomGameMode(ApplicationManager.OnlineGameMode);Time.timeScale=1;
         directory=Path.Combine(Path.GetTempPath(),"CounterattackFullRoom",Guid.NewGuid().ToString("N"));Directory.CreateDirectory(directory);
+    }
+    public IEnumerator Run(bool guest,int size,bool mirror,string branch)
+    {
+        InitializeFixture();
         var data=Data(size,mirror);
         if(branch.StartsWith("action-preview:"))data.gameSettings.playerAssistance=branch.EndsWith(":medium")?2:1;
         yield return Load(data,branch is "replica" or "status" or "scorers" or "banners" or "f3-label" or "settings"?false:guest,branch=="room-intro");
@@ -210,35 +216,7 @@ public sealed partial class OnlineFullRoomSceneFixture
                 .GetComponentInChildren<TMPro.TextMeshPro>();
             var numberRenderer=sample.GetComponent<MeshRenderer>();
             Assert.That(numberRenderer.sharedMaterial.shader.name,Is.EqualTo("TextMeshPro/Distance Field Overlay"));
-            var previousTarget=camera.targetTexture;
-            var previousActive=RenderTexture.active;
-            var target=new RenderTexture(1600,900,24);
-            var crop=new Texture2D(40,40,TextureFormat.RGB24,false);
-            try
-            {
-                camera.targetTexture=target;
-                Vector3 center=camera.WorldToScreenPoint(sample.transform.position);
-                var rect=new Rect(Mathf.Clamp(center.x-20,0,1560),Mathf.Clamp(center.y-20,0,860),40,40);
-                Color32[] Render()
-                {
-                    camera.Render();
-                    RenderTexture.active=target;
-                    crop.ReadPixels(rect,0,0);
-                    crop.Apply();
-                    return crop.GetPixels32();
-                }
-                var withNumber=Render();
-                File.WriteAllBytes("Temp/OnlineJersey"+(guest?"Guest":"Host")+".png",crop.EncodeToPNG());
-                numberRenderer.enabled=false;
-                var withoutNumber=Render();
-                Assert.That(withNumber.Where((pixel,i)=>!pixel.Equals(withoutNumber[i])).Count(),Is.GreaterThan(8));
-            }
-            finally
-            {
-                numberRenderer.enabled=true;
-                camera.targetTexture=previousTarget;RenderTexture.active=previousActive;
-                Object.Destroy(target);Object.Destroy(crop);
-            }
+            AssertVisibleJerseyPixels(camera, sample, "Temp/OnlineJersey"+(guest?"Guest":"Host")+".png");
             yield break;
         }
         if (branch == "movement-summary")
@@ -764,6 +742,171 @@ public sealed partial class OnlineFullRoomSceneFixture
         }
         finally{(flow as IDisposable)?.Dispose();}
     }
+    public IEnumerator RunNativeRoom(bool guest)
+    {
+        InitializeFixture();
+        SuppressLegacyRoomRunner();
+        var data = Data(16, guest);
+        yield return LoadNativeRoom(data, guest, "native-room-scene");
+        Assert.That(SceneManager.GetActiveScene().path, Is.EqualTo("Assets/Scenes/Room.unity"));
+        var board = Object.FindAnyObjectByType<OnlineRoomStartup>().Board;
+        Assert.That(board.match, Is.SameAs(MatchManager.Instance));
+        Assert.That(board.displayedBall, Is.SameAs(board.match.ball.transform));
+        Assert.That(board.tokens, Has.Length.EqualTo(32));
+        Assert.That(board.tokens.All(token => token.GetComponentInChildren<TMPro.TextMeshPro>(true) != null), Is.True);
+        var number = board.match.playerTokenManager.allTokens.First(token => token.isHomeTeam && token.jerseyNumber == 9)
+            .GetComponentInChildren<TMPro.TextMeshPro>();
+        yield return null;
+        AssertVisibleJerseyPixels(board.boardCamera, number);
+        Assert.That(board.controls.startButton, Is.Null);
+        Assert.That(board.rollPanels.stoppage, Is.SameAs(board.match.stoppageActionsPanel));
+        Assert.That(board.match.homeTeamDirection, Is.EqualTo(data.openingSetup.DirectionFor(true)));
+        Assert.That(board.match.kickoffManager.gameObject.activeSelf, Is.EqualTo(!guest));
+        var input = Object.FindAnyObjectByType<GameInputManager>();
+        var inspection = RoomInspectionCard.Instance;
+        var stats = Object.FindAnyObjectByType<MatchStatsUI>();
+        Assert.That(inspection, Is.Not.Null);
+        Assert.That(stats, Is.Not.Null);
+        Physics.SyncTransforms();
+        foreach (int jersey in new[] { 1, 2 })
+        {
+            var token = board.tokens.Single(player => player.isHomeTeam && player.jerseyNumber == jersey);
+            var ray = new Ray(token.transform.position + Vector3.up * 10f, Vector3.down);
+            Assert.That(board.boardInput.PresentHover(ray, true), Is.SameAs(token));
+            if (token.IsGoalKeeper)
+            {
+                var smallCard = stats.GetComponentsInChildren<GoalkeeperCard>(true).Single(card => card.DisplayedToken == token);
+                Assert.That(smallCard.gameObject.activeInHierarchy, Is.True);
+                AssertAttributeBadge(smallCard.savingValueText, token.saving);
+            }
+            else
+            {
+                var smallCard = stats.GetComponentsInChildren<PlayerCard>(true).Single(card => card.DisplayedToken == token);
+                Assert.That(smallCard.gameObject.activeInHierarchy, Is.True);
+                AssertAttributeBadge(smallCard.paceValueText, token.pace);
+            }
+            input.SetLineupHoverToken(token);
+            Assert.That(board.boardInput.TryKey(KeyCode.Space), Is.True);
+            Assert.That(inspection.LockedPlayer, Is.SameAs(token));
+            board.controls.Escape();
+            Assert.That(inspection.IsOpen, Is.False);
+        }
+        input.SetLineupHoverToken(null);
+        if (guest)
+        {
+            var before = board.match.CaptureOnlineDecisionTiming();
+            board.match.AdvanceOnlineAuthorityTime(5f);
+            Assert.That(board.match.CaptureOnlineDecisionTiming(), Is.EqualTo(before));
+        }
+        else
+        {
+            var version = new OnlineCompatibility("ground-wire-v7", "ground-rules-v1", OnlineFullRoomBootstrap.Catalog);
+            var protocol = new OnlineMatchProtocol("native-room-scene", "home", "away", "away", version);
+            protocol.BindAuthenticatedAccount("home", "h", version);
+            protocol.BindAuthenticatedAccount("away", "a", version);
+            var authority = new OnlineGroundPassAuthority(board.match, protocol);
+            using var nativePause = new OnlineSharedPause(protocol, board.match);
+            var initial = nativePause.Capture(authority);
+            Assert.That(initial.stage, Is.EqualTo("kickoff.setup"));
+            Assert.That(initial.tokens, Has.Length.EqualTo(32));
+            var pauseView = Object.FindAnyObjectByType<PauseMenuManager>(FindObjectsInactive.Include);
+            board.controls.Configure(OnlineTeam.Away);
+            board.controls.Requested += message =>
+            {
+                var receipt = nativePause.Submit("a", message.ToCommand());
+                Assert.That(receipt.Status, Is.EqualTo(OnlineCommandStatus.Accepted));
+                board.controls.Reply(new OnlineGroundPassMessage { status = receipt.Status.ToString() });
+                board.Display(nativePause.Capture(authority), "host");
+            };
+            board.Display(initial, "host");
+            board.controls.Escape();
+            Assert.That(pauseView.pausePanel.activeInHierarchy, Is.True);
+            Assert.That(pauseView.resumeButton.interactable, Is.True);
+            pauseView.resumeButton.onClick.Invoke();
+            Assert.That(pauseView.pausePanel.activeSelf, Is.False);
+            Assert.That(nativePause.IsPaused, Is.False);
+        }
+    }
+
+    private static void AssertAttributeBadge(TMPro.TMP_Text value, int expected)
+    {
+        Assert.That(value.text, Is.EqualTo(expected.ToString()));
+        var badge = value.transform.parent.Find(value.name + "Badge");
+        Assert.That(badge, Is.Not.Null);
+        var image = badge.GetComponent<UnityEngine.UI.Image>();
+        Assert.That(image.sprite, Is.Not.Null);
+        Assert.That(image.color, Is.EqualTo(MatchStatsUI.GetInspectionAttributeColor(expected)));
+        Assert.That(badge.GetSiblingIndex(), Is.LessThan(value.transform.GetSiblingIndex()));
+    }
+
+    private static void AssertVisibleJerseyPixels(Camera camera, TMPro.TextMeshPro sample, string artifactPath = null)
+    {
+        var numberRenderer = sample.GetComponent<MeshRenderer>();
+        var previousTarget = camera.targetTexture;
+        var previousActive = RenderTexture.active;
+        var target = new RenderTexture(1600, 900, 24);
+        var crop = new Texture2D(40, 40, TextureFormat.RGB24, false);
+        try
+        {
+            camera.targetTexture = target;
+            var center = camera.WorldToScreenPoint(sample.transform.position);
+            var rect = new Rect(Mathf.Clamp(center.x - 20, 0, 1560), Mathf.Clamp(center.y - 20, 0, 860), 40, 40);
+            Color32[] Render()
+            {
+                camera.Render();
+                RenderTexture.active = target;
+                crop.ReadPixels(rect, 0, 0);
+                crop.Apply();
+                return crop.GetPixels32();
+            }
+            var withNumber = Render();
+            if (artifactPath != null) File.WriteAllBytes(artifactPath, crop.EncodeToPNG());
+            numberRenderer.enabled = false;
+            var withoutNumber = Render();
+            Assert.That(withNumber.Where((pixel, i) => !pixel.Equals(withoutNumber[i])).Count(), Is.GreaterThan(8));
+        }
+        finally
+        {
+            numberRenderer.enabled = true;
+            camera.targetTexture = previousTarget;
+            RenderTexture.active = previousActive;
+            Object.Destroy(target);
+            Object.Destroy(crop);
+        }
+    }
+
+    public IEnumerator RunOfflineNativeRoom(string mode)
+    {
+        InitializeFixture();
+        SuppressLegacyRoomRunner();
+        var data = Data(16, false);
+        data.gameSettings.gameMode = mode;
+        string path = Path.Combine(directory, "offline-room.json");
+        File.WriteAllText(path, JsonConvert.SerializeObject(data));
+        app.SetSelectedRoomGameMode(mode);
+        app.SetActiveSaveFilePath(path);
+        previousFormationFlag = app.UseRegularFormationOnNextRoomLoad;
+        app.PrepareRoomLaunchWithRegularFormation();
+        yield return EditorSceneManager.LoadSceneAsyncInPlayMode("Assets/Scenes/Room.unity", new LoadSceneParameters(LoadSceneMode.Single));
+        var startup = Object.FindAnyObjectByType<OnlineRoomStartup>();
+        Assert.That(startup, Is.Not.Null);
+        var match = MatchManager.Instance;
+        Assert.That(match, Is.Not.Null);
+        float deadline = Time.realtimeSinceStartup + 15f;
+        while (match.ball.GetCurrentHex() == null && Time.realtimeSinceStartup < deadline) yield return null;
+        Assert.That(match.ball.GetCurrentHex(), Is.Not.Null);
+        Assert.That(match.gameData.gameSettings.gameMode, Is.EqualTo(mode));
+        Assert.That(match.playerTokenManager.allTokens, Has.Count.EqualTo(22));
+        Assert.That(startup.Board, Is.Null);
+        Assert.That(Object.FindAnyObjectByType<RoomInspectionCard>(), Is.Not.Null);
+    }
+
+    private void SuppressLegacyRoomRunner()
+    {
+        previousFrameworkFlag = UnityEditor.SessionState.GetBool("CounterAttack.FrameworkTests", false);
+        UnityEditor.SessionState.SetBool("CounterAttack.FrameworkTests", true);
+    }
+
     public IEnumerator Cleanup()
     {
         if(app==null)yield break;
@@ -771,6 +914,17 @@ public sealed partial class OnlineFullRoomSceneFixture
         yield return EditorSceneManager.LoadSceneAsyncInPlayMode("Assets/Scenes/MainMenu.unity",new LoadSceneParameters(LoadSceneMode.Single));session?.Dispose();session=null;
         if(previousExplicit)app.SetActiveSaveFilePath(previousPath);else{app.ClearActiveSaveContext();app.LastSavedFileName=previousPath;}app.SetSelectedRoomGameMode(previousMode);
         RestoreGlobals();if(created)Object.Destroy(app.gameObject);UnityEngine.Random.state=random;Time.timeScale=scale;
+        if (previousFormationFlag.HasValue)
+        {
+            app.ConsumeRegularFormationRoomLaunch();
+            if (previousFormationFlag.Value) app.PrepareRoomLaunchWithRegularFormation();
+            previousFormationFlag = null;
+        }
+        if (previousFrameworkFlag.HasValue)
+        {
+            UnityEditor.SessionState.SetBool("CounterAttack.FrameworkTests", previousFrameworkFlag.Value);
+            previousFrameworkFlag = null;
+        }
         if(directory!=null)
         {
             string full=Path.GetFullPath(directory),parent=Path.GetFullPath(Path.Combine(Path.GetTempPath(),"CounterattackFullRoom"))+Path.DirectorySeparatorChar;

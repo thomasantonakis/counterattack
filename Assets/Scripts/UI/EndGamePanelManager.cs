@@ -52,6 +52,20 @@ public class EndGamePanelManager : MonoBehaviour
     private string recapOverride;
     private string scoreLineOverride;
 
+    internal static void ShowPublishedOnlineConclusion(CounterAttack.Online.OnlineGroundPassState state)
+    {
+        if (!CounterAttack.Online.OnlineMatchConclusionView.CanDisplay(state)
+            && !(state.matchComplete && state.shootout?.complete == true)) return;
+        var manager = ResolveExisting(logIfMissing: false);
+        if (manager == null || manager.root.activeSelf) return;
+        manager.titleOverride = "Full Time";
+        manager.recapOverride = null;
+        manager.scoreLineOverride = state.shootout?.complete == true
+            ? $"{state.shootout.homeScore} - {state.shootout.awayScore} on penalties"
+            : manager.BuildMatchEndedScoreLineOverride();
+        manager.ShowPanel();
+    }
+
     public static void ShowMatchEndedPanel()
     {
         if(CounterAttack.Online.OnlineRoomSession.Current?.HasInitialData==true)return;
@@ -569,6 +583,7 @@ public class EndGamePanelManager : MonoBehaviour
 
     private void ReturnToMainMenu()
     {
+        CounterAttack.Online.OnlineFrontendSession.Current?.Close();
         MatchManager.Instance?.SetPauseMenuOpen(false);
         SceneManager.LoadScene(MainMenuSceneName);
     }

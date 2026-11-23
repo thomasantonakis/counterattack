@@ -131,7 +131,8 @@ public partial class CreateNewGameManager : MonoBehaviour
 
     private void MaintainKitDropdownPopupHeight(TMP_Dropdown dropdown)
     {
-        if (dropdown == null || dropdown.options.Count == 0 || !IsAlwaysVisibleKitDropdown(dropdown))
+        if (dropdown == null || dropdown.options.Count == 0
+            || (!IsAlwaysVisibleKitDropdown(dropdown) && GetRequestedCreateLoadGameMode() != ApplicationManager.OnlineGameMode))
         {
             return;
         }
@@ -146,7 +147,8 @@ public partial class CreateNewGameManager : MonoBehaviour
             return;
         }
 
-        float desiredHeight = item.rect.height * dropdown.options.Count;
+        int visibleRows = IsAlwaysVisibleKitDropdown(dropdown) ? dropdown.options.Count : Mathf.Min(8, dropdown.options.Count);
+        float desiredHeight = item.rect.height * visibleRows;
         popupRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, desiredHeight);
         RectTransform viewport = popup.Find("Viewport") as RectTransform;
         if (viewport != null)
@@ -875,14 +877,15 @@ public partial class CreateNewGameManager : MonoBehaviour
         }
 
         RectTransform item = dropdown.template.Find("Viewport/Content/Item") as RectTransform;
-        if (item == null || item.rect.height <= 0f)
+        if (item == null)
         {
             return;
         }
 
         RectTransform template = dropdown.template as RectTransform;
-        float itemHeight = item.rect.height;
-        template.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, itemHeight * Mathf.Min(8,dropdown.options.Count) + 8f);
+        float itemHeight = item.rect.height > 0f ? item.rect.height : item.sizeDelta.y;
+        if (itemHeight > 0f)
+            template.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, itemHeight * Mathf.Min(8, dropdown.options.Count) + 8f);
     }
 
     private void RefreshInternationalTeamKitOptions()
@@ -2187,7 +2190,7 @@ public partial class CreateNewGameManager : MonoBehaviour
         }
     }
 
-    private void ApplyExistingSettingsToUi(GameSettings settings)
+    private void ApplyExistingSettingsToUi(GameSettings settings, TMP_InputField preserveName = null)
     {
         if (settings == null)
         {
@@ -2219,8 +2222,8 @@ public partial class CreateNewGameManager : MonoBehaviour
         SelectDropdownOption(tiebreakerDropdown, settings.tiebreaker, TieBreakerNone);
         SelectDropdownOption(matchTypeDropdown, settings.matchType, "Regular");
 
-        SetInputFieldTextWithoutNotify(homeTeamInputField, settings.homeTeamName);
-        SetInputFieldTextWithoutNotify(awayTeamInputField, settings.awayTeamName);
+        if (preserveName != homeTeamInputField) SetInputFieldTextWithoutNotify(homeTeamInputField, settings.homeTeamName);
+        if (preserveName != awayTeamInputField) SetInputFieldTextWithoutNotify(awayTeamInputField, settings.awayTeamName);
         RefreshCreateGameButtonState();
 
         if (IsInternationalSettings(settings))
@@ -2583,7 +2586,7 @@ public partial class CreateNewGameManager : MonoBehaviour
             UpdateKitPreviews();
             UpdateKitValidationForCurrentSelection();
             SetRegularDraftDropdownOptions();
-            RestoreRegularMatchSelectionSnapshot();
+            if (!suppressRegularMatchSelectionSnapshot) RestoreRegularMatchSelectionSnapshot();
             UpdateKitPreviews();
             UpdateKitValidationForCurrentSelection();
 

@@ -22,6 +22,7 @@ namespace CounterAttack.Online
         private Vector2 remoteDragOrigin;
         private Canvas remoteDragCanvas;
         private bool remoteDragSorting;
+        private int remoteDragSortingOrder;
         private long remoteDragRevision;
         private double nextDragFrame;
 
@@ -79,7 +80,9 @@ namespace CounterAttack.Online
                 if(remoteDragCanvas!=null)
                 {
                     remoteDragSorting=remoteDragCanvas.overrideSorting;
+                    remoteDragSortingOrder=remoteDragCanvas.sortingOrder;
                     remoteDragCanvas.overrideSorting=true;
+                    remoteDragCanvas.sortingOrder=Mathf.Max(remoteDragSortingOrder,remoteDragCanvas.rootCanvas.sortingOrder+19);
                 }
             }
             remoteDragRect=target;
@@ -90,7 +93,11 @@ namespace CounterAttack.Online
         private void ClearRemoteDrag()
         {
             if(remoteDragRect!=null)remoteDragRect.anchoredPosition=remoteDragOrigin;
-            if(remoteDragCanvas!=null)remoteDragCanvas.overrideSorting=remoteDragSorting;
+            if(remoteDragCanvas!=null)
+            {
+                remoteDragCanvas.sortingOrder=remoteDragSortingOrder;
+                remoteDragCanvas.overrideSorting=remoteDragSorting;
+            }
             remoteDragCanvas=null;
             remoteDragRect=null;
             if(freeDraftDragPreview!=null)freeDraftDragPreview.gameObject.SetActive(false);

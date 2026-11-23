@@ -9,6 +9,36 @@ public class PenaltyShootoutOrderPanelController : MonoBehaviour
     private PenaltyShootoutManager manager;
     private PenaltyShootoutOrderPanelView view;
     private static int activePanelCount;
+    private CounterAttack.Online.OnlineGroundPassBoard onlineBoard;
+
+    internal void DisplayOnline(CounterAttack.Online.OnlineGroundPassState state, CounterAttack.Online.OnlineGroundPassBoard board)
+    {
+        var order = state.shootout;
+        bool visible = order?.selecting == true && !state.isSharedPaused && !state.connectionHeld;
+        if (!visible)
+        {
+            if (onlineBoard != null) gameObject.SetActive(false);
+            return;
+        }
+        if (onlineBoard == null)
+        {
+            onlineBoard = board;
+            view = GetComponent<PenaltyShootoutOrderPanelView>();
+            view.startButton.onClick.AddListener(board.controls.ConfirmShootout);
+        }
+        gameObject.SetActive(true);
+        bool home = board.localTeam == CounterAttack.Online.OnlineTeam.Home;
+        view.startButton.interactable = board.controls.CanManageShootout && !(home ? order.homeReady : order.awayReady);
+        var settings = board.match.gameData.gameSettings;
+        view.homeHeaderText.text = settings.homeTeamName;
+        view.awayHeaderText.text = settings.awayTeamName;
+        List<PlayerToken> Resolve(string[] ids) => ids.Select(id => board.tokens.FirstOrDefault(
+            token => CounterAttack.Online.OnlineRollPublication.ActorId(token) == id)).ToList();
+        var homeOrder = Resolve(order.homeOrder);
+        var awayOrder = Resolve(order.awayOrder);
+        if (!GetOrder(true).SequenceEqual(homeOrder)) RebuildRows(view.GetRows(true), homeOrder);
+        if (!GetOrder(false).SequenceEqual(awayOrder)) RebuildRows(view.GetRows(false), awayOrder);
+    }
 
     public static bool IsAnyPanelActive => activePanelCount > 0;
 
@@ -72,6 +102,13 @@ public class PenaltyShootoutOrderPanelController : MonoBehaviour
             return;
         }
 
+        if (onlineBoard != null)
+        {
+            if (view.startButton.interactable && row.Token != null && targetRow.Token != null
+                && row.Token.isHomeTeam == (onlineBoard.localTeam == CounterAttack.Online.OnlineTeam.Home))
+                onlineBoard.controls.SwapShootout(row.Token.jerseyNumber, targetRow.Token.jerseyNumber);
+            return;
+        }
         SwapRowTokens(row, targetRow);
         manager?.UpdateOrdersFromPanel(GetOrder(true), GetOrder(false));
     }

@@ -32,11 +32,11 @@ Resolve the actual checkout with git rev-parse --show-toplevel.
 Windows root: C:/Users/thomas/Documents/Projects/Personal/counterattack.
 Git commit/push authorized; preserve unrelated working changes.
 
-Normal online flow loads Assets/Scenes/OnlineRoom.unity, authored from Room,
-using real gameplay managers, full pitch and drafted roster. It is distinct
-from OnlineRoomProof and from unchanged offline Room. Host executes rules;
-guest projects state. Presentation parity is incomplete. Reuse authored UI
-and prefabs across both entry points. Catalog full-room-v25 / wire v7.
+Normal Online flow loads Assets/Scenes/Room.unity after the shared Draft.
+Both roles use the Room roster, ball, pitch and authored panels. The host owns
+gameplay, and the guest applies published state to those same Room objects.
+OnlineRoom and OnlineRoomProof remain available for historical test fixtures.
+The normal player build uses Room. Catalog full-room-v25 / wire v7.
 Host currently manages Away, guest Home regardless of OS; preserve this unless
 explicitly changing team allocation. Reassess compatibility for payload changes.
 

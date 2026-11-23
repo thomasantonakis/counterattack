@@ -45,7 +45,23 @@ namespace CounterAttack.Online
             }
             return false;
         }
-        public bool TryKey(KeyCode key)=>Submit(OnlineBoardActionPicker.Key(state,key));
+        public bool TryKey(KeyCode key)
+        {
+            if (key != KeyCode.Space) return Submit(OnlineBoardActionPicker.Key(state,key));
+            if (KeyboardOwnedByUI(key) || RoomInputOwnership.IntroActive || RulesViewer.IsOpen
+                || GameInputManager.IsPresentationModalActive) return false;
+            var card = RoomInspectionCard.Instance;
+            if (card == null) return false;
+            if (card.IsOpen)
+            {
+                card.Close();
+                return true;
+            }
+            var token = roomPresentation?.InspectionHoverToken;
+            if (token == null) return false;
+            card.Toggle(token);
+            return card.IsOpen;
+        }
         public static bool KeyboardOwnedByUI(KeyCode key)
         {
             var selected=EventSystem.current?.currentSelectedGameObject;
@@ -67,8 +83,7 @@ namespace CounterAttack.Online
         private void Update()
         {
             if(!samplePhysicalInput || board==null || !board.liveFullRoom)return;
-            if(RoomInputOwnership.CardOpen && Input.GetKeyDown(KeyCode.Space))
-            { RoomInspectionCard.Instance.Close();return; }
+            if(RoomInputOwnership.CardOpen && Input.GetKeyDown(KeyCode.Space) && TryKey(KeyCode.Space)) return;
             if(RoomInputOwnership.BlocksHover)
             { pressArmed=false;PresentHover(default,false);return; }
             if(Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)
@@ -86,10 +101,9 @@ namespace CounterAttack.Online
             if(board.boardCamera==null)return;
             bool overUi=PointerOwnedByUI();
             var ray=board.boardCamera.ScreenPointToRay(Input.mousePosition);
-            var token=PresentHover(ray,!overUi && !GameInputManager.IsPresentationModalActive);
-            var inspectionToken=roomPresentation?.InspectionHoverToken??token;
-            if(Input.GetKeyDown(KeyCode.Space) && inspectionToken!=null && !KeyboardOwnedByUI(KeyCode.Space))
-            { RoomInspectionCard.Instance?.Toggle(inspectionToken);pressArmed=false;return; }
+            PresentHover(ray,!overUi && !GameInputManager.IsPresentationModalActive);
+            if (Input.GetKeyDown(KeyCode.Space) && TryKey(KeyCode.Space))
+            { pressArmed=false;return; }
             if(Input.GetMouseButtonDown(0))
             { pressArmed=!overUi && !Input.GetMouseButton(1);pressPosition=Input.mousePosition; }
             float threshold=roomPresentation!=null?roomPresentation.dragThreshold:10f;

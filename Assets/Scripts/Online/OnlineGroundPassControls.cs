@@ -54,11 +54,11 @@ namespace CounterAttack.Online
 
         private void Awake()
         {
-            startButton.onClick.AddListener(StartPass);
-            targetButton.onClick.AddListener(Target);
-            rollButton.onClick.AddListener(Roll);
-            pauseButton.onClick.AddListener(Pause);
-            resumeButton.onClick.AddListener(Resume);
+            startButton?.onClick.AddListener(StartPass);
+            targetButton?.onClick.AddListener(Target);
+            rollButton?.onClick.AddListener(Roll);
+            pauseButton?.onClick.AddListener(Pause);
+            resumeButton?.onClick.AddListener(Resume);
             if (legalTargets != null) legalTargets.onValueChanged.AddListener(SelectLegalTarget);
             if (commandButton != null) commandButton.onClick.AddListener(ExecuteSelectedCommand);
         }
@@ -160,17 +160,24 @@ namespace CounterAttack.Online
         }
 
         public void SetConnected(bool value)
-        { connected = value; if (!value) { pending = false; commandStatus.text = "Connection unavailable"; } Refresh(); }
+        { connected = value; if (!value) { pending = false; SetStatus("Connection unavailable"); } Refresh(); }
 
         public void Reply(OnlineGroundPassMessage reply)
         {
             pending = false;
-            commandStatus.text = reply.status;
+            SetStatus(reply.status);
             Refresh();
         }
 
         private bool CanAct => connected && !pending && state != null && !state.connectionHeld && !state.isSharedPaused
             && state.owner == team.ToString();
+
+        internal bool CanResume => CanManageOwnPause && !state.keeperActionBlocked;
+
+        private void SetStatus(string message)
+        {
+            if (commandStatus != null) commandStatus.text = message;
+        }
 
         private void Refresh()
         {
@@ -185,12 +192,12 @@ namespace CounterAttack.Online
             if(commandButton!=null) commandButton.interactable=CanAct && commandOptions.Length>0;
             if(legalCommands!=null) legalCommands.interactable=CanAct && commandOptions.Length>0;
             bool Legal(string id) => CanAct && state.legalActions?.Contains(id) == true;
-            startButton.interactable = Legal(OnlineGroundPassAuthority.StartAction);
-            rollButton.interactable = Legal(OnlineGroundPassAuthority.RollAction);
-            targetButton.interactable = CanAct && state.stage == "target";
+            if (startButton != null) startButton.interactable = Legal(OnlineGroundPassAuthority.StartAction);
+            if (rollButton != null) rollButton.interactable = Legal(OnlineGroundPassAuthority.RollAction);
+            if (targetButton != null) targetButton.interactable = CanAct && state.stage == "target";
             if (legalTargets != null) legalTargets.interactable = connected && !pending && targetOptions.Length > 0;
-            pauseButton.interactable = connected && !pending && state != null && !state.isSharedPaused;
-            resumeButton.interactable = CanManageOwnPause && !state.keeperActionBlocked;
+            if (pauseButton != null) pauseButton.interactable = connected && !pending && state != null && !state.isSharedPaused;
+            if (resumeButton != null) resumeButton.interactable = CanResume;
         }
 
         public void StartPass() => Gameplay(OnlineGroundPassAuthority.StartAction);
@@ -244,7 +251,7 @@ namespace CounterAttack.Online
         private void Gameplay(string action)
         {
             if (!CanAct || state.legalActions?.Contains(action) != true)
-            { commandStatus.text = "Action unavailable for this decision"; return; }
+            { SetStatus("Action unavailable for this decision"); return; }
             Emit(state.Command(checked(++sequence), action));
         }
 
@@ -265,8 +272,8 @@ namespace CounterAttack.Online
 
         private void Emit(OnlineGroundPassMessage message)
         {
-            if (Requested == null) { commandStatus.text = "Connection unavailable"; return; }
-            pending = true; commandStatus.text = "Pending " + message.actionId; Refresh(); Requested(message);
+            if (Requested == null) { SetStatus("Connection unavailable"); return; }
+            pending = true; SetStatus("Pending " + message.actionId); Refresh(); Requested(message);
         }
     }
 }

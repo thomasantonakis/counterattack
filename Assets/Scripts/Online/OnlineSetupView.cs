@@ -52,7 +52,7 @@ namespace CounterAttack.Online
             if(state!=null && state.revision!=renderedRevision)
             {
                 applying=true;
-                try{setup.ApplyOnlineSetupSettings(client.ViewSettings());renderedRevision=state.revision;}
+                try{setup.ApplyOnlineSetupSettings(client.ViewSettings(), client.Team==OnlineTeam.Home);renderedRevision=state.revision;}
                 finally{applying=false;}
             }
             RefreshControls();

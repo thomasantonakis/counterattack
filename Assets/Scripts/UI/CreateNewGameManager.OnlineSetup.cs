@@ -8,7 +8,12 @@ public partial class CreateNewGameManager
         =>onlineSetupConfirmation=submit??throw new ArgumentNullException(nameof(submit));
     public void UnbindOnlineSetupConfirmation()=>onlineSetupConfirmation=null;
     public GameSettings CaptureOnlineSetupDraft()=>CaptureSettingsFromUi(GetHomeTeamNameForSettings(),GetAwayTeamNameForSettings(),false);
-    public void ApplyOnlineSetupSettings(GameSettings settings)=>ApplyExistingSettingsToUi(CounterAttack.Online.OnlineSetupRules.Copy(settings));
+    public void ApplyOnlineSetupSettings(GameSettings settings, bool? ownsHome = null)
+    {
+        var localName = ownsHome == true ? homeTeamInputField : ownsHome == false ? awayTeamInputField : null;
+        bool sameRegularMode = !IsInternationalMatchSelected() && !IsInternationalSettings(settings);
+        ApplyExistingSettingsToUi(settings, sameRegularMode && localName != null && localName.isFocused ? localName : null);
+    }
     private bool RouteOnlineSetupConfirmation()
     {
         if(onlineSetupConfirmation==null)return false;
@@ -87,10 +92,10 @@ public partial class CreateNewGameManager
         TokenKitPreset selectedAwayKit = GetSelectedKitPreset(awayKitDropdown);
         TokenKitPreset selectedHomeGKKit = GetSelectedKitPreset(homeGKKitDropdown);
         TokenKitPreset selectedAwayGKKit = GetSelectedKitPreset(awayGKKitDropdown);
-        settings.homeKit = selectedHomeKit?.DisplayName ?? GetSelectedKitPresetId(homeKitDropdown);
-        settings.awayKit = selectedAwayKit?.DisplayName ?? GetSelectedKitPresetId(awayKitDropdown);
-        settings.homeGKKit = selectedHomeGKKit?.DisplayName ?? GetSelectedKitPresetId(homeGKKitDropdown);
-        settings.awayGKKit = selectedAwayGKKit?.DisplayName ?? GetSelectedKitPresetId(awayGKKitDropdown);
+        settings.homeKit = (finalizeForLocalSave ? selectedHomeKit?.DisplayName : selectedHomeKit?.Id) ?? GetSelectedKitPresetId(homeKitDropdown);
+        settings.awayKit = (finalizeForLocalSave ? selectedAwayKit?.DisplayName : selectedAwayKit?.Id) ?? GetSelectedKitPresetId(awayKitDropdown);
+        settings.homeGKKit = (finalizeForLocalSave ? selectedHomeGKKit?.DisplayName : selectedHomeGKKit?.Id) ?? GetSelectedKitPresetId(homeGKKitDropdown);
+        settings.awayGKKit = (finalizeForLocalSave ? selectedAwayGKKit?.DisplayName : selectedAwayGKKit?.Id) ?? GetSelectedKitPresetId(awayGKKitDropdown);
         Debug.Log($"[CreateNewGameManager] Selected kits: Home '{settings.homeKit}' (id '{selectedHomeKit?.Id ?? string.Empty}'), Away '{settings.awayKit}' (id '{selectedAwayKit?.Id ?? string.Empty}'), Home GK '{settings.homeGKKit}' (id '{selectedHomeGKKit?.Id ?? string.Empty}'), Away GK '{settings.awayGKKit}' (id '{selectedAwayGKKit?.Id ?? string.Empty}').");
 
         return settings;

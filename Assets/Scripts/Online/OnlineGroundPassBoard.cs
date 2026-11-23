@@ -16,6 +16,11 @@ namespace CounterAttack.Online
         [Tooltip("Keep a manual session alive across actions. This does not replace the prepared roster with a normal Room match.")]
         public bool continuousManualSession;
         public bool liveFullRoom;
+        internal bool usesNativeRoom;
+        internal OnlineNativeRoomPause nativePause;
+        internal PenaltyShootoutOrderPanelController nativeShootout;
+        internal bool GuestRulesInactive => usesNativeRoom
+            ? GetComponent<OnlineRoomStartup>().GuestConfigured : !authorityRoot.activeSelf;
         public ScoreboardManager liveScoreboard;
         public GameDebugMonitor instructionMonitor;
         public OnlineRoomMenu menu;
@@ -95,7 +100,7 @@ namespace CounterAttack.Online
             {
                 match.ApplyOnlineReplicaMatchState(state);
                 if(movementPanel==null)movementPanel=FindAnyObjectByType<MovementPhaseMovedTokensPanel>(FindObjectsInactive.Include);
-                movementPanel?.ApplyOnline(state.movementPanel,tokens);
+                movementPanel?.ApplyOnline(state.movementPanel,tokens,state.connectionHeld || state.isSharedPaused);
                 liveScoreboard?.RefreshPublishedOnlineState();
                 match.OnlineEventBanner?.ApplyOnlinePublication(state.banners);
                 match.OnlinePitchLines?.ApplyOnlineFinalThirdLabel(state.finalThirdLabelSide, state.finalThirdLabelHome);
@@ -106,9 +111,16 @@ namespace CounterAttack.Online
             if (requesterPauseMessage != null) requesterPauseMessage.SetActive(requester);
             if (passivePauseMessage != null) passivePauseMessage.SetActive(state.isSharedPaused && !requester);
             menu?.Display(state);
+            nativePause?.Display(state);
             shootoutView?.Display(state);
             coinView?.Display(state);
             conclusionView?.Display(state);
+            if (usesNativeRoom)
+            {
+                match.coinTossPanel?.DisplayNativeOnline(state, localTeam);
+                nativeShootout?.DisplayOnline(state, this);
+                EndGamePanelManager.ShowPublishedOnlineConclusion(state);
+            }
             boardInput?.Display(state);
             foreach (var token in state.tokens)
             {
@@ -121,7 +133,8 @@ namespace CounterAttack.Online
             if(!liveFullRoom || OnlineRoomSession.IsGuest)
             {
             displayedBall.gameObject.SetActive(state.ballOnBoard);
-            if (state.ballOnBoard) displayedBall.position = Center(state.ballX, state.ballZ) + Vector3.up * (liveFullRoom?match.ball.transform.position.y:1.2f);
+            if (state.ballOnBoard && !usesNativeRoom)
+                displayedBall.position = Center(state.ballX, state.ballZ) + Vector3.up * (liveFullRoom?match.ball.transform.position.y:1.2f);
             }
             // A full snapshot can arrive between animation frames, or be the first
             // state after reconnect. Restore its captured visual pose after the
@@ -170,7 +183,7 @@ namespace CounterAttack.Online
             boardInput?.AdvancePreviewMarkers();
             if(liveFullRoom)instructionMonitor?.RefreshOnlineInstructionPalette();
             // Personal presentation only. No keys route to rule/input managers.
-            if (boardCamera != null)
+            if (boardCamera != null && !usesNativeRoom)
             {
                 boardCamera.orthographicSize = Mathf.Clamp(boardCamera.orthographicSize - Input.mouseScrollDelta.y, 4f, 40f);
                 if (Input.GetMouseButton(1)) boardCamera.transform.position += new Vector3(-Input.GetAxis("Mouse X"), 0, -Input.GetAxis("Mouse Y"));

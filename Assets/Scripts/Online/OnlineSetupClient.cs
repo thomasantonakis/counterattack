@@ -44,6 +44,11 @@ namespace CounterAttack.Online
         {
             if(!CanApply(snapshot))return false;
             if(state!=null && snapshot.connectionRevision!=state.connectionRevision)pending=null;
+            if(state!=null && state.settings.matchType!=snapshot.settings.matchType && draft?.matchType!=snapshot.settings.matchType)
+            {
+                draft=null;
+                pending=null;
+            }
             state=JsonConvert.DeserializeObject<OnlineSetupState>(JsonConvert.SerializeObject(snapshot));
             nextSequence=Math.Max(nextSequence,Team==OnlineTeam.Home?state.homeSequence:state.awaySequence);
             Changed?.Invoke();

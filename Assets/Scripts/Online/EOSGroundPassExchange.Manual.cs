@@ -139,7 +139,7 @@ namespace CounterAttack.Online
 
         private IEnumerator ManualGuest(OnlineGroundPassReplica replica)
         {
-            EOSProofCheck.Require(board.controls != null && !board.authorityRoot.activeSelf, "Authored inert guest manual controls");
+            EOSProofCheck.Require(board.controls != null && board.GuestRulesInactive, "Guest manual controls require inactive gameplay rules");
             using var transport = ObserveManualTransport();
             board.controls.Configure(OnlineTeam.Home); board.controls.SetConnected(false);
             string nonce = Guid.NewGuid().ToString("N");

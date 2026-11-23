@@ -124,7 +124,13 @@ namespace CounterAttack.Online
             try{(probe as IDisposable)?.Dispose();}catch(Exception error){failure??=error;}
             probe=null;native=null;channel?.TransportLost();
             Busy=false;running=null;
-            if(failure!=null && !stop){Error=failure.Message;Status="Online connection failed. Leave the session to try again.";Debug.LogWarning("Online session failed: "+failure.Message);}
+            if(failure!=null && !stop)
+            {
+                Error=failure.Message;
+                Status="Online connection failed. Leave the session to try again.";
+                FindAnyObjectByType<OnlineRoomStartup>()?.Board?.nativePause?.PresentClosedMatch(Status);
+                Debug.LogWarning("Online session failed: "+failure.Message);
+            }
             else Status="Online session closed";
             Retain(failure);
             if(stop && !disposed)Destroy(gameObject);
@@ -161,6 +167,7 @@ namespace CounterAttack.Online
                     {
                         Status="The other manager left the session.";
                         roomBoard?.menu?.PresentPeerDeparture();
+                        roomBoard?.nativePause?.PresentClosedMatch("The other manager left the match. Return to the main menu.");
                         break;
                     }
                     if(stop)break;
@@ -169,10 +176,10 @@ namespace CounterAttack.Online
                     {
                         if(gameplay==null)
                         {
-                            var bootstrap=FindAnyObjectByType<OnlineFullRoomBootstrap>();
-                            if(bootstrap!=null && bootstrap.Ready)
+                            var startup=FindAnyObjectByType<OnlineRoomStartup>();
+                            if(startup?.Board!=null)
                             {
-                                roomBoard=bootstrap.board;
+                                roomBoard=startup.Board;
                                 var exchange=new EOSGroundPassExchange(roomBoard,RunDirectory);
                                 gameplay=Hosting?exchange.Host(native,peer,socket,lobbyId):exchange.Guest(native,peer,socket,lobbyId);
                             }
@@ -290,7 +297,7 @@ namespace CounterAttack.Online
                 File.WriteAllText(Path.Combine(RunDirectory,"room-bootstrap.json"),Newtonsoft.Json.JsonConvert.SerializeObject(roomLaunch,Newtonsoft.Json.Formatting.Indented));
                 RoomPrepared?.Invoke(OnlineRoomLaunchData.Copy(roomLaunch));
                 roomLifetime=new OnlineRoomLaunchLifetime("ground-"+lobbyId,!Hosting,roomLaunch,RunDirectory);
-                UnityEngine.SceneManagement.SceneManager.LoadScene(OnlineFullRoomBootstrap.SceneName);
+                UnityEngine.SceneManagement.SceneManager.LoadScene(OnlineRoomStartup.SceneName);
             }
         }
 
@@ -347,9 +354,14 @@ namespace CounterAttack.Online
                     {
                         if(roomBoard.controls!=null)roomBoard.controls.SetConnected(false);
                         // Rules coroutines cannot outlive their authenticated transport.
-                        foreach(var component in roomBoard.authorityRoot.GetComponentsInChildren<MonoBehaviour>(true))
-                            if(component!=null)component.StopAllCoroutines();
-                        roomBoard.authorityRoot.SetActive(false);
+                        if (roomBoard.usesNativeRoom)
+                            roomBoard.GetComponent<OnlineRoomStartup>().StopRules();
+                        else
+                        {
+                            foreach(var component in roomBoard.authorityRoot.GetComponentsInChildren<MonoBehaviour>(true))
+                                if(component!=null)component.StopAllCoroutines();
+                            roomBoard.authorityRoot.SetActive(false);
+                        }
                     }
                 }
                 finally{roomBoard=null;roomLifetime?.Dispose();roomLifetime=null;}

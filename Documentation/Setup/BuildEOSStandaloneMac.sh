@@ -25,7 +25,7 @@ pipeline list_open_scenes | jq -e '.success and all(.data.result.scenes[]; .isDi
 pipeline test_status | jq -e '.success and (.data.result.status == "completed" or .data.result.status == "no_tests")' >/dev/null
 printf 'Building %s through the open Editor...\n' "$mode"
 if [ "$mode" = game ]; then
-    scenes='["Assets/Scenes/SplashScreen.unity","Assets/Scenes/MainMenu.unity","Assets/Scenes/CreateLoadRoom.unity","Assets/Scenes/OnlineModeMenu.unity","Assets/Scenes/CreateNewGameScene.unity","Assets/Scenes/Draft.unity","Assets/Scenes/FreeDraft.unity","Assets/Scenes/Room.unity","Assets/Scenes/OnlineRoom.unity"]'
+    scenes='["Assets/Scenes/SplashScreen.unity","Assets/Scenes/MainMenu.unity","Assets/Scenes/CreateLoadRoom.unity","Assets/Scenes/OnlineModeMenu.unity","Assets/Scenes/CreateNewGameScene.unity","Assets/Scenes/Draft.unity","Assets/Scenes/FreeDraft.unity","Assets/Scenes/Room.unity"]'
 else
     scenes="$(jq -cn --arg scene "$scene" '[$scene]')"
 fi

@@ -155,7 +155,7 @@ namespace CounterAttack.Online
             File.WriteAllText(Path.Combine(output, "gameplay-evidence.json"), JsonUtility.ToJson(new Evidence
             {
                 role = role, digest = Digest(state), publicationSequence = state.publicationSequence,
-                rollSequence = state.rollSequence, guestRulesInactive = !board.authorityRoot.activeSelf,
+                rollSequence = state.rollSequence, guestRulesInactive = board.GuestRulesInactive,
                 sharedPauseRevision = state.sharedPauseRevision, recoveryGenerations = recoveryGenerations
             }, true));
         }
@@ -311,7 +311,7 @@ namespace CounterAttack.Online
         internal IEnumerator Guest(EOSStandaloneSession session, ProductUserId remote, SocketId socket, string lobby)
         {
             SetPeer(session, remote, socket, lobby);
-            EOSProofCheck.Require(!board.authorityRoot.activeSelf, "Guest gameplay managers must remain inactive");
+            EOSProofCheck.Require(board.GuestRulesInactive, "Guest gameplay managers must remain inactive");
             var replica = new OnlineGroundPassReplica(matchId, board.tokens.Select(token => (token.isHomeTeam ? "home:" : "away:") + token.jerseyNumber), SessionCatalog);
             if (board.liveFullRoom || Environment.GetCommandLineArgs().Contains("-ca-online-manual"))
             {

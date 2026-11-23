@@ -15,6 +15,7 @@ namespace CounterAttack.Online
         private bool originalRaycasts;
         private Canvas dragCanvas;
         private bool previousOverrideSorting;
+        private int previousSortingOrder;
         private PlayerSlotDropHandler highlightedSlot;
         public void OnPointerClick(PointerEventData eventData)
         {
@@ -34,7 +35,9 @@ namespace CounterAttack.Online
             if(dragCanvas!=null)
             {
                 previousOverrideSorting=dragCanvas.overrideSorting;
+                previousSortingOrder=dragCanvas.sortingOrder;
                 dragCanvas.overrideSorting=true;
+                dragCanvas.sortingOrder=Mathf.Max(previousSortingOrder,dragCanvas.rootCanvas.sortingOrder+20);
             }
             view.PublishDragPosition(selection,rect,originalPosition);
         }
@@ -76,7 +79,11 @@ namespace CounterAttack.Online
             if(selection==null)return;selection=null;
             if(draggedRect!=null && draggedRect.parent==originalParent)draggedRect.anchoredPosition=originalPosition;
             if(dragGroup!=null){dragGroup.alpha=originalAlpha;dragGroup.blocksRaycasts=originalRaycasts;}
-            if(dragCanvas!=null)dragCanvas.overrideSorting=previousOverrideSorting;
+            if(dragCanvas!=null)
+            {
+                dragCanvas.sortingOrder=previousSortingOrder;
+                dragCanvas.overrideSorting=previousOverrideSorting;
+            }
             highlightedSlot?.ClearDropHighlight();
             highlightedSlot=null;
             dragCanvas=null;

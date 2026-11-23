@@ -65,14 +65,40 @@ public sealed partial class OnlineDraftSceneFixture
         var canvas=start.GetComponentInParent<Canvas>();var data=new PointerEventData(EventSystem.current){button=PointerEventData.InputButton.Left,pointerDrag=start.gameObject,position=RectTransformUtility.WorldToScreenPoint(canvas.worldCamera,rect.position),dragging=true,pointerPressRaycast=new RaycastResult{gameObject=start.gameObject,module=canvas.GetComponent<GraphicRaycaster>()}};
         bool invalidBegin=branch is "empty" or "roll-blocked";
         string chosen=pool?(before.freeSelection?before.available[0]:before.cards[offerIndex].id):own[start.index-1]?.id;
+        if (pool)
+        {
+            var offered = before.freeSelection ? OnlineDraftCatalog.Load().Single(card => card.id == chosen) : before.cards[offerIndex];
+            var pace = view.cards[offerIndex].paceValueText;
+            Assert.That(pace.text, Is.EqualTo(offered.pace.ToString()));
+            var circle = pace.transform.parent.Find(pace.name + "Badge");
+            Assert.That(circle, Is.Not.Null, "The Draft offer reuses its authored rating circle");
+            Assert.That(circle.GetComponent<Image>().color, Is.EqualTo(MatchStatsUI.GetInspectionAttributeColor(offered.pace)));
+            Assert.That(circle.GetSiblingIndex(), Is.LessThan(pace.transform.GetSiblingIndex()));
+        }
         try
         {
             Assert.That(ExecuteEvents.Execute(start.gameObject,data,ExecuteEvents.beginDragHandler),Is.True,"Authored online control must handle BeginDrag");
             Assert.That(group.blocksRaycasts,Is.EqualTo(invalidBegin?raycasts:false));
+            var border = target.transform.Find("Online Drop Border");
+            Assert.That(border, Is.Not.Null, "The four-sided drop border is authored on the slot prefab");
+            Assert.That(border.childCount, Is.EqualTo(4));
+            data.pointerCurrentRaycast = new RaycastResult { gameObject = target.gameObject };
             data.position+=new Vector2(80,40);data.delta=new Vector2(80,40);Assert.That(ExecuteEvents.Execute(start.gameObject,data,ExecuteEvents.dragHandler),Is.True);
+            if (pool || branch is "roster" or "keeper" or "ready" or "large")
+                Assert.That(border.gameObject.activeSelf, Is.True);
+            if (invalidBegin || branch is "foreign" or "same" or "kind")
+                Assert.That(border.gameObject.activeSelf, Is.False);
             if(!invalidBegin)Assert.That(Vector2.Distance(rect.anchoredPosition,original),Is.GreaterThan(1),"The existing authored card follows the drag");
             if(branch=="disconnect"){if(ReferenceEquals(client,host.Draft))host.TransportLost();else guest.TransportLost();}
-            if(branch=="reconnect"){host.Begin();Flush();Assert.That(client.Connected,Is.True);}
+            if(branch=="reconnect")
+            {
+                // Deliver the in-flight drag on its original generation before
+                // rotating the handshake. Drop must still reject the old gesture.
+                Flush();
+                host.Begin();
+                Flush();
+                Assert.That(client.Connected,Is.True);
+            }
             var dropBaseline=client.Capture();
             if(branch!="cancel")Assert.That(ExecuteEvents.Execute(target.gameObject,data,ExecuteEvents.dropHandler),Is.True);
             if(branch=="pending")
@@ -97,8 +123,12 @@ public sealed partial class OnlineDraftSceneFixture
                 host.Begin();Flush();Assert.That(client.Connected,Is.True);ExecuteEvents.Execute(target.gameObject,data,ExecuteEvents.dropHandler);Flush();Assert.That(requests,Is.Zero,"A cancelled drag must not replay after reconnect");
             }
             Assert.That(JsonConvert.SerializeObject(host.Draft.Capture()),Is.EqualTo(JsonConvert.SerializeObject(guest.Draft.Capture())));
-            Assert.That(rect.parent,Is.SameAs(parent));Assert.That(rect.GetSiblingIndex(),Is.EqualTo(sibling));Assert.That(Vector2.Distance(rect.anchoredPosition,original),Is.LessThan(.01));Assert.That(group.alpha,Is.EqualTo(alpha));Assert.That(group.blocksRaycasts,Is.EqualTo(raycasts));
+            Assert.That(rect.parent,Is.SameAs(parent));Assert.That(rect.GetSiblingIndex(),Is.EqualTo(sibling));Assert.That(Vector2.Distance(rect.anchoredPosition,original),Is.LessThan(.01));
+            bool emptyOffer = pool && !after.freeSelection && after.cards.ElementAtOrDefault(offerIndex) == null;
+            Assert.That(group.alpha,Is.EqualTo(emptyOffer ? 0 : alpha), "A picked offer leaves an empty slot in the same position");
+            Assert.That(group.blocksRaycasts,Is.EqualTo(!emptyOffer && raycasts));
             Assert.That(Object.FindObjectsByType<Transform>(FindObjectsInactive.Include,FindObjectsSortMode.None).Length,Is.EqualTo(hierarchy),"Drag reuses authored objects without runtime placeholders");Assert.That(UnityEngine.Random.state,Is.EqualTo(randomBefore));
+            Assert.That(border.gameObject.activeSelf, Is.False);
             Assert.That(app.LastSavedFileName,Is.EqualTo(previousSave));Assert.That(app.HasExplicitSaveContext,Is.EqualTo(explicitSave));
         }
         finally{client.Requested-=observe;ExecuteEvents.Execute(start.gameObject,data,ExecuteEvents.endDragHandler);}

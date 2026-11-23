@@ -114,7 +114,8 @@ public partial class PlayerTokenManager : MonoBehaviour
 
         ApplicationManager.EnsureInstanceExists();
         bool regularFormationRequested = ApplicationManager.Instance.ConsumeRegularFormationRoomLaunch();
-        if (Application.isEditor && !regularFormationRequested)
+        if (Application.isEditor && !regularFormationRequested
+            && CounterAttack.Online.OnlineRoomSession.Current?.HasInitialData != true)
         {
             Debug.Log("Using Room-scene editor test positions for direct Play Mode.");
             return;

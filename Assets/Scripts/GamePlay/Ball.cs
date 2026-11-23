@@ -118,7 +118,8 @@ public class Ball : MonoBehaviour
             Debug.LogError("Starting hex is null!");
         }
         AdjustBallHeightBasedOnOccupancy();
-        MatchManager.Instance?.RecordInitialSetupSnapshot();
+        if (!CounterAttack.Online.OnlineRoomSession.IsGuest)
+            MatchManager.Instance?.RecordInitialSetupSnapshot();
     }
 
     // This method is called when players are ready

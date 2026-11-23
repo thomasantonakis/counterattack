@@ -8,6 +8,7 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler, IPointerEnterH
     private DraftManager draftManager;
     private Image dropHighlight;
     private Color originalDropColor;
+    private Transform onlineDropBorder;
 
     public void OnPointerEnter(PointerEventData eventData)
     {
@@ -16,7 +17,16 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler, IPointerEnterH
         bool keeper=IsGoalkeeperRosterSlot();
         bool eligible;
         if(source.TryGetComponent<CounterAttack.Online.OnlineDraftClickTarget>(out var online))
-            eligible=online.CanPreviewDrop(GetComponent<CounterAttack.Online.OnlineDraftClickTarget>());
+        {
+            if (!online.CanPreviewDrop(GetComponent<CounterAttack.Online.OnlineDraftClickTarget>())) return;
+            onlineDropBorder ??= transform.Find("Online Drop Border");
+            if (onlineDropBorder != null)
+            {
+                onlineDropBorder.gameObject.SetActive(true);
+                return;
+            }
+            eligible = true;
+        }
         else if(source.TryGetComponent<PlayerSlotDragHandler>(out var roster))
             eligible=source!=gameObject && roster.validRosterName==transform.parent.name
                 && source.TryGetComponent<PlayerSlotDropHandler>(out var sourceSlot) && sourceSlot.IsGoalkeeperRosterSlot()==keeper;
@@ -38,6 +48,7 @@ public class PlayerSlotDropHandler : MonoBehaviour, IDropHandler, IPointerEnterH
     private void OnDisable()=>ClearDropHighlight();
     internal void ClearDropHighlight()
     {
+        if (onlineDropBorder != null) onlineDropBorder.gameObject.SetActive(false);
         if(dropHighlight!=null)dropHighlight.color=originalDropColor;
         dropHighlight=null;
     }

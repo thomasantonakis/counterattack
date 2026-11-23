@@ -22,6 +22,7 @@ namespace CounterAttack.Online
         private float rollPanelHeight;
         private double rollPromptDeadline;
         private TMP_Text rollPrompt;
+        private bool openingControlsBound;
         public Button previousPageButton,nextPageButton;
         public Button kickoffChoiceButton,leftChoiceButton,rightChoiceButton;
         private OnlineDraftClient client;
@@ -49,6 +50,14 @@ namespace CounterAttack.Online
             }
             source.enabled=false;sourceUi.enabled=false;
             if(source.draftOrderPanel!=null){source.draftOrderPanel.externalInput=true;source.draftOrderPanel.enabled=false;}
+            if (sourceUi.coinTossPanel != null && !openingControlsBound)
+            {
+                var coin = sourceUi.coinTossPanel;
+                coin.kickoffButton.onClick.AddListener(() => Choose(CoinTossChoice.Kickoff));
+                coin.leftToRightButton.onClick.AddListener(() => Choose(CoinTossChoice.LeftToRight));
+                coin.rightToLeftButton.onClick.AddListener(() => Choose(CoinTossChoice.RightToLeft));
+                openingControlsBound = true;
+            }
             foreach(var root in offlineRoots)if(root!=null)root.SetActive(false);
         }
         private void Start()
@@ -58,9 +67,6 @@ namespace CounterAttack.Online
             if(rollPanelButton!=null)rollPanelButton.onClick.AddListener(Act);
             if(previousPageButton!=null)previousPageButton.onClick.AddListener(()=>ChangePage(-1));
             if(nextPageButton!=null)nextPageButton.onClick.AddListener(()=>ChangePage(1));
-            if(kickoffChoiceButton!=null)kickoffChoiceButton.onClick.AddListener(()=>Choose(CoinTossChoice.Kickoff));
-            if(leftChoiceButton!=null)leftChoiceButton.onClick.AddListener(()=>Choose(CoinTossChoice.LeftToRight));
-            if(rightChoiceButton!=null)rightChoiceButton.onClick.AddListener(()=>Choose(CoinTossChoice.RightToLeft));
             session=OnlineFrontendSession.Current;
             if(session!=null){session.DraftAvailable+=Configure;if(session.Draft!=null)Configure(session.Draft);}
             Render();
@@ -128,7 +134,15 @@ namespace CounterAttack.Online
         {
             if(!online)return;
             if(Input.GetKeyDown(KeyCode.R) && client?.Capture()?.phase is "roll" or "opening-roll")Act();
-            if(rollPanelButton!=null && rollPanelButton.gameObject.activeSelf && rendered!=null)
+            if (rendered?.phase == "opening-roll" && sourceUi.coinTossPanel != null)
+            {
+                int remaining = Mathf.Max(0, Mathf.CeilToInt((float)(rollPromptDeadline - Time.realtimeSinceStartupAsDouble)));
+                string team = rendered.turn == OnlineTeam.Home ? rendered.settings.homeTeamName : rendered.settings.awayTeamName;
+                string prompt = !client.Connected ? "Reconnecting" : rendered.turn == client.Team
+                    ? $"Press [R] to roll, Autorolling in {remaining}s" : $"{team} rolls in {remaining}s";
+                sourceUi.coinTossPanel.dicePanel.footer.text = prompt;
+            }
+            else if(rollPanelButton!=null && rollPanelButton.gameObject.activeSelf && rendered!=null)
             {
                 rollPrompt??=rollPanelButton.GetComponentInChildren<TMP_Text>(true);
                 int remaining=Mathf.Max(0,Mathf.CeilToInt((float)(rollPromptDeadline-Time.realtimeSinceStartupAsDouble)));
@@ -179,22 +193,32 @@ namespace CounterAttack.Online
             if(nextPageButton!=null){nextPageButton.gameObject.SetActive(s.freeSelection && s.phase=="pick");nextPageButton.interactable=(page+1)*4<s.available.Length;}
             foreach(var button in new[]{kickoffChoiceButton,leftChoiceButton,rightChoiceButton})
             {
-                if(button==null)continue;button.gameObject.SetActive(s.phase=="opening-choice" && (button!=kickoffChoiceButton || s.openingCanChooseKickoff));
-                button.interactable=client.Connected && !client.Pending && s.turn==client.Team;
+                if(button!=null)button.gameObject.SetActive(false);
             }
-            bool rolling=s.phase is "roll" or "opening-roll";
-            bool rollResult=s.phase is "roll-result" or "opening-result";
+            bool rolling=s.phase=="roll";
+            bool rollResult=s.phase=="roll-result";
             bool opening=s.phase is "opening-roll" or "opening-result" or "opening-choice";
-            bool choosing=s.phase=="opening-choice";
+            var coin = sourceUi.coinTossPanel;
+            if (opening && coin != null)
+                coin.PresentPublishedToss(s.settings.homeTeamName, s.settings.awayTeamName, s.settings.homeKit, s.settings.awayKit,
+                    new OnlineCoinTossSnapshot
+                    {
+                        purpose = nameof(CoinTossPurpose.FirstHalf),
+                        stage = s.phase == "opening-choice" ? "choice" : s.phase == "opening-result" ? "result"
+                            : s.turn == OnlineTeam.Home ? "home" : "away",
+                        homeRoll = s.homeRoll, awayRoll = s.awayRoll, winnerHome = s.openingWinnerIsHome,
+                        choosingHome = s.turn == OnlineTeam.Home, canChooseKickoff = s.openingCanChooseKickoff
+                    }, client.Connected && !client.Pending && s.turn == client.Team);
+            else coin?.HidePublishedToss();
             var dice=source.draftOrderPanel;
             if(dice!=null)
             {
-                dice.visuals.SetActive(rolling || rollResult || choosing);
-                if(rolling || rollResult || choosing)
+                dice.visuals.SetActive(rolling || rollResult);
+                if(rolling || rollResult)
                 {
                     if(rollPanelHeight<=0)rollPanelHeight=dice.panel.rect.height;
-                    dice.panel.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical,rollPanelHeight+(choosing?270:0));
-                    dice.title.text=opening?"OPENING COIN TOSS":"ROLL FOR FIRST DRAFT PICK";
+                    dice.panel.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical,rollPanelHeight);
+                    dice.title.text="ROLL FOR FIRST DRAFT PICK";
                     dice.homeTeam.text=s.settings.homeTeamName;dice.awayTeam.text=s.settings.awayTeamName;
                     var homePalette=TokenKitCatalog.GetInstructionPalette(TokenKitCatalog.ResolveStyle(s.settings.homeKit));
                     var awayPalette=TokenKitCatalog.GetInstructionPalette(TokenKitCatalog.ResolveStyle(s.settings.awayKit));
@@ -203,7 +227,7 @@ namespace CounterAttack.Online
                     dice.homeResult.text=s.homeRoll==0?"Waiting for roll":"Roll "+s.homeRoll;
                     dice.awayResult.text=s.awayRoll==0?"Waiting for roll":"Roll "+s.awayRoll;
                     string winner=s.homeRoll==s.awayRoll?"Tie. Roll again.":(s.homeRoll>s.awayRoll?s.settings.homeTeamName:s.settings.awayTeamName)+" wins the roll";
-                    dice.outcome.text=rollResult || choosing?winner:"Round "+s.rollRound+(opening?" - Highest roll chooses kickoff or direction":" - Highest roll drafts first");
+                    dice.outcome.text=rollResult?winner:"Round "+s.rollRound+" - Highest roll drafts first";
                     dice.footer.text=string.Empty;
                     if(s.homeRoll>0)dice.homeDie.Resolve(s.homeRoll,false);else if(s.turn==OnlineTeam.Home)dice.homeDie.Begin(false);else dice.homeDie.Clear();
                     if(s.awayRoll>0)dice.awayDie.Resolve(s.awayRoll,false);else if(s.turn==OnlineTeam.Away)dice.awayDie.Begin(false);else dice.awayDie.Clear();

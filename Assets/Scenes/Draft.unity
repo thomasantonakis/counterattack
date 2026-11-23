@@ -12189,8 +12189,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Press [R] to roll
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 34961c1f1246349b28bf66f7159cb11b, type: 2}
-  m_sharedMaterial: {fileID: 960504890114517827, guid: 34961c1f1246349b28bf66f7159cb11b, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: d4a36f9cf8dbd4a6ebbd41c93db96dce, type: 2}
+  m_sharedMaterial: {fileID: -5746288838139167143, guid: d4a36f9cf8dbd4a6ebbd41c93db96dce, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
