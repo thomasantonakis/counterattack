@@ -8,6 +8,8 @@ namespace CounterAttack.Online
         private readonly Dictionary<HexCell,float> publishedPreviewHeights=new();
         private readonly HashSet<HexCell> publishedGoalMarkers=new();
         private readonly HashSet<HexCell> hostHintHexes=new();
+        private readonly HashSet<HexCell> passHoverHexes = new();
+        private HexCell passHoverOrigin, passHoverTarget;
         private Vector3 publishedGoalBallPose;
         private void ClearPublishedHighlights()
         {
@@ -23,12 +25,15 @@ namespace CounterAttack.Online
         {
             ClearPublishedHighlights();
             ClearHostHints();
+            if (publication?.stage != "target" || publication.connectionHeld || publication.isSharedPaused)
+                PresentGroundPassHover(null);
             if(!isActiveAndEnabled || board==null || !board.liveFullRoom)return;
             if(publication==null || publication.connectionHeld || publication.isSharedPaused || publication.stage=="blocked")return;
             if(!OnlineRoomSession.IsGuest)
             {
                 foreach(var hint in OnlinePublishedHexHints.Build(publication))
                 {
+                    if (SuppressGroundPassHint(publication, hint.Value)) continue;
                     var hex=board.grid.GetHexCellAt(new Vector3Int(hint.Key.x,0,hint.Key.y));
                     if(hex==null || hex.isInGoal!=0)continue;
                     hex.SetOnlineHostHint(hint.Value switch{
@@ -43,6 +48,7 @@ namespace CounterAttack.Online
                 || System.Array.Exists(publication.hexPreviews,p=>p.x==hex.coordinates.x && p.z==hex.coordinates.z && p.committedGoal);
             foreach(var hint in OnlinePublishedHexHints.Build(publication))
             {
+                if (SuppressGroundPassHint(publication, hint.Value)) continue;
                 var hex=board.grid.GetHexCellAt(new Vector3Int(hint.Key.x,0,hint.Key.y));if(hex==null)continue;
                 if(hint.Value=="passTargetCommitted" && !MarkerPermitted(hex))continue;
                 hex.HighlightHex(hint.Value);publishedHintHexes.Add(hex);
@@ -61,6 +67,28 @@ namespace CounterAttack.Online
                 if(hex!=null && MarkerPermitted(hex)){hex.HighlightHex("passTargetCommitted");publishedHintHexes.Add(hex);}
             }
         }
+
+        private bool SuppressGroundPassHint(OnlineGroundPassState state, string reason)
+            => state.stage == "target" && reason == "ReachOverlayAttacker" && board.match.difficulty_level == 3;
+
+        private void PresentGroundPassHover(HexCell target)
+        {
+            var origin = board?.match?.ball?.GetCurrentHex();
+            if (target != null && (origin == null || state?.stage != "target" || board.match.difficulty_level == 3
+                || board.controls?.CanSubmitAction(OnlineGroundPassAuthority.TargetAction(target.coordinates.x, target.coordinates.z)) != true))
+                target = null;
+            if (target == passHoverTarget && origin == passHoverOrigin) return;
+            foreach (var hex in passHoverHexes) if (hex != null) hex.SetOnlinePassHover(false);
+            passHoverHexes.Clear();
+            passHoverTarget = target;
+            passHoverOrigin = origin;
+            if (target == null) return;
+
+            foreach (var hex in GroundPassCommon.CalculateThickPath(board.grid, origin, target, board.match.ball.ballRadius))
+                passHoverHexes.Add(hex);
+            passHoverHexes.Add(target);
+            foreach (var hex in passHoverHexes) hex.SetOnlinePassHover(true);
+        }
         internal void SynchronizePreviewMarkerPose()
         {if(board!=null && publishedGoalMarkers.Count>0)publishedGoalBallPose=board.displayedBall.position;}
         internal void AdvancePreviewMarkers()
@@ -74,6 +102,6 @@ namespace CounterAttack.Online
             foreach(var hex in hostHintHexes)if(hex!=null)hex.SetOnlineHostHint(null);
             hostHintHexes.Clear();
         }
-        private void OnDisable(){SetLocalGoalHover(null);ClearHostHints();ClearPublishedHighlights();}
+        private void OnDisable(){SetLocalGoalHover(null);PresentGroundPassHover(null);ClearHostHints();ClearPublishedHighlights();}
     }
 }

@@ -47,8 +47,9 @@ namespace CounterAttack.Online
         }
         public bool TryKey(KeyCode key)
         {
+            if (KeyboardOwnedByUI(key) && !CanRollCoinFromBoard(key)) return false;
             if (key != KeyCode.Space) return Submit(OnlineBoardActionPicker.Key(state,key));
-            if (KeyboardOwnedByUI(key) || RoomInputOwnership.IntroActive || RulesViewer.IsOpen
+            if (RoomInputOwnership.IntroActive || RulesViewer.IsOpen
                 || GameInputManager.IsPresentationModalActive) return false;
             var card = RoomInspectionCard.Instance;
             if (card == null) return false;
@@ -97,7 +98,7 @@ namespace CounterAttack.Online
                     if (Input.GetKeyDown(key) && !KeyboardOwnedByUI(key))
                         camera.TryHandlePresetKey(new KeyPressData(key, shift, ctrl: false, alt: false));
             }
-            foreach(var key in Keys)if(Input.GetKeyDown(key) && !KeyboardOwnedByUI(key)){TryKey(key);break;}
+            foreach(var key in Keys)if(Input.GetKeyDown(key)){TryKey(key);break;}
             if(board.boardCamera==null)return;
             bool overUi=PointerOwnedByUI();
             var ray=board.boardCamera.ScreenPointToRay(Input.mousePosition);
@@ -134,11 +135,16 @@ namespace CounterAttack.Online
             }
             if(token!=null && token.IsMoving)token=null;
             roomPresentation?.PresentOnlineHover(token,hex);
+            PresentGroundPassHover(hex);
             var action=hex!=null && hex.isInGoal!=0?OnlineBoardActionPicker.Hex(state,hex.coordinates.x,hex.coordinates.z):null;
-            SetLocalGoalHover(action!=null && action.StartsWith("shot.target:",System.StringComparison.Ordinal)
+            SetLocalGoalHover(action!=null && (action.StartsWith("shot.target:",System.StringComparison.Ordinal)
+                || action.StartsWith("header.goal:",System.StringComparison.Ordinal))
                 && board.controls?.CanSubmitAction(action)==true?hex:null);
             return token;
         }
+
+        private bool CanRollCoinFromBoard(KeyCode key) => key == KeyCode.R
+            && board?.controls?.CanSubmitAction("coin.roll") == true;
 
         private void SetLocalGoalHover(HexCell hex)
         {

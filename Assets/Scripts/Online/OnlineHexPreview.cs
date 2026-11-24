@@ -27,9 +27,9 @@ namespace CounterAttack.Online
                     || float.IsNaN(p.height) || float.IsInfinity(p.height) || p.height< -1 || p.height>1 || !seen.Add(new Vector2Int(p.x,p.z)))return false;
             return true;
         }
-        public static OnlineHexPreview[] Capture(HexGrid grid,HexCell selected)
+        public static OnlineHexPreview[] Capture(HexGrid grid,HexCell selected,IEnumerable<HexCell> additional=null)
         {
-            var result=(grid.highlightedHexes??new List<HexCell>()).Append(selected).Where(h=>h!=null && h.hexRenderer!=null && grid.GetHexCellAt(h.coordinates)==h
+            var result=(grid.highlightedHexes??new List<HexCell>()).Append(selected).Concat(additional??Enumerable.Empty<HexCell>()).Where(h=>h!=null && h.hexRenderer!=null && grid.GetHexCellAt(h.coordinates)==h
                 && (Shareable(h.HighlightReason) || h.IsCommittedGoalTarget)).Distinct().OrderBy(h=>h.coordinates.x).ThenBy(h=>h.coordinates.z)
                 .Select(h=>new OnlineHexPreview{x=h.coordinates.x,z=h.coordinates.z,reason=Shareable(h.HighlightReason)?h.HighlightReason:"passTargetCommitted",
                     darkness=h.HighlightDarkness,height=h.transform.position.y,committedGoal=h.IsCommittedGoalTarget}).ToArray();

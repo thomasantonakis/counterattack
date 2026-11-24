@@ -31,6 +31,12 @@ same-named feature folders. They cover authenticated setup edits, older-build
 rejection, Draft handoff into the authored Room, kickoff command ownership and
 replica startup.
 
+For the paired Draft, aiming, status and penalty-toss regressions, use
+`OnlinePairedFeedbackPlayModeTests` under `Assets/Tests/PlayMode/Features/OnlinePairedFeedback/`,
+category `OnlinePairedFeedback`. The authored scene cases cover Draft averages,
+Novice and Experienced kickoff aiming, guest CanShootTo elevation and movement
+status rows, and penalty-toss input and resume after a tied final whistle.
+
 For Room coin toss/half transitions, use EditMode `OnlineRoomCoinTossEditorTests`
 (13 cases) and PlayMode `OnlineRoomCoinTossPlayModeTests` (24 cases), category
 `OnlineRoomCoinToss`, under the same-named Editor/PlayMode feature folders.

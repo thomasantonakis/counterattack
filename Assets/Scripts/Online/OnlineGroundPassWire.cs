@@ -129,7 +129,8 @@ namespace CounterAttack.Online
                 || state.legalActions.Any(a => !OnlineProtocolIds.IsValid(a))) return false;
             if (catalog != null && state.catalogId != catalog || roster != null && !roster.SetEquals(state.tokens.Select(token => token.id))) return false;
             if(!OnlineRosterPublication.Valid(state) || !OnlineInstructionObservation.Valid(state.instruction) || !OnlineHexPreview.Valid(state.hexPreviews)
-                || !OnlineMovementPanelFrame.Valid(state.movementPanel))return false;
+                || !OnlineMovementPanelFrame.Valid(state.movementPanel)
+                || !OnlineMovementTokenStatusFrame.Valid(state.movementTokenStatus,state.tokens))return false;
             if (!OnlineScorerPublication.Valid(state.homeScorers) || !OnlineScorerPublication.Valid(state.awayScorers)
                 || !OnlineRoomBannerPublication.Valid(state.banners) || state.finalThirdLabelSide is < -1 or > 1
                 || !OnlineRoomSettings.Valid(state.roomSettings) || state.rollPanel?.Valid() == false)

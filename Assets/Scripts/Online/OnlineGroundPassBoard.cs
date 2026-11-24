@@ -34,6 +34,7 @@ namespace CounterAttack.Online
         public Transform[] displayedTokens;
         public Transform displayedBall;
         private MovementPhaseMovedTokensPanel movementPanel;
+        private MovementPhaseTokenStatusPanel movementTokenStatusPanel;
         public Camera boardCamera;
         public Text statusText;
         public GameObject localStatsPanel;
@@ -101,6 +102,8 @@ namespace CounterAttack.Online
                 match.ApplyOnlineReplicaMatchState(state);
                 if(movementPanel==null)movementPanel=FindAnyObjectByType<MovementPhaseMovedTokensPanel>(FindObjectsInactive.Include);
                 movementPanel?.ApplyOnline(state.movementPanel,tokens,state.connectionHeld || state.isSharedPaused);
+                if(movementTokenStatusPanel==null)movementTokenStatusPanel=FindAnyObjectByType<MovementPhaseTokenStatusPanel>(FindObjectsInactive.Include);
+                movementTokenStatusPanel?.ApplyOnline(state.movementTokenStatus,tokens);
                 liveScoreboard?.RefreshPublishedOnlineState();
                 match.OnlineEventBanner?.ApplyOnlinePublication(state.banners);
                 match.OnlinePitchLines?.ApplyOnlineFinalThirdLabel(state.finalThirdLabelSide, state.finalThirdLabelHome);
