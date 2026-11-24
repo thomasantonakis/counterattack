@@ -1,6 +1,8 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Collections.Generic;
+using System.Reflection;
 using CounterAttack.Online;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
@@ -52,6 +54,101 @@ public sealed class OnlineSaveResumeEditorTests
         Assert.That(second.runtimeSnapshot.teamInAttack, Is.EqualTo(attackingTeam));
         Assert.That(second.runtimeSnapshot.decisionTiming.decisions.Single().remaining, Is.EqualTo(4));
         Assert.That(File.ReadAllBytes(path), Is.EqualTo(original));
+    }
+
+    [Test]
+    public void FailedAtomicPublishKeepsThePreviousFileAndRemovesTheTemporaryFile()
+    {
+        var checkpoint = Checkpoint();
+        var slot = store.Save(checkpoint);
+        var path = Directory.GetFiles(directory).Single();
+        var original = File.ReadAllBytes(path);
+        var constructor = typeof(OnlineCheckpointStore).GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic,
+            null, new[] {typeof(string), typeof(OnlineCompatibility), typeof(Action<string, string, bool>)}, null);
+        var failing = (OnlineCheckpointStore)constructor.Invoke(new object[]
+        {
+            directory, new OnlineCompatibility("protocol", "rules", "catalog"),
+            (Action<string, string, bool>)((temporary, destination, replace) =>
+            {
+                Assert.That(File.Exists(temporary), Is.True);
+                Assert.That(destination, Is.EqualTo(path));
+                Assert.That(replace, Is.True);
+                throw new IOException("Injected publish failure");
+            })
+        });
+        checkpoint.displayName = "Failed update";
+        Assert.Throws<IOException>(() => failing.Save(checkpoint, slot));
+        Assert.That(File.ReadAllBytes(path), Is.EqualTo(original));
+        Assert.That(Directory.GetFiles(directory), Is.EqualTo(new[] {path}));
+    }
+
+    [Test]
+    public void BrowserSummarizesValidSavesAndReportsDamagedFiles()
+    {
+        var checkpoint = Checkpoint();
+        checkpoint.match.stats.homeTeamStats.totalGoals = 2;
+        var slot = store.Save(checkpoint);
+        File.WriteAllText(Path.Combine(directory, Guid.NewGuid().ToString("N") + ".json"), "{bad json");
+        var entry = store.Browse(out int unreadable).Single();
+        Assert.That(entry.Slot, Is.EqualTo(slot));
+        Assert.That(entry.Description, Does.Contain("Home 2–0 Away"));
+        Assert.That(unreadable, Is.EqualTo(1));
+    }
+
+    [Test]
+    public void ResumeBootstrapRequiresTheAuthenticatedPeerAndMatchingAcknowledgement()
+    {
+        var compatibility = new OnlineCompatibility(OnlineSessionWire.Version, "rules", "catalog");
+        var protocol = OnlineFrontendSessionPolicy.CreateMatchProtocol("resume-attempt", "host", "guest", compatibility);
+        protocol.BindAuthenticatedAccount("host", "local", compatibility);
+        var host = new OnlineSetupHostChannel(protocol, "local", "guest", OnlineSetupAgreementEditorTests.Valid(), () => 0);
+        var guest = new OnlineSetupGuestChannel(protocol.MatchId, "host", compatibility, OnlineTeam.Home, () => 0);
+        var launchType = typeof(OnlineRoomLaunchData);
+        var source = store.CreateRun(Checkpoint());
+        source.sourceSavePath = "/host-only";
+        var bootstrap = (MatchManager.GameData)launchType.GetMethod("ResumeBootstrap", BindingFlags.Static | BindingFlags.NonPublic)
+            .Invoke(null, new object[] {source});
+        typeof(OnlineSetupHostChannel).GetMethod("EnableResume", BindingFlags.Instance | BindingFlags.NonPublic)
+            .Invoke(host, new object[] {bootstrap});
+
+        var toHost = new Queue<byte[]>();
+        var toGuest = new Queue<byte[]>();
+        host.Outgoing += toGuest.Enqueue;
+        guest.Outgoing += toHost.Enqueue;
+        host.Begin();
+        Receive(toGuest, guest, "host");
+        foreach (byte[] packet in toHost)
+            Assert.That(host.Receive("another-device", packet, packet.Length), Is.False);
+        Assert.That(host.Ready, Is.False);
+        Receive(toHost, host, "guest");
+        Receive(toGuest, guest, "host");
+        Assert.That(guest.ResumeData.rosters.home.Count, Is.EqualTo(16));
+        Assert.That(guest.ResumeData.events, Is.Empty);
+        Assert.That(guest.ResumeData.runtimeSnapshot, Is.Null);
+        Assert.That(guest.ResumeData.sourceSavePath, Is.Null);
+
+        foreach (var invalid in new[]
+        {
+            new OnlineSessionMessage {kind="resume-ack", matchId="old-attempt", nonce=host.Nonce, resumeToken=Guid.NewGuid().ToString("N")},
+            new OnlineSessionMessage {kind="resume-ack", matchId=protocol.MatchId, nonce=host.Nonce, resumeToken=Guid.NewGuid().ToString("N")}
+        })
+        {
+            foreach (byte[] packet in OnlineSessionWire.Encode(invalid))
+                host.Receive("guest", packet, packet.Length);
+            Assert.That(host.ResumeAcknowledged, Is.False);
+        }
+        Receive(toHost, host, "guest");
+        Assert.That(host.ResumeAcknowledged, Is.True);
+        Assert.That(host.Draft, Is.Null);
+
+        static void Receive(Queue<byte[]> queue, OnlineSessionChannel receiver, string sender)
+        {
+            while (queue.Count > 0)
+            {
+                var packet = queue.Dequeue();
+                Assert.That(receiver.Receive(sender, packet, packet.Length), Is.True);
+            }
+        }
     }
 
     [Test]
@@ -122,7 +219,7 @@ public sealed class OnlineSaveResumeEditorTests
         match.events.Add(new GameplayEvent { sequenceNumber = 8 });
         match.runtimeSnapshot.decisionTiming.decisions.Add(new DecisionTimingState { remaining = 4 });
         foreach (var side in new[] { "Home", "Away" })
-        for (int jersey = 1; jersey <= 11; jersey++)
+        for (int jersey = 1; jersey <= 16; jersey++)
         {
             (side == "Home" ? match.rosters.home : match.rosters.away).Add(jersey.ToString(), new MatchManager.RosterPlayer());
             match.runtimeSnapshot.tokens.Add(new RoomTokenSnapshot { tokenKey = side + ":" + jersey });

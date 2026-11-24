@@ -13,19 +13,19 @@ using UnityEngine.UI;
 
 public sealed partial class OnlineFullRoomSceneFixture
 {
-    private IEnumerator LoadNativeRoom(MatchManager.GameData data, bool guest, string matchId)
+    private IEnumerator LoadNativeRoom(MatchManager.GameData data, bool guest, string matchId, bool resume = false)
     {
         string path = Path.Combine(directory, guest ? "native-replica.json" : "native-authority.json");
         File.WriteAllText(path, JsonConvert.SerializeObject(data));
-        session = new OnlineRoomSession(matchId, guest, data, path);
+        session = new OnlineRoomSession(matchId, guest, data, path, resume: resume);
         app.SetActiveSaveFilePath(path);
         yield return EditorSceneManager.LoadSceneAsyncInPlayMode(
             $"Assets/Scenes/{OnlineRoomStartup.SceneName}.unity", new LoadSceneParameters(LoadSceneMode.Single));
         var startup = Object.FindAnyObjectByType<OnlineRoomStartup>();
         Assert.That(startup, Is.Not.Null);
         float deadline = Time.realtimeSinceStartup + 15f;
-        while (startup.Board == null && Time.realtimeSinceStartup < deadline) yield return null;
-        Assert.That(startup.Board, Is.Not.Null, "Room must bind the online role");
+        while (startup.Board == null && startup.Failure == null && Time.realtimeSinceStartup < deadline) yield return null;
+        Assert.That(startup.Board, Is.Not.Null, startup.Failure ?? "Room must bind the online role");
     }
 
     private IEnumerator LoadPresentationGuest(MatchManager.GameData data, string matchId, bool nativeRoom)

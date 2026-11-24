@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
@@ -27,11 +28,19 @@ namespace CounterAttack.Online
     }
 
     // This file format belongs to the host. It is never a network bootstrap.
+    public sealed class OnlineCheckpointSummary
+    {
+        public Guid Slot { get; internal set; }
+        public string Description { get; internal set; }
+        public DateTime SavedUtc { get; internal set; }
+    }
+
     public sealed class OnlineCheckpointStore
     {
         private static readonly object WriteGate = new();
         private readonly string directory;
         private readonly OnlineCompatibility compatibility;
+        private readonly Action<string, string, bool> publish;
 
         public OnlineCheckpointStore() : this(
             Path.Combine(Application.persistentDataPath, "OnlineSaves"), OnlineFrontendSessionPolicy.Compatibility())
@@ -39,15 +48,22 @@ namespace CounterAttack.Online
         }
 
         public OnlineCheckpointStore(string directory, OnlineCompatibility compatibility)
+            : this(directory, compatibility, Publish)
+        {
+        }
+
+        internal OnlineCheckpointStore(string directory, OnlineCompatibility compatibility, Action<string, string, bool> publish)
         {
             this.directory = Path.GetFullPath(directory);
             this.compatibility = compatibility ?? throw new ArgumentNullException(nameof(compatibility));
+            this.publish = publish ?? throw new ArgumentNullException(nameof(publish));
         }
 
         public OnlineCheckpoint Load(Guid slotId)
         {
             var document = JObject.Parse(File.ReadAllText(SlotPath(slotId)));
-            if (document["schemaVersion"]?.Value<int>() != OnlineCheckpoint.SchemaVersion)
+            if (document["schemaVersion"]?.Type != JTokenType.Integer
+                || document["schemaVersion"].Value<long>() != OnlineCheckpoint.SchemaVersion)
                 throw new InvalidDataException("This online save uses an unsupported format.");
 
             var snapshot = document["match"]?["runtimeSnapshot"] as JObject;
@@ -60,6 +76,43 @@ namespace CounterAttack.Online
             var checkpoint = document.ToObject<OnlineCheckpoint>();
             Validate(checkpoint);
             return checkpoint;
+        }
+
+        public IReadOnlyList<OnlineCheckpointSummary> Browse(out int unreadable)
+        {
+            unreadable = 0;
+            var saves = new List<OnlineCheckpointSummary>();
+            if (!Directory.Exists(directory)) return saves;
+            foreach (string path in Directory.EnumerateFiles(directory, "*.json"))
+            {
+                try
+                {
+                    if (!Guid.TryParseExact(Path.GetFileNameWithoutExtension(path), "N", out var slot))
+                    {
+                        unreadable++;
+                        continue;
+                    }
+                    var checkpoint = Load(slot);
+                    var data = checkpoint.match;
+                    var clock = data.runtimeSnapshot.clock;
+                    int time = Math.Max(0, (int)clock.currentHalfRegulationSeconds);
+                    saves.Add(new OnlineCheckpointSummary
+                    {
+                        Slot = slot,
+                        SavedUtc = checkpoint.savedUtc,
+                        Description = $"{checkpoint.displayName}\n"
+                            + $"{data.gameSettings.homeTeamName} {data.stats.homeTeamStats?.totalGoals ?? 0}–{data.stats.awayTeamStats?.totalGoals ?? 0} {data.gameSettings.awayTeamName}\n"
+                            + $"Half {clock.currentHalf} · {time / 60:00}:{time % 60:00}\n"
+                            + $"Saved {checkpoint.savedUtc.ToLocalTime():g}"
+                    });
+                }
+                catch (Exception error) when (error is IOException or UnauthorizedAccessException or JsonException
+                    or ArgumentException or FormatException or OverflowException)
+                {
+                    unreadable++;
+                }
+            }
+            return saves.OrderByDescending(save => save.SavedUtc).ToArray();
         }
 
         public Guid Save(OnlineCheckpoint checkpoint, Guid? selectedSlot = null)
@@ -87,10 +140,7 @@ namespace CounterAttack.Online
                             writer.Write(JsonConvert.SerializeObject(checkpoint, Formatting.Indented));
                         stream.Flush(flushToDisk: true);
                     }
-                    if (selectedSlot.HasValue)
-                        File.Replace(temporary, destination, null);
-                    else
-                        File.Move(temporary, destination);
+                    publish(temporary, destination, selectedSlot.HasValue);
                 }
                 finally
                 {
@@ -98,6 +148,12 @@ namespace CounterAttack.Online
                 }
                 return slot;
             }
+        }
+
+        private static void Publish(string temporary, string destination, bool replace)
+        {
+            if (replace) File.Replace(temporary, destination, null);
+            else File.Move(temporary, destination);
         }
 
         public MatchManager.GameData CreateRun(OnlineCheckpoint checkpoint)
@@ -130,7 +186,7 @@ namespace CounterAttack.Online
                 || checkpoint.hostAccount == checkpoint.guestAccount)
                 throw new InvalidDataException("This online save has invalid checkpoint metadata.");
 
-            if (checkpoint.protocol != compatibility.Protocol || checkpoint.rules != compatibility.Rules
+            if (!OnlineProtocolIds.IsValid(checkpoint.protocol) || checkpoint.rules != compatibility.Rules
                 || checkpoint.catalog != compatibility.Catalog)
                 throw new InvalidDataException("This online save requires a different game version or player catalog.");
 
@@ -139,8 +195,7 @@ namespace CounterAttack.Online
             if (match?.gameSettings?.gameMode != ApplicationManager.OnlineGameMode
                 || string.IsNullOrWhiteSpace(match.gameSettings.homeTeamName)
                 || string.IsNullOrWhiteSpace(match.gameSettings.awayTeamName)
-                || match.rosters?.home?.Count < 11 || match.rosters?.away?.Count < 11
-                || match.rosters?.home == null || match.rosters?.away == null
+                || match.rosters?.home?.Count is not (16 or 18) || match.rosters.away?.Count != match.rosters.home.Count
                 || match.stats == null || match.openingSetup == null || match.events == null
                 || snapshot == null || snapshot.version != RoomSaveService.SaveSchemaVersion
                 || !SupportedState(snapshot.currentState) || snapshot.teamInAttack is not ("Home" or "Away")
@@ -149,8 +204,10 @@ namespace CounterAttack.Online
                 || !Enum.TryParse<MatchManager.TeamAttackingDirection>(snapshot.awayTeamDirection, out var awayDirection)
                 || !Enum.IsDefined(typeof(MatchManager.TeamAttackingDirection), awayDirection) || homeDirection == awayDirection
                 || snapshot.clock == null || snapshot.clock.currentHalf < 1 || snapshot.clock.totalCompletedActions < 1
+                || float.IsNaN(snapshot.clock.currentHalfRegulationSeconds) || float.IsInfinity(snapshot.clock.currentHalfRegulationSeconds)
+                || snapshot.clock.currentHalfRegulationSeconds < 0
                 || snapshot.clock.isMatchComplete || snapshot.clock.isWaitingForExtraActionsRoll
-                || snapshot.ball == null || snapshot.tokens == null || snapshot.tokens.Count < 22
+                || snapshot.ball == null || snapshot.tokens == null || snapshot.tokens.Count != 2 * match.rosters.home.Count
                 || snapshot.tokens.Any(t => t == null || string.IsNullOrEmpty(t.tokenKey) || t.isPlaying && t.currentHex == null)
                 || snapshot.tokens.Select(t => t.tokenKey).Distinct().Count() != snapshot.tokens.Count
                 || snapshot.touchReferences == null || snapshot.offside == null || snapshot.substitutions == null

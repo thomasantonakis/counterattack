@@ -42,6 +42,7 @@ namespace CounterAttack.Online
         public OnlineMovementPanelFrame movementPanel;
         public OnlineMovementTokenStatusFrame movementTokenStatus;
         public bool introPending,homeIntroReady,awayIntroReady;
+        public bool resumePending,homeResumeReady,awayResumeReady;
         public bool ShouldStreamPresentation() => ballMoving || playerMoving || goalMotion;
         public string selectedPlayer;
         public int ballX, ballZ, selectedX, selectedZ, interceptorX, interceptorZ;
@@ -375,6 +376,9 @@ namespace CounterAttack.Online
                 state.introPending=roomSession?.IntroPending==true;
                 state.homeIntroReady=roomSession?.HomeIntroReady==true;
                 state.awayIntroReady=roomSession?.AwayIntroReady==true;
+                state.resumePending=roomSession?.ResumePending==true;
+                state.homeResumeReady=roomSession?.HomeResumeReady==true;
+                state.awayResumeReady=roomSession?.AwayResumeReady==true;
                 state.movementPanel=MovementPhaseMovedTokensPanel.CaptureOnline(match.movementPhaseManager);
                 state.movementTokenStatus=MovementPhaseTokenStatusPanel.CaptureOnline(match.movementPhaseManager,HeaderRules);
                 if(state.movementActive && match.movementPhaseManager is { } movement)

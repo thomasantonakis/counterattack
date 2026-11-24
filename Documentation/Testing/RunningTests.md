@@ -78,6 +78,13 @@ Folders: `Assets/Editor/FeatureTests/OnlineSnapshotPose/` and
 `Assets/Tests/PlayMode/Features/OnlineSnapshotPose/`. The latter uses real
 movement and a fresh guest; it does not require EOS login or another machine.
 
+For online checkpoint save and resume, run the focused EditMode fixture
+`OnlineSaveResumeEditorTests` and PlayMode fixture `OnlineSaveResumePlayModeTests`,
+category `OnlineSaveResume`. The native Room cases use temporary save slots and
+exercise both attacking teams, a guest-owned pause and the two Ready confirmations.
+See the [online save and resume plan](../Plans/OnlineSaveAndResume.md) for the
+paired packaged walkthrough.
+
 For required online goalkeeper decisions, use PlayMode fixture
 `OnlineRequiredKeeperPlayModeTests` (category `OnlineRequiredKeeper`, 33 cases)
 in `Assets/Tests/PlayMode/Features/OnlineRequiredKeeper/`. Its three methods are

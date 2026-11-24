@@ -11,6 +11,28 @@ Implement a host-owned save so the same two players can close Counterattack and 
 
 The first release uses local storage on the original host machine and requires both original EOS Product User IDs. With current device-based EOS login, players should use their original devices and profiles. A device identity reset can prevent loading or rejoining. Cloud saves, host migration, account portability, substitute players, Draft saves and mid-action saves are future work.
 
+## Paired walkthrough
+
+Build the normal game on both platforms from the same commit. The macOS build
+script is `Documentation/Setup/BuildEOSStandaloneMac.sh game`. The Windows
+build and launch script is `Documentation/Setup/BuildOnlineGameWindows.ps1 -Launch`.
+
+1. Host on one machine and join on the other. Play through kickoff and complete
+   a ground pass to a teammate. Let any roll or result panels finish.
+2. Have Away pause. On Home, select **Save Match As**, give it a name, and
+   confirm the saved message. Both players return to the main menu and close
+   their apps.
+3. Reopen both apps. On the original host, use **Online → Load Match → Host
+   Saved Match** and copy the fresh code. If a third EOS profile is available,
+   try that profile first and verify it cannot take the saved Away seat. Then
+   join with the original guest's device and profile.
+4. Compare teams, score, half, time and ball position before selecting **Ready**.
+   Confirm one Ready leaves play held. Confirm both release play and that the
+   current attacking team can make the next move on both screens.
+5. Leave without saving. Load the same slot again, verify that it returns to
+   the original checkpoint, then cancel before both players confirm Ready.
+   Record the commit, host and guest platform, and any divergence or error.
+
 ## 1. Capture and store a host checkpoint
 
 - Add a dedicated online save store under `Application.persistentDataPath`, separate from offline slots and per-run `OnlineSessions` diagnostics. Use a versioned envelope with a durable match ID, checkpoint ID, UTC save time, display name, compatibility metadata, authenticated host/Home and guest/Away IDs, and serialized match data plus the runtime snapshot. Derive browser metadata from the validated checkpoint. Keep participant IDs and paths local to the host and out of user-facing messages and guest payloads.

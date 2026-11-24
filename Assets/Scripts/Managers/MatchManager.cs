@@ -1299,6 +1299,7 @@ public partial class MatchManager : MonoBehaviour
     public int CurrentHalf => currentHalf;
     public bool IsPauseMenuOpen => isPauseMenuOpen;
     public bool IsGameplayInputBlocked => CounterAttack.Online.OnlineRoomSession.IsGuest
+        || CounterAttack.Online.OnlineRoomSession.Current?.ResumePending==true
         || CounterAttack.Online.OnlineRoomSession.Current?.IntroPending==true || isPauseMenuOpen || RoomInputOwnership.IntroActive;
     public bool AreSubstitutionsAvailable => areSubstitutionsAvailable;
     public string SubstitutionsAvailabilityReason => substitutionsAvailabilityReason;
@@ -6146,6 +6147,9 @@ public partial class MatchManager : MonoBehaviour
         return $"{(isHomeTeam ? "Home" : "Away")}:{jerseyNumber}";
     }
 
+    internal bool RuntimeSnapshotRestored { get; private set; }
+    internal string RuntimeSnapshotRestoreError { get; private set; }
+
     private IEnumerator RestoreRuntimeSnapshotWhenReady(RoomRuntimeSnapshot snapshot)
     {
         if (snapshot == null)
@@ -6155,11 +6159,34 @@ public partial class MatchManager : MonoBehaviour
 
         yield return new WaitUntil(() => hexGrid != null && hexGrid.IsGridInitialized());
         yield return new WaitUntil(() => playerTokenManager != null
-            && FindObjectsByType<PlayerToken>(FindObjectsInactive.Include).Length > 0);
+            && (CounterAttack.Online.OnlineRoomSession.Current?.IsResuming == true
+                ? playerTokenManager.allTokens.Count == 22
+                : FindObjectsByType<PlayerToken>(FindObjectsInactive.Include).Length > 0));
         yield return new WaitUntil(() => ball != null && ball.GetCurrentHex() != null);
         yield return null;
 
-        ApplyRuntimeSnapshot(snapshot);
+        if (CounterAttack.Online.OnlineRoomSession.Current?.IsResuming != true)
+        {
+            ApplyRuntimeSnapshot(snapshot);
+            yield break;
+        }
+        try
+        {
+            if (ResolveHex(snapshot.ball) == null || snapshot.tokens.Any(token =>
+                    token.currentHex != null && ResolveHex(token.currentHex) == null))
+                throw new InvalidDataException("The saved board contains invalid ball or player positions.");
+            var expected = playerTokenManager.CaptureOnlineRoomRoster()
+                .Select(token => BuildTokenKey(token.isHomeTeam, token.jerseyNumber)).ToHashSet();
+            if (!expected.SetEquals(snapshot.tokens.Select(token => token.tokenKey)))
+                throw new InvalidDataException("The saved player roster could not be restored.");
+            ApplyRuntimeSnapshot(snapshot);
+            RuntimeSnapshotRestored = true;
+        }
+        catch (Exception error)
+        {
+            RuntimeSnapshotRestoreError = "The saved board could not be restored.";
+            Debug.LogWarning($"Online checkpoint restore failed: {error.GetType().Name}");
+        }
     }
 
     private void ApplyRuntimeSnapshot(RoomRuntimeSnapshot snapshot)

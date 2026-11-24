@@ -24,6 +24,8 @@ public static class RoomSaveService
             || publication.halfExpired || publication.stoppageAwaitingRoll || publication.keeperActionBlocked
             || publication.substitutionReview != null || pause.CaptureSubstitutionReview() != null
             || publication.rollPanel != null || publication.playerMoving || publication.goalMotion
+            || publication.passActive || publication.awaitingRoll || match.looseBallManager?.isActivated == true
+            || match.kickoffManager?.OnlineActive == true
             || match.DecisionTiming.HasRollWait || MatchManager.TimingResultBlocked || !match.attackHasPossession)
             reason = "Finish a ground pass and settle any pending rolls before saving.";
         else

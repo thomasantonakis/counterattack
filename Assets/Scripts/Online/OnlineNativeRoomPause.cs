@@ -18,6 +18,11 @@ namespace CounterAttack.Online
         private bool editing;
         private bool namingSave;
         private string saveMessage;
+        private TMP_Text resumeLabel;
+        private TMP_Text leaveLabel;
+        private string normalResumeLabel;
+        private string normalLeaveLabel;
+        private GameObject[] regularPauseActions;
         private Guid? selectedSave;
         private Guid durableMatchId = Guid.NewGuid();
         private Func<string> saveUnavailable;
@@ -36,6 +41,15 @@ namespace CounterAttack.Online
         {
             board = source;
             view = pause;
+            resumeLabel = view.resumeButton.GetComponentInChildren<TMP_Text>(true);
+            normalResumeLabel = resumeLabel?.text;
+            leaveLabel = view.backToMainMenuButton.GetComponentInChildren<TMP_Text>(true);
+            normalLeaveLabel = leaveLabel?.text;
+            regularPauseActions = new[]
+            {
+                view.saveMatchButton.gameObject, view.saveMatchAsButton.gameObject,
+                view.editSettings.gameObject, view.substitutionsButton.gameObject, view.quitButton.gameObject
+            };
             substitutions = substitutionView;
             board.controls.LocalEscapeHandler = CloseSubstitutionsOrSettings;
             view.resumeButton.onClick.AddListener(board.controls.Resume);
@@ -111,6 +125,8 @@ namespace CounterAttack.Online
         internal void BindCheckpointHost(OnlineMatchProtocol protocol, OnlineSharedPause pause,
             OnlineGroundPassAuthority authority, string guestAccount, OnlineCheckpointStore store, OnlineCompatibility compatibility)
         {
+            selectedSave = OnlineRoomSession.Current?.SelectedSlot;
+            durableMatchId = OnlineRoomSession.Current?.DurableMatch ?? durableMatchId;
             string Guard()
             {
                 var publication = state;
@@ -369,6 +385,7 @@ namespace CounterAttack.Online
         {
             bool paused = state?.isSharedPaused == true;
             bool reconnecting = state?.connectionHeld == true;
+            bool resuming = state?.resumePending == true;
             bool reviewing = state?.substitutionReview != null && terminalMessage == null;
             if (!paused || reconnecting || terminalMessage != null || reviewing)
             {
@@ -378,7 +395,7 @@ namespace CounterAttack.Online
                 saveMessage = null;
             }
             if (substitutions != null) substitutions.gameObject.SetActive(selectingPlayers || reviewing);
-            bool showPause = (paused || reconnecting || terminalMessage != null) && !editing && !selectingPlayers && !reviewing && !namingSave;
+            bool showPause = (paused || reconnecting || resuming || terminalMessage != null) && !editing && !selectingPlayers && !reviewing && !namingSave;
             if (showPause && !view.pausePanel.activeSelf)
                 view.pausePanel.transform.SetAsLastSibling();
             view.pausePanel.SetActive(showPause);
@@ -388,7 +405,10 @@ namespace CounterAttack.Online
             bool canSave = showPause && saveUnavailable != null && checkpointReason == null && terminalMessage == null;
             view.saveMatchButton.interactable = canSave && selectedSave.HasValue;
             view.saveMatchAsButton.interactable = canSave;
-            view.resumeButton.interactable = terminalMessage == null && board.controls.CanResume;
+            if (resumeLabel != null) resumeLabel.text = resuming ? "Ready" : normalResumeLabel;
+            if (leaveLabel != null) leaveLabel.text = resuming ? "Cancel Resume" : normalLeaveLabel;
+            foreach (var action in regularPauseActions) action.SetActive(!resuming);
+            view.resumeButton.interactable = terminalMessage == null && (resuming ? board.controls.CanConfirmResume : board.controls.CanResume);
             view.editSettings.interactable = terminalMessage == null && paused && !reconnecting && values != null;
             view.substitutionsButton.interactable = localRow != null && terminalMessage == null
                 && (Nomination ? board.controls.CanNominateKeeper
@@ -398,6 +418,7 @@ namespace CounterAttack.Online
             if (view.substitutionsButton.GetComponentInChildren<TMP_Text>(true) is { } label)
                 label.text = Nomination ? "Nominate goalkeeper" : "Substitutions";
             view.pauseSaveStatusText.text = terminalMessage ?? (reconnecting ? "Reconnecting. The match is held."
+                : resuming ? ResumeStatus()
                 : state?.keeperActionBlocked == true ? state.keeperActionReason
                 : saveMessage ?? checkpointReason ??
                 (state?.pauseRequester == board.localTeam.ToString() ? "You paused the match."
@@ -405,6 +426,16 @@ namespace CounterAttack.Online
             for (int i = 0; i < fields.Length; i++)
                 fields[i].interactable = board.controls.CanEditSettings && options[i]?.Length > 1
                     && (i != (int)OnlineRoomSettings.Field.Tiebreaker || board.match.CanChangeTiebreaker());
+        }
+
+        private string ResumeStatus()
+        {
+            var settings = board.match.gameData.gameSettings;
+            int clock = Mathf.Max(0, Mathf.FloorToInt(state.regulationSeconds));
+            string score = $"{settings.homeTeamName} {state.homeStats?.totalGoals ?? 0}–{state.awayStats?.totalGoals ?? 0} {settings.awayTeamName}";
+            bool ready = IsHome ? state.homeResumeReady : state.awayResumeReady;
+            return $"{score} · Half {state.half}, {clock / 60:00}:{clock % 60:00}\n"
+                + (ready ? "Waiting for the other manager." : "Review the restored board, then select Ready.");
         }
     }
 }

@@ -133,7 +133,7 @@ namespace CounterAttack.Online
             if(seededClient!=null)seededClient.Changed-=SeedGuestSelection;
             // Leaving setup before agreement cancels its native lifetime; agreed
             // sessions remain alive for the scene-transition coordinator.
-            if(bound!=null && bound.AgreedSettings==null)bound.Close();
+            if(bound!=null && bound.AgreedSettings==null && !bound.LaunchingRoom)bound.Close();
         }
     }
 }
