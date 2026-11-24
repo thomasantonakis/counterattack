@@ -62,6 +62,11 @@ public sealed partial class OnlineFullRoomSceneFixture
         Assert.That(pause.Capture(authority).stage, Is.EqualTo("target"), "Kickoff taker has reached the ball");
         GuestPause(OnlineSharedPause.RequestAction);
         Assert.That(view.saveMatchAsButton.interactable, Is.False, "An unsettled kickoff pass cannot be saved");
+        Assert.That(view.pauseSaveStatusText.gameObject.activeInHierarchy, Is.True, "The host can see why saving is blocked");
+        Assert.That(view.pauseSaveStatusText.text, Does.Contain("ground pass"));
+        var saveLabel = view.saveMatchAsButton.transform.Find("MaskContainer")?.GetComponentInChildren<TMPro.TMP_Text>(true)
+            ?? view.saveMatchAsButton.GetComponentInChildren<TMPro.TMP_Text>(true);
+        var unavailableColor = saveLabel.color;
         view.saveMatchAsButton.onClick.Invoke();
         Assert.That(view.saveAsOverlay.activeSelf, Is.False);
         Assert.That(Directory.Exists(slotFolder), Is.False);
@@ -83,7 +88,9 @@ public sealed partial class OnlineFullRoomSceneFixture
         GuestPause(OnlineSharedPause.RequestAction);
         Assert.That(view.pausePanel.activeSelf, Is.True);
         Assert.That(view.resumeButton.interactable, Is.False, "The guest owns the pause");
-        Assert.That(view.saveMatchAsButton.interactable, Is.True, view.pauseSaveStatusText.text);
+        Assert.That(view.saveMatchAsButton.IsInteractable(), Is.True, view.pauseSaveStatusText.text);
+        Assert.That(saveLabel.color, Is.Not.EqualTo(unavailableColor), "The host can see that Save Match As is now available");
+        Assert.That(view.pauseSaveStatusText.text, Does.Contain("Save Match As"));
         view.saveMatchAsButton.onClick.Invoke();
         Assert.That(view.saveAsOverlay.activeSelf, Is.True);
         view.saveNameInput.text = "After kickoff pass";

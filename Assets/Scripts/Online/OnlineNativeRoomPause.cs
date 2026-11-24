@@ -417,10 +417,13 @@ namespace CounterAttack.Online
                         : board.controls.CanOpenSubstitutionReview));
             if (view.substitutionsButton.GetComponentInChildren<TMP_Text>(true) is { } label)
                 label.text = Nomination ? "Nominate goalkeeper" : "Substitutions";
+            view.RefreshPauseActionColors();
+            view.pauseSaveStatusText.gameObject.SetActive(showPause);
+            view.pauseSaveStatusText.color = new Color32(30, 69, 89, 255);
             view.pauseSaveStatusText.text = terminalMessage ?? (reconnecting ? "Reconnecting. The match is held."
                 : resuming ? ResumeStatus()
                 : state?.keeperActionBlocked == true ? state.keeperActionReason
-                : saveMessage ?? checkpointReason ??
+                : saveMessage ?? checkpointReason ?? (canSave ? "Checkpoint available. Select Save Match As." : null) ??
                 (state?.pauseRequester == board.localTeam.ToString() ? "You paused the match."
                 : "The other manager paused the match."));
             for (int i = 0; i < fields.Length; i++)

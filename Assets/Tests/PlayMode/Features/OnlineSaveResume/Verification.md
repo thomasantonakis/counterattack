@@ -26,3 +26,8 @@ The existing fixtures for broader coverage are:
 | `Assets/Tests/PlayMode/Features/OnlineFrontendEntry/` | `OnlineFrontendEntryPlayModeTests` |
 | `Assets/Tests/PlayMode/Features/OnlineSharedPause/` | `OnlineSharedPausePlayModeTests` |
 | `Assets/Tests/PlayMode/Features/OnlineRoomMenu/` | `OnlineRoomMenuPlayModeTests` |
+
+The pause presentation follow-up verifies that the blocked reason is visible
+and the Save Match As label changes color when saving becomes available.
+Compilation completed with zero errors. Both focused cases passed with zero
+failures or skips in `TestResults/GameplayRegression/Runs/20261124T233929225Z/`.

@@ -917,7 +917,7 @@ public class PauseMenuManager : MonoBehaviour
         if (pausePanel != null && pausePanel.activeInHierarchy) RefreshPauseActionColors();
     }
 
-    private void RefreshPauseActionColors()
+    internal void RefreshPauseActionColors()
     {
         if (substitutionsButton != null)
         {
