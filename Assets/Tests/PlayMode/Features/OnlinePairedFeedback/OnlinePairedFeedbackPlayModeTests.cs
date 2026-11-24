@@ -29,6 +29,22 @@ public sealed class OnlinePairedFeedbackPlayModeTests
     public IEnumerator GuestRendersRaisedHeaderTargetsAndAllTokenStatuses()
         => Run("OnlineFullRoomSceneFixture", "RunGuestGoalTargetsAndStatus");
 
+    [UnityTest, Category("TokenResetMovement")]
+    public IEnumerator GuestAcceptsGoalResetWithOccupiedDestination([Values(1, -1)] int goalSide)
+        => Run("OnlineFullRoomSceneFixture", "RunGoalResetWithOccupiedDestination", goalSide, true);
+
+    [UnityTest, Category("TokenResetMovement")]
+    public IEnumerator OfflineGoalResetHandlesOccupiedDestination()
+        => Run("OnlineFullRoomSceneFixture", "RunGoalResetWithOccupiedDestination", 1, false);
+
+    [UnityTest, Category("TokenResetMovement")]
+    public IEnumerator HalfTimeResetHandlesOccupiedDestination([Values(false, true)] bool online)
+        => Run("OnlineFullRoomSceneFixture", "RunHalfTimeResetWithOccupiedDestination", online);
+
+    [UnityTest, Category("TokenResetMovement")]
+    public IEnumerator ShootoutStagingHandlesSwappedTokens([Values(false, true)] bool online)
+        => Run("OnlineFullRoomSceneFixture", "RunShootoutStagingWithSwappedTokens", online);
+
     [UnityTest]
     public IEnumerator PenaltyTossCanResumeAndRollAfterTheFinalWhistle()
         => Run("OnlineFullRoomSceneFixture", "RunPenaltyTossPauseFromFinalWhistle");

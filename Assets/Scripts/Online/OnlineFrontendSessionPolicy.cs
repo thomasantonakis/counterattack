@@ -65,7 +65,7 @@ namespace CounterAttack.Online
                 text.Append(resource).Append('\n').Append(asset.text.Replace("\r\n","\n").TrimStart('\uFEFF')).Append('\n');
             }
             string digest=BitConverter.ToString(hash.ComputeHash(Encoding.UTF8.GetBytes(text.ToString()))).Replace("-","");
-            return new OnlineCompatibility(OnlineSessionWire.Version,"frontend-rules-v8","catalog-"+digest);
+            return new OnlineCompatibility(OnlineSessionWire.Version,"frontend-rules-v9","catalog-"+digest);
         }
     }
 }
