@@ -1,0 +1,28 @@
+using System;
+using System.Collections;
+using System.Linq;
+using NUnit.Framework;
+using UnityEngine.TestTools;
+
+[Category("OnlineSaveResume")]
+public sealed class OnlineSaveResumePlayModeTests
+{
+    private object fixture;
+
+    [UnityTest]
+    public IEnumerator HostSavesDuringGuestPauseAfterEitherSidePasses([Values(true, false)] bool homeAttacks)
+    {
+        var bridge = AppDomain.CurrentDomain.GetAssemblies()
+            .Single(assembly => assembly.GetName().Name == "Assembly-CSharp-Editor")
+            .GetType("OnlineFullRoomSceneFixture", true);
+        fixture = Activator.CreateInstance(bridge);
+        return (IEnumerator)bridge.GetMethod("RunCheckpointPause").Invoke(fixture, new object[] { homeAttacks });
+    }
+
+    [UnityTearDown]
+    public IEnumerator Cleanup()
+    {
+        if (fixture != null) yield return (IEnumerator)fixture.GetType().GetMethod("Cleanup").Invoke(fixture, null);
+        fixture = null;
+    }
+}

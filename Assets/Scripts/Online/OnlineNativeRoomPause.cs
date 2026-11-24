@@ -16,6 +16,12 @@ namespace CounterAttack.Online
         private string[] values;
         private OnlineGroundPassState state;
         private bool editing;
+        private bool namingSave;
+        private string saveMessage;
+        private Guid? selectedSave;
+        private Guid durableMatchId = Guid.NewGuid();
+        private Func<string> saveUnavailable;
+        private Action<string> commitSave;
         private string terminalMessage;
         private SubstitutionMenuView substitutions;
         private SubstitutionDropdownRowView localRow;
@@ -47,6 +53,10 @@ namespace CounterAttack.Online
             view.editSettingsBackButton.onClick.AddListener(() => CloseSettings());
             view.saveMatchButton.interactable = false;
             view.saveMatchAsButton.interactable = false;
+            view.saveMatchButton.onClick.AddListener(() => commitSave?.Invoke(null));
+            view.saveMatchAsButton.onClick.AddListener(OpenSaveAs);
+            view.saveAsSaveButton.onClick.AddListener(() => commitSave?.Invoke(view.saveNameInput.text.Trim()));
+            view.saveAsCancelButton.onClick.AddListener(CloseSaveAs);
             view.captureLogFileButton.interactable = false;
             view.substitutionsButton.interactable = false;
             if (substitutions != null)
@@ -98,6 +108,113 @@ namespace CounterAttack.Online
             }
         }
 
+        internal void BindCheckpointHost(OnlineMatchProtocol protocol, OnlineSharedPause pause,
+            OnlineGroundPassAuthority authority, string guestAccount, OnlineCheckpointStore store, OnlineCompatibility compatibility)
+        {
+            string Guard()
+            {
+                var publication = state;
+                return RoomSaveService.CanCaptureOnline(board.match, protocol, pause, publication, out string reason)
+                    ? null : reason;
+            }
+            saveUnavailable = Guard;
+            commitSave = requestedName =>
+            {
+                // Capture and write synchronously on the same authority thread as command admission.
+                var current = pause.Capture(authority);
+                if (!RoomSaveService.CanCaptureOnline(board.match, protocol, pause, current, out var reason))
+                {
+                    ShowSaveMessage(reason);
+                    return;
+                }
+                if (requestedName == null && !selectedSave.HasValue)
+                {
+                    OpenSaveAs();
+                    return;
+                }
+                if (requestedName != null && (requestedName.Length == 0 || requestedName.Length > 100))
+                {
+                    ShowSaveMessage("Enter a save name of up to 100 characters.");
+                    return;
+                }
+                try
+                {
+                    var match = board.match;
+                    match.EnsureGameplayEventLogInitialized();
+                    var savedUtc = DateTime.UtcNow;
+                    var snapshot = match.CreateRuntimeSnapshot();
+                    snapshot.savedAtUtc = savedUtc.ToString("O");
+                    var data = OnlineRoomLaunchData.Copy(match.gameData);
+                    data.runtimeSnapshot = snapshot;
+                    data.sourceSavePath = null;
+                    data.lastSavedUtc = snapshot.savedAtUtc;
+                    var checkpoint = new OnlineCheckpoint
+                    {
+                        matchId = durableMatchId,
+                        checkpointId = Guid.NewGuid(),
+                        savedUtc = savedUtc,
+                        displayName = requestedName ?? store.Load(selectedSave.Value).displayName,
+                        hostAccount = protocol.HostAccountId,
+                        guestAccount = guestAccount,
+                        protocol = compatibility.Protocol,
+                        rules = compatibility.Rules,
+                        catalog = compatibility.Catalog,
+                        match = data
+                    };
+                    selectedSave = store.Save(checkpoint, requestedName == null ? selectedSave : null);
+                    CloseSaveAs();
+                    ShowSaveMessage($"Saved {checkpoint.displayName}.");
+                }
+                catch (Exception error) when (error is System.IO.IOException or UnauthorizedAccessException
+                    or Newtonsoft.Json.JsonException or ArgumentException)
+                {
+                    Debug.LogWarning($"Online checkpoint write failed: {error.GetType().Name}");
+                    ShowSaveMessage("Could not save the match. Try again.");
+                }
+            };
+        }
+
+        internal void UnbindCheckpointHost()
+        {
+            saveUnavailable = null;
+            commitSave = null;
+            CloseSaveAs();
+        }
+
+        private void OpenSaveAs()
+        {
+            if (saveUnavailable == null) return;
+            if (saveUnavailable() is { } reason)
+            {
+                ShowSaveMessage(reason);
+                return;
+            }
+            var settings = board.match.gameData.gameSettings;
+            namingSave = true;
+            view.saveNameInput.SetTextWithoutNotify($"{settings.homeTeamName} vs {settings.awayTeamName}");
+            view.savePreviewText.text = "Save a new online checkpoint on this device.";
+            view.saveModalStatusText.text = "";
+            view.overwriteConfirmPanel.SetActive(false);
+            Refresh();
+            view.saveNameInput.ActivateInputField();
+        }
+
+        private void CloseSaveAs()
+        {
+            namingSave = false;
+            Refresh();
+        }
+
+        private void ShowSaveMessage(string message)
+        {
+            if (namingSave) view.saveModalStatusText.text = message;
+            else
+            {
+                saveMessage = message;
+                Refresh();
+            }
+        }
+
         internal void Display(OnlineGroundPassState publication)
         {
             state = publication;
@@ -144,6 +261,11 @@ namespace CounterAttack.Online
 
         private bool CloseSubstitutionsOrSettings()
         {
+            if (namingSave)
+            {
+                CloseSaveAs();
+                return true;
+            }
             if (state?.substitutionReview != null && terminalMessage == null)
             {
                 if (substitutions.backButton.interactable) board.controls.FinishSubstitutionReview(false);
@@ -252,13 +374,20 @@ namespace CounterAttack.Online
             {
                 editing = false;
                 selectingPlayers = false;
+                namingSave = false;
+                saveMessage = null;
             }
             if (substitutions != null) substitutions.gameObject.SetActive(selectingPlayers || reviewing);
-            bool showPause = (paused || reconnecting || terminalMessage != null) && !editing && !selectingPlayers && !reviewing;
+            bool showPause = (paused || reconnecting || terminalMessage != null) && !editing && !selectingPlayers && !reviewing && !namingSave;
             if (showPause && !view.pausePanel.activeSelf)
                 view.pausePanel.transform.SetAsLastSibling();
             view.pausePanel.SetActive(showPause);
+            view.saveAsOverlay.SetActive(namingSave);
             view.editSettingsPanel.SetActive(editing);
+            string checkpointReason = saveUnavailable?.Invoke();
+            bool canSave = showPause && saveUnavailable != null && checkpointReason == null && terminalMessage == null;
+            view.saveMatchButton.interactable = canSave && selectedSave.HasValue;
+            view.saveMatchAsButton.interactable = canSave;
             view.resumeButton.interactable = terminalMessage == null && board.controls.CanResume;
             view.editSettings.interactable = terminalMessage == null && paused && !reconnecting && values != null;
             view.substitutionsButton.interactable = localRow != null && terminalMessage == null
@@ -270,8 +399,9 @@ namespace CounterAttack.Online
                 label.text = Nomination ? "Nominate goalkeeper" : "Substitutions";
             view.pauseSaveStatusText.text = terminalMessage ?? (reconnecting ? "Reconnecting. The match is held."
                 : state?.keeperActionBlocked == true ? state.keeperActionReason
-                : state?.pauseRequester == board.localTeam.ToString() ? "You paused the match."
-                : "The other manager paused the match.");
+                : saveMessage ?? checkpointReason ??
+                (state?.pauseRequester == board.localTeam.ToString() ? "You paused the match."
+                : "The other manager paused the match."));
             for (int i = 0; i < fields.Length; i++)
                 fields[i].interactable = board.controls.CanEditSettings && options[i]?.Length > 1
                     && (i != (int)OnlineRoomSettings.Field.Tiebreaker || board.match.CanChangeTiebreaker());

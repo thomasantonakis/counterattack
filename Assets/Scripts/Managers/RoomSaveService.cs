@@ -5,9 +5,32 @@ using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
+using CounterAttack.Online;
 
 public static class RoomSaveService
 {
+    internal static bool CanCaptureOnline(MatchManager match, OnlineMatchProtocol protocol, OnlineSharedPause pause,
+        OnlineGroundPassState publication, out string reason)
+    {
+        if (OnlineRoomSession.Current?.HasInitialData != true || OnlineRoomSession.IsGuest
+            || protocol.HostTeam != OnlineTeam.Home || !match.IsOnlineAuthorityControlled)
+            reason = "Only the host can save this online match.";
+        else if (!protocol.BothConnected || pause.ConnectionHeld || publication == null)
+            reason = "Wait for both managers to connect before saving.";
+        else if (!pause.IsPaused || publication.sharedPauseRevision != pause.Revision)
+            reason = "Pause the match before saving.";
+        else if (!OnlineCheckpointStore.SupportedState(match.currentState.ToString()) || publication.introPending
+            || publication.coin != null || publication.shootout != null || publication.matchComplete
+            || publication.halfExpired || publication.stoppageAwaitingRoll || publication.keeperActionBlocked
+            || publication.substitutionReview != null || pause.CaptureSubstitutionReview() != null
+            || publication.rollPanel != null || publication.playerMoving || publication.goalMotion
+            || match.DecisionTiming.HasRollWait || MatchManager.TimingResultBlocked || !match.attackHasPossession)
+            reason = "Finish a ground pass and settle any pending rolls before saving.";
+        else
+            return match.CanCreateRuntimeSnapshot(out reason);
+        return false;
+    }
+
     public const int SaveSchemaVersion = 1;
     private const string JsonExtension = ".json";
     private const string PlaySessionsFolderName = "PlaySessions";
