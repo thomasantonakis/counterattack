@@ -700,14 +700,9 @@ public class HexGrid : MonoBehaviour
     {
         foreach (HexCell hex in highlightedHexes)
         {
-            if (hex != null) 
-            {
-                hex.ResetHighlight();  // Assuming this method resets the color of the hex
-            }
-            if (hex.isInGoal != 0 && Mathf.Abs(hex.transform.position.y - 0.07f) < 0.0001f)
-            {
-                hex.transform.position -= Vector3.up * 0.07f;
-            }
+            if (hex == null) continue;
+            hex.ClearRaisedGoalTarget();
+            hex.ResetHighlight();
         }
         highlightedHexes.Clear();  // Clear the list after resetting
     }
@@ -1274,6 +1269,7 @@ public class HexGrid : MonoBehaviour
       {
           i.isAttackOccupied = false;
           i.isDefenseOccupied = false;
+          i.ClearRaisedGoalTarget();
           i.ResetHighlight();
       }
     }

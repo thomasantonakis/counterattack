@@ -29,23 +29,21 @@ namespace CounterAttack.Online
         }
         public static OnlineHexPreview[] Capture(HexGrid grid, HexCell selected, IEnumerable<HexCell> headerAtGoalTargets = null)
         {
-            var headerTargets = new HashSet<HexCell>(headerAtGoalTargets ?? Enumerable.Empty<HexCell>());
-            var result = (grid.highlightedHexes ?? new List<HexCell>()).Append(selected).Concat(headerTargets)
+            var result = (grid.highlightedHexes ?? new List<HexCell>()).Append(selected)
+                .Concat(headerAtGoalTargets ?? Enumerable.Empty<HexCell>())
                 .Where(hex => hex != null && hex.hexRenderer != null && grid.GetHexCellAt(hex.coordinates) == hex)
                 .Distinct().OrderBy(hex => hex.coordinates.x).ThenBy(hex => hex.coordinates.z)
                 .Select(hex =>
                 {
-                    bool headerTarget = headerTargets.Contains(hex);
-                    string reason = hex.HighlightReason;
-                    // Header aim publishes the raised base highlight even during local hover.
-                    if (headerTarget) reason = "CanShootFrom";
-                    else if (!Shareable(reason)) reason = hex.IsCommittedGoalTarget ? "passTargetCommitted" : null;
+                    // Local hover can change a raised target's fill while the base preview stays shared.
+                    var (reason, darkness) = hex.BasePreviewHighlight;
+                    if (!Shareable(reason)) reason = hex.IsCommittedGoalTarget ? "passTargetCommitted" : null;
                     return reason == null ? null : new OnlineHexPreview
                     {
                         x = hex.coordinates.x,
                         z = hex.coordinates.z,
                         reason = reason,
-                        darkness = headerTarget ? 1f : hex.HighlightDarkness,
+                        darkness = darkness,
                         height = hex.transform.position.y,
                         committedGoal = hex.IsCommittedGoalTarget
                     };
