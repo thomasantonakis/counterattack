@@ -27,13 +27,32 @@ namespace CounterAttack.Online
                     || float.IsNaN(p.height) || float.IsInfinity(p.height) || p.height< -1 || p.height>1 || !seen.Add(new Vector2Int(p.x,p.z)))return false;
             return true;
         }
-        public static OnlineHexPreview[] Capture(HexGrid grid,HexCell selected,IEnumerable<HexCell> additional=null)
+        public static OnlineHexPreview[] Capture(HexGrid grid, HexCell selected, IEnumerable<HexCell> headerAtGoalTargets = null)
         {
-            var result=(grid.highlightedHexes??new List<HexCell>()).Append(selected).Concat(additional??Enumerable.Empty<HexCell>()).Where(h=>h!=null && h.hexRenderer!=null && grid.GetHexCellAt(h.coordinates)==h
-                && (Shareable(h.HighlightReason) || h.IsCommittedGoalTarget)).Distinct().OrderBy(h=>h.coordinates.x).ThenBy(h=>h.coordinates.z)
-                .Select(h=>new OnlineHexPreview{x=h.coordinates.x,z=h.coordinates.z,reason=Shareable(h.HighlightReason)?h.HighlightReason:"passTargetCommitted",
-                    darkness=h.HighlightDarkness,height=h.transform.position.y,committedGoal=h.IsCommittedGoalTarget}).ToArray();
-            if(!Valid(result))throw new InvalidOperationException("Online hex preview exceeds its bounded contract");return result;
+            var headerTargets = new HashSet<HexCell>(headerAtGoalTargets ?? Enumerable.Empty<HexCell>());
+            var result = (grid.highlightedHexes ?? new List<HexCell>()).Append(selected).Concat(headerTargets)
+                .Where(hex => hex != null && hex.hexRenderer != null && grid.GetHexCellAt(hex.coordinates) == hex)
+                .Distinct().OrderBy(hex => hex.coordinates.x).ThenBy(hex => hex.coordinates.z)
+                .Select(hex =>
+                {
+                    bool headerTarget = headerTargets.Contains(hex);
+                    string reason = hex.HighlightReason;
+                    // Header aim publishes the raised base highlight even during local hover.
+                    if (headerTarget) reason = "CanShootFrom";
+                    else if (!Shareable(reason)) reason = hex.IsCommittedGoalTarget ? "passTargetCommitted" : null;
+                    return reason == null ? null : new OnlineHexPreview
+                    {
+                        x = hex.coordinates.x,
+                        z = hex.coordinates.z,
+                        reason = reason,
+                        darkness = headerTarget ? 1f : hex.HighlightDarkness,
+                        height = hex.transform.position.y,
+                        committedGoal = hex.IsCommittedGoalTarget
+                    };
+                })
+                .Where(preview => preview != null).ToArray();
+            if (!Valid(result)) throw new InvalidOperationException("Online hex preview exceeds its bounded contract");
+            return result;
         }
     }
 }

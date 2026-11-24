@@ -1008,7 +1008,13 @@ public class GoalFlowManager : MonoBehaviour
         finalPosition.y = fixedY;
         token.transform.position = finalPosition;
 
-        token.SetCurrentHex(targetHex);
+        // The animation can arrive before another player leaves this hex.
+        // Keep logical occupancy unique until the reset formation is reconciled.
+        PlayerToken occupant = targetHex.GetOccupyingToken();
+        if (occupant == null || occupant == token)
+        {
+            token.SetCurrentHex(targetHex);
+        }
 
         // Debug.Log($"✅ Token {token.name} moved to {finalPosition} (target hex: {targetHex.name})");
     }

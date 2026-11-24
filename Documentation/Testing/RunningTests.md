@@ -36,6 +36,10 @@ For the paired Draft, aiming, status and penalty-toss regressions, use
 category `OnlinePairedFeedback`. The authored scene cases cover Draft averages,
 Novice and Experienced kickoff aiming, guest CanShootTo elevation and movement
 status rows, and penalty-toss input and resume after a tied final whistle.
+`GuestRendersRaisedHeaderTargetsAndAllTokenStatuses` also checks that host hover
+keeps the guest's goal-line target raised and highlighted until aiming ends.
+Use PlayMode category `TokenResetMovement` for the focused goal, halftime and
+shootout occupancy cases in online and offline Room.
 `GuestAcceptsEachPenaltyTossCountdownPublication` checks the encoded
 countdown updates advance their publication sequence without changing the roll decision.
 
