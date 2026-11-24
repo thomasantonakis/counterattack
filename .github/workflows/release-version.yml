@@ -1,30 +1,34 @@
 name: Release version
 
 on:
-  push:
+  pull_request:
     branches: [master, codex/online-foundation-personal-mac]
-    paths-ignore:
-      - 'ProjectSettings/ProjectSettings.asset'
+    types: [closed]
   workflow_dispatch:
 
 permissions:
   contents: write
+  pull-requests: write
 
 concurrency:
-  group: release-version-${{ github.ref }}
+  group: release-version-${{ github.event.pull_request.base.ref || github.ref_name }}
   cancel-in-progress: false
 
 jobs:
   bump-version:
-    if: github.event_name == 'workflow_dispatch' || (!contains(github.event.head_commit.message, '[skip version]') && github.event.head_commit.parents && startsWith(github.event.head_commit.message, 'Merge pull request'))
+    if: github.event_name == 'workflow_dispatch' || (github.event.pull_request.merged == true && !contains(github.event.pull_request.title, '[skip version]'))
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
+          ref: ${{ github.event.pull_request.base.ref || github.ref_name }}
           fetch-depth: 0
-      - name: Increment patch version and tag commit
+      - name: Calculate release version
+        id: version
+        env:
+          BASE_BRANCH: ${{ github.event.pull_request.base.ref || github.ref_name }}
         run: |
-          if [[ "${GITHUB_REF_NAME}" == "master" ]]; then
+          if [[ "${BASE_BRANCH}" == "master" ]]; then
             prefix="v0.9."
             initial="0.9.3"
           else
@@ -42,14 +46,14 @@ jobs:
             current="${prefix#v}${patch}"
             tag="${prefix}${patch}"
           fi
-          current_bundle=$(sed -n 's/^  bundleVersion: //p' ProjectSettings/ProjectSettings.asset)
-          if [[ "${current_bundle}" == "${current}" ]]; then
-            echo "Game version is already ${current}; ensuring release tag exists."
-            git tag "${tag}" "${GITHUB_SHA}"
-            git push origin "${tag}"
-            exit 0
-          fi
-          python3 - "${current}" <<'PY'
+          echo "version=${current}" >> "${GITHUB_OUTPUT}"
+          echo "tag=${tag}" >> "${GITHUB_OUTPUT}"
+          echo "branch=${BASE_BRANCH}" >> "${GITHUB_OUTPUT}"
+      - name: Update Unity bundle version
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          python3 - "${VERSION}" <<'PY'
           from pathlib import Path
           import re
           import sys
@@ -60,13 +64,31 @@ jobs:
               raise SystemExit("Could not update exactly one bundleVersion")
           path.write_text(updated)
           PY
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add ProjectSettings/ProjectSettings.asset
-          if git diff --cached --quiet; then
-            echo "Version already current; no commit created."
-            exit 0
-          fi
-          git commit -m "[skip version] Bump game version to ${current}"
-          git tag "${tag}"
-          git push origin "HEAD:${GITHUB_REF_NAME}" "${tag}"
+      - name: Create or update version pull request
+        id: pr
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ github.token }}
+          branch: automation/release-version-${{ steps.version.outputs.version }}
+          delete-branch: true
+          base: ${{ steps.version.outputs.branch }}
+          title: "[skip version] Bump game version to ${{ steps.version.outputs.version }}"
+          commit-message: "[skip version] Bump game version to ${{ steps.version.outputs.version }}"
+          body: |
+            Automated release version update for `${{ steps.version.outputs.branch }}`.
+
+            - Set `bundleVersion` to `${{ steps.version.outputs.version }}`.
+            - Add the matching tag `${{ steps.version.outputs.tag }}` after merge.
+
+            ## Online compatibility
+
+            - [x] Compatible
+            - [ ] Rules bump
+            - [ ] Protocol bump
+            - [ ] Both
+
+            Reason: Release version bookkeeping only; online protocol, rules and catalog are unchanged.
+          labels: automated,release
+      - name: Report created version PR
+        if: steps.pr.outputs.pull-request-number != ''
+        run: echo "Version PR #${{ steps.pr.outputs.pull-request-number }} created or updated."
