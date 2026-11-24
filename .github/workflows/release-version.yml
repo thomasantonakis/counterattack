@@ -8,23 +8,21 @@ on:
 
 permissions:
   contents: write
-  pull-requests: write
 
 concurrency:
   group: release-version-${{ github.event.pull_request.base.ref || github.ref_name }}
   cancel-in-progress: false
 
 jobs:
-  bump-version:
-    if: github.event_name == 'workflow_dispatch' || (github.event.pull_request.merged == true && !contains(github.event.pull_request.title, '[skip version]'))
+  tag-release:
+    if: (github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true) && !contains(github.event.pull_request.title, '[skip version]')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
-          ref: ${{ github.event.pull_request.base.ref || github.ref_name }}
+          ref: ${{ github.event.pull_request.merge_commit_sha || github.sha }}
           fetch-depth: 0
-      - name: Calculate release version
-        id: version
+      - name: Tag the next branch version
         env:
           BASE_BRANCH: ${{ github.event.pull_request.base.ref || github.ref_name }}
         run: |
@@ -38,57 +36,13 @@ jobs:
           git fetch --force origin "+refs/tags/${prefix}*:refs/tags/${prefix}*" || true
           latest=$(git tag --list "${prefix}*" --sort=-version:refname | head -n 1)
           if [[ -z "${latest}" ]]; then
-            current="${initial}"
-            tag="v${current}"
+            version="${initial}"
           else
             patch=${latest##*.}
             patch=$((patch + 1))
-            current="${prefix#v}${patch}"
-            tag="${prefix}${patch}"
+            version="${prefix#v}${patch}"
           fi
-          echo "version=${current}" >> "${GITHUB_OUTPUT}"
-          echo "tag=${tag}" >> "${GITHUB_OUTPUT}"
-          echo "branch=${BASE_BRANCH}" >> "${GITHUB_OUTPUT}"
-      - name: Update Unity bundle version
-        env:
-          VERSION: ${{ steps.version.outputs.version }}
-        run: |
-          python3 - "${VERSION}" <<'PY'
-          from pathlib import Path
-          import re
-          import sys
-          path = Path("ProjectSettings/ProjectSettings.asset")
-          text = path.read_text()
-          updated, count = re.subn(r"(?m)^  bundleVersion: .*?$", f"  bundleVersion: {sys.argv[1]}", text, count=1)
-          if count != 1:
-              raise SystemExit("Could not update exactly one bundleVersion")
-          path.write_text(updated)
-          PY
-      - name: Create or update version pull request
-        id: pr
-        uses: peter-evans/create-pull-request@v7
-        with:
-          token: ${{ github.token }}
-          branch: automation/release-version-${{ steps.version.outputs.version }}
-          delete-branch: true
-          base: ${{ steps.version.outputs.branch }}
-          title: "[skip version] Bump game version to ${{ steps.version.outputs.version }}"
-          commit-message: "[skip version] Bump game version to ${{ steps.version.outputs.version }}"
-          body: |
-            Automated release version update for `${{ steps.version.outputs.branch }}`.
-
-            - Set `bundleVersion` to `${{ steps.version.outputs.version }}`.
-            - Add the matching tag `${{ steps.version.outputs.tag }}` after merge.
-
-            ## Online compatibility
-
-            - [x] Compatible
-            - [ ] Rules bump
-            - [ ] Protocol bump
-            - [ ] Both
-
-            Reason: Release version bookkeeping only; online protocol, rules and catalog are unchanged.
-          labels: automated,release
-      - name: Report created version PR
-        if: steps.pr.outputs.pull-request-number != ''
-        run: echo "Version PR #${{ steps.pr.outputs.pull-request-number }} created or updated."
+          tag="v${version}"
+          git tag "${tag}" "${GITHUB_SHA}"
+          git push origin "${tag}"
+          echo "Tagged merge as ${tag}; Unity bundleVersion updates still require a PR."
