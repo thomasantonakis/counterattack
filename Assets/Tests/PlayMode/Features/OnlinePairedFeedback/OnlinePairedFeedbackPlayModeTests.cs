@@ -33,6 +33,10 @@ public sealed class OnlinePairedFeedbackPlayModeTests
     public IEnumerator PenaltyTossCanResumeAndRollAfterTheFinalWhistle()
         => Run("OnlineFullRoomSceneFixture", "RunPenaltyTossPauseFromFinalWhistle");
 
+    [UnityTest]
+    public IEnumerator GuestAcceptsEachPenaltyTossCountdownPublication()
+        => Run("OnlineFullRoomSceneFixture", "RunPenaltyTossCountdownPublication");
+
     [UnityTearDown]
     public IEnumerator Cleanup()
     {

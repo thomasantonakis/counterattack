@@ -164,4 +164,59 @@ public sealed partial class OnlineFullRoomSceneFixture
         }
         Assert.That(awayTurn.coin.awayRoll, Is.InRange(1, 6), "Away's automatic roll must continue after resuming");
     }
+
+    public IEnumerator RunPenaltyTossCountdownPublication()
+    {
+        InitializeFixture();
+        SuppressLegacyRoomRunner();
+        var data = Data(16, false);
+        data.gameSettings.numberOfHalfs = 1;
+        data.gameSettings.halfDuration = 15;
+        data.gameSettings.tiebreaker = "Penalties";
+        var protocol = NativePresentationProtocol();
+        yield return LoadNativeRoom(data, false, protocol.MatchId);
+        var board = Object.FindAnyObjectByType<OnlineRoomStartup>().Board;
+        var authority = new OnlineGroundPassAuthority(board.match, protocol);
+        pause = new OnlineSharedPause(protocol, board.match);
+        var replica = new OnlineGroundPassReplica(protocol.MatchId, board.tokens.Select(OnlineRollPublication.ActorId),
+            OnlineFullRoomBootstrap.Catalog);
+
+        AcceptThroughWire(pause.Capture(authority));
+        typeof(MatchManager).GetMethod("BeginHalfEndFlow", BindingFlags.Instance | BindingFlags.NonPublic)
+            .Invoke(board.match, null);
+        var initial = pause.Capture(authority);
+        Assert.That(initial.stage, Is.EqualTo("coin.home"));
+        Assert.That(initial.coin.rollSeconds, Is.EqualTo(5));
+        AcceptThroughWire(initial);
+        AcceptThroughWire(pause.Capture(authority));
+
+        OnlineGroundPassState countdown;
+        float deadline = Time.realtimeSinceStartup + 3f;
+        do
+        {
+            yield return null;
+            countdown = pause.Capture(authority);
+        } while (countdown.coin.rollSeconds == initial.coin.rollSeconds && Time.realtimeSinceStartup < deadline);
+
+        Assert.That(countdown.coin.rollSeconds, Is.InRange(1, 4));
+        Assert.That(countdown.revision, Is.EqualTo(initial.revision));
+        Assert.That(countdown.decisionId, Is.EqualTo(initial.decisionId));
+        AcceptThroughWire(countdown);
+        Assert.That(countdown.publicationSequence, Is.GreaterThan(initial.publicationSequence));
+        Assert.That(replica.State.coin.rollSeconds, Is.EqualTo(countdown.coin.rollSeconds));
+        AcceptThroughWire(countdown);
+
+        void AcceptThroughWire(OnlineGroundPassState state)
+        {
+            var reader = new OnlineGroundPassWire();
+            OnlineGroundPassMessage decoded = null;
+            foreach (var packet in OnlineGroundPassWire.Encode(new OnlineGroundPassMessage
+            {
+                kind = "state", matchId = state.matchId, state = state
+            })) decoded = reader.Receive(packet, packet.Length);
+            Assert.That(decoded, Is.Not.Null);
+            Assert.That(replica.Apply(decoded.state), Is.True,
+                $"Guest rejected {state.stage} with {state.coin?.rollSeconds}s left at publication {state.publicationSequence}");
+        }
+    }
 }

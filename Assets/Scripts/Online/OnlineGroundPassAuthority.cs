@@ -87,6 +87,7 @@ namespace CounterAttack.Online
         private readonly OnlineMatchProtocol protocol;
         private readonly Dictionary<string, HexCell> targetActions = new(StringComparer.Ordinal);
         private string fingerprint, decisionId;
+        private int? publishedCoinRollSeconds;
         private long decisionSequence, publicationSequence;
         private bool executing, faulted;
         private OnlineSharedPause sharedPause;
@@ -126,6 +127,8 @@ namespace CounterAttack.Online
         {
             var state = ReadState();
             var next = JsonUtility.ToJson(state);
+            // The wire serializes the nullable countdown, which JsonUtility omits.
+            var coinRollSeconds = state.coin?.rollSeconds;
             var boundary = JsonUtility.ToJson(new Boundary { stage=state.stage, owner=state.owner, gameState=state.gameState,
                 possession=state.possessionTeam, lastTouch=state.lastTouch, ballOnBoard=state.ballOnBoard, ballMoving=state.ballMoving,
                 homeDirection=state.homeDirection,awayDirection=state.awayDirection,
@@ -136,10 +139,11 @@ namespace CounterAttack.Online
                 actions=state.legalActions, tokens=state.tokens, header=state.header });
             bool boundaryChanged = boundary != boundaryFingerprint
                 || decisionId != null && !protocol.HasPendingDecision && state.legalActions.Length > 0;
-            if (next != fingerprint || boundaryChanged)
+            if (next != fingerprint || coinRollSeconds != publishedCoinRollSeconds || boundaryChanged)
             {
                 publicationSequence = checked(publicationSequence + 1);
                 fingerprint = next;
+                publishedCoinRollSeconds = coinRollSeconds;
             }
             // Clock/budget publications must not revoke an otherwise unchanged
             // legal command merely because it spent time in transit.
