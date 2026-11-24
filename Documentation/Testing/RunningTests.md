@@ -36,6 +36,8 @@ For the paired Draft, aiming, status and penalty-toss regressions, use
 category `OnlinePairedFeedback`. The authored scene cases cover Draft averages,
 Novice and Experienced kickoff aiming, guest CanShootTo elevation and movement
 status rows, and penalty-toss input and resume after a tied final whistle.
+`GuestAcceptsEachPenaltyTossCountdownPublication` checks the encoded
+countdown updates advance their publication sequence without changing the roll decision.
 
 For Room coin toss/half transitions, use EditMode `OnlineRoomCoinTossEditorTests`
 (13 cases) and PlayMode `OnlineRoomCoinTossPlayModeTests` (24 cases), category
