@@ -113,6 +113,9 @@ public sealed partial class OnlineFullRoomSceneFixture
     }
 
     public IEnumerator RunNativeShootoutRollsAndPause(bool homePauses)
+        => RunNativeShootoutRollsAndPause(homePauses, guestCheck: null);
+
+    private IEnumerator RunNativeShootoutRollsAndPause(bool homePauses, string guestCheck)
     {
         InitializeFixture();
         SuppressLegacyRoomRunner();
@@ -186,6 +189,7 @@ public sealed partial class OnlineFullRoomSceneFixture
         Assert.That(Control(true, acknowledge), Is.EqualTo(OnlineCommandStatus.Accepted));
         Assert.That(pause.Capture(authority).rollPanel?.resultId, Is.EqualTo(result.rollPanel.resultId));
         Assert.That(Control(false, acknowledge), Is.EqualTo(OnlineCommandStatus.Accepted));
+        var betweenKicks = pause.Capture(authority);
         deadline = Time.realtimeSinceStartup + 15f;
         while (!shot.isWaitingForShotRoll && Time.realtimeSinceStartup < deadline)
         {
@@ -195,6 +199,7 @@ public sealed partial class OnlineFullRoomSceneFixture
         }
         Assert.That(manager.homeAttempts, Is.EqualTo(1));
         Assert.That(shot.isWaitingForShotRoll && !manager.currentShooter.isHomeTeam, Is.True);
+        var nextShooter = pause.Capture(authority);
         shot.StartCoroutine(shot.StartShotRoll(new RollInputOverride { hasOverride = true, roll = 1 }));
         deadline = Time.realtimeSinceStartup + 15f;
         while (!shot.isWaitingForShotRoll && Time.realtimeSinceStartup < deadline)
@@ -217,8 +222,18 @@ public sealed partial class OnlineFullRoomSceneFixture
 
         yield return LoadPresentationGuest(data, protocol.MatchId, nativeRoom: true);
         board = Object.FindAnyObjectByType<OnlineRoomStartup>().Board;
-        ConfigureFixtureTeam(board, OnlineTeam.Home);
+        ConfigureFixtureTeam(board, guestCheck == null ? OnlineTeam.Home : OnlineTeam.Away);
         var replica = new OnlineGroundPassReplica(protocol.MatchId, board.tokens.Select(OnlineRollPublication.ActorId), OnlineFullRoomBootstrap.Catalog);
+        if (guestCheck == "portraits")
+        {
+            VerifyGuestShootoutPortraits(replica, board, shooter, save, nextShooter);
+            yield break;
+        }
+        if (guestCheck == "drag")
+        {
+            yield return VerifyGuestShootoutRollDrag(replica, board, shooter, paused, save, betweenKicks, nextShooter);
+            yield break;
+        }
         foreach (var snapshot in new[] { shooter, paused, save, result, pausedResult })
         {
             ApplyPublication(replica, board, snapshot);

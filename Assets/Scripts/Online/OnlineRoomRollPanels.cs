@@ -153,7 +153,7 @@ namespace CounterAttack.Online
             panels = new[]
             {
                 new Panel(duel.visuals, duelOverlay, () => duel.IsOpen, () => duel.IsComplete,
-                    () => duel.Dismiss(), duel.FitAndClamp),
+                    () => duel.Dismiss(), duel.RestorePanelPosition),
                 new Panel(header.visuals, headerOverlay, () => header.IsOpen, () => header.IsOnlineResultReady,
                     header.Close, header.FitAndClamp,
                     (RectTransform)header.attackTeam.transform.parent, (RectTransform)header.defenseTeam.transform.parent),

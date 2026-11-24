@@ -221,6 +221,8 @@ public class MatchStatsUI : MonoBehaviour
     [SerializeField] private GameInputManager lineupHoverInput;
     private PlayerToken lastHoveredHomeToken;
     private PlayerToken lastHoveredAwayToken;
+    private PlayerToken shootoutHomePreview;
+    private PlayerToken shootoutAwayPreview;
 
     private const float TablesTopPadding = 0f;
     private const float CardColumnGap = 0.035f;
@@ -1155,6 +1157,22 @@ public class MatchStatsUI : MonoBehaviour
         RefreshHoverCards();
     }
 
+    internal void SetPublishedShootoutContestants(PlayerToken shooter, PlayerToken goalkeeper)
+    {
+        PlayerToken home = null;
+        PlayerToken away = null;
+        if (shooter != null && goalkeeper != null)
+        {
+            home = shooter.isHomeTeam ? shooter : goalkeeper;
+            away = shooter.isHomeTeam ? goalkeeper : shooter;
+        }
+
+        if (shootoutHomePreview == home && shootoutAwayPreview == away) return;
+        shootoutHomePreview = home;
+        shootoutAwayPreview = away;
+        RefreshHoverCards();
+    }
+
     private void HandleHoverTokenChanged(PlayerToken token, HexCell hex)
     {
         if (RoomInputOwnership.BlocksHover) return;
@@ -1178,8 +1196,10 @@ public class MatchStatsUI : MonoBehaviour
     private void RefreshHoverCards()
     {
         EnsureHoverCards();
-        RefreshHoverCard(homeHoverCard, homeGoalkeeperHoverCard, homeHoverCardAnchor, lineupHoveredHomeToken ?? lastHoveredHomeToken, true);
-        RefreshHoverCard(awayHoverCard, awayGoalkeeperHoverCard, awayHoverCardAnchor, lineupHoveredAwayToken ?? lastHoveredAwayToken, false);
+        RefreshHoverCard(homeHoverCard, homeGoalkeeperHoverCard, homeHoverCardAnchor,
+            shootoutHomePreview ?? lineupHoveredHomeToken ?? lastHoveredHomeToken, true);
+        RefreshHoverCard(awayHoverCard, awayGoalkeeperHoverCard, awayHoverCardAnchor,
+            shootoutAwayPreview ?? lineupHoveredAwayToken ?? lastHoveredAwayToken, false);
     }
 
     private void RefreshHoverCard(PlayerCard outfieldCard, GoalkeeperCard goalkeeperCard, RectTransform anchor, PlayerToken token, bool isHomeTeam)

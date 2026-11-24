@@ -123,6 +123,9 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
     private static bool waitForEscapeRelease;
     private static int reservedEscapeFrame = -1;
     public bool IsOpen => stage != Stage.Closed && !looseBallSuspended;
+    internal bool CanDragPanel => IsOpen || CounterAttack.Online.OnlineRoomSession.IsGuest
+        && visuals != null && visuals.activeInHierarchy
+        && visuals.TryGetComponent(out CanvasGroup overlay) && overlay.blocksRaycasts;
     public bool IsComplete => stage == Stage.Complete;
     public bool DribblerOnLeft => dribblerView == leftPlayer;
     public bool HasSceneBindings => visuals != null && panel != null && title != null && outcome != null
@@ -238,12 +241,10 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
         visuals.SetActive(true);
         UnityEngine.EventSystems.EventSystem.current?.SetSelectedGameObject(null);
         visuals.transform.SetAsLastSibling();
-        if (rememberedPosition) panel.anchoredPosition = lastDraggedPosition;
-        else ResetPanelPosition();
         stage = Stage.Defender;
         defenderView.die.Begin(true);
         footer.text = "Press [R] — tackler rolls";
-        FitAndClamp();
+        RestorePanelPosition();
         return true;
     }
 
@@ -305,9 +306,7 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
         var match = MatchManager.Instance;
         string currentMatch = match != null ? match.GetEntityId().ToString() + ":" + match.gameData?.playSessionId : "";
         if (matchKey != currentMatch) { matchKey = currentMatch; rememberedPosition = false; }
-        if (rememberedPosition) panel.anchoredPosition = lastDraggedPosition;
-        else ResetPanelPosition();
-        FitAndClamp();
+        RestorePanelPosition();
         return true;
     }
 
@@ -1048,6 +1047,20 @@ public sealed class DuelResolutionPanelController : MonoBehaviour
         if(looseRecoveryContent==null)return;
         var recovery=(RectTransform)looseRecoveryContent.transform;
         recovery.anchoredPosition=new Vector2(recovery.anchoredPosition.x,-(recoveryAttached?recoveryAttachedTop:recoveryStandaloneTop));
+    }
+
+    internal void RestorePanelPosition()
+    {
+        if (panel == null) return;
+        if (rememberedPosition)
+        {
+            panel.anchoredPosition = lastDraggedPosition;
+            FitAndClamp();
+        }
+        else
+        {
+            ResetPanelPosition();
+        }
     }
 
     public void ResetPanelPosition()

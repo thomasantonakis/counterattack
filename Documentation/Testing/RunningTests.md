@@ -60,6 +60,12 @@ select ordering (8), paused substitution reconciliation (4), first-kick outcomes
 deterministic dice and fresh inert guests, with no external EOS peer required.
 Use focused method filters serially for iteration; retain native XML/progress.
 
+For guest shootout presentation, use PlayMode category
+`OnlineGuestShootoutPresentation` in
+`Assets/Tests/PlayMode/Features/OnlineGuestShootoutPresentation/`. It covers
+the current shooter and goalkeeper cards, the authored dice panel drag handle,
+and local position restoration across a pause and the next kick.
+
 For in-flight full Room snapshot continuity, run EditMode fixture
 `OnlineSnapshotPoseEditorTests` (9 cases) and PlayMode fixture
 `OnlineSnapshotPosePlayModeTests` (5 cases), category `OnlineSnapshotPose`.
