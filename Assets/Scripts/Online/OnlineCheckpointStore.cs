@@ -31,7 +31,10 @@ namespace CounterAttack.Online
     public sealed class OnlineCheckpointSummary
     {
         public Guid Slot { get; internal set; }
-        public string Description { get; internal set; }
+        public string DisplayName { get; internal set; }
+        public string Teams { get; internal set; }
+        public string Score { get; internal set; }
+        public string Clock { get; internal set; }
         public DateTime SavedUtc { get; internal set; }
     }
 
@@ -100,10 +103,10 @@ namespace CounterAttack.Online
                     {
                         Slot = slot,
                         SavedUtc = checkpoint.savedUtc,
-                        Description = $"{checkpoint.displayName}\n"
-                            + $"{data.gameSettings.homeTeamName} {data.stats.homeTeamStats?.totalGoals ?? 0}–{data.stats.awayTeamStats?.totalGoals ?? 0} {data.gameSettings.awayTeamName}\n"
-                            + $"Half {clock.currentHalf} · {time / 60:00}:{time % 60:00}\n"
-                            + $"Saved {checkpoint.savedUtc.ToLocalTime():g}"
+                        DisplayName = checkpoint.displayName,
+                        Teams = $"{data.gameSettings.homeTeamName} vs {data.gameSettings.awayTeamName}",
+                        Score = $"{data.stats.homeTeamStats?.totalGoals ?? 0}–{data.stats.awayTeamStats?.totalGoals ?? 0}",
+                        Clock = $"H{clock.currentHalf} {time / 60:00}:{time % 60:00}"
                     });
                 }
                 catch (Exception error) when (error is IOException or UnauthorizedAccessException or JsonException

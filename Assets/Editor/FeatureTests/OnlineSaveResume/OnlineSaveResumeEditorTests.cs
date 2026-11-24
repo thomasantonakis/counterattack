@@ -91,7 +91,8 @@ public sealed class OnlineSaveResumeEditorTests
         File.WriteAllText(Path.Combine(directory, Guid.NewGuid().ToString("N") + ".json"), "{bad json");
         var entry = store.Browse(out int unreadable).Single();
         Assert.That(entry.Slot, Is.EqualTo(slot));
-        Assert.That(entry.Description, Does.Contain("Home 2–0 Away"));
+        Assert.That(entry.Teams, Is.EqualTo("Home vs Away"));
+        Assert.That(entry.Score, Is.EqualTo("2–0"));
         Assert.That(unreadable, Is.EqualTo(1));
     }
 

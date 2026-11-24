@@ -85,6 +85,17 @@ public sealed partial class OnlineFullRoomSceneFixture
             yield return null;
 
         Assert.That(board.match.currentState, Is.EqualTo(MatchManager.GameState.EndOfStandardPass));
+        var scorer = board.tokens.Single(token => token.isHomeTeam && token.jerseyNumber == 2);
+        string scorerName = scorer.playerName;
+        scorer.ReceiveYellowCard();
+        scorer.ReceiveInjury();
+        var log = board.match.gameData.gameLog;
+        var opponent = board.tokens.Single(token => !token.isHomeTeam && token.jerseyNumber == 2);
+        log.LogEvent(scorer, MatchManager.ActionType.YellowCardShown, connectedToken: opponent);
+        log.LogEvent(scorer, MatchManager.ActionType.Injured, connectedToken: opponent);
+        log.LogEvent(scorer, MatchManager.ActionType.ShotAttempt);
+        log.LogEvent(scorer, MatchManager.ActionType.ShotOnTarget);
+        log.LogEvent(scorer, MatchManager.ActionType.GoalScored);
         GuestPause(OnlineSharedPause.RequestAction);
         Assert.That(view.pausePanel.activeSelf, Is.True);
         Assert.That(view.resumeButton.interactable, Is.False, "The guest owns the pause");
@@ -104,6 +115,12 @@ public sealed partial class OnlineFullRoomSceneFixture
         Assert.That(checkpoint.match.runtimeSnapshot.ball.x, Is.EqualTo(target.coordinates.x));
         Assert.That(checkpoint.match.runtimeSnapshot.ball.z, Is.EqualTo(target.coordinates.z));
         Assert.That(checkpoint.match.events.Count, Is.GreaterThan(0));
+        Assert.That(checkpoint.match.runtimeSnapshot.stats.homeTeamStats.totalGoals, Is.EqualTo(1));
+        var savedPlayerStats = checkpoint.match.runtimeSnapshot.stats.playerStats
+            .Single(entry => entry.playerKey == MatchManager.GetStableTokenKey(scorer)).stats;
+        Assert.That(savedPlayerStats.goals, Is.EqualTo(1));
+        Assert.That(savedPlayerStats.yellowCards, Is.EqualTo(1));
+        Assert.That(savedPlayerStats.injuries, Is.EqualTo(1));
 
         view.saveMatchButton.onClick.Invoke();
         Assert.That(Directory.GetFiles(slotFolder, "*.json"), Has.Length.EqualTo(1));
@@ -123,15 +140,33 @@ public sealed partial class OnlineFullRoomSceneFixture
 
         yield return EditorSceneManager.LoadSceneAsyncInPlayMode("Assets/Scenes/OnlineModeMenu.unity", new LoadSceneParameters(LoadSceneMode.Single));
         var menu = Object.FindAnyObjectByType<OnlineModeMenu>();
-        typeof(OnlineModeMenu).GetField("checkpointStore", flags).SetValue(menu, store);
         Assert.That(menu.loadMatchButton.gameObject.activeInHierarchy, Is.True);
-        menu.loadMatchButton.onClick.Invoke();
-        Assert.That(menu.loadMatchPanel.activeInHierarchy, Is.True);
-        Assert.That(menu.hostCheckpoint.interactable, Is.True);
-        Assert.That(menu.checkpointSummary.text, Does.Contain("After kickoff pass"));
-        Assert.That(menu.checkpointSummary.text, Does.Contain("0–0"));
-        menu.cancelCheckpoint.onClick.Invoke();
-        Assert.That(menu.loadMatchPanel.activeSelf, Is.False);
+        void BindTestStore(Scene scene, LoadSceneMode mode)
+        {
+            if (scene.name != "CreateLoadRoom") return;
+            var sceneBrowser = Object.FindAnyObjectByType<CreateLoadRoomManager>();
+            typeof(CreateLoadRoomManager).GetField("onlineStore", flags).SetValue(sceneBrowser, store);
+        }
+        SceneManager.sceneLoaded += BindTestStore;
+        try
+        {
+            menu.loadMatchButton.onClick.Invoke();
+            yield return null;
+            yield return null;
+        }
+        finally { SceneManager.sceneLoaded -= BindTestStore; }
+        Assert.That(SceneManager.GetActiveScene().name, Is.EqualTo("CreateLoadRoom"));
+        var browser = Object.FindAnyObjectByType<CreateLoadRoomManager>();
+        var rows = (Transform)typeof(CreateLoadRoomManager).GetField("rowsContent", flags).GetValue(browser);
+        var row = rows.Cast<Transform>().Single(child => child.gameObject.activeInHierarchy && child.name == "SaveRow_After kickoff pass");
+        Assert.That(row.GetComponent<UnityEngine.UI.Button>().IsInteractable(), Is.True);
+        Assert.That(row.GetComponentsInChildren<TMPro.TMP_Text>().Select(label => label.text),
+            Does.Contain("After kickoff pass").And.Contain("1–0"));
+        var cancel = (UnityEngine.UI.Button)typeof(CreateLoadRoomManager).GetField("loadBrowserCancelButton", flags).GetValue(browser);
+        cancel.onClick.Invoke();
+        yield return null;
+        yield return null;
+        Assert.That(SceneManager.GetActiveScene().name, Is.EqualTo(OnlineModeMenu.SceneName));
 
         const string resumedMatch = "new-checkpoint-session";
         protocol = OnlineFrontendSessionPolicy.CreateMatchProtocol(resumedMatch, "home", "away", version);
@@ -189,6 +224,7 @@ public sealed partial class OnlineFullRoomSceneFixture
         Assert.That(recovery.AcknowledgeSnapshot(guestConnection, oldGeneration), Is.False);
         Assert.That(recovery.AcknowledgeSnapshot(guestConnection, recovery.Generation), Is.True);
         board.Display(pause.Capture(authority), "Resume");
+        AssertRestoredStats(board);
         Assert.That(resumedView.pausePanel.activeSelf, Is.True);
         Assert.That(resumedView.resumeButton.interactable, Is.True);
         resumedView.resumeButton.onClick.Invoke();
@@ -222,6 +258,7 @@ public sealed partial class OnlineFullRoomSceneFixture
         var guestBoard = Object.FindAnyObjectByType<OnlineRoomStartup>().Board;
         var replica = new OnlineGroundPassReplica(resumedMatch, guestBoard.tokens.Select(OnlineRollPublication.ActorId), version.Catalog);
         ApplyPublication(replica, guestBoard, held);
+        AssertRestoredStats(guestBoard);
         var guestView = Object.FindAnyObjectByType<PauseMenuManager>(FindObjectsInactive.Include);
         Assert.That(guestView.saveMatchAsButton.interactable, Is.False);
         guestView.saveMatchAsButton.onClick.Invoke();
@@ -231,5 +268,27 @@ public sealed partial class OnlineFullRoomSceneFixture
         Assert.That(replica.State.movementActive, Is.True);
         Assert.That(replica.State.resumePending, Is.False);
         Assert.That(File.ReadAllBytes(saved), Is.EqualTo(sourceBytes));
+
+        void AssertRestoredStats(OnlineGroundPassBoard restoredBoard)
+        {
+            var restoredMatch = restoredBoard.match;
+            var player = restoredBoard.tokens.Single(token => token.isHomeTeam && token.jerseyNumber == 2);
+            var stats = restoredMatch.gameData.stats.GetPlayerStats(player);
+            Assert.That(stats.goals, Is.EqualTo(1));
+            Assert.That(stats.yellowCards, Is.EqualTo(1));
+            Assert.That(stats.injuries, Is.EqualTo(1));
+            Assert.That(player.isBooked && player.isInjured, Is.True);
+            Assert.That(restoredMatch.homeScorers.Single().scorer, Is.EqualTo(scorerName));
+            Assert.That(restoredBoard.liveScoreboard.homeScoreText.text, Is.EqualTo("1"), "Scoreboard refreshes before Ready");
+            var statsView = restoredMatch.matchStatsUI;
+            var titles = (TMPro.TMP_Text[])typeof(MatchStatsUI).GetField("statTitleTexts", flags).GetValue(statsView);
+            var home = (TMPro.TMP_Text[])typeof(MatchStatsUI).GetField("homeStatsTexts", flags).GetValue(statsView);
+            int cards = System.Array.FindIndex(titles, text => text.text == "Yellow / Red Cards");
+            int injuries = System.Array.FindIndex(titles, text => text.text == "Injuries / Subs Used");
+            Assert.That(cards, Is.GreaterThanOrEqualTo(0));
+            Assert.That(injuries, Is.GreaterThanOrEqualTo(0));
+            Assert.That(home[cards].text, Is.EqualTo("1/0"), "The stats panel refreshes while held");
+            Assert.That(home[injuries].text, Is.EqualTo("1/0"));
+        }
     }
 }

@@ -22,11 +22,12 @@ build and launch script is `Documentation/Setup/BuildOnlineGameWindows.ps1 -Laun
 2. Have Away pause. On Home, select **Save Match As**, give it a name, and
    confirm the saved message. Both players return to the main menu and close
    their apps.
-3. Reopen both apps. On the original host, use **Online → Load Match → Host
-   Saved Match** and copy the fresh code. If a third EOS profile is available,
+3. Reopen both apps. On the original host, choose **Online → Load Match**,
+   select the save from the table, and copy the fresh code. If a third EOS profile is available,
    try that profile first and verify it cannot take the saved Away seat. Then
    join with the original guest's device and profile.
-4. Compare teams, score, half, time and ball position before selecting **Ready**.
+4. Compare teams, score, half, time, ball position, and player statistics and
+   status before selecting **Ready**.
    Confirm one Ready leaves play held. Confirm both release play and that the
    current attacking team can make the next move on both screens.
 5. Leave without saving. Load the same slot again, verify that it returns to

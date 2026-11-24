@@ -4,6 +4,8 @@ using UnityEngine.UI;
 using TMPro;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using CounterAttack.Online;
 
 public class CreateLoadRoomManager : MonoBehaviour
 {
@@ -42,15 +44,39 @@ public class CreateLoadRoomManager : MonoBehaviour
     };
 
     private string selectedGameMode = ApplicationManager.HotSeatGameMode;
+    private static bool openOnlineBrowser;
+    private bool onlineBrowser;
+    private OnlineCheckpointStore onlineStore;
+    private static readonly SaveColumnDefinition[] OnlineColumns =
+    {
+        new("CreatedAt", "Save name", 380f),
+        new("Teams", "Teams", 510f),
+        new("Score", "Score", 136f),
+        new("Clock", "Time", 168f),
+        new("LastActivityAt", "Saved", 320f)
+    };
+
+    public static void OpenOnlineBrowser()
+    {
+        openOnlineBrowser = true;
+        SceneManager.LoadScene("CreateLoadRoom");
+    }
 
     private void Awake()
     {
+        onlineBrowser = openOnlineBrowser;
+        openOnlineBrowser = false;
         ResolveSelectedGameMode();
         BindCreateLoadReferences();
         BindLoadBrowserReferences();
         ConfigureLoadBrowser();
         ApplyModeLabels();
         CloseLoadBrowser();
+    }
+
+    private void Start()
+    {
+        if (onlineBrowser) LoadRoom();
     }
 
     public void CreateNewRoom()
@@ -75,7 +101,7 @@ public class CreateLoadRoomManager : MonoBehaviour
 
     public void BackToMainMenu()
     {
-        SceneManager.LoadScene(MainMenuSceneName);
+        SceneManager.LoadScene(onlineBrowser ? OnlineModeMenu.SceneName : MainMenuSceneName);
     }
     
     public void ExitGameFromCreateLoadRoom()
@@ -86,6 +112,11 @@ public class CreateLoadRoomManager : MonoBehaviour
 
     private void ResolveSelectedGameMode()
     {
+        if (onlineBrowser)
+        {
+            selectedGameMode = ApplicationManager.OnlineGameMode;
+            return;
+        }
         ApplicationManager.EnsureInstanceExists();
         string requestedMode = ApplicationManager.Instance.SelectedRoomGameMode;
         selectedGameMode = string.IsNullOrWhiteSpace(requestedMode)
@@ -181,9 +212,15 @@ public class CreateLoadRoomManager : MonoBehaviour
     {
         if (loadBrowserCancelButton != null)
         {
-            loadBrowserCancelButton.onClick.RemoveListener(CloseLoadBrowser);
-            loadBrowserCancelButton.onClick.AddListener(CloseLoadBrowser);
+            loadBrowserCancelButton.onClick.RemoveListener(CancelLoadBrowser);
+            loadBrowserCancelButton.onClick.AddListener(CancelLoadBrowser);
         }
+    }
+
+    private void CancelLoadBrowser()
+    {
+        if (onlineBrowser) SceneManager.LoadScene(OnlineModeMenu.SceneName);
+        else CloseLoadBrowser();
     }
 
     private void CloseLoadBrowser()
@@ -210,6 +247,12 @@ public class CreateLoadRoomManager : MonoBehaviour
             previewRow.SetActive(false);
         }
 
+        if (onlineBrowser)
+        {
+            RebuildOnlineRows(columnLayouts);
+            RebuildRowsLayout();
+            return;
+        }
         List<RoomSaveSummary> summaries = RoomSaveService.GetEligibleSaveSummaries(selectedGameMode);
         Debug.Log($"{selectedGameMode} load browser found {summaries.Count} eligible save file(s).");
         emptyStateText.text = summaries.Count == 0
@@ -218,20 +261,54 @@ public class CreateLoadRoomManager : MonoBehaviour
 
         foreach (RoomSaveSummary summary in summaries)
         {
-            CreateSaveRow(summary, columnLayouts);
+            CreateSaveRow(summary.FileName, columnLayouts, key => GetColumnValue(summary, key),
+                () => SelectSave(summary), () => DeleteSave(summary));
         }
 
         RebuildRowsLayout();
     }
 
-    private void CreateSaveRow(RoomSaveSummary summary, IReadOnlyList<SaveColumnLayout> columnLayouts)
+    private void RebuildOnlineRows(IReadOnlyList<SaveColumnLayout> columns)
+    {
+        try
+        {
+            onlineStore ??= new OnlineCheckpointStore();
+            var saves = onlineStore.Browse(out int unreadable);
+            emptyStateText.text = saves.Count == 0 ? "No compatible online saves on this device." : "";
+            if (loadBrowserStatusText != null)
+                loadBrowserStatusText.text = unreadable == 0
+                    ? "Select a save to host its resume lobby."
+                    : $"{unreadable} unsupported or damaged save(s) were skipped.";
+            foreach (var save in saves)
+            {
+                string Value(string key) => key switch
+                {
+                    "CreatedAt" => save.DisplayName,
+                    "Teams" => save.Teams,
+                    "Score" => save.Score,
+                    "Clock" => save.Clock,
+                    "LastActivityAt" => save.SavedUtc.ToLocalTime().ToString("g"),
+                    _ => ""
+                };
+                CreateSaveRow(save.DisplayName, columns, Value, () => OnlineModeMenu.OpenCheckpointLobby(save.Slot));
+            }
+        }
+        catch (Exception error) when (error is System.IO.IOException or UnauthorizedAccessException)
+        {
+            emptyStateText.text = "Could not read online saves on this device.";
+        }
+    }
+
+    private void CreateSaveRow(string name, IReadOnlyList<SaveColumnLayout> columnLayouts,
+        Func<string, string> value, Action select, Action deleteSave = null)
     {
         GameObject row = Instantiate(previewRow, rowsContent, false);
-        row.name = $"SaveRow_{summary.FileName}";
+        row.name = $"SaveRow_{name}";
         Button rowButton = row.GetComponent<Button>();
         rowButton.onClick.RemoveAllListeners();
-        rowButton.onClick.AddListener(() => SelectSave(summary));
+        rowButton.onClick.AddListener(() => select());
 
+        if (onlineBrowser) ApplyOnlineColumns(row.transform, columnLayouts);
         foreach (SaveColumnLayout columnLayout in columnLayouts)
         {
             Transform column = FindColumnChild(row.transform, columnLayout.Definition.Key);
@@ -246,10 +323,13 @@ public class CreateLoadRoomManager : MonoBehaviour
             {
                 var delete = column.GetComponent<UnityEngine.UI.Button>();
                 delete.onClick.RemoveAllListeners();
-                delete.onClick.AddListener(() => DeleteSave(summary));
+                delete.onClick.AddListener(() => deleteSave?.Invoke());
             }
             else if (column.TryGetComponent(out TextMeshProUGUI label))
-                label.text = GetColumnValue(summary, columnLayout.Definition.Key);
+            {
+                if (onlineBrowser) label.richText = false;
+                label.text = value(columnLayout.Definition.Key);
+            }
         }
         row.SetActive(true);
     }
@@ -341,6 +421,7 @@ public class CreateLoadRoomManager : MonoBehaviour
 
     private List<SaveColumnLayout> GetColumnLayouts()
     {
+        if (onlineBrowser) return OnlineColumns.Select(c => new SaveColumnLayout(c, c.DefaultWidth)).ToList();
         List<SaveColumnLayout> columnLayouts = new();
         HashSet<string> includedColumnKeys = new(StringComparer.Ordinal);
 
@@ -376,6 +457,7 @@ public class CreateLoadRoomManager : MonoBehaviour
         {
             return;
         }
+        if (onlineBrowser) ApplyOnlineColumns(headerRow, columnLayouts);
 
         for (int index = 0; index < columnLayouts.Count; index++)
         {
@@ -401,6 +483,15 @@ public class CreateLoadRoomManager : MonoBehaviour
                 label.text = columnLayout.Definition.Header;
             }
         }
+    }
+
+    private static void ApplyOnlineColumns(Transform parent, IReadOnlyList<SaveColumnLayout> columns)
+    {
+        foreach (Transform child in parent)
+            child.gameObject.SetActive(TryGetColumnDefinition(child.name, out var definition)
+                && columns.Any(column => column.Definition.Key == definition.Key));
+        for (int i = 0; i < columns.Count; i++)
+            FindColumnChild(parent, columns[i].Definition.Key)?.SetSiblingIndex(i);
     }
 
     private static Transform FindColumnChild(Transform parent, string columnKey)

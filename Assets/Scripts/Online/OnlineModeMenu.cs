@@ -3,7 +3,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Linq;
-using System.Collections.Generic;
 
 namespace CounterAttack.Online
 {
@@ -18,12 +17,7 @@ namespace CounterAttack.Online
         public Button joinButton;
         public OnlineFrontendSession sessionPrefab;
         public Button loadMatchButton;
-        public GameObject loadMatchPanel;
-        public TMP_Text checkpointSummary;
-        public Button previousCheckpoint, nextCheckpoint, hostCheckpoint, cancelCheckpoint;
-        private IReadOnlyList<OnlineCheckpointSummary> checkpoints;
-        private OnlineCheckpointStore checkpointStore;
-        private int selectedCheckpoint, skippedCheckpoints;
+        private static System.Guid? pendingCheckpoint;
         private OnlineFrontendSession hostedSession;
         private bool proceeding;
         private string lastHostStatus;
@@ -47,20 +41,25 @@ namespace CounterAttack.Online
                 roomFailure = null;
             }
             loadMatchButton?.onClick.AddListener(OpenLoadMatch);
-            previousCheckpoint?.onClick.AddListener(PreviousCheckpoint);
-            nextCheckpoint?.onClick.AddListener(NextCheckpoint);
-            hostCheckpoint?.onClick.AddListener(HostSelectedCheckpoint);
-            cancelCheckpoint?.onClick.AddListener(CloseLoadMatch);
+        }
+
+        private void Start()
+        {
+            var selected = pendingCheckpoint;
+            pendingCheckpoint = null;
+            if (selected.HasValue) HostSelectedCheckpoint(selected.Value);
+        }
+
+        public static void OpenCheckpointLobby(System.Guid slot)
+        {
+            pendingCheckpoint = slot;
+            SceneManager.LoadScene(SceneName);
         }
 
         private void OnDisable()
         {
             lobbyCode.onValueChanged.RemoveListener(UpdateJoinAvailability);
             loadMatchButton?.onClick.RemoveListener(OpenLoadMatch);
-            previousCheckpoint?.onClick.RemoveListener(PreviousCheckpoint);
-            nextCheckpoint?.onClick.RemoveListener(NextCheckpoint);
-            hostCheckpoint?.onClick.RemoveListener(HostSelectedCheckpoint);
-            cancelCheckpoint?.onClick.RemoveListener(CloseLoadMatch);
         }
 
         public void Host()
@@ -137,52 +136,24 @@ namespace CounterAttack.Online
                 status.text = "Closing the resume lobby…";
                 return;
             }
-            if (hostedSession != null || SessionIsClosing() || loadMatchPanel == null) return;
-            try
-            {
-                checkpointStore ??= new OnlineCheckpointStore();
-                checkpoints = checkpointStore.Browse(out skippedCheckpoints);
-                selectedCheckpoint = 0;
-                loadMatchPanel.SetActive(true);
-                RefreshCheckpoint();
-            }
-            catch (System.Exception error) when (error is System.IO.IOException or System.UnauthorizedAccessException)
-            {
-                status.text = "Could not read online saves on this device.";
-            }
+            if (hostedSession != null || SessionIsClosing()) return;
+            CreateLoadRoomManager.OpenOnlineBrowser();
         }
 
-        private void PreviousCheckpoint() { selectedCheckpoint--; RefreshCheckpoint(); }
-        private void NextCheckpoint() { selectedCheckpoint++; RefreshCheckpoint(); }
-        private void CloseLoadMatch() => loadMatchPanel.SetActive(false);
-
-        private void RefreshCheckpoint()
+        private void HostSelectedCheckpoint(System.Guid slot)
         {
-            selectedCheckpoint = Mathf.Clamp(selectedCheckpoint, 0, Mathf.Max(0, checkpoints.Count - 1));
-            previousCheckpoint.interactable = selectedCheckpoint > 0;
-            nextCheckpoint.interactable = selectedCheckpoint + 1 < checkpoints.Count;
-            hostCheckpoint.interactable = checkpoints.Count > 0;
-            checkpointSummary.text = checkpoints.Count == 0 ? "No compatible online saves were found."
-                : $"{selectedCheckpoint + 1} of {checkpoints.Count}\n{checkpoints[selectedCheckpoint].Description}";
-            if (skippedCheckpoints > 0)
-                checkpointSummary.text += $"\n{skippedCheckpoints} unsupported or damaged save(s).";
-        }
-
-        private void HostSelectedCheckpoint()
-        {
-            if (checkpoints == null || checkpoints.Count == 0 || hostedSession != null || SessionIsClosing()) return;
+            if (hostedSession != null || SessionIsClosing()) return;
             try
             {
                 hostedSession = Instantiate(sessionPrefab);
-                hostedSession.HostCheckpoint(checkpoints[selectedCheckpoint].Slot);
-                CloseLoadMatch();
+                hostedSession.HostCheckpoint(slot);
             }
             catch (System.Exception error) when (error is System.IO.IOException or System.UnauthorizedAccessException
                 or Newtonsoft.Json.JsonException or System.ArgumentException or System.InvalidOperationException
                 or System.FormatException or System.OverflowException)
             {
                 hostedSession?.Close();
-                checkpointSummary.text = "Could not open this online save. It may have been removed, damaged or made by an incompatible build.";
+                status.text = "Could not open this online save. It may have been removed, damaged or made by an incompatible build.";
             }
         }
 

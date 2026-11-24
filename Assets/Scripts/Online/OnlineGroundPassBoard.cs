@@ -35,6 +35,7 @@ namespace CounterAttack.Online
         public Transform displayedBall;
         private MovementPhaseMovedTokensPanel movementPanel;
         private MovementPhaseTokenStatusPanel movementTokenStatusPanel;
+        private bool restoredStatsPresented;
         public Camera boardCamera;
         public Text statusText;
         public GameObject localStatsPanel;
@@ -107,6 +108,14 @@ namespace CounterAttack.Online
                 liveScoreboard?.RefreshPublishedOnlineState();
                 match.OnlineEventBanner?.ApplyOnlinePublication(state.banners);
                 match.OnlinePitchLines?.ApplyOnlineFinalThirdLabel(state.finalThirdLabelSide, state.finalThirdLabelHome);
+            }
+            if (usesNativeRoom && state.resumePending && !restoredStatsPresented)
+            {
+                // Ready holds Unity time, so the normal scaled UI refresh cannot
+                // present restored data before both managers confirm.
+                if (!OnlineRoomSession.IsGuest) liveScoreboard?.RefreshPublishedOnlineState();
+                match.matchStatsUI?.UpdateStatsUI();
+                restoredStatsPresented = true;
             }
             if (sharedPausePanel != null) sharedPausePanel.SetActive(
                 liveFullRoom && state.connectionHeld || state.isSharedPaused && menu?.UsesRoomPause(state) != true);
