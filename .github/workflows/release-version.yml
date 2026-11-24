@@ -23,7 +23,6 @@ jobs:
         with:
           fetch-depth: 0
       - name: Increment patch version and tag commit
-        env:
         run: |
           if [[ "${GITHUB_REF_NAME}" == "master" ]]; then
             prefix="v0.9."
