@@ -73,7 +73,6 @@ public partial class HeaderManager : MonoBehaviour
     public int interceptionDiceRoll;
     private readonly Dictionary<HexCell, bool> headerTargetThreatByHex = new();
     private readonly List<HexCell> headerAtGoalTargetHexes = new();
-    private readonly Dictionary<HexCell, float> headerAtGoalTargetOriginalHeights = new();
     private readonly HashSet<PlayerToken> headerInterceptionSuppressedTokens = new();
     private HexCell hoveredHeaderTargetHex;
     private HexCell hoveredHeaderAtGoalTargetHex;
@@ -788,20 +787,10 @@ public partial class HeaderManager : MonoBehaviour
                 continue;
             }
 
-            canShootToHex.HighlightHex("CanShootFrom", 1);
+            canShootToHex.HighlightRaisedGoalTarget("CanShootFrom", 0.03f, 1);
             if (!headerAtGoalTargetHexes.Contains(canShootToHex))
             {
                 headerAtGoalTargetHexes.Add(canShootToHex);
-            }
-            if (!headerAtGoalTargetOriginalHeights.ContainsKey(canShootToHex))
-            {
-                headerAtGoalTargetOriginalHeights[canShootToHex] = canShootToHex.transform.position.y;
-            }
-            if (canShootToHex.transform.position.y < 0.03f)
-            {
-                Vector3 position = canShootToHex.transform.position;
-                position.y = 0.03f;
-                canShootToHex.transform.position = position;
             }
         }
     }
@@ -818,17 +807,11 @@ public partial class HeaderManager : MonoBehaviour
                 continue;
             }
 
+            hex.ClearRaisedGoalTarget();
             hex.ResetHighlight();
-            if (headerAtGoalTargetOriginalHeights.TryGetValue(hex, out float originalHeight))
-            {
-                Vector3 position = hex.transform.position;
-                position.y = originalHeight;
-                hex.transform.position = position;
-            }
         }
 
         headerAtGoalTargetHexes.Clear();
-        headerAtGoalTargetOriginalHeights.Clear();
     }
 
     private bool IsHeaderAtGoalAvailable()

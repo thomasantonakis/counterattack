@@ -1338,7 +1338,7 @@ public partial class ShotManager : MonoBehaviour
 
         foreach (HexCell canShootToHex in originHex.ShootingPaths.Keys)
         {
-            canShootToHex.HighlightHex("CanShootFrom", 1);
+            canShootToHex.HighlightRaisedGoalTarget("CanShootFrom", ShotTargetElevation, 1);
             if (!hexGrid.highlightedHexes.Contains(canShootToHex))
             {
                 hexGrid.highlightedHexes.Add(canShootToHex);
@@ -1346,10 +1346,6 @@ public partial class ShotManager : MonoBehaviour
             if (!shotCommitPreviewTargets.Contains(canShootToHex))
             {
                 shotCommitPreviewTargets.Add(canShootToHex);
-            }
-            if (canShootToHex.transform.position.y == 0)
-            {
-                canShootToHex.transform.position += Vector3.up * ShotTargetElevation;
             }
         }
     }
@@ -1584,12 +1580,9 @@ public partial class ShotManager : MonoBehaviour
         foreach (HexCell targetHex in shotCommitPreviewTargets)
         {
             if (targetHex == null) continue;
+            targetHex.ClearRaisedGoalTarget();
             targetHex.ResetHighlight();
             hexGrid.highlightedHexes.Remove(targetHex);
-            if (targetHex.transform.position.y > 0.001f)
-            {
-                targetHex.transform.position -= Vector3.up * ShotTargetElevation;
-            }
         }
 
         shotCommitPreviewTargets.Clear();
@@ -1946,12 +1939,9 @@ public partial class ShotManager : MonoBehaviour
         foreach (HexCell targetHex in shotTargetSelectionTargets)
         {
             if (targetHex == null) continue;
+            targetHex.ClearRaisedGoalTarget();
             targetHex.ResetHighlight();
             hexGrid.highlightedHexes.Remove(targetHex);
-            if (targetHex.transform.position.y > 0.001f)
-            {
-                targetHex.transform.position -= Vector3.up * ShotTargetElevation;
-            }
         }
 
         shotTargetSelectionTargets.Clear();
@@ -2570,7 +2560,7 @@ public partial class ShotManager : MonoBehaviour
         // Highlight and raise all CanShootTo hexes
         foreach (var canShootToHex in shootingPaths.Keys)
         {
-            canShootToHex.HighlightHex("CanShootFrom", 1);
+            canShootToHex.HighlightRaisedGoalTarget("CanShootFrom", ShotTargetElevation, 1);
             if (!hexGrid.highlightedHexes.Contains(canShootToHex))
             {
                 hexGrid.highlightedHexes.Add(canShootToHex);
@@ -2578,10 +2568,6 @@ public partial class ShotManager : MonoBehaviour
             if (!shotTargetSelectionTargets.Contains(canShootToHex))
             {
                 shotTargetSelectionTargets.Add(canShootToHex);
-            }
-            if (canShootToHex.transform.position.y == 0)
-            {
-                canShootToHex.transform.position += Vector3.up * ShotTargetElevation; // Raise it above the plane
             }
         }
 

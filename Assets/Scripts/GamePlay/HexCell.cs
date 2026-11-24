@@ -260,6 +260,30 @@ public class HexCell : MonoBehaviour
         ResetHighlight();
     }
 
+    private (float OriginalHeight, string Reason, float Darkness)? raisedGoalTargetPreview;
+
+    internal (string Reason, float Darkness) BasePreviewHighlight => raisedGoalTargetPreview is { } preview
+        ? (preview.Reason, preview.Darkness)
+        : (HighlightReason, HighlightDarkness);
+
+    internal void HighlightRaisedGoalTarget(string reason, float minimumHeight, float darkness = 0, string hoverReason = null)
+    {
+        var position = transform.position;
+        raisedGoalTargetPreview = (raisedGoalTargetPreview?.OriginalHeight ?? position.y, reason, darkness);
+        position.y = Mathf.Max(position.y, minimumHeight);
+        transform.position = position;
+        HighlightHex(hoverReason ?? reason, darkness);
+    }
+
+    internal void ClearRaisedGoalTarget()
+    {
+        if (raisedGoalTargetPreview is not { } preview) return;
+        var position = transform.position;
+        position.y = preview.OriginalHeight;
+        transform.position = position;
+        raisedGoalTargetPreview = null;
+    }
+
     public void HighlightHex(string reason, float darkness = 0)
     {
         if (hexRenderer == null)

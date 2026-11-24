@@ -1395,13 +1395,8 @@ public partial class MovementPhaseManager : MonoBehaviour
                     CanDribblerWalkIntoOpponentGoal(token, hex)
                 )
                 {
-                    hex.HighlightHex(isHoveredMovementDestination ? "MovementDestinationHover" : "MovementGoal");
-                    if (hex.transform.position.y < 0.07f)
-                    {
-                        Vector3 position = hex.transform.position;
-                        position.y = 0.07f;
-                        hex.transform.position = position;
-                    }
+                    hex.HighlightRaisedGoalTarget("MovementGoal", 0.07f,
+                        hoverReason: isHoveredMovementDestination ? "MovementDestinationHover" : null);
                 }
             }
         }
@@ -3353,17 +3348,18 @@ public partial class MovementPhaseManager : MonoBehaviour
                 continue;
             }
 
-            string highlightReason = hoveredRepositionHex == hex
-                ? "MovementDestinationHover"
-                : hex.isInGoal != 0 ? "MovementGoal" : "reposition";
-            hex.HighlightHex(highlightReason);
+            string hoverReason = hoveredRepositionHex == hex ? "MovementDestinationHover" : null;
+            if (hex.isInGoal != 0)
+            {
+                hex.HighlightRaisedGoalTarget("MovementGoal", 0.03f, hoverReason: hoverReason);
+            }
+            else
+            {
+                hex.HighlightHex(hoverReason ?? "reposition");
+            }
             if (!hexGrid.highlightedHexes.Contains(hex))
             {
                 hexGrid.highlightedHexes.Add(hex);
-            }
-            if (hex.isInGoal != 0 && hex.transform.position.y == 0)
-            {
-                hex.transform.position += Vector3.up * 0.03f;
             }
         }
     }
