@@ -32,6 +32,7 @@ jobs:
             prefix="v0.10."
             initial="0.10.20"
           fi
+          git fetch --force origin "+refs/tags/${prefix}*:refs/tags/${prefix}*" || true
           latest=$(git tag --list "${prefix}*" --sort=-version:refname | head -n 1)
           if [[ -z "${latest}" ]]; then
             current="${initial}"
@@ -41,6 +42,13 @@ jobs:
             patch=$((patch + 1))
             current="${prefix#v}${patch}"
             tag="${prefix}${patch}"
+          fi
+          current_bundle=$(sed -n 's/^  bundleVersion: //p' ProjectSettings/ProjectSettings.asset)
+          if [[ "${current_bundle}" == "${current}" ]]; then
+            echo "Game version is already ${current}; ensuring release tag exists."
+            git tag "${tag}" "${GITHUB_SHA}"
+            git push origin "${tag}"
+            exit 0
           fi
           python3 - "${current}" <<'PY'
           from pathlib import Path

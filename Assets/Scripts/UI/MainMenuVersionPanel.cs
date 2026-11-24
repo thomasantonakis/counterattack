@@ -11,7 +11,7 @@ public sealed class MainMenuVersionPanel : MonoBehaviour
     private void Awake()
     {
         if (versionText != null)
-            versionText.text = "Game " + Application.version;
+            versionText.text = "Game version " + Application.version;
 
         if (compatibilityText == null)
             return;
