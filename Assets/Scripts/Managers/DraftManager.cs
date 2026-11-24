@@ -2840,7 +2840,7 @@ public class DraftManager : MonoBehaviour
 
                 // Team Average should include every non-goalkeeper squad slot, including larger benches.
                 // That keeps 18-player squads honest by counting slots 17 and 18 as well.
-                if (i >= 2 && i <= squadSize && i != 12)
+                if (i >= 2 && i != 12)
                 {
                     teamAverageSumPace += pace;
                     teamAverageSumDribbling += dribbling;

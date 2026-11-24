@@ -40,6 +40,7 @@ namespace CounterAttack.Online
         public bool movementAvailable, firstTimePassAvailable, groundPassAvailable;
         public bool movementActive, playerMoving, goalMotion;
         public OnlineMovementPanelFrame movementPanel;
+        public OnlineMovementTokenStatusFrame movementTokenStatus;
         public bool introPending,homeIntroReady,awayIntroReady;
         public bool ShouldStreamPresentation() => ballMoving || playerMoving || goalMotion;
         public string selectedPlayer;
@@ -371,6 +372,7 @@ namespace CounterAttack.Online
                 state.homeIntroReady=roomSession?.HomeIntroReady==true;
                 state.awayIntroReady=roomSession?.AwayIntroReady==true;
                 state.movementPanel=MovementPhaseMovedTokensPanel.CaptureOnline(match.movementPhaseManager);
+                state.movementTokenStatus=MovementPhaseTokenStatusPanel.CaptureOnline(match.movementPhaseManager,HeaderRules);
                 if(state.movementActive && match.movementPhaseManager is { } movement)
                 {
                     string section=movement.isMovementPhaseDef?"Defensive movement":movement.isMovementPhase2f2?"Two-for-two movement":"Attacking movement";
@@ -401,7 +403,7 @@ namespace CounterAttack.Online
                     state.finalThirdLabelHome = home;
                 }
             }
-            if(state.catalogId==OnlineFullRoomBootstrap.Catalog)state.hexPreviews=OnlineHexPreview.Capture(match.hexGrid,match.ball.CommittedGoalTarget??(state.hasSelectedTarget?match.hexGrid.GetHexCellAt(new Vector3Int(state.selectedX,0,state.selectedZ)):null));
+            if(state.catalogId==OnlineFullRoomBootstrap.Catalog)state.hexPreviews=OnlineHexPreview.Capture(match.hexGrid,match.ball.CommittedGoalTarget??(state.hasSelectedTarget?match.hexGrid.GetHexCellAt(new Vector3Int(state.selectedX,0,state.selectedZ)):null),HeaderRules?.PublishedHeaderAtGoalTargets);
             state.legalActions = actions.OrderBy(a => a, StringComparer.Ordinal).ToArray();
             return state;
         }

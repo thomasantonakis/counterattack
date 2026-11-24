@@ -806,6 +806,8 @@ public partial class HeaderManager : MonoBehaviour
         }
     }
 
+    internal IReadOnlyList<HexCell> PublishedHeaderAtGoalTargets => headerAtGoalTargetHexes;
+
     private void ClearHeaderAtGoalTargets()
     {
         hoveredHeaderAtGoalTargetHex = null;

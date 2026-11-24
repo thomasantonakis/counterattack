@@ -55,6 +55,25 @@ public sealed partial class OnlineDraftSceneFixture
         if(client.Team==OnlineTeam.Home){Assert.That(view.actionButton.interactable,Is.True);view.actionButton.onClick.Invoke();Flush();Client(OnlineTeam.Away).Request(OnlineDraftIntent.Roll);Flush();}
         else{Assert.That(view.actionButton.interactable,Is.False);Client(OnlineTeam.Home).Request(OnlineDraftIntent.Roll);Flush();Assert.That(view.actionButton.interactable,Is.True);view.actionButton.onClick.Invoke();Flush();}
         Assert.That(view.source.draftOrderPanel.visuals.activeSelf,Is.False);Assert.That(view.cards.All(c=>c.gameObject.activeInHierarchy),Is.True);
+        if (branch == "team-average")
+        {
+            for (int i = 0; i < 40 && host.Draft.Capture().phase == "pick"; i++) Pick();
+            var drafted = client.Capture();
+            Assert.That(drafted.phase, Is.EqualTo("review"));
+            foreach (bool home in new[] { true, false })
+            {
+                var roster = home ? drafted.home : drafted.away;
+                var panel = home ? view.source.homeAveragePanel : view.source.awayAveragePanel;
+                string side = home ? "Home" : "Away";
+                var team = roster.Where((card, index) => card != null && index != 0 && index != 11);
+                var xi = roster.Skip(1).Take(10);
+                Assert.That(panel.transform.Find($"{side}-TeamAverage/ContentWrapper/PaceInSlot").GetComponent<TMP_Text>().text,
+                    Is.EqualTo(team.Average(card => card.pace).ToString("F1")));
+                Assert.That(panel.transform.Find($"{side}-XI/ContentWrapper/PaceInSlot").GetComponent<TMP_Text>().text,
+                    Is.EqualTo(xi.Average(card => card.pace).ToString("F1")));
+            }
+            yield break;
+        }
         if(branch=="fixed-offer-positions")
         {
             Canvas.ForceUpdateCanvases();

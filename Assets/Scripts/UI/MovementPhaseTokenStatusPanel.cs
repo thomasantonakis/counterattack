@@ -1,6 +1,24 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using CounterAttack.Online;
 using UnityEngine;
+
+[Serializable]
+public sealed class OnlineMovementTokenStatusFrame
+{
+    public string[] stunned, jumped, stunnedNext;
+
+    public static bool Valid(OnlineMovementTokenStatusFrame frame, OnlineGroundPassTokenState[] tokens)
+    {
+        if (frame == null) return true;
+        var roster = tokens.Select(token => token.id).ToHashSet(StringComparer.Ordinal);
+        return ValidRow(frame.stunned) && ValidRow(frame.jumped) && ValidRow(frame.stunnedNext);
+
+        bool ValidRow(string[] row) => row != null && row.Length <= roster.Count
+            && row.Distinct(StringComparer.Ordinal).Count() == row.Length && row.All(roster.Contains);
+    }
+}
 
 public class MovementPhaseTokenStatusPanel : MonoBehaviour
 {
@@ -27,7 +45,7 @@ public class MovementPhaseTokenStatusPanel : MonoBehaviour
 
     private void Update()
     {
-        Refresh(force: false);
+        if (!OnlineRoomSession.IsGuest) Refresh(force: false);
     }
 
     private void Refresh(bool force)
@@ -35,11 +53,37 @@ public class MovementPhaseTokenStatusPanel : MonoBehaviour
         IReadOnlyList<PlayerToken> stunnedTokens = movementPhaseManager != null
             ? movementPhaseManager.stunnedTokens
             : null;
-        IReadOnlyList<PlayerToken> jumpedTokens = BuildJumpedTokens();
+        IReadOnlyList<PlayerToken> jumpedTokens = BuildJumpedTokens(headerManager);
         IReadOnlyList<PlayerToken> stunnedNextTokens = movementPhaseManager != null
             ? movementPhaseManager.stunnedforNext
             : null;
 
+        RenderStatus(stunnedTokens, jumpedTokens, stunnedNextTokens, force);
+    }
+
+    public static OnlineMovementTokenStatusFrame CaptureOnline(MovementPhaseManager movement, HeaderManager header)
+    {
+        string[] Ids(IEnumerable<PlayerToken> tokens) => tokens?.Where(token => token != null)
+            .Select(OnlineRollPublication.ActorId).Distinct(StringComparer.Ordinal).ToArray() ?? Array.Empty<string>();
+        var frame = new OnlineMovementTokenStatusFrame
+        {
+            stunned = Ids(movement?.stunnedTokens),
+            jumped = Ids(BuildJumpedTokens(header)),
+            stunnedNext = Ids(movement?.stunnedforNext)
+        };
+        return frame.stunned.Length + frame.jumped.Length + frame.stunnedNext.Length > 0 ? frame : null;
+    }
+
+    public void ApplyOnline(OnlineMovementTokenStatusFrame frame, PlayerToken[] roster)
+    {
+        PlayerToken[] Resolve(string[] ids) => ids?.Select(id => roster.FirstOrDefault(token =>
+            token != null && OnlineRollPublication.ActorId(token) == id)).ToArray();
+        RenderStatus(Resolve(frame?.stunned), Resolve(frame?.jumped), Resolve(frame?.stunnedNext), force: false);
+    }
+
+    private void RenderStatus(IReadOnlyList<PlayerToken> stunnedTokens, IReadOnlyList<PlayerToken> jumpedTokens,
+        IReadOnlyList<PlayerToken> stunnedNextTokens, bool force)
+    {
         bool hasStunned = HasTokens(stunnedTokens);
         bool hasJumped = HasTokens(jumpedTokens);
         bool hasStunnedNext = HasTokens(stunnedNextTokens);
@@ -83,7 +127,7 @@ public class MovementPhaseTokenStatusPanel : MonoBehaviour
         gameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(0f, (hasStunned ? stunnedSection.rect.height : 0f) + (hasJumped ? jumpedSection.rect.height : 0f) + (hasStunnedNext ? stunnedNextSection.rect.height : 0f));
     }
 
-    private IReadOnlyList<PlayerToken> BuildJumpedTokens()
+    private static IReadOnlyList<PlayerToken> BuildJumpedTokens(HeaderManager headerManager)
     {
         List<PlayerToken> tokens = new();
         if (headerManager == null)

@@ -453,6 +453,15 @@ public class HexCell : MonoBehaviour
         ApplyHexFillColor(currentFillColor);
     }
 
+    private bool onlinePassHover;
+
+    internal void SetOnlinePassHover(bool visible)
+    {
+        if (onlinePassHover == visible) return;
+        onlinePassHover = visible;
+        ApplyHexFillColor(currentFillColor);
+    }
+
     private void ApplyHexFillColor(Color fillColor)
     {
         if (hexRenderer == null)
@@ -465,6 +474,10 @@ public class HexCell : MonoBehaviour
         if (isCommittedGoalTarget || localGoalHover)
         {
             fillColor = new Color(1f, 0.48f, 0.05f, 1f);
+        }
+        else if (onlinePassHover && currentHighlightReason != "passTargetCommitted")
+        {
+            fillColor = new Color(.18f, .83f, 1f);
         }
         else if (onlineHostHint.HasValue && string.IsNullOrEmpty(currentHighlightReason))
         {
