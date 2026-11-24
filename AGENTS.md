@@ -34,6 +34,11 @@
 - Codex is authorized to execute automated EditMode and PlayMode Unity Test Framework tests through the live Unity CLI/Pipeline, inspect their results, diagnose failures, and rerun affected tests. Framework-controlled entry/exit of Play Mode is authorized. Never launch Unity, use batchmode or GUI scripting, or start ordinary gameplay through `editor_play`.
 - Before each test run, wait for compilation/reload to finish, inspect every loaded scene's dirty state through Unity CLI, save dirty scenes with `save_all`, then recheck that they are clean before starting tests. Check after recompilation, since editor initializers can modify Room during reload. Do not overwrite unsaved scene changes with on-disk files. A test-start timeout may be a blocking Scene(s) Have Been Modified dialog: inspect this possibility before attributing it to a freeze or restarting anything. An already-open modal needs the user's manual Save action; never use GUI scripting to dismiss it.
 
+## Paired online game tests
+
+- For every paired online game test handoff, provide copyable macOS shell and Windows PowerShell commands. Each block must fetch, check out the actual test branch, fast-forward pull, print the commit, build the normal standalone game through the running Unity Editor, confirm the build succeeded, and launch the built app. Use the same commit on both machines. Give the actual branch name and app paths, and keep local edits intact.
+- Open Unity manually on each machine before building. Use the platform setup guides above for the Editor, Pipeline and EOS configuration. These commands are for packaged player testing alongside the project's focused Unity Test Framework coverage.
+
 ## Unity Test Framework Migration
 
 - Prefer isolated EditMode tests for rules and PlayMode tests for coroutines, movement, input and interruptions. Use deterministic boards and rigged dice; wait for meaningful states with bounded timeouts.
