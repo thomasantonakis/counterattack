@@ -10,6 +10,7 @@
 
 - The repository owner has authorized Codex to run necessary Git commands in this project, including add, commit, fetch, pull and push, without asking again. Keep commits limited to task-related files and preserve unrelated local edits. Tool-enforced sandbox or credential prompts may still apply.
 - Follow [CONTRIBUTING.md](CONTRIBUTING.md) for every repository change. Start on a feature branch from the intended target, push the feature branch, and always open a PR. Use `codex/online-foundation-personal-mac` as the base for work that depends on the online foundation and `master` for independent changes. Keep both target branches free of direct pushes. Complete the online compatibility section when targeting the online branch.
+- Release versioning: GitHub Actions creates the next patch Git tag after PRs merge to `master` (`v0.9.x`, starting at `v0.9.3`) or `codex/online-foundation-personal-mac` (`v0.10.x`, starting at `v0.10.20`). This repository currently blocks Actions from creating PRs, so the workflow does not update `ProjectSettings/ProjectSettings.asset`; when a release label should advance, include the `bundleVersion` update in a normal PR. The main-menu label reads `Application.version`; online protocol/rules/catalog labels come from the live compatibility handshake. See [ReleaseVersioning.md](Documentation/Setup/ReleaseVersioning.md). Do not describe tag automation as automatic game-version-file updates.
 
 ## Unity Workflow Rules
 
