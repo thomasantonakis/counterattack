@@ -43,6 +43,11 @@ shootout occupancy cases in online and offline Room.
 `GuestAcceptsEachPenaltyTossCountdownPublication` checks the encoded
 countdown updates advance their publication sequence without changing the roll decision.
 
+For raised CanShootTo highlights, use PlayMode category `OnlineRaisedGoalTargets`
+in `Assets/Tests/PlayMode/Features/OnlineRaisedGoalTargets/`. It checks the
+guest's highlight and elevation before, during and after host hover across shot
+aiming, headers, goal-mouth movement and the committed shootout marker.
+
 For Room coin toss/half transitions, use EditMode `OnlineRoomCoinTossEditorTests`
 (13 cases) and PlayMode `OnlineRoomCoinTossPlayModeTests` (24 cases), category
 `OnlineRoomCoinToss`, under the same-named Editor/PlayMode feature folders.
