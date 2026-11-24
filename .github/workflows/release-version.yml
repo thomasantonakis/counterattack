@@ -1,0 +1,65 @@
+name: Release version
+
+on:
+  push:
+    branches: [master, codex/online-foundation-personal-mac]
+    paths-ignore:
+      - 'ProjectSettings/ProjectSettings.asset'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-version-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  bump-version:
+    if: github.event_name == 'workflow_dispatch' || (!contains(github.event.head_commit.message, '[skip version]') && github.event.head_commit.parents && startsWith(github.event.head_commit.message, 'Merge pull request'))
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+      - name: Increment patch version and tag commit
+        env:
+        run: |
+          if [[ "${GITHUB_REF_NAME}" == "master" ]]; then
+            prefix="v0.9."
+            initial="0.9.3"
+          else
+            prefix="v0.10."
+            initial="0.10.20"
+          fi
+          latest=$(git tag --list "${prefix}*" --sort=-version:refname | head -n 1)
+          if [[ -z "${latest}" ]]; then
+            current="${initial}"
+            tag="v${current}"
+          else
+            patch=${latest##*.}
+            patch=$((patch + 1))
+            current="${prefix#v}${patch}"
+            tag="${prefix}${patch}"
+          fi
+          python3 - "${current}" <<'PY'
+          from pathlib import Path
+          import re
+          import sys
+          path = Path("ProjectSettings/ProjectSettings.asset")
+          text = path.read_text()
+          updated, count = re.subn(r"(?m)^  bundleVersion: .*?$", f"  bundleVersion: {sys.argv[1]}", text, count=1)
+          if count != 1:
+              raise SystemExit("Could not update exactly one bundleVersion")
+          path.write_text(updated)
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add ProjectSettings/ProjectSettings.asset
+          if git diff --cached --quiet; then
+            echo "Version already current; no commit created."
+            exit 0
+          fi
+          git commit -m "[skip version] Bump game version to ${current}"
+          git tag "${tag}"
+          git push origin "HEAD:${GITHUB_REF_NAME}" "${tag}"
