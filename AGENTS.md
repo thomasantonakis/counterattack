@@ -38,6 +38,7 @@
 
 - For every paired online game test handoff, provide copyable macOS shell and Windows PowerShell commands. Each block must fetch, check out the actual test branch, fast-forward pull, print the commit, build the normal standalone game through the running Unity Editor, confirm the build succeeded, and launch the built app. Use the same commit on both machines. Give the actual branch name and app paths, and keep local edits intact.
 - Open Unity manually on each machine before building. Use the platform setup guides above for the Editor, Pipeline and EOS configuration. These commands are for packaged player testing alongside the project's focused Unity Test Framework coverage.
+- Keep the handoff short. Put build and launch logic in repository scripts and give the user the Git commands and script invocations. Use `Documentation/Setup/BuildEOSStandaloneMac.sh game` on macOS and `Documentation/Setup/BuildOnlineGameWindows.ps1 -Launch` on Windows.
 
 ## Unity Test Framework Migration
 
