@@ -970,14 +970,14 @@ PrefabInstance:
       insertIndex: 3
       addedObject: {fileID: 1842688754}
     - targetCorrespondingSourceObject: {fileID: 1839278460620223348, guid: 4983b4eb1659b4f0699151739a18b8a7, type: 3}
-      insertIndex: 4
-      addedObject: {fileID: 274800534}
-    - targetCorrespondingSourceObject: {fileID: 1839278460620223348, guid: 4983b4eb1659b4f0699151739a18b8a7, type: 3}
-      insertIndex: 6
+      insertIndex: 5
       addedObject: {fileID: 354610577}
     - targetCorrespondingSourceObject: {fileID: 1839278460620223348, guid: 4983b4eb1659b4f0699151739a18b8a7, type: 3}
-      insertIndex: 7
+      insertIndex: 6
       addedObject: {fileID: 1963101991}
+    - targetCorrespondingSourceObject: {fileID: 1839278460620223348, guid: 4983b4eb1659b4f0699151739a18b8a7, type: 3}
+      insertIndex: 7
+      addedObject: {fileID: 274800534}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 2281008518743502496, guid: 4983b4eb1659b4f0699151739a18b8a7, type: 3}
       insertIndex: -1
