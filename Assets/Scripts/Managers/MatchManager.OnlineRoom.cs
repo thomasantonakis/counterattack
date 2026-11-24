@@ -84,7 +84,12 @@ public partial class MatchManager
                 var hex=hexGrid.GetHexCellAt(new Vector3Int(item.x,0,item.z));if(hex==null)continue;
                 token.isAttacker=token.isHomeTeam==(teamInAttack==TeamInAttack.Home);hex.isAttackOccupied=token.isAttacker;hex.isDefenseOccupied=!token.isAttacker;token.SetCurrentHex(hex);
             }
-            OnlineShootoutManager?.ApplyOnlineShootout(state.shootout,tokens);
+            var shootout = OnlineShootoutManager;
+            shootout?.ApplyOnlineShootout(state.shootout, tokens);
+            bool shootoutActive = state.shootout?.active == true;
+            matchStatsUI?.SetPublishedShootoutContestants(
+                shootoutActive ? shootout?.currentShooter : null,
+                shootoutActive ? shootout?.currentDefendingGoalkeeper : null);
             if(state.ballOnBoard)ball.PlaceAtCell(hexGrid.GetHexCellAt(new Vector3Int(state.ballX,0,state.ballZ)));
             LastTokenToTouchTheBallOnPurpose=tokens.FirstOrDefault(t=>OnlineRollPublication.ActorId(t)==state.lastTouch);
             if(playerTokenManager.AuthoredOnlineRoster!=null)
