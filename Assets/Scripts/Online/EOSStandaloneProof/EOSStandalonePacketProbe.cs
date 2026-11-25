@@ -496,12 +496,16 @@ internal sealed class EOSStandalonePacketProbe
     {
         byte probeChannel = watchLobby ? WatchProbeChannel : ManagerProbeChannel;
         string lobbyId = searchByCode ? null : inputLobby;
-        bool liveMatch = searchByCode && OnlineSpectatorAdmission.TryNormalizeCode(inputLobby, out matchCode);
-        if (liveMatch && watchLobby)
-            matchCode += OnlineSpectatorAdmission.ViewerCompatibilitySuffix(OnlineFrontendSessionPolicy.Compatibility());
-        EOSProofCheck.Require(searchByCode ? liveMatch || !watchLobby && OnlineFrontendSessionPolicy.ValidLobbyCode(inputLobby) :
+        string lookupCode = null;
+        EOSProofCheck.Require(searchByCode ? OnlineFrontendSessionPolicy.TryNormalizeLobbyCode(inputLobby, out lookupCode) :
             inputLobby != null && inputLobby.Length == 32,
             searchByCode ? OnlineFrontendSessionPolicy.LobbyCodePrompt : "Expected a 32-character lobby ID");
+        if (searchByCode)
+        {
+            matchCode = lookupCode;
+            if (watchLobby)
+                matchCode += OnlineSpectatorAdmission.ViewerCompatibilitySuffix(OnlineFrontendSessionPolicy.Compatibility());
+        }
 
         var session = new EOSStandaloneSession();
         LobbySearch search = null;
@@ -530,7 +534,7 @@ internal sealed class EOSStandalonePacketProbe
             {
                 var parameter = new LobbySearchSetParameterOptions
                 {
-                    Parameter = JoinCodeAttribute(liveMatch ? OnlineSpectatorAdmission.Lookup(inputLobby) : inputLobby),
+                    Parameter = JoinCodeAttribute(OnlineSpectatorAdmission.Lookup(lookupCode)),
                     ComparisonOp = ComparisonOp.Equal
                 };
                 EOSProofCheck.Require(search.SetParameter(ref parameter) == Result.Success, "Searching by the lobby code");
@@ -647,7 +651,7 @@ internal sealed class EOSStandalonePacketProbe
                 RequestedChannel = probeChannel
             };
             bool ackReceived = false;
-            deadline = Time.realtimeSinceStartupAsDouble + (liveMatch ? 18 : 180);
+            deadline = Time.realtimeSinceStartupAsDouble + (searchByCode ? 18 : 180);
             while (!ackReceived && Time.realtimeSinceStartupAsDouble < deadline)
             {
                 session.Tick();

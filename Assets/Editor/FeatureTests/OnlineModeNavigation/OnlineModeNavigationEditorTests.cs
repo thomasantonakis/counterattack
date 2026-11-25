@@ -40,7 +40,7 @@ public sealed class OnlineModeNavigationEditorTests
             Assert.That(OnlineSetupRules.Validate(OnlineModeMenu.HostDefaults()),Is.Empty);
             menu.lobbyCode.SetTextWithoutNotify("invalid");
             menu.Join();
-            Assert.That(menu.status.text, Does.Contain("8-digit"));
+            Assert.That(menu.status.text, Does.Contain("8-character"));
             Assert.That(SceneManager.GetActiveScene().path, Is.EqualTo(MenuPath));
             Assert.That(OnlineFrontendSession.Current, Is.Null);
             Assert.That(OnlineModeMenu.TakeJoinCode(), Is.Null);
@@ -122,11 +122,14 @@ public sealed class OnlineModeNavigationEditorTests
             options.Invoke(menu, new object[] { new OnlineMatchRoleOptions(true, true, true) });
             Assert.That(menu.awayRoleButton.gameObject.activeInHierarchy, Is.True);
             Assert.That(menu.spectatorRoleButton.gameObject.activeInHierarchy, Is.True);
+            Assert.That(menu.awayRoleButton.IsInteractable(), Is.True);
+            Assert.That(menu.spectatorRoleButton.IsInteractable(), Is.True);
             Assert.That(menu.mainCard.interactable, Is.False);
 
             options.Invoke(menu, new object[] { new OnlineMatchRoleOptions(true, false, true) });
             Assert.That(menu.awayRoleButton.gameObject.activeInHierarchy, Is.False);
             Assert.That(menu.spectatorRoleButton.gameObject.activeInHierarchy, Is.True);
+            Assert.That(menu.spectatorRoleButton.IsInteractable(), Is.True);
             options.Invoke(menu, new object[] { new OnlineMatchRoleOptions(true, true, false) });
             Assert.That(menu.awayRoleButton.gameObject.activeInHierarchy, Is.True);
             Assert.That(menu.spectatorRoleButton.gameObject.activeInHierarchy, Is.False);

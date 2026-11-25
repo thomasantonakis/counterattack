@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -9,7 +8,7 @@ namespace CounterAttack.Online
     public sealed class OnlineSpectatorAdmission
     {
         public const int ViewerLimit = 2;
-        public const int CodeLength = 8;
+        public const int CodeLength = OnlineFrontendSessionPolicy.LobbyCodeLength;
         internal const string AwayReservationAttribute = "COUNTERATTACK_AWAY_RESERVATION";
 
         private readonly HashSet<string> viewers = new(StringComparer.Ordinal);
@@ -18,7 +17,7 @@ namespace CounterAttack.Online
 
         public OnlineSpectatorAdmission(string savedAwayIdentity = null)
         {
-            MatchCode = RandomNumberGenerator.GetInt32(100_000_000).ToString("D8", CultureInfo.InvariantCulture);
+            MatchCode = OnlineFrontendSessionPolicy.GenerateLobbyCode();
             expectedCode = Encoding.ASCII.GetBytes(MatchCode);
             awayIdentity = savedAwayIdentity;
         }
@@ -26,24 +25,6 @@ namespace CounterAttack.Online
         public string MatchCode { get; }
         public bool ViewingEnabled { get; private set; } = true;
         public int ViewerCount => viewers.Count;
-
-        public static bool TryNormalizeCode(string input, out string code)
-        {
-            code = input?.Trim();
-            if (code?.Length == CodeLength)
-            {
-                foreach (char value in code)
-                {
-                    if (value is >= '0' and <= '9')
-                        continue;
-                    code = null;
-                    return false;
-                }
-                return true;
-            }
-            code = null;
-            return false;
-        }
 
         internal static string Lookup(string code)
         {

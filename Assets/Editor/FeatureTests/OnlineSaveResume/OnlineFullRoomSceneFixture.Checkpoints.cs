@@ -192,10 +192,8 @@ public sealed partial class OnlineFullRoomSceneFixture
         var menu = Object.FindAnyObjectByType<OnlineModeMenu>();
         Assert.That(menu.lobbyCode.characterLimit, Is.EqualTo(OnlineSpectatorAdmission.CodeLength));
         Assert.That(menu.lobbyCode.characterValidation, Is.EqualTo(TMPro.TMP_InputField.CharacterValidation.None));
-        const string sharedCode = "00123456";
-        Assert.That(OnlineModeMenu.TryReadLobbyCode(sharedCode, out var parsedCode), Is.True);
-        Assert.That(parsedCode, Is.EqualTo(sharedCode));
-        Assert.That(OnlineModeMenu.TryReadLobbyCode("7A3F9C2B", out _), Is.True);
+        Assert.That(OnlineModeMenu.TryReadLobbyCode("00a7f29c", out var parsedCode), Is.True);
+        Assert.That(parsedCode, Is.EqualTo("00A7F29C"));
         Assert.That(menu.loadMatchButton.gameObject.activeInHierarchy, Is.True);
         void BindTestStore(Scene scene, LoadSceneMode mode)
         {

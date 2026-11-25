@@ -43,7 +43,7 @@ public sealed class OnlineFrontendEntrySceneFixture
                 onlineMenu.lobbyCode.text = "bad";
                 onlineMenu.Join();
                 Assert.That(OnlineFrontendSession.Current, Is.Null);
-                Assert.That(onlineMenu.status.text, Does.Contain("8-digit"));
+                Assert.That(onlineMenu.status.text, Does.Contain("8-character"));
                 Assert.That(SceneManager.GetActiveScene().name, Is.EqualTo(OnlineModeMenu.SceneName));
                 yield break;
             }

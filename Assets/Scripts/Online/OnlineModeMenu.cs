@@ -235,7 +235,7 @@ namespace CounterAttack.Online
             }
             if (SessionIsClosing()) return;
 
-            if (roleCard == null || !OnlineSpectatorAdmission.TryNormalizeCode(code, out _))
+            if (roleCard == null)
             {
                 OpenSetup(code);
                 return;
@@ -268,8 +268,10 @@ namespace CounterAttack.Online
         private void SetRoleOptions(OnlineMatchRoleOptions options)
         {
             roleOptions = options;
-            awayRoleButton.gameObject.SetActive(options?.CanJoinAway == true);
-            spectatorRoleButton.gameObject.SetActive(options?.CanSpectate == true);
+            awayRoleButton.interactable = options?.CanJoinAway == true;
+            spectatorRoleButton.interactable = options?.CanSpectate == true;
+            awayRoleButton.gameObject.SetActive(awayRoleButton.interactable);
+            spectatorRoleButton.gameObject.SetActive(spectatorRoleButton.interactable);
             if (options == null) return;
             roleStatus.text = !options.Found ? "No active match found for this code."
                 : !options.CanJoinAway && !options.CanSpectate ? "This match has no open roles."

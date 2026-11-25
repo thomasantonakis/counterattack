@@ -123,7 +123,7 @@ namespace CounterAttack.Online
         }
         public void Watch(string matchCode, bool forceRelay = false)
         {
-            if (!OnlineSpectatorAdmission.TryNormalizeCode(matchCode, out var code))
+            if (!OnlineFrontendSessionPolicy.TryNormalizeLobbyCode(matchCode, out var code))
                 throw new ArgumentException("Enter a Match Code that supports spectating.", nameof(matchCode));
             if (Busy || running != null) throw new InvalidOperationException("An online session is already running");
             Begin(false, code, forceRelay, watching: true);
@@ -476,7 +476,7 @@ namespace CounterAttack.Online
                 return;
             LobbyCode = pendingHostedCode;
             pendingHostedCode = null;
-            Status = SpectatorError == null ? "Share the 8-digit Match Code." : "Share the 8-digit Match Code to join as Away.";
+            Status = SpectatorError == null ? "Share the Match Code." : "Share the Match Code to join as Away.";
         }
 
         private void OnAgreed(GameSettings settings)
