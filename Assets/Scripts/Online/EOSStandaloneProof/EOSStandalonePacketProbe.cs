@@ -14,7 +14,7 @@ internal sealed class EOSStandalonePacketProbe
     internal const byte ManagerProbeChannel = 7;
     internal const byte WatchProbeChannel = 41;
     internal const string WatchLobbyFileName = "watch-lobby-id.txt";
-    private const string LobbyBucket = "counterattack-m0-p2p";
+    internal const string LobbyBucket = "counterattack-m0-p2p";
     private const string WatchLobbyBucket = "counterattack-watch-proof";
     internal const string LiveWatchLobbyBucket = "counterattack-watch-v1";
 
@@ -422,6 +422,7 @@ internal sealed class EOSStandalonePacketProbe
                     && hello.StartsWith(prefix, StringComparison.Ordinal)
                     && admission.TryAdmitAway(candidate, hello.Substring(prefix.Length)))
                 {
+                    PublishAwayReservation(session, lobby, lobbyId, admission.MatchCode, candidate);
                     admitted(sender);
                     yield break;
                 }
@@ -431,6 +432,29 @@ internal sealed class EOSStandalonePacketProbe
             yield return null;
         }
         throw new EOSProofFailure("No Away manager presented a valid Match Code");
+    }
+
+    private static void PublishAwayReservation(EOSStandaloneSession session, LobbyInterface lobby, Utf8String lobbyId,
+        string matchCode, string identity)
+    {
+        var options = new UpdateLobbyModificationOptions { LocalUserId = session.UserId, LobbyId = lobbyId };
+        if (lobby.UpdateLobbyModification(ref options, out var modification) != Result.Success) return;
+        try
+        {
+            var attribute = new LobbyModificationAddAttributeOptions
+            {
+                Visibility = LobbyAttributeVisibility.Public,
+                Attribute = new AttributeData
+                {
+                    Key = OnlineSpectatorAdmission.AwayReservationAttribute,
+                    Value = OnlineSpectatorAdmission.AwayReservation(matchCode, identity)
+                }
+            };
+            if (modification.AddAttribute(ref attribute) != Result.Success) return;
+            var update = new UpdateLobbyOptions { LobbyModificationHandle = modification };
+            lobby.UpdateLobby(ref update, null, (ref UpdateLobbyCallbackInfo _) => { });
+        }
+        finally { modification.Release(); }
     }
 
     private static void RejectManager(EOSStandaloneSession session, LobbyInterface lobby, P2PInterface p2p,

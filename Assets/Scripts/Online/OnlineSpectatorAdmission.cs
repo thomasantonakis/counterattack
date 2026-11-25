@@ -9,6 +9,7 @@ namespace CounterAttack.Online
     {
         public const int ViewerLimit = 2;
         public const int CodeLength = 22;
+        internal const string AwayReservationAttribute = "COUNTERATTACK_AWAY_RESERVATION";
 
         private readonly HashSet<string> viewers = new(StringComparer.Ordinal);
         private readonly byte[] expectedCode;
@@ -53,6 +54,7 @@ namespace CounterAttack.Online
                 .Replace("-", "");
         }
         internal static string MatchIdentity(string code) => "spectator-" + Lookup(code);
+        internal static string AwayReservation(string code, string identity) => Lookup(code + ":away:" + identity);
 
         internal static string ViewerCompatibilitySuffix(OnlineCompatibility compatibility) =>
             ":" + OnlineSpectatorRoomWire.Version + ":" + compatibility.Protocol + ":" + compatibility.Rules + ":" + compatibility.Catalog;

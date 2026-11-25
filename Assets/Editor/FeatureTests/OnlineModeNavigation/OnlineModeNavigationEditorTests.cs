@@ -100,6 +100,42 @@ public sealed class OnlineModeNavigationEditorTests
     }
 
     [Test]
+    public void AuthoredJoinCardOffersOnlyAvailableRoles()
+    {
+        WithMenu(menu =>
+        {
+            Assert.That(menu.roleCard, Is.Not.Null);
+            Assert.That(menu.roleCard.activeSelf, Is.False);
+            var rows = menu.roleCard.transform.Find("WhiteBkg/ButtonsPanel");
+            Assert.That(rows.GetComponent<VerticalLayoutGroup>(), Is.Not.Null);
+            Assert.That(menu.awayRoleButton.transform.parent, Is.SameAs(rows));
+            Assert.That(menu.spectatorRoleButton.transform.parent, Is.SameAs(rows));
+            Assert.That(menu.awayRoleButton.onClick.GetPersistentMethodName(0), Is.EqualTo(nameof(menu.SelectAway)));
+            Assert.That(menu.spectatorRoleButton.onClick.GetPersistentMethodName(0), Is.EqualTo(nameof(menu.SelectSpectator)));
+            var back = rows.Find("BackToCodeButton").GetComponent<Button>();
+            Assert.That(back.onClick.GetPersistentMethodName(0), Is.EqualTo(nameof(menu.CancelRoleChoice)));
+            const System.Reflection.BindingFlags flags = System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic;
+            var show = typeof(OnlineModeMenu).GetMethod("SetRoleCardVisible", flags);
+            var options = typeof(OnlineModeMenu).GetMethod("SetRoleOptions", flags);
+            show.Invoke(menu, new object[] { true });
+            options.Invoke(menu, new object[] { new OnlineMatchRoleOptions(true, true, true) });
+            Assert.That(menu.awayRoleButton.gameObject.activeInHierarchy, Is.True);
+            Assert.That(menu.spectatorRoleButton.gameObject.activeInHierarchy, Is.True);
+            Assert.That(menu.mainCard.interactable, Is.False);
+
+            options.Invoke(menu, new object[] { new OnlineMatchRoleOptions(true, false, true) });
+            Assert.That(menu.awayRoleButton.gameObject.activeInHierarchy, Is.False);
+            Assert.That(menu.spectatorRoleButton.gameObject.activeInHierarchy, Is.True);
+            options.Invoke(menu, new object[] { new OnlineMatchRoleOptions(false, false, false) });
+            Assert.That(menu.spectatorRoleButton.gameObject.activeInHierarchy, Is.False);
+            Assert.That(menu.roleStatus.text, Does.Contain("No active match"));
+            menu.CancelRoleChoice();
+            Assert.That(menu.roleCard.activeSelf, Is.False);
+            Assert.That(menu.mainCard.interactable, Is.True);
+        });
+    }
+
+    [Test]
     public void HostControlsExpandBelowHostWithoutHidingJoin()
     {
         WithMenu(menu =>
