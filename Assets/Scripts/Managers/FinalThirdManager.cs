@@ -233,6 +233,7 @@ public partial class FinalThirdManager : MonoBehaviour
             Debug.Log("No Tokens in the Final Third! Skipping!");
             return; // No Eligible Tokens
         }
+        MatchManager.Instance?.SuspendOrdinaryActionsForFinalThird();
         movedTokens = new List<PlayerToken>();
         forfeitedTokens = new List<PlayerToken>();
         currentTeamMoving = "attack";

@@ -402,13 +402,15 @@ public class MatchStatsUI : MonoBehaviour
     {
         while (Vector2.Distance(panel.anchoredPosition, targetPos) > 0.1f)
         {
-            panel.anchoredPosition = Vector2.Lerp(panel.anchoredPosition, targetPos, Time.deltaTime * animationSpeed);
+            float elapsed = CounterAttack.Online.OnlineRoomSession.Current?.IsResuming == true
+                ? Time.unscaledDeltaTime : Time.deltaTime;
+            panel.anchoredPosition = Vector2.Lerp(panel.anchoredPosition, targetPos, elapsed * animationSpeed);
             yield return null;
         }
         panel.anchoredPosition = targetPos;
     }
 
-    void UpdateStatsUI()
+    internal void UpdateStatsUI()
     {
         if (MatchManager.Instance == null || MatchManager.Instance.gameData == null)
         {

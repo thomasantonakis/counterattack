@@ -8,7 +8,7 @@ public sealed partial class GoalkeeperBoxEntryFixture
 {
     public IEnumerator RunCodexKickoffLegacy()
     {
-        LoadLegacyRoster();
+        LoadLegacyRoster(startInOpenPlay: false);
         var kickoff = Add<KickoffManager>(); match.kickoffManager = kickoff; input.kickoffManager = kickoff;
         kickoff.ball = ball; kickoff.hexGrid = grid; kickoff.playerTokenManager = match.playerTokenManager;
         kickoff.freeKickManager = match.freeKickManager; kickoff.groundBallManager = ground;

@@ -13,6 +13,7 @@ namespace CounterAttack.Online
         public bool onBoard;
         public RoomTokenSnapshot runtime;
         public MatchManager.PlayerStats playerStats;
+        public bool hasRecordedPlayerStats;
         public bool visible;
         public float inactiveX,inactiveY,inactiveZ;
         public int passesAttempted, passesCompleted, interceptionsAttempted, interceptionsMade, possessionWon, possessionLost;
@@ -42,6 +43,7 @@ namespace CounterAttack.Online
         public OnlineMovementPanelFrame movementPanel;
         public OnlineMovementTokenStatusFrame movementTokenStatus;
         public bool introPending,homeIntroReady,awayIntroReady;
+        public bool resumePending,homeResumeReady,awayResumeReady;
         public bool ShouldStreamPresentation() => ballMoving || playerMoving || goalMotion;
         public string selectedPlayer;
         public int ballX, ballZ, selectedX, selectedZ, interceptorX, interceptorZ;
@@ -375,6 +377,9 @@ namespace CounterAttack.Online
                 state.introPending=roomSession?.IntroPending==true;
                 state.homeIntroReady=roomSession?.HomeIntroReady==true;
                 state.awayIntroReady=roomSession?.AwayIntroReady==true;
+                state.resumePending=roomSession?.ResumePending==true;
+                state.homeResumeReady=roomSession?.HomeResumeReady==true;
+                state.awayResumeReady=roomSession?.AwayResumeReady==true;
                 state.movementPanel=MovementPhaseMovedTokensPanel.CaptureOnline(match.movementPhaseManager);
                 state.movementTokenStatus=MovementPhaseTokenStatusPanel.CaptureOnline(match.movementPhaseManager,HeaderRules);
                 if(state.movementActive && match.movementPhaseManager is { } movement)
@@ -429,6 +434,7 @@ namespace CounterAttack.Online
                 id = TokenId(token), onBoard = hex != null, x = hex == null ? 0 : hex.coordinates.x,
                 z = hex == null ? 0 : hex.coordinates.z,
                 runtime=protocol.Compatibility.Catalog==OnlineFullRoomBootstrap.Catalog?match.CaptureOnlineRosterToken(token):null,
+                hasRecordedPlayerStats = stats != null,
                 playerStats=protocol.Compatibility.Catalog==OnlineFullRoomBootstrap.Catalog?JsonUtility.FromJson<MatchManager.PlayerStats>(JsonUtility.ToJson(stats??new MatchManager.PlayerStats())):null,
                 visible=token.gameObject.activeSelf,
                 inactiveX=hex==null?token.transform.position.x:0,inactiveY=hex==null?token.transform.position.y:0,inactiveZ=hex==null?token.transform.position.z:0,

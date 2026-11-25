@@ -833,12 +833,6 @@ public class HexGrid : MonoBehaviour
         //   // GetHexCellAt(new Vector3Int(16, 0, -12))
         // };
 
-        // Get NE and SE corner z-values for validation
-        // HexCell hex183 = GetHexCellAt(new Vector3Int(18, 0, 3)); // NE corner
-        HexCell hex18_3 = GetHexCellAt(new Vector3Int(18, 0, -3)); // SE corner
-        // float zNE183 = hex183.GetHexCorners()[2].z;
-        float zSE18_3 = hex18_3.GetHexCorners()[0].z;
-
         // Outer dictionary: CanShootFrom -> (CanShootTo -> Path)
         if (shotOrHead == "shot") shootingPaths = new Dictionary<HexCell, Dictionary<HexCell, List<HexCell>>>();
         else headingPaths = new Dictionary<HexCell, Dictionary<HexCell, List<HexCell>>>();
@@ -871,17 +865,15 @@ public class HexGrid : MonoBehaviour
                     }
                 }
 
-                float intersectionZ = CalculateIntersectionWithGoalLine(fromHex, toHex);
-
-                // Validate the intersection point
-                if (Mathf.Abs(intersectionZ) >= MathF.Abs(zSE18_3))
+                // The ball center must cross the goal line between or exactly at a post.
+                // The visual disc may overlap a post; it does not change goal eligibility.
+                if (!IsCenterlineWithinGoalMouth(fromHex, toHex))
                 {
-                    Debug.Log($"Line that connects centers of {fromHex.coordinates} and {toHex.coordinates} does not intersect with goal line. IntersectionZ: {intersectionZ}, zSE18_3: {zSE18_3}");
                     continue;
                 }
 
                 // Calculate the path using the ball's radius
-                List<HexCell> path = groundBallManager.CalculateThickPath(fromHex, toHex, ball.ballRadius);
+                List<HexCell> path = groundBallManager.CalculateThickPath(fromHex, toHex, ball.PhysicalRadius);
                 if (path == null || path.Count == 0)
                 {
                     Debug.Log($"No path found from {fromHex.coordinates} to {toHex.coordinates}.");
@@ -936,6 +928,17 @@ public class HexGrid : MonoBehaviour
 
     private void AssignShootingPathsToHexes()
     {
+        // These flags and dictionaries are derived from the shipped JSON on every
+        // Room load; never depend on stale serialized values or a prior rebuild.
+        if (cells != null)
+            foreach (HexCell cell in cells)
+                if (cell != null)
+                {
+                    cell.CanShootFrom = false;
+                    cell.CanHeadFrom = false;
+                    cell.ShootingPaths = null;
+                    cell.HeadingPaths = null;
+                }
         if (shootingPaths == null)
         {
             Debug.LogError("shootingPaths is null! Ensure CalculateShootingPaths is called before this.");
@@ -1194,6 +1197,17 @@ public class HexGrid : MonoBehaviour
             //     }
             // }
         }
+    }
+
+    public bool IsCenterlineWithinGoalMouth(HexCell fromHex, HexCell toHex)
+    {
+        if (fromHex == null || toHex == null) return false;
+        float intersectionZ = CalculateIntersectionWithGoalLine(fromHex, toHex);
+        float postZ = Mathf.Abs(GetHexCellAt(new Vector3Int(18, 0, -3)).GetHexCorners()[0].z);
+        // HexHeight is authored as 0.866 while the polygon corners use trig.
+        // Their ~0.000013 difference must not reject a centerline on the post.
+        const float postTolerance = 0.00002f;
+        return !float.IsNaN(intersectionZ) && Mathf.Abs(intersectionZ) <= postZ + postTolerance;
     }
 
     private float CalculateIntersectionWithGoalLine(HexCell fromHex, HexCell toHex)

@@ -1,0 +1,63 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62026415e31b54ad688584bc4e3211da, type: 3}
+  m_Name: CounterAttackMusicLibrary
+  m_EditorClassIdentifier: Assembly-CSharp::MusicLibrary
+  catalog:
+  - {fileID: 8300000, guid: a2c05e03f236d4062bc980b531bd861a, type: 3}
+  - {fileID: 8300000, guid: 9fcc2eee317764209ba9aa979f21f0f9, type: 3}
+  - {fileID: 8300000, guid: f3c72baa174044f26859827a7671a452, type: 3}
+  - {fileID: 8300000, guid: f712276a5371042ea9047d990f5c969a, type: 3}
+  - {fileID: 8300000, guid: d12d3880a8d144865b51858a7746b545, type: 3}
+  - {fileID: 8300000, guid: c253e97c13ab04c339088efb3cf4ae8a, type: 3}
+  - {fileID: 8300000, guid: 69fb9e8b9cfaa44509201974598a54ed, type: 3}
+  - {fileID: 8300000, guid: 7901517b373ef43e69615b6fbee1057b, type: 3}
+  - {fileID: 8300000, guid: 4af855a5722b14920bbd5d373f331c33, type: 3}
+  - {fileID: 8300000, guid: 8d22c88ab8b7047919d267e5549491cc, type: 3}
+  - {fileID: 8300000, guid: 018e962eef72943e9abca0a1e73b7b91, type: 3}
+  playlists:
+  - label: Startup
+    scenes:
+    - SplashScreen
+    tracks:
+    - {fileID: 8300000, guid: 4af855a5722b14920bbd5d373f331c33, type: 3}
+    repeat: 0
+  - label: Main menu
+    scenes:
+    - MainMenu
+    - CreateLoadRoom
+    tracks:
+    - {fileID: 8300000, guid: 9fcc2eee317764209ba9aa979f21f0f9, type: 3}
+    - {fileID: 8300000, guid: c253e97c13ab04c339088efb3cf4ae8a, type: 3}
+    - {fileID: 8300000, guid: 8d22c88ab8b7047919d267e5549491cc, type: 3}
+    repeat: 2
+  - label: Team selection
+    scenes:
+    - CreateNewGameScene
+    - Draft
+    - FreeDraft
+    tracks:
+    - {fileID: 8300000, guid: f712276a5371042ea9047d990f5c969a, type: 3}
+    repeat: 1
+  - label: Pre-match (assign scenes when available)
+    scenes: []
+    tracks:
+    - {fileID: 8300000, guid: 69fb9e8b9cfaa44509201974598a54ed, type: 3}
+    repeat: 0
+  - label: Victory (assign scenes when available)
+    scenes: []
+    tracks:
+    - {fileID: 8300000, guid: 7901517b373ef43e69615b6fbee1057b, type: 3}
+    repeat: 0
+  musicVolume: 0.65
+  masterVolume: 1
+  fadeSeconds: 1

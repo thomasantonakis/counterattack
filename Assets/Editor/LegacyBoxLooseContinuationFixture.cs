@@ -12,10 +12,11 @@ public sealed partial class GoalkeeperBoxEntryFixture
         Subscribe(ground); Subscribe(match.finalThirdManager);
         LegacyKey("P"); ClickPass(yaneva.currentHex); ClickPass(yaneva.currentHex);
         yield return Until(() => !ground.isActivated && ball.GetCurrentHex() == yaneva.currentHex, "box-continuation audit receives its kickoff pass");
+        yield return ForfeitLegacyFinalThirds();
         Assert.That(match.attackHasPossession && ftp.isAvailable && movement.isAvailable, Is.True);
         Assert.That(high.isAvailable || longBall.isAvailable || ground.isAvailable || movement.isActivated
             || ftp.isActivated || high.isActivated || longBall.isActivated, Is.False);
-        yield return ForfeitLegacyFinalThirds(); LegacyKey("M");
+        LegacyKey("M");
         if (moveSupport)
         {
             var support = players["Toothnail"];

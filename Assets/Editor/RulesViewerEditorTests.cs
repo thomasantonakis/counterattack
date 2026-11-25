@@ -48,7 +48,8 @@ public sealed class RulesViewerEditorTests
         Assert.That(viewer.entries.All(e => e.resultButton != null && e.text != null && e.rect != null), Is.True);
         Assert.That(viewer.entries.Where(e => e.heading).All(e => e.contentsButton != null), Is.True);
         Assert.That(viewer.GetComponentsInChildren<RawImage>(true).Length, Is.EqualTo(8));
-        Assert.That(viewer.surface.GetComponent<GameplayInputConsumer>().BlocksGameplayWhileActive, Is.True);
+        Assert.That(viewer.surface.GetComponent<GameplayInputConsumer>().BlocksGameplayWhileActive, Is.False,
+            "The Rules overlay leaves live match timing under the existing pause state.");
     }
 
     [TestCase("Assets/Scenes/MainMenu.unity")]

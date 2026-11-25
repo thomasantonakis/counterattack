@@ -17,6 +17,7 @@ namespace CounterAttack.Online
         private Vector2 pressPosition;
         private bool pressArmed;
         private HexCell localGoalHover;
+        private HexCell remoteGoalHover;
         private static readonly KeyCode[] CameraPresets = { KeyCode.Alpha1, KeyCode.Alpha2, KeyCode.Alpha3, KeyCode.Alpha4,
             KeyCode.Keypad1, KeyCode.Keypad2, KeyCode.Keypad3, KeyCode.Keypad4 };
         private static readonly KeyCode[] Keys={KeyCode.P,KeyCode.L,KeyCode.C,KeyCode.F,KeyCode.M,KeyCode.S,KeyCode.R,KeyCode.D,KeyCode.B,KeyCode.N,KeyCode.T,KeyCode.X,
@@ -136,11 +137,60 @@ namespace CounterAttack.Online
             if(token!=null && token.IsMoving)token=null;
             roomPresentation?.PresentOnlineHover(token,hex);
             PresentGroundPassHover(hex);
-            var action=hex!=null && hex.isInGoal!=0?OnlineBoardActionPicker.Hex(state,hex.coordinates.x,hex.coordinates.z):null;
-            SetLocalGoalHover(action!=null && (action.StartsWith("shot.target:",System.StringComparison.Ordinal)
-                || action.StartsWith("header.goal:",System.StringComparison.Ordinal))
-                && board.controls?.CanSubmitAction(action)==true?hex:null);
+            var action = GoalHoverAction(hex);
+            SetLocalGoalHover(action != null && board.controls?.CanSubmitAction(action) == true ? hex : null);
             return token;
+        }
+
+        private string GoalHoverAction(HexCell hex)
+        {
+            if (hex == null || hex.isInGoal == 0 || hex.IsCommittedGoalTarget) return null;
+            var action = OnlineBoardActionPicker.Hex(state, hex.coordinates.x, hex.coordinates.z);
+            if (action != null && (action.StartsWith("shot.target:", System.StringComparison.Ordinal)
+                || action.StartsWith("header.goal:", System.StringComparison.Ordinal)
+                || action.StartsWith("movement.target:", System.StringComparison.Ordinal)
+                || action.StartsWith("duel.target:", System.StringComparison.Ordinal))) return action;
+            return state?.legalActions?.Contains("shot.confirm") == true
+                && state.hexPreviews?.Any(preview => preview.x == hex.coordinates.x && preview.z == hex.coordinates.z
+                    && preview.reason == "CanShootFrom") == true ? "shot.confirm" : null;
+        }
+
+        internal void CapturePointerHover(OnlineRoomPointer pointer)
+        {
+            if (roomPresentation?.hoveredToken is { } token && token.GetCurrentHex() != null)
+                pointer.hoveredToken = OnlineRollPublication.ActorId(token);
+            var action = GoalHoverAction(localGoalHover);
+            if (action == null || board.controls?.CanSubmitAction(action) != true) return;
+            pointer.goalX = localGoalHover.coordinates.x;
+            pointer.goalZ = localGoalHover.coordinates.z;
+        }
+
+        internal void PresentPeerHover(OnlineRoomPointer pointer)
+        {
+            bool canShow = isActiveAndEnabled && board != null && pointer != null && pointer.icon != 2
+                && !RoomInputOwnership.BlocksHover && !GameInputManager.IsPresentationModalActive;
+            PlayerToken token = null;
+            HexCell goal = null;
+            if (canShow)
+            {
+                if (pointer.hoveredToken != null)
+                    token = board.tokens.FirstOrDefault(candidate => candidate.GetCurrentHex() != null && !candidate.IsMoving
+                        && OnlineRollPublication.ActorId(candidate) == pointer.hoveredToken);
+                if (pointer.goalX is int x && pointer.goalZ is int z
+                    && state?.owner == (board.localTeam == OnlineTeam.Home ? "Away" : "Home")
+                    && !state.connectionHeld && !state.isSharedPaused)
+                {
+                    var hex = board.grid.GetHexCellAt(new Vector3Int(x, 0, z));
+                    if (GoalHoverAction(hex) != null) goal = hex;
+                }
+            }
+            if (roomPresentation == null)
+                roomPresentation = FindAnyObjectByType<GameInputManager>(FindObjectsInactive.Include);
+            if (roomPresentation != null) roomPresentation.PresentOnlinePeerHover(token);
+            if (remoteGoalHover == goal) return;
+            if (remoteGoalHover != null) remoteGoalHover.SetRemoteGoalHover(false);
+            remoteGoalHover = goal;
+            if (remoteGoalHover != null) remoteGoalHover.SetRemoteGoalHover(true);
         }
 
         private bool CanRollCoinFromBoard(KeyCode key) => key == KeyCode.R

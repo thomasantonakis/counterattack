@@ -238,7 +238,7 @@ public static class RoomAIKickoffPlanner
         if (match?.hexGrid == null || origin == null || target == null || Distance(origin, target) is 0 or > 11) return false;
         var from = Hex(match.hexGrid, origin); var to = Hex(match.hexGrid, target);
         if (from == null || to == null || to.isOutOfBounds) return false;
-        var path = GroundPassCommon.CalculateThickPath(match.hexGrid, from, to, match.ball.ballRadius);
+        var path = GroundPassCommon.CalculateThickPath(match.hexGrid, from, to, match.ball.PhysicalRadius);
         var opponents = snapshot.tokens.Where(token => token != null && token.isPlaying && !token.isSentOff
             && token.currentHex != null && token.teamSide != snapshot.teamInAttack).ToList();
         if (opponents.Any(token => path.Any(hex => Distance(token.currentHex, RoomHexCoordinates.FromHex(hex)) == 0))) return false;

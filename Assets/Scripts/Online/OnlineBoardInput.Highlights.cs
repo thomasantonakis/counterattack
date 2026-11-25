@@ -102,6 +102,6 @@ namespace CounterAttack.Online
             foreach(var hex in hostHintHexes)if(hex!=null)hex.SetOnlineHostHint(null);
             hostHintHexes.Clear();
         }
-        private void OnDisable(){SetLocalGoalHover(null);PresentGroundPassHover(null);ClearHostHints();ClearPublishedHighlights();}
+        private void OnDisable(){SetLocalGoalHover(null);PresentPeerHover(null);PresentGroundPassHover(null);ClearHostHints();ClearPublishedHighlights();}
     }
 }

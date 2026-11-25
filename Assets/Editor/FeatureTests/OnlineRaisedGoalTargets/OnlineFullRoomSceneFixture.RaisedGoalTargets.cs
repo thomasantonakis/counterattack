@@ -43,6 +43,12 @@ public sealed partial class OnlineFullRoomSceneFixture
     }
 
     public IEnumerator RunRaisedGoalTargetPublication(string mode)
+        => RunRaisedGoalTarget(mode, false);
+
+    public IEnumerator RunSharedOrangeGoalHover(string mode)
+        => RunRaisedGoalTarget(mode, true);
+
+    private IEnumerator RunRaisedGoalTarget(string mode, bool synchronizeHover)
     {
         InitializeFixture();
         SuppressLegacyRoomRunner();
@@ -97,7 +103,13 @@ public sealed partial class OnlineFullRoomSceneFixture
             case "snapshot":
                 shot.StartShotProcess(attacker, "snapshot");
                 Assert.That(shot.OnlineShotStage, Is.EqualTo("snapshot.select"));
-                shot.CompleteDefenderMovement();
+                var blocker = shot.OnlineSnapshotBlockers.First();
+                Assert.That(shot.TryExecuteOnlineShot(OnlineShotIntent.SelectBlocker, blocker), Is.True);
+                Assert.That(shot.TryExecuteOnlineShot(OnlineShotIntent.MoveBlocker, target: shot.OnlineSnapshotDestinations.First()), Is.True);
+                float aimDeadline = Time.realtimeSinceStartup + 8f;
+                while (shot.OnlineShotStage != "target" && Time.realtimeSinceStartup < aimDeadline)
+                    yield return null;
+                Assert.That(shot.OnlineShotStage, Is.EqualTo("target"));
                 break;
             case "free-kick-preview":
                 match.currentState = MatchManager.GameState.FreeKickExecution;
@@ -136,6 +148,32 @@ public sealed partial class OnlineFullRoomSceneFixture
         source.GetType().GetMethod("OnHoverReceived", Private).Invoke(source, new object[] { null, hovered });
         Assert.That(hovered.HighlightReason, Is.EqualTo(hoverReason));
         var duringHover = authority.Capture();
+        OnlineRoomPointer hoverPointer = null;
+        if (synchronizeHover)
+        {
+            board.boardInput.samplePhysicalInput = false;
+            board.controls.Configure(OnlineTeam.Home);
+            board.controls.SetConnected(true);
+            board.Display(duringHover, "Local goal hover");
+            Physics.SyncTransforms();
+            board.boardInput.PresentHover(new Ray(hovered.GetHexCenter() + Vector3.up * 10f, Vector3.down), true);
+            Vector3 center = hovered.GetHexCenter();
+            Vector2 screen = board.boardCamera.WorldToScreenPoint(new Vector3(center.x, 0f, center.z));
+            Assert.That(board.boardCamera.pixelRect.Contains(screen), Is.True, mode);
+            var captured = (OnlineRoomPointer)typeof(OnlineRoomPointers).GetMethod("CaptureBoardPointer", Private)
+                .Invoke(board.pointers, new object[] { screen, 0 });
+            Assert.That(captured.visible, Is.False, "The goal target is outside the pitch cursor bounds");
+            var wire = new OnlineGroundPassWire();
+            foreach (var fragment in OnlineGroundPassWire.Encode(new OnlineGroundPassMessage
+            {
+                kind = "pointer", matchId = protocol.MatchId, sequence = 1, connectionGeneration = 1,
+                peerNonce = System.Guid.NewGuid().ToString("N"), pointer = captured
+            }))
+                hoverPointer = wire.Receive(fragment, fragment.Length)?.pointer ?? hoverPointer;
+            Assert.That(hoverPointer, Is.Not.Null);
+            Assert.That(hoverPointer.goalX, Is.EqualTo(hovered.coordinates.x), mode);
+            Assert.That(hoverPointer.goalZ, Is.EqualTo(hovered.coordinates.z), mode);
+        }
 
         input.hoveredHex = null;
         switch (mode)
@@ -173,6 +211,20 @@ public sealed partial class OnlineFullRoomSceneFixture
         ApplyPublication(replica, board, duringHover);
         Assert.That(targets.Select(cell => cell.transform.position.y), Is.EqualTo(raisedHeights), $"{mode} loses a raised goal target on hover");
         Assert.That(targets.Select(cell => cell.HighlightReason), Is.All.EqualTo(baseReason));
+        if (synchronizeHover)
+        {
+            var goal = board.grid.GetHexCellAt(hovered.coordinates);
+            Color baseColor = goal.hexRenderer.material.color;
+            board.pointers.ShowRemote(hoverPointer, 1);
+            yield return null;
+            yield return null;
+            Assert.That(Vector4.Distance(goal.hexRenderer.material.color, new Color(1f, .48f, .05f, 1f)), Is.LessThan(.001f));
+            Assert.That(goal.IsCommittedGoalTarget, Is.False);
+            board.pointers.ShowRemote(new OnlineRoomPointer(), 2);
+            yield return null;
+            yield return null;
+            Assert.That(Vector4.Distance(goal.hexRenderer.material.color, baseColor), Is.LessThan(.001f));
+        }
         ApplyPublication(replica, board, withdrawn);
         Assert.That(targets.Select(cell => cell.transform.position.y), Is.EqualTo(guestHeights));
         Assert.That(targets.Select(cell => cell.HighlightReason), Has.None.EqualTo(baseReason));

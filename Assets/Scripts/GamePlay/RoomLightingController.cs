@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 
 /// <summary>Consumes persistent Room lighting assets and restores globals when Room leaves.</summary>
 [ExecuteAlways]
-public sealed class RoomLightingController : MonoBehaviour
+public sealed partial class RoomLightingController : MonoBehaviour
 {
     public RoomLightingPreset midAfternoon;
     public RoomLightingPreset sunset;
@@ -43,6 +43,7 @@ public sealed class RoomLightingController : MonoBehaviour
         }
         string value = match?.gameData?.gameSettings?.fixtureLighting;
         if (appliedValue == null || appliedValue != FixtureLightingOptions.Normalize(value)) ApplyLoadedSettings();
+        AdvanceGoalEffects(Time.deltaTime);
     }
 
     public void ApplyLoadedSettings() => Apply(FixtureLightingOptions.Parse(
@@ -57,6 +58,7 @@ public sealed class RoomLightingController : MonoBehaviour
             _ => midAfternoon
         };
         if (preset == null) return;
+        EndGoalEffects();
         RenderSettings.skybox = preset.sky;
         RenderSettings.ambientMode = preset.ambientMode;
         RenderSettings.ambientSkyColor = preset.ambientSky;
@@ -97,6 +99,7 @@ public sealed class RoomLightingController : MonoBehaviour
 
     private void OnDisable()
     {
+        EndGoalEffects();
         if (subscribed != null) subscribed.OnGameSettingsLoaded -= ApplyLoadedSettings;
         subscribed = null;
         RestoreEnvironment();

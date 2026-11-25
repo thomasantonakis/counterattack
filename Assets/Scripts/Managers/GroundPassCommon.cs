@@ -153,7 +153,7 @@ public static class GroundPassCommon
             return new GroundPassValidationResult(false, false, null, PassValidationFailureReason.OutOfRange);
         }
 
-        List<HexCell> pathHexes = CalculateThickPath(hexGrid, ballHex, targetHex, ball.ballRadius);
+        List<HexCell> pathHexes = CalculateThickPath(hexGrid, ballHex, targetHex, ball.PhysicalRadius);
 
         if (isQuickThrow)
         {
@@ -223,7 +223,7 @@ public static class GroundPassCommon
             return new List<GroundInterceptionCandidate>();
         }
 
-        List<HexCell> pathHexes = CalculateThickPath(hexGrid, ballHex, targetHex, ball.ballRadius);
+        List<HexCell> pathHexes = CalculateThickPath(hexGrid, ballHex, targetHex, ball.PhysicalRadius);
         List<HexCell> relevantInterceptionHexes = GetRelevantInterceptionHexes(pathHexes, targetHex, isQuickThrow);
         HashSet<HexCell> relevantInterceptionHexSet = new HashSet<HexCell>(relevantInterceptionHexes);
         HashSet<HexCell> blockingHexSet = blockingDefenderHexes != null
@@ -304,7 +304,7 @@ public static class GroundPassCommon
             return new List<GroundBallPathInteraction>();
         }
 
-        List<HexCell> pathHexes = CalculateThickPath(hexGrid, ballHex, targetHex, ball.ballRadius);
+        List<HexCell> pathHexes = CalculateThickPath(hexGrid, ballHex, targetHex, ball.PhysicalRadius);
         HashSet<PlayerToken> excludedDefenders = excludeOutfieldDefenders != null
             ? excludeOutfieldDefenders.Where(token => token != null).ToHashSet()
             : new HashSet<PlayerToken>();
@@ -463,16 +463,20 @@ public static class GroundPassCommon
             return new List<HexCell>();
         }
 
+        if (ballRadius < 0f) throw new ArgumentOutOfRangeException(nameof(ballRadius));
         List<HexCell> path = new List<HexCell>();
         Vector3 startPos = startHex.GetHexCenter();
         Vector3 endPos = endHex.GetHexCenter();
+        Vector2 start = new Vector2(startPos.x, startPos.z), end = new Vector2(endPos.x, endPos.z);
+        Vector2[] capsule = DiscPathGeometry.BuildCapsulePolygon(start, end, ballRadius);
         List<HexCell> candidateHexes = GetCandidateGroundPathHexes(hexGrid, startHex, endHex);
 
         foreach (HexCell candidateHex in candidateHexes)
         {
-            Vector3 candidatePos = candidateHex.GetHexCenter();
-            float distanceToLine = DistanceFromPointToLine(candidatePos, startPos, endPos);
-            if (distanceToLine <= ballRadius && !path.Contains(candidateHex))
+            Vector3[] corners = candidateHex.GetHexCorners();
+            Vector2[] polygon = new Vector2[corners.Length];
+            for (int i = 0; i < corners.Length; i++) polygon[i] = new Vector2(corners[i].x, corners[i].z);
+            if (DiscPathGeometry.CapsuleCoversPathHex(start, end, ballRadius, polygon, capsule))
             {
                 path.Add(candidateHex);
             }

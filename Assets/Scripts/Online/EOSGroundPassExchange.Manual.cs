@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.IO;
 using System.Linq;
 using UnityEngine;
 
@@ -24,6 +25,9 @@ namespace CounterAttack.Online
             long presentationSequence = 0, pointerSequence = 0;
             double nextPointer = 0;
             OnlineGroundPassState finishingSnapshot = null;
+            OnlineGroundPassMessage[] reportParts = null;
+            int nextReportPart = 0;
+            double nextReportSend = 0;
             void Publish(OnlineGroundPassState state, string status)
             {
                 Send(new OnlineGroundPassMessage { kind = "state", state = state, status = status,
@@ -99,7 +103,26 @@ namespace CounterAttack.Online
                     }
                     var state = finishingSnapshot ?? pause.Capture(authority);
                     if (ready && finishingSnapshot == null && CompletedManualAction(state))
-                    { finishingSnapshot = state; board.controls.SetConnected(false); }
+                    {
+                        finishingSnapshot = state;
+                        board.controls.SetConnected(false);
+                        nextReportPart = 0;
+                        nextReportSend = RecoveryNow;
+                        if (board.usesNativeRoom)
+                        {
+                            try
+                            {
+                                reportParts = OnlineFullTimeReport.Encode(matchId, state.publicationSequence,
+                                    board.match.gameData.events);
+                            }
+                            catch (Exception error) when (error is InvalidDataException or Newtonsoft.Json.JsonException)
+                            {
+                                Debug.LogWarning("Could not publish Full Time history: " + error.Message);
+                                reportParts = new[] { new OnlineGroundPassMessage {
+                                    kind = OnlineFullTimeReport.Unavailable, revision = state.publicationSequence } };
+                            }
+                        }
+                    }
                     board.Display(state, board.liveFullRoom?$"Online match | {protocol.HostTeam} authority":"Authority Away | enter target X/Z; Home chooses the pass");
                     var boundary = state.revision + ":" + state.sharedPauseRevision + ":" + state.connectionHeld
                         + ":" + state.stage + ":" + state.owner + ":" + state.rollSequence;
@@ -113,6 +136,16 @@ namespace CounterAttack.Online
                         if (!ready && recovery.State == OnlinePeerState.Connected) snapshotDigest = Digest(state);
                         sent = state.publicationSequence; sentBoundary = boundary;
                         nextTimedSnapshot = RecoveryNow + .25; nextPublication = RecoveryNow + 1;
+                    }
+                    if (finishingSnapshot != null && sent == finishingSnapshot.publicationSequence
+                        && ready && recovery.CanSubmit && reportParts != null && nextReportPart < reportParts.Length
+                        && RecoveryNow >= nextReportSend)
+                    {
+                        var part = reportParts[nextReportPart++];
+                        part.peerNonce = nonce;
+                        part.connectionGeneration = recovery.Generation;
+                        Send(part);
+                        nextReportSend = RecoveryNow + .05;
                     }
                     if (ready && recovery.CanSubmit && !done && board.pointers != null && RecoveryNow >= nextPointer)
                     {
@@ -147,6 +180,10 @@ namespace CounterAttack.Online
             long generation = 0, heartbeat = 0, pointerSequence = 0;
             double nextPointer = 0;
             double lastHost = RecoveryNow, nextHeartbeat = 0, nextRejoin = 0;
+            double reportDeadline = double.PositiveInfinity;
+            long terminalPublication = 0;
+            OnlineFullTimeReport.Receiver report = null;
+            bool reportResolved = false, terminalConfirmed = false;
             void SendCurrent(OnlineGroundPassMessage message)
             { message.peerNonce = nonce; message.connectionGeneration = generation; Send(message); }
             void Local(OnlineGroundPassMessage command) => SendCurrent(command);
@@ -174,6 +211,7 @@ namespace CounterAttack.Online
                         if (message.status == "rejoin-required")
                         {
                             board.controls.SetConnected(false); nonce = Guid.NewGuid().ToString("N"); generation = 0; heartbeat = 0; doneSent = false;
+                            terminalConfirmed = false;
                             SendCurrent(new OnlineGroundPassMessage { kind = "hello" }); continue;
                         }
                         generation = message.connectionGeneration;
@@ -184,9 +222,35 @@ namespace CounterAttack.Online
                                 $"Manual guest rejected state {incoming?.publicationSequence}, revision {incoming?.revision}, " +
                                 $"phase {incoming?.gameState}/{incoming?.stage}, pause revision {incoming?.sharedPauseRevision}");
                             board.Display(replica.State, board.liveFullRoom?$"Online match | {localTeam} replica":"Replica Home | Start, enter X/Z, preview then confirm");
+                            terminalConfirmed = CompletedManualAction(incoming) && !incoming.connectionHeld && message.status != "resync";
+                            if (board.usesNativeRoom && CompletedManualAction(incoming)
+                                && incoming.publicationSequence != terminalPublication)
+                            {
+                                terminalPublication = incoming.publicationSequence;
+                                report = new OnlineFullTimeReport.Receiver(matchId, terminalPublication);
+                                reportDeadline = RecoveryNow + 25;
+                                reportResolved = board.HasOnlineReportHistory;
+                            }
                             if (message.status == "resync")
                                 SendCurrent(new OnlineGroundPassMessage { kind = "hello", status = "resync-ack", digest = Digest(message.state) });
-                            board.controls.SetConnected(!message.state.connectionHeld && message.status != "resync");
+                            board.controls.SetConnected(!incoming.connectionHeld && message.status != "resync"
+                                && !CompletedManualAction(incoming));
+                        }
+                        else if (message.kind == OnlineFullTimeReport.Part || message.kind == OnlineFullTimeReport.Unavailable)
+                        {
+                            if (!board.usesNativeRoom || report == null || reportResolved || message.revision != terminalPublication)
+                                continue;
+                            if (message.kind == OnlineFullTimeReport.Part) report.Accept(message);
+                            if (report.Events != null)
+                            {
+                                board.PresentFullTimeHistory(report.Events, replica.State.half);
+                                reportResolved = true;
+                            }
+                            else if (report.Failed || message.kind == OnlineFullTimeReport.Unavailable)
+                            {
+                                EndGamePanelManager.ShowOnlineHistoryUnavailable();
+                                reportResolved = true;
+                            }
                         }
                         else if (message.kind == "presentation")
                         { if (replica.ApplyPresentation(message.presentation)) board.QueuePresentation(message.presentation); }
@@ -205,6 +269,7 @@ namespace CounterAttack.Online
                         if (RecoveryNow >= nextRejoin)
                         {
                             transportUnavailable = false; nonce = Guid.NewGuid().ToString("N"); generation = 0; heartbeat = 0; doneSent = false;
+                            terminalConfirmed = false;
                             SendCurrent(new OnlineGroundPassMessage { kind = "hello" }); lastHost = RecoveryNow; nextRejoin = RecoveryNow + 1;
                         }
                     }
@@ -215,7 +280,13 @@ namespace CounterAttack.Online
                     }
                     if (generation > 0 && RecoveryNow >= nextHeartbeat)
                     { SendCurrent(new OnlineGroundPassMessage { kind = "hello", status = "heartbeat", sequence = ++heartbeat }); nextHeartbeat = RecoveryNow + 1; }
-                    if (!doneSent && state != null && CompletedManualAction(state))
+                    if (report != null && !reportResolved && RecoveryNow >= reportDeadline)
+                    {
+                        EndGamePanelManager.ShowOnlineHistoryUnavailable();
+                        reportResolved = true;
+                    }
+                    if (!doneSent && state != null && CompletedManualAction(state)
+                        && (!board.usesNativeRoom || terminalConfirmed && reportResolved))
                     { SendCurrent(new OnlineGroundPassMessage { kind = "done", digest = Digest(state) }); doneSent = true; board.controls.SetConnected(false); }
                     yield return null;
                 }

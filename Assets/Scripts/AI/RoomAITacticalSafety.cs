@@ -494,7 +494,7 @@ public static class RoomAITacticalSafety
                 {
                     var target = grid.GetHexCellAt(new UnityEngine.Vector3Int(receiver.currentHex.x, 0, receiver.currentHex.z), false);
                     if (origin == null || target == null) continue;
-                    var path = GroundPassCommon.CalculateThickPath(grid, origin, target, match.ball.ballRadius);
+                    var path = GroundPassCommon.CalculateThickPath(grid, origin, target, match.ball.PhysicalRadius);
                     // A goalkeeper-wall interaction requires its own preview.
                     // Do not claim a normal interception-only FTP in that area.
                     if (path.Count == 0 || path.Any(h => h != null && h.isInPenaltyBox == goalSign)) continue;

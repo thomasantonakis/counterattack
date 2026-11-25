@@ -310,6 +310,78 @@ or revert all earlier commits as if they were six migration bug fixes.
   or can be applied by the pause requester. Keep the existing agreed settings
   unchanged until answered. Continue unrelated multiplayer implementation.
 
+### Fixed — F3 and Standard Pass share input after a recovery (2026-11-17)
+
+The initial investigation was read-only while the user finished the match.
+The user subsequently authorized the gameplay fixes. Original evidence follows.
+
+Fix: recovery establishes F3 ownership before offering the new attack's actions;
+F3 reserves ordinary availability, refreshes preserve that reservation, and direct
+action entry points reject attempts during F3. Ground-pass click/hover/key handlers
+yield to F3 even if an old preview remains active. Normal continuation is recomputed
+after the final phase. Twelve focused native tests and 20 existing regressions passed; see
+`Assets/Editor/FeatureTests/F3RepositionInput/TASKS.md` for exact scope/results.
+
+- Active file was identified read-only through
+  `ApplicationManager.Instance.GetLastSavedFilePath()`: the disposable Room direct-play
+  file under `SavedGames/__RoomPlaytests/__RoomDirectPlay__gv10-dHYf-vRVz-oLwz_2024-11-26_00-28__Single Player__Inverness Caledonian Thistle__Aurora F.C..json`.
+  Live data reported null playSessionId/start/source fields and inherited sequence 0.
+  Do not associate later events with another run without rechecking match identity.
+- Events 584–586: Murphy (Home:5, Inverness CT) recovers the loose ball following
+  the tackle contest against Soares; possession changes Away → Home.
+- Events 587–589: AnyOtherScenario offers movement/standard_pass/long_ball, then
+  opposite-end F3 starts. Aurora's defensive F3 owns the next input.
+- Event 591: P is consumed by GroundBallManager despite the instruction belonging
+  to FinalThirdManager. Event 592 selects Standard Pass for Home:5.
+- Read-only live inspection confirmed FinalThirdManager active on defense and
+  GroundBallManager simultaneously activated/awaiting target selection (range 6).
+  Aurora's Kuzmic, Abraham, Delgado, Marell and Vladoiu remained movable.
+  F3 selected players successfully, but the highlight list stayed empty.
+- Events 593 onward: Aurora clicks are owned by FinalThirdManager but their logged
+  result is overwritten with standard_pass_target_selection/invalid_target,
+  typically OutOfRange from the ball on the other end of the pitch.
+- Confirmed code mechanism: GroundBallManager.OnClickReceived only checks
+  isAwaitingTargetSelection; its hover handler also remains active during F3.
+  ValidateGroundPassPath clears the shared highlightedHexes. Neither handler yields
+  to F3 ownership. GroundBallManager can also accept P during F3 when isAvailable.
+- **Additional user-observed consequence:** confirming the pass target moved the
+  selected Aurora player to that hex. This is not merely missing highlights: the
+  same input can commit a pass and an unintended F3 token move. Exact confirmation
+  event/destination has not yet been inspected; preserve the continuing run.
+- Earlier diagnostic suggestion was Enter to forfeit the current F3 moves as a
+  manual way to continue, explicitly sacrificing those moves. No input, runtime
+  flag, pause/stop, recompile or gameplay-code change was performed by Codex.
+
+Focused coverage now exercises recovery → opposite F3 → attempted P,
+click/hover ownership, preserved movement highlights, and pass confirmation never
+moving an F3 player. Both team/direction combinations and normal pass continuation
+after F3 passed. Move validation and legitimate recovery options are preserved.
+
+User clarification after the match (2026-11-17): **do not accept the new attacking
+team's action inputs until all potentially triggered Final Third phases have
+resolved**. This is the intended ownership rule for the fix, not an open rule
+question. Preserve normal continuation choices once the F3 interruption finishes.
+
+### Fixed — mouse hover restores reposition highlights during travel (2026-11-17)
+
+User reports moving the mouse while a token is repositioning re-highlights the
+reposition destination hexes. The original investigation notes follow.
+
+Fix: click/hover/highlight refresh reject input while IsResolvingReposition, and
+the reservation now covers travel plus any nested goalkeeper decision. Selection
+highlights remain available before confirmation. Both-direction native tackle /
+reposition / goalkeeper tests passed in `20261117T173625893Z/results.xml` under
+`TestResults/GameplayRegression/Runs/`.
+
+Original code lead: MovementPhaseManager.OnHoverReceived guarded isPlayerMoving and the
+selectedToken's IsMoving, but reposition travel is separately tracked by
+IsResolvingReposition. isWaitingForReposition stays true while JumpToHex runs and
+while a nested goalkeeper decision can finish. ShouldShowEasyRepositionHover and
+RefreshRepositionHighlights did not reject IsResolvingReposition. The new tests
+cover real reposition travel, hover changes and a nested GK interruption; the
+committed target stays intact and destination highlights stay cleared during
+travel. Selection highlights before confirmation are preserved.
+
 - Decision timing review resolved by the user (2026-11-09): Rules opened from Pause
   preserves that pause; Rules opened beside instructions is inspection and does not
   pause gameplay. Mandatory rolls and CPU commands continue through the live overlay.

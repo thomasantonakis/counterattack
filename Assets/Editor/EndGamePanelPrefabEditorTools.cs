@@ -191,6 +191,7 @@ public static class EndGamePanelPrefabEditorTools
             awayStatsTexts,
             mainMenuButton);
 
+        PostMatchReportEditorTools.Author(root);
         PrefabUtility.SaveAsPrefabAsset(root, PrefabPath);
         Object.DestroyImmediate(root);
         AssetDatabase.SaveAssets();

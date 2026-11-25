@@ -37,10 +37,15 @@ public sealed partial class GoalkeeperBoxEntryFixture
         var attack = attackLeft ? duelPanel.leftPlayer : duelPanel.rightPlayer;
         var defense = attackLeft ? duelPanel.rightPlayer : duelPanel.leftPlayer;
         Assert.That(attack.playerName.text, Does.Contain(shot.shooter.playerName)); Assert.That(attack.modifier.text, Does.Contain("xGoals"));
-        if (shot.isWaitingForShotRoll) Assert.That(attack.die.IsAnimating && !defense.die.IsAnimating, Is.True);
+        if (shot.isWaitingForShotRoll) Assert.That(attack.die.IsAnimating && !defense.die.IsAnimating, Is.True,
+            $"Free-kick shot roll: attackAnimating={attack.die.IsAnimating}, defenseAnimating={defense.die.IsAnimating}");
         else
         {
-            Assert.That(!attack.die.IsAnimating && attack.total.text.Contains($"Total: {shot.totalShotPower}") && defense.die.IsAnimating, Is.True);
+            bool resolvedShotShown = shot.totalShotPower == 0
+                ? attack.total.text.Contains("Roll 1")
+                : attack.total.text.Contains($"Total: {shot.totalShotPower}");
+            Assert.That(!attack.die.IsAnimating && resolvedShotShown && defense.die.IsAnimating, Is.True,
+                $"Free-kick defender roll: attackAnimating={attack.die.IsAnimating}, attackTotal={attack.total.text}, shotPower={shot.totalShotPower}, defenseAnimating={defense.die.IsAnimating}");
             Assert.That(defense.playerName.text, Does.Contain(LegacyShotField<PlayerToken>(CurrentLegacyShotInteraction(), "defender").playerName));
         }
     }

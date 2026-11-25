@@ -278,7 +278,9 @@ public class GameInputManager : MonoBehaviour
     [SerializeField] private Canvas hoverNameCanvas;
     [SerializeField] private RectTransform hoverNameRect;
     [SerializeField] private TextMeshProUGUI hoverNameLabel;
+    [SerializeField] private TextMeshProUGUI peerHoverNameLabel;
     private PlayerToken lineupHoverToken;
+    private PlayerToken peerHoverToken;
     private static ClickInputData currentClick;
     private bool suppressMouseClickUntilReleased;
 
@@ -291,8 +293,8 @@ public class GameInputManager : MonoBehaviour
 
     private void LateUpdate() => UpdateHoverNameLabel();
 
-    public void SetLineupHoverToken(PlayerToken token) => lineupHoverToken = token;
-    public PlayerToken InspectionHoverToken => lineupHoverToken ?? hoveredToken;
+    public void SetLineupHoverToken(PlayerToken token) => lineupHoverToken = EndGamePanelManager.IsVisible ? null : token;
+    public PlayerToken InspectionHoverToken => EndGamePanelManager.IsVisible ? null : lineupHoverToken ?? hoveredToken;
     public static bool IsPresentationModalActive => IsModalUiActive() || IsDiceRollModalVisible;
     public static bool IsCameraPointerOverUi => IsPointerOverUi(previewOnlyForResolution: IsDiceRollModalVisible);
 
@@ -302,14 +304,23 @@ public class GameInputManager : MonoBehaviour
         UpdateHoverNameLabel();
     }
 
+    internal void PresentOnlinePeerHover(PlayerToken token) => peerHoverToken = token;
+
     private void OnDisable()
     {
         lineupHoverToken = null;
+        peerHoverToken = null;
         HideHoverNameLabel();
     }
 
     private void ProcessInputs()
     {
+        if (EndGamePanelManager.IsVisible)
+        {
+            ClearHover(); lineupHoverToken = null;
+            isDragging = false; suppressMouseClickUntilReleased = true;
+            return;
+        }
         if (RoomInputOwnership.IntroActive || RoomMatchIntro.Instance?.IsConsumingSkipRelease == true)
         {
             ClearHover(); isDragging = false; suppressMouseClickUntilReleased = true;
@@ -938,8 +949,14 @@ public class GameInputManager : MonoBehaviour
 
     private void UpdateHoverNameLabel()
     {
-        PlayerToken displayToken = lineupHoverToken != null ? lineupHoverToken : hoveredToken;
-        if (displayToken == null)
+        if (EndGamePanelManager.IsVisible)
+        {
+            HideHoverNameLabel();
+            return;
+        }
+        PlayerToken localToken = lineupHoverToken != null ? lineupHoverToken : hoveredToken;
+        PlayerToken remoteToken = peerHoverToken != localToken ? peerHoverToken : null;
+        if (localToken == null && remoteToken == null)
         {
             HideHoverNameLabel();
             return;
@@ -952,31 +969,30 @@ public class GameInputManager : MonoBehaviour
 
         hoverNameCanvas.gameObject.SetActive(true);
         Camera activeCamera = Camera.main;
-        hoverNameLabel.text = displayToken.playerName;
-        hoverNameLabel.color = GetHoverNameLabelColor(displayToken);
-        if (activeCamera != null)
-        {
-            if (!TryGetHoverNameScreenMetrics(activeCamera, displayToken, out Vector3 screenPoint, out float tokenScreenWidth, out float tokenScreenHeight))
-            {
-                HideHoverNameLabel();
-                return;
-            }
+        UpdateHoverName(hoverNameLabel, hoverNameRect, localToken, activeCamera);
+        if (peerHoverNameLabel != null)
+            UpdateHoverName(peerHoverNameLabel, peerHoverNameLabel.rectTransform, remoteToken, activeCamera);
+    }
 
-            float fontSize = Mathf.Clamp(tokenScreenHeight * hoverNameFontToTokenHeightRatio, hoverNameMinFontSize, hoverNameMaxFontSize) * hoverNameScale;
-            hoverNameLabel.fontSize = fontSize;
+    private void UpdateHoverName(TextMeshProUGUI label, RectTransform rect, PlayerToken token, Camera camera)
+    {
+        Vector3 screenPoint = default;
+        float tokenWidth = 0f, tokenHeight = 0f;
+        bool visible = token != null && camera != null
+            && TryGetHoverNameScreenMetrics(camera, token, out screenPoint, out tokenWidth, out tokenHeight);
+        label.gameObject.SetActive(visible);
+        if (!visible) return;
 
-            Vector2 preferredSize = hoverNameLabel.GetPreferredValues(hoverNameLabel.text);
-            float labelWidth = Mathf.Max(hoverNameMinWidthPixels, preferredSize.x + hoverNameHorizontalPaddingPixels, tokenScreenWidth * hoverNameWidthToTokenRatio);
-            float labelHeight = Mathf.Max(preferredSize.y + hoverNameVerticalPaddingPixels, fontSize * hoverNameHeightToFontRatio);
-            hoverNameRect.sizeDelta = new Vector2(labelWidth, labelHeight);
-
-            float pixelOffset = Mathf.Max(hoverNameMinOffsetPixels, tokenScreenHeight * hoverNameOffsetToTokenHeightRatio);
-            hoverNameRect.position = screenPoint + new Vector3(0f, pixelOffset, 0f);
-        }
-        else
-        {
-            HideHoverNameLabel();
-        }
+        label.text = token.playerName;
+        label.color = GetHoverNameLabelColor(token);
+        float fontSize = Mathf.Clamp(tokenHeight * hoverNameFontToTokenHeightRatio, hoverNameMinFontSize, hoverNameMaxFontSize) * hoverNameScale;
+        label.fontSize = fontSize;
+        Vector2 preferredSize = label.GetPreferredValues(label.text);
+        float width = Mathf.Max(hoverNameMinWidthPixels, preferredSize.x + hoverNameHorizontalPaddingPixels, tokenWidth * hoverNameWidthToTokenRatio);
+        float height = Mathf.Max(preferredSize.y + hoverNameVerticalPaddingPixels, fontSize * hoverNameHeightToFontRatio);
+        rect.sizeDelta = new Vector2(width, height);
+        float offset = Mathf.Max(hoverNameMinOffsetPixels, tokenHeight * hoverNameOffsetToTokenHeightRatio);
+        rect.position = screenPoint + new Vector3(0f, offset, 0f);
     }
 
     private void HideHoverNameLabel()

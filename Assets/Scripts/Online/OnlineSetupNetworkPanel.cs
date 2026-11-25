@@ -26,6 +26,7 @@ namespace CounterAttack.Online
             online=ApplicationManager.Instance?.SelectedRoomGameMode==ApplicationManager.OnlineGameMode;
             if(panel!=null)panel.SetActive(online);
             if(!online)return;
+            lobbyCode.characterLimit = OnlineFrontendSessionPolicy.LobbyCodeLength;
             if(string.IsNullOrWhiteSpace(setup.homeTeamInputField.text))setup.homeTeamInputField.SetTextWithoutNotify("Home");
             if(string.IsNullOrWhiteSpace(setup.awayTeamInputField.text))setup.awayTeamInputField.SetTextWithoutNotify("Away");
             GuardLocalSave();hostButton.onClick.AddListener(Host);joinButton.onClick.AddListener(Join);
@@ -133,7 +134,7 @@ namespace CounterAttack.Online
             if(seededClient!=null)seededClient.Changed-=SeedGuestSelection;
             // Leaving setup before agreement cancels its native lifetime; agreed
             // sessions remain alive for the scene-transition coordinator.
-            if(bound!=null && bound.AgreedSettings==null)bound.Close();
+            if(bound!=null && bound.AgreedSettings==null && !bound.LaunchingRoom)bound.Close();
         }
     }
 }

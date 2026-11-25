@@ -12,17 +12,19 @@ namespace CounterAttack.Online
         public OnlineDraftRequest draftRequest;
         public OnlineDraftState draftState;
         public OnlineDraftDragFrame draftDrag;
+        public MatchManager.GameData resumeData;
+        public string resumeToken;
     }
     // Dedicated frontend control channel; it cannot be decoded as a gameplay packet.
     public sealed class OnlineSessionWire
     {
-        public const string Version="session-wire-v2";
+        public const string Version="session-wire-v5";
         public const int FragmentPayload=OnlineReliableJsonWire<OnlineSessionMessage>.FragmentPayload;
         public const int HeaderSize=OnlineReliableJsonWire<OnlineSessionMessage>.HeaderSize;
         public const int PayloadLimit=OnlineReliableJsonWire<OnlineSessionMessage>.PayloadLimit;
         private readonly OnlineReliableJsonWire<OnlineSessionMessage> framing=new(0xCA11,Valid);
         private static bool Valid(OnlineSessionMessage m)=>m.version==Version && OnlineProtocolIds.IsValid(m.matchId)
-            && new[]{"hello","setup-request","setup-state","setup-reply","heartbeat","leave","phase-ready","phase-ack","draft-request","draft-state","draft-reply","draft-drag"}.Contains(m.kind);
+            && new[]{"hello","setup-request","setup-state","setup-reply","heartbeat","leave","phase-ready","phase-ack","draft-request","draft-state","draft-reply","draft-drag","resume-bootstrap","resume-ack"}.Contains(m.kind);
         public static IEnumerable<byte[]> Encode(OnlineSessionMessage message)
         {
             message.version=Version;

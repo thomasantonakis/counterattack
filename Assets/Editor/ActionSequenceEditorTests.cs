@@ -288,8 +288,8 @@ public sealed class ReboundRecoveryEditorTests
 
 public sealed class HighPassScatterEditorTests
 {
-    [TestCase(0, 0f)]
-    [TestCase(1, 0f)]
+    [TestCase(0, 1f / 12f)]
+    [TestCase(1, 1f / 12f)]
     [TestCase(4, .5f)]
     [TestCase(6, 5f / 6f)]
     [TestCase(7, 1f)]

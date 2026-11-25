@@ -6,6 +6,13 @@ using UnityEngine.UI;
 
 public class EndGamePanelManager : MonoBehaviour
 {
+    private static readonly System.Collections.Generic.HashSet<EndGamePanelManager> visiblePanels = new();
+    public static bool IsVisible => visiblePanels.Any(panel => panel != null && panel.isActiveAndEnabled
+        && (panel.root != null ? panel.root.activeInHierarchy : panel.gameObject.activeInHierarchy));
+
+    private void OnEnable() => visiblePanels.Add(this);
+    private void OnDisable() => visiblePanels.Remove(this);
+
     private const string MainMenuSceneName = "MainMenu";
     private const int StatsRowCount = 21;
     private static readonly string[] StatRowTitles =
@@ -63,7 +70,39 @@ public class EndGamePanelManager : MonoBehaviour
         manager.scoreLineOverride = state.shootout?.complete == true
             ? $"{state.shootout.homeScore} - {state.shootout.awayScore} on penalties"
             : manager.BuildMatchEndedScoreLineOverride();
-        manager.ShowPanel();
+        bool guest = CounterAttack.Online.OnlineRoomSession.IsGuest;
+        MatchManager.GameData guestReport = null;
+        if (guest)
+        {
+            guestReport = CounterAttack.Online.OnlineRoomLaunchData.Copy(MatchManager.Instance?.gameData);
+            if (guestReport != null)
+            {
+                var recorded = state.tokens.Where(token => token.hasRecordedPlayerStats)
+                    .Select(token => token.runtime.tokenKey).ToHashSet();
+                guestReport.stats.playerStats.RemoveAll(entry => !recorded.Contains(entry.playerKey));
+            }
+        }
+        manager.ShowPanelWithData(guestReport ?? MatchManager.Instance?.gameData);
+        if (guest)
+        {
+            manager.GetComponent<PostMatchReportController>()?.SetHistoryAvailable(false);
+            manager.recapText.text = "Receiving Pitch and Luck history from the host…";
+        }
+    }
+
+    internal static void ApplyPublishedOnlineHistory(System.Collections.Generic.IReadOnlyList<GameplayEvent> events, int half)
+    {
+        var manager = ResolveExisting(logIfMissing: false);
+        if (manager == null || !manager.root.activeSelf) return;
+        manager.GetComponent<PostMatchReportController>()?.ApplyOnlineHistory(events, half);
+        manager.UpdateScoreRecapFields();
+    }
+
+    internal static void ShowOnlineHistoryUnavailable()
+    {
+        var manager = ResolveExisting(logIfMissing: false);
+        if (manager != null && manager.root.activeSelf)
+            manager.recapText.text = "Pitch and Luck history could not be received.";
     }
 
     public static void ShowMatchEndedPanel()
@@ -179,7 +218,9 @@ public class EndGamePanelManager : MonoBehaviour
         EnsurePanelReferences();
     }
 
-    private void ShowPanel()
+    private void ShowPanel() => ShowPanelWithData(MatchManager.Instance?.gameData);
+
+    private void ShowPanelWithData(MatchManager.GameData data)
     {
         if (!EnsurePanelReferences())
         {
@@ -192,6 +233,8 @@ public class EndGamePanelManager : MonoBehaviour
         HideLiveMatchUi();
         GameplayInputConsumer.Ensure(root, blocksGameplayWhileActive: true);
         root.SetActive(true);
+        EnterReportPause();
+        GetComponent<PostMatchReportController>()?.ShowReport(data, string.IsNullOrWhiteSpace(recapOverride));
         Canvas.ForceUpdateCanvases();
 
         if (recapScroll != null)
@@ -200,6 +243,14 @@ public class EndGamePanelManager : MonoBehaviour
         }
 
         Debug.Log("[EndGamePanel] Match recap panel shown.");
+    }
+
+    private void EnterReportPause()
+    {
+        MatchManager.Instance?.SetPauseMenuOpen(true);
+        foreach (var director in FindObjectsByType<GameplayAudioDirector>(FindObjectsInactive.Exclude))
+            if (director.gameObject.scene == gameObject.scene)
+                director.SetPaused(true, playTransitionCue: false);
     }
 
     private bool EnsurePanelReferences()
@@ -585,6 +636,7 @@ public class EndGamePanelManager : MonoBehaviour
     {
         CounterAttack.Online.OnlineFrontendSession.Current?.Close();
         MatchManager.Instance?.SetPauseMenuOpen(false);
+        MenuAudioPlayer.Play(GameplayAudioPool.MenuBack);
         SceneManager.LoadScene(MainMenuSceneName);
     }
 }

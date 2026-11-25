@@ -16,6 +16,9 @@ public sealed partial class DraftOrderPanelController : MonoBehaviour
     private int displayedRollSeconds;
     private bool coinToss;
     private string coinTossChoices;
+    private float wiggleDeadline;
+    private bool wigglePlayed;
+    private GameplayAudioDirector roomAudioDirector;
     public bool externalInput;
     public MatchManager roomMatch;
     public bool IsOpen => stage != Stage.Closed;
@@ -28,6 +31,7 @@ public sealed partial class DraftOrderPanelController : MonoBehaviour
     private void Awake() { if (visuals != null) visuals.SetActive(false); }
     private void OnDisable()
     {
+        StopWaitAudio();
         stage = Stage.Closed;
         HomeWon = null;
         if (visuals != null) visuals.SetActive(false);
@@ -47,7 +51,8 @@ public sealed partial class DraftOrderPanelController : MonoBehaviour
         if (!HasSceneBindings || settings == null || IsOpen) return false;
         HomeWon = null;
         coinToss = forCoinToss;
-        this.rollAutomatically = rollAutomatically;
+        this.rollAutomatically = rollAutomatically || !OnlineRoomControlled;
+        roomAudioDirector = roomMatch != null ? FindFirstObjectByType<GameplayAudioDirector>() : null;
         coinTossChoices = choicesCopy;
         title.text = coinToss ? tossTitle : "ROLL FOR FIRST DRAFT PICK";
         homeTeam.text = TeamName(settings, true);
@@ -78,6 +83,7 @@ public sealed partial class DraftOrderPanelController : MonoBehaviour
     private void BeginRoll(Stage rollingTeam)
     {
         stage = rollingTeam;
+        BeginRollWait();
         rollUntil = Time.unscaledTime + DecisionTimingConfig.AutomaticRollSeconds;
         UpdateRollPrompt(rollAutomatically ? Mathf.CeilToInt(DecisionTimingConfig.AutomaticRollSeconds) : -1);
     }
@@ -105,6 +111,8 @@ public sealed partial class DraftOrderPanelController : MonoBehaviour
     {
         if(OnlineRoomControlled && !onlineRoll)return;
         if (stage is not (Stage.Home or Stage.Away)) return;
+        StopWaitAudio();
+        if (roomMatch == null) MenuAudioPlayer.Play(GameplayAudioPool.Dice);
         int roll = roomMatch != null
             ? roomMatch.ResolveGameplayDiceRoll("coin_toss", rollOverride, jackpotEnabled: false,
                 details: new System.Collections.Generic.Dictionary<string, string>
@@ -146,15 +154,48 @@ public sealed partial class DraftOrderPanelController : MonoBehaviour
         Close();
     }
 
+    public void AdvanceRollWait(float unscaledTime)
+    {
+        if (stage is not (Stage.Home or Stage.Away)) { StopWaitAudio(); return; }
+        if (!wigglePlayed && unscaledTime >= wiggleDeadline)
+        {
+            wigglePlayed = roomMatch != null
+                ? roomAudioDirector != null && roomAudioDirector.PlayDiceWiggle()
+                : MenuAudioPlayer.Play(GameplayAudioPool.DiceWiggle);
+        }
+        if (!rollAutomatically) return;
+        int seconds = Mathf.CeilToInt(rollUntil - unscaledTime);
+        if (seconds <= 0) Roll();
+        else if (seconds != displayedRollSeconds) UpdateRollPrompt(seconds);
+    }
+
+    private void BeginRollWait()
+    {
+        wiggleDeadline = Time.unscaledTime + .25f;
+        wigglePlayed = false;
+    }
+
+    private void StopWaitAudio()
+    {
+        if (wigglePlayed)
+        {
+            if (roomMatch != null) roomAudioDirector?.StopDiceWiggle();
+            else MenuAudioPlayer.StopDiceWiggle();
+        }
+        wigglePlayed = false;
+    }
+
     public void Close()
     {
         stage = Stage.Closed;
+        StopWaitAudio();
         visuals.SetActive(false);
     }
 
     private void Update()
     {
         if(OnlineRoomControlled)return;
+        AdvanceRollWait(Time.unscaledTime);
         AdvanceResult(Time.unscaledTime);
         if (!IsOpen) return;
         Fit();
@@ -179,10 +220,6 @@ public sealed partial class DraftOrderPanelController : MonoBehaviour
             }
         }
 
-        if (!rollAutomatically || stage is not (Stage.Home or Stage.Away)) return;
-        int seconds = Mathf.CeilToInt(rollUntil - Time.unscaledTime);
-        if (seconds <= 0) Roll();
-        else if (seconds != displayedRollSeconds) UpdateRollPrompt(seconds);
     }
 
     internal void Fit()

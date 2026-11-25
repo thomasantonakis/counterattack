@@ -3187,7 +3187,7 @@ public static class RoomAIDecisionSnapshotBuilder
             hexGrid,
             ballHex,
             target,
-            matchManager.groundBallManager.ball.ballRadius);
+            matchManager.groundBallManager.ball.PhysicalRadius);
         IEnumerable<PlayerToken> allTokens = matchManager.playerTokenManager != null
             ? matchManager.playerTokenManager.allTokens
             : UnityEngine.Object.FindObjectsByType<PlayerToken>();
@@ -4286,7 +4286,7 @@ public static class RoomAIDecisionSnapshotBuilder
                 matchManager.hexGrid,
                 proposedHex,
                 receiverHex,
-                matchManager.ball != null ? matchManager.ball.ballRadius : 0f);
+                matchManager.ball != null ? matchManager.ball.PhysicalRadius : 0f);
             bool blocked = false;
             int interceptors = 0;
             foreach (PlayerToken opponent in tokens)
@@ -4639,7 +4639,7 @@ public static class RoomAIDecisionSnapshotBuilder
                     && HexGridUtils.GetHexStepDistance(landing, token.GetCurrentHex()) <= 11))
                 {
                     var passPath = GroundPassCommon.CalculateThickPath(matchManager.hexGrid, landing,
-                        receiver.GetCurrentHex(), matchManager.ball.ballRadius);
+                        receiver.GetCurrentHex(), matchManager.ball.PhysicalRadius);
                     if (passPath.Any(hex => hex.GetOccupyingToken() != null
                         && hex.GetOccupyingToken().isHomeTeam == goalkeeper.isHomeTeam)) continue;
                     EvaluateAnticipatedGoalkeeperThreat(snapshot, explanation, goalkeeper, proposedHex,
@@ -5991,7 +5991,7 @@ public static class RoomAIDecisionSnapshotBuilder
         List<HexCell> thickPath = freeKick.groundBallManager?.CalculateThickPath(
             ballHex,
             target,
-            freeKick.ball != null ? freeKick.ball.ballRadius : 0f);
+            freeKick.ball != null ? freeKick.ball.PhysicalRadius : 0f);
         if (thickPath != null)
         {
             foreach (HexCell pathHex in thickPath)

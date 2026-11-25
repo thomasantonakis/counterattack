@@ -6,6 +6,15 @@ using UnityEngine;
 public sealed partial class GoalkeeperBoxEntryFixture
 {
     private bool timingManualReview;
+    private bool forceRepositionMovementGuard;
+
+    public IEnumerator RunTimingDuelForfeitDuringMovementGuard()
+    {
+        forceRepositionMovementGuard = true;
+        try { yield return RunTimingDuelInterruption(1, false, false, false, true); }
+        finally { forceRepositionMovementGuard = false; }
+    }
+
     public IEnumerator RunTimingDuelReview(int side, bool expired)
     {
         timingManualReview = true;
@@ -102,6 +111,12 @@ public sealed partial class GoalkeeperBoxEntryFixture
             var destinations = movement.repositionHexes;
             Assert.That(destinations, Is.Not.Empty);
             Assert.That(input.TryExecuteSyntheticHexClick(destinations[0], "Timing nutmeg reposition", out error), Is.True, error);
+        }
+        else if (forceRepositionMovementGuard)
+        {
+            movement.isPlayerMoving = true;
+            try { LegacyKey("X"); }
+            finally { movement.isPlayerMoving = false; }
         }
         else LegacyKey("X");
         yield return Until(() => !movement.isWaitingForReposition && !movement.IsResolvingReposition && !movement.isPlayerMoving, "legal reposition remains available after expiry");

@@ -15,6 +15,7 @@ namespace CounterAttack.Online
     {
         public const string RequestAction = "pause.request";
         public const string ResumeAction = "pause.resume";
+        public const string ResumeReadyAction = "resume.ready";
         public static string SubstitutionAction(int outgoing,int incoming)=>"roster.substitute:"+outgoing+":"+incoming;
         public static string EmergencyKeeperAction(int jersey)=>"keeper.nominate:"+jersey;
         private static bool ParseEmergencyKeeper(string action,out int jersey)
@@ -64,6 +65,7 @@ namespace CounterAttack.Online
             foreach (OnlineTeam team in Enum.GetValues(typeof(OnlineTeam)))
             { receipts[team] = new(); order[team] = new(); lastSequence[team] = 0; }
             match.RegisterOnlineAuthorityScope();
+            if (OnlineRoomSession.Current?.ResumePending == true) ApplyHold();
         }
 
         public OnlineCommandReply Submit(string connection, OnlineMatchCommand control)
@@ -83,6 +85,11 @@ namespace CounterAttack.Online
             if (!protocol.BothConnected) return Reply(OnlineCommandStatus.Disconnected);
             bool full=protocol.Compatibility.Catalog==OnlineFullRoomBootstrap.Catalog;
             bool nativeRoom=full && match.gameObject.scene.name==OnlineRoomStartup.SceneName;
+            var room = OnlineRoomSession.Current;
+            bool resumeReady = control.ActionId == ResumeReadyAction;
+            if (resumeReady && (!nativeRoom || room?.ResumePending != true || ConnectionHeld))
+                return Reply(OnlineCommandStatus.NotReady);
+            if (!resumeReady && room?.ResumePending == true) return Reply(OnlineCommandStatus.NotReady);
             bool rosterReview = control.ActionId.StartsWith(OnlineSubstitutionReview.Prefix, StringComparison.Ordinal);
             bool shootout=control.ActionId.StartsWith("shootout.",StringComparison.Ordinal);
             bool currentReview = rosterReview && control.ActionId != OnlineSubstitutionReview.OpenAction
@@ -94,14 +101,15 @@ namespace CounterAttack.Online
             acceptedRevision.TryGetValue((team, lastSequence[team]), out long ownRevision);
             if (control.Revision != Revision && (!(currentReview || currentShootout) || control.Revision < ownRevision))
                 return Reply(OnlineCommandStatus.StaleRevision);
-            if (control.DecisionId != (shootout?"shootout-order":"shared-pause")) return Reply(OnlineCommandStatus.WrongDecision);
+            if (control.DecisionId != (resumeReady ? "resume-ready" : shootout?"shootout-order":"shared-pause"))
+                return Reply(OnlineCommandStatus.WrongDecision);
             bool substitution=ParseSubstitution(control.ActionId,out int outgoing,out int incoming);
             bool nomination=ParseEmergencyKeeper(control.ActionId,out int nominee);
             bool settings = control.ActionId.StartsWith(OnlineRoomSettings.Prefix, StringComparison.Ordinal);
             bool rollAck = control.ActionId.StartsWith(OnlineRoomRollPanels.AcknowledgePrefix, StringComparison.Ordinal);
             bool introAck = control.ActionId == "intro.ready";
             var requiredTeam=default(OnlineTeam);bool required=full && match.TryGetOnlineRequiredKeeperTeam(out requiredTeam);
-            if (control.ActionId != RequestAction && control.ActionId != ResumeAction && !substitution && !nomination && !shootout && !settings && !rollAck && !introAck && !rosterReview) return Reply(OnlineCommandStatus.IllegalAction);
+            if (control.ActionId != RequestAction && control.ActionId != ResumeAction && !substitution && !nomination && !shootout && !settings && !rollAck && !introAck && !rosterReview && !resumeReady) return Reply(OnlineCommandStatus.IllegalAction);
             if (rosterReview && (!nativeRoom || !IsPaused || ConnectionHeld || required || !match.AreSubstitutionsAvailable))
                 return Reply(OnlineCommandStatus.NotReady);
             if (nativeRoom && substitution && !required) return Reply(OnlineCommandStatus.IllegalAction);
@@ -119,7 +127,7 @@ namespace CounterAttack.Online
             if(control.ActionId==ResumeAction && full && (match.HasGoalkeeperActionBlockingResume() || substitutionReview != null))
                 return Reply(OnlineCommandStatus.NotReady);
 
-            var nextRevision = rollAck || introAck ? Revision : checked(Revision + 1);
+            var nextRevision = rollAck || introAck || resumeReady ? Revision : checked(Revision + 1);
             if (rosterReview)
             {
                 try
@@ -142,6 +150,10 @@ namespace CounterAttack.Online
             else if(introAck)
             {
                 OnlineRoomSession.Current.AcknowledgeIntro(team);
+            }
+            else if (resumeReady)
+            {
+                if (!room.AcknowledgeResume(team)) return Reply(OnlineCommandStatus.NotReady);
             }
             else if (settings)
             {
@@ -224,12 +236,13 @@ namespace CounterAttack.Online
             if (disposed) throw new ObjectDisposedException(nameof(OnlineSharedPause));
             if (ConnectionHeld == held) return;
             ConnectionHeld = held;
+            if (held) OnlineRoomSession.Current?.ResetReturningGuestReady();
             ApplyHold();
         }
 
         private void ApplyHold()
         {
-            var hold = IsPaused || ConnectionHeld;
+            var hold = IsPaused || ConnectionHeld || OnlineRoomSession.Current?.ResumePending == true;
             resultPanel?.SetOnlineAuthorityControl(true, hold);
             headerResultPanel?.SetOnlineAuthorityControl(true, hold);
             if (hold && !holdingTime) previousScale = Time.timeScale;
