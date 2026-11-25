@@ -39,12 +39,19 @@ namespace CounterAttack.Online
             ":" + OnlineSpectatorRoomWire.Version + ":" + compatibility.Protocol + ":" + compatibility.Rules + ":" + compatibility.Catalog;
 
         // Call on the session thread with the identity supplied by the authenticated transport.
-        public bool TryAdmitAway(string authenticatedPeer, string code)
+        public bool TryAdmitAway(string authenticatedPeer, string code) =>
+            TryAdmitAway(authenticatedPeer, code, out _);
+
+        public bool TryAdmitAway(string authenticatedPeer, string code, out bool waitingForViewerLeave)
         {
-            if (!ValidRequest(authenticatedPeer, code) || viewers.Contains(authenticatedPeer))
+            waitingForViewerLeave = false;
+            if (!ValidRequest(authenticatedPeer, code) || awayIdentity != null && awayIdentity != authenticatedPeer)
+                return false;
+            waitingForViewerLeave = viewers.Contains(authenticatedPeer);
+            if (waitingForViewerLeave)
                 return false;
             awayIdentity ??= authenticatedPeer;
-            return string.Equals(awayIdentity, authenticatedPeer, StringComparison.Ordinal);
+            return true;
         }
 
         public bool TryAdmitViewer(string authenticatedPeer, string code)

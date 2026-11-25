@@ -63,6 +63,34 @@ public sealed class OnlineSpectatorAdmissionEditorTests
     }
 
     [Test]
+    public void AwayJoinWaitsForTheSameIdentityToLeaveTheViewerLobby()
+    {
+        var match = new OnlineSpectatorAdmission();
+        Assert.That(match.TryAdmitViewer("guest", match.MatchCode), Is.True);
+        Assert.That(match.TryAdmitAway("guest", "wrong", out var waiting), Is.False);
+        Assert.That(waiting, Is.False);
+        Assert.That(match.TryAdmitAway("guest", match.MatchCode, out waiting), Is.False);
+        Assert.That(waiting, Is.True);
+
+        match.ViewerLeft("guest");
+        Assert.That(match.TryAdmitAway("guest", match.MatchCode, out waiting), Is.True);
+        Assert.That(waiting, Is.False);
+        Assert.That(match.TryAdmitViewer("guest", match.MatchCode), Is.False);
+    }
+
+    [Test]
+    public void SpectatorCannotClaimAReservedManagerSeatByLeaving()
+    {
+        var match = new OnlineSpectatorAdmission(savedAwayIdentity: "original-away");
+        Assert.That(match.TryAdmitViewer("guest", match.MatchCode), Is.True);
+        Assert.That(match.TryAdmitAway("guest", match.MatchCode, out var waiting), Is.False);
+        Assert.That(waiting, Is.False);
+        match.ViewerLeft("guest");
+        Assert.That(match.TryAdmitAway("guest", match.MatchCode), Is.False);
+        Assert.That(match.TryAdmitAway("original-away", match.MatchCode), Is.True);
+    }
+
+    [Test]
     public void ViewingCanCloseWhileTheOriginalManagerRetainsAccess()
     {
         var match = new OnlineSpectatorAdmission(savedAwayIdentity: "saved-away");

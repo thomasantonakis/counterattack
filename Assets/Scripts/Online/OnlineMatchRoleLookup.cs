@@ -113,18 +113,18 @@ namespace CounterAttack.Online
                 EOSProofCheck.Require(details.CopyInfo(ref options, out var info) == Result.Success && info != null, "Reading open lobby seats");
                 var owner = new LobbyDetailsGetLobbyOwnerOptions();
                 if (details.GetLobbyOwner(ref owner)?.ToString() == local.ToString()) return (true, false);
-                if (managerCode != null && !AwayAvailable(details, managerCode, local)) return (true, false);
+                if (managerCode != null && IsAwayReservedForSomeoneElse(details, managerCode, local)) return (true, false);
                 return (true, info.Value.AvailableSlots > 0);
             }
             finally { details.Release(); }
         }
 
-        private static bool AwayAvailable(LobbyDetails details, string code, ProductUserId local)
+        internal static bool IsAwayReservedForSomeoneElse(LobbyDetails details, string code, ProductUserId local)
         {
             var lookup = new LobbyDetailsCopyAttributeByKeyOptions { AttrKey = OnlineSpectatorAdmission.AwayReservationAttribute };
             if (details.CopyAttributeByKey(ref lookup, out var attribute) != Result.Success)
-                return true;
-            return string.Equals(attribute?.Data?.Value.AsUtf8?.ToString(),
+                return false;
+            return !string.Equals(attribute?.Data?.Value.AsUtf8?.ToString(),
                 OnlineSpectatorAdmission.AwayReservation(code, local.ToString()), StringComparison.Ordinal);
         }
     }

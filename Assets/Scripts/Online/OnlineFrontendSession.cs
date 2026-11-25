@@ -30,6 +30,7 @@ namespace CounterAttack.Online
         private EOSGroundPassExchange spectatorRoomSource;
         private OnlineSpectatorAdmission spectatorAdmission;
         private EosLiveSpectators viewerLobby;
+        private bool viewerJoined;
         public JObject SpectatorPublication { get; private set; }
         public event Action<JObject> SpectatorUpdated;
         public int SpectatorCount => spectatorAdmission?.ViewerCount ?? 0;
@@ -147,6 +148,7 @@ namespace CounterAttack.Online
 
         private IEnumerator WatchExchange(EOSStandaloneSession session, ProductUserId host, SocketId watchSocket, string _)
         {
+            viewerJoined = true;
             using var link = new EosSpectatorRoomLink(session, host, watchSocket,
                 OnlineSpectatorAdmission.MatchIdentity(LobbyCode));
             double deadline = Time.realtimeSinceStartupAsDouble + 20;
@@ -183,6 +185,7 @@ namespace CounterAttack.Online
         {
             previousBackground=Application.runInBackground;ownsBackground=true;Application.runInBackground=true;
             Hosting=hosting;LobbyCode=code;relayOnly=forceRelay;stop=false;Busy=true;Error=null;
+            viewerJoined = false;
             startedUtc=DateTime.UtcNow.ToString("O");
             RunDirectory=Path.Combine(Application.persistentDataPath,"OnlineSessions",Guid.NewGuid().ToString("N"));Directory.CreateDirectory(RunDirectory);
             Status=hosting?"Creating an online session...":watching?"Opening the spectator connection...":"Joining the online session...";
@@ -204,7 +207,7 @@ namespace CounterAttack.Online
                 bool next=false;
                 try
                 {
-                    if(stop && channel==null)break;
+                    if(stop && channel==null && !viewerJoined)break;
                     next=probe.MoveNext();
                 }
                 catch(Exception error){failure=error;}

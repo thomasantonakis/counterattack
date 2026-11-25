@@ -398,6 +398,7 @@ internal sealed class EOSStandalonePacketProbe
         };
         string prefix = "ca-m0-hello:" + lobbyId;
         string candidate = null;
+        string pendingCode = null;
         double candidateDeadline = 0, nextInspection = 0;
         double deadline = Time.realtimeSinceStartupAsDouble + 900;
         while (Time.realtimeSinceStartupAsDouble < deadline)
@@ -414,12 +415,14 @@ internal sealed class EOSStandalonePacketProbe
                     if (member != candidate)
                     {
                         candidate = member;
+                        pendingCode = null;
                         candidateDeadline = now + 12;
                     }
                     if (candidate != null && now >= candidateDeadline)
                     {
                         RejectManager(session, lobby, p2p, lobbyId, socket, ProductUserId.FromString(candidate));
                         candidate = null;
+                        pendingCode = null;
                     }
                     if (candidate != null)
                     {
@@ -431,6 +434,12 @@ internal sealed class EOSStandalonePacketProbe
                     }
                 }
             }
+            if (pendingCode != null && admission.TryAdmitAway(candidate, pendingCode))
+            {
+                PublishAwayReservation(session, lobby, lobbyId, admission.MatchCode, candidate);
+                admitted(ProductUserId.FromString(candidate));
+                yield break;
+            }
             for (int i = 0; i < 8; i++)
             {
                 ProductUserId sender = null;
@@ -441,16 +450,22 @@ internal sealed class EOSStandalonePacketProbe
                 if (result != Result.Success || candidate == null || candidate != sender?.ToString()
                     || channel != ManagerProbeChannel || actualSocket.SocketName != socket.SocketName) continue;
                 string hello = Encoding.ASCII.GetString(buffer, 0, (int)size);
-                if (hello.Length == prefix.Length + OnlineSpectatorAdmission.CodeLength
-                    && hello.StartsWith(prefix, StringComparison.Ordinal)
-                    && admission.TryAdmitAway(candidate, hello.Substring(prefix.Length)))
+                string code = hello.Length == prefix.Length + OnlineSpectatorAdmission.CodeLength
+                    && hello.StartsWith(prefix, StringComparison.Ordinal) ? hello.Substring(prefix.Length) : null;
+                if (admission.TryAdmitAway(candidate, code, out bool waitingForViewerLeave))
                 {
                     PublishAwayReservation(session, lobby, lobbyId, admission.MatchCode, candidate);
                     admitted(sender);
                     yield break;
                 }
+                if (waitingForViewerLeave)
+                {
+                    pendingCode = code;
+                    continue;
+                }
                 RejectManager(session, lobby, p2p, lobbyId, socket, sender);
                 candidate = null;
+                pendingCode = null;
             }
             yield return null;
         }
@@ -656,7 +671,10 @@ internal sealed class EOSStandalonePacketProbe
             {
                 session.Tick();
                 if (removed)
-                    throw new InvalidOperationException("This lobby is reserved for the original guest's EOS profile.");
+                    throw new InvalidOperationException(watchLobby ? "The host declined the spectator join."
+                        : searchByCode && OnlineMatchRoleLookup.IsAwayReservedForSomeoneElse(details, lookupCode, session.UserId)
+                            ? "Away is reserved for the original manager."
+                            : "The host declined the Away join. Try again.");
                 ProductUserId sender = null;
                 var receivedSocket = new SocketId();
                 var result = p2p.ReceivePacket(ref receive, ref sender, ref receivedSocket,
