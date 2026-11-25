@@ -28,6 +28,35 @@ namespace CounterAttack.Online
         public bool ViewingEnabled { get; private set; } = true;
         public int ViewerCount => viewers.Count;
 
+        public static bool TryNormalizeCode(string input, out string code)
+        {
+            code = input?.Trim();
+            if (code?.Length == CodeLength && code[CodeLength - 1] is 'A' or 'Q' or 'g' or 'w')
+            {
+                foreach (char value in code)
+                {
+                    if (value is >= 'A' and <= 'Z' or >= 'a' and <= 'z' or >= '0' and <= '9' or '-' or '_')
+                        continue;
+                    code = null;
+                    return false;
+                }
+                return true;
+            }
+            code = null;
+            return false;
+        }
+
+        internal static string Lookup(string code)
+        {
+            using var hash = SHA256.Create();
+            return BitConverter.ToString(hash.ComputeHash(Encoding.ASCII.GetBytes("counterattack-match-v1:" + code)))
+                .Replace("-", "");
+        }
+        internal static string MatchIdentity(string code) => "spectator-" + Lookup(code);
+
+        internal static string ViewerCompatibilitySuffix(OnlineCompatibility compatibility) =>
+            ":" + OnlineSpectatorRoomWire.Version + ":" + compatibility.Protocol + ":" + compatibility.Rules + ":" + compatibility.Catalog;
+
         // Call on the session thread with the identity supplied by the authenticated transport.
         public bool TryAdmitAway(string authenticatedPeer, string code)
         {
@@ -43,6 +72,9 @@ namespace CounterAttack.Online
                 && !string.Equals(authenticatedPeer, awayIdentity, StringComparison.Ordinal)
                 && viewers.Add(authenticatedPeer);
         }
+
+        internal bool CanResumeViewer(string authenticatedPeer, string code) =>
+            ViewingEnabled && viewers.Contains(authenticatedPeer) && ValidRequest(authenticatedPeer, code);
 
         public void ViewerLeft(string authenticatedPeer) => viewers.Remove(authenticatedPeer);
 

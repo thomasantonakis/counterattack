@@ -29,6 +29,43 @@ internal static class EOSWatchLobbyProof
             watchLobby: viewer, matchCode: fields[1]);
     }
 
+    internal static IEnumerator VerifyLiveLobbies(string outputDirectory)
+    {
+        var admission = new OnlineSpectatorAdmission();
+        EosLiveSpectators viewers = null;
+        EOSStandaloneSession owner = null;
+        string managerLobbyId = null;
+        var manager = EOSStandalonePacketProbe.HostProbe(outputDirectory, onCodePublished: _ => { },
+            liveAdmission: admission, openViewing: (session, id) =>
+            {
+                owner = session;
+                managerLobbyId = id;
+                viewers = new EosLiveSpectators(session, admission, EmptyPublication, Time.realtimeSinceStartupAsDouble);
+            },
+            closeViewing: () => viewers?.Dispose());
+        using (manager as IDisposable)
+        {
+            while (manager.MoveNext())
+            {
+                viewers?.Tick(Time.realtimeSinceStartupAsDouble);
+                if (viewers?.Ready == true)
+                {
+                    var managerMembers = EosLiveSpectators.ReadMembers(owner, owner.Platform.GetLobbyInterface(), managerLobbyId);
+                    EOSProofCheck.Require(managerMembers?.Count == 0, "The original manager lobby remains available");
+                    yield break;
+                }
+                yield return manager.Current;
+            }
+        }
+        throw new EOSProofFailure("Manager and viewer lobbies did not coexist");
+    }
+
+    private static bool EmptyPublication(long _, out byte[] payload)
+    {
+        payload = null;
+        return false;
+    }
+
     internal sealed class Admission
     {
         private readonly OnlineSpectatorAdmission policy;

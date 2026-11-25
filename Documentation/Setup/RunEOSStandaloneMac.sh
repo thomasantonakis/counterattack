@@ -9,13 +9,13 @@ if [ "$interaction" = continuous ]; then continuous=true; interaction=manual; fi
 case "$interaction" in automatic) ;; manual) if [ "$role" != guest ] || { [ "$mode" != gameplay ] && [ "$mode" != room ]; }; then printf 'Manual requires guest gameplay or room.\n' >&2; exit 2; fi ;; *) printf 'Expected automatic or manual.\n' >&2; exit 2 ;; esac
 case "$role" in
     guest|login|local) ;;
-    watch-host|watch-manager|watch-viewer)
+    watch-host|watch-manager|watch-viewer|watch-lobbies)
         if [ "$mode" != packets ]; then printf 'Watch proof requires packets mode.\n' >&2; exit 2; fi
-        if [ "$role" != watch-host ]; then
+        if [ "$role" = watch-manager ] || [ "$role" = watch-viewer ]; then
             if [ ! -f "$lobby_file" ]; then printf 'Provide a local lobby ID file as argument four.\n' >&2; exit 2; fi
             lobby_file="$(cd "$(dirname "$lobby_file")" && pwd)/$(basename "$lobby_file")"
         fi ;;
-    *) printf 'Expected login, guest, local, watch-host, watch-manager or watch-viewer.\n' >&2; exit 2 ;;
+    *) printf 'Expected login, guest, local, watch-host, watch-manager, watch-viewer or watch-lobbies.\n' >&2; exit 2 ;;
 esac
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$repo_root"

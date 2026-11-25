@@ -4,6 +4,28 @@ using NUnit.Framework;
 public sealed class OnlineSpectatorAdmissionEditorTests
 {
     [Test]
+    public void SharedCodeRoundTripsThroughTheOnlineMenuWithoutCaseFolding()
+    {
+        var match = new OnlineSpectatorAdmission();
+        Assert.That(OnlineModeMenu.TryReadLobbyCode(" " + match.MatchCode + " ", out var code), Is.True);
+        Assert.That(code, Is.EqualTo(match.MatchCode));
+        Assert.That(match.TryAdmitViewer("viewer", code), Is.True);
+        Assert.That(OnlineModeMenu.TryReadLobbyCode(code + "=", out _), Is.False);
+        Assert.That(OnlineModeMenu.TryReadLobbyCode(code.Substring(0, 21) + "!", out _), Is.False);
+    }
+
+    [Test]
+    public void MatchCodeRejectsNonCanonicalBase64PaddingBits()
+    {
+        var match = new OnlineSpectatorAdmission();
+        string nonCanonical = match.MatchCode.Substring(0, 21) + "B";
+        Assert.That(OnlineSpectatorAdmission.TryNormalizeCode(nonCanonical, out var code), Is.False);
+        Assert.That(code, Is.Null);
+        Assert.That(OnlineModeMenu.TryReadLobbyCode(" ab34Cd12 ", out code), Is.True);
+        Assert.That(code, Is.EqualTo("AB34CD12"));
+    }
+
+    [Test]
     public void SameCodeAdmitsEarlyViewerAndOneAwayManager()
     {
         var match = new OnlineSpectatorAdmission();

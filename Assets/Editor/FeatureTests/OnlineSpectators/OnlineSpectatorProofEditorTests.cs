@@ -9,11 +9,12 @@ public sealed class OnlineSpectatorProofEditorTests
     [SetUp]
     public void SetUp() => output = Path.Combine(Path.GetTempPath(), "CA-watch-proof-" + Guid.NewGuid().ToString("N"));
 
-    [Test]
-    public void HostCanStartBeforeEitherLobbyExists()
+    [TestCase("watch-host")]
+    [TestCase("watch-lobbies")]
+    public void HostCanStartBeforeEitherLobbyExists(string role)
     {
-        var arguments = EOSProofArguments.Parse(new[] { "-ca-eos-role", "watch-host", "-ca-eos-output", output });
-        Assert.That(arguments.Role, Is.EqualTo("watch-host"));
+        var arguments = EOSProofArguments.Parse(new[] { "-ca-eos-role", role, "-ca-eos-output", output });
+        Assert.That(arguments.Role, Is.EqualTo(role));
         Assert.That(arguments.LobbyFile, Is.Null);
     }
 

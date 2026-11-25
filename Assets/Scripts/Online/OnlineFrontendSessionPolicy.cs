@@ -19,7 +19,7 @@ namespace CounterAttack.Online
             => new(matchId, hostAccount, guestAccount, hostAccount, compatibility);
 
         public static RelayControl Route(bool relayOnly)=>relayOnly?RelayControl.ForceRelays:RelayControl.AllowRelays;
-        public const string LobbyCodePrompt = "Enter the 8-character lobby code shared by the host.";
+        public const string LobbyCodePrompt = "Enter the Match Code shared by the host. Older sessions use an 8-character code.";
         internal const string LobbyCodeAttribute = "COUNTERATTACK_JOIN_CODE";
 
         public static bool ValidLobbyCode(string code) =>
@@ -28,6 +28,8 @@ namespace CounterAttack.Online
 
         public static bool TryNormalizeLobbyCode(string input, out string code)
         {
+            if (OnlineSpectatorAdmission.TryNormalizeCode(input, out code))
+                return true;
             code = input?.Trim();
             if (!ValidLobbyCode(code))
             {

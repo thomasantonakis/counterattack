@@ -5,6 +5,7 @@ using System.IO;
 using Epic.OnlineServices;
 using Epic.OnlineServices.P2P;
 using Epic.OnlineServices.Lobby;
+using Newtonsoft.Json.Linq;
 using UnityEngine;
 namespace CounterAttack.Online
 {
@@ -21,12 +22,18 @@ namespace CounterAttack.Online
         private OnlineRoomLaunchLifetime roomLifetime;
         private IEnumerator gameplay;
         private EOSGroundPassExchange spectatorRoomSource;
+        private OnlineSpectatorAdmission spectatorAdmission;
+        private EosLiveSpectators viewerLobby;
+        public JObject SpectatorPublication { get; private set; }
+        public event Action<JObject> SpectatorUpdated;
+        public int SpectatorCount => spectatorAdmission?.ViewerCount ?? 0;
+        public string SpectatorError { get; private set; }
         internal bool TryEncodeSpectatorPublication(long sequence, out byte[] payload)
         {
             payload = null;
             if (!Hosting || stop || disposed || lobbyId == null)
                 return false;
-            string spectatorMatchId = "spectator-" + lobbyId;
+            string spectatorMatchId = OnlineSpectatorAdmission.MatchIdentity(spectatorAdmission.MatchCode);
             if (roomLifetime != null)
                 return spectatorRoomSource != null && spectatorRoomSource.TryEncodeSpectatorRoom(spectatorMatchId, sequence, out payload);
             string scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
@@ -97,6 +104,7 @@ namespace CounterAttack.Online
             if(Busy || running!=null)throw new InvalidOperationException("An online session is already running");
             initial=OnlineSetupRules.Normalize(settings);var invalid=OnlineSetupRules.Validate(initial);
             if(!string.IsNullOrEmpty(invalid))throw new ArgumentException(invalid,nameof(settings));
+            spectatorAdmission = new OnlineSpectatorAdmission();
             Begin(true,null,forceRelay);
         }
         public void Join(string lobbyCode,bool forceRelay=false)
@@ -106,18 +114,65 @@ namespace CounterAttack.Online
             if(Busy || running!=null)throw new InvalidOperationException("An online session is already running");
             Begin(false,code,forceRelay);
         }
-        private void Begin(bool hosting,string code,bool forceRelay)
+        public void Watch(string matchCode, bool forceRelay = false)
+        {
+            if (!OnlineSpectatorAdmission.TryNormalizeCode(matchCode, out var code))
+                throw new ArgumentException("Enter a Match Code that supports spectating.", nameof(matchCode));
+            if (Busy || running != null) throw new InvalidOperationException("An online session is already running");
+            Begin(false, code, forceRelay, watching: true);
+        }
+
+        public void CloseViewing()
+        {
+            spectatorAdmission?.CloseViewing();
+            var closing = viewerLobby;
+            viewerLobby = null;
+            try { closing?.Dispose(); }
+            catch (Exception error) { SpectatorError ??= error.Message; }
+        }
+
+        private void OpenViewing(EOSStandaloneSession session, string _)
+        {
+            if (spectatorAdmission?.ViewingEnabled != true) return;
+            try { viewerLobby = new EosLiveSpectators(session, spectatorAdmission, TryEncodeSpectatorPublication, Time.realtimeSinceStartupAsDouble); }
+            catch (Exception error) { SpectatorError = error.Message; CloseViewing(); }
+        }
+
+        private IEnumerator WatchExchange(EOSStandaloneSession session, ProductUserId host, SocketId watchSocket, string _)
+        {
+            using var link = new EosSpectatorRoomLink(session, host, watchSocket,
+                OnlineSpectatorAdmission.MatchIdentity(LobbyCode));
+            double deadline = Time.realtimeSinceStartupAsDouble + 20;
+            while (!stop && !disposed)
+            {
+                session.Tick();
+                double now = Time.realtimeSinceStartupAsDouble;
+                if (link.PollHost() > 0)
+                {
+                    deadline = now + 20;
+                    Status = "Spectating";
+                    SpectatorPublication = link.Stream.Latest;
+                    SpectatorUpdated?.Invoke(SpectatorPublication);
+                }
+                if (now >= deadline) throw new TimeoutException("The host stopped sending spectator updates.");
+                yield return null;
+            }
+        }
+
+        private void Begin(bool hosting,string code,bool forceRelay,bool watching=false)
         {
             previousBackground=Application.runInBackground;ownsBackground=true;Application.runInBackground=true;
             Hosting=hosting;LobbyCode=code;relayOnly=forceRelay;stop=false;Busy=true;Error=null;
             startedUtc=DateTime.UtcNow.ToString("O");
             RunDirectory=Path.Combine(Application.persistentDataPath,"OnlineSessions",Guid.NewGuid().ToString("N"));Directory.CreateDirectory(RunDirectory);
-            Status=hosting?"Creating an online session...":"Joining the online session...";
+            Status=hosting?"Creating an online session...":watching?"Opening the spectator connection...":"Joining the online session...";
             var route=OnlineFrontendSessionPolicy.Route(forceRelay);
             probe = hosting
                 ? EOSStandalonePacketProbe.HostProbe(RunDirectory, Exchange, route, OnLobbyCodePublished,
-                    onLobbyCreated: id => lobbyId = id)
-                : EOSStandalonePacketProbe.GuestProbe(code, Exchange, route, searchByCode: true);
+                    onLobbyCreated: id => lobbyId = id, liveAdmission: spectatorAdmission,
+                    openViewing: OpenViewing, closeViewing: CloseViewing)
+                : EOSStandalonePacketProbe.GuestProbe(code, watching ? WatchExchange : Exchange, route,
+                    searchByCode: true, watchLobby: watching);
             running=StartCoroutine(Run());
         }
         private IEnumerator Run()
@@ -133,6 +188,12 @@ namespace CounterAttack.Online
                 }
                 catch(Exception error){failure=error;}
                 if(!next || failure!=null)break;
+                try { viewerLobby?.Tick(Time.realtimeSinceStartupAsDouble); }
+                catch (Exception error)
+                {
+                    SpectatorError = error.Message;
+                    CloseViewing();
+                }
                 yield return probe.Current;
             }
             try{StopRoom();}catch(Exception error){failure??=error;}
@@ -263,7 +324,11 @@ namespace CounterAttack.Online
                 var result=p2p.ReceivePacket(ref receive,ref sender,ref receivedSocket,out var channelId,new ArraySegment<byte>(receiveBuffer),out var size);
                 if(result==Result.NotFound)return;
                 if(result!=Result.Success)throw new IOException("Receiving reconnect handshake failed: "+result);
-                if(!SamePeer(sender,receivedSocket) || channelId!=7 || System.Text.Encoding.ASCII.GetString(receiveBuffer,0,(int)size)!="ca-m0-hello:"+lobbyId || !ReservedPeerIsMember())continue;
+                if(!SamePeer(sender,receivedSocket) || channelId!=7 || !ReservedPeerIsMember())continue;
+                string hello=System.Text.Encoding.ASCII.GetString(receiveBuffer,0,(int)size);
+                string expected="ca-m0-hello:"+lobbyId;
+                if(hello.Length!=expected.Length+OnlineSpectatorAdmission.CodeLength || !hello.StartsWith(expected,StringComparison.Ordinal)
+                    || spectatorAdmission?.TryAdmitAway(sender.ToString(),hello.Substring(expected.Length))!=true)continue;
                 recovery.ConnectionLost();var ack=System.Text.Encoding.ASCII.GetBytes("ca-m0-ack:"+lobbyId);
                 var send=new SendPacketOptions{LocalUserId=native.UserId,RemoteUserId=peer,SocketId=socket,Channel=7,Data=new ArraySegment<byte>(ack),AllowDelayedDelivery=false,Reliability=PacketReliability.ReliableOrdered};
                 p2p.SendPacket(ref send);
@@ -331,6 +396,7 @@ namespace CounterAttack.Online
         public void Close()
         {
             if(stop)return;stop=true;Status="Closing the online session...";
+            CloseViewing();
             try{channel?.Leave();if(native?.Platform!=null && outgoing.Count>0)Flush();}catch(Exception error){Debug.LogWarning("Online leave: "+error.Message);}
             // A menu may unload Room in this same call stack. Release subscriptions,
             // holds and coroutines before any scene-owned controls are destroyed.

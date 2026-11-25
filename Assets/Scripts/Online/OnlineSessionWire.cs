@@ -16,7 +16,7 @@ namespace CounterAttack.Online
     // Dedicated frontend control channel; it cannot be decoded as a gameplay packet.
     public sealed class OnlineSessionWire
     {
-        public const string Version="session-wire-v2";
+        public const string Version="session-wire-v3";
         public const int FragmentPayload=OnlineReliableJsonWire<OnlineSessionMessage>.FragmentPayload;
         public const int HeaderSize=OnlineReliableJsonWire<OnlineSessionMessage>.HeaderSize;
         public const int PayloadLimit=OnlineReliableJsonWire<OnlineSessionMessage>.PayloadLimit;

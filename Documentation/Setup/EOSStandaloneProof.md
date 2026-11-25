@@ -83,6 +83,12 @@ checkouts after both applications finish and cleanup succeeds.
 
 ## Spectator lobby transport proof
 
+To check live lobby creation on one Mac, build the packet proof and run
+`bash Documentation/Setup/RunEOSStandaloneMac.sh watch-lobbies packets`.
+This opens the normal manager and viewer lobbies under one authenticated EOS
+identity and checks they can coexist. It exercises the live host's lobby code
+without occupying either remote seat.
+
 Use the packet proof build on three clients with distinct EOS device identities.
 Use Windows for one role and macOS for another. Build and run each client from
 the same commit. Start the host first, then give its local `lobby-id.txt` to the
