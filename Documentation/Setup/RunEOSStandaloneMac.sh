@@ -3,10 +3,20 @@ set -euo pipefail
 role="${1:-guest}"
 mode="${2:-packets}"
 interaction="${3:-automatic}"
+lobby_file="${4:-}"
 continuous=false
 if [ "$interaction" = continuous ]; then continuous=true; interaction=manual; fi
 case "$interaction" in automatic) ;; manual) if [ "$role" != guest ] || { [ "$mode" != gameplay ] && [ "$mode" != room ]; }; then printf 'Manual requires guest gameplay or room.\n' >&2; exit 2; fi ;; *) printf 'Expected automatic or manual.\n' >&2; exit 2 ;; esac
-case "$role" in guest|login|local) ;; *) printf 'Usage: %s [login|guest|local] [packets|gameplay]\n' "$0" >&2; exit 2 ;; esac
+case "$role" in
+    guest|login|local) ;;
+    watch-host|watch-manager|watch-viewer)
+        if [ "$mode" != packets ]; then printf 'Watch proof requires packets mode.\n' >&2; exit 2; fi
+        if [ "$role" != watch-host ]; then
+            if [ ! -f "$lobby_file" ]; then printf 'Provide a local lobby ID file as argument four.\n' >&2; exit 2; fi
+            lobby_file="$(cd "$(dirname "$lobby_file")" && pwd)/$(basename "$lobby_file")"
+        fi ;;
+    *) printf 'Expected login, guest, local, watch-host, watch-manager or watch-viewer.\n' >&2; exit 2 ;;
+esac
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$repo_root"
 app=Build/EOSProof/Mac/CounterattackEOSProof.app
@@ -30,6 +40,9 @@ mkdir -p "$run"
 set -- -ca-eos-role "$role" -ca-eos-output "$run" -logFile "$run/Player.log" -screen-fullscreen 0 -screen-width 640 -screen-height 360
 if [ "$interaction" = manual ]; then set -- "$@" -ca-online-manual -screen-width 1280 -screen-height 720; fi
 if [ "$continuous" = true ]; then set -- "$@" -ca-online-continuous; fi
+if [ "$role" = watch-manager ] || [ "$role" = watch-viewer ]; then
+    set -- "$@" -ca-eos-lobby-file "$lobby_file"
+fi
 if [ "$role" = guest ]; then
     handoff="$(gh api "repos/thomasantonakis/counterattack/contents/Documentation/Setup/$handoff_name?ref=codex/online-foundation-personal-mac" --jq '.content' | tr -d '\n' | base64 -D)"
     printf '%s' "$handoff" | jq -e --arg kind "$handoff_kind" --argjson now "$(date +%s)" '.kind == $kind and (.lobbyId | test("^[0-9a-f]{32}$")) and (.createdUnix <= $now + 30) and ($now - .createdUnix < 900)' >/dev/null

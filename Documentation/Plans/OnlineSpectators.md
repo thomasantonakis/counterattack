@@ -24,6 +24,8 @@ Let invited viewers watch a live Counterattack match while the two managers keep
 
 ## Verification checklist
 
+- [ ] Qualify simultaneous EOS lobby ownership and late viewing with the [standalone transport proof](../Setup/EOSStandaloneProof.md#spectator-lobby-transport-proof).
+
 - [ ] Add dedicated `OnlineSpectators` feature tests and a short checklist. EditMode cases cover invite validation, full and duplicate admission, identity/role isolation, stale messages, and exclusion of private fields from encoded snapshots. Send disallowed commands through the actual host dispatch path and assert they have no match effects.
 - [ ] PlayMode cases cover late join into a live Room, correct public state and final result, camera and inspection, viewer disconnect and resync, host closing watching, and repeated join/leave. Assert that manager commands and timers continue without interruption throughout. Preserve the two-manager flow with viewing disabled.
 - [ ] Run the focused Unity tests under [AGENTS.md](../../AGENTS.md). Record compilation separately from passed, failed and skipped counts. Retain native XML and progress under `TestResults/GameplayRegression/Runs/`.

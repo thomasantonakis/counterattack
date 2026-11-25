@@ -37,13 +37,16 @@ public sealed class EOSStandaloneProof : MonoBehaviour
             Directory.CreateDirectory(arguments.OutputDirectory);
             var gameplay = gameplayBoard == null ? null
                 : new CounterAttack.Online.EOSGroundPassExchange(gameplayBoard, arguments.OutputDirectory);
-            probe = arguments.Role == "local"
-                ? gameplay != null ? gameplay.Local() : throw new EOSProofFailure("Local gameplay role needs the gameplay scene")
-                : arguments.Role == "host"
-                ? EOSStandalonePacketProbe.HostProbe(arguments.OutputDirectory, gameplay == null ? null : gameplay.Host)
-                : arguments.Role == "guest"
-                    ? EOSStandalonePacketProbe.GuestProbe(File.ReadAllText(arguments.LobbyFile).Trim(), gameplay == null ? null : gameplay.Guest)
-                    : LoginOnly(arguments.AuthenticationSoakSeconds);
+            probe = arguments.Role switch
+            {
+                "local" => gameplay != null ? gameplay.Local() : throw new EOSProofFailure("Local gameplay role needs the gameplay scene"),
+                "host" => EOSStandalonePacketProbe.HostProbe(arguments.OutputDirectory, gameplay == null ? null : gameplay.Host),
+                "guest" => EOSStandalonePacketProbe.GuestProbe(ReadLobbyId(arguments), gameplay == null ? null : gameplay.Guest),
+                "watch-host" => EOSWatchLobbyProof.Host(arguments.OutputDirectory),
+                "watch-manager" => EOSWatchLobbyProof.Manager(ReadLobbyId(arguments)),
+                "watch-viewer" => EOSWatchLobbyProof.Viewer(ReadLobbyId(arguments)),
+                _ => LoginOnly(arguments.AuthenticationSoakSeconds)
+            };
         }
         catch (Exception exception) { failure = exception; }
 
@@ -88,6 +91,8 @@ public sealed class EOSStandaloneProof : MonoBehaviour
         Application.Quit(failure == null ? 0 : 1);
 #endif
     }
+
+    private static string ReadLobbyId(EOSProofArguments arguments) => File.ReadAllText(arguments.LobbyFile).Trim();
 
     private IEnumerator LoginOnly(int soakSeconds)
     {
@@ -153,12 +158,14 @@ public sealed class EOSProofArguments
                 default: throw new EOSProofFailure("Unknown probe argument");
             }
         }
-        EOSProofCheck.Require(result.Role == "host" || result.Role == "guest" || result.Role == "login" || result.Role == "local", "Expected host, guest, login or local role");
+        EOSProofCheck.Require(result.Role is "host" or "guest" or "login" or "local" or "watch-host" or "watch-manager" or "watch-viewer",
+            "Expected host, guest, login, local, watch-host, watch-manager or watch-viewer role");
         EOSProofCheck.Require(result.AuthenticationSoakSeconds==0 || result.Role=="login","Authentication soak requires login role");
         EOSProofCheck.Require(!string.IsNullOrWhiteSpace(result.OutputDirectory) && Path.IsPathRooted(result.OutputDirectory), "Expected absolute output directory");
         EOSProofCheck.Require(!File.Exists(Path.Combine(result.OutputDirectory, "result.json")), "Use a fresh run directory");
-        if (result.Role == "guest")
-            EOSProofCheck.Require(!string.IsNullOrEmpty(result.LobbyFile) && Path.IsPathRooted(result.LobbyFile), "Guest needs an absolute lobby-file path");
+        if (result.Role is "guest" or "watch-manager" or "watch-viewer")
+            EOSProofCheck.Require(!string.IsNullOrEmpty(result.LobbyFile) && Path.IsPathRooted(result.LobbyFile),
+                "Joining the proof needs an absolute lobby-file path");
         return result;
     }
 }

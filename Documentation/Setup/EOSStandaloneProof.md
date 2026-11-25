@@ -80,3 +80,51 @@ do not establish gameplay synchronization, recovery, performance or signing.
 
 The host's remote handoff creates temporary Git commits; fast-forward the
 checkouts after both applications finish and cleanup succeeds.
+
+## Spectator lobby transport proof
+
+Use the packet proof build on three clients with distinct EOS device identities.
+Use Windows for one role and macOS for another. Build and run each client from
+the same commit. Start the host first, then give its local `lobby-id.txt` to the
+manager. The host writes `watch-lobby-id.txt` only after the manager handshake
+and the second lobby's creation. Give that file to the viewer. Transfer the
+files privately while the host is running.
+
+On macOS, build and start one of the three roles. Substitute the absolute path
+to the appropriate file for a client role.
+
+```sh
+git fetch origin &&
+git switch feature/online-spectators &&
+git pull --ff-only origin feature/online-spectators &&
+git rev-parse HEAD &&
+bash Documentation/Setup/BuildEOSStandaloneMac.sh packets &&
+bash Documentation/Setup/RunEOSStandaloneMac.sh watch-host packets
+# For the manager or viewer, use one of these in place of the host command.
+# bash Documentation/Setup/RunEOSStandaloneMac.sh watch-manager packets automatic /absolute/path/lobby-id.txt
+# bash Documentation/Setup/RunEOSStandaloneMac.sh watch-viewer packets automatic /absolute/path/watch-lobby-id.txt
+```
+
+On Windows, use Windows PowerShell in the checkout.
+
+```powershell
+git fetch origin
+if ($LASTEXITCODE -ne 0) { throw 'Fetch failed' }
+git switch feature/online-spectators
+if ($LASTEXITCODE -ne 0) { throw 'Checkout failed' }
+git pull --ff-only origin feature/online-spectators
+if ($LASTEXITCODE -ne 0) { throw 'Fast-forward failed' }
+git rev-parse HEAD
+.\Documentation\Setup\BuildEOSStandaloneWindows.ps1
+.\Documentation\Setup\RunEOSStandaloneWindows.ps1 -Role watch-manager -LobbyFile 'C:\path\lobby-id.txt'
+# For the host or viewer, use one of these in place of the manager command.
+# .\Documentation\Setup\RunEOSStandaloneWindows.ps1 -Role watch-host
+# .\Documentation\Setup\RunEOSStandaloneWindows.ps1 -Role watch-viewer -LobbyFile 'C:\path\watch-lobby-id.txt'
+```
+
+The Mac app is `Build/EOSProof/Mac/CounterattackEOSProof.app`. The Windows app
+is `Build/EOSProof/Windows/CounterattackEOSProof.exe`. Require passing local
+`result.json` files from all three roles and removal of both host handoff files.
+Repeat with Windows hosting and macOS running a client. This proof covers one
+viewer, forced relay routing, the manager packet exchange during the watch
+lobby's lifetime, and the exchange after watch lobby teardown.

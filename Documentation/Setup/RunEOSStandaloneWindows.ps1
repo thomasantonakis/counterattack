@@ -1,9 +1,14 @@
-param([ValidateSet('login', 'host', 'guest', 'local')][string]$Role = 'host', [switch]$Gameplay, [switch]$Manual, [switch]$Room, [switch]$Continuous, [switch]$Managed, [string]$RunDirectory, [string]$VerificationRequestId)
+param([ValidateSet('login', 'host', 'guest', 'local', 'watch-host', 'watch-manager', 'watch-viewer')][string]$Role = 'host', [switch]$Gameplay, [switch]$Manual, [switch]$Room, [switch]$Continuous, [switch]$Managed, [string]$RunDirectory, [string]$VerificationRequestId, [string]$LobbyFile)
 $ErrorActionPreference = 'Stop'
 if ($Room) { $Gameplay = $true }
 if ($Continuous) { $Manual = $true }
 if ($Manual -and (-not $Gameplay -or $Role -notin @('host','guest'))) { throw 'Manual requires host/guest -Gameplay or -Room.' }
 if ($Managed -and ($Manual -or $Role -ne 'host')) { throw 'Managed is only for the automatic verification host.' }
+if ($Role.StartsWith('watch-') -and $Gameplay) { throw 'Watch proof requires the standalone packet build.' }
+if ($Role -in @('watch-manager', 'watch-viewer')) {
+    if (-not $LobbyFile -or -not (Test-Path -LiteralPath $LobbyFile -PathType Leaf)) { throw 'Provide a local -LobbyFile.' }
+    $LobbyFile = (Resolve-Path -LiteralPath $LobbyFile).Path
+}
 $repoRoot = (git -C $PSScriptRoot rev-parse --show-toplevel).Trim()
 Set-Location $repoRoot
 $exe = Join-Path $repoRoot 'Build/EOSProof/Windows/CounterattackEOSProof.exe'
@@ -54,6 +59,7 @@ $playerArgs = '-ca-eos-role ' + $Role + ' -ca-eos-output "' + $run + '" -logFile
 if ($Manual) { $playerArgs += ' -ca-online-manual'; $playerArgs = $playerArgs.Replace('-screen-width 640 -screen-height 360', '-screen-width 1280 -screen-height 720') }
 if ($Continuous) { $playerArgs += ' -ca-online-continuous' }
 if ($Role -eq 'guest') { $playerArgs += ' -ca-eos-lobby-file "' + $lobbyPath + '"' }
+if ($Role -in @('watch-manager', 'watch-viewer')) { $playerArgs += ' -ca-eos-lobby-file "' + $LobbyFile + '"' }
 $proofWindow = if ($Manual) { 'Normal' } else { 'Hidden' }
 $player = Start-Process -FilePath $exe -ArgumentList $playerArgs -WindowStyle $proofWindow -PassThru
 try {
@@ -78,7 +84,7 @@ try {
         elseif ($Gameplay) { Write-Host "Gameplay handoff published. On the Mac: bash Documentation/Setup/RunEOSStandaloneMac.sh guest $guestMode" }
         else { Write-Host 'Standalone handoff published. On the Mac: bash Documentation/Setup/RunEOSStandaloneMac.sh guest' }
     }
-    $deadline = [DateTime]::UtcNow.AddSeconds($(if ($Managed) { 300 } elseif ($Continuous) { 7500 } elseif ($Role -eq 'host' -or $Manual) { 1250 } else { 120 }))
+    $deadline = [DateTime]::UtcNow.AddSeconds($(if ($Managed) { 300 } elseif ($Continuous) { 7500 } elseif ($Role.StartsWith('watch-')) { 1400 } elseif ($Role -eq 'host' -or $Manual) { 1250 } else { 120 }))
     while (-not (Test-Path -LiteralPath $resultPath) -and -not $player.HasExited -and [DateTime]::UtcNow -lt $deadline) { Start-Sleep -Seconds 1 }
     if (-not (Test-Path -LiteralPath $resultPath)) { throw "No completed report. Inspect $run/Player.log; close only the proof application if it is still running." }
     $report = Get-Content -Raw -LiteralPath $resultPath | ConvertFrom-Json
