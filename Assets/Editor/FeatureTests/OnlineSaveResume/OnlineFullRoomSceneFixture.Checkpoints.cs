@@ -10,7 +10,7 @@ using UnityEngine.SceneManagement;
 
 public sealed partial class OnlineFullRoomSceneFixture
 {
-    public IEnumerator RunCheckpointPause(bool homeAttacks)
+    public IEnumerator RunCheckpointPause(bool homeAttacks, bool afterMovement)
     {
         InitializeFixture();
         SuppressLegacyRoomRunner();
@@ -63,7 +63,7 @@ public sealed partial class OnlineFullRoomSceneFixture
         GuestPause(OnlineSharedPause.RequestAction);
         Assert.That(view.saveMatchAsButton.interactable, Is.False, "An unsettled kickoff pass cannot be saved");
         Assert.That(view.pauseSaveStatusText.gameObject.activeInHierarchy, Is.True, "The host can see why saving is blocked");
-        Assert.That(view.pauseSaveStatusText.text, Does.Contain("ground pass"));
+        Assert.That(view.pauseSaveStatusText.text, Does.Contain("next action"));
         var saveLabel = view.saveMatchAsButton.transform.Find("MaskContainer")?.GetComponentInChildren<TMPro.TMP_Text>(true)
             ?? view.saveMatchAsButton.GetComponentInChildren<TMPro.TMP_Text>(true);
         var unavailableColor = saveLabel.color;
@@ -85,6 +85,21 @@ public sealed partial class OnlineFullRoomSceneFixture
             yield return null;
 
         Assert.That(board.match.currentState, Is.EqualTo(MatchManager.GameState.EndOfStandardPass));
+        if (afterMovement)
+        {
+            Submit(OnlineGroundPassAuthority.MovementStartAction);
+            Assert.That(pause.Capture(authority).movementActive, Is.True);
+            GuestPause(OnlineSharedPause.RequestAction);
+            Assert.That(view.saveMatchAsButton.interactable, Is.False, "An active Movement Phase cannot be saved.");
+            GuestPause(OnlineSharedPause.ResumeAction);
+            for (int phase = 0; phase < 3; phase++)
+                Submit(OnlineGroundPassAuthority.MovementForfeitAction);
+            deadline = Time.realtimeSinceStartup + 10f;
+            while (pause.Capture(authority).stage != "action" && Time.realtimeSinceStartup < deadline)
+                yield return null;
+            Assert.That(board.match.currentState, Is.EqualTo(MatchManager.GameState.EndOfMovementPhase));
+            Assert.That(board.match.attackHasPossession, Is.True);
+        }
         var scorer = board.tokens.Single(token => token.isHomeTeam && token.jerseyNumber == 2);
         string scorerName = scorer.playerName;
         scorer.ReceiveYellowCard();
@@ -96,6 +111,7 @@ public sealed partial class OnlineFullRoomSceneFixture
         log.LogEvent(scorer, MatchManager.ActionType.ShotAttempt);
         log.LogEvent(scorer, MatchManager.ActionType.ShotOnTarget);
         log.LogEvent(scorer, MatchManager.ActionType.GoalScored);
+        var beforeSave = pause.Capture(authority);
         GuestPause(OnlineSharedPause.RequestAction);
         Assert.That(view.pausePanel.activeSelf, Is.True);
         Assert.That(view.resumeButton.interactable, Is.False, "The guest owns the pause");
@@ -140,6 +156,7 @@ public sealed partial class OnlineFullRoomSceneFixture
 
         yield return EditorSceneManager.LoadSceneAsyncInPlayMode("Assets/Scenes/OnlineModeMenu.unity", new LoadSceneParameters(LoadSceneMode.Single));
         var menu = Object.FindAnyObjectByType<OnlineModeMenu>();
+        Assert.That(menu.lobbyCode.characterLimit, Is.EqualTo(8));
         Assert.That(menu.loadMatchButton.gameObject.activeInHierarchy, Is.True);
         void BindTestStore(Scene scene, LoadSceneMode mode)
         {
@@ -239,10 +256,12 @@ public sealed partial class OnlineFullRoomSceneFixture
         var playable = pause.Capture(authority);
         Assert.That(playable.resumePending, Is.False);
         Assert.That(playable.owner, Is.EqualTo(homeAttacks ? "Home" : "Away"));
-        Assert.That(playable.legalActions, Does.Contain(OnlineGroundPassAuthority.MovementStartAction));
-        Submit(OnlineGroundPassAuthority.MovementStartAction);
+        Assert.That(playable.legalActions, Is.EquivalentTo(beforeSave.legalActions));
+        var continuation = afterMovement ? OnlineGroundPassAuthority.StartAction : OnlineGroundPassAuthority.MovementStartAction;
+        Assert.That(playable.legalActions, Does.Contain(continuation));
+        Submit(continuation);
         var next = pause.Capture(authority);
-        Assert.That(next.movementActive, Is.True);
+        Assert.That(afterMovement ? next.passActive && next.awaitingTarget : next.movementActive, Is.True);
         Assert.That(match.gameData.events.Last().sequenceNumber, Is.GreaterThan(lastSequence));
         Assert.That(File.ReadAllBytes(saved), Is.EqualTo(sourceBytes));
 
@@ -265,7 +284,7 @@ public sealed partial class OnlineFullRoomSceneFixture
         Assert.That(guestView.saveAsOverlay.activeSelf, Is.False);
         Assert.That(guestBoard.match.ball.GetCurrentHex().coordinates, Is.EqualTo(snapshot.ball.ToVector3Int()));
         ApplyPublication(replica, guestBoard, next);
-        Assert.That(replica.State.movementActive, Is.True);
+        Assert.That(afterMovement ? replica.State.passActive && replica.State.awaitingTarget : replica.State.movementActive, Is.True);
         Assert.That(replica.State.resumePending, Is.False);
         Assert.That(File.ReadAllBytes(saved), Is.EqualTo(sourceBytes));
 

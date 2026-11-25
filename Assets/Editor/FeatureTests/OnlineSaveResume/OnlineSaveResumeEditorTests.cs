@@ -187,6 +187,9 @@ public sealed class OnlineSaveResumeEditorTests
     }
 
     [TestCase("MovementPhase", null)]
+    [TestCase("KickOffSetup", null)]
+    [TestCase("WaitingForThrowInTaker", null)]
+    [TestCase("GoalKick", null)]
     [TestCase("EndOfStandardPass", "pending-roll")]
     public void UnsupportedStateOrUnsettledRollCannotBeSaved(string state, string rollKey)
     {
@@ -197,6 +200,20 @@ public sealed class OnlineSaveResumeEditorTests
         Assert.That(Directory.Exists(directory), Is.False);
     }
 
+    [TestCase("EndOfMovementPhase")]
+    [TestCase("EndOfFirstTimePass")]
+    [TestCase("EndOfLongBall")]
+    [TestCase("SuccessfulTackle")]
+    [TestCase("BallControl")]
+    [TestCase("HeaderCompleted")]
+    [TestCase("AnyOtherScenario")]
+    public void SettledActionChoiceCanBeStored(string state)
+    {
+        var checkpoint = Checkpoint();
+        checkpoint.match.runtimeSnapshot.currentState = state;
+        Assert.That(store.Load(store.Save(checkpoint)).match.runtimeSnapshot.currentState, Is.EqualTo(state));
+    }
+
     private static OnlineCheckpoint Checkpoint()
     {
         var match = new MatchManager.GameData
@@ -205,6 +222,7 @@ public sealed class OnlineSaveResumeEditorTests
             runtimeSnapshot = new RoomRuntimeSnapshot
             {
                 currentState = nameof(MatchManager.GameState.EndOfStandardPass),
+                attackHasPossession = true,
                 teamInAttack = "Home",
                 homeTeamDirection = "LeftToRight",
                 awayTeamDirection = "RightToLeft",

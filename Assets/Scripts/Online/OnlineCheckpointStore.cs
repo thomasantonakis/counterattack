@@ -171,7 +171,17 @@ namespace CounterAttack.Online
             return data;
         }
 
-        public static bool SupportedState(string state) => state is nameof(MatchManager.GameState.EndOfStandardPass);
+        // These ordinary choice points are rebuilt by RefreshAvailableActionsForCurrentState.
+        // The Room guard separately requires possession and all action managers to be settled.
+        public static bool SupportedState(string state) => state is
+            nameof(MatchManager.GameState.EndOfMovementPhase) or
+            nameof(MatchManager.GameState.EndOfStandardPass) or
+            nameof(MatchManager.GameState.EndOfFirstTimePass) or
+            nameof(MatchManager.GameState.EndOfLongBall) or
+            nameof(MatchManager.GameState.SuccessfulTackle) or
+            nameof(MatchManager.GameState.BallControl) or
+            nameof(MatchManager.GameState.HeaderCompleted) or
+            nameof(MatchManager.GameState.AnyOtherScenario);
 
         private string SlotPath(Guid slot)
         {
@@ -201,7 +211,8 @@ namespace CounterAttack.Online
                 || match.rosters?.home?.Count is not (16 or 18) || match.rosters.away?.Count != match.rosters.home.Count
                 || match.stats == null || match.openingSetup == null || match.events == null
                 || snapshot == null || snapshot.version != RoomSaveService.SaveSchemaVersion
-                || !SupportedState(snapshot.currentState) || snapshot.teamInAttack is not ("Home" or "Away")
+                || !SupportedState(snapshot.currentState) || !snapshot.attackHasPossession
+                || snapshot.teamInAttack is not ("Home" or "Away")
                 || !Enum.TryParse<MatchManager.TeamAttackingDirection>(snapshot.homeTeamDirection, out var homeDirection)
                 || !Enum.IsDefined(typeof(MatchManager.TeamAttackingDirection), homeDirection)
                 || !Enum.TryParse<MatchManager.TeamAttackingDirection>(snapshot.awayTeamDirection, out var awayDirection)

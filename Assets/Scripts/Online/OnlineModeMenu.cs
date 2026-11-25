@@ -33,6 +33,7 @@ namespace CounterAttack.Online
 
         private void OnEnable()
         {
+            lobbyCode.characterLimit = OnlineFrontendSessionPolicy.LobbyCodeLength;
             lobbyCode.onValueChanged.AddListener(UpdateJoinAvailability);
             UpdateJoinAvailability(lobbyCode.text);
             if (roomFailure != null)

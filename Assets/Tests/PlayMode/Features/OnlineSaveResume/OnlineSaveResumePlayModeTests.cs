@@ -11,12 +11,19 @@ public sealed class OnlineSaveResumePlayModeTests
 
     [UnityTest]
     public IEnumerator HostSavesDuringGuestPauseAfterEitherSidePasses([Values(true, false)] bool homeAttacks)
+        => RunCheckpoint(homeAttacks, afterMovement: false);
+
+    [UnityTest]
+    public IEnumerator HostSavesAndResumesAfterMovementWithPossession([Values(true, false)] bool homeAttacks)
+        => RunCheckpoint(homeAttacks, afterMovement: true);
+
+    private IEnumerator RunCheckpoint(bool homeAttacks, bool afterMovement)
     {
         var bridge = AppDomain.CurrentDomain.GetAssemblies()
             .Single(assembly => assembly.GetName().Name == "Assembly-CSharp-Editor")
             .GetType("OnlineFullRoomSceneFixture", true);
         fixture = Activator.CreateInstance(bridge);
-        return (IEnumerator)bridge.GetMethod("RunCheckpointPause").Invoke(fixture, new object[] { homeAttacks });
+        return (IEnumerator)bridge.GetMethod("RunCheckpointPause").Invoke(fixture, new object[] { homeAttacks, afterMovement });
     }
 
     [UnityTearDown]

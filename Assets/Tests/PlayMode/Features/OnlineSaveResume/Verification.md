@@ -46,3 +46,17 @@ The EditMode fixture passed 11 cases with zero failures or skips in
 Unity compilation completed with zero errors. For broader offline browser
 coverage, run `RoomSaveBrowserEditorTests` in
 `Assets/Editor/RoomSaveBrowserEditorTests.cs`.
+
+The completed Movement Phase follow-up checks the real movement commands on
+both attacking sides. An active phase blocks saves. A settled phase with
+possession saves through the host's pause menu and restores the same legal
+action list. The next pass starts and is published to the replica. The
+Online menu fixture also checks the eight-character lobby code field.
+
+Compilation completed with zero errors. The earlier reproduction at
+`TestResults/GameplayRegression/Runs/20261125T000122398Z/` showed Save Match As
+disabled after Movement Phase. The fixed run passed all 4 focused PlayMode
+cases with zero failures or skips at
+`TestResults/GameplayRegression/Runs/20261125T000255510Z/`.
+The focused EditMode fixture passed 21 cases with zero failures or skips at
+`TestResults/GameplayRegression/Runs/20261125T000402618Z/`.

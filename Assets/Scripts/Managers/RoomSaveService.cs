@@ -26,8 +26,11 @@ public static class RoomSaveService
             || publication.rollPanel != null || publication.playerMoving || publication.goalMotion
             || publication.passActive || publication.awaitingRoll || match.looseBallManager?.isActivated == true
             || match.kickoffManager?.OnlineActive == true
+            || match.IsStopPlayRestartPending || match.shotManager?.isWaitingForSaveandHoldScenario == true
+            || match.shotManager?.isWaitingForSnapshotDecisionFromLoose == true
+            || match.shotManager?.isWaitingForShotCommitConfirmation == true
             || match.DecisionTiming.HasRollWait || MatchManager.TimingResultBlocked || !match.attackHasPossession)
-            reason = "Finish a ground pass and settle any pending rolls before saving.";
+            reason = "Finish the current action, restart or roll. Save when the attacking team has possession and can choose its next action.";
         else
             return match.CanCreateRuntimeSnapshot(out reason);
         return false;
