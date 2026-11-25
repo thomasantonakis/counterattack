@@ -141,6 +141,8 @@ namespace CounterAttack.Online
             if(!hosting)return;
             if(hostCode.text!=(code??string.Empty))hostCode.SetTextWithoutNotify(code??string.Empty);
             var hostStatus = hostedSession.Error ?? hostedSession.Status;
+            if (hostedSession.Error == null && hostedSession.SpectatorError != null)
+                hostStatus += "\nSpectate unavailable. " + hostedSession.SpectatorError;
             if (hostStatus != lastHostStatus)
             {
                 lastHostStatus = hostStatus;
@@ -271,7 +273,7 @@ namespace CounterAttack.Online
             if (options == null) return;
             roleStatus.text = !options.Found ? "No active match found for this code."
                 : !options.CanJoinAway && !options.CanSpectate ? "This match has no open roles."
-                : string.Empty;
+                : !options.CanSpectate ? "Spectating is unavailable for this match." : string.Empty;
         }
 
         public void SelectAway() => SelectRole(away: true);

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -8,7 +9,7 @@ namespace CounterAttack.Online
     public sealed class OnlineSpectatorAdmission
     {
         public const int ViewerLimit = 2;
-        public const int CodeLength = 22;
+        public const int CodeLength = 8;
         internal const string AwayReservationAttribute = "COUNTERATTACK_AWAY_RESERVATION";
 
         private readonly HashSet<string> viewers = new(StringComparer.Ordinal);
@@ -17,10 +18,7 @@ namespace CounterAttack.Online
 
         public OnlineSpectatorAdmission(string savedAwayIdentity = null)
         {
-            var random = new byte[16];
-            using (var generator = RandomNumberGenerator.Create())
-                generator.GetBytes(random);
-            MatchCode = Convert.ToBase64String(random).TrimEnd('=').Replace('+', '-').Replace('/', '_');
+            MatchCode = RandomNumberGenerator.GetInt32(100_000_000).ToString("D8", CultureInfo.InvariantCulture);
             expectedCode = Encoding.ASCII.GetBytes(MatchCode);
             awayIdentity = savedAwayIdentity;
         }
@@ -32,11 +30,11 @@ namespace CounterAttack.Online
         public static bool TryNormalizeCode(string input, out string code)
         {
             code = input?.Trim();
-            if (code?.Length == CodeLength && code[CodeLength - 1] is 'A' or 'Q' or 'g' or 'w')
+            if (code?.Length == CodeLength)
             {
                 foreach (char value in code)
                 {
-                    if (value is >= 'A' and <= 'Z' or >= 'a' and <= 'z' or >= '0' and <= '9' or '-' or '_')
+                    if (value is >= '0' and <= '9')
                         continue;
                     code = null;
                     return false;

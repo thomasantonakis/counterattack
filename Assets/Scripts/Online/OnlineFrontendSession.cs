@@ -52,6 +52,7 @@ namespace CounterAttack.Online
         private OnlineDraftClient announcedDraft;
         public OnlineSetupClient Client=>channel?.Client;
         public string LobbyCode {get;private set;}
+        private string pendingHostedCode;
         private string lobbyId;
         public string Status {get;private set;}="Not connected";
         public string RunDirectory {get;private set;}
@@ -214,6 +215,7 @@ namespace CounterAttack.Online
                     SpectatorError = error.Message;
                     CloseViewing();
                 }
+                ExposeHostedCode();
                 yield return probe.Current;
             }
             try{StopRoom();}catch(Exception error){failure??=error;}
@@ -463,8 +465,18 @@ namespace CounterAttack.Online
 
         private void OnLobbyCodePublished(string code)
         {
-            LobbyCode = code;
-            Status = "Share the lobby code with the other manager.";
+            pendingHostedCode = code;
+            Status = "Opening the spectator lobby…";
+        }
+
+        private void ExposeHostedCode()
+        {
+            if (pendingHostedCode == null || !OnlineFrontendSessionPolicy.IsMatchCodeReady(
+                    spectatorAdmission?.ViewingEnabled == true, viewerLobby?.Ready == true))
+                return;
+            LobbyCode = pendingHostedCode;
+            pendingHostedCode = null;
+            Status = SpectatorError == null ? "Share the 8-digit Match Code." : "Share the 8-digit Match Code to join as Away.";
         }
 
         private void OnAgreed(GameSettings settings)

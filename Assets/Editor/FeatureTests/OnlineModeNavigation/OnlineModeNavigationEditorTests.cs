@@ -40,7 +40,7 @@ public sealed class OnlineModeNavigationEditorTests
             Assert.That(OnlineSetupRules.Validate(OnlineModeMenu.HostDefaults()),Is.Empty);
             menu.lobbyCode.SetTextWithoutNotify("invalid");
             menu.Join();
-            Assert.That(menu.status.text, Does.Contain("8-character"));
+            Assert.That(menu.status.text, Does.Contain("8-digit"));
             Assert.That(SceneManager.GetActiveScene().path, Is.EqualTo(MenuPath));
             Assert.That(OnlineFrontendSession.Current, Is.Null);
             Assert.That(OnlineModeMenu.TakeJoinCode(), Is.Null);
@@ -127,6 +127,10 @@ public sealed class OnlineModeNavigationEditorTests
             options.Invoke(menu, new object[] { new OnlineMatchRoleOptions(true, false, true) });
             Assert.That(menu.awayRoleButton.gameObject.activeInHierarchy, Is.False);
             Assert.That(menu.spectatorRoleButton.gameObject.activeInHierarchy, Is.True);
+            options.Invoke(menu, new object[] { new OnlineMatchRoleOptions(true, true, false) });
+            Assert.That(menu.awayRoleButton.gameObject.activeInHierarchy, Is.True);
+            Assert.That(menu.spectatorRoleButton.gameObject.activeInHierarchy, Is.False);
+            Assert.That(menu.roleStatus.text, Does.Contain("Spectating is unavailable"));
             options.Invoke(menu, new object[] { new OnlineMatchRoleOptions(false, false, false) });
             Assert.That(menu.spectatorRoleButton.gameObject.activeInHierarchy, Is.False);
             Assert.That(menu.roleStatus.text, Does.Contain("No active match"));

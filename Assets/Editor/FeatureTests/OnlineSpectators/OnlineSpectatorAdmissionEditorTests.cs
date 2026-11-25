@@ -3,24 +3,35 @@ using NUnit.Framework;
 
 public sealed class OnlineSpectatorAdmissionEditorTests
 {
+    [TestCase(true, false, false)]
+    [TestCase(true, true, true)]
+    [TestCase(false, false, true)]
+    public void HostSharesTheCodeAfterViewerDiscoveryOrWithViewingDisabled(bool viewing, bool advertised, bool expected)
+    {
+        Assert.That(OnlineFrontendSessionPolicy.IsMatchCodeReady(viewing, advertised), Is.EqualTo(expected));
+    }
+
     [Test]
-    public void SharedCodeRoundTripsThroughTheOnlineMenuWithoutCaseFolding()
+    public void SharedCodeRoundTripsThroughTheOnlineMenuAsEightDigits()
     {
         var match = new OnlineSpectatorAdmission();
+        Assert.That(match.MatchCode, Does.Match("^[0-9]{8}$"));
         Assert.That(OnlineModeMenu.TryReadLobbyCode(" " + match.MatchCode + " ", out var code), Is.True);
         Assert.That(code, Is.EqualTo(match.MatchCode));
         Assert.That(match.TryAdmitViewer("viewer", code), Is.True);
         Assert.That(OnlineModeMenu.TryReadLobbyCode(code + "=", out _), Is.False);
-        Assert.That(OnlineModeMenu.TryReadLobbyCode(code.Substring(0, 21) + "!", out _), Is.False);
+        Assert.That(OnlineModeMenu.TryReadLobbyCode(code.Substring(0, 7) + "!", out _), Is.False);
     }
 
     [Test]
-    public void MatchCodeRejectsNonCanonicalBase64PaddingBits()
+    public void MatchCodePreservesLeadingZerosAndRequiresEightAsciiDigits()
     {
-        var match = new OnlineSpectatorAdmission();
-        string nonCanonical = match.MatchCode.Substring(0, 21) + "B";
-        Assert.That(OnlineSpectatorAdmission.TryNormalizeCode(nonCanonical, out var code), Is.False);
+        Assert.That(OnlineSpectatorAdmission.TryNormalizeCode(" 00123456 ", out var code), Is.True);
+        Assert.That(code, Is.EqualTo("00123456"));
+        Assert.That(OnlineSpectatorAdmission.TryNormalizeCode("0012345B", out code), Is.False);
         Assert.That(code, Is.Null);
+        Assert.That(OnlineSpectatorAdmission.TryNormalizeCode("0012345", out _), Is.False);
+        Assert.That(OnlineSpectatorAdmission.TryNormalizeCode("001234567", out _), Is.False);
         Assert.That(OnlineModeMenu.TryReadLobbyCode(" ab34Cd12 ", out code), Is.True);
         Assert.That(code, Is.EqualTo("AB34CD12"));
     }

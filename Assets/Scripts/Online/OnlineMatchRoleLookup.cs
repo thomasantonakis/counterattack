@@ -51,9 +51,31 @@ namespace CounterAttack.Online
                         yield return null;
                     }
                     EOSProofCheck.Require(managerResult is Result.Success or Result.NotFound
-                        && viewerResult is Result.Success or Result.NotFound, "Match Code lookup failed. Try again.");
+                        || viewerResult is Result.Success or Result.NotFound, "Match Code lookup failed. Try again.");
                     var away = managerResult == Result.Success ? Availability(manager, session.UserId, code) : (found: false, open: false);
                     var spectators = viewerResult == Result.Success ? Availability(viewer, session.UserId) : (found: false, open: false);
+                    if (!spectators.found && viewerResult is Result.Success or Result.NotFound)
+                    {
+                        double retryUntil = Time.realtimeSinceStartupAsDouble + 5;
+                        while (!spectators.found && Time.realtimeSinceStartupAsDouble < retryUntil)
+                        {
+                            double retryAt = Time.realtimeSinceStartupAsDouble + .75;
+                            while (Time.realtimeSinceStartupAsDouble < retryAt)
+                            {
+                                session.Tick();
+                                yield return null;
+                            }
+                            viewerResult = null;
+                            viewer.Find(ref find, null, (ref LobbySearchFindCallbackInfo info) => viewerResult = info.ResultCode);
+                            while (!viewerResult.HasValue && Time.realtimeSinceStartupAsDouble < retryUntil)
+                            {
+                                session.Tick();
+                                yield return null;
+                            }
+                            if (viewerResult == Result.Success) spectators = Availability(viewer, session.UserId);
+                            else if (viewerResult != Result.NotFound) break;
+                        }
+                    }
                     complete(new OnlineMatchRoleOptions(away.found || spectators.found, away.open, spectators.open));
                 }
                 finally { viewer.Release(); }

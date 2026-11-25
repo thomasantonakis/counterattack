@@ -30,8 +30,7 @@ namespace CounterAttack.Online
         private long sequence;
         private double nextCapture, nextInspection, startupDeadline;
         private bool closed;
-        internal bool Ready => !closed && incoming != 0 && publish == null
-            && ReadMembers(session, lobby, lobbyId) != null;
+        internal bool Ready => !closed && incoming != 0 && publish == null;
 
         internal EosLiveSpectators(EOSStandaloneSession session, OnlineSpectatorAdmission admission,
             Capture capture, double now)
@@ -68,7 +67,7 @@ namespace CounterAttack.Online
                 EOSProofCheck.Require(now < startupDeadline, "Creating the watch lobby timed out");
                 return;
             }
-            EOSProofCheck.Require(created == Result.Success && !string.IsNullOrEmpty(lobbyId), "Creating the watch lobby");
+            EOSProofCheck.Require(created == Result.Success && !string.IsNullOrEmpty(lobbyId), "Creating the watch lobby: " + created);
             if (incoming == 0)
             {
                 socket = EOSStandalonePacketProbe.ProbeSocket(lobbyId.ToString(), watchLobby: true);
