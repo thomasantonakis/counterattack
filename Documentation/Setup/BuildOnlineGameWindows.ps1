@@ -8,38 +8,42 @@ $root = $root.Trim()
 $cli = @('--project-path', $root, '--caller', 'codex', '--skill', 'unity-cli', '--format', 'json')
 
 function Invoke-Pipeline {
-    param([string] $Command, [string[]] $Arguments = @())
-    $raw = & unity command $Command @Arguments @cli
-    if ($LASTEXITCODE -ne 0) { throw "Unity ${Command} failed: $raw" }
-    $response = ($raw -join "`n") | ConvertFrom-Json
-    if (!$response.success) { throw "Unity ${Command} failed: $raw" }
-    return $response.data.result
-}
-
-function Wait-ForEditor {
-    $deadline = [DateTime]::UtcNow.AddSeconds(30)
+    param(
+        [string] $Command,
+        [string[]] $Arguments = @(),
+        [int] $TimeoutSeconds = 30,
+        [int] $RetrySeconds = 0
+    )
+    $deadline = [DateTime]::UtcNow.AddSeconds($RetrySeconds)
     do {
-        $raw = & unity command editor_status @cli --timeout 5
+        $raw = & unity command $Command @Arguments @cli --timeout $TimeoutSeconds
         $exitCode = $LASTEXITCODE
-        $response = ($raw -join "`n") | ConvertFrom-Json -ErrorAction SilentlyContinue
-        if ($exitCode -eq 0 -and $response.success -and $response.data.result) {
+        $message = $raw -join "`n"
+        if ($exitCode -eq 0) {
+            $response = $message | ConvertFrom-Json
+            if (!$response.success) { throw "Unity ${Command} failed: $message" }
             return $response.data.result
         }
-        if (($raw -join ' ') -notmatch 'socket hang up|ECONNRESET|ECONNREFUSED|EDITOR_NOT_RUNNING|EDITOR_UNREACHABLE|No running Editor|no.*Pipeline|timed out') {
-            throw "Unity editor_status failed: $raw"
+        if ($message -notmatch 'socket hang up|ECONNRESET|ECONNREFUSED|EDITOR_NOT_RUNNING|EDITOR_UNREACHABLE|EDITOR_TIMEOUT|No running Editor|no.*Pipeline|timed out') {
+            throw "Unity ${Command} failed: $message"
         }
+        if ([DateTime]::UtcNow -ge $deadline) { break }
         Start-Sleep -Seconds 2
-    } while ([DateTime]::UtcNow -lt $deadline)
+    } while ($true)
 
     & unity status --project-path $root --format json | Write-Host
-    throw "Unity Pipeline did not answer for this checkout. Check the open Editor for a blocking dialog and confirm Pipeline is running, then rerun the same command. Last response: $raw"
+    throw "Unity ${Command} did not answer for this checkout. Check the open Editor for a blocking dialog and confirm Pipeline is running. Last response: $message"
 }
 
 function Assert-EditorReady {
-    $editor = Wait-ForEditor
-    if ($editor.playMode -ne 'stopped' -or $editor.compiling -or $editor.domainReloadInProgress) {
-        throw 'Stop Play Mode and wait for Unity to finish compiling.'
-    }
+    $deadline = [DateTime]::UtcNow.AddMinutes(2)
+    do {
+        $editor = Invoke-Pipeline 'editor_status' -TimeoutSeconds 10 -RetrySeconds 60
+        if ($editor.playMode -ne 'stopped') { throw 'Stop Play Mode before building.' }
+        if (!$editor.compiling -and !$editor.domainReloadInProgress) { break }
+        if ([DateTime]::UtcNow -ge $deadline) { throw 'Unity is still compiling or reloading. Check the open Editor for a blocking dialog.' }
+        Start-Sleep -Seconds 2
+    } while ($true)
     $loaded = Invoke-Pipeline 'list_open_scenes'
     if ($loaded.scenes | Where-Object { $_.isDirty }) {
         throw 'Save the open scenes in Unity before building.'
@@ -51,12 +55,18 @@ function Assert-EditorReady {
 }
 
 Assert-EditorReady
-$raw = & unity recompile --project-path $root --format json
-if ($LASTEXITCODE -ne 0) { throw "Unity compilation failed: $raw" }
-$compile = ($raw -join "`n") | ConvertFrom-Json
-if (!$compile.success -or $compile.data.failed -or $compile.data.compilationFailed) {
-    throw "Unity compilation failed: $raw"
-}
+Write-Host 'Requesting script compilation through the open Unity Editor...'
+$null = Invoke-Pipeline 'recompile' -TimeoutSeconds 120
+$deadline = [DateTime]::UtcNow.AddMinutes(5)
+do {
+    $compile = Invoke-Pipeline 'recompile_status' -TimeoutSeconds 10 -RetrySeconds 60
+    if ($compile.failed -or $compile.compilationFailed -or $compile.summary.errors -gt 0) {
+        throw "Unity compilation failed: $($compile | ConvertTo-Json -Depth 8 -Compress)"
+    }
+    if ($compile.status -in @('completed', 'up_to_date')) { break }
+    if ([DateTime]::UtcNow -ge $deadline) { throw 'Unity compilation did not finish in five minutes. Check the open Editor and its log.' }
+    Start-Sleep -Seconds 2
+} while ($true)
 Assert-EditorReady
 
 $exe = Join-Path $root 'Build/OnlineGame/Windows/Counterattack.exe'
@@ -72,6 +82,7 @@ if ($PSVersionTable.PSVersion -lt [version]'7.3') {
     $PSNativeCommandArgumentPassing = 'Standard'
 }
 
+Write-Host 'Building the Windows player through the open Unity Editor...'
 $queued = Invoke-Pipeline 'build' @(
     '--target', 'StandaloneWindows64', '--outputPath', $exe,
     '--scenes', $sceneJson, '--confirm', 'true'
@@ -83,7 +94,7 @@ if ($queued.status -ne 'queued' -or !$queued.buildId) {
 $deadline = [DateTime]::UtcNow.AddMinutes(20)
 do {
     Start-Sleep -Seconds 2
-    $build = Invoke-Pipeline 'build_status'
+    $build = Invoke-Pipeline 'build_status' -TimeoutSeconds 15 -RetrySeconds 60
     if ($build.buildId -ne $queued.buildId) { throw 'Unity reported a different build.' }
 } until ($build.status -eq 'completed' -or [DateTime]::UtcNow -ge $deadline)
 
