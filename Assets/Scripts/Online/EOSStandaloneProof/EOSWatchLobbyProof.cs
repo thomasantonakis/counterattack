@@ -25,7 +25,7 @@ internal static class EOSWatchLobbyProof
         var fields = handoff.Split(' ');
         EOSProofCheck.Require(fields.Length == 2 && fields[1].Length == OnlineSpectatorAdmission.CodeLength,
             "Expected a spectator proof handoff containing the EOS lobby ID and Match Code");
-        return EOSStandalonePacketProbe.GuestProbe(fields[0], viewer ? null : EchoManagerPackets,
+        return EOSStandalonePacketProbe.GuestProbe(fields[0], viewer ? ReceiveRoomPublications : EchoManagerPackets,
             watchLobby: viewer, matchCode: fields[1]);
     }
 
@@ -55,7 +55,7 @@ internal static class EOSWatchLobbyProof
         ProductUserId manager, SocketId socket, string outputDirectory, OnlineSpectatorAdmission admission)
     {
         var connection = new ManagerProbeConnection(session, manager, socket);
-        var watch = EOSStandalonePacketProbe.HostProbe(outputDirectory, watchOwner: session,
+        var watch = EOSStandalonePacketProbe.HostProbe(outputDirectory, SendRoomPublications, watchOwner: session,
             admission: new Admission(admission, viewer: true));
         var watchLobbyFile = Path.Combine(outputDirectory, EOSStandalonePacketProbe.WatchLobbyFileName);
         bool managerPingSent = false;
@@ -98,6 +98,52 @@ internal static class EOSWatchLobbyProof
             yield return null;
         }
         throw new EOSProofFailure("Manager did not respond after the watch lobby closed");
+    }
+
+    private static IEnumerator SendRoomPublications(EOSStandaloneSession session,
+        ProductUserId viewer, SocketId socket, string matchId)
+    {
+        using var link = new EosSpectatorRoomLink(session, viewer, socket, matchId);
+        var settings = new MatchManager.GameSettings { homeTeamName = "Home", awayTeamName = "Away" };
+        var state = new OnlineGroundPassState
+        {
+            matchId = matchId, catalogId = OnlineFullRoomBootstrap.Catalog, half = 1,
+            homeStats = new MatchManager.TeamStats { totalGoals = 1 },
+            awayStats = new MatchManager.TeamStats()
+        };
+        for (int sequence = 1; sequence <= 2; sequence++)
+        {
+            state.regulationSeconds = sequence * 60;
+            state.isSharedPaused = sequence == 2;
+            EOSProofCheck.Require(OnlineSpectatorRoomWire.TryEncode(state, settings, sequence, out var payload),
+                "Encoding the spectator proof Room publication");
+            link.QueueLatest(payload);
+            while (link.HasOutgoing)
+            {
+                session.Tick();
+                link.Flush();
+                yield return null;
+            }
+        }
+    }
+
+    private static IEnumerator ReceiveRoomPublications(EOSStandaloneSession session,
+        ProductUserId host, SocketId socket, string matchId)
+    {
+        using var link = new EosSpectatorRoomLink(session, host, socket, matchId);
+        var deadline = Time.realtimeSinceStartupAsDouble + 30;
+        int applied = 0;
+        while (link.Stream.Sequence < 2 && Time.realtimeSinceStartupAsDouble < deadline)
+        {
+            session.Tick();
+            applied += link.PollHost();
+            yield return null;
+        }
+        EOSProofCheck.Require(applied == 2 && link.Stream.Sequence == 2, "Receiving the ordered spectator Room publications");
+        var snapshot = link.Stream.Latest;
+        EOSProofCheck.Require((int)snapshot["home"]["stats"]["totalGoals"] == 1
+            && (int)snapshot["clock"]["regulationSeconds"] == 120
+            && (bool)snapshot["paused"], "Spectator score, clock and pause match the published Room");
     }
 
     private static IEnumerator EchoManagerPackets(EOSStandaloneSession session,

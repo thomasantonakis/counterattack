@@ -130,4 +130,6 @@ is `Build/EOSProof/Windows/CounterattackEOSProof.exe`. Require passing local
 `result.json` files from all three roles and removal of both host handoff files.
 Repeat with Windows hosting and macOS running a client. This proof covers one
 viewer, forced relay routing, the manager packet exchange during the watch
-lobby's lifetime, and the exchange after watch lobby teardown.
+lobby's lifetime, and the exchange after watch lobby teardown. The viewer
+also verifies two ordered sample Room snapshots on its dedicated channel,
+including the score, clock and shared pause state.
