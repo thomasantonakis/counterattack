@@ -1,0 +1,61 @@
+using System;
+using System.Collections.Generic;
+using System.Security.Cryptography;
+using System.Text;
+
+namespace CounterAttack.Online
+{
+    public sealed class OnlineSpectatorAdmission
+    {
+        public const int ViewerLimit = 2;
+        public const int CodeLength = 22;
+
+        private readonly HashSet<string> viewers = new(StringComparer.Ordinal);
+        private readonly byte[] expectedCode;
+        private string awayIdentity;
+
+        public OnlineSpectatorAdmission(string savedAwayIdentity = null)
+        {
+            var random = new byte[16];
+            using (var generator = RandomNumberGenerator.Create())
+                generator.GetBytes(random);
+            MatchCode = Convert.ToBase64String(random).TrimEnd('=').Replace('+', '-').Replace('/', '_');
+            expectedCode = Encoding.ASCII.GetBytes(MatchCode);
+            awayIdentity = savedAwayIdentity;
+        }
+
+        public string MatchCode { get; }
+        public bool ViewingEnabled { get; private set; } = true;
+        public int ViewerCount => viewers.Count;
+
+        // Call on the session thread with the identity supplied by the authenticated transport.
+        public bool TryAdmitAway(string authenticatedPeer, string code)
+        {
+            if (!ValidRequest(authenticatedPeer, code) || viewers.Contains(authenticatedPeer))
+                return false;
+            awayIdentity ??= authenticatedPeer;
+            return string.Equals(awayIdentity, authenticatedPeer, StringComparison.Ordinal);
+        }
+
+        public bool TryAdmitViewer(string authenticatedPeer, string code)
+        {
+            return ViewingEnabled && viewers.Count < ViewerLimit && ValidRequest(authenticatedPeer, code)
+                && !string.Equals(authenticatedPeer, awayIdentity, StringComparison.Ordinal)
+                && viewers.Add(authenticatedPeer);
+        }
+
+        public void ViewerLeft(string authenticatedPeer) => viewers.Remove(authenticatedPeer);
+
+        public void CloseViewing()
+        {
+            ViewingEnabled = false;
+            viewers.Clear();
+        }
+
+        private bool ValidRequest(string peer, string code)
+        {
+            return !string.IsNullOrEmpty(peer) && code?.Length == CodeLength
+                && CryptographicOperations.FixedTimeEquals(expectedCode, Encoding.UTF8.GetBytes(code));
+        }
+    }
+}

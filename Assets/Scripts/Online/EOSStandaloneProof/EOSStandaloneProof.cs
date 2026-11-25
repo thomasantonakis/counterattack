@@ -43,8 +43,8 @@ public sealed class EOSStandaloneProof : MonoBehaviour
                 "host" => EOSStandalonePacketProbe.HostProbe(arguments.OutputDirectory, gameplay == null ? null : gameplay.Host),
                 "guest" => EOSStandalonePacketProbe.GuestProbe(ReadLobbyId(arguments), gameplay == null ? null : gameplay.Guest),
                 "watch-host" => EOSWatchLobbyProof.Host(arguments.OutputDirectory),
-                "watch-manager" => EOSWatchLobbyProof.Manager(ReadLobbyId(arguments)),
-                "watch-viewer" => EOSWatchLobbyProof.Viewer(ReadLobbyId(arguments)),
+                "watch-manager" => EOSWatchLobbyProof.Join(ReadLobbyId(arguments), viewer: false),
+                "watch-viewer" => EOSWatchLobbyProof.Join(ReadLobbyId(arguments), viewer: true),
                 _ => LoginOnly(arguments.AuthenticationSoakSeconds)
             };
         }

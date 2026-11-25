@@ -83,7 +83,8 @@ internal sealed class EOSStandalonePacketProbe
 
     internal static IEnumerator HostProbe(string outputDirectory,
         Func<EOSStandaloneSession, ProductUserId, SocketId, string, IEnumerator> exchange = null, RelayControl relayControl=RelayControl.ForceRelays,
-        Action<string> onCodePublished = null, EOSStandaloneSession watchOwner = null)
+        Action<string> onCodePublished = null, EOSStandaloneSession watchOwner = null,
+        EOSWatchLobbyProof.Admission admission = null)
     {
         bool watchLobby = watchOwner != null;
         byte probeChannel = watchLobby ? WatchProbeChannel : ManagerProbeChannel;
@@ -186,7 +187,7 @@ internal sealed class EOSStandalonePacketProbe
                 onCodePublished(code);
             }
 
-            File.WriteAllText(lobbyIdFile, lobbyIdText);
+            File.WriteAllText(lobbyIdFile, admission?.Handoff(lobbyIdText) ?? lobbyIdText);
             deadline = Time.realtimeSinceStartupAsDouble + 900;
             while ((joinedGuestId == null || requestedGuestId == null) &&
                    Time.realtimeSinceStartupAsDouble < deadline)
@@ -231,9 +232,15 @@ internal sealed class EOSStandalonePacketProbe
                     EOSProofCheck.Require(sender?.ToString() == joinedGuestId, "P2P hello sender");
                     EOSProofCheck.Require(receivedSocket.SocketName == socket.SocketName, "P2P hello socket");
                     EOSProofCheck.Require(channel == probeChannel, "P2P hello channel");
-                    EOSProofCheck.Require(bytesWritten == (uint)expectedHello.Length, "P2P hello byte count");
+                    int admissionLength = admission == null ? 0 : OnlineSpectatorAdmission.CodeLength;
+                    EOSProofCheck.Require(bytesWritten == (uint)(expectedHello.Length + admissionLength), "P2P hello byte count");
                     for (var i = 0; i < expectedHello.Length; i++)
                         EOSProofCheck.Require(buffer[i] == expectedHello[i], "P2P hello payload byte " + i);
+                    if (admission != null)
+                    {
+                        var code = Encoding.ASCII.GetString(buffer, expectedHello.Length, admissionLength);
+                        EOSProofCheck.Require(admission.TryAdmit(joinedGuestId, code), "Match Code or role admission rejected");
+                    }
                     helloReceived = true;
                 }
                 yield return null;
@@ -308,6 +315,7 @@ internal sealed class EOSStandalonePacketProbe
         {
             if (p2p != null && acceptedGuest != null && session.Platform != null)
             {
+                admission?.Release(acceptedGuest.ToString());
                 var close = new CloseConnectionOptions
                 {
                     LocalUserId = session.UserId,
@@ -338,7 +346,8 @@ internal sealed class EOSStandalonePacketProbe
 
     internal static IEnumerator GuestProbe(string inputLobby,
         Func<EOSStandaloneSession, ProductUserId, SocketId, string, IEnumerator> exchange = null,
-        RelayControl relayControl = RelayControl.ForceRelays, bool searchByCode = false, bool watchLobby = false)
+        RelayControl relayControl = RelayControl.ForceRelays, bool searchByCode = false, bool watchLobby = false,
+        string matchCode = null)
     {
         byte probeChannel = watchLobby ? WatchProbeChannel : ManagerProbeChannel;
         string lobbyId = searchByCode ? null : inputLobby;
@@ -456,7 +465,7 @@ internal sealed class EOSStandalonePacketProbe
             joined = true;
 
             var socket = ProbeSocket(lobbyId, watchLobby);
-            var hello = ProbeBytes("ca-m0-hello:", lobbyId);
+            var hello = ProbeBytes("ca-m0-hello:", lobbyId + matchCode);
             var send = new SendPacketOptions
             {
                 LocalUserId = session.UserId,

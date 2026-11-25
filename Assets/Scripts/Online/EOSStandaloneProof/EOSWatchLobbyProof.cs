@@ -3,6 +3,7 @@ using System.Collections;
 using System.IO;
 using Epic.OnlineServices;
 using Epic.OnlineServices.P2P;
+using CounterAttack.Online;
 using UnityEngine;
 
 internal static class EOSWatchLobbyProof
@@ -11,21 +12,51 @@ internal static class EOSWatchLobbyProof
     private const byte AfterWatch = 2;
     private const byte Finished = 3;
 
-    internal static IEnumerator Host(string outputDirectory) =>
-        EOSStandalonePacketProbe.HostProbe(outputDirectory, (session, manager, socket, _) =>
-            WatchAlongsideManager(session, manager, socket, outputDirectory));
+    internal static IEnumerator Host(string outputDirectory)
+    {
+        var admission = new OnlineSpectatorAdmission();
+        return EOSStandalonePacketProbe.HostProbe(outputDirectory, (session, manager, socket, _) =>
+            WatchAlongsideManager(session, manager, socket, outputDirectory, admission),
+            admission: new Admission(admission, viewer: false));
+    }
 
-    internal static IEnumerator Manager(string lobbyId) =>
-        EOSStandalonePacketProbe.GuestProbe(lobbyId, EchoManagerPackets);
+    internal static IEnumerator Join(string handoff, bool viewer)
+    {
+        var fields = handoff.Split(' ');
+        EOSProofCheck.Require(fields.Length == 2 && fields[1].Length == OnlineSpectatorAdmission.CodeLength,
+            "Expected a spectator proof handoff containing the EOS lobby ID and Match Code");
+        return EOSStandalonePacketProbe.GuestProbe(fields[0], viewer ? null : EchoManagerPackets,
+            watchLobby: viewer, matchCode: fields[1]);
+    }
 
-    internal static IEnumerator Viewer(string lobbyId) =>
-        EOSStandalonePacketProbe.GuestProbe(lobbyId, watchLobby: true);
+    internal sealed class Admission
+    {
+        private readonly OnlineSpectatorAdmission policy;
+        private readonly bool viewer;
+
+        internal Admission(OnlineSpectatorAdmission policy, bool viewer)
+        {
+            this.policy = policy;
+            this.viewer = viewer;
+        }
+
+        internal string Handoff(string lobbyId) => lobbyId + " " + policy.MatchCode;
+        internal bool TryAdmit(string peer, string code) =>
+            viewer ? policy.TryAdmitViewer(peer, code) : policy.TryAdmitAway(peer, code);
+
+        internal void Release(string peer)
+        {
+            if (viewer)
+                policy.ViewerLeft(peer);
+        }
+    }
 
     private static IEnumerator WatchAlongsideManager(EOSStandaloneSession session,
-        ProductUserId manager, SocketId socket, string outputDirectory)
+        ProductUserId manager, SocketId socket, string outputDirectory, OnlineSpectatorAdmission admission)
     {
         var connection = new ManagerProbeConnection(session, manager, socket);
-        var watch = EOSStandalonePacketProbe.HostProbe(outputDirectory, watchOwner: session);
+        var watch = EOSStandalonePacketProbe.HostProbe(outputDirectory, watchOwner: session,
+            admission: new Admission(admission, viewer: true));
         var watchLobbyFile = Path.Combine(outputDirectory, EOSStandalonePacketProbe.WatchLobbyFileName);
         bool managerPingSent = false;
         bool managerResponded = false;
@@ -48,7 +79,8 @@ internal static class EOSWatchLobbyProof
         }
         finally
         {
-            (watch as IDisposable)?.Dispose();
+            try { (watch as IDisposable)?.Dispose(); }
+            finally { admission.CloseViewing(); }
         }
 
         EOSProofCheck.Require(managerResponded, "Manager did not respond while the watch lobby proof was running");
