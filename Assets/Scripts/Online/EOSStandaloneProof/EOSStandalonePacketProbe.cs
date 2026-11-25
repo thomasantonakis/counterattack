@@ -84,7 +84,7 @@ internal sealed class EOSStandalonePacketProbe
     internal static IEnumerator HostProbe(string outputDirectory,
         Func<EOSStandaloneSession, ProductUserId, SocketId, string, IEnumerator> exchange = null, RelayControl relayControl=RelayControl.ForceRelays,
         Action<string> onCodePublished = null, EOSStandaloneSession watchOwner = null,
-        EOSWatchLobbyProof.Admission admission = null)
+        EOSWatchLobbyProof.Admission admission = null, Action<string> onLobbyCreated = null)
     {
         bool watchLobby = watchOwner != null;
         byte probeChannel = watchLobby ? WatchProbeChannel : ManagerProbeChannel;
@@ -141,6 +141,7 @@ internal sealed class EOSStandalonePacketProbe
             EOSProofCheck.Require(!(string.IsNullOrEmpty(lobbyId)), "P2P coordination lobby ID");
 
             var lobbyIdText = lobbyId.ToString();
+            onLobbyCreated?.Invoke(lobbyIdText);
             var socket = ProbeSocket(lobbyIdText, watchLobby);
             string joinedGuestId = null;
             string requestedGuestId = null;

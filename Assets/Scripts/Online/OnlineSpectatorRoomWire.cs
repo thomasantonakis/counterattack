@@ -13,17 +13,21 @@ namespace CounterAttack.Online
         public const int MaxBytes = 65536;
 
         public static bool TryEncode(OnlineGroundPassState state, MatchManager.GameSettings settings,
-            long sequence, out byte[] payload)
+            long sequence, out byte[] payload) =>
+            TryEncode(state, settings, state?.matchId, sequence, out payload);
+
+        internal static bool TryEncode(OnlineGroundPassState state, MatchManager.GameSettings settings,
+            string spectatorMatchId, long sequence, out byte[] payload)
         {
             payload = null;
-            if (state?.catalogId != OnlineFullRoomBootstrap.Catalog || string.IsNullOrEmpty(state.matchId)
+            if (state?.catalogId != OnlineFullRoomBootstrap.Catalog || !OnlineProtocolIds.IsValid(spectatorMatchId)
                 || sequence < 1 || settings == null)
                 return false;
 
             var publication = new
             {
                 version = Version,
-                matchId = state.matchId,
+                matchId = spectatorMatchId,
                 sequence,
                 stage = "room",
                 home = new { name = settings.homeTeamName, stats = state.homeStats, scorers = Goals(state.homeScorers) },
@@ -66,6 +70,12 @@ namespace CounterAttack.Online
                 }
             };
 
+            return TryEncodePublication(publication, out payload);
+        }
+
+        internal static bool TryEncodePublication(object publication, out byte[] payload)
+        {
+            payload = null;
             var bytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(publication,
                 new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
             if (bytes.Length > MaxBytes) return false;

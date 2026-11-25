@@ -27,10 +27,10 @@ namespace CounterAttack.Online
             remoteIdentity = remote.ToString();
             this.socket = socket;
             p2p = session.Platform.GetP2PInterface();
-            Stream = new OnlineSpectatorRoomStream(matchId);
+            Stream = new OnlineSpectatorStream(matchId);
         }
 
-        internal OnlineSpectatorRoomStream Stream { get; }
+        internal OnlineSpectatorStream Stream { get; }
         internal bool HasOutgoing => sending != null || pending != null;
         internal void QueueLatest(byte[] snapshot) => pending = snapshot;
 

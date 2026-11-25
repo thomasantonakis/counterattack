@@ -8,7 +8,7 @@ using Newtonsoft.Json.Linq;
 
 namespace CounterAttack.Online
 {
-    public sealed class OnlineSpectatorRoomStream
+    public sealed class OnlineSpectatorStream
     {
         private const ushort Magic = 0xCA42;
         private const int MaxCompressedBytes = 48000;
@@ -21,7 +21,7 @@ namespace CounterAttack.Online
             public byte[] compressed;
         }
 
-        public OnlineSpectatorRoomStream(string matchId)
+        public OnlineSpectatorStream(string matchId)
         {
             OnlineProtocolIds.Require(matchId, nameof(matchId));
             this.matchId = matchId;
@@ -57,14 +57,14 @@ namespace CounterAttack.Online
                 return false;
 
             var snapshot = Expand(envelope);
+            int stage = StageIndex(snapshot["stage"]?.Type == JTokenType.String ? snapshot.Value<string>("stage") : null);
             if (snapshot["version"]?.Type != JTokenType.Integer || snapshot.Value<long>("version") != OnlineSpectatorRoomWire.Version
                 || snapshot["matchId"]?.Type != JTokenType.String || snapshot.Value<string>("matchId") != matchId
-                || snapshot["stage"]?.Type != JTokenType.String || snapshot.Value<string>("stage") != "room"
-                || snapshot["sequence"]?.Type != JTokenType.Integer)
+                || stage < 0 || snapshot["sequence"]?.Type != JTokenType.Integer)
                 throw new InvalidDataException("Spectator snapshot identity");
 
             long sequence = snapshot.Value<long>("sequence");
-            if (sequence <= Sequence)
+            if (sequence <= Sequence || stage < StageIndex(Latest?.Value<string>("stage")))
                 return false;
             Latest = snapshot;
             Sequence = sequence;
@@ -75,6 +75,15 @@ namespace CounterAttack.Online
             envelope.version == OnlineSpectatorRoomWire.Version
             && envelope.expandedBytes is > 0 and <= OnlineSpectatorRoomWire.MaxBytes
             && envelope.compressed?.Length is > 0 and <= MaxCompressedBytes;
+
+        private static int StageIndex(string stage) => stage switch
+        {
+            "lobby" => 0,
+            "setup" => 1,
+            "draft" => 2,
+            "room" => 3,
+            _ => -1
+        };
 
         private static JObject Expand(Envelope envelope)
         {

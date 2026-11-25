@@ -12,4 +12,4 @@ Run `OnlineSpectatorProofEditorTests` and `OnlineSpectatorAdmissionEditorTests` 
 
 Run `OnlineSpectatorRoomWireEditorTests` to verify the separate Room publication, including its version, size limit, scoreboard, clock, stats, visible player cards and the exclusion of manager-only fields and unrevealed dice. This fixture does not exercise EOS delivery or the spectator view.
 
-Run `OnlineSpectatorRoomStreamEditorTests` to verify fragmented delivery, rejection of manager commands and mismatched matches, and recovery from interrupted or stale snapshots. The packaged spectator proof sends two Room samples over the separate viewer channel and verifies score, clock and shared pause on the viewer.
+Run `OnlineSpectatorStreamEditorTests` to verify fragmented delivery, rejection of manager commands and mismatched matches, and recovery from interrupted or stale snapshots. The fixture also follows lobby, setup, Draft and Room publications under one spectator match identity and checks that private draft offers stay out of the stream. The packaged spectator proof sends two Room samples over the separate viewer channel and verifies score, clock and shared pause on the viewer.

@@ -5,14 +5,14 @@ using System.Text;
 using CounterAttack.Online;
 using NUnit.Framework;
 
-public sealed class OnlineSpectatorRoomStreamEditorTests
+public sealed class OnlineSpectatorStreamEditorTests
 {
     private const string Match = "spectator-test";
 
     [Test]
     public void ReassemblesAFullSnapshotAndDropsOlderPublications()
     {
-        var stream = new OnlineSpectatorRoomStream(Match);
+        var stream = new OnlineSpectatorStream(Match);
         var packets = stream.Encode(Snapshot(Match, 4, large: true)).ToArray();
         Assert.That(packets.Length, Is.GreaterThan(1));
         foreach (var packet in packets.Take(packets.Length - 1))
@@ -31,7 +31,7 @@ public sealed class OnlineSpectatorRoomStreamEditorTests
     [Test]
     public void CompleteUpdateSupersedesAnInterruptedSnapshot()
     {
-        var stream = new OnlineSpectatorRoomStream(Match);
+        var stream = new OnlineSpectatorStream(Match);
         var old = stream.Encode(Snapshot(Match, 1, large: true)).ToArray();
         Assert.That(old.Length, Is.GreaterThan(1));
         Assert.That(stream.Receive(old[0], old[0].Length), Is.False);
@@ -43,7 +43,7 @@ public sealed class OnlineSpectatorRoomStreamEditorTests
     [Test]
     public void OtherMatchesAndManagerCommandsNeverBecomeSpectatorState()
     {
-        var stream = new OnlineSpectatorRoomStream(Match);
+        var stream = new OnlineSpectatorStream(Match);
         Assert.Throws<InvalidDataException>(() => Deliver(stream, Snapshot("another-match", 99)));
         var command = new OnlineGroundPassMessage { matchId = Match, kind = "command", actionId = "ground.start" };
         var packet = OnlineGroundPassWire.Encode(command).First();
@@ -54,7 +54,41 @@ public sealed class OnlineSpectatorRoomStreamEditorTests
         Assert.That(Deliver(stream, Snapshot(Match, 1)), Is.True);
     }
 
-    private static bool Deliver(OnlineSpectatorRoomStream stream, byte[] snapshot)
+    [Test]
+    public void FollowsPregameStagesWithTheSameMatchIdentityAsRoom()
+    {
+        var stream = new OnlineSpectatorStream(Match);
+        var settings = new GameSettings { homeTeamName = "Home club", homeKit = "kit-home" };
+        var setup = new OnlineSetupState { matchId = "manager-match", settings = settings, homeSequence = 85 };
+        var draft = new OnlineDraftState
+        {
+            matchId = "manager-match", phase = "pick", settings = settings, roomSessionId = "private-save-session",
+            cards = new[] { new OnlineDraftCard { name = "private-offer" } },
+            home = new[] { null, new OnlineDraftCard { id = "o0042", name = "Revealed Pick" } }
+        };
+
+        Assert.That(OnlineSpectatorPregameWire.TryEncode(Match, 1, settings, null, null, out var lobby), Is.True);
+        Assert.That(Deliver(stream, lobby), Is.True);
+        Assert.That((string)stream.Latest["stage"], Is.EqualTo("lobby"));
+        Assert.That(OnlineSpectatorPregameWire.TryEncode(Match, 2, settings, setup, null, out var setupPacket), Is.True);
+        Assert.That(Deliver(stream, setupPacket), Is.True);
+        Assert.That((string)stream.Latest["stage"], Is.EqualTo("setup"));
+        Assert.That((string)stream.Latest["teams"]["home"]["kit"], Is.EqualTo("kit-home"));
+        Assert.That(stream.Latest.ToString(), Does.Not.Contain("homeSequence"));
+
+        Assert.That(OnlineSpectatorPregameWire.TryEncode(Match, 3, settings, setup, draft, out var draftPacket), Is.True);
+        Assert.That(Deliver(stream, draftPacket), Is.True);
+        Assert.That((string)stream.Latest["stage"], Is.EqualTo("draft"));
+        Assert.That((string)stream.Latest["draft"]["home"][1]["name"], Is.EqualTo("Revealed Pick"));
+        Assert.That(stream.Latest.ToString(), Does.Not.Contain("private-offer").And.Not.Contain("private-save-session"));
+        Assert.That(Deliver(stream, Snapshot(Match, 4)), Is.True);
+        Assert.That(Deliver(stream, draftPacket), Is.False);
+        Assert.That(OnlineSpectatorPregameWire.TryEncode(Match, 5, settings, setup, draft, out var oldStage), Is.True);
+        Assert.That(Deliver(stream, oldStage), Is.False);
+        Assert.That((string)stream.Latest["stage"], Is.EqualTo("room"));
+    }
+
+    private static bool Deliver(OnlineSpectatorStream stream, byte[] snapshot)
     {
         bool applied = false;
         foreach (var packet in stream.Encode(snapshot))

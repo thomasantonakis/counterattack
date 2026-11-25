@@ -21,10 +21,18 @@ namespace CounterAttack.Online
         private OnlineRoomLaunchLifetime roomLifetime;
         private IEnumerator gameplay;
         private EOSGroundPassExchange spectatorRoomSource;
-        internal bool TryEncodeSpectatorRoom(long sequence, out byte[] payload)
+        internal bool TryEncodeSpectatorPublication(long sequence, out byte[] payload)
         {
             payload = null;
-            return spectatorRoomSource != null && spectatorRoomSource.TryEncodeSpectatorRoom(sequence, out payload);
+            if (!Hosting || stop || disposed || lobbyId == null)
+                return false;
+            string spectatorMatchId = "spectator-" + lobbyId;
+            if (roomLifetime != null)
+                return spectatorRoomSource != null && spectatorRoomSource.TryEncodeSpectatorRoom(spectatorMatchId, sequence, out payload);
+            string scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+            var setup = scene is "CreateNewGameScene" or "Draft" ? Client?.Capture() : null;
+            return OnlineSpectatorPregameWire.TryEncode(spectatorMatchId, sequence, initial,
+                setup, scene == "Draft" ? Draft?.Capture() : null, out payload);
         }
         private OnlineGroundPassBoard roomBoard;
         public MatchManager.GameData CaptureRoomLaunch()=>OnlineRoomLaunchData.Copy(roomLaunch);
@@ -107,7 +115,8 @@ namespace CounterAttack.Online
             Status=hosting?"Creating an online session...":"Joining the online session...";
             var route=OnlineFrontendSessionPolicy.Route(forceRelay);
             probe = hosting
-                ? EOSStandalonePacketProbe.HostProbe(RunDirectory, Exchange, route, OnLobbyCodePublished)
+                ? EOSStandalonePacketProbe.HostProbe(RunDirectory, Exchange, route, OnLobbyCodePublished,
+                    onLobbyCreated: id => lobbyId = id)
                 : EOSStandalonePacketProbe.GuestProbe(code, Exchange, route, searchByCode: true);
             running=StartCoroutine(Run());
         }
