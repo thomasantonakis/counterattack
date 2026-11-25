@@ -9,8 +9,22 @@ using UnityEngine;
 public sealed partial class GoalkeeperBoxEntryFixture
 {
     public IEnumerator RunMovementOpeningSave(int side, bool preview, bool expired)
+        => RunMovementOpeningRoundTrip(side, preview, expired, false);
+
+    public IEnumerator RunStoppageMovementOpeningSave(int side)
+        => RunMovementOpeningRoundTrip(side, false, false, true);
+
+    private IEnumerator RunMovementOpeningRoundTrip(int side, bool preview, bool expired, bool stoppage)
     {
         StartAutomaticMovementOpening(side);
+        if (stoppage)
+        {
+            match.isHalfExpired = true;
+            match.isClockRunning = false;
+            Assert.That(match.TryEnterExtraActionsRollBeforeRestart(null), Is.True);
+            Assert.That(match.CanCreateRuntimeSnapshot(out _), Is.False);
+            Invoke(match, "DetermineExtraActions", new RollInputOverride { hasOverride = true, roll = 4 });
+        }
         Assert.That(match.CanCreateRuntimeSnapshot(out string reason), Is.True, reason);
 
         var origin = attacker.currentHex;
@@ -27,15 +41,20 @@ public sealed partial class GoalkeeperBoxEntryFixture
 
         match.RefreshDecisionTiming();
         var originalDecision = match.DecisionTiming.Current;
-        Assert.That(originalDecision.kind, Is.EqualTo(DecisionKind.AttackingMovement));
-        match.AdvanceDecisionTiming(expired ? originalDecision.remaining : 4f);
-        float remaining = originalDecision.remaining;
-        float budget = originalDecision.budget;
+        if (stoppage)
+            Assert.That(originalDecision, Is.Null, "Stoppage does not start a tactical allowance");
+        else
+        {
+            Assert.That(originalDecision.kind, Is.EqualTo(DecisionKind.AttackingMovement));
+            match.AdvanceDecisionTiming(expired ? originalDecision.remaining : 4f);
+        }
+        float? remaining = originalDecision?.remaining;
+        float? budget = originalDecision?.budget;
         const float regulationTime = 12f;
         Set(match, "currentHalfRegulationSeconds", regulationTime);
         match.SetPauseMenuOpen(true);
         match.AdvanceDecisionTiming(5f);
-        Assert.That(originalDecision.remaining, Is.EqualTo(remaining));
+        Assert.That(originalDecision?.remaining, Is.EqualTo(remaining));
         int actions = match.totalCompletedActions;
         var ballHex = ball.GetCurrentHex();
 
@@ -75,13 +94,16 @@ public sealed partial class GoalkeeperBoxEntryFixture
             Assert.That(ball.GetCurrentHex(), Is.SameAs(ballHex));
             Assert.That(match.totalCompletedActions, Is.EqualTo(actions));
             Assert.That(match.CreateRuntimeSnapshot().clock.currentHalfRegulationSeconds, Is.EqualTo(regulationTime));
+            Assert.That(match.CreateRuntimeSnapshot().clock.isHalfExpired, Is.EqualTo(stoppage));
+            Assert.That(match.CreateRuntimeSnapshot().clock.extraActionsRemaining,
+                Is.EqualTo(loaded.runtimeSnapshot.clock.extraActionsRemaining));
             Assert.That(match.gameData.events.Count(entry => entry.kind == "action.committed"), Is.EqualTo(commitments));
             Assert.That(movement.headerManager.defenderWillJump, Does.Contain(defender));
             Assert.That(movement.stunnedTokens, Does.Contain(awayGK));
-            Assert.That(match.DecisionTiming.Current.id, Is.EqualTo(originalDecision.id));
-            Assert.That(match.DecisionTiming.Current.budget, Is.EqualTo(budget));
-            Assert.That(match.DecisionTiming.Current.remaining, Is.EqualTo(remaining));
-            Assert.That(match.DecisionTiming.Current.expired, Is.EqualTo(expired));
+            Assert.That(match.DecisionTiming.Current?.id, Is.EqualTo(originalDecision?.id));
+            Assert.That(match.DecisionTiming.Current?.budget, Is.EqualTo(budget));
+            Assert.That(match.DecisionTiming.Current?.remaining, Is.EqualTo(remaining));
+            Assert.That(match.DecisionTiming.Current?.expired ?? false, Is.EqualTo(expired));
             Assert.That(match.DecisionTiming.HoldsMatchClock, Is.EqualTo(expired));
             Assert.That(match.CanCreateRuntimeSnapshot(out reason), Is.True, reason);
 

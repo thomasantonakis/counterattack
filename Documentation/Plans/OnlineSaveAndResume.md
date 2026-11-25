@@ -4,7 +4,7 @@ Implement a host-owned save so the same two players can close Counterattack and 
 
 ## Player flow and first release scope
 
-1. Either player pauses. At a supported checkpoint, the host can use **Save Match As** to name a new save or **Save Match** to update its selected slot. Show a success message only after the file is committed. Both players can then leave through the existing menu.
+1. Either player pauses. At a supported checkpoint, the host can use **Save Match As** to name a new save or **Save Match** to update its selected slot. This includes a settled loose ball at the opening of an automatically committed Movement Phase and settled play after the stoppage-actions roll. Show a success message only after the file is committed. Both players can then leave through the existing menu.
 2. The original host opens **Online → Load Match**, selects an online save, and creates a lobby. Show its new code using the existing copy-code interaction.
 3. The guest uses **Online → Join** with that code. After verification, show the saved teams, score and match time on a resume screen. The host stays Home and the guest stays Away. Go directly to `Room` with the saved rosters and setup.
 4. Once Room is restored and both players have received the restored state, each confirms **Ready**. The host releases the resume hold and publishes the playable state. Either player may cancel before play starts. The saved checkpoint remains available for another attempt.

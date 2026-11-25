@@ -6007,6 +6007,14 @@ public partial class MatchManager : MonoBehaviour
             return false;
         }
 
+        if (isWaitingForExtraActionsRoll || StoppageActionsPanelController.IsHoldingContinuation
+            || isHalfExpired && (!extraActionsDetermined || extraActionsRemaining <= 0)
+                && currentState is not (GameState.HalfTime or GameState.MatchEnded))
+        {
+            reason = "Cannot save while the half is ending or stoppage actions are being determined.";
+            return false;
+        }
+
         bool savingMovementOpening = CanSaveMovementOpening;
         if (HasActiveRuntimeAction(savingMovementOpening))
         {
@@ -6143,9 +6151,9 @@ public partial class MatchManager : MonoBehaviour
     {
         return movementPhaseManager?.goalKeeperManager?.IsWaitingForPickupChoice == true
             || (!savingMovementOpening && movementPhaseManager?.isActivated == true)
-            || (savingMovementOpening && (looseBallManager?.isActivated == true
-                || movementPhaseManager.headerManager?.isActivated == true
-                || isWaitingForExtraActionsRoll || IsStopPlayRestartPending))
+            || looseBallManager?.isActivated == true
+            || movementPhaseManager?.headerManager?.isActivated == true
+            || IsStopPlayRestartPending
             || (groundBallManager != null && groundBallManager.isActivated)
             || (firstTimePassManager != null && firstTimePassManager.isActivated)
             || (highPassManager != null && highPassManager.isActivated)

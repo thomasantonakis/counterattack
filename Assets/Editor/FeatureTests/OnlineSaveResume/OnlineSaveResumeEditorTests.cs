@@ -56,14 +56,15 @@ public sealed class OnlineSaveResumeEditorTests
         Assert.That(File.ReadAllBytes(path), Is.EqualTo(original));
     }
 
-    [Test]
-    public void PriorOnlineCheckpointRetainsItsStatisticsAcrossTheReportUpgrade()
+    [TestCase("session-wire-v3", "frontend-rules-v9")]
+    [TestCase("session-wire-v4", "frontend-rules-v10")]
+    public void PriorOnlineCheckpointRetainsItsStatisticsAcrossTheReportUpgrade(string priorProtocol, string priorRules)
     {
-        var oldStore = new OnlineCheckpointStore(directory, new OnlineCompatibility("session-wire-v3", "frontend-rules-v9", "catalog"));
-        var newStore = new OnlineCheckpointStore(directory, new OnlineCompatibility("session-wire-v4", "frontend-rules-v10", "catalog"));
+        var oldStore = new OnlineCheckpointStore(directory, new OnlineCompatibility(priorProtocol, priorRules, "catalog"));
+        var newStore = new OnlineCheckpointStore(directory, new OnlineCompatibility("session-wire-v5", "frontend-rules-v11", "catalog"));
         var checkpoint = Checkpoint();
-        checkpoint.protocol = "session-wire-v3";
-        checkpoint.rules = "frontend-rules-v9";
+        checkpoint.protocol = priorProtocol;
+        checkpoint.rules = priorRules;
         checkpoint.match.stats.homeTeamStats.totalGoals = 3;
         var selected = oldStore.Save(checkpoint);
         var resumed = newStore.CreateRun(newStore.Load(selected));

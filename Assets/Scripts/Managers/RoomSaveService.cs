@@ -21,7 +21,7 @@ public static class RoomSaveService
             reason = "Pause the match before saving.";
         else if (!OnlineCheckpointStore.SupportedState(match.currentState.ToString()) || publication.introPending
             || publication.coin != null || publication.shootout != null || publication.matchComplete
-            || publication.halfExpired || publication.stoppageAwaitingRoll || publication.keeperActionBlocked
+            || publication.stoppageAwaitingRoll || publication.keeperActionBlocked
             || publication.substitutionReview != null || pause.CaptureSubstitutionReview() != null
             || publication.rollPanel != null || publication.playerMoving || publication.goalMotion
             || publication.passActive || publication.awaitingRoll || match.looseBallManager?.isActivated == true
@@ -29,8 +29,8 @@ public static class RoomSaveService
             || match.IsStopPlayRestartPending || match.shotManager?.isWaitingForSaveandHoldScenario == true
             || match.shotManager?.isWaitingForSnapshotDecisionFromLoose == true
             || match.shotManager?.isWaitingForShotCommitConfirmation == true
-            || match.DecisionTiming.HasRollWait || MatchManager.TimingResultBlocked || !match.attackHasPossession)
-            reason = "Finish the current action, restart or roll. Save when the attacking team has possession and can choose its next action.";
+            || match.DecisionTiming.HasRollWait || MatchManager.TimingResultBlocked)
+            reason = "Finish the current action, restart, or roll. Save at the next action choice.";
         else
             return match.CanCreateRuntimeSnapshot(out reason);
         return false;

@@ -55,6 +55,13 @@ For raised CanShootTo highlights, use PlayMode category `OnlineRaisedGoalTargets
 in `Assets/Tests/PlayMode/Features/OnlineRaisedGoalTargets/`. It checks the
 guest's highlight and elevation before, during and after host hover across shot
 aiming, headers, goal-mouth movement and the committed shootout marker.
+Filter `PeerReceivesAndClearsOrangeHoverBeforeTargetCommit` to check the transient
+orange hover shared by the two managers.
+
+For simultaneous player names and local preview cards in the authored Room,
+run `BothNamesAppearWhileOnlyLocalHoverUpdatesThePreview` in
+`Assets/Tests/PlayMode/Features/OnlineTeamPointers/`. Both roles receive the
+peer hover and keep their own preview selection.
 
 For Room coin toss/half transitions, use EditMode `OnlineRoomCoinTossEditorTests`
 (13 cases) and PlayMode `OnlineRoomCoinTossPlayModeTests` (24 cases), category
@@ -90,8 +97,31 @@ For online checkpoint save and resume, run the focused EditMode fixture
 `OnlineSaveResumeEditorTests` and PlayMode fixture `OnlineSaveResumePlayModeTests`,
 category `OnlineSaveResume`. The native Room cases use temporary save slots and
 exercise both attacking teams, a guest-owned pause and the two Ready confirmations.
+The loose-ball opening and stoppage cases round-trip those checkpoints and
+continue play. Offline coverage uses `LooseBallOpeningAtSettledStoppageSavesAndRestores`
+in `Assets/Tests/PlayMode/Features/MovementOpeningSave/`.
 See the [online save and resume plan](../Plans/OnlineSaveAndResume.md) for the
 paired packaged walkthrough.
+
+For defensive fouls followed by advantage, filter
+`DefensiveFoulRepositionKeepsUnusedAttackerAvailableInTwoForTwo` in
+`Assets/Tests/PlayMode/Features/OnlineGroundDuels/`. The cases use both directions
+and cover a first injury and no injury.
+
+The paired feedback regressions compiled in Unity 6000.5.3f1 with zero errors.
+Native XML and progress for the focused runs are under
+`TestResults/GameplayRegression/Runs/`.
+
+| Focused coverage | Passed | Run directory |
+| --- | ---: | --- |
+| Online checkpoint EditMode | 23 | `20261125T195133511Z` |
+| Defensive foul and 2-for-2 | 4 | `20261125T195150060Z` |
+| Online loose-ball and stoppage saves | 4 | `20261125T214324800Z` |
+| Offline movement-opening saves | 9 | `20261125T214704490Z` |
+| Resumed Full Time history | 1 | `20261125T214725171Z` |
+| Raised goal-line targets and orange hover | 15 | `20261125T214820810Z` |
+| Team pointers and names | 8 | `20261125T215036306Z` |
+| Full Time hover suppression | 2 | `20261125T215133155Z` |
 
 For required online goalkeeper decisions, use PlayMode fixture
 `OnlineRequiredKeeperPlayModeTests` (category `OnlineRequiredKeeper`, 33 cases)

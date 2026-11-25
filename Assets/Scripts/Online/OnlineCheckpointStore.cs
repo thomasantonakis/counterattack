@@ -173,8 +173,9 @@ namespace CounterAttack.Online
         }
 
         // These ordinary choice points are rebuilt by RefreshAvailableActionsForCurrentState.
-        // The Room guard separately requires possession and all action managers to be settled.
+        // An automatic movement opening has its own serialized continuation.
         public static bool SupportedState(string state) => state is
+            nameof(MatchManager.GameState.MovementPhase) or
             nameof(MatchManager.GameState.EndOfMovementPhase) or
             nameof(MatchManager.GameState.EndOfStandardPass) or
             nameof(MatchManager.GameState.EndOfFirstTimePass) or
@@ -200,7 +201,8 @@ namespace CounterAttack.Online
                 || checkpoint.hostAccount == checkpoint.guestAccount)
                 throw new InvalidDataException("This online save has invalid checkpoint metadata.");
 
-            bool priorStableCheckpoint = checkpoint.rules == "frontend-rules-v9" && compatibility.Rules == "frontend-rules-v10";
+            bool priorStableCheckpoint = compatibility.Rules == "frontend-rules-v11"
+                && checkpoint.rules is "frontend-rules-v9" or "frontend-rules-v10";
             if (!OnlineProtocolIds.IsValid(checkpoint.protocol) || checkpoint.rules != compatibility.Rules && !priorStableCheckpoint
                 || checkpoint.catalog != compatibility.Catalog)
                 throw new InvalidDataException("This online save requires a different game version or player catalog.");
@@ -213,7 +215,8 @@ namespace CounterAttack.Online
                 || match.rosters?.home?.Count is not (16 or 18) || match.rosters.away?.Count != match.rosters.home.Count
                 || match.stats == null || match.openingSetup == null || match.events == null
                 || snapshot == null || snapshot.version != RoomSaveService.SaveSchemaVersion
-                || !SupportedState(snapshot.currentState) || !snapshot.attackHasPossession
+                || !SupportedState(snapshot.currentState)
+                || (snapshot.currentState == nameof(MatchManager.GameState.MovementPhase)) != (snapshot.movementOpening != null)
                 || snapshot.teamInAttack is not ("Home" or "Away")
                 || !Enum.TryParse<MatchManager.TeamAttackingDirection>(snapshot.homeTeamDirection, out var homeDirection)
                 || !Enum.IsDefined(typeof(MatchManager.TeamAttackingDirection), homeDirection)
@@ -223,6 +226,8 @@ namespace CounterAttack.Online
                 || float.IsNaN(snapshot.clock.currentHalfRegulationSeconds) || float.IsInfinity(snapshot.clock.currentHalfRegulationSeconds)
                 || snapshot.clock.currentHalfRegulationSeconds < 0
                 || snapshot.clock.isMatchComplete || snapshot.clock.isWaitingForExtraActionsRoll
+                || snapshot.clock.isHalfExpired && (!snapshot.clock.extraActionsDetermined || snapshot.clock.extraActionsRemaining < 1)
+                || snapshot.movementOpening != null && snapshot.clock.currentCommittedActionKind != nameof(MatchManager.MatchActionKind.MovementPhase)
                 || snapshot.ball == null || snapshot.tokens == null || snapshot.tokens.Count != 2 * match.rosters.home.Count
                 || snapshot.tokens.Any(t => t == null || string.IsNullOrEmpty(t.tokenKey) || t.isPlaying && t.currentHex == null)
                 || snapshot.tokens.Select(t => t.tokenKey).Distinct().Count() != snapshot.tokens.Count

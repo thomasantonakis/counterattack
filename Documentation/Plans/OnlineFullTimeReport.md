@@ -14,7 +14,7 @@ Show the same complete Full Time report to both online managers in the normal `R
 - Capture the report after the host finalizes stats and records the last gameplay event. Share the report calculations across host, guest and offline paths. Use a versioned payload containing compact report-ready data or the narrow event projections those calculations consume. Carry stable player IDs through substitutions and keep account IDs, save paths, private selections and diagnostics out of the payload. When save/resume is available, include the checkpoint's inherited history exactly once.
 - Bind the report to the match ID and final publication revision. Send it reliably with bounded transfer and payload sizes, separate from recurring gameplay snapshots. Validate completeness and handle duplicate, stale, interrupted and oversized transfers. Show the confirmed score and basic recap during transfer, and explain which remaining tabs are unavailable if it fails. Check mixed-build behavior under [CONTRIBUTING.md](../../CONTRIBUTING.md) and bump the protocol if older builds cannot handle required messages.
 
-Both clients use `frontend-rules-v10` and `session-wire-v4`. Stable v9 checkpoints still load with the same player catalog. Older saved dice records use the same fallback calculation as the offline report.
+The paired feedback changes advance compatibility to `frontend-rules-v11` and `session-wire-v5`. Stable v9 and v10 checkpoints still load with the same player catalog. Older saved dice records use the same fallback calculation as the offline report.
 
 ## Verification checklist
 

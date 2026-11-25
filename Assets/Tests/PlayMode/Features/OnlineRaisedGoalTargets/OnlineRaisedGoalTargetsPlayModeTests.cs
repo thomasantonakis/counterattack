@@ -18,6 +18,11 @@ public sealed class OnlineRaisedGoalTargetsPlayModeTests
     public IEnumerator GuestShowsAndClearsTheCommittedShootoutTarget()
         => Run("RunCommittedShootoutTargetPublication");
 
+    [UnityTest]
+    public IEnumerator PeerReceivesAndClearsOrangeHoverBeforeTargetCommit(
+        [Values("header", "shot", "snapshot", "walk", "reposition")] string mode)
+        => Run("RunSharedOrangeGoalHover", mode);
+
     private IEnumerator Run(string method, params object[] arguments)
     {
         var bridge = AppDomain.CurrentDomain.GetAssemblies().Single(assembly => assembly.GetName().Name == "Assembly-CSharp-Editor")

@@ -77,6 +77,57 @@ public sealed partial class OnlineFullRoomSceneFixture
         CaptureGlobals();previousPath=app.LastSavedFileName;previousExplicit=app.HasExplicitSaveContext;previousMode=app.SelectedRoomGameMode;app.SetSelectedRoomGameMode(ApplicationManager.OnlineGameMode);Time.timeScale=1;
         directory=Path.Combine(Path.GetTempPath(),"CounterattackFullRoom",Guid.NewGuid().ToString("N"));Directory.CreateDirectory(directory);
     }
+    public IEnumerator RunNativePeerHover(bool guest)
+    {
+        InitializeFixture();
+        SuppressLegacyRoomRunner();
+        yield return LoadNativeRoom(Data(16, false, useFrontendSeats: true), guest, "full-room-scene");
+        var board = Object.FindAnyObjectByType<OnlineRoomStartup>().Board;
+        var input = board.boardInput;
+        input.samplePhysicalInput = false;
+        var token = board.tokens.First(candidate => candidate.currentHex != null);
+        Physics.SyncTransforms();
+        var ray = new Ray(token.transform.position + Vector3.up * 10, Vector3.down);
+        Assert.That(input.PresentHover(ray, true), Is.SameAs(token));
+        var presentation = Object.FindAnyObjectByType<GameInputManager>(FindObjectsInactive.Include);
+        Assert.That(presentation.InspectionHoverToken, Is.SameAs(token));
+        const System.Reflection.BindingFlags fields = System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance;
+        var localPointer = new OnlineRoomPointer { visible = true };
+        typeof(OnlineBoardInput).GetMethod("CapturePointerHover", fields).Invoke(input, new object[] { localPointer });
+        Assert.That(localPointer.hoveredToken, Is.EqualTo(OnlineRollPublication.ActorId(token)));
+        var peer = board.tokens.First(candidate => candidate.isHomeTeam != token.isHomeTeam && candidate.currentHex != null);
+        var stats = Object.FindAnyObjectByType<MatchStatsUI>();
+        var localSlot = typeof(MatchStatsUI).GetField(token.isHomeTeam ? "lastHoveredHomeToken" : "lastHoveredAwayToken", fields);
+        Assert.That(localSlot.GetValue(stats), Is.SameAs(token));
+        var cardSlot = typeof(MatchStatsUI).GetField(peer.isHomeTeam ? "lastHoveredHomeToken" : "lastHoveredAwayToken", fields);
+        var previousCard = cardSlot.GetValue(stats);
+        var peerLabel = (TMPro.TMP_Text)typeof(GameInputManager).GetField("peerHoverNameLabel", fields).GetValue(presentation);
+        var localLabel = (TMPro.TMP_Text)typeof(GameInputManager).GetField("hoverNameLabel", fields).GetValue(presentation);
+        Assert.That(peerLabel, Is.Not.Null, "Room has a peer hover label");
+        var wire = new OnlineGroundPassWire();
+        OnlineGroundPassMessage received = null;
+        foreach (var fragment in OnlineGroundPassWire.Encode(new OnlineGroundPassMessage
+        {
+            kind = "pointer", matchId = "full-room-scene", sequence = 3, connectionGeneration = 1,
+            peerNonce = System.Guid.NewGuid().ToString("N"),
+            pointer = new OnlineRoomPointer { visible = true, hoveredToken = OnlineRollPublication.ActorId(peer) }
+        }))
+            received = wire.Receive(fragment, fragment.Length) ?? received;
+        board.pointers.ShowRemote(received.pointer, received.sequence);
+        yield return null;
+        yield return null;
+        Assert.That(localLabel.gameObject.activeInHierarchy && peerLabel.gameObject.activeInHierarchy, Is.True);
+        Assert.That(localLabel.text, Is.EqualTo(token.playerName));
+        Assert.That(peerLabel.text, Is.EqualTo(peer.playerName));
+        Assert.That(cardSlot.GetValue(stats), Is.SameAs(previousCard));
+        Assert.That(presentation.InspectionHoverToken, Is.SameAs(token));
+        board.pointers.ShowRemote(new OnlineRoomPointer(), 4);
+        yield return null;
+        yield return null;
+        Assert.That(peerLabel.gameObject.activeInHierarchy, Is.False);
+        Assert.That(localLabel.gameObject.activeInHierarchy, Is.True);
+    }
+
     public IEnumerator Run(bool guest,int size,bool mirror,string branch)
     {
         InitializeFixture();

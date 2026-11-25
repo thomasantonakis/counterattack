@@ -11,6 +11,12 @@ using UnityEngine.SceneManagement;
 public sealed partial class OnlineFullRoomSceneFixture
 {
     public IEnumerator RunCheckpointPause(bool homeAttacks, bool afterMovement, bool finishReport, bool expectHistory)
+        => RunCheckpointRoundTrip(homeAttacks, afterMovement, finishReport, expectHistory, null);
+
+    public IEnumerator RunCheckpointAtNewBoundary(bool homeAttacks, string boundary)
+        => RunCheckpointRoundTrip(homeAttacks, false, false, false, boundary);
+
+    private IEnumerator RunCheckpointRoundTrip(bool homeAttacks, bool afterMovement, bool finishReport, bool expectHistory, string boundary)
     {
         InitializeFixture();
         SuppressLegacyRoomRunner();
@@ -73,18 +79,40 @@ public sealed partial class OnlineFullRoomSceneFixture
         GuestPause(OnlineSharedPause.ResumeAction);
 
         var targetState = pause.Capture(authority);
-        var target = board.match.playerTokenManager.allTokens
+        var occupied = board.match.playerTokenManager.allTokens
             .Where(token => token.isHomeTeam == homeAttacks && token.GetCurrentHex() != null)
-            .Select(token => token.GetCurrentHex())
+            .Select(token => token.GetCurrentHex());
+        var targets = boundary == "loose" ? board.cells.Where(hex => hex.GetOccupyingToken() == null) : occupied;
+        var target = targets
             .Where(hex => targetState.legalActions.Contains(OnlineGroundPassAuthority.TargetAction(hex.coordinates.x, hex.coordinates.z)))
             .OrderBy(hex => Mathf.Abs(hex.coordinates.z - targetState.ballZ) + Mathf.Abs(hex.coordinates.x - targetState.ballX))
             .First();
         Submit(OnlineGroundPassAuthority.TargetAction(target.coordinates.x, target.coordinates.z));
         deadline = Time.realtimeSinceStartup + 15f;
-        while (board.match.currentState != MatchManager.GameState.EndOfStandardPass && Time.realtimeSinceStartup < deadline)
+        var expectedAfterPass = boundary == "loose" ? MatchManager.GameState.MovementPhase : MatchManager.GameState.EndOfStandardPass;
+        while (board.match.currentState != expectedAfterPass && Time.realtimeSinceStartup < deadline)
             yield return null;
 
-        Assert.That(board.match.currentState, Is.EqualTo(MatchManager.GameState.EndOfStandardPass));
+        Assert.That(board.match.currentState, Is.EqualTo(expectedAfterPass));
+        if (boundary == "loose")
+        {
+            Assert.That(board.match.attackHasPossession, Is.False);
+            Assert.That(board.match.movementPhaseManager.isMovementPhaseAttack, Is.True);
+            Assert.That(board.match.movementPhaseManager.movedTokens, Is.Empty);
+        }
+        if (boundary == "stoppage")
+        {
+            board.match.isHalfExpired = true;
+            Assert.That(board.match.TryEnterExtraActionsRollBeforeRestart(board.match.RefreshAvailableActionsForCurrentState), Is.True);
+            GuestPause(OnlineSharedPause.RequestAction);
+            Assert.That(view.saveMatchAsButton.interactable, Is.False, "The stoppage roll must finish first");
+            GuestPause(OnlineSharedPause.ResumeAction);
+            Submit("stoppage.roll");
+            deadline = Time.realtimeSinceStartup + 12f;
+            while (StoppageActionsPanelController.IsHoldingContinuation && Time.realtimeSinceStartup < deadline)
+                yield return null;
+            Assert.That(StoppageActionsPanelController.IsHoldingContinuation, Is.False);
+        }
         if (afterMovement)
         {
             Submit(OnlineGroundPassAuthority.MovementStartAction);
@@ -133,6 +161,9 @@ public sealed partial class OnlineFullRoomSceneFixture
         Assert.That(checkpoint.match.runtimeSnapshot.teamInAttack, Is.EqualTo(homeAttacks ? "Home" : "Away"));
         Assert.That(checkpoint.match.runtimeSnapshot.ball.x, Is.EqualTo(target.coordinates.x));
         Assert.That(checkpoint.match.runtimeSnapshot.ball.z, Is.EqualTo(target.coordinates.z));
+        Assert.That(checkpoint.match.runtimeSnapshot.attackHasPossession, Is.EqualTo(boundary != "loose"));
+        Assert.That(checkpoint.match.runtimeSnapshot.movementOpening != null, Is.EqualTo(boundary == "loose"));
+        Assert.That(checkpoint.match.runtimeSnapshot.clock.isHalfExpired, Is.EqualTo(boundary == "stoppage"));
         Assert.That(checkpoint.match.events.Count, Is.GreaterThan(0));
         Assert.That(checkpoint.match.runtimeSnapshot.stats.homeTeamStats.totalGoals, Is.EqualTo(1));
         var savedPlayerStats = checkpoint.match.runtimeSnapshot.stats.playerStats
@@ -260,6 +291,13 @@ public sealed partial class OnlineFullRoomSceneFixture
         Assert.That(playable.resumePending, Is.False);
         Assert.That(playable.owner, Is.EqualTo(homeAttacks ? "Home" : "Away"));
         Assert.That(playable.legalActions, Is.EquivalentTo(beforeSave.legalActions));
+        if (boundary == "loose")
+        {
+            Submit(playable.legalActions.First(action => action.StartsWith("movement.player:")));
+            Assert.That(pause.Capture(authority).stage, Is.EqualTo("movement.attack.target"));
+            Assert.That(File.ReadAllBytes(saved), Is.EqualTo(sourceBytes));
+            yield break;
+        }
         if (finishReport)
         {
             match.ResolveGameplayDiceRoll("high_pass_accuracy", actor: board.tokens.Single(token =>

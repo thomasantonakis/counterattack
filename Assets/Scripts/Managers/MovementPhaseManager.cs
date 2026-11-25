@@ -1106,8 +1106,7 @@ public partial class MovementPhaseManager : MonoBehaviour
         movedTokens.Add(token);
 
         MovementPhaseMovedTokenSection section = GetCurrentMovedTokenSection();
-        // A duel can reposition the ball carrier during the opponent's phase.
-        // Keep its eligibility bookkeeping, but only show moves owned by this phase.
+        // Show only moves owned by the current phase.
         bool attackingSection = section != MovementPhaseMovedTokenSection.DefMP;
         if (token.isAttacker == attackingSection)
             movedTokenEntries.Add(new MovementPhaseMovedTokenEntry(token, section));
@@ -1978,7 +1977,7 @@ public partial class MovementPhaseManager : MonoBehaviour
         }
         
                   
-        if(isDribblerRunning)
+        if (isDribblerRunning && !isMovementPhaseDef)
         {
             if (isNutmegInProgress)
             {
@@ -2551,7 +2550,9 @@ public partial class MovementPhaseManager : MonoBehaviour
         if (isDribblerRunning)
         {
             hexGrid.ClearHighlightedHexes();
-            RegisterMovedToken(selectedToken);
+            // Repositioning during defence does not spend the carrier's attacking move.
+            if (!isMovementPhaseDef || selectedToken?.isAttacker != true)
+                RegisterMovedToken(selectedToken);
             selectedToken = null;
             isDribblerRunning = false;
             isAwaitingHexDestination = false;
@@ -2898,7 +2899,7 @@ public partial class MovementPhaseManager : MonoBehaviour
             ResetBallInterceptionDiceRolls();
             StartNutmegProcess();
         }
-        else if (isDribblerRunning)
+        else if (isDribblerRunning && !isMovementPhaseDef)
         {
             Debug.Log("No more defenders to roll.");
             StartCoroutine(ContinueDribblerMovement());
