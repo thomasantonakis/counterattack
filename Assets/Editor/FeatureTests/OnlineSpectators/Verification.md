@@ -9,3 +9,5 @@ The standalone transport proof uses the EOS packet proof scene. Start `watch-hos
 - [ ] Verify the two-viewer transport capacity and public stage and Room replication after the packaged proof passes.
 
 Run `OnlineSpectatorProofEditorTests` and `OnlineSpectatorAdmissionEditorTests` with explicit EditMode fixture filters. They verify the command-line entry points, role admission, and the host's two-viewer limit. The three-player run verifies native EOS behavior.
+
+Run `OnlineSpectatorRoomWireEditorTests` to verify the separate Room publication, including its version, size limit, scoreboard, clock, stats, visible player cards and the exclusion of manager-only fields and unrevealed dice. This fixture does not exercise EOS delivery or the spectator view.

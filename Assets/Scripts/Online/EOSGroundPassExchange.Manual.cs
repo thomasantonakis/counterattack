@@ -98,6 +98,7 @@ namespace CounterAttack.Online
                         else throw new EOSProofFailure("Unexpected manual host message");
                     }
                     var state = finishingSnapshot ?? pause.Capture(authority);
+                    if (board.liveFullRoom) latestHostRoomState = state;
                     if (ready && finishingSnapshot == null && CompletedManualAction(state))
                     { finishingSnapshot = state; board.controls.SetConnected(false); }
                     board.Display(state, board.liveFullRoom?$"Online match | {protocol.HostTeam} authority":"Authority Away | enter target X/Z; Home chooses the pass");

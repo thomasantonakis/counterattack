@@ -20,6 +20,12 @@ namespace CounterAttack.Online
         private MatchManager.GameData roomLaunch;
         private OnlineRoomLaunchLifetime roomLifetime;
         private IEnumerator gameplay;
+        private EOSGroundPassExchange spectatorRoomSource;
+        internal bool TryEncodeSpectatorRoom(long sequence, out byte[] payload)
+        {
+            payload = null;
+            return spectatorRoomSource != null && spectatorRoomSource.TryEncodeSpectatorRoom(sequence, out payload);
+        }
         private OnlineGroundPassBoard roomBoard;
         public MatchManager.GameData CaptureRoomLaunch()=>OnlineRoomLaunchData.Copy(roomLaunch);
         private OnlineDraftClient announcedDraft;
@@ -181,6 +187,7 @@ namespace CounterAttack.Online
                             {
                                 roomBoard=startup.Board;
                                 var exchange=new EOSGroundPassExchange(roomBoard,RunDirectory);
+                                if (Hosting) spectatorRoomSource = exchange;
                                 gameplay=Hosting?exchange.Host(native,peer,socket,lobbyId):exchange.Guest(native,peer,socket,lobbyId);
                             }
                         }
@@ -348,6 +355,7 @@ namespace CounterAttack.Online
             finally
             {
                 gameplay=null;
+                spectatorRoomSource=null;
                 try
                 {
                     if(roomBoard!=null)
