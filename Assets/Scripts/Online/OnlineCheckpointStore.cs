@@ -200,7 +200,8 @@ namespace CounterAttack.Online
                 || checkpoint.hostAccount == checkpoint.guestAccount)
                 throw new InvalidDataException("This online save has invalid checkpoint metadata.");
 
-            if (!OnlineProtocolIds.IsValid(checkpoint.protocol) || checkpoint.rules != compatibility.Rules
+            bool priorStableCheckpoint = checkpoint.rules == "frontend-rules-v9" && compatibility.Rules == "frontend-rules-v10";
+            if (!OnlineProtocolIds.IsValid(checkpoint.protocol) || checkpoint.rules != compatibility.Rules && !priorStableCheckpoint
                 || checkpoint.catalog != compatibility.Catalog)
                 throw new InvalidDataException("This online save requires a different game version or player catalog.");
 

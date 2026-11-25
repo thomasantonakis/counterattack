@@ -23,7 +23,7 @@ public sealed class OnlineSaveResumePlayModeTests
             .Single(assembly => assembly.GetName().Name == "Assembly-CSharp-Editor")
             .GetType("OnlineFullRoomSceneFixture", true);
         fixture = Activator.CreateInstance(bridge);
-        return (IEnumerator)bridge.GetMethod("RunCheckpointPause").Invoke(fixture, new object[] { homeAttacks, afterMovement });
+        return (IEnumerator)bridge.GetMethod("RunCheckpointPause").Invoke(fixture, new object[] { homeAttacks, afterMovement, false, false });
     }
 
     [UnityTearDown]

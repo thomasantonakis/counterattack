@@ -17,6 +17,8 @@ namespace CounterAttack.Online
         public bool continuousManualSession;
         public bool liveFullRoom;
         internal bool usesNativeRoom;
+        internal bool HasOnlineConclusion { get; private set; }
+        internal bool HasOnlineReportHistory { get; private set; }
         internal OnlineNativeRoomPause nativePause;
         internal PenaltyShootoutOrderPanelController nativeShootout;
         internal bool GuestRulesInactive => usesNativeRoom
@@ -132,6 +134,7 @@ namespace CounterAttack.Online
                 match.coinTossPanel?.DisplayNativeOnline(state, localTeam);
                 nativeShootout?.DisplayOnline(state, this);
                 EndGamePanelManager.ShowPublishedOnlineConclusion(state);
+                HasOnlineConclusion |= OnlineManualSessionPolicy.CanFinish(state, continuous: true);
             }
             boardInput?.Display(state);
             foreach (var token in state.tokens)
@@ -172,6 +175,25 @@ namespace CounterAttack.Online
                     +" | defense: "+string.Join(", ",state.header.defenders)
                     +"\n"+string.Join(" | ",state.header.scores.Select(score=>score.actorId+" rolled "+score.roll+" = "+score.total))
                     +(string.IsNullOrEmpty(state.header.winner)?"":" | winner "+state.header.winner);
+        }
+
+        internal void PresentFullTimeHistory(System.Collections.Generic.IReadOnlyList<GameplayEvent> events, int half)
+        {
+            if (!usesNativeRoom || !OnlineRoomSession.IsGuest || !HasOnlineConclusion || HasOnlineReportHistory) return;
+            EndGamePanelManager.ApplyPublishedOnlineHistory(events, half);
+            HasOnlineReportHistory = true;
+        }
+
+        internal void PresentSessionDeparture(string message)
+        {
+            if (HasOnlineConclusion)
+            {
+                if (OnlineRoomSession.IsGuest && !HasOnlineReportHistory)
+                    EndGamePanelManager.ShowOnlineHistoryUnavailable();
+                return;
+            }
+            menu?.PresentPeerDeparture();
+            nativePause?.PresentClosedMatch(message);
         }
 
         private Vector3 Center(int x, int z) => grid.GetHexCenterForCoordinates(new Vector3Int(x, 0, z));

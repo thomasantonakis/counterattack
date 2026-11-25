@@ -16,6 +16,8 @@ The first release uses local storage on the original host machine and requires b
 Build the normal game on both platforms from the same commit. The macOS build
 script is `Documentation/Setup/BuildEOSStandaloneMac.sh game`. The Windows
 build and launch script is `Documentation/Setup/BuildOnlineGameWindows.ps1 -Launch`.
+For the final report, use the shorter [paired Full Time check](OnlineFullTimeReport.md#verification-checklist)
+with a save near the final whistle.
 
 1. Host on one machine and join on the other. Play through kickoff and complete
    a ground pass to a teammate or a Movement Phase with possession. Let any
@@ -59,8 +61,8 @@ build and launch script is `Documentation/Setup/BuildOnlineGameWindows.ps1 -Laun
 
 ## Verification checklist
 
-- [ ] Add focused native Unity tests and a verification checklist under `OnlineSaveResume` feature folders. Use `OnlineSaveResume` as the category and separate EditMode and PlayMode fixtures. Use temporary saves and clean up scene, singleton, subscriptions and session state after every case.
-- [ ] EditMode covers checkpoint round-trip, supported and unsupported states, role and identity checks, save schema and compatibility, corrupt files, atomic overwrite failure, repeated loads, session-scoped readiness and stale messages.
-- [ ] PlayMode exercises the real host pause and save entry point. Cover a guest-owned pause, a guest save attempt, an unsettled action and one real save/teardown/restore flow. Assert score, clock and timing, board, possession, stats, scorer and event continuity, and the next legal action. Exercise both Home and Away possession with deterministic setup and rigged dice where needed. Verify the guest remains read-only and both confirmations are required. Cover cancellation or disconnect during startup and successful retry from the same file.
-- [ ] Run only the feature's focused fixtures through the live Unity CLI using `AGENTS.md`. Report compile status and passed, failed and skipped counts separately. Retain native XML and progress under `TestResults/GameplayRegression/Runs/`. At handoff, identify the affected existing save, startup, session and pause fixtures for broader verification.
+- [x] Add focused native `OnlineSaveResume` test fixtures and verification checklists. Cases use temporary saves and restore scene and session state.
+- [x] Verify checkpoints, save compatibility, role and identity checks, atomic overwrite failure, repeated loads, readiness and stale messages in EditMode.
+- [x] Exercise the authored pause, save browser, restored Room and the next action in PlayMode. Cover each attacking side, the guest-owned pause, unsettled and settled actions, restored match and player stats, and both Ready confirmations.
+- [x] Run focused fixtures through the live Unity CLI. The post-merge runs passed 22 EditMode and 4 PlayMode cases with zero failures or skips. Unity compiled with zero errors. Native XML and progress are in `TestResults/GameplayRegression/Runs/20261125T002102746Z/` and `TestResults/GameplayRegression/Runs/20261125T002226439Z/`.
 - [ ] Run a paired packaged-build walkthrough on Windows and macOS. Save after a real gameplay action, close both apps, relaunch both, host from the save, reject another device's identity, and let the original guest join with the new code. Verify both screens agree before ready and after the next action. Verify two separate loads from the same file and report the roles, builds and results.

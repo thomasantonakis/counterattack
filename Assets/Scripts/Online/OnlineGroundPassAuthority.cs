@@ -13,6 +13,7 @@ namespace CounterAttack.Online
         public bool onBoard;
         public RoomTokenSnapshot runtime;
         public MatchManager.PlayerStats playerStats;
+        public bool hasRecordedPlayerStats;
         public bool visible;
         public float inactiveX,inactiveY,inactiveZ;
         public int passesAttempted, passesCompleted, interceptionsAttempted, interceptionsMade, possessionWon, possessionLost;
@@ -433,6 +434,7 @@ namespace CounterAttack.Online
                 id = TokenId(token), onBoard = hex != null, x = hex == null ? 0 : hex.coordinates.x,
                 z = hex == null ? 0 : hex.coordinates.z,
                 runtime=protocol.Compatibility.Catalog==OnlineFullRoomBootstrap.Catalog?match.CaptureOnlineRosterToken(token):null,
+                hasRecordedPlayerStats = stats != null,
                 playerStats=protocol.Compatibility.Catalog==OnlineFullRoomBootstrap.Catalog?JsonUtility.FromJson<MatchManager.PlayerStats>(JsonUtility.ToJson(stats??new MatchManager.PlayerStats())):null,
                 visible=token.gameObject.activeSelf,
                 inactiveX=hex==null?token.transform.position.x:0,inactiveY=hex==null?token.transform.position.y:0,inactiveZ=hex==null?token.transform.position.z:0,

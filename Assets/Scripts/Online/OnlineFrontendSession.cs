@@ -149,7 +149,7 @@ namespace CounterAttack.Online
                 Status="Online connection failed. Leave the session to try again.";
                 var startup = FindAnyObjectByType<OnlineRoomStartup>();
                 if (startup?.Board != null)
-                    startup.Board.nativePause?.PresentClosedMatch(failure.Message + " Return to the main menu.");
+                    startup.Board.PresentSessionDeparture(failure.Message + " Return to the main menu.");
                 else if (startup != null && roomLaunch != null)
                 {
                     OnlineModeMenu.ReturnFromFailedRoom(failure.Message);
@@ -203,8 +203,7 @@ namespace CounterAttack.Online
                         if (roomLifetime?.Session.IsResuming == true && roomBoard == null)
                             throw new InvalidOperationException("The other manager cancelled the resume.");
                         Status="The other manager left the session.";
-                        roomBoard?.menu?.PresentPeerDeparture();
-                        roomBoard?.nativePause?.PresentClosedMatch("The other manager left the match. Return to the main menu.");
+                        roomBoard?.PresentSessionDeparture("The other manager left the match. Return to the main menu.");
                         break;
                     }
                     if(stop)break;

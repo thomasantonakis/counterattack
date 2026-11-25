@@ -36,6 +36,8 @@ namespace CounterAttack.Online
         public OnlineRoomPointer pointer;
         public string compressedState;
         public int expandedStateBytes;
+        public string reportChunk;
+        public int reportPartCount, reportExpandedBytes;
         internal OnlineGroundPassMessage WithCompressedState(string payload,int size)
         {
             var copy=(OnlineGroundPassMessage)MemberwiseClone();copy.state=null;copy.compressedState=payload;copy.expandedStateBytes=size;return copy;
@@ -55,7 +57,9 @@ namespace CounterAttack.Online
         public const int HeaderSize=OnlineReliableJsonWire<OnlineGroundPassMessage>.HeaderSize;
         private readonly OnlineReliableJsonWire<OnlineGroundPassMessage> framing=new(0xCA07,Valid);
         private static bool Valid(OnlineGroundPassMessage message)=>message.version=="ground-wire-v7" && OnlineProtocolIds.IsValid(message.matchId)
-            && new[]{"hello","command","state","presentation","pointer","reply","control","control-reply","done","finish"}.Contains(message.kind)
+            && new[]{"hello","command","state","presentation","pointer","reply","control","control-reply","done","finish",
+                OnlineFullTimeReport.Part,OnlineFullTimeReport.Unavailable}.Contains(message.kind)
+            && OnlineFullTimeReport.ValidEnvelope(message)
             && (message.kind == "pointer"
                 ? message.pointer?.Valid() == true && message.sequence > 0 && message.connectionGeneration > 0
                     && Guid.TryParseExact(message.peerNonce, "N", out _) && message.state == null && message.presentation == null

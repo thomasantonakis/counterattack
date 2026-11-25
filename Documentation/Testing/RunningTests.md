@@ -25,6 +25,14 @@ For regular online full-time results, use EditMode
 in the same-named Editor/PlayMode feature folders. They cover win/draw,
 regulation/extra-time endings, terminal input and safe host/guest Leave.
 
+For the authored online Full Time report, run `OnlineFullTimeReportEditorTests`
+and `OnlineFullTimeReportPlayModeTests` in the same-named feature folders,
+category `OnlineFullTimeReport`. EditMode checks multi-part Pitch and Luck
+history, parity and validation. PlayMode checks the native Room panel for a
+resumed win, draw, extra time, penalties and unavailable history. See the
+[online Full Time report plan](../Plans/OnlineFullTimeReport.md) for paired
+packaged verification.
+
 For host/Home and guest/Away assignment, use `OnlineSeatOwnershipEditorTests`
 and `OnlineSeatOwnershipPlayModeTests`, category `OnlineSeatOwnership`, in the
 same-named feature folders. They cover authenticated setup edits, older-build

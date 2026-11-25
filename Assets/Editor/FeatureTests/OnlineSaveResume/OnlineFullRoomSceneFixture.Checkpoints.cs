@@ -10,7 +10,7 @@ using UnityEngine.SceneManagement;
 
 public sealed partial class OnlineFullRoomSceneFixture
 {
-    public IEnumerator RunCheckpointPause(bool homeAttacks, bool afterMovement)
+    public IEnumerator RunCheckpointPause(bool homeAttacks, bool afterMovement, bool finishReport, bool expectHistory)
     {
         InitializeFixture();
         SuppressLegacyRoomRunner();
@@ -111,6 +111,9 @@ public sealed partial class OnlineFullRoomSceneFixture
         log.LogEvent(scorer, MatchManager.ActionType.ShotAttempt);
         log.LogEvent(scorer, MatchManager.ActionType.ShotOnTarget);
         log.LogEvent(scorer, MatchManager.ActionType.GoalScored);
+        if (finishReport)
+            board.match.ResolveGameplayDiceRoll("high_pass_accuracy", actor: scorer,
+                details: new System.Collections.Generic.Dictionary<string, string> {["highPassAttribute"] = "4", ["threshold"] = "8"});
         var beforeSave = pause.Capture(authority);
         GuestPause(OnlineSharedPause.RequestAction);
         Assert.That(view.pausePanel.activeSelf, Is.True);
@@ -257,6 +260,20 @@ public sealed partial class OnlineFullRoomSceneFixture
         Assert.That(playable.resumePending, Is.False);
         Assert.That(playable.owner, Is.EqualTo(homeAttacks ? "Home" : "Away"));
         Assert.That(playable.legalActions, Is.EquivalentTo(beforeSave.legalActions));
+        if (finishReport)
+        {
+            match.ResolveGameplayDiceRoll("high_pass_accuracy", actor: board.tokens.Single(token =>
+                    token.isHomeTeam && token.jerseyNumber == 2),
+                details: new System.Collections.Generic.Dictionary<string, string> {["highPassAttribute"] = "4", ["threshold"] = "8"});
+            Assert.That(match.gameData.events.Count(entry => entry.kind == "dice.roll"), Is.EqualTo(2));
+            match.gameData.gameSettings.tiebreaker = "None";
+            match.currentHalf = match.gameData.gameSettings.numberOfHalfs;
+            typeof(MatchManager).GetMethod("BeginHalfEndFlow", flags).Invoke(match, null);
+            Assert.That(match.OnlineMatchComplete, Is.True);
+            yield return VerifyFullTimeReport(board, authority, protocol, data, expectHistory);
+            Assert.That(File.ReadAllBytes(saved), Is.EqualTo(sourceBytes));
+            yield break;
+        }
         var continuation = afterMovement ? OnlineGroundPassAuthority.StartAction : OnlineGroundPassAuthority.MovementStartAction;
         Assert.That(playable.legalActions, Does.Contain(continuation));
         Submit(continuation);

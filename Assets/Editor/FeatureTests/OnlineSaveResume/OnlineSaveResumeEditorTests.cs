@@ -57,6 +57,21 @@ public sealed class OnlineSaveResumeEditorTests
     }
 
     [Test]
+    public void PriorOnlineCheckpointRetainsItsStatisticsAcrossTheReportUpgrade()
+    {
+        var oldStore = new OnlineCheckpointStore(directory, new OnlineCompatibility("session-wire-v3", "frontend-rules-v9", "catalog"));
+        var newStore = new OnlineCheckpointStore(directory, new OnlineCompatibility("session-wire-v4", "frontend-rules-v10", "catalog"));
+        var checkpoint = Checkpoint();
+        checkpoint.protocol = "session-wire-v3";
+        checkpoint.rules = "frontend-rules-v9";
+        checkpoint.match.stats.homeTeamStats.totalGoals = 3;
+        var selected = oldStore.Save(checkpoint);
+        var resumed = newStore.CreateRun(newStore.Load(selected));
+        Assert.That(resumed.stats.homeTeamStats.totalGoals, Is.EqualTo(3));
+        Assert.That(resumed.inheritedEventSequence, Is.EqualTo(8));
+    }
+
+    [Test]
     public void FailedAtomicPublishKeepsThePreviousFileAndRemovesTheTemporaryFile()
     {
         var checkpoint = Checkpoint();
