@@ -88,7 +88,8 @@ Use Windows for one role and macOS for another. Build and run each client from
 the same commit. Start the host first, then give its local `lobby-id.txt` to the
 manager. The host writes `watch-lobby-id.txt` only after the manager handshake
 and the second lobby's creation. Give that file to the viewer. Transfer the
-files privately while the host is running.
+files privately while the host is running. These are internal EOS lobby IDs
+used by the proof. The game will use one shareable Match Code for both roles.
 
 On macOS, build and start one of the three roles. Substitute the absolute path
 to the appropriate file for a client role.
