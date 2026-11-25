@@ -176,7 +176,7 @@ public sealed partial class GoalkeeperBoxEntryFixture
             return Enumerable.Range(0, property.arraySize).Select(i => (MovementPhaseMovedTokenSlotView)property.GetArrayElementAtIndex(i).objectReferenceValue).ToArray();
         }
         var attack = Slots("attackingMovementSlots"); var defense = Slots("defensiveMovementSlots");
-        Assert.That(attack[0].State, Is.EqualTo(MovementPhaseMovedTokenSlotView.PresentationState.Active));
+        Assert.That(attack[0].State, Is.EqualTo(MovementPhaseMovedTokenSlotView.PresentationState.Active), "Opening attacker slot");
         Assert.That(attack[0].GetComponentInChildren<UnityEngine.UI.RawImage>().texture, Is.Not.Null, "Next slot previews the team kit before selection.");
         Assert.That(attack[0].GetComponentsInChildren<TMPro.TMP_Text>().Single(t => t.name == "Number").text, Is.Empty);
         Assert.That(attack.Skip(1).All(s => s.State == MovementPhaseMovedTokenSlotView.PresentationState.Empty), Is.True);
@@ -191,7 +191,7 @@ public sealed partial class GoalkeeperBoxEntryFixture
         yield return Until(() => movement.movedTokens.Contains(runner) && !movement.isPlayerMoving, "completed slot movement");
         yield return null;
         Assert.That(attack[0].State, Is.EqualTo(MovementPhaseMovedTokenSlotView.PresentationState.Completed));
-        Assert.That(attack[1].State, Is.EqualTo(MovementPhaseMovedTokenSlotView.PresentationState.Active));
+        Assert.That(attack[1].State, Is.EqualTo(MovementPhaseMovedTokenSlotView.PresentationState.Active), "Next attacker slot after movement");
         var completedTexture = attack[0].GetComponentInChildren<UnityEngine.UI.RawImage>().texture;
         LegacyKey("X"); yield return null;
         Assert.That(attack.Skip(1).All(s => s.State == MovementPhaseMovedTokenSlotView.PresentationState.Forfeited), Is.True);
@@ -201,16 +201,16 @@ public sealed partial class GoalkeeperBoxEntryFixture
         Assert.That(border.fontSize, Is.GreaterThan(cross.fontSize));
         Assert.That(border.transform.GetSiblingIndex(), Is.LessThan(cross.transform.GetSiblingIndex()));
         Assert.That(attack[0].GetComponentInChildren<UnityEngine.UI.RawImage>().texture, Is.SameAs(completedTexture));
-        Assert.That(defense[0].State, Is.EqualTo(MovementPhaseMovedTokenSlotView.PresentationState.Active));
+        Assert.That(defense[0].State, Is.EqualTo(MovementPhaseMovedTokenSlotView.PresentationState.Active), "Opening defender slot");
         LegacyKey("X"); yield return null;
         Assert.That(attack.Skip(1).All(s => s.State == MovementPhaseMovedTokenSlotView.PresentationState.Forfeited), Is.True);
         Assert.That(defense.All(s => s.State == MovementPhaseMovedTokenSlotView.PresentationState.Forfeited), Is.True);
         LegacyKey("X"); yield return null;
         Assert.That(panel.GetComponent<CanvasGroup>().alpha, Is.EqualTo(0f));
         Assert.That(attack.All(s => s.State == MovementPhaseMovedTokenSlotView.PresentationState.Empty), Is.True);
-        movement.ResetMovementPhase(); movement.ActivateMovementPhase(); yield return null;
-        Assert.That(attack[0].State, Is.EqualTo(MovementPhaseMovedTokenSlotView.PresentationState.Active));
-        Assert.That(attack.Skip(1).All(s => s.State == MovementPhaseMovedTokenSlotView.PresentationState.Empty), Is.True);
+        movement.ResetMovementPhase(); yield return null;
+        Assert.That(attack.All(s => s.State == MovementPhaseMovedTokenSlotView.PresentationState.Empty), Is.True,
+            "Reset clears all slots while Final Third owns input.");
     }
 
     public IEnumerator RunMovementForfeitPresentation(int side, bool rejectDefense)

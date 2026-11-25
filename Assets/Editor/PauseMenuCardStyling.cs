@@ -23,7 +23,7 @@ namespace CounterAttack.Editor
             var pauseContent = Card(manager.pausePanel, "MenuCard_Pause", "PAUSED", "TAKE A BREATHER. PLAN YOUR NEXT MOVE.", 656, 1080);
             var settingsContent = Card(manager.editSettingsPanel, "MenuCard_PauseSettings", "MATCH SETTINGS", "MAKE THE MATCH YOUR OWN.", 1120, 1100);
             var actions = new[] { manager.resumeButton, manager.addTacticalNoteButton, manager.substitutionsButton,
-                manager.saveMatchButton, manager.saveMatchAsButton, manager.editSettings, manager.backToMainMenuButton, manager.quitButton };
+                manager.saveMatchButton, manager.saveMatchAsButton, manager.editSettings };
             for (int i = 0; i < actions.Length; i++)
             {
                 StyleButton(actions[i]);
@@ -103,7 +103,7 @@ namespace CounterAttack.Editor
                 PrefabUtility.SaveAsPrefabAsset(copy, Cards + name + ".prefab");
                 Object.DestroyImmediate(copy);
             }
-            Footer(manager.quitButton, manager.pausePanel.transform.Find("MenuCard_Pause"), "Quit Game");
+            Footer(manager.backToMainMenuButton, manager.pausePanel.transform.Find("MenuCard_Pause"), "Back to Main Menu");
             Footer(manager.editSettingsBackButton, manager.editSettingsPanel.transform.Find("MenuCard_PauseSettings"), "Back");
             AlignCaptureLogfile();
             Place(manager.logFileStatusText.rectTransform, 0, -680, 936, 40);
@@ -156,10 +156,10 @@ namespace CounterAttack.Editor
             AlignFooterArrow(button);
         }
 
-        public static void AlignQuitHoverArrow()
+        public static void AlignBackToMainMenuHoverArrow()
         {
             var manager = Object.FindAnyObjectByType<PauseMenuManager>();
-            AlignFooterArrow(manager.quitButton);
+            AlignFooterArrow(manager.backToMainMenuButton);
             AlignFooterArrow(manager.editSettingsBackButton);
             AlignCaptureLogfile();
         }

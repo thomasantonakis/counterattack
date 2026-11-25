@@ -131,8 +131,7 @@ public partial class CreateNewGameManager : MonoBehaviour
 
     private void MaintainKitDropdownPopupHeight(TMP_Dropdown dropdown)
     {
-        if (dropdown == null || dropdown.options.Count == 0
-            || (!IsAlwaysVisibleKitDropdown(dropdown) && GetRequestedCreateLoadGameMode() != ApplicationManager.OnlineGameMode))
+        if (dropdown == null || dropdown.options.Count == 0)
         {
             return;
         }
@@ -147,8 +146,12 @@ public partial class CreateNewGameManager : MonoBehaviour
             return;
         }
 
-        int visibleRows = IsAlwaysVisibleKitDropdown(dropdown) ? dropdown.options.Count : Mathf.Min(8, dropdown.options.Count);
+        int visibleRows = dropdown.options.Count;
+        if (!IsAlwaysVisibleKitDropdown(dropdown) && GetRequestedCreateLoadGameMode() == ApplicationManager.OnlineGameMode)
+            visibleRows = Mathf.Min(8, visibleRows);
         float desiredHeight = item.rect.height * visibleRows;
+        if (!IsAlwaysVisibleKitDropdown(dropdown))
+            desiredHeight = Mathf.Min(desiredHeight, dropdown.template.rect.height);
         popupRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, desiredHeight);
         RectTransform viewport = popup.Find("Viewport") as RectTransform;
         if (viewport != null)
@@ -246,7 +249,7 @@ public partial class CreateNewGameManager : MonoBehaviour
 
     private void ConfigureAIDifficultyDropdown(bool isSinglePlayerCreateMode)
     {
-        aiDifficultyDropdown = FindObjectsByType<TMP_Dropdown>(FindObjectsInactive.Include, FindObjectsSortMode.None)
+        aiDifficultyDropdown = FindObjectsByType<TMP_Dropdown>(FindObjectsInactive.Include)
             .FirstOrDefault(candidate => string.Equals(candidate.gameObject.name, "AIDifficultyDropDown", StringComparison.OrdinalIgnoreCase));
         if (aiDifficultyDropdown == null)
         {
@@ -2016,6 +2019,7 @@ public partial class CreateNewGameManager : MonoBehaviour
         PlayerPrefs.Save();
         ApplicationManager.EnsureInstanceExists();
         ApplicationManager.Instance.SetSelectedRoomGameMode(GetSelectedCreateMenuGameMode());
+        MenuAudioPlayer.Play(GameplayAudioPool.MenuBack);
         SceneManager.LoadScene(CreateLoadRoomSceneName);
     }
 
@@ -2649,6 +2653,7 @@ public partial class CreateNewGameManager : MonoBehaviour
             ? $"Existing draft game settings updated at {path}"
             : $"Game settings saved to {path}");
 
+        MenuAudioPlayer.Play(GameplayAudioPool.MenuAdvance);
         // Check the draft and gkDraft settings to determine the scene to load
         if ((settings.draft == "Regular" && settings.gkDraft == "Deal")
             || (settings.draft == DraftInternational && settings.gkDraft == DraftInternational))

@@ -10,6 +10,7 @@ namespace CounterAttack.Online
         public readonly long revision,sharedPauseRevision,homeAcceptedSequence,awayAcceptedSequence,homePauseSequence,awayPauseSequence;
         public readonly bool connectionHeld,isSharedPaused,keeperActionBlocked,substitutionsAvailable,shootoutSelecting;
         public readonly bool introPending,homeIntroReady,awayIntroReady;
+        public readonly bool resumePending,homeResumeReady,awayResumeReady;
         public readonly long substitutionReviewId;
         public readonly bool homeSubstitutionConfirmed, awaySubstitutionConfirmed;
         public readonly bool homeKeeperReplacement,awayKeeperReplacement,homeForcedKeeperSubstitution,awayForcedKeeperSubstitution,homeEmergencyKeeper,awayEmergencyKeeper;
@@ -22,6 +23,7 @@ namespace CounterAttack.Online
             homePauseSequence=source.homePauseSequence;awayPauseSequence=source.awayPauseSequence;
             connectionHeld=source.connectionHeld;isSharedPaused=source.isSharedPaused;
             introPending=source.introPending;homeIntroReady=source.homeIntroReady;awayIntroReady=source.awayIntroReady;
+            resumePending=source.resumePending;homeResumeReady=source.homeResumeReady;awayResumeReady=source.awayResumeReady;
             keeperActionBlocked=source.keeperActionBlocked;substitutionsAvailable=source.substitutionsAvailable;
             substitutionReviewId=source.substitutionReview?.id ?? 0;
             homeSubstitutionConfirmed=source.substitutionReview?.homeConfirmed==true;

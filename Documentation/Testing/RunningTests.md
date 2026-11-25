@@ -25,6 +25,14 @@ For regular online full-time results, use EditMode
 in the same-named Editor/PlayMode feature folders. They cover win/draw,
 regulation/extra-time endings, terminal input and safe host/guest Leave.
 
+For the authored online Full Time report, run `OnlineFullTimeReportEditorTests`
+and `OnlineFullTimeReportPlayModeTests` in the same-named feature folders,
+category `OnlineFullTimeReport`. EditMode checks multi-part Pitch and Luck
+history, parity and validation. PlayMode checks the native Room panel for a
+resumed win, draw, extra time, penalties and unavailable history. See the
+[online Full Time report plan](../Plans/OnlineFullTimeReport.md) for paired
+packaged verification.
+
 For host/Home and guest/Away assignment, use `OnlineSeatOwnershipEditorTests`
 and `OnlineSeatOwnershipPlayModeTests`, category `OnlineSeatOwnership`, in the
 same-named feature folders. They cover authenticated setup edits, older-build
@@ -47,6 +55,13 @@ For raised CanShootTo highlights, use PlayMode category `OnlineRaisedGoalTargets
 in `Assets/Tests/PlayMode/Features/OnlineRaisedGoalTargets/`. It checks the
 guest's highlight and elevation before, during and after host hover across shot
 aiming, headers, goal-mouth movement and the committed shootout marker.
+Filter `PeerReceivesAndClearsOrangeHoverBeforeTargetCommit` to check the transient
+orange hover shared by the two managers.
+
+For simultaneous player names and local preview cards in the authored Room,
+run `BothNamesAppearWhileOnlyLocalHoverUpdatesThePreview` in
+`Assets/Tests/PlayMode/Features/OnlineTeamPointers/`. Both roles receive the
+peer hover and keep their own preview selection.
 
 For Room coin toss/half transitions, use EditMode `OnlineRoomCoinTossEditorTests`
 (13 cases) and PlayMode `OnlineRoomCoinTossPlayModeTests` (24 cases), category
@@ -77,6 +92,36 @@ For in-flight full Room snapshot continuity, run EditMode fixture
 Folders: `Assets/Editor/FeatureTests/OnlineSnapshotPose/` and
 `Assets/Tests/PlayMode/Features/OnlineSnapshotPose/`. The latter uses real
 movement and a fresh guest; it does not require EOS login or another machine.
+
+For online checkpoint save and resume, run the focused EditMode fixture
+`OnlineSaveResumeEditorTests` and PlayMode fixture `OnlineSaveResumePlayModeTests`,
+category `OnlineSaveResume`. The native Room cases use temporary save slots and
+exercise both attacking teams, a guest-owned pause and the two Ready confirmations.
+The loose-ball opening and stoppage cases round-trip those checkpoints and
+continue play. Offline coverage uses `LooseBallOpeningAtSettledStoppageSavesAndRestores`
+in `Assets/Tests/PlayMode/Features/MovementOpeningSave/`.
+See the [online save and resume plan](../Plans/OnlineSaveAndResume.md) for the
+paired packaged walkthrough.
+
+For defensive fouls followed by advantage, filter
+`DefensiveFoulRepositionKeepsUnusedAttackerAvailableInTwoForTwo` in
+`Assets/Tests/PlayMode/Features/OnlineGroundDuels/`. The cases use both directions
+and cover a first injury and no injury.
+
+The paired feedback regressions compiled in Unity 6000.5.3f1 with zero errors.
+Native XML and progress for the focused runs are under
+`TestResults/GameplayRegression/Runs/`.
+
+| Focused coverage | Passed | Run directory |
+| --- | ---: | --- |
+| Online checkpoint EditMode | 23 | `20261125T195133511Z` |
+| Defensive foul and 2-for-2 | 4 | `20261125T195150060Z` |
+| Online loose-ball and stoppage saves | 4 | `20261125T214324800Z` |
+| Offline movement-opening saves | 9 | `20261125T214704490Z` |
+| Resumed Full Time history | 1 | `20261125T214725171Z` |
+| Raised goal-line targets and orange hover | 15 | `20261125T214820810Z` |
+| Team pointers and names | 8 | `20261125T215036306Z` |
+| Full Time hover suppression | 2 | `20261125T215133155Z` |
 
 For required online goalkeeper decisions, use PlayMode fixture
 `OnlineRequiredKeeperPlayModeTests` (category `OnlineRequiredKeeper`, 33 cases)
@@ -272,6 +317,91 @@ session reuse also passed 1/1. Windows/macOS packets remain pending. Exact
 filters, one-use markers and local lobby-ID handoff are in the same
 `Verification.md`. Do not run the host's five-minute wait until both Editors
 are ready. Lobby joining alone does not prove P2P packet delivery.
+
+Shooting geometry inspection is an isolated diagnostic scene at
+`Assets/Scenes/ShootingPathInspection.unity`. Its focused filters are
+`DiscPathGeometryEditorTests` (disc versus hex-polygon boundaries) and
+`ShootingPathInspectorEditorTests` (stored/physical/difference views) under
+`Assets/Editor/FeatureTests/ShootingPathInspection/` and
+`ShootingPathInspectorPlayModeTests` under
+`Assets/Tests/PlayMode/Features/ShootingPathInspection/` (category
+`ShootingPathInspection`). The feature's `TASKS.md` records controls, isolation,
+native results and the remaining manual keyboard/mouse check. These checks do
+not constitute full gameplay regression validation.
+
+Stadium goal lighting: `StadiumGoalEffectsEditorTests` (category
+`StadiumGoalEffects`) under `Assets/Editor/FeatureTests/StadiumGoalEffects/`.
+Latest focused scope: 14 EditMode passed, zero failed/skipped; compilation clean.
+Native evidence and pending in-match visual review: feature `TASKS.md`.
+This is presentation-only; gameplay suites were not run.
+
+Jersey list height: `KitDropdownHeightPlayModeTests` (category `KitDropdownHeight`)
+under `Assets/Tests/PlayMode/Features/KitDropdownHeight/`. Latest: 10 passed,
+zero failed/skipped; compilation clean. Tests verify actual TMP popups for both
+setup modes, home/away, goalkeeper and international list sizing. Native artifacts
+and scope: `Assets/Editor/FeatureTests/KitDropdownHeight/TASKS.md`.
+
+Menu interaction audio: run only `MenuAudioEditorTests` under
+`Assets/Editor/FeatureTests/GameplayAudio/UI/` and `MenuAudioPlayModeTests` under
+`Assets/Tests/PlayMode/Features/GameplayAudio/UI/` (category `MenuAudio`). Latest:
+11 EditMode and 11 PlayMode passed, zero failed/skipped, including checkboxes and
+pre-match dice. Match dice audio: `GameplayDiceAudioPlayModeTests` under
+`Assets/Tests/PlayMode/Features/GameplayAudio/Dice/` (category `GameplayDiceAudio`),
+8 passed, zero failed/skipped. Compilation separately clean. Exact artifacts and
+pending listening checks are in the respective feature TASKS.md files and
+`Documentation/Plans/UiAudio.md`. No whole gameplay suites were run.
+
+Recovery audio: run only `GameplayRecoveryAudioPlayModeTests` (category
+`GameplayRecoveryAudio`) under `Assets/Tests/PlayMode/Features/GameplayAudio/Recovery/`.
+Latest: 41 passed, zero failed/skipped; Editor compilation clean. Native artifact
+and precise scope: `Assets/Editor/FeatureTests/GameplayAudio/Recovery/TASKS.md`.
+
+Snapshot availability / international mix uses `GameplaySnapshotAudioPlayModeTests`
+(category `GameplaySnapshotAudio`) under `Assets/Tests/PlayMode/Features/GameplayAudio/SnapshotAndMix/`.
+Latest: 13 passed, zero failed/skipped; Editor compilation separately clean.
+Native reproduction/results, exact scope and pending real-clip listening:
+`Assets/Editor/FeatureTests/GameplayAudio/SnapshotAndMix/TASKS.md`.
+
+Foul timing/card follow-up uses `GameplayFoulAudioTimingPlayModeTests` (category
+`GameplayFoulAudioTiming`), under `Assets/Tests/PlayMode/Features/GameplayAudio/FoulTiming/`.
+Latest focused new-fixture result: 48 passed, zero failed/skipped; Editor compilation
+separately clean. Covers early tackler foul audio and actual leniency/card responses,
+including normal/dangerous thresholds, nutmegs, jackpot, both teams/directions and
+no duplicate after later foul stats. Affected `GameplayIncidentAudioPlayModeTests`: 74 passed, zero failed/skipped.
+Final follow-up scope: 122 PlayMode passes, no whole gameplay suites.
+Native evidence and reproduction history:
+`Assets/Editor/FeatureTests/GameplayAudio/FoulTiming/TASKS.md`.
+
+Confirmed-goal audio uses `GameplayGoalAudioPlayModeTests` (category
+`GameplayGoalAudio`) under `Assets/Tests/PlayMode/Features/GameplayAudio/Goals/`.
+Run that explicit fixture only. Latest: 16 passed, zero failed/skipped; Editor
+compilation separately clean. Tests cover live normal/own-goal attribution for
+both teams/directions, duplicate delivery, pause/mute, missing clips, disabled
+audio and silent scorer-history restoration. Native artifacts and listening
+criteria: `Assets/Editor/FeatureTests/GameplayAudio/Goals/TASKS.md`.
+
+Other match incidents use `GameplayIncidentAudioPlayModeTests` (category
+`GameplayIncidentAudio`) in `Assets/Tests/PlayMode/Features/GameplayAudio/Incidents/`.
+Its 74 cases passed across the initial 72-case run and two new handball cases;
+the two snapshot cases were also rerun after adding break/setup guards. Zero
+failed/skipped. Dedicated task checklist, exact native paths, test scope and
+pending actual-clip listening: `Assets/Editor/FeatureTests/GameplayAudio/Incidents/TASKS.md`.
+The revised 70/30 mix and goals filling remaining stand gain additionally passed
+the 23 EditMode and six existing ambience playback cases, without whole suites.
+
+Gameplay audio uses `GameplayAudioEditorTests` under
+`Assets/Editor/FeatureTests/GameplayAudio/` and
+`GameplayAudioPlaybackPlayModeTests` under
+`Assets/Tests/PlayMode/Features/GameplayAudio/` (category `GameplayAudio`).
+Run these explicit fixture filters only; PlayMode requires async execution over
+Pipeline HTTP and inspection of the completed result. Latest foundation scope:
+23 EditMode and 6 PlayMode passes, zero failed/skipped; compilation separately
+clean. The playback cases use owned silent clips, preserve local preferences,
+and do not load live saves. They cover continuous crossfades for zero/one/two/many
+clips, bounded gain, mute during a crossfade, stop/restart and fading chants while
+Walla continues under event reactions. Checkbox tests cover all three categories, binding
+cleanup, persistence and ignoring obsolete slider values. Native XML and pending real-asset listening/UI
+acceptance are recorded in the feature TASKS.md. No full suites ran.
 
 Restart selection feedback uses RestartSelectionFeedbackPlayModeTests, category
 RestartSelectionFeedback, under Assets/Tests/PlayMode/Features/RestartSelectionFeedback/.
@@ -610,3 +740,54 @@ No new Mac run is required to establish these two recovered probe passes.
 Normal-game human Host/Join -> team/kit agreement -> Draft -> full Room play,
 actual network interruption/recovery and measured latency remain unverified.
 These paired attempts recorded recoveryGenerations=0; do not claim reconnect.
+
+Post-match report tabs and leaderboards: use only `PostMatchReportEditorTests`
+(category `PostMatchReport`) in `Assets/Editor/FeatureTests/PostMatchReport/`.
+Latest revised scope: 25 EditMode passed, zero failed/skipped; compilation clean.
+Full-time audio uses only `PostMatchAudioPlayModeTests` under
+`Assets/Tests/PlayMode/Features/PostMatchReport/`: 2 passed, zero failed/skipped.
+Pitch and hover heatmaps use `PostMatchPitchEditorTests` under
+`Assets/Editor/FeatureTests/PostMatchPitch/`: 18 cases passed. Real popup opening,
+selection, complete option visibility and reopening use
+`PostMatchDropdownPlayModeTests` in the PostMatchReport PlayMode folder: 1 passed.
+Affected existing regressions also executed: `EndGamePanelOwnershipEditorTests`
+(3 passed), `PauseMusicPlayModeTests` (1 passed), and
+`GameplayAudioPlaybackPlayModeTests` (7 passed). Total distinct current coverage:
+46 EditMode and 11 PlayMode passed, zero failed/skipped in final runs.
+Each feature TASKS.md records native
+XML, rendered previews, exact scope and broader user-run checks. Gameplay rules,
+recording and save schemas are unchanged; no whole gameplay suites were run.
+
+F3 action ownership and reposition hover: select only
+`F3RepositionInputPlayModeTests` (category `F3RepositionInput`) under
+`Assets/Tests/PlayMode/Features/F3RepositionInput/`. Final run: 12 passed,
+0 failed/skipped, native XML `TestResults/GameplayRegression/Runs/20261117T173625893Z/results.xml`.
+Compilation completed separately with zero errors. The feature checklist at
+`Assets/Editor/FeatureTests/F3RepositionInput/TASKS.md` records reproductions,
+fixture corrections and exact broader user-run regression fixtures. No full
+EditMode/PlayMode suites were executed for this fix.
+At the user's request, 20 existing affected PlayMode regressions also passed:
+FinalThirdHover (6), LegacyMovementRecoveryAudits (3), tackle_reposition (4),
+lost_foot (6 including legacy duel presentation), and LegacyHighPassBoxSequence
+(1). With the 12 new cases: 32 passed, zero failed/skipped in final runs. Exact
+XML paths and the corrected high-pass fixture setup are recorded in TASKS.md.
+
+Post-match luck: `PostMatchLuckEditorTests` (22 cases) and
+`PostMatchLuckPlayModeTests` (12 cases), category `PostMatchLuck`, under the
+corresponding feature folders. Final affected UI checks used the explicit
+`PostMatch` name filter: 65 EditMode passed in `20261118T053028941Z/results.xml`
+and 17 PlayMode passed in `20261118T053211710Z/results.xml`, under the native Runs
+folder. Nine existing movement/recovery and header-save/spill PlayMode regressions
+also passed. Total distinct scope: 91 passed, no failed/skipped final cases;
+compilation clean. No complete suites executed. See PostMatchLuck/TASKS.md for
+exact scope, model/legacy limitations and the rendered preview.
+
+Player ratings prototype: `PostMatchRatingEditorTests` (9 cases), category
+`PostMatchRatings`, in `Assets/Editor/FeatureTests/PostMatchRatings/`. Final
+affected `PostMatch` filter: 74 EditMode passed in `20261118T063118596Z/results.xml`
+and 17 PlayMode passed in `20261118T063325939Z/results.xml`. With the nine existing
+gameplay regressions already recorded for luck, distinct completed scope is
+100 passed, zero failed/skipped in final runs. No complete suites executed.
+The prototype has no gameplay/statistics/save mutations; calibration and manual
+acceptance remain separate. See its TASKS.md for the formula, limitations,
+retained XML and three rendered previews.

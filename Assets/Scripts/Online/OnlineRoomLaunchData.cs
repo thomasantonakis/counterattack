@@ -37,5 +37,26 @@ namespace CounterAttack.Online
             if(source==null)return null;
             var clone=JsonConvert.DeserializeObject<MatchManager.GameData>(JsonConvert.SerializeObject(source));clone.gameLog?.RebindStats(clone.stats);return clone;
         }
+
+        internal static MatchManager.GameData ResumeBootstrap(MatchManager.GameData source)
+        {
+            var copy = Copy(source);
+            return new MatchManager.GameData
+            {
+                gameSettings = copy.gameSettings,
+                rosters = copy.rosters,
+                openingSetup = copy.openingSetup,
+                extraTimeOpeningSetup = copy.extraTimeOpeningSetup,
+                playSessionId = copy.playSessionId,
+                playSessionStartedUtc = copy.playSessionStartedUtc
+            };
+        }
+
+        internal static bool IsResumeBootstrap(MatchManager.GameData data) =>
+            data?.gameSettings?.gameMode == ApplicationManager.OnlineGameMode
+            && data.rosters?.home?.Count is 16 or 18
+            && data.rosters.away?.Count == data.rosters.home.Count
+            && data.openingSetup != null && data.runtimeSnapshot == null && data.events?.Count == 0
+            && data.sourceSavePath == null && Guid.TryParseExact(data.playSessionId, "N", out _);
     }
 }

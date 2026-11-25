@@ -11,6 +11,7 @@ namespace CounterAttack.Online
         public const byte Channel=9;
         public const int MaxQueuedPackets=256;
         public const double PeerTimeoutSeconds=15;
+        public const int LobbyCodeLength = 8;
         public const OnlineTeam HostTeam = OnlineTeam.Home;
         public const OnlineTeam GuestTeam = OnlineTeam.Away;
 
@@ -23,7 +24,7 @@ namespace CounterAttack.Online
         internal const string LobbyCodeAttribute = "COUNTERATTACK_JOIN_CODE";
 
         public static bool ValidLobbyCode(string code) =>
-            code != null && code.Length == 8 &&
+            code != null && code.Length == LobbyCodeLength &&
             code.All(c => c is >= '0' and <= '9' or >= 'a' and <= 'f' or >= 'A' and <= 'F');
 
         public static bool TryNormalizeLobbyCode(string input, out string code)
@@ -43,7 +44,7 @@ namespace CounterAttack.Online
 
         public static string GenerateLobbyCode()
         {
-            var bytes = new byte[4];
+            var bytes = new byte[LobbyCodeLength / 2];
             using var random = RandomNumberGenerator.Create();
             random.GetBytes(bytes);
             return BitConverter.ToString(bytes).Replace("-", "");
@@ -67,7 +68,7 @@ namespace CounterAttack.Online
                 text.Append(resource).Append('\n').Append(asset.text.Replace("\r\n","\n").TrimStart('\uFEFF')).Append('\n');
             }
             string digest=BitConverter.ToString(hash.ComputeHash(Encoding.UTF8.GetBytes(text.ToString()))).Replace("-","");
-            return new OnlineCompatibility(OnlineSessionWire.Version,"frontend-rules-v9","catalog-"+digest);
+            return new OnlineCompatibility(OnlineSessionWire.Version,"frontend-rules-v11","catalog-"+digest);
         }
     }
 }

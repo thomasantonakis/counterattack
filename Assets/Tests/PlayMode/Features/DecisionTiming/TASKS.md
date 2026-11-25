@@ -93,3 +93,7 @@ Broader user-run checks remain unexecuted; see Verification.md for native artifa
 
 This continuation batch passed 22 cases; native evidence and compilation are recorded
 separately in Verification.md. Use each named method as a single explicit filter.
+
+- [x] X forfeits a live tackle reposition before the player-movement input guard;
+  focused test `RepositionForfeitXIsHandledBeforeMovementGuard` passed 1/1 on
+  2026-11-12. Native result: `TestResults/GameplayRegression/Runs/20261112T182708456Z/`.

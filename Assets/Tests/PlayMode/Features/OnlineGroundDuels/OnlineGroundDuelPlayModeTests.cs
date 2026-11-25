@@ -18,6 +18,9 @@ public sealed class OnlineGroundDuelPlayModeTests
         =>(IEnumerator)Bridge.GetMethod("RunOnlineGroundDuel").Invoke(fixture,new object[]{side,kind,branch});
     [UnityTest] public IEnumerator MovedDefenderMayStand([Values(1,-1)]int side)
         =>(IEnumerator)Bridge.GetMethod("RunOnlineGroundDuel").Invoke(fixture,new object[]{side,"tackle","stand"});
+    [UnityTest] public IEnumerator DefensiveFoulRepositionKeepsUnusedAttackerAvailableInTwoForTwo(
+        [Values(1,-1)]int side,[Values("foul","injury")]string branch)
+        =>(IEnumerator)Bridge.GetMethod("RunOnlineGroundDuel").Invoke(fixture,new object[]{side,"tackle",branch});
     [UnityTest] public IEnumerator NutmegVictimSelectionKeepsOtherSteals([Values(1,-1)]int side)
         =>(IEnumerator)Bridge.GetMethod("RunOnlineGroundDuel").Invoke(fixture,new object[]{side,"nutmeg","select"});
 }

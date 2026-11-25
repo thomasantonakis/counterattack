@@ -245,8 +245,18 @@ namespace CounterAttack.Online
             if (board.liveFullRoom || Environment.GetCommandLineArgs().Contains("-ca-online-manual"))
             {
                 var manual = ManualHost(authority, protocol, pause);
-                using(manual as IDisposable)
-                    while (manual.MoveNext()) yield return manual.Current;
+                if (board.usesNativeRoom)
+                {
+                    var compatibility = OnlineFrontendSessionPolicy.Compatibility();
+                    board.nativePause.BindCheckpointHost(protocol, pause, authority, guestAccount,
+                        new OnlineCheckpointStore(), compatibility);
+                }
+                try
+                {
+                    using (manual as IDisposable)
+                        while (manual.MoveNext()) yield return manual.Current;
+                }
+                finally { board.nativePause?.UnbindCheckpointHost(); }
                 yield break;
             }
             var first = authority.Capture();

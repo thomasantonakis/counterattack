@@ -22,6 +22,8 @@ namespace CounterAttack.Online
         public GameObject roleCard;
         public Button awayRoleButton, spectatorRoleButton;
         public TMP_Text roleStatus;
+        public Button loadMatchButton;
+        private static System.Guid? pendingCheckpoint;
         private OnlineFrontendSession hostedSession;
         private OnlineFrontendSession joiningSession;
         private IEnumerator roleLookup;
@@ -33,16 +35,44 @@ namespace CounterAttack.Online
         private string lastHostStatus;
 
         private static string pendingJoinCode;
+        private static string roomFailure;
+
+        internal static void ReturnFromFailedRoom(string message)
+        {
+            roomFailure = message;
+            SceneManager.LoadScene(SceneName);
+        }
 
         private void OnEnable()
         {
+            lobbyCode.characterLimit = OnlineSpectatorAdmission.CodeLength;
             lobbyCode.onValueChanged.AddListener(UpdateJoinAvailability);
             UpdateJoinAvailability(lobbyCode.text);
+            if (roomFailure != null)
+            {
+                status.text = roomFailure;
+                roomFailure = null;
+            }
+            loadMatchButton?.onClick.AddListener(OpenLoadMatch);
+        }
+
+        private void Start()
+        {
+            var selected = pendingCheckpoint;
+            pendingCheckpoint = null;
+            if (selected.HasValue) HostSelectedCheckpoint(selected.Value);
+        }
+
+        public static void OpenCheckpointLobby(System.Guid slot)
+        {
+            pendingCheckpoint = slot;
+            SceneManager.LoadScene(SceneName);
         }
 
         private void OnDisable()
         {
             lobbyCode.onValueChanged.RemoveListener(UpdateJoinAvailability);
+            loadMatchButton?.onClick.RemoveListener(OpenLoadMatch);
         }
 
         public void Host()
@@ -65,7 +95,7 @@ namespace CounterAttack.Online
 
         public void ContinueToMatchSetup()
         {
-            if (hostedSession?.Client?.Connected != true || proceeding) return;
+            if (hostedSession?.Client?.Connected != true || proceeding || hostedSession.HostingResume) return;
             proceeding = true;
             OpenSetup(null);
         }
@@ -99,7 +129,13 @@ namespace CounterAttack.Online
             var code=hosting?hostedSession.LobbyCode:null;
             hostCode.gameObject.SetActive(hosting);
             copyButton.gameObject.SetActive(hosting);
-            continueButton.gameObject.SetActive(hosting);
+            continueButton.gameObject.SetActive(hosting && !hostedSession.HostingResume);
+            if (loadMatchButton != null)
+            {
+                loadMatchButton.interactable = !hosting || hostedSession.HostingResume;
+                var label = loadMatchButton.GetComponentInChildren<TMP_Text>(true);
+                if (label != null) label.text = hosting && hostedSession.HostingResume ? "Cancel Load" : "Load Match";
+            }
             copyButton.interactable=code!=null;
             continueButton.interactable=hostedSession?.Client?.Connected==true;
             if(!hosting)return;
@@ -120,8 +156,38 @@ namespace CounterAttack.Online
         private void OnDestroy()
         {
             DisposeRoleLookup();
-            if(!proceeding && joiningSession!=null)joiningSession.Close();
-            if(!proceeding && hostedSession!=null)hostedSession.Close();
+            if(!proceeding && joiningSession!=null && !joiningSession.LaunchingRoom)joiningSession.Close();
+            if(!proceeding && hostedSession!=null && !hostedSession.LaunchingRoom)hostedSession.Close();
+        }
+
+        private void OpenLoadMatch()
+        {
+            if (hostedSession != null && hostedSession.HostingResume)
+            {
+                hostedSession.Close();
+                lastHostStatus = null;
+                status.text = "Closing the resume lobby…";
+                return;
+            }
+            if (hostedSession != null || SessionIsClosing()) return;
+            CreateLoadRoomManager.OpenOnlineBrowser();
+        }
+
+        private void HostSelectedCheckpoint(System.Guid slot)
+        {
+            if (hostedSession != null || SessionIsClosing()) return;
+            try
+            {
+                hostedSession = Instantiate(sessionPrefab);
+                hostedSession.HostCheckpoint(slot);
+            }
+            catch (System.Exception error) when (error is System.IO.IOException or System.UnauthorizedAccessException
+                or Newtonsoft.Json.JsonException or System.ArgumentException or System.InvalidOperationException
+                or System.FormatException or System.OverflowException)
+            {
+                hostedSession?.Close();
+                status.text = "Could not open this online save. It may have been removed, damaged or made by an incompatible build.";
+            }
         }
 
         public static GameSettings HostDefaults()

@@ -10,8 +10,10 @@ namespace CounterAttack.Online
         public string Fault {get;protected set;}
         public string Nonce {get;protected set;}
         public bool PeerLeft {get;private set;}
+        public bool PeerResumeFailed {get;private set;}
         public abstract OnlineSetupClient Client {get;}
         public OnlineDraftClient Draft {get;protected set;}
+        public MatchManager.GameData ResumeData {get;protected set;}
         public OnlineRoundTripStatistics Latency {get;}
         protected readonly string matchId,remoteAccount;
         protected readonly OnlineCompatibility compatibility;
@@ -53,7 +55,7 @@ namespace CounterAttack.Online
             else
             {
                 if(message.nonce!=Nonce || !ValidNonce(Nonce))return false;
-                if(message.kind=="leave"){PeerLeft=true;TransportLost();accepted=true;}
+                if(message.kind=="leave"){PeerLeft=true;PeerResumeFailed=message.status=="resume-failed";TransportLost();accepted=true;}
                 else if(message.kind=="heartbeat")
                 {
                     accepted=message.sequence>0 && (message.status=="ping" || message.status=="pong");
@@ -71,7 +73,8 @@ namespace CounterAttack.Online
             nextHeartbeat=clock()+1;long sequence=checked(++ping);Latency.Sent(sequence);
             Send(new OnlineSessionMessage{kind="heartbeat",status="ping",sequence=sequence});
         }
-        public void Leave(){if(ValidNonce(Nonce))Send(new OnlineSessionMessage{kind="leave"});TransportLost();}
+        public void Leave(bool resumeFailed=false)
+        {if(ValidNonce(Nonce))Send(new OnlineSessionMessage{kind="leave",status=resumeFailed?"resume-failed":null});TransportLost();}
         public void TransportLost(){Client.SetTransportAvailable(false);Draft?.SetTransportAvailable(false);Lost();}
         protected virtual void Lost(){}
         protected void RestartLiveness(){PeerLeft=false;LastReceived=clock();Client.SetTransportAvailable(true);Draft?.SetTransportAvailable(true);}
@@ -88,6 +91,9 @@ namespace CounterAttack.Online
         private string remoteConnection;
         public OnlineDraftAuthority DraftAuthority {get;private set;}
         private Func<GameSettings,OnlineDraftAuthority> draftFactory;
+        private MatchManager.GameData resumeBootstrap;
+        private string resumeToken;
+        public bool ResumeAcknowledged {get;private set;}
         public override bool Ready=>protocol.BothConnected && Fault==null;
         public OnlineSetupHostChannel(OnlineMatchProtocol protocol,string localConnection,string peerAccount,GameSettings settings,Func<double> clock)
             :base(protocol.MatchId,peerAccount,protocol.Compatibility,clock)
@@ -105,6 +111,11 @@ namespace CounterAttack.Online
             if(DraftAuthority!=null)Draft.Apply(DraftAuthority.Capture());
         }
         public void EnableDraft(Func<GameSettings,OnlineDraftAuthority> factory)=>draftFactory=factory??throw new ArgumentNullException(nameof(factory));
+        internal void EnableResume(MatchManager.GameData bootstrap)
+        {
+            resumeBootstrap = bootstrap ?? throw new ArgumentNullException(nameof(bootstrap));
+            resumeToken = Guid.NewGuid().ToString("N");
+        }
         public override void Tick()
         {
             base.Tick();
@@ -138,7 +149,14 @@ namespace CounterAttack.Online
             if(!Compatible(message)){Fault="Both games must use the same version and player catalog.";return false;}
             string connection="frontend-peer-"+Nonce;
             if(!protocol.BindAuthenticatedAccount(remoteAccount,connection,compatibility))return false;
-            remoteConnection=connection;var state=Authority.Capture();Send(new OnlineSessionMessage{kind="setup-state",state=state});Client.Apply(state);PublishDraft();return true;
+            remoteConnection=connection;
+            if (resumeBootstrap != null)
+            {
+                Send(new OnlineSessionMessage {kind="setup-state",state=Authority.Capture()});
+                Send(new OnlineSessionMessage {kind="resume-bootstrap",resumeData=resumeBootstrap,resumeToken=resumeToken});
+                return true;
+            }
+            var state=Authority.Capture();Send(new OnlineSessionMessage{kind="setup-state",state=state});Client.Apply(state);PublishDraft();return true;
         }
         protected override void Lost()
         {
@@ -148,6 +166,7 @@ namespace CounterAttack.Online
         }
         private void Local(OnlineSetupRequest request)
         {
+            if (resumeBootstrap != null) return;
             var reply=Authority.Submit(localConnection,request);var state=Authority.Capture();
             Client.Receive(request.sequence,reply.Status,state);
             if(Ready)Send(new OnlineSessionMessage{kind="setup-state",state=Authority.Capture()});
@@ -155,6 +174,13 @@ namespace CounterAttack.Online
         }
         protected override bool Dispatch(OnlineSessionMessage message)
         {
+            if (resumeBootstrap != null)
+            {
+                if (!Ready || message.kind != "resume-ack" || message.resumeToken != resumeToken || ResumeAcknowledged)
+                    return false;
+                ResumeAcknowledged = true;
+                return true;
+            }
             if(Ready && DraftAuthority!=null && message.kind=="draft-request" && message.draftRequest!=null)
             {
                 var draftReply=DraftAuthority.Submit(remoteConnection,message.draftRequest);var snapshot=DraftAuthority.Capture();
@@ -174,6 +200,7 @@ namespace CounterAttack.Online
         private readonly OnlineTeam expectedHost;
         private readonly HashSet<string> retired=new(StringComparer.Ordinal);
         private readonly Queue<string> order=new();
+        private string resumeToken;
         public OnlineSetupGuestChannel(string matchId,string hostAccount,OnlineCompatibility compatibility,OnlineTeam expectedHost,Func<double> clock)
             :base(matchId,hostAccount,compatibility,clock)
         {
@@ -191,6 +218,17 @@ namespace CounterAttack.Online
         }
         protected override bool Dispatch(OnlineSessionMessage message)
         {
+            if (message.kind == "resume-bootstrap")
+            {
+                if (!Ready || !ValidNonce(message.resumeToken) || !OnlineRoomLaunchData.IsResumeBootstrap(message.resumeData)
+                    || resumeToken != null && resumeToken != message.resumeToken)
+                    return false;
+                resumeToken = message.resumeToken;
+                ResumeData ??= message.resumeData;
+                Send(new OnlineSessionMessage {kind="resume-ack",resumeToken=message.resumeToken});
+                return true;
+            }
+            if (ResumeData != null) return false;
             if(message.kind is "draft-state" or "draft-reply")
             {
                 if(Client.Capture()?.phase!="draft-ready" || message.draftState?.hostTeam!=expectedHost)return false;

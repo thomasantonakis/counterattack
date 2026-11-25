@@ -131,6 +131,8 @@ The connected instance must be `ready` and point at this Windows checkout.
 If Pipeline is absent, first wait for imports, inspect compile errors/Safe
 Mode, and then use the installed Editor UI to start or restart the Pipeline
 server if necessary. Do not reinstall Pipeline merely to force a reconnect.
+If the build script reports that Unity did not answer, check the open Editor
+for a dialog. Resolve it in Unity, then rerun the same PowerShell build command.
 
 ## 4. Configure EOS locally for Windows
 

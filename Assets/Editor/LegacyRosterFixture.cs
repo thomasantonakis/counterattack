@@ -15,7 +15,7 @@ public sealed partial class GoalkeeperBoxEntryFixture
 
     // Static football data only: never deserialize a runtime snapshot, event log,
     // stats or a path into ApplicationManager. Every test receives fresh state.
-    private Dictionary<string, PlayerToken> LoadLegacyRoster(int side = 1)
+    private Dictionary<string, PlayerToken> LoadLegacyRoster(int side = 1, bool startInOpenPlay = true)
     {
         Board(side);
         var data = JsonConvert.DeserializeObject<LegacyRosterDocument>(
@@ -56,6 +56,10 @@ public sealed partial class GoalkeeperBoxEntryFixture
         Invoke(grid, "LoadPrecomputedShootingPaths");
         Invoke(grid, "CalculateGoalDistanceAndDangerousTackleCaches");
         match.StartMatch();
+        // Most recorded scenarios begin after the opening pass. Enter ordinary
+        // open play through the real phase transition so action availability
+        // follows current kickoff rules.
+        if (startInOpenPlay) match.BroadcastSafeEndofMovementPhase(countMovementAction: false, triggerFinalThird: false);
         return players;
     }
 }

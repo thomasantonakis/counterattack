@@ -31,6 +31,10 @@ public sealed class OnlineTeamPointersPlayModeTests
         => (IEnumerator)Bridge.GetMethod("Run").Invoke(fixture, new object[] { guest, 16, false, "team-hover" });
 
     [UnityTest]
+    public IEnumerator BothNamesAppearWhileOnlyLocalHoverUpdatesThePreview([Values(false,true)] bool guest)
+        => (IEnumerator)Bridge.GetMethod("RunNativePeerHover").Invoke(fixture, new object[] { guest });
+
+    [UnityTest]
     public IEnumerator RoomIntroReservesEscapeOnBothRoles([Values(false, true)] bool guest)
         => (IEnumerator)Bridge.GetMethod("Run").Invoke(fixture, new object[] { guest, 16, false, "room-intro" });
 }

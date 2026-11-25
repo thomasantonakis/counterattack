@@ -13,6 +13,7 @@ namespace CounterAttack.Online
         [SerializeField] private OnlineRoomPointers teamPointers;
         public bool GuestConfigured { get; private set; }
         public OnlineGroundPassBoard Board { get; private set; }
+        public string Failure { get; private set; }
         private bool nativeOnline;
 
         private void Awake()
@@ -38,9 +39,20 @@ namespace CounterAttack.Online
             if (!nativeOnline) yield break;
 
             var match = GetComponentInRoom<MatchManager>();
-            yield return new WaitUntil(() => match.playerTokenManager.allTokens.Count == 22
-                && match.ball.GetCurrentHex() != null
-                && match.currentState == MatchManager.GameState.KickOffSetup);
+            bool restoring = OnlineRoomSession.Current.IsResuming && !OnlineRoomSession.IsGuest;
+            bool Initialized() => match != null && match.hexGrid.IsGridInitialized() && match.ball.GetCurrentHex() != null
+                && (restoring ? match.RuntimeSnapshotRestored : match.playerTokenManager.allTokens.Count == 22
+                    && match.currentState == MatchManager.GameState.KickOffSetup);
+            double deadline = Time.realtimeSinceStartupAsDouble + 30;
+            while (!Initialized())
+            {
+                if (match?.RuntimeSnapshotRestoreError != null || Time.realtimeSinceStartupAsDouble >= deadline)
+                {
+                    Failure = match?.RuntimeSnapshotRestoreError ?? "Room did not finish initializing.";
+                    yield break;
+                }
+                yield return null;
+            }
 
             var board = gameObject.AddComponent<OnlineGroundPassBoard>();
             board.match = match;

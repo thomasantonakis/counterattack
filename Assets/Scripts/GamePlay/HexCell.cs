@@ -477,6 +477,15 @@ public class HexCell : MonoBehaviour
         ApplyHexFillColor(currentFillColor);
     }
 
+    private bool remoteGoalHover;
+
+    internal void SetRemoteGoalHover(bool visible)
+    {
+        if (remoteGoalHover == visible) return;
+        remoteGoalHover = visible;
+        ApplyHexFillColor(currentFillColor);
+    }
+
     private bool onlinePassHover;
 
     internal void SetOnlinePassHover(bool visible)
@@ -495,7 +504,7 @@ public class HexCell : MonoBehaviour
 
         currentFillColor = fillColor;
         // Target selection survives path, challenge, and goalkeeper highlight cleanup.
-        if (isCommittedGoalTarget || localGoalHover)
+        if (isCommittedGoalTarget || localGoalHover || remoteGoalHover)
         {
             fillColor = new Color(1f, 0.48f, 0.05f, 1f);
         }

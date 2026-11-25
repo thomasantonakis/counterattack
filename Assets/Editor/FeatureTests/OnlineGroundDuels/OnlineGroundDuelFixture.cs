@@ -95,6 +95,35 @@ public sealed partial class GoalkeeperBoxEntryFixture
             if(branch=="automatic")match.AdvanceOnlineAuthorityTime(DecisionTimingConfig.AutomaticRollSeconds+.1f);
             else Submit(connection,"duel.roll");
         }
+        if (branch is "foul" or "injury")
+        {
+            attacker.resilience = 4;
+            match.refereeLeniency = 3;
+            Roll("away", 1);
+            Roll("home", 4);
+            yield return Until(() => authority.Capture().stage == "foul.leniency", "defensive tackle foul");
+            RigOnlineLongRoll(1);
+            Submit("away", "foul.leniency");
+            yield return Until(() => authority.Capture().stage == "foul.injury", "fouled player owns injury roll");
+            RigOnlineLongRoll(branch == "injury" ? 5 : 2);
+            Submit("home", "foul.injury");
+            yield return Until(() => authority.Capture().stage == "foul.choice", "Play On becomes available");
+            Assert.That(attacker.isInjured, Is.EqualTo(branch == "injury"));
+            Assert.That(movement.movedTokens, Has.No.Member(attacker));
+            Submit("home", "foul.advantage");
+            yield return Until(() => authority.Capture().stage == "duel.reposition", "attacker may reposition");
+            var reposition = authority.Capture().legalActions.First(action => action.StartsWith("duel.target:"));
+            Submit("home", reposition);
+            yield return Until(() => movement.isMovementPhaseDef && movement.isAwaitingTokenSelection
+                && !movement.IsResolvingReposition, "defensive movement continues after reposition");
+            Assert.That(ball.GetCurrentHex(), Is.SameAs(attacker.GetCurrentHex()));
+            Submit("away", "movement.forfeit");
+            Assert.That(movement.isMovementPhase2f2, Is.True);
+            Assert.That(authority.Capture().legalActions, Does.Contain("movement.player:home:9"));
+            Submit("home", "movement.player:home:9");
+            Assert.That(movement.selectedToken, Is.SameAs(attacker));
+            yield break;
+        }
         bool wonDefence=branch.StartsWith("defender");
         Roll("away",wonDefence?6:branch=="tie"?3:2);
         Assert.That(authority.Capture().owner,Is.EqualTo("Home"));

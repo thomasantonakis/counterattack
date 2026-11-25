@@ -78,8 +78,9 @@ public sealed class OnlineModeNavigationEditorTests
             float hostTop = card.InverseTransformPoint(corners[1]).y;
             Assert.That(hostTop, Is.LessThan(headerBottom), "The heading must clear the Host row");
             CollectionAssert.AreEqual(new[] { "CreateNewMatchButton", "LoadMatchButton", "Lobby Code",
-                    "Connection Status", "BackToMainMenuButton" },
+                    "Connection Status", "OnlineLoadMatchButton", "BackToMainMenuButton" },
                 rows.Cast<Transform>().Where(row => row.gameObject.activeSelf).Select(row => row.name).ToArray());
+            Assert.That(menu.loadMatchButton, Is.SameAs(rows.Find("OnlineLoadMatchButton").GetComponent<Button>()));
 
             foreach (var screen in new[] { new Vector2(2560, 1080), new Vector2(1024, 768), new Vector2(720, 960) })
             {

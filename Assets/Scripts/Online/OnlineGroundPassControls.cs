@@ -237,7 +237,17 @@ namespace CounterAttack.Online
             Gameplay(OnlineGroundPassAuthority.TargetAction(x, z));
         }
         public void Pause() => Control(OnlineSharedPause.RequestAction);
-        public void Resume() => Control(OnlineSharedPause.ResumeAction);
+        internal bool CanConfirmResume => connected && !pending && state?.resumePending == true
+            && !state.connectionHeld && !(team == OnlineTeam.Home ? state.homeResumeReady : state.awayResumeReady);
+        public void Resume()
+        {
+            if (state?.resumePending == true)
+            {
+                if (CanConfirmResume) Control(OnlineSharedPause.ResumeReadyAction);
+                return;
+            }
+            Control(OnlineSharedPause.ResumeAction);
+        }
         public void Substitute(int outgoing,int incoming)
         {
             if(outgoing is >=1 and <=18 && incoming is >=1 and <=18 && outgoing!=incoming)
@@ -253,7 +263,7 @@ namespace CounterAttack.Online
                 return;
             }
             if(RoomInputOwnership.CardOpen){RoomInspectionCard.Instance.Close();return;}
-            if(state?.introPending==true)return;
+            if(state?.introPending==true || state?.resumePending==true)return;
             if(RollEscapeHandler?.Invoke()==true || LocalEscapeHandler?.Invoke()==true)return;
             if (state?.isSharedPaused == true) Resume(); else Pause();
         }
@@ -287,7 +297,9 @@ namespace CounterAttack.Online
             if(action.StartsWith("keeper.nominate:",StringComparison.Ordinal) && !CanNominateKeeper)return;
             if(action==OnlineSharedPause.ResumeAction && !CanResume)return;
             Emit(new OnlineGroundPassMessage { kind = "control", matchId = state.matchId, sequence = checked(++controlSequence),
-                revision = state.sharedPauseRevision, decisionId = shootout?"shootout-order":"shared-pause", actionId = action });
+                revision = state.sharedPauseRevision,
+                decisionId = action == OnlineSharedPause.ResumeReadyAction ? "resume-ready" : shootout?"shootout-order":"shared-pause",
+                actionId = action });
         }
 
         private void Emit(OnlineGroundPassMessage message)

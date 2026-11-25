@@ -76,6 +76,7 @@ public sealed class HeaderChallengePresentationEditorTests
             SetInstance(stoppage); panel = stoppage;
         }
         var camera = Component<CameraController>("Camera");
+        camera.gameObject.AddComponent<Camera>();
         var input = Component<GameInputManager>("Input"); input.cameraController = camera;
         camera.transform.position = new Vector3(3, 25, -18);
         Vector3 original = camera.transform.position;
@@ -497,7 +498,7 @@ public sealed class HeaderChallengePresentationEditorTests
             string guidance = ShotManager.FreeKickShotGuidance(roll, shot.totalShotPower);
             var result = panel.ResolveSingle(shot,
                 new GameplayDiceRollResult { roll = roll, isJackpot = jackpot, jackpotEnabled = true },
-                guidance, resolvedTotal: shot.totalShotPower);
+                guidance, resolvedTotal: roll == 1 ? (int?)null : shot.totalShotPower);
             Assert.That(result.MoveNext(), Is.True);
             Assert.That(panel.IsComplete, Is.True);
             string frozen = attack.total.text;

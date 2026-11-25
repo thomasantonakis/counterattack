@@ -13,6 +13,8 @@
 - Release versioning: GitHub Actions creates the next patch Git tag after PRs merge to `master` (`v0.9.x`, starting at `v0.9.3`) or `codex/online-foundation-personal-mac` (`v0.10.x`, starting at `v0.10.20`). It cannot update protected branch files under current repository Actions permissions, so `ProjectSettings/ProjectSettings.asset` must be changed in a normal PR.
 - Before preparing any release or product PR to either release branch, always ask whether the user wants the game version advanced. If yes, update `bundleVersion` in that PR and align it with the branch's next release tag. If no, leave the version unchanged. The menu reads `Application.version`; online protocol/rules/catalog labels come from the live compatibility handshake. See [ReleaseVersioning.md](Documentation/Setup/ReleaseVersioning.md).
 
+- The project owner authorizes Codex to run Unity CLI commands for this project, subject to the Unity workflow rules below. These authorizations do not bypass sandbox controls that require tool-level escalation.
+
 ## Unity Workflow Rules
 
 - Never edit or whitespace-normalize a scene file on disk while it is loaded in the Editor. Make loaded-scene changes through Unity CLI/Pipeline and save through the Editor. Unity-generated whitespace is not a reason to rewrite a loaded scene to satisfy `git diff --check`; report serializer whitespace instead.
@@ -33,6 +35,12 @@
 - Use static shell checks such as `rg`, `sed`, and `git diff --check` freely. For Unity compilation, rely on the open editor reload and Editor.log.
 - Codex is authorized to execute automated EditMode and PlayMode Unity Test Framework tests through the live Unity CLI/Pipeline, inspect their results, diagnose failures, and rerun affected tests. Framework-controlled entry/exit of Play Mode is authorized. Never launch Unity, use batchmode or GUI scripting, or start ordinary gameplay through `editor_play`.
 - Before each test run, wait for compilation/reload to finish, inspect every loaded scene's dirty state through Unity CLI, save dirty scenes with `save_all`, then recheck that they are clean before starting tests. Check after recompilation, since editor initializers can modify Room during reload. Do not overwrite unsaved scene changes with on-disk files. A test-start timeout may be a blocking Scene(s) Have Been Modified dialog: inspect this possibility before attributing it to a freeze or restarting anything. An already-open modal needs the user's manual Save action; never use GUI scripting to dismiss it.
+
+## Paired online game tests
+
+- For every paired online game test handoff, provide copyable macOS shell and Windows PowerShell commands. Each block must fetch, check out the actual test branch, fast-forward pull, print the commit, build the normal standalone game through the running Unity Editor, confirm the build succeeded, and launch the built app. Use the same commit on both machines. Give the actual branch name and app paths, and keep local edits intact.
+- Open Unity manually on each machine before building. Use the platform setup guides above for the Editor, Pipeline and EOS configuration. These commands are for packaged player testing alongside the project's focused Unity Test Framework coverage.
+- Keep the handoff short. Put build and launch logic in repository scripts and give the user the Git commands and script invocations. Use `Documentation/Setup/BuildEOSStandaloneMac.sh game` on macOS and `Documentation/Setup/BuildOnlineGameWindows.ps1 -Launch` on Windows.
 
 ## Unity Test Framework Migration
 

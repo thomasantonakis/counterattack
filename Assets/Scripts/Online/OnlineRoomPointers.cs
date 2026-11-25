@@ -36,8 +36,17 @@ namespace CounterAttack.Online
         {
             if (board == null || held || !Application.isFocused || GameInputManager.IsCameraPointerOverUi)
                 return new OnlineRoomPointer();
-            var pointer = Project(board.boardCamera, pitch, Input.mousePosition);
-            pointer.icon = Input.GetMouseButton(1) ? 2 : Input.GetMouseButton(0) ? 1 : 0;
+            int icon = Input.GetMouseButton(1) ? 2 : Input.GetMouseButton(0) ? 1 : 0;
+            return CaptureBoardPointer(Input.mousePosition, icon);
+        }
+
+        internal OnlineRoomPointer CaptureBoardPointer(Vector2 screen, int icon)
+        {
+            var pointer = Project(board.boardCamera, pitch, screen);
+            pointer.icon = icon;
+            // Goal-line hexes are beyond the pitch bounds used to draw the cursor.
+            if (icon != 2 && board.boardCamera != null && board.boardCamera.pixelRect.Contains(screen))
+                board.boardInput?.CapturePointerHover(pointer);
             return pointer;
         }
 
@@ -82,6 +91,7 @@ namespace CounterAttack.Online
             if (!hideNative) RestoreCursor();
             var other = held || Time.unscaledTimeAsDouble - remoteReceivedAt > 0.6 ? null : remote;
             Draw(remoteMarker, remoteIcon, other, home ? settings?.awayKit : settings?.homeKit);
+            board.boardInput?.PresentPeerHover(other);
         }
 
         private bool Draw(TMP_Text marker, RawImage icon, OnlineRoomPointer pointer, string kit)
@@ -110,7 +120,11 @@ namespace CounterAttack.Online
             return visible;
         }
 
-        private void OnDisable() => RestoreCursor();
+        private void OnDisable()
+        {
+            if (board != null && board.boardInput != null) board.boardInput.PresentPeerHover(null);
+            RestoreCursor();
+        }
 
         private void RestoreCursor()
         {

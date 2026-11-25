@@ -63,6 +63,11 @@ namespace CounterAttack.Editor
         [MenuItem("CounterAttack/Room/Rebuild Shooting Path Assets")]
         public static void RebuildShootingPathAssets()
         {
+            if (EditorApplication.isPlayingOrWillChangePlaymode)
+                throw new System.InvalidOperationException("Stop Play Mode before rebuilding path assets.");
+            for (int i = 0; i < UnityEngine.SceneManagement.SceneManager.sceneCount; i++)
+                if (UnityEngine.SceneManagement.SceneManager.GetSceneAt(i).isDirty)
+                    throw new System.InvalidOperationException("Save loaded scenes before switching to Room to rebuild path assets.");
             EditorSceneManager.OpenScene(RoomScenePath, OpenSceneMode.Single);
             HexGrid hexGrid = Object.FindAnyObjectByType<HexGrid>();
             if (hexGrid == null)

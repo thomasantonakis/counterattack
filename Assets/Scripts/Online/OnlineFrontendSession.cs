@@ -20,6 +20,12 @@ namespace CounterAttack.Online
         public event Action<MatchManager.GameData> RoomPrepared;
         private MatchManager.GameData roomLaunch;
         private OnlineRoomLaunchLifetime roomLifetime;
+        private OnlineCheckpoint resumeCheckpoint;
+        private Guid? resumeSlot;
+        private MatchManager.GameData resumeRun;
+        private double roomStartupDeadline;
+        internal bool LaunchingRoom => roomLifetime != null;
+        internal bool HostingResume => resumeCheckpoint != null;
         private IEnumerator gameplay;
         private EOSGroundPassExchange spectatorRoomSource;
         private OnlineSpectatorAdmission spectatorAdmission;
@@ -159,6 +165,19 @@ namespace CounterAttack.Online
             }
         }
 
+        public void HostCheckpoint(Guid slot)
+        {
+            if (Busy || running != null) throw new InvalidOperationException("An online session is already running.");
+            var store = new OnlineCheckpointStore();
+            resumeCheckpoint = store.Load(slot);
+            resumeSlot = slot;
+            resumeRun = store.CreateRun(resumeCheckpoint);
+            initial = OnlineSetupRules.Normalize(Newtonsoft.Json.Linq.JObject.FromObject(resumeRun.gameSettings).ToObject<GameSettings>());
+            var invalid = OnlineSetupRules.Validate(initial);
+            if (!string.IsNullOrEmpty(invalid)) throw new InvalidOperationException("The saved match settings are unsupported.");
+            spectatorAdmission = new OnlineSpectatorAdmission(resumeCheckpoint.guestAccount);
+            Begin(true, null, false);
+        }
         private void Begin(bool hosting,string code,bool forceRelay,bool watching=false)
         {
             previousBackground=Application.runInBackground;ownsBackground=true;Application.runInBackground=true;
@@ -170,7 +189,8 @@ namespace CounterAttack.Online
             probe = hosting
                 ? EOSStandalonePacketProbe.HostProbe(RunDirectory, Exchange, route, OnLobbyCodePublished,
                     onLobbyCreated: id => lobbyId = id, liveAdmission: spectatorAdmission,
-                    openViewing: OpenViewing, closeViewing: CloseViewing)
+                    openViewing: OpenViewing, closeViewing: CloseViewing,
+                    requiredHost: resumeCheckpoint?.hostAccount, requiredGuest: resumeCheckpoint?.guestAccount)
                 : EOSStandalonePacketProbe.GuestProbe(code, watching ? WatchExchange : Exchange, route,
                     searchByCode: true, watchLobby: watching);
             running=StartCoroutine(Run());
@@ -204,7 +224,14 @@ namespace CounterAttack.Online
             {
                 Error=failure.Message;
                 Status="Online connection failed. Leave the session to try again.";
-                FindAnyObjectByType<OnlineRoomStartup>()?.Board?.nativePause?.PresentClosedMatch(Status);
+                var startup = FindAnyObjectByType<OnlineRoomStartup>();
+                if (startup?.Board != null)
+                    startup.Board.PresentSessionDeparture(failure.Message + " Return to the main menu.");
+                else if (startup != null && roomLaunch != null)
+                {
+                    OnlineModeMenu.ReturnFromFailedRoom(failure.Message);
+                    Destroy(gameObject);
+                }
                 Debug.LogWarning("Online session failed: "+failure.Message);
             }
             else Status="Online session closed";
@@ -220,7 +247,13 @@ namespace CounterAttack.Online
                 var protocol=OnlineFrontendSessionPolicy.CreateMatchProtocol(match,session.UserId.ToString(),remote.ToString(),compatibility);
                 protocol.BindAuthenticatedAccount(session.UserId.ToString(),"frontend-host",compatibility);
                 var hostChannel=new OnlineSetupHostChannel(protocol,"frontend-host",remote.ToString(),initial,()=>Time.realtimeSinceStartupAsDouble);
-                hostChannel.EnableDraft(s=>new OnlineDraftAuthority(protocol,s,OnlineDraftCatalog.Load(),rollClock:()=>Time.realtimeSinceStartupAsDouble));
+                if (HostingResume)
+                {
+                    if (!resumeCheckpoint.IsHost(session.UserId.ToString()) || !resumeCheckpoint.IsGuest(remote.ToString()))
+                        throw new InvalidOperationException("Only the original managers can resume this match.");
+                    hostChannel.EnableResume(OnlineRoomLaunchData.ResumeBootstrap(resumeRun));
+                }
+                else hostChannel.EnableDraft(s=>new OnlineDraftAuthority(protocol,s,OnlineDraftCatalog.Load(),rollClock:()=>Time.realtimeSinceStartupAsDouble));
                 channel=hostChannel;
             }
             else channel=new OnlineSetupGuestChannel(match,remote.ToString(),compatibility,OnlineFrontendSessionPolicy.HostTeam,()=>Time.realtimeSinceStartupAsDouble);
@@ -231,6 +264,8 @@ namespace CounterAttack.Online
             recovery=new OnlineFrontendRecovery(channel,()=>Time.realtimeSinceStartupAsDouble,()=>outgoing.Clear(),()=>outgoing.Count==0);
             RegisterConnectionNotifications();
             Status="Checking game versions and settings...";
+            double handshakeDeadline = Time.realtimeSinceStartupAsDouble + 35;
+            bool exchangedHello = false;
             try
             {
                 while(!disposed)
@@ -241,18 +276,49 @@ namespace CounterAttack.Online
                     if(channel.Fault!=null)throw new InvalidOperationException(channel.Fault);
                     if(channel.PeerLeft)
                     {
+                        if (channel.PeerResumeFailed) throw new InvalidOperationException("The other manager could not restore the saved match.");
+                        if (roomLifetime?.Session.IsResuming == true && roomBoard == null)
+                            throw new InvalidOperationException("The other manager cancelled the resume.");
                         Status="The other manager left the session.";
-                        roomBoard?.menu?.PresentPeerDeparture();
-                        roomBoard?.nativePause?.PresentClosedMatch("The other manager left the match. Return to the main menu.");
+                        roomBoard?.PresentSessionDeparture("The other manager left the match. Return to the main menu.");
                         break;
                     }
                     if(stop)break;
+                    exchangedHello |= channel.Ready;
+                    if ((!exchangedHello || HostingResume && roomLaunch == null)
+                        && Time.realtimeSinceStartupAsDouble > handshakeDeadline)
+                        throw new TimeoutException("The online handshake did not finish. Check that both games use the same version.");
                     if(recovery.Expired)throw new TimeoutException("The other manager did not reconnect within five minutes.");
+                    if (roomLaunch == null && channel.Ready)
+                    {
+                        var restored = Hosting
+                            ? (channel as OnlineSetupHostChannel)?.ResumeAcknowledged == true ? resumeRun : null
+                            : channel.ResumeData;
+                        if (restored != null)
+                        {
+                            try { LaunchRoom(restored, resume: true); }
+                            catch
+                            {
+                                channel.Leave(resumeFailed: true);
+                                Flush();
+                                throw;
+                            }
+                        }
+                    }
                     if(roomLifetime!=null)
                     {
                         if(gameplay==null)
                         {
                             var startup=FindAnyObjectByType<OnlineRoomStartup>();
+                            if (startup?.Failure != null || Time.realtimeSinceStartupAsDouble > roomStartupDeadline)
+                            {
+                                if (roomLifetime.Session.IsResuming)
+                                {
+                                    channel.Leave(resumeFailed: true);
+                                    Flush();
+                                }
+                                throw new InvalidOperationException(startup?.Failure ?? "Room initialization timed out.");
+                            }
                             if(startup?.Board!=null)
                             {
                                 roomBoard=startup.Board;
@@ -265,6 +331,7 @@ namespace CounterAttack.Online
                         Status=recovery.Recovering?"Connection interrupted. Waiting for the other manager...":"Online match connected";
                     }
                     else if(recovery.Recovering)Status="Connection interrupted. Waiting for the other manager to reconnect...";
+                    else if(HostingResume)Status="Waiting for the original guest.";
                     else if(channel.Ready)Status=agreedSettings==null?"Connected. Review your selections.":"Both managers agreed. Preparing Draft...";
                     yield return null;
                 }
@@ -374,12 +441,24 @@ namespace CounterAttack.Online
             }
             if(roomLaunch==null && Draft?.Connected==true && Draft.Phase=="room-ready")
             {
-                roomLaunch=OnlineRoomLaunchData.Create(Draft.Capture());
-                File.WriteAllText(Path.Combine(RunDirectory,"room-bootstrap.json"),Newtonsoft.Json.JsonConvert.SerializeObject(roomLaunch,Newtonsoft.Json.Formatting.Indented));
-                RoomPrepared?.Invoke(OnlineRoomLaunchData.Copy(roomLaunch));
-                roomLifetime=new OnlineRoomLaunchLifetime("ground-"+lobbyId,!Hosting,roomLaunch,RunDirectory);
-                UnityEngine.SceneManagement.SceneManager.LoadScene(OnlineRoomStartup.SceneName);
+                LaunchRoom(OnlineRoomLaunchData.Create(Draft.Capture()), resume: false);
             }
+        }
+
+        private void LaunchRoom(MatchManager.GameData data, bool resume)
+        {
+            ApplicationManager.EnsureInstanceExists();
+            roomLaunch = data;
+            if (!resume)
+                File.WriteAllText(Path.Combine(RunDirectory,"room-bootstrap.json"),
+                    Newtonsoft.Json.JsonConvert.SerializeObject(data, Newtonsoft.Json.Formatting.Indented));
+            string match = "ground-" + lobbyId;
+            roomLifetime = resume
+                ? OnlineRoomLaunchLifetime.Resume(match, !Hosting, roomLaunch, RunDirectory, resumeCheckpoint, resumeSlot)
+                : new OnlineRoomLaunchLifetime(match, !Hosting, roomLaunch, RunDirectory);
+            roomStartupDeadline = Time.realtimeSinceStartupAsDouble + 40;
+            RoomPrepared?.Invoke(OnlineRoomLaunchData.Copy(roomLaunch));
+            UnityEngine.SceneManagement.SceneManager.LoadScene(OnlineRoomStartup.SceneName);
         }
 
         private void OnLobbyCodePublished(string code)

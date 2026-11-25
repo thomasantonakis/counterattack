@@ -23,7 +23,7 @@ namespace CounterAttack.Online
             roomPause.resumeButton.onClick.AddListener(board.controls.Resume);
             roomPause.substitutionsButton.onClick.AddListener(() => substitutionButton.onClick.Invoke());
             roomPause.backToMainMenuButton.onClick.AddListener(Leave);
-            roomPause.quitButton.onClick.AddListener(() =>
+            roomPause.quitButton?.onClick.AddListener(() =>
             {
                 OnlineFrontendSession.Current?.Close();
                 Application.Quit();
