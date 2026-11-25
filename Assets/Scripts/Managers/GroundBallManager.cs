@@ -62,6 +62,7 @@ public partial class GroundBallManager : MonoBehaviour
 
     private void OnClickReceived(PlayerToken token, HexCell hex)
     {
+        if (finalThirdManager != null && finalThirdManager.isActivated) return;
         if (isAwaitingTargetSelection)
         {
             RecordGroundPassTargetClick(hex);
@@ -269,6 +270,7 @@ public partial class GroundBallManager : MonoBehaviour
 
     private void OnHoverReceived(PlayerToken token, HexCell hex)
     {
+        if (finalThirdManager != null && finalThirdManager.isActivated) return;
         if (!isActivated || !isAwaitingTargetSelection)
         {
             return;
@@ -298,6 +300,7 @@ public partial class GroundBallManager : MonoBehaviour
 
     private void OnKeyReceived(KeyPressData keyData)
     {
+        if (finalThirdManager != null && finalThirdManager.isActivated) return;
         if (MatchManager.Instance?.TryDispatchTimedRoll(this, keyData, OnKeyReceived) == true) return;
         if (keyData.isConsumed) return;
         if (isAvailable && !isActivated && !freeKickManager.isWaitingForExecution && keyData.key == KeyCode.P)
@@ -803,7 +806,7 @@ public partial class GroundBallManager : MonoBehaviour
     public void PopulateGroundPathInterceptions(HexCell targetHex, bool highlightPath = true)
     {
         HexCell ballHex = ball.GetCurrentHex();  // Get the current hex of the ball
-        List<HexCell> pathHexes = CalculateThickPath(ballHex, targetHex, ball.ballRadius);
+        List<HexCell> pathHexes = CalculateThickPath(ballHex, targetHex, ball.PhysicalRadius);
         string joined = string.Join(" -> ", pathHexes.Select(hex => hex.coordinates.ToString()));  
         Debug.Log($"Path: {joined}");
         hexGrid.ClearHighlightedHexes();

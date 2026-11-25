@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using TMPro;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using CounterAttack.Online;
 
@@ -13,6 +14,9 @@ public class CreateLoadRoomManager : MonoBehaviour
     private const string CreateNewGameSceneName = "CreateNewGameScene";
     private const string RoomSceneName = "Room";
     private const string MainMenuSceneName = "MainMenu";
+    private const string CreatedAtColumn = "CreatedAt";
+    private const string LastActivityAtColumn = "LastActivityAt";
+    [SerializeField] private MenuConfirmation quitConfirmation;
 
     [Header("Create / Load")]
     [SerializeField] private TextMeshProUGUI headerText;
@@ -29,14 +33,15 @@ public class CreateLoadRoomManager : MonoBehaviour
     [SerializeField] private Button loadBrowserCancelButton;
     [SerializeField] private ScrollRect loadBrowserScrollRect;
     [SerializeField] private TextMeshProUGUI loadBrowserStatusText;
+    [SerializeField] private TextMeshProUGUI saveFolderPathText;
 
     private static readonly SaveColumnDefinition[] DefaultColumns =
     {
-        new("Teams", "Teams", 520f),
+        new("Teams", "Saved Game Name", 520f),
         new("Score", "Score", 192f),
         new("Clock", "Time", 192f),
-        new("CreatedAt", "Created at", 256f),
-        new("LastActivityAt", "Last activity", 256f),
+        new(CreatedAtColumn, "Created at", 256f),
+        new(LastActivityAtColumn, "Last activity", 256f),
         new("MatchDuration", "Duration", 192f),
         new("Tie", "Tie", 128f),
         new("Delete", "Delete", 160f),
@@ -44,6 +49,9 @@ public class CreateLoadRoomManager : MonoBehaviour
     };
 
     private string selectedGameMode = ApplicationManager.HotSeatGameMode;
+    private string sortColumn = LastActivityAtColumn;
+    private bool sortDescending = true;
+
     private static bool openOnlineBrowser;
     private bool onlineBrowser;
     private OnlineCheckpointStore onlineStore;
@@ -83,6 +91,7 @@ public class CreateLoadRoomManager : MonoBehaviour
     {
         ApplicationManager.EnsureInstanceExists();
         ApplicationManager.Instance.SetSelectedRoomGameMode(selectedGameMode);
+        MenuAudioPlayer.Play(GameplayAudioPool.MenuAdvance);
         SceneManager.LoadScene(CreateNewGameSceneName);
     }
 
@@ -94,20 +103,27 @@ public class CreateLoadRoomManager : MonoBehaviour
         }
 
         loadBrowserOverlay.SetActive(true);
+        if (saveFolderPathText != null)
+        {
+            var folder = onlineBrowser ? (onlineStore ??= new OnlineCheckpointStore()).FolderPath
+                : ApplicationManager.Instance.GetSaveFolderPath();
+            saveFolderPathText.text = $"Saved games folder\n{folder}";
+        }
         if (loadBrowserStatusText != null) loadBrowserStatusText.text = string.Empty;
         RebuildSaveRows();
+        MenuAudioPlayer.Play(GameplayAudioPool.MenuAdvance);
         Debug.Log($"Opening {selectedGameMode} save browser");
     }
 
     public void BackToMainMenu()
     {
+        MenuAudioPlayer.Play(GameplayAudioPool.MenuBack);
         SceneManager.LoadScene(onlineBrowser ? OnlineModeMenu.SceneName : MainMenuSceneName);
     }
     
     public void ExitGameFromCreateLoadRoom()
     {
-        Debug.Log("Game Quit!");
-        Application.Quit(); // This will close the application
+        quitConfirmation.ShowQuit();
     }
 
     private void ResolveSelectedGameMode()
@@ -219,6 +235,7 @@ public class CreateLoadRoomManager : MonoBehaviour
 
     private void CancelLoadBrowser()
     {
+        if (loadBrowserOverlay != null && loadBrowserOverlay.activeSelf) MenuAudioPlayer.Play(GameplayAudioPool.MenuBack);
         if (onlineBrowser) SceneManager.LoadScene(OnlineModeMenu.SceneName);
         else CloseLoadBrowser();
     }
@@ -259,13 +276,32 @@ public class CreateLoadRoomManager : MonoBehaviour
             ? $"No eligible {GetModeDisplayName()} save files found."
             : string.Empty;
 
-        foreach (RoomSaveSummary summary in summaries)
+        foreach (RoomSaveSummary summary in SortSaves(summaries))
         {
             CreateSaveRow(summary.FileName, columnLayouts, key => GetColumnValue(summary, key),
                 () => SelectSave(summary), () => DeleteSave(summary));
         }
 
         RebuildRowsLayout();
+    }
+
+    public void SortByCreatedDate() => ChangeSort(CreatedAtColumn);
+
+    public void SortByModifiedDate() => ChangeSort(LastActivityAtColumn);
+
+    private void ChangeSort(string column)
+    {
+        sortDescending = sortColumn != column || !sortDescending;
+        sortColumn = column;
+        RebuildSaveRows();
+    }
+
+    private IEnumerable<RoomSaveSummary> SortSaves(IEnumerable<RoomSaveSummary> summaries)
+    {
+        Func<RoomSaveSummary, DateTime> date = sortColumn == CreatedAtColumn
+            ? summary => summary.CreatedSortUtc
+            : summary => summary.LastActivitySortUtc;
+        return sortDescending ? summaries.OrderByDescending(date) : summaries.OrderBy(date);
     }
 
     private void RebuildOnlineRows(IReadOnlyList<SaveColumnLayout> columns)
@@ -279,7 +315,10 @@ public class CreateLoadRoomManager : MonoBehaviour
                 loadBrowserStatusText.text = unreadable == 0
                     ? "Select a save to host its resume lobby."
                     : $"{unreadable} unsupported or damaged save(s) were skipped.";
-            foreach (var save in saves)
+            var ordered = sortColumn == CreatedAtColumn
+                ? sortDescending ? saves.OrderByDescending(save => save.DisplayName) : saves.OrderBy(save => save.DisplayName)
+                : sortDescending ? saves.OrderByDescending(save => save.SavedUtc) : saves.OrderBy(save => save.SavedUtc);
+            foreach (var save in ordered)
             {
                 string Value(string key) => key switch
                 {
@@ -327,7 +366,7 @@ public class CreateLoadRoomManager : MonoBehaviour
             }
             else if (column.TryGetComponent(out TextMeshProUGUI label))
             {
-                if (onlineBrowser) label.richText = false;
+                if (onlineBrowser || columnLayout.Definition.Key == "Teams") label.richText = false;
                 label.text = value(columnLayout.Definition.Key);
             }
         }
@@ -366,6 +405,7 @@ public class CreateLoadRoomManager : MonoBehaviour
         PlayerPrefs.Save();
         CloseLoadBrowser();
         ApplicationManager.Instance.PrepareRoomLaunchWithRegularFormation();
+        MenuAudioPlayer.Play(GameplayAudioPool.MenuAdvance);
         SceneManager.LoadScene(RoomSceneName);
     }
 
@@ -480,7 +520,9 @@ public class CreateLoadRoomManager : MonoBehaviour
 
             if (column.TryGetComponent(out TextMeshProUGUI label))
             {
-                label.text = columnLayout.Definition.Header;
+                label.text = Application.isPlaying && columnLayout.Definition.Key == sortColumn
+                    ? $"{columnLayout.Definition.Header} {(sortDescending ? "▼" : "▲")}"
+                    : columnLayout.Definition.Header;
             }
         }
     }
@@ -558,7 +600,7 @@ public class CreateLoadRoomManager : MonoBehaviour
         {
             foreach (SaveColumnDefinition columnDefinition in DefaultColumns)
             {
-                if (columnDefinition.Key == "LastActivityAt")
+                if (columnDefinition.Key == LastActivityAtColumn)
                 {
                     definition = columnDefinition;
                     return true;
@@ -595,16 +637,16 @@ public class CreateLoadRoomManager : MonoBehaviour
     {
         return columnKey switch
         {
-            "Teams" => summary.Teams,
+            "Teams" => Path.GetFileNameWithoutExtension(summary.FileName),
             "Clock" => summary.Clock,
             "Score" => summary.Score,
             "HalfLength" => summary.HalfLength,
             "Halves" => summary.Halves,
             "MatchDuration" => summary.MatchDuration,
             "Tie" => summary.Tie,
-            "CreatedAt" => FormatUtc(summary.CreatedUtc),
+            CreatedAtColumn => FormatUtc(summary.CreatedUtc),
             "CreatedUtc" => FormatUtc(summary.CreatedUtc),
-            "LastActivityAt" => FormatUtc(summary.LastActivityUtc),
+            LastActivityAtColumn => FormatUtc(summary.LastActivityUtc),
             "LastActivityUtc" => FormatUtc(summary.LastActivityUtc),
             "LastSavedAt" => FormatUtc(summary.LastSavedUtc),
             "LastSavedUtc" => FormatUtc(summary.LastSavedUtc),

@@ -17,6 +17,8 @@ public sealed class DecisionTimingReportedIssuesPlayModeTests
         => (IEnumerator)Bridge.GetMethod("RunFinalThirdMotionTiming").Invoke(board, new object[] {side,expired,defense});
     [UnityTest] public IEnumerator TacklePanel([Values(1,-1)] int side, [Values(false,true)] bool accept)
         => (IEnumerator)Bridge.GetMethod("RunTacklePendingMovementPanel").Invoke(board, new object[] {side,accept});
+    [UnityTest] public IEnumerator OpponentRepositionDoesNotFillDefensiveMovedSlot([Values(1,-1)] int side)
+        => (IEnumerator)Bridge.GetMethod("RunOpponentRepositionDoesNotFillDefensiveMovedSlot").Invoke(board, new object[] {side});
     [UnityTest] public IEnumerator PenaltyKeeperImmediately([Values(1,-1)] int side, [Values(false,true)] bool shootoutMode)
         => (IEnumerator)Bridge.GetMethod("RunImmediatePenaltyKeeper").Invoke(board, new object[] {side,shootoutMode});
 }

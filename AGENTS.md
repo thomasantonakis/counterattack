@@ -13,6 +13,8 @@
 - Release versioning: GitHub Actions creates the next patch Git tag after PRs merge to `master` (`v0.9.x`, starting at `v0.9.3`) or `codex/online-foundation-personal-mac` (`v0.10.x`, starting at `v0.10.20`). It cannot update protected branch files under current repository Actions permissions, so `ProjectSettings/ProjectSettings.asset` must be changed in a normal PR.
 - Before preparing any release or product PR to either release branch, always ask whether the user wants the game version advanced. If yes, update `bundleVersion` in that PR and align it with the branch's next release tag. If no, leave the version unchanged. The menu reads `Application.version`; online protocol/rules/catalog labels come from the live compatibility handshake. See [ReleaseVersioning.md](Documentation/Setup/ReleaseVersioning.md).
 
+- The project owner authorizes Codex to run Unity CLI commands for this project, subject to the Unity workflow rules below. These authorizations do not bypass sandbox controls that require tool-level escalation.
+
 ## Unity Workflow Rules
 
 - Never edit or whitespace-normalize a scene file on disk while it is loaded in the Editor. Make loaded-scene changes through Unity CLI/Pipeline and save through the Editor. Unity-generated whitespace is not a reason to rewrite a loaded scene to satisfy `git diff --check`; report serializer whitespace instead.

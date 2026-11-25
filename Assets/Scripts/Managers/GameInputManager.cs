@@ -291,8 +291,8 @@ public class GameInputManager : MonoBehaviour
 
     private void LateUpdate() => UpdateHoverNameLabel();
 
-    public void SetLineupHoverToken(PlayerToken token) => lineupHoverToken = token;
-    public PlayerToken InspectionHoverToken => lineupHoverToken ?? hoveredToken;
+    public void SetLineupHoverToken(PlayerToken token) => lineupHoverToken = EndGamePanelManager.IsVisible ? null : token;
+    public PlayerToken InspectionHoverToken => EndGamePanelManager.IsVisible ? null : lineupHoverToken ?? hoveredToken;
     public static bool IsPresentationModalActive => IsModalUiActive() || IsDiceRollModalVisible;
     public static bool IsCameraPointerOverUi => IsPointerOverUi(previewOnlyForResolution: IsDiceRollModalVisible);
 
@@ -310,6 +310,12 @@ public class GameInputManager : MonoBehaviour
 
     private void ProcessInputs()
     {
+        if (EndGamePanelManager.IsVisible)
+        {
+            ClearHover(); lineupHoverToken = null;
+            isDragging = false; suppressMouseClickUntilReleased = true;
+            return;
+        }
         if (RoomInputOwnership.IntroActive || RoomMatchIntro.Instance?.IsConsumingSkipRelease == true)
         {
             ClearHover(); isDragging = false; suppressMouseClickUntilReleased = true;
@@ -938,6 +944,11 @@ public class GameInputManager : MonoBehaviour
 
     private void UpdateHoverNameLabel()
     {
+        if (EndGamePanelManager.IsVisible)
+        {
+            HideHoverNameLabel();
+            return;
+        }
         PlayerToken displayToken = lineupHoverToken != null ? lineupHoverToken : hoveredToken;
         if (displayToken == null)
         {

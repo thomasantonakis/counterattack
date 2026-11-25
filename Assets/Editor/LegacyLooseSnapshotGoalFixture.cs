@@ -11,8 +11,9 @@ public sealed partial class GoalkeeperBoxEntryFixture
         EnableForAuthoredPresentation(match.shotManager); Subscribe(ground); Subscribe(match.finalThirdManager);
         LegacyKey("P"); ClickPass(yaneva.currentHex); ClickPass(yaneva.currentHex);
         yield return Until(() => !ground.isActivated && ball.GetCurrentHex() == yaneva.currentHex, "kickoff pass reaches Yaneva before snapshot audit");
+        yield return ForfeitLegacyFinalThirds();
         Assert.That(match.attackHasPossession && movement.isAvailable && ftp.isAvailable, Is.True);
-        yield return ForfeitLegacyFinalThirds(); LegacyKey("M");
+        LegacyKey("M");
         input.TryExecuteSyntheticHexClick(support.currentHex, "Legacy migration", out _);
         input.TryExecuteSyntheticHexClick(Hex(13 * side, 5), "Legacy migration", out _);
         yield return Until(() => support.currentHex == Hex(13 * side, 5) && !movement.isPlayerMoving, "first movement positions Toothnail on the later scatter path");

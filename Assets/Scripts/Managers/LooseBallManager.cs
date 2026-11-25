@@ -885,7 +885,9 @@ public partial class LooseBallManager : MonoBehaviour
             details: new Dictionary<string, string>
             {
                 ["directionIndex"] = directionRoll.ToString(),
-                ["distanceRoll"] = distanceRoll.ToString()
+                ["distanceRoll"] = distanceRoll.ToString(),
+                ["recoveryAttribute"] = (recoveryUsesSaving ? potentialInterceptor.saving : potentialInterceptor.tackling).ToString(),
+                ["recoveryModifier"] = recoveryModifier.ToString()
             });
         interceptionRoll = diceResult.roll;
         // The presentation uses the attribute selected by the actual recovery branch.

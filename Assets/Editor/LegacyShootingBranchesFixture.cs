@@ -261,7 +261,8 @@ public sealed partial class GoalkeeperBoxEntryFixture
                 yield return WaitForLegacyGoalReset();
                 Assert.That(shot.isActivated || loose.isActivated || keeper.isActivated, Is.False); break;
             case ShootingBranchStepType.ExpectOffTarget:
-                yield return Until(() => !shot.isActivated && !loose.isActivated && !keeper.isActivated && !match.goalFlowManager.isActivated,
+                yield return Until(() => !shot.isActivated && !loose.isActivated && !keeper.isActivated && !match.goalFlowManager.isActivated
+                    && match.finalThirdManager.isActivated,
                     "original natural-one free-kick shot finishes off target");
                 Assert.That(match.currentState, Is.EqualTo(MatchManager.GameState.WaitingForGoalKickFinalThirds));
                 AssertNativeShootingOwners(finalThirdActive: true); AssertNativeRestartAvailability();

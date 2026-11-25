@@ -10,6 +10,9 @@ public sealed partial class GoalkeeperBoxEntryFixture
         // This aerial sequence starts in open play; StartMatch offers kickoff's ground pass.
         match.BroadcastSafeEndofMovementPhase(countMovementAction: false, triggerFinalThird: false);
         var target = Hex(13, 1);
+        // This scenario exercises a live high-pass continuation, not kickoff.
+        // StartMatch now correctly reserves kickoff for a ground pass.
+        match.BroadcastSafeEndofMovementPhase(countMovementAction: false, triggerFinalThird: false);
         LegacyKey("C"); Assert.That(high.isActivated, Is.True);
         input.TryExecuteSyntheticHexClick(target, "Legacy migration", out _);
         Assert.That(high.currentTargetHex, Is.SameAs(target));

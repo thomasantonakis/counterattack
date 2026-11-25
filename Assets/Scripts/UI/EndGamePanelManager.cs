@@ -6,6 +6,13 @@ using UnityEngine.UI;
 
 public class EndGamePanelManager : MonoBehaviour
 {
+    private static readonly System.Collections.Generic.HashSet<EndGamePanelManager> visiblePanels = new();
+    public static bool IsVisible => visiblePanels.Any(panel => panel != null && panel.isActiveAndEnabled
+        && (panel.root != null ? panel.root.activeInHierarchy : panel.gameObject.activeInHierarchy));
+
+    private void OnEnable() => visiblePanels.Add(this);
+    private void OnDisable() => visiblePanels.Remove(this);
+
     private const string MainMenuSceneName = "MainMenu";
     private const int StatsRowCount = 21;
     private static readonly string[] StatRowTitles =
@@ -192,6 +199,9 @@ public class EndGamePanelManager : MonoBehaviour
         HideLiveMatchUi();
         GameplayInputConsumer.Ensure(root, blocksGameplayWhileActive: true);
         root.SetActive(true);
+        EnterReportPause();
+        GetComponent<PostMatchReportController>()?.ShowReport(
+            MatchManager.Instance?.gameData, string.IsNullOrWhiteSpace(recapOverride));
         Canvas.ForceUpdateCanvases();
 
         if (recapScroll != null)
@@ -200,6 +210,14 @@ public class EndGamePanelManager : MonoBehaviour
         }
 
         Debug.Log("[EndGamePanel] Match recap panel shown.");
+    }
+
+    private void EnterReportPause()
+    {
+        MatchManager.Instance?.SetPauseMenuOpen(true);
+        foreach (var director in FindObjectsByType<GameplayAudioDirector>(FindObjectsInactive.Exclude))
+            if (director.gameObject.scene == gameObject.scene)
+                director.SetPaused(true, playTransitionCue: false);
     }
 
     private bool EnsurePanelReferences()
@@ -585,6 +603,7 @@ public class EndGamePanelManager : MonoBehaviour
     {
         CounterAttack.Online.OnlineFrontendSession.Current?.Close();
         MatchManager.Instance?.SetPauseMenuOpen(false);
+        MenuAudioPlayer.Play(GameplayAudioPool.MenuBack);
         SceneManager.LoadScene(MainMenuSceneName);
     }
 }

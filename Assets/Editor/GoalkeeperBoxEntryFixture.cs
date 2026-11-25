@@ -227,6 +227,8 @@ public sealed partial class GoalkeeperBoxEntryFixture : IDisposable
         else if (branch == "long_direct")
         {
             Place(defender, target);
+            Subscribe(longBall);
+            longBall.ActivateLongBall();
             flow = longBall.HandleLongBallMovement(target);
         }
         else if (aerial) flow = AerialAccuracy(target, branch.StartsWith("high"), inaccurate);
@@ -282,6 +284,14 @@ public sealed partial class GoalkeeperBoxEntryFixture : IDisposable
         if (aerial && branch.StartsWith("high"))
             yield return Until(() => high.isWaitingForDefGKChallengeDecision,
                 "high pass continues after free move");
+        else if (branch == "long_direct")
+        {
+            yield return Until(() => longBall.isWaitingForDefLBMove || complete,
+                "long ball offers its separate goalkeeper Pace response after the box-entry move");
+            if (longBall.isWaitingForDefLBMove)
+                Assert.That(input.TryExecuteSyntheticKeyPress("X", "Test Framework", out string error), Is.True, error);
+            yield return Until(() => complete, "direct defender landing completes after the free move");
+        }
         else if (aerial)
             yield return Until(() => longBall.isWaitingForDefLBMove || complete, "long ball continues after free move");
         else yield return Until(() => complete, $"{branch} completes after decision");
@@ -510,11 +520,11 @@ public sealed partial class GoalkeeperBoxEntryFixture : IDisposable
         int startFrame = Time.frameCount;
         while (!condition())
         {
-            // High Pass flight is authored as 91 rendered frames. Preserve the
-            // normal eight-second bound while allowing that sequence at a slow
-            // Editor frame rate; every wait still has a 30-second watchdog.
+            // Long shot flights can exceed eight seconds in the Editor even
+            // after the minimum rendered frames have elapsed.
             int frames = Time.frameCount - startFrame;
-            if (waitClock.Elapsed.TotalSeconds >= 30 || waitClock.Elapsed.TotalSeconds >= 8 && frames >= minimumFrames)
+            double timeoutSeconds = minimumFrames >= 1200 ? 18 : 8;
+            if (waitClock.Elapsed.TotalSeconds >= 30 || waitClock.Elapsed.TotalSeconds >= timeoutSeconds && frames >= minimumFrames)
                 Assert.Fail($"Timed out: {state}. elapsed={waitClock.Elapsed.TotalSeconds:0.00}s, frames={frames}, "
                     + $"Ball={ball.GetCurrentHex()?.coordinates}, position={ball.transform.position}, "
                     + $"moving={ball.isMoving}, cellMove={ball.IsCellMoveInProgress}, GK={keeper.isActivated}, "
@@ -526,6 +536,11 @@ public sealed partial class GoalkeeperBoxEntryFixture : IDisposable
     public void Dispose()
     {
         if (disposed) return; disposed = true;
+        if (stealAudioObserver != null)
+        {
+            GameplayAudioEvents.IncidentConfirmed -= stealAudioObserver;
+            stealAudioObserver = null;
+        }
         if (root != null)
         {
             foreach (var component in root.GetComponentsInChildren<MonoBehaviour>(true)) component.StopAllCoroutines();

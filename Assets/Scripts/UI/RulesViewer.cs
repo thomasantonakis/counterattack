@@ -79,7 +79,7 @@ public sealed class RulesViewer : MonoBehaviour, IPointerClickHandler
 
     public static void OpenRules()
     {
-        var viewer = FindObjectsByType<RulesViewer>(FindObjectsInactive.Include, FindObjectsSortMode.None)
+        var viewer = FindObjectsByType<RulesViewer>(FindObjectsInactive.Include)
             .FirstOrDefault(v => v.gameObject.scene == UnityEngine.SceneManagement.SceneManager.GetActiveScene());
         if (viewer == null) { Debug.LogError("Rules viewer is not authored in this scene."); return; }
         viewer.Open();

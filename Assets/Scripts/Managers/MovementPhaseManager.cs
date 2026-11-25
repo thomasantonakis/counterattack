@@ -30,6 +30,7 @@ public struct MovementPhaseMovedTokenEntry
 public partial class MovementPhaseManager : MonoBehaviour
 {
     private PlayerToken lastDuelAttacker;
+    private string groundLuckContestId;
     private float lastDuelDribbleProbability = 1f;
     public const int DefaultAttackingMoveLimit = 4;
     public int AttackingMoveLimit => maxAttackerMoves;
@@ -96,6 +97,7 @@ public partial class MovementPhaseManager : MonoBehaviour
     public bool isWaitingForNutmegDecisionWithoutMoving = false;
     public bool isWaitingForGKWallDiveDecision = false;
     public bool committedMovementConsumesExtraAction = true;
+    private bool automaticallyCommitted;
     // public bool isWaitingForSnapshotDecisionFromLoose = false;
     public bool lookingForNutmegVictim = false;
     public bool isNutmegInProgress = false;
@@ -212,6 +214,17 @@ public partial class MovementPhaseManager : MonoBehaviour
     {
         return isWaitingForYellowCardRoll || isWaitingForInjuryRoll || isWaitingForFoulDecision;
     }
+
+    internal bool CanSaveAutomaticOpening => automaticallyCommitted && isActivated && isCommitted
+        && isMovementPhaseAttack && isAwaitingTokenSelection
+        && attackersMoved == 0 && movedTokens.Count == 0
+        && !isPlayerMoving && !isDribblerRunning && !tokenPickedUpBall
+        && !isWaitingForSnapshotDecision && !isWaitingForNutmegDecision
+        && !lookingForNutmegVictim && !isNutmegInProgress
+        && !isWaitingForInterceptionDiceRoll && !isWaitingForTackleRoll
+        && !isWaitingForGKWallDiveDecision && !IsGoalkeeperDiveChallengeInProgress()
+        && !isWaitingForReposition && !IsResolvingReposition && !IsResolvingFoulSequence()
+        && !IsThrowInMovementRestricted();
 
     public bool TryDeferDuelDoubleInjury(PlayerToken token)
     {
@@ -351,7 +364,7 @@ public partial class MovementPhaseManager : MonoBehaviour
         if (!isActivated) return;
         if (finalThirdManager.isActivated) return;
         if (goalKeeperManager.isActivated) return;
-        if (isPlayerMoving) return;
+        if (isPlayerMoving || IsResolvingReposition) return;
         if (shotManager.isActivated) return;
         if (highPassManager != null && highPassManager.isActivated) return;
         if (IsResolvingFoulSequence()) return;
@@ -535,7 +548,7 @@ public partial class MovementPhaseManager : MonoBehaviour
 
     private void OnHoverReceived(PlayerToken token, HexCell hex)
     {
-        if (isPlayerMoving || (selectedToken != null && selectedToken.IsMoving)) return;
+        if (IsResolvingReposition || isPlayerMoving || (selectedToken != null && selectedToken.IsMoving)) return;
         if (goalKeeperManager != null && goalKeeperManager.isActivated) return;
         if (shotManager != null && shotManager.isActivated)
         {
@@ -584,6 +597,7 @@ public partial class MovementPhaseManager : MonoBehaviour
     {
         if (MatchManager.Instance?.TryDispatchTimedRoll(this, keyData, OnKeyReceived) == true) return;
         if (keyData.isConsumed) return;
+        if (TryForfeitWaitingReposition(keyData)) return;
         if (isPlayerMoving && !isGkWallDiveSequenceActive) return;
         if (finalThirdManager.isActivated) return;
         if (goalKeeperManager.isActivated) return;
@@ -906,38 +920,27 @@ public partial class MovementPhaseManager : MonoBehaviour
                 return;
             }
         }
-        if (isWaitingForReposition && keyData.key == KeyCode.X)
+    }
+
+    private bool TryForfeitWaitingReposition(KeyPressData keyData)
+    {
+        if (!isWaitingForReposition || IsResolvingReposition || keyData.key != KeyCode.X
+            || (isNutmegInProgress && !isSuccessfulTackleRepositionPending)) return false;
+
+        ConsumeMovementKey(keyData, repositionWinner.isHomeTeam);
+        if (isSuccessfulTackleRepositionPending)
         {
-            if (isNutmegInProgress && !isSuccessfulTackleRepositionPending)
-            {
-                Debug.Log($"{repositionWinner.name} just nutmegged {repositionLoser.name}, they have to reposition.");
-            }
-            else if (isSuccessfulTackleRepositionPending)
-            {
-                ConsumeMovementKey(keyData, repositionWinner.isHomeTeam);
-                Debug.Log($"{repositionWinner.name} forfeits repositioning and stays at current position after the successful tackle.");
-                isWaitingForReposition = false;
-                hexGrid.ClearHighlightedHexes();
-                return;
-            }
-            else if (isMovementPhaseDef)
-            {
-                ConsumeMovementKey(keyData, repositionWinner.isHomeTeam);
-                Debug.Log($"{repositionWinner.name} forfeits repositioning and stays at current position.");
-                isWaitingForReposition = false;
-                hexGrid.ClearHighlightedHexes();
-                AdvanceMovementPhase();
-                return;
-            }
-            else
-            {
-                ConsumeMovementKey(keyData, repositionWinner.isHomeTeam);
-                isWaitingForReposition = false;
-                hexGrid.ClearHighlightedHexes();
-                AdvanceMovementPhase();
-                return;
-            }
+            Debug.Log($"{repositionWinner.name} forfeits repositioning and stays at current position after the successful tackle.");
+            isWaitingForReposition = false;
+            hexGrid.ClearHighlightedHexes();
+            return true;
         }
+
+        Debug.Log($"{repositionWinner.name} forfeits repositioning and stays at current position.");
+        isWaitingForReposition = false;
+        hexGrid.ClearHighlightedHexes();
+        AdvanceMovementPhase();
+        return true;
     }
 
     private void ConsumeMovementKey(KeyPressData keyData, bool? consumedByHomeTeam = null)
@@ -1063,12 +1066,23 @@ public partial class MovementPhaseManager : MonoBehaviour
         );
         // TODO: add one action taken to the counter with an identifier
         isCommitted = true;  // Set the committed flag to true
+        automaticallyCommitted = commitSource == "auto";
         committedMovementConsumesExtraAction = consumesExtraAction;
         MatchManager.Instance.currentState = MatchManager.GameState.MovementPhase;  // Update game state
         MatchManager.Instance.CommitToAction(
             consumesExtraAction ? MatchManager.MatchActionKind.MovementPhase : MatchManager.MatchActionKind.None,
             commitSource,
             commitReason);
+    }
+
+    internal void RestoreAutomaticOpening(PlayerToken previewToken)
+    {
+        ActivateMovementPhase();
+        isCommitted = true;
+        automaticallyCommitted = true;
+        committedMovementConsumesExtraAction = true;
+        if (previewToken != null)
+            HandleTokenSelection(previewToken);
     }
 
     private bool IsSnapshotSuppressedByFinalExtraMovement()
@@ -1092,7 +1106,11 @@ public partial class MovementPhaseManager : MonoBehaviour
         movedTokens.Add(token);
 
         MovementPhaseMovedTokenSection section = GetCurrentMovedTokenSection();
-        movedTokenEntries.Add(new MovementPhaseMovedTokenEntry(token, section));
+        // A duel can reposition the ball carrier during the opponent's phase.
+        // Keep its eligibility bookkeeping, but only show moves owned by this phase.
+        bool attackingSection = section != MovementPhaseMovedTokenSection.DefMP;
+        if (token.isAttacker == attackingSection)
+            movedTokenEntries.Add(new MovementPhaseMovedTokenEntry(token, section));
     }
 
     private MovementPhaseMovedTokenSection GetCurrentMovedTokenSection()
@@ -2810,6 +2828,8 @@ public partial class MovementPhaseManager : MonoBehaviour
 
             bool foul = isDribblerRunning && diceRoll <= FOUL_THRESHOLD;
             bool recovered = diceRoll == 6 || diceRoll + defenderTackling >= INTERCEPTION_THRESHOLD;
+            if (foul)
+                GameplayAudioEvents.PublishIncident(MatchManager.Instance, GameplayAudioEvents.IncidentKind.Foul, selectedDefender.isHomeTeam);
             yield return SingleRollResolutionPresentation.Resolve(this, interceptionRoll,
                 foul ? (IsCurrentBallHexInOpponentPenaltyBox() ? "PENALTY!" : "FOUL")
                     : recovered ? "BALL RECOVERED" : "RECOVERY FAILED", continueWithFoulChecks: foul);
@@ -2842,6 +2862,7 @@ public partial class MovementPhaseManager : MonoBehaviour
             else
             {
                 Debug.Log($"{selectedDefender.name} at {selectedDefender.GetCurrentHex().coordinates} failed to intercept.");
+                GameplayAudioEvents.PublishIncident(MatchManager.Instance, GameplayAudioEvents.IncidentKind.DuelLost, selectedDefender.isHomeTeam);
                 // Move to the next defender, if any
                 eligibleDefenders.Remove(selectedDefender);
                 defendersTriedToIntercept.Add(selectedDefender);
@@ -2924,6 +2945,8 @@ public partial class MovementPhaseManager : MonoBehaviour
     {
         PlayerToken attackerToken = ball.GetCurrentHex()?.GetOccupyingToken();
         PlayerToken rollingToken = isDefender ? (isNutmegInProgress ? nutmegVictim : selectedDefender) : attackerToken;
+        if (isDefender) groundLuckContestId = Guid.NewGuid().ToString("N");
+        PlayerToken luckDefender = isNutmegInProgress ? nutmegVictim : selectedDefender;
         GameplayDiceRollResult tackleRoll = MatchManager.Instance.ResolveGameplayDiceRoll(
             isDefender ? "movement_tackle_defender" : "movement_tackle_attacker",
             rollOverride,
@@ -2936,7 +2959,12 @@ public partial class MovementPhaseManager : MonoBehaviour
                 ["isNutmeg"] = isNutmegInProgress.ToString(),
                 ["isGkWallDive"] = (goalkeeperChallengeMode == GoalkeeperChallengeMode.WallDive).ToString(),
                 ["goalkeeperChallengeMode"] = goalkeeperChallengeMode.ToString()
-            });
+            },
+            luckModel: GameplayLuckModel.GroundDuel(groundLuckContestId, attackerToken,
+                GetDefenderGroundDuelSkill(luckDefender),
+                (isNutmegInProgress ? 1 : 0) + (IsGoalkeeperDiveChallengeInProgress() ? gkWallDiveSavingPenalty : 0),
+                IsCurrentTackleDangerous(attackerToken, luckDefender) ? 2 : FOUL_THRESHOLD,
+                CurrentGroundDuelPresentation == GroundDuelPresentationKind.OutsideBoxHands));
         int diceRoll = tackleRoll.isJackpot ? 50 : tackleRoll.roll;
         
         // Random
@@ -2944,6 +2972,9 @@ public partial class MovementPhaseManager : MonoBehaviour
         {
             defenderDiceRoll = diceRoll;
             tackleDefenderRolled = true;
+            int foulThreshold = IsCurrentTackleDangerous(attackerToken, rollingToken) ? 2 : FOUL_THRESHOLD;
+            if (rollingToken != null && diceRoll <= foulThreshold)
+                GameplayAudioEvents.PublishIncident(MatchManager.Instance, GameplayAudioEvents.IncidentKind.Foul, rollingToken.isHomeTeam);
             activeDuelPanel?.ShowDuelRoll(true, tackleRoll);
             if (diceRoll == 50) Debug.Log($"Defender rolled A JACKPOT!!!");
             else Debug.Log($"Defender rolled: {defenderDiceRoll}. Now it's the attacker's turn.");
@@ -3252,6 +3283,7 @@ public partial class MovementPhaseManager : MonoBehaviour
         }
 
         foulHex ??= attackerToken.GetCurrentHex();
+        GameplayAudioEvents.PublishIncident(MatchManager.Instance, GameplayAudioEvents.IncidentKind.Foul, goalkeeper.isHomeTeam);
         Debug.Log($"{goalkeeper.name} touches the ball with hands outside the penalty box at {foulHex?.coordinates.ToString() ?? "<unknown>"}. Forced free kick and straight red card.");
         selectedDefender = goalkeeper;
         MarkTokenCurrentHexOccupied(attackerToken);
@@ -3341,6 +3373,7 @@ public partial class MovementPhaseManager : MonoBehaviour
 
     private void RefreshRepositionHighlights()
     {
+        if (IsResolvingReposition) return;
         foreach (HexCell hex in repositionHexes)
         {
             if (hex == null || hex.isDefenseOccupied || hex.isAttackOccupied)
@@ -3370,6 +3403,7 @@ public partial class MovementPhaseManager : MonoBehaviour
             && MatchManager.Instance.difficulty_level < 3
             && isActivated
             && isWaitingForReposition
+            && !IsResolvingReposition
             && repositionHexes != null
             && repositionHexes.Count > 0;
     }
@@ -3398,6 +3432,13 @@ public partial class MovementPhaseManager : MonoBehaviour
             return;
         }
 
+        IsResolvingReposition = true;
+        try { await CompleteRepositionToHex(hex); }
+        finally { IsResolvingReposition = false; }
+    }
+
+    private async Task CompleteRepositionToHex(HexCell hex)
+    {
         Debug.Log($"{repositionWinner.name} repositioning to {hex.name}.");
         HexCell winnerHex = repositionWinner.GetCurrentHex();
         // the check seems to be redundant as before the call of this method, the Possession has been changed if needed
@@ -3416,9 +3457,7 @@ public partial class MovementPhaseManager : MonoBehaviour
         foreach (HexCell needToresetHighlightHex in hexGrid.highlightedHexes) needToresetHighlightHex.ResetHighlight();
         hexGrid.ClearHighlightedHexes();
         hoveredRepositionHex = null;
-        IsResolvingReposition = true;
-        try { await helperFunctions.StartCoroutineAndWait(repositionWinner.JumpToHex(hex)); }
-        finally { IsResolvingReposition = false; }
+        await helperFunctions.StartCoroutineAndWait(repositionWinner.JumpToHex(hex));
         ball.PlaceAtCell(hex); // Move the ball
         if (!isSuccessfulTackleRepositionPending && hex.isInGoal != 0
             && TryHandleMovementGoal(repositionWinner, allowAssist: true,
@@ -4025,6 +4064,7 @@ public partial class MovementPhaseManager : MonoBehaviour
         isAvailable = false;
         isBallPickable = false;
         isCommitted = false;
+        automaticallyCommitted = false;
         isDribblerRunning = false;
         isPlayerMoving = false;
         tokenPickedUpBall = false;

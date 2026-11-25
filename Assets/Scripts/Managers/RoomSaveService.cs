@@ -459,6 +459,7 @@ public static class RoomSaveService
             string createdUtc = root.Value<string>("createdUtc");
             string lastSavedUtc = root.Value<string>("lastSavedUtc");
             string lastLogWrittenUtc = root.Value<string>("lastLogWrittenUtc");
+            DateTime fileCreatedUtc = File.GetCreationTimeUtc(filePath);
             DateTime lastSavedSortUtc = ParseUtcOrFallback(lastSavedUtc, lastWriteUtc);
             DateTime lastLogWrittenSortUtc = ParseUtcOrFallback(lastLogWrittenUtc, DateTime.MinValue);
             DateTime lastActivitySortUtc = MaxUtc(lastSavedSortUtc, lastLogWrittenSortUtc, lastWriteUtc);
@@ -480,12 +481,13 @@ public static class RoomSaveService
                 Halves = numberOfHalfs > 0 ? numberOfHalfs.ToString() : "-",
                 MatchDuration = halfDuration > 0 && numberOfHalfs > 0 ? $"{numberOfHalfs}x{halfDuration}" : "-",
                 Tie = FormatTieBreaker(ReadString(settings, "tiebreaker", "-")),
-                CreatedUtc = string.IsNullOrWhiteSpace(createdUtc) ? File.GetCreationTimeUtc(filePath).ToString("o") : createdUtc,
+                CreatedUtc = string.IsNullOrWhiteSpace(createdUtc) ? fileCreatedUtc.ToString("o") : createdUtc,
                 LastSavedUtc = string.IsNullOrWhiteSpace(lastSavedUtc) ? lastWriteUtc.ToString("o") : lastSavedUtc,
                 LastLogWrittenUtc = lastLogWrittenUtc,
                 LastActivityUtc = lastActivitySortUtc == DateTime.MinValue ? lastWriteUtc.ToString("o") : lastActivitySortUtc.ToString("o"),
                 Status = FormatSummaryStatus(true, isMatchComplete),
                 HasRuntimeSnapshot = true,
+                CreatedSortUtc = ParseUtcOrFallback(createdUtc, fileCreatedUtc),
                 LastSavedSortUtc = lastSavedSortUtc,
                 LastActivitySortUtc = lastActivitySortUtc,
                 LastWriteUtc = lastWriteUtc
@@ -815,6 +817,7 @@ public class RoomSaveSummary
     public string LastActivityUtc;
     public string Status;
     public bool HasRuntimeSnapshot;
+    public DateTime CreatedSortUtc;
     public DateTime LastSavedSortUtc;
     public DateTime LastActivitySortUtc;
     public DateTime LastWriteUtc;
@@ -833,6 +836,7 @@ public class RoomRuntimeSnapshot
     public bool attackHasPossession;
     public string homeTeamDirection;
     public string awayTeamDirection;
+    public RoomMovementOpeningSnapshot movementOpening;
     public RoomClockSnapshot clock = new();
     public RoomHexCoordinates ball;
     public List<RoomTokenSnapshot> tokens = new();
@@ -843,6 +847,16 @@ public class RoomRuntimeSnapshot
     public List<MatchManager.GoalEvent> homeScorers = new();
     public List<MatchManager.GoalEvent> awayScorers = new();
     public List<string> gameLog = new();
+}
+
+[Serializable]
+public class RoomMovementOpeningSnapshot
+{
+    public RoomTokenReference previewToken;
+    public List<RoomTokenReference> stunnedTokens;
+    public List<RoomTokenReference> stunnedForNext;
+    public List<RoomTokenReference> attackingJumpers;
+    public List<RoomTokenReference> defendingJumpers;
 }
 
 [Serializable]

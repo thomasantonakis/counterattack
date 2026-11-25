@@ -52,11 +52,11 @@ public sealed partial class GoalkeeperBoxEntryFixture
             Assert.That(match.finalThirdManager.isActivated, Is.False, "Final Third cannot start before the pass lands.");
             yield return Until(() => ball.GetCurrentHex() == Hex(10) && !ground.isActivated, "safe ground pass lands and cleans up");
             Assert.That(match.attackHasPossession, Is.True);
+            Assert.That(match.finalThirdManager.isActivated, Is.True);
+            yield return ForfeitLegacyFinalThirds();
             Assert.That(movement.isAvailable && ftp.isAvailable, Is.True);
             Assert.That(ground.isAvailable || high.isAvailable || longBall.isAvailable, Is.False);
             Assert.That(movement.isActivated || ftp.isActivated || high.isActivated || longBall.isActivated, Is.False);
-            Assert.That(match.finalThirdManager.isActivated, Is.True);
-            yield return ForfeitLegacyFinalThirds();
             Assert.That(match.gameData.stats.GetPlayerStats(attacker).passesAttempted, Is.EqualTo(1));
             Assert.That(match.gameData.stats.GetPlayerStats(attacker).passesCompleted, Is.EqualTo(1));
             yield break;

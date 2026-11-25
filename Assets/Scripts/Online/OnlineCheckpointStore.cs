@@ -42,6 +42,7 @@ namespace CounterAttack.Online
     {
         private static readonly object WriteGate = new();
         private readonly string directory;
+        internal string FolderPath => directory;
         private readonly OnlineCompatibility compatibility;
         private readonly Action<string, string, bool> publish;
 

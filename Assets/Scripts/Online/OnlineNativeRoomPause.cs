@@ -48,8 +48,8 @@ namespace CounterAttack.Online
             regularPauseActions = new[]
             {
                 view.saveMatchButton.gameObject, view.saveMatchAsButton.gameObject,
-                view.editSettings.gameObject, view.substitutionsButton.gameObject, view.quitButton.gameObject
-            };
+                view.editSettings.gameObject, view.substitutionsButton.gameObject, view.quitButton?.gameObject
+            }.Where(action => action != null).ToArray();
             substitutions = substitutionView;
             board.controls.LocalEscapeHandler = CloseSubstitutionsOrSettings;
             view.resumeButton.onClick.AddListener(board.controls.Resume);
@@ -58,7 +58,7 @@ namespace CounterAttack.Online
                 OnlineFrontendSession.Current?.Close();
                 SceneManager.LoadScene("MainMenu");
             });
-            view.quitButton.onClick.AddListener(() =>
+            view.quitButton?.onClick.AddListener(() =>
             {
                 OnlineFrontendSession.Current?.Close();
                 Application.Quit();

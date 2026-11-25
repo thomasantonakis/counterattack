@@ -409,7 +409,7 @@ public partial class LongBallManager : MonoBehaviour
             return false;
         }
 
-        List<HexCell> pathHexes = groundBallManager.CalculateThickPath(ballHex, targetHex, ball.ballRadius);
+        List<HexCell> pathHexes = groundBallManager.CalculateThickPath(ballHex, targetHex, ball.PhysicalRadius);
         foreach (HexCell pathHex in pathHexes)
         {
             if (pathHex != null && adjacentDefenderBlockers.Contains(pathHex))
@@ -585,7 +585,7 @@ public partial class LongBallManager : MonoBehaviour
             return (false, false);
         }
 
-        List<HexCell> pathHexes = groundBallManager.CalculateThickPath(ballHex, targetHex, ball.ballRadius);
+        List<HexCell> pathHexes = groundBallManager.CalculateThickPath(ballHex, targetHex, ball.PhysicalRadius);
 
         foreach (HexCell hex in pathHexes)
         {

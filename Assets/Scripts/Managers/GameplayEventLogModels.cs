@@ -86,6 +86,8 @@ public class GameplayChoiceOption
 
 public class GameplayDiceEvent
 {
+    public GameplayLuckModel luck;
+    public bool? luckJackpotEnabled;
     public string context;
     public string die = "d6";
     public int roll;
