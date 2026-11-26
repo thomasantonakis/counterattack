@@ -146,12 +146,22 @@ public sealed class OnlineConnectionPanelEditorTests
             {
                 var instructions = (RectTransform)canvas.Find("InstructionsPanel");
                 var preview = (RectTransform)canvas.Find("MatchStatsUI/HoverCardsRoot/HomeHoverCardAnchor");
+                var defaultRules = (GameObject)serialized.FindProperty("roomRulesButton").objectReferenceValue;
+                var onlineRules = (GameObject)serialized.FindProperty("onlineRoomRulesButton").objectReferenceValue;
                 var bounds = InCanvas(rect, canvas);
                 var instructionsBounds = InCanvas(instructions, canvas);
+                var rulesBounds = InCanvas((RectTransform)onlineRules.transform, canvas);
                 Assert.That(bounds.min.x, Is.GreaterThan(instructionsBounds.max.x));
                 Assert.That(bounds.max.x, Is.LessThan(InCanvas(preview, canvas).min.x));
                 Assert.That(bounds.min.y, Is.EqualTo(instructionsBounds.min.y).Within(1));
-                Assert.That(bounds.max.y, Is.EqualTo(instructionsBounds.max.y).Within(1));
+                Assert.That(bounds.size, Is.EqualTo(rulesBounds.size));
+                Assert.That(rulesBounds.size, Is.EqualTo(InCanvas((RectTransform)defaultRules.transform, canvas).size));
+                Assert.That(rulesBounds.min.x, Is.EqualTo(bounds.min.x).Within(1));
+                Assert.That(rulesBounds.min.y, Is.GreaterThan(bounds.max.y));
+                Assert.That(rulesBounds.max.y, Is.LessThan(instructionsBounds.max.y));
+                var rulesClick = onlineRules.GetComponent<Button>().onClick;
+                Assert.That(rulesClick.GetPersistentTarget(0), Is.EqualTo(onlineRules.GetComponent<RulesViewerOpener>()));
+                Assert.That(rulesClick.GetPersistentMethodName(0), Is.EqualTo(nameof(RulesViewerOpener.OpenRules)));
             }
             else
             {

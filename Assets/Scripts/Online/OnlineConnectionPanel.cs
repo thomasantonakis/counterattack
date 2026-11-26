@@ -8,6 +8,8 @@ namespace CounterAttack.Online
         [SerializeField] private CanvasGroup panel;
         [SerializeField] private TMP_Text reading;
         [SerializeField] private bool showBeforeSession;
+        [SerializeField] private GameObject roomRulesButton;
+        [SerializeField] private GameObject onlineRoomRulesButton;
 
         private OnlineFrontendSession observedSession;
         private OnlineConnectionQuality observedState;
@@ -29,6 +31,10 @@ namespace CounterAttack.Online
             float alpha = visible ? 1 : 0;
             if (panel.alpha != alpha)
                 panel.alpha = alpha;
+            if (roomRulesButton != null && roomRulesButton.activeSelf == visible)
+                roomRulesButton.SetActive(!visible);
+            if (onlineRoomRulesButton != null && onlineRoomRulesButton.activeSelf != visible)
+                onlineRoomRulesButton.SetActive(visible);
             if (!visible)
             {
                 observedSession = null;

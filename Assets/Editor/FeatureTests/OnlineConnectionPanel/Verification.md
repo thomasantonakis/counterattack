@@ -1,9 +1,9 @@
 # Online connection panel
 
-- [x] Match Setup and Draft use the bottom-center prefab. Room places it in the gap between the instructions and left player-card preview.
+- [x] Match Setup and Draft use the bottom-center prefab. Room places the 200 × 64 connection panel below the matching Rules button, in the gap between the instructions and left player-card preview. Offline Room uses its original Rules button.
 - [x] The manager panel presents peer round-trip time and a Good, Average or Poor rating. It updates both every second from the existing heartbeat. Offline players and spectators do not see the panel.
 - [x] The five-second median drives the initial 180 ms and 350 ms bands. Two replies at least 100 ms above the median can lower the rating to Average. Reply gaps of 2.5 and 3.5 seconds trigger Average and Poor respectively. The ping clears after five seconds without a reply and whenever the session enters recovery.
-- [x] Unity 6000.5.3f1 compiled with zero errors. The focused `OnlineConnectionPanelEditorTests` run passed 11, failed 0 and skipped 0. Native XML and per-case progress are in `TestResults/GameplayRegression/Runs/20261126T082446145Z/`.
+- [x] Unity 6000.5.3f1 compiled with zero errors. The focused `OnlineConnectionPanelEditorTests` run passed 11, failed 0 and skipped 0. Native XML and per-case progress are in `TestResults/GameplayRegression/Runs/20261126T091514919Z/`.
 - [ ] On two separate internet connections, compare the commit printed on both machines. Confirm both managers see the panel through Match Setup, Draft and Room, and check readability at 16:9 and on a taller display. Interrupt one network link and confirm the rating responds, recovery clears stale ping, and a fresh reading appears after reconnect. Compare the rating with the responsiveness of draft picks and Room actions.
 
 ## Paired standalone test
