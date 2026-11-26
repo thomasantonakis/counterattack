@@ -106,7 +106,7 @@ namespace CounterAttack.Online
         public void Begin()
         {
             if(remoteConnection!=null)protocol.Disconnect(remoteConnection);
-            remoteConnection=null;Nonce=Guid.NewGuid().ToString("N");wire=new();Fault=null;RestartLiveness();
+            remoteConnection=null;Nonce=Guid.NewGuid().ToString("N");wire=new();Fault=null;Latency.ResetConnection();RestartLiveness();
             Client.Apply(Authority.Capture());Send(Hello(Authority.Capture()));
             if(DraftAuthority!=null)Draft.Apply(DraftAuthority.Capture());
         }
@@ -212,6 +212,7 @@ namespace CounterAttack.Online
             if(!ValidNonce(message.nonce) || retired.Contains(message.nonce) || message.state==null || message.state.hostTeam!=expectedHost)return false;
             if(!Compatible(message)){Fault="Both games must use the same version and player catalog.";return false;}
             if(!Client.Apply(message.state))return false;
+            if (Nonce != message.nonce) Latency.ResetConnection();
             if(Nonce!=null && Nonce!=message.nonce)
             {retired.Add(Nonce);order.Enqueue(Nonce);while(order.Count>64)retired.Remove(order.Dequeue());wire=new();}
             Nonce=message.nonce;Fault=null;RestartLiveness();Send(Hello());return true;
