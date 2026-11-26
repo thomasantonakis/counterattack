@@ -23,11 +23,8 @@ namespace CounterAttack.Online
             roomPause.resumeButton.onClick.AddListener(board.controls.Resume);
             roomPause.substitutionsButton.onClick.AddListener(() => substitutionButton.onClick.Invoke());
             roomPause.backToMainMenuButton.onClick.AddListener(Leave);
-            roomPause.quitButton?.onClick.AddListener(() =>
-            {
-                OnlineFrontendSession.Current?.Close();
-                Application.Quit();
-            });
+            roomPause.quitButton?.onClick.AddListener(() => roomPause.QuitConfirmation.ShowQuit(
+                () => OnlineFrontendSession.Current?.Close()));
             roomPause.editSettings.onClick.AddListener(() =>
             {
                 settingsOpen = true;
@@ -37,6 +34,7 @@ namespace CounterAttack.Online
             var previousEscape = board.controls.LocalEscapeHandler;
             board.controls.LocalEscapeHandler = () =>
             {
+                if (roomPause.QuitConfirmation?.TryClose() == true) return true;
                 if (!settingsOpen) return previousEscape?.Invoke() == true;
                 CloseRoomSettings();
                 return true;

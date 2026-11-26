@@ -70,6 +70,14 @@ public sealed partial class OnlineFullRoomSceneFixture
         Assert.That(view.saveMatchAsButton.interactable, Is.False, "An unsettled kickoff pass cannot be saved");
         Assert.That(view.pauseSaveStatusText.gameObject.activeInHierarchy, Is.True, "The host can see why saving is blocked");
         Assert.That(view.pauseSaveStatusText.text, Does.Contain("next action"));
+        if (boundary == "leave-unavailable")
+        {
+            view.backToMainMenuButton.onClick.Invoke();
+            Assert.That(GetLeaveConfirmation(view).IsOpen, Is.False);
+            yield return WaitForMainMenuAfterLeaving();
+            Assert.That(Directory.Exists(slotFolder), Is.False);
+            yield break;
+        }
         var saveLabel = view.saveMatchAsButton.transform.Find("MaskContainer")?.GetComponentInChildren<TMPro.TMP_Text>(true)
             ?? view.saveMatchAsButton.GetComponentInChildren<TMPro.TMP_Text>(true);
         var unavailableColor = saveLabel.color;
@@ -149,6 +157,11 @@ public sealed partial class OnlineFullRoomSceneFixture
         Assert.That(view.saveMatchAsButton.IsInteractable(), Is.True, view.pauseSaveStatusText.text);
         Assert.That(saveLabel.color, Is.Not.EqualTo(unavailableColor), "The host can see that Save Match As is now available");
         Assert.That(view.pauseSaveStatusText.text, Does.Contain("Save Match As"));
+        if (boundary is "leave-new" or "leave-existing" or "leave-without-saving")
+        {
+            yield return VerifyOnlinePauseLeave(board, view, store, slotFolder, boundary);
+            yield break;
+        }
         view.saveMatchAsButton.onClick.Invoke();
         Assert.That(view.saveAsOverlay.activeSelf, Is.True);
         view.saveNameInput.text = "After kickoff pass";

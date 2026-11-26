@@ -26,7 +26,8 @@ namespace CounterAttack.Online
         private Guid? selectedSave;
         private Guid durableMatchId = Guid.NewGuid();
         private Func<string> saveUnavailable;
-        private Action<string> commitSave;
+        private Action<string, Action> commitSave;
+        private Action afterNamedSave;
         private string terminalMessage;
         private SubstitutionMenuView substitutions;
         private SubstitutionDropdownRowView localRow;
@@ -53,23 +54,16 @@ namespace CounterAttack.Online
             substitutions = substitutionView;
             board.controls.LocalEscapeHandler = CloseSubstitutionsOrSettings;
             view.resumeButton.onClick.AddListener(board.controls.Resume);
-            view.backToMainMenuButton.onClick.AddListener(() =>
-            {
-                OnlineFrontendSession.Current?.Close();
-                SceneManager.LoadScene("MainMenu");
-            });
-            view.quitButton?.onClick.AddListener(() =>
-            {
-                OnlineFrontendSession.Current?.Close();
-                Application.Quit();
-            });
+            view.backToMainMenuButton.onClick.AddListener(BackToMainMenu);
+            view.quitButton?.onClick.AddListener(() => view.QuitConfirmation.ShowQuit(
+                () => OnlineFrontendSession.Current?.Close()));
             view.editSettings.onClick.AddListener(() => { editing = true; Refresh(); });
             view.editSettingsBackButton.onClick.AddListener(() => CloseSettings());
             view.saveMatchButton.interactable = false;
             view.saveMatchAsButton.interactable = false;
-            view.saveMatchButton.onClick.AddListener(() => commitSave?.Invoke(null));
-            view.saveMatchAsButton.onClick.AddListener(OpenSaveAs);
-            view.saveAsSaveButton.onClick.AddListener(() => commitSave?.Invoke(view.saveNameInput.text.Trim()));
+            view.saveMatchButton.onClick.AddListener(() => commitSave?.Invoke(null, null));
+            view.saveMatchAsButton.onClick.AddListener(() => OpenSaveAs());
+            view.saveAsSaveButton.onClick.AddListener(() => commitSave?.Invoke(view.saveNameInput.text.Trim(), afterNamedSave));
             view.saveAsCancelButton.onClick.AddListener(CloseSaveAs);
             view.captureLogFileButton.interactable = false;
             view.substitutionsButton.interactable = false;
@@ -134,7 +128,7 @@ namespace CounterAttack.Online
                     ? null : reason;
             }
             saveUnavailable = Guard;
-            commitSave = requestedName =>
+            commitSave = (requestedName, onSaved) =>
             {
                 // Capture and write synchronously on the same authority thread as command admission.
                 var current = pause.Capture(authority);
@@ -145,7 +139,7 @@ namespace CounterAttack.Online
                 }
                 if (requestedName == null && !selectedSave.HasValue)
                 {
-                    OpenSaveAs();
+                    OpenSaveAs(onSaved);
                     return;
                 }
                 if (requestedName != null && (requestedName.Length == 0 || requestedName.Length > 100))
@@ -186,7 +180,9 @@ namespace CounterAttack.Online
                 {
                     Debug.LogWarning($"Online checkpoint write failed: {error.GetType().Name}");
                     ShowSaveMessage("Could not save the match. Try again.");
+                    return;
                 }
+                onSaved?.Invoke();
             };
         }
 
@@ -197,7 +193,26 @@ namespace CounterAttack.Online
             CloseSaveAs();
         }
 
-        private void OpenSaveAs()
+        private void BackToMainMenu()
+        {
+            if (saveUnavailable == null || saveUnavailable() != null)
+            {
+                LeaveMatch();
+                return;
+            }
+
+            view.LeaveMatchConfirmation.Show(() => commitSave?.Invoke(null, LeaveMatch), LeaveMatch);
+        }
+
+        private void LeaveMatch()
+        {
+            if (OnlineFrontendSession.Current != null) OnlineFrontendSession.Current.Close();
+            else OnlineRoomSession.Current?.Dispose();
+            MenuAudioPlayer.Play(GameplayAudioPool.MenuBack);
+            SceneManager.LoadScene("MainMenu");
+        }
+
+        private void OpenSaveAs(Action onSaved = null)
         {
             if (saveUnavailable == null) return;
             if (saveUnavailable() is { } reason)
@@ -205,6 +220,8 @@ namespace CounterAttack.Online
                 ShowSaveMessage(reason);
                 return;
             }
+            view.LeaveMatchConfirmation.TryClose();
+            afterNamedSave = onSaved;
             var settings = board.match.gameData.gameSettings;
             namingSave = true;
             view.saveNameInput.SetTextWithoutNotify($"{settings.homeTeamName} vs {settings.awayTeamName}");
@@ -217,6 +234,7 @@ namespace CounterAttack.Online
 
         private void CloseSaveAs()
         {
+            afterNamedSave = null;
             namingSave = false;
             Refresh();
         }
@@ -224,6 +242,7 @@ namespace CounterAttack.Online
         private void ShowSaveMessage(string message)
         {
             if (namingSave) view.saveModalStatusText.text = message;
+            else if (view.LeaveMatchConfirmation.IsOpen) view.LeaveMatchConfirmation.ShowError(message);
             else
             {
                 saveMessage = message;
@@ -277,6 +296,7 @@ namespace CounterAttack.Online
 
         private bool CloseSubstitutionsOrSettings()
         {
+            if (view.LeaveMatchConfirmation.TryClose() || view.QuitConfirmation?.TryClose() == true) return true;
             if (namingSave)
             {
                 CloseSaveAs();
@@ -392,7 +412,9 @@ namespace CounterAttack.Online
                 editing = false;
                 selectingPlayers = false;
                 namingSave = false;
+                afterNamedSave = null;
                 saveMessage = null;
+                view.LeaveMatchConfirmation.TryClose();
             }
             if (substitutions != null) substitutions.gameObject.SetActive(selectingPlayers || reviewing);
             bool showPause = (paused || reconnecting || resuming || terminalMessage != null) && !editing && !selectingPlayers && !reviewing && !namingSave;
