@@ -23,6 +23,7 @@ namespace CounterAttack.Online
         public Button awayRoleButton, spectatorRoleButton;
         public TMP_Text roleStatus;
         public Button loadMatchButton;
+        [SerializeField] private MenuConfirmation quitConfirmation;
         private static System.Guid? pendingCheckpoint;
         private OnlineFrontendSession hostedSession;
         private OnlineFrontendSession joiningSession;
@@ -107,6 +108,7 @@ namespace CounterAttack.Online
 
         private void Update()
         {
+            if (quitConfirmation?.IsOpen == true) return;
             if (joiningSession != null)
             {
                 if (joiningAway && joiningSession.Client?.Connected == true)
@@ -336,7 +338,7 @@ namespace CounterAttack.Online
             else SceneManager.LoadScene("MainMenu");
         }
 
-        public void Exit() => Application.Quit();
+        public void Exit() => quitConfirmation.ShowQuit();
 
         public static bool TryReadLobbyCode(string input, out string code)
         {

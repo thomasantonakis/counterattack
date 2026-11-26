@@ -25,6 +25,10 @@ public class PauseMenuManager : MonoBehaviour
     // The older online proof scene has its own Quit button.
     public Button quitButton;
     [SerializeField] private MenuConfirmation leaveMatchConfirmation;
+    [SerializeField] private MenuConfirmation quitConfirmation;
+
+    internal MenuConfirmation LeaveMatchConfirmation => leaveMatchConfirmation;
+    internal MenuConfirmation QuitConfirmation => quitConfirmation;
 
     [Header("Save UI")]
     public TextMeshProUGUI pauseSaveStatusText;
@@ -114,10 +118,9 @@ public class PauseMenuManager : MonoBehaviour
 
     void Update()
     {
-        if (leaveMatchConfirmation != null && leaveMatchConfirmation.gameObject.activeSelf)
+        if (leaveMatchConfirmation?.IsOpen == true)
         {
-            if (Input.GetKeyUp(KeyCode.Escape))
-                leaveMatchConfirmation.Close();
+            if (Input.GetKeyUp(KeyCode.Escape)) leaveMatchConfirmation.Close();
             return;
         }
 
