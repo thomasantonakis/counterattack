@@ -70,6 +70,19 @@ namespace CounterAttack.Online
         public GameSettings AgreedSettings=>OnlineSetupRules.Copy(agreedSettings);
         internal GameSettings CaptureHostedSetup() => Hosting && !HostingResume ? OnlineSetupRules.Copy(initial) : null;
         public OnlineLatencySummary Latency=>channel?.Latency.Capture()??new OnlineLatencySummary();
+        internal OnlineConnectionQuality ConnectionState
+        {
+            get
+            {
+                if (stop || disposed || !Busy || channel?.PeerLeft == true || Error != null)
+                    return OnlineConnectionQuality.Disconnected;
+                if (connectionLost || recovery?.Recovering == true)
+                    return OnlineConnectionQuality.Reconnecting;
+                return channel?.Ready == true ? OnlineConnectionQuality.Measuring : OnlineConnectionQuality.Waiting;
+            }
+        }
+
+        internal OnlineConnectionReading CaptureConnection() => channel.Latency.CaptureConnection();
         public int QueuedPackets=>outgoing.Count;
         private OnlineSessionChannel channel;
         private OnlineFrontendRecovery recovery;
