@@ -48,6 +48,8 @@ namespace CounterAttack.Online
         private MatchManager previousMatch;
         private bool ownsMatch;
         private bool spectatorBoardPresented;
+        private string goalAudioMatchId;
+        private int heardHomeGoals, heardAwayGoals;
 
         public void InitializeAuthority()
         {
@@ -146,6 +148,7 @@ namespace CounterAttack.Online
             if (liveFullRoom && OnlineRoomSession.IsGuest)
             {
                 match.ApplyOnlineReplicaMatchState(state);
+                PresentGuestGoalAudio(state);
                 if(movementPanel==null)movementPanel=FindAnyObjectByType<MovementPhaseMovedTokensPanel>(FindObjectsInactive.Include);
                 movementPanel?.ApplyOnline(state.movementPanel,tokens,state.connectionHeld || state.isSharedPaused);
                 if(movementTokenStatusPanel==null)movementTokenStatusPanel=FindAnyObjectByType<MovementPhaseTokenStatusPanel>(FindObjectsInactive.Include);
@@ -218,6 +221,33 @@ namespace CounterAttack.Online
                     +" | defense: "+string.Join(", ",state.header.defenders)
                     +"\n"+string.Join(" | ",state.header.scores.Select(score=>score.actorId+" rolled "+score.roll+" = "+score.total))
                     +(string.IsNullOrEmpty(state.header.winner)?"":" | winner "+state.header.winner);
+        }
+
+        private void PresentGuestGoalAudio(OnlineGroundPassState state)
+        {
+            if (state.homeStats == null || state.awayStats == null) return;
+
+            int homeGoals = state.homeStats.totalGoals;
+            int awayGoals = state.awayStats.totalGoals;
+            if (goalAudioMatchId != state.matchId)
+            {
+                // The first publication may restore a running or saved match.
+                goalAudioMatchId = state.matchId;
+                heardHomeGoals = homeGoals;
+                heardAwayGoals = awayGoals;
+                return;
+            }
+
+            if (homeGoals > heardHomeGoals)
+            {
+                heardHomeGoals = homeGoals;
+                GameplayAudioEvents.PublishGoalConfirmed(match, homeScored: true);
+            }
+            if (awayGoals > heardAwayGoals)
+            {
+                heardAwayGoals = awayGoals;
+                GameplayAudioEvents.PublishGoalConfirmed(match, homeScored: false);
+            }
         }
 
         internal void PresentFullTimeHistory(System.Collections.Generic.IReadOnlyList<GameplayEvent> events, int half)
