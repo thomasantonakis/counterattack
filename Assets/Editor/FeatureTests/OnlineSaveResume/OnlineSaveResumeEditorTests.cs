@@ -114,6 +114,22 @@ public sealed class OnlineSaveResumeEditorTests
     }
 
     [Test]
+    public void BrowserListsCurrentCheckpointAlongsideAnIncompatibleOnlineSave()
+    {
+        var older = Checkpoint();
+        older.rules = "older-rules";
+        var oldStore = new OnlineCheckpointStore(directory, new OnlineCompatibility("protocol", older.rules, "catalog"));
+        var olderSlot = oldStore.Save(older);
+        var currentSlot = store.Save(Checkpoint());
+
+        var entries = store.Browse(out int skipped);
+
+        Assert.That(entries.Select(entry => entry.Slot), Is.EqualTo(new[] { currentSlot }));
+        Assert.That(skipped, Is.EqualTo(1));
+        Assert.That(File.Exists(Path.Combine(directory, olderSlot.ToString("N") + ".json")), Is.True);
+    }
+
+    [Test]
     public void ResumeBootstrapRequiresTheAuthenticatedPeerAndMatchingAcknowledgement()
     {
         var compatibility = new OnlineCompatibility(OnlineSessionWire.Version, "rules", "catalog");

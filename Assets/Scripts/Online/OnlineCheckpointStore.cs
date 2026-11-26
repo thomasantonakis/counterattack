@@ -110,7 +110,7 @@ namespace CounterAttack.Online
                         Clock = $"H{clock.currentHalf} {time / 60:00}:{time % 60:00}"
                     });
                 }
-                catch (Exception error) when (error is IOException or UnauthorizedAccessException or JsonException
+                catch (Exception error) when (error is IOException or InvalidDataException or UnauthorizedAccessException or JsonException
                     or ArgumentException or FormatException or OverflowException)
                 {
                     unreadable++;
