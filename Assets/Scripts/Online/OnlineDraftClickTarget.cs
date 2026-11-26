@@ -1,10 +1,14 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using TMPro;
 namespace CounterAttack.Online
 {
     public sealed class OnlineDraftClickTarget:MonoBehaviour,IPointerClickHandler,IBeginDragHandler,IDragHandler,IEndDragHandler,IDropHandler
     {
         public OnlineDraftView view;public bool card;public int index;public OnlineTeam team;
+        public TMP_Text[] poolCells;
+        public OnlineDraftCard PoolCard { get; private set; }
+        private bool IsPoolRow => poolCells != null && poolCells.Length > 0;
         private OnlineDraftDragSelection selection;
         private RectTransform draggedRect;
         private CanvasGroup dragGroup;
@@ -17,21 +21,41 @@ namespace CounterAttack.Online
         private bool previousOverrideSorting;
         private int previousSortingOrder;
         private PlayerSlotDropHandler highlightedSlot;
+        internal void BindPoolCard(OnlineDraftCard candidate)
+        {
+            PoolCard = candidate;
+            if (candidate != null)
+                for (int column = 0; column < poolCells.Length; column++)
+                    poolCells[column].text = OnlineDraftView.CellValue(candidate, column);
+        }
+
         public void OnPointerClick(PointerEventData eventData)
         {
             if(view==null || eventData==null || eventData.dragging || selection!=null || eventData.button!=PointerEventData.InputButton.Left)return;
-            if(card)view.SelectCard(index,eventData.clickCount==2);
+            if(IsPoolRow){if(PoolCard!=null)view.SelectPoolCard(PoolCard.id,eventData.clickCount==2);}
+            else if(card)view.SelectCard(index,eventData.clickCount==2);
             else view.SelectSlot(team,index);
         }
         public void OnBeginDrag(PointerEventData eventData)
         {
             if(view==null || eventData==null || eventData.button!=PointerEventData.InputButton.Left || selection!=null)return;
             var rect=GetComponent<RectTransform>();var group=GetComponent<CanvasGroup>();
-            if(rect==null || group==null || !view.TryBeginDrag(card,team,index,out var pending))return;
+            if(rect==null || group==null || IsPoolRow && (PoolCard==null || view.poolDragGhost==null)
+                || !view.TryBeginDrag(this,out var pending))return;
+            if(IsPoolRow)
+            {
+                var ghost=view.poolDragGhost;
+                ghost.BindPoolCard(PoolCard);
+                var ghostRect=(RectTransform)ghost.transform;
+                ghostRect.sizeDelta=rect.rect.size;
+                ghostRect.position=rect.position;
+                ghost.gameObject.SetActive(true);
+                rect=ghostRect;
+            }
             selection=pending;draggedRect=rect;dragGroup=group;originalParent=rect.parent;originalPosition=rect.anchoredPosition;originalAlpha=group.alpha;originalRaycasts=group.blocksRaycasts;
             RectTransformUtility.ScreenPointToWorldPointInRectangle(originalParent as RectTransform??rect,eventData.position,eventData.pressEventCamera,out var point);pointerOffset=rect.position-point;
             group.alpha=originalAlpha*.6f;group.blocksRaycasts=false;
-            dragCanvas=GetComponent<Canvas>();
+            dragCanvas=rect.GetComponent<Canvas>();
             if(dragCanvas!=null)
             {
                 previousOverrideSorting=dragCanvas.overrideSorting;
@@ -54,7 +78,7 @@ namespace CounterAttack.Online
         }
         public void OnDrop(PointerEventData eventData)
         {
-            if(card || view==null || eventData?.pointerDrag==null)return;
+            if(card || IsPoolRow || view==null || eventData?.pointerDrag==null)return;
             var source=eventData.pointerDrag.GetComponent<OnlineDraftClickTarget>();if(source==null || source.selection==null)return;
             if(source.view!=view){source.Cancel();return;}
             var pending=source.selection;source.Restore();view.CompleteDrag(pending,team,index);
@@ -62,13 +86,12 @@ namespace CounterAttack.Online
         public void OnEndDrag(PointerEventData eventData)=>Cancel();
         internal bool CanPreviewDrop(OnlineDraftClickTarget target)
         {
-            return selection!=null && target!=null && !target.card && target.view==view
-                && target.team==view.Client.Team && target.index!=(!card?index:0)
-                && (target.index is 1 or 12)==selection.goalkeeper;
+            return selection!=null && target!=null && !target.card && !target.IsPoolRow && target.view==view
+                && view.CanDrop(selection,target.team,target.index);
         }
         private void OnDisable()=>Cancel();
         private void Cancel(){var pending=selection;Restore();if(pending!=null && view!=null)view.CancelDrag(pending);}
-        private void Restore()
+        internal void Restore()
         {
             if(selection==null)return;selection=null;
             if(draggedRect!=null && draggedRect.parent==originalParent)draggedRect.anchoredPosition=originalPosition;
@@ -79,6 +102,7 @@ namespace CounterAttack.Online
                 dragCanvas.overrideSorting=previousOverrideSorting;
             }
             PlayerSlotDropHandler.ClearDropTarget(ref highlightedSlot);
+            if(IsPoolRow && view!=null && view.poolDragGhost!=null)view.poolDragGhost.gameObject.SetActive(false);
             dragCanvas=null;
             draggedRect=null;dragGroup=null;originalParent=null;
         }

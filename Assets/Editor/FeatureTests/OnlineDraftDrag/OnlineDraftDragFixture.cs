@@ -56,7 +56,8 @@ public sealed partial class OnlineDraftSceneFixture
         yield return null;
         var before=client.Capture();var own=client.Team==OnlineTeam.Home?before.home:before.away;
         int offerIndex=Math.Max(0,Array.FindIndex(before.cards,card=>card!=null));
-        var start=pool?view.cards[offerIndex].GetComponent<OnlineDraftClickTarget>():slots[branch is "roster" or "kind" or "large" or "ready" or "empty"?1:0].GetComponent<OnlineDraftClickTarget>();
+        bool poolRow=pool && before.freeSelection;
+        var start=poolRow?view.poolRows[0]:pool?view.cards[offerIndex].GetComponent<OnlineDraftClickTarget>():slots[branch is "roster" or "kind" or "large" or "ready" or "empty"?1:0].GetComponent<OnlineDraftClickTarget>();
         int destination=branch=="last-card"?Array.FindIndex(own,c=>c==null)+1:branch=="large"?18:branch=="keeper"?12:pool?(branch=="gk-card"?1:2):branch is "roster" or "ready"?3:branch=="same"?1:branch=="kind"?1:12;
         var target=(branch=="foreign"?foreign:slots)[destination-1].GetComponent<OnlineDraftClickTarget>();
         var rect=start.GetComponent<RectTransform>();var original=rect.anchoredPosition;var parent=rect.parent;int sibling=rect.GetSiblingIndex();var group=start.GetComponent<CanvasGroup>();Assert.That(group,Is.Not.Null,"Use the authored drag canvas group");float alpha=group.alpha;bool raycasts=group.blocksRaycasts;
@@ -65,9 +66,10 @@ public sealed partial class OnlineDraftSceneFixture
         var canvas=start.GetComponentInParent<Canvas>();var data=new PointerEventData(EventSystem.current){button=PointerEventData.InputButton.Left,pointerDrag=start.gameObject,position=RectTransformUtility.WorldToScreenPoint(canvas.worldCamera,rect.position),dragging=true,pointerPressRaycast=new RaycastResult{gameObject=start.gameObject,module=canvas.GetComponent<GraphicRaycaster>()}};
         bool invalidBegin=branch is "empty" or "roll-blocked";
         string chosen=pool?(before.freeSelection?before.available[0]:before.cards[offerIndex].id):own[start.index-1]?.id;
-        if (pool)
+        if (poolRow) Assert.That(start.poolCells[2].text, Is.EqualTo(start.PoolCard.pace.ToString()));
+        else if (pool)
         {
-            var offered = before.freeSelection ? OnlineDraftCatalog.Load().Single(card => card.id == chosen) : before.cards[offerIndex];
+            var offered = before.cards[offerIndex];
             var pace = view.cards[offerIndex].paceValueText;
             Assert.That(pace.text, Is.EqualTo(offered.pace.ToString()));
             var circle = pace.transform.parent.Find(pace.name + "Badge");
@@ -88,7 +90,8 @@ public sealed partial class OnlineDraftSceneFixture
                 Assert.That(border.gameObject.activeSelf, Is.True);
             if (invalidBegin || branch is "foreign" or "same" or "kind")
                 Assert.That(border.gameObject.activeSelf, Is.False);
-            if(!invalidBegin)Assert.That(Vector2.Distance(rect.anchoredPosition,original),Is.GreaterThan(1),"The existing authored card follows the drag");
+            if(poolRow)Assert.That(view.poolDragGhost.gameObject.activeInHierarchy,Is.True,"The authored row preview follows the drag");
+            else if(!invalidBegin)Assert.That(Vector2.Distance(rect.anchoredPosition,original),Is.GreaterThan(1),"The existing authored card follows the drag");
             if(branch=="disconnect"){if(ReferenceEquals(client,host.Draft))host.TransportLost();else guest.TransportLost();}
             if(branch=="reconnect")
             {
@@ -129,6 +132,7 @@ public sealed partial class OnlineDraftSceneFixture
             Assert.That(group.blocksRaycasts,Is.EqualTo(!emptyOffer && raycasts));
             Assert.That(Object.FindObjectsByType<Transform>(FindObjectsInactive.Include,FindObjectsSortMode.None).Length,Is.EqualTo(hierarchy),"Drag reuses authored objects without runtime placeholders");Assert.That(UnityEngine.Random.state,Is.EqualTo(randomBefore));
             Assert.That(border.gameObject.activeSelf, Is.False);
+            if(poolRow)Assert.That(view.poolDragGhost.gameObject.activeSelf,Is.False);
             Assert.That(app.LastSavedFileName,Is.EqualTo(previousSave));Assert.That(app.HasExplicitSaveContext,Is.EqualTo(explicitSave));
         }
         finally{client.Requested-=observe;ExecuteEvents.Execute(start.gameObject,data,ExecuteEvents.endDragHandler);}

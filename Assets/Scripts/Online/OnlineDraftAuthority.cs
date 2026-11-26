@@ -72,6 +72,7 @@ namespace CounterAttack.Online
         private OnlineTeam turn=OnlineTeam.Home,first;
         private int homeRoll,awayRoll,round=1,batch,picks;
         private long revision,connections,homeSequence,awaySequence;
+        private long arcadeRevisionFloor, homeLastPickRevision, awayLastPickRevision;
         private bool homeReady,awayReady;
         private readonly Dictionary<(OnlineTeam,long),(string body,long revision)> receipts=new();
         private readonly Queue<(OnlineTeam,long)> receiptOrder=new();
@@ -111,7 +112,7 @@ namespace CounterAttack.Online
         private bool Allowed(OnlineDraftCard c,bool keeper)=>c.type?.Trim() switch
         {"TableTopia"=>keeper?settings.includeTabletopiaGK:settings.includeTabletopia,"Not TableTopia"=>keeper?settings.includeNonTabletopiaGK:settings.includeNonTabletopia,"World Cup"=>keeper?settings.includeInternationalsGK:settings.includeInternationals,_=>true};
         private void Observe()
-        {if(connections==protocol.ConnectionRevision)return;connections=protocol.ConnectionRevision;if(phase is "roll" or "pick" or "review")homeReady=awayReady=false;revision++;}
+        {if(connections==protocol.ConnectionRevision)return;connections=protocol.ConnectionRevision;if(phase is "roll" or "pick" or "review")homeReady=awayReady=false;arcadeRevisionFloor=++revision;}
         public bool AdvanceRollResult()
         {
             if(phase is not ("roll-result" or "opening-result") || !protocol.BothConnected || rollClock()<rollResultDeadline)return false;
@@ -181,7 +182,12 @@ namespace CounterAttack.Online
             if(receipts.TryGetValue(key,out var receipt))return receipt.body==body?new(OnlineCommandStatus.Duplicate,receipt.revision):Reply(OnlineCommandStatus.SequenceConflict);
             if(request.sequence<=(actor==OnlineTeam.Home?homeSequence:awaySequence))return Reply(OnlineCommandStatus.StaleSequence);
             if(!protocol.BothConnected)return Reply(OnlineCommandStatus.Disconnected);
-            if(request.revision!=revision)return Reply(OnlineCommandStatus.StaleRevision);
+            bool arcadePick=phase=="pick" && Repeatable && request.intent==OnlineDraftIntent.Pick;
+            bool wasGoalkeeperPhase=goalkeeperPhase;
+            long ownPickRevision=actor==OnlineTeam.Home?homeLastPickRevision:awayLastPickRevision;
+            // A peer filling their own Arcade slots does not invalidate our exact-slot pick.
+            if(request.revision!=revision && (!arcadePick || request.revision>revision
+                || request.revision<Math.Max(arcadeRevisionFloor,ownPickRevision)))return Reply(OnlineCommandStatus.StaleRevision);
             if(phase=="room-ready")return Reply(OnlineCommandStatus.NotReady);
             var roster=actor==OnlineTeam.Home?home:away;
             switch(request.intent)
@@ -196,8 +202,8 @@ namespace CounterAttack.Online
                     if(!Repeatable && actor!=turn)return Reply(OnlineCommandStatus.WrongTeam);
                     int index=request.slot-1;
                     if(index<0 || index>=roster.Length || !goalkeeperPhase && index is 0 or 11)return Reply(OnlineCommandStatus.IllegalAction);
+                    if(FreeSelection && (((index is 0 or 11)!=goalkeeperPhase) || roster[index]!=null))return Reply(OnlineCommandStatus.IllegalAction);
                     var card=(FreeSelection?pool:visible).FirstOrDefault(c=>c!=null && c.id==request.cardId);if(card==null)return Reply(OnlineCommandStatus.IllegalAction);
-                    if(goalkeeperPhase && index is not (0 or 11))index=roster[0]==null?0:11;
                     if(roster[index]!=null)
                     {int destination=-1;for(int n=1;n<=roster.Length;n++){int candidate=(index+n)%roster.Length;if((candidate is 0 or 11)==goalkeeperPhase && roster[candidate]==null){destination=candidate;break;}}index=destination;}
                     if(index<0)return Reply(OnlineCommandStatus.IllegalAction);
@@ -234,7 +240,11 @@ namespace CounterAttack.Online
                     turn=opening.ChoosingHome?OnlineTeam.Home:OnlineTeam.Away;
                     if(opening.IsComplete){phase="room-ready";roomSessionId=Guid.NewGuid().ToString("N");roomStartedUtc=DateTime.UtcNow.ToString("O");}break;
             }
-            revision++;if(actor==OnlineTeam.Home)homeSequence=request.sequence;else awaySequence=request.sequence;
+            revision++;
+            if(!arcadePick || phase!="pick" || goalkeeperPhase!=wasGoalkeeperPhase)
+                arcadeRevisionFloor=revision;
+            if(actor==OnlineTeam.Home){homeSequence=request.sequence;if(arcadePick)homeLastPickRevision=revision;}
+            else{awaySequence=request.sequence;if(arcadePick)awayLastPickRevision=revision;}
             receipts.Add(key,(body,revision));receiptOrder.Enqueue(key);while(receiptOrder.Count>128)receipts.Remove(receiptOrder.Dequeue());return Reply(OnlineCommandStatus.Accepted);
         }
         private static OnlineTeam Other(OnlineTeam team)=>team==OnlineTeam.Home?OnlineTeam.Away:OnlineTeam.Home;

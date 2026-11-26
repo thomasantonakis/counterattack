@@ -133,10 +133,13 @@ public sealed partial class OnlineDraftSceneFixture
             Assert.That(client.Capture().phase,Is.EqualTo("opening-roll"));Assert.That(view.actionButton.interactable,Is.EqualTo(client.Team==OnlineTeam.Home));
         }
         Assert.That(app.LastSavedFileName,Is.EqualTo(previousSave));Assert.That(app.HasExplicitSaveContext,Is.EqualTo(explicitSave));
-        Assert.That(Object.FindObjectsByType<OnlineDraftClickTarget>(FindObjectsInactive.Include,FindObjectsSortMode.None).Length,Is.EqualTo(40),"Projection uses authored controls only");
+        Assert.That(Object.FindObjectsByType<OnlineDraftClickTarget>(FindObjectsInactive.Include).Length,
+            Is.EqualTo(view.homeSlots.Length + view.awaySlots.Length + view.cards.Length + view.poolRows.Length + 1),
+            "Projection uses authored controls only, including the hidden pool and drag preview");
     }
     public IEnumerator Cleanup()
     {
+        if (draftSpectator != null) draftSpectator.Close();
         if(app==null)yield break;
         yield return EditorSceneManager.LoadSceneAsyncInPlayMode("Assets/Scenes/MainMenu.unity",new LoadSceneParameters(LoadSceneMode.Single));
         app.SetSelectedRoomGameMode(previousMode);if(explicitSave)app.SetActiveSaveFilePath(previousSave);else{app.ClearActiveSaveContext();app.LastSavedFileName=previousSave;}

@@ -10,8 +10,13 @@ namespace CounterAttack.Online
         internal readonly bool card,goalkeeper;
         internal readonly int index;
         internal readonly string id;
-        internal OnlineDraftDragSelection(OnlineDraftView view,OnlineDraftClient client,long connection,bool card,int index,OnlineDraftCard player)
-        {this.view=view;this.client=client;this.connection=connection;this.card=card;this.index=index;id=player.id;goalkeeper=player.goalkeeper;}
+        internal readonly OnlineDraftClickTarget source;
+        internal readonly bool fromPool;
+        internal OnlineDraftDragSelection(OnlineDraftView view,OnlineDraftClient client,long connection,OnlineDraftClickTarget source,OnlineDraftCard player)
+        {
+            this.view=view;this.client=client;this.connection=connection;this.source=source;
+            fromPool=source.PoolCard!=null;card=source.card || fromPool;index=source.index;id=player.id;goalkeeper=player.goalkeeper;
+        }
     }
     public sealed partial class OnlineDraftView
     {
@@ -28,12 +33,22 @@ namespace CounterAttack.Online
 
         internal void PublishDragPosition(OnlineDraftDragSelection selection,RectTransform card,Vector2 origin)
         {
-            if(Time.unscaledTimeAsDouble<nextDragFrame || card.parent is not RectTransform parent)return;
+            if(Time.unscaledTimeAsDouble<nextDragFrame)return;
+            var parent=(RectTransform)card.parent;
+            Vector2 offset=card.anchoredPosition-origin;
+            int offerIndex=selection.card?selection.index:0;
+            if(selection.fromPool)
+            {
+                // The first card is a fixed shared reference even while the pool table is displayed.
+                var anchor=(RectTransform)cards[0].transform;
+                parent=(RectTransform)anchor.parent;
+                offset=parent.InverseTransformVector(card.position-anchor.position);
+                offerIndex=0;
+            }
             var size=parent.rect.size;
             if(size.x<=0 || size.y<=0)return;
             nextDragFrame=Time.unscaledTimeAsDouble+1.0/15;
-            var offset=card.anchoredPosition-origin;
-            client.PublishDrag(selection.id,selection.card?0:selection.index,Mathf.Clamp(offset.x/size.x,-2,2),Mathf.Clamp(offset.y/size.y,-2,2),selection.card?selection.index:0);
+            client.PublishDrag(selection.id,selection.card?0:selection.index,Mathf.Clamp(offset.x/size.x,-2,2),Mathf.Clamp(offset.y/size.y,-2,2),offerIndex);
         }
 
         private void RenderRemoteDrag(OnlineDraftDragFrame frame)
@@ -67,7 +82,7 @@ namespace CounterAttack.Online
                 }
                 else
                 {
-                    int index=Array.FindIndex(DisplayedCards(rendered),offer=>offer?.id==frame.cardId);
+                    int index=Array.FindIndex(rendered.cards,offer=>offer?.id==frame.cardId);
                     if(index>=0 && index<cards.Length)target=cards[index].transform as RectTransform;
                 }
             }
@@ -104,23 +119,29 @@ namespace CounterAttack.Online
             previewedOffer=null;
         }
         private string previewedOffer;
-        internal bool TryBeginDrag(bool card,OnlineTeam team,int index,out OnlineDraftDragSelection selection)
+        internal bool TryBeginDrag(OnlineDraftClickTarget target,out OnlineDraftDragSelection selection)
         {
             selection=null;var s=rendered;
             if(!online || activeDrag!=null || client==null || !client.Connected || client.Pending || s==null || s.phase is not ("pick" or "review"))return false;
             OnlineDraftCard player;
-            if(card)
+            if(target.PoolCard!=null)
             {
-                if(s.phase!="pick" || !s.repeatable && s.turn!=client.Team)return false;
-                var visible=DisplayedCards(s);if(index<0 || index>=visible.Length || visible[index]==null)return false;player=visible[index];
+                if(!CanBrowsePool() || !System.Array.Exists(s.available,id=>id==target.PoolCard.id))return false;
+                player=target.PoolCard;
+            }
+            else if(target.card)
+            {
+                if(!CanPick(s) || s.freeSelection || target.index<0 || target.index>=s.cards.Length || s.cards[target.index]==null)return false;
+                player=s.cards[target.index];
             }
             else
             {
-                var roster=client.Team==OnlineTeam.Home?s.home:s.away;
-                if(team!=client.Team || index<1 || index>roster.Length || roster[index-1]==null)return false;player=roster[index-1];
+                var roster=OwnRoster(s);
+                if(target.team!=client.Team || target.index<1 || target.index>roster.Length || roster[target.index-1]==null)return false;
+                player=roster[target.index-1];
             }
             nextDragFrame=0;
-            selection=activeDrag=new OnlineDraftDragSelection(this,client,s.connectionRevision,card,index,player);selected=null;selectedSlot=0;Render();return true;
+            selection=activeDrag=new OnlineDraftDragSelection(this,client,s.connectionRevision,target,player);selected=null;selectedSlot=0;Render();return true;
         }
         internal bool DragIsCurrent(OnlineDraftDragSelection selection)
         {
@@ -129,24 +150,36 @@ namespace CounterAttack.Online
                 || client==null || !client.Connected || client.Pending || s==null || s.connectionRevision!=selection.connection || s.phase is not ("pick" or "review"))return false;
             if(selection.card)
             {
-                if(s.phase!="pick" || !s.repeatable && s.turn!=client.Team)return false;
-                var visible=DisplayedCards(s);return selection.index>=0 && selection.index<visible.Length && visible[selection.index]?.id==selection.id;
+                if(!CanPick(s))return false;
+                if(selection.fromPool)return s.freeSelection && selection.goalkeeper==(s.selection=="goalkeepers")
+                    && System.Array.Exists(s.available,id=>id==selection.id);
+                return !s.freeSelection && selection.index>=0 && selection.index<s.cards.Length && s.cards[selection.index]?.id==selection.id;
             }
             var roster=client.Team==OnlineTeam.Home?s.home:s.away;
             return selection.index>=1 && selection.index<=roster.Length && roster[selection.index-1]?.id==selection.id;
         }
         internal bool CompleteDrag(OnlineDraftDragSelection selection,OnlineTeam team,int slot)
         {
-            bool current=DragIsCurrent(selection);
+            bool canDrop=CanDrop(selection,team,slot);
             if(ReferenceEquals(activeDrag,selection)){activeDrag=null;client?.PublishDrag(null,0,0,0);}
-            if(!current || team!=client.Team){RefreshAfterDrag();return false;}
-            var roster=client.Team==OnlineTeam.Home?rendered.home:rendered.away;
-            if(slot<1 || slot>roster.Length || !selection.card && (slot==selection.index || GoalkeeperSlot(slot)!=GoalkeeperSlot(selection.index))
-                || selection.card && !selection.goalkeeper && GoalkeeperSlot(slot)){RefreshAfterDrag();return false;}
-            // Picks keep the authority's existing GK/occupied-slot placement policy.
+            if(!canDrop){RefreshAfterDrag();return false;}
             bool sent=selection.card?client.Request(OnlineDraftIntent.Pick,selection.id,slot)
                 :client.Request(OnlineDraftIntent.Swap,null,selection.index,slot);
             if(!sent)RefreshAfterDrag();return sent;
+        }
+        internal bool CanDrop(OnlineDraftDragSelection selection,OnlineTeam team,int slot)
+        {
+            if(!DragIsCurrent(selection) || team!=client.Team || slot<1 || slot>OwnRoster(rendered).Length)return false;
+            if(selection.fromPool)return CanPlacePoolCard(rendered,team,slot,selection.id);
+            return GoalkeeperSlot(slot)==selection.goalkeeper && (selection.card || slot!=selection.index);
+        }
+
+        private void InvalidateLocalDrag()
+        {
+            if(activeDrag==null)return;
+            activeDrag.source.Restore();
+            activeDrag=null;
+            client?.PublishDrag(null,0,0,0);
         }
         internal void CancelDrag(OnlineDraftDragSelection selection)
         {if(!ReferenceEquals(activeDrag,selection))return;activeDrag=null;client?.PublishDrag(null,0,0,0);RefreshAfterDrag();}

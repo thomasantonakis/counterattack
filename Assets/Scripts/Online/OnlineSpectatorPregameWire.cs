@@ -37,7 +37,7 @@ namespace CounterAttack.Online
                 } : null,
                 draft = draft == null ? null : new
                 {
-                    draft.phase,
+                    draft.phase, draft.selection, draft.repeatable,
                     draft.turn, draft.homeRoll, draft.awayRoll, draft.rollRound, draft.batch, draft.totalBatches,
                     draft.openingWinnerIsHome,
                     home = Roster(draft.home),

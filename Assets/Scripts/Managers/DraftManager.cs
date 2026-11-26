@@ -2153,7 +2153,7 @@ public class DraftManager : MonoBehaviour
         return (candidateValue ?? string.Empty).IndexOf(filterValue.Trim(), System.StringComparison.OrdinalIgnoreCase) >= 0;
     }
 
-    private bool MatchesNumericFilter(int candidateValue, string filterValue)
+    internal static bool MatchesNumericFilter(int candidateValue, string filterValue)
     {
         if (string.IsNullOrWhiteSpace(filterValue))
         {
@@ -2455,7 +2455,7 @@ public class DraftManager : MonoBehaviour
         return null;
     }
 
-    private string AbbreviateNationality(string nationality)
+    internal static string AbbreviateNationality(string nationality)
     {
         if (string.IsNullOrWhiteSpace(nationality))
         {

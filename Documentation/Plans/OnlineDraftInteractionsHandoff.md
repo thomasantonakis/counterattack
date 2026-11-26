@@ -1,6 +1,6 @@
 ﻿# Online draft interactions handoff
 
-Continue on `feature/online-nonregular-draft-controls`, created from `fix/confirmation-back-hover` at `60e1f84a`. This handoff covers the two managers and spectators in the online `Draft` scene. Implement it in the next session.
+Implementation is on `feature/online-nonregular-draft-controls`, created from `fix/confirmation-back-hover` at `60e1f84a`. See the [feature checklist](../../Assets/Editor/FeatureTests/OnlineDraftInteractions/Verification.md) for current behavior, tests and paired verification. The baseline and original plan below are historical.
 
 The branch inherits `0039b3db` and `60e1f84a` from its parent. Both were ahead of `origin/codex/online-foundation-personal-mac` when the branch was cut. Keep the draft changes in their own commits and check the base before marking the implementation PR ready. Use this branch's plan going forward. The earlier [handoff PR #25](https://github.com/thomasantonakis/counterattack/pull/25) remains a record of the earlier baseline.
 

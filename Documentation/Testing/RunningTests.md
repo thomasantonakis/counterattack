@@ -627,6 +627,12 @@ not standalone player test builds.
 
 ## Online Draft focused filters
 
+Free and Arcade interactions use EditMode `OnlineDraftInteractionRulesTests`
+and PlayMode `OnlineDraftInteractionsPlayModeTests`, category
+`OnlineDraftInteractions`. They cover keeper/outfield roll parity, exact slot
+eligibility, local controls for both managers, crossing Arcade picks and the
+spectator Draft view. See the [feature checklist](../../Assets/Editor/FeatureTests/OnlineDraftInteractions/Verification.md).
+
 Regular Draft: EditMode `OnlineDraftAuthorityEditorTests` (40) and
 `OnlineDraftChannelEditorTests` (16); PlayMode `OnlineDraftScenePlayModeTests` (20).
 Variants: EditMode `OnlineDraftVariantEditorTests` (38),
