@@ -21,10 +21,14 @@ namespace CounterAttack.Online
         private Vector3 normalScale;
         private Color normalColor;
         private float normalFontMin, normalFontMax;
+        private TextWrappingModes normalWrapping;
         private int normalSibling;
         private bool showingDeparture;
+        private RectTransform roomPauseCard;
+        private Vector2 normalPausePosition;
+        private Vector3 normalPauseScale;
 
-        private void OnEnable()
+        private void Awake()
         {
             rect = (RectTransform)transform;
             background = GetComponent<Image>();
@@ -37,9 +41,13 @@ namespace CounterAttack.Online
             normalColor = background.color;
             normalFontMin = reading.fontSizeMin;
             normalFontMax = reading.fontSizeMax;
+            normalWrapping = reading.textWrappingMode;
+        }
+
+        private void OnEnable()
+        {
             observedSession = null;
             nextRefresh = 0;
-            Update();
         }
 
         private void Update()
@@ -55,7 +63,7 @@ namespace CounterAttack.Online
                 roomRulesButton.SetActive(!visible);
             if (onlineRoomRulesButton != null && onlineRoomRulesButton.activeSelf != visible)
                 onlineRoomRulesButton.SetActive(visible);
-            bool departed = visible && session?.PeerLeftPregame == true;
+            bool departed = visible && session?.PeerDeparted == true;
             if (showingDeparture != departed) SetDeparturePresentation(departed);
             if (departed) return;
             if (!visible)
@@ -98,11 +106,6 @@ namespace CounterAttack.Online
                 reading.text = label;
         }
 
-        private void OnDisable()
-        {
-            if (showingDeparture) SetDeparturePresentation(false);
-        }
-
         private void SetDeparturePresentation(bool departed)
         {
             showingDeparture = departed;
@@ -113,15 +116,62 @@ namespace CounterAttack.Online
             rect.anchoredPosition = departed ? Vector2.zero : normalPosition;
             rect.localScale = departed ? normalScale * 3f : normalScale;
             background.color = departed ? new Color32(135, 28, 37, 255) : normalColor;
-            reading.fontSizeMin = departed ? 18 : normalFontMin;
+            bool inRoom = gameObject.scene.name == "Room";
+            reading.fontSizeMin = departed ? (inRoom ? 12 : 18) : normalFontMin;
             reading.fontSizeMax = departed ? 24 : normalFontMax;
+            reading.textWrappingMode = departed ? TextWrappingModes.NoWrap : normalWrapping;
             if (departed)
             {
                 rect.SetAsLastSibling();
-                reading.text = "Connection closed\nThe other manager left.\nPress Leave session to exit.";
+                var pause = GetComponentInParent<Canvas>()?.GetComponentInChildren<PauseMenuManager>(true);
+                if (pause?.pausePanel != null && pause.pausePanel.transform.parent == rect.parent)
+                {
+                    rect.SetSiblingIndex(pause.pausePanel.transform.GetSiblingIndex());
+                    var menu = pause.pausePanel.transform;
+                    roomPauseCard = menu.childCount > 0 ? menu.GetChild(0) as RectTransform : null;
+                    if (roomPauseCard != null)
+                    {
+                        normalPausePosition = roomPauseCard.anchoredPosition;
+                        normalPauseScale = roomPauseCard.localScale;
+                    }
+                }
+                string action = inRoom ? "Use the Pause menu to exit." : "Press Leave session to exit.";
+                reading.text = $"Connection closed\nThe other manager left.\n{action}";
             }
-            else rect.SetSiblingIndex(normalSibling);
+            else
+            {
+                rect.SetSiblingIndex(normalSibling);
+                if (roomPauseCard != null)
+                {
+                    roomPauseCard.anchoredPosition = normalPausePosition;
+                    roomPauseCard.localScale = normalPauseScale;
+                }
+                roomPauseCard = null;
+            }
             nextRefresh = 0;
         }
+
+        private void LateUpdate()
+        {
+            if (!showingDeparture || rect.parent is not RectTransform parent) return;
+            Vector2 center = parent.rect.center;
+            if (roomPauseCard == null)
+            {
+                rect.position = parent.TransformPoint(center);
+                return;
+            }
+
+            const float gap = 16f;
+            float noticeHeight = rect.rect.height * Mathf.Abs(rect.localScale.y);
+            float normalCardHeight = roomPauseCard.rect.height * Mathf.Abs(normalPauseScale.y);
+            float spaceForCard = Mathf.Max(1, parent.rect.height - noticeHeight - 3 * gap);
+            float cardScale = Mathf.Min(1, spaceForCard / Mathf.Max(1, normalCardHeight));
+            roomPauseCard.localScale = normalPauseScale * cardScale;
+            float cardHeight = normalCardHeight * cardScale;
+            // Stack both panels down the center. Fit the Pause card when the viewport is short.
+            rect.position = parent.TransformPoint(center + Vector2.up * (cardHeight + gap) * .5f);
+            roomPauseCard.position = parent.TransformPoint(center - Vector2.up * (noticeHeight + gap) * .5f);
+        }
+
     }
 }

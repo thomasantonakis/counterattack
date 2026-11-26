@@ -89,6 +89,7 @@ public sealed class OnlineFrontendRecoveryEditorTests
         var after=guest.Client.Capture();Assert.That(after.settings.homeTeamName,Is.EqualTo(before.settings.homeTeamName));Assert.That(after.settings.awayTeamName,Is.EqualTo(before.settings.awayTeamName));
         Assert.That(after.homeSequence,Is.EqualTo(before.homeSequence));Assert.That(after.awaySequence,Is.EqualTo(before.awaySequence));
         Assert.That(guest.Client.Pending,Is.False);
+        if(branch=="pending")Assert.That(guest.Client.Dirty,Is.False,"The recovered snapshot acknowledges the submitted edit");
         if(branch=="agreed"){Assert.That(after.phase,Is.EqualTo("draft-ready"));Assert.That(after.homeReady && after.awayReady,Is.True);Assert.That(notifications,Is.EqualTo(1));}
         else Assert.That(after.homeReady || after.awayReady,Is.False,"Reconnect invalidates setup consent");
     }

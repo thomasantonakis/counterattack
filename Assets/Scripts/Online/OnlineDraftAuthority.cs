@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace CounterAttack.Online
 {
-    public enum OnlineDraftIntent { Roll, Pick, Swap, Ready, Unready, Start, Choose }
+    public enum OnlineDraftIntent { Roll, Pick, Swap, Ready, Unready, Start, Choose, ReturnToPool }
     [Serializable] public sealed class OnlineDraftCard
     {
         public string id,name,country,type;
@@ -72,7 +72,7 @@ namespace CounterAttack.Online
         private OnlineTeam turn=OnlineTeam.Home,first;
         private int homeRoll,awayRoll,round=1,batch,picks;
         private long revision,connections,homeSequence,awaySequence;
-        private long arcadeRevisionFloor, homeLastPickRevision, awayLastPickRevision;
+        private long arcadeRevisionFloor, homeLastPoolEditRevision, awayLastPoolEditRevision;
         private bool homeReady,awayReady;
         private readonly Dictionary<(OnlineTeam,long),(string body,long revision)> receipts=new();
         private readonly Queue<(OnlineTeam,long)> receiptOrder=new();
@@ -169,7 +169,7 @@ namespace CounterAttack.Online
             Observe();return Copy(new OnlineDraftState{matchId=protocol.MatchId,revision=revision,connectionRevision=connections,homeSequence=homeSequence,awaySequence=awaySequence,
                 phase=phase,turn=turn,hostTeam=protocol.HostTeam,firstPicker=first,connected=protocol.BothConnected,homeReady=homeReady,awayReady=awayReady,
                 homeRoll=homeRoll,awayRoll=awayRoll,rollRound=round,batch=batch,totalBatches=(home.Length-2)/2,settings=settings,cards=visible.ToArray(),home=home,away=away,
-                selection=goalkeeperPhase?"goalkeepers":"outfielders",freeSelection=FreeSelection,repeatable=Repeatable,available=FreeSelection && phase is "pick" or "roll"?pool.Select(c=>c.id).ToArray():Array.Empty<string>(),
+                selection=goalkeeperPhase?"goalkeepers":"outfielders",freeSelection=FreeSelection,repeatable=Repeatable,available=FreeSelection && (phase=="roll" || phase=="pick" || ArcadePoolOpen)?pool.Select(c=>c.id).ToArray():Array.Empty<string>(),
                 openingCanChooseKickoff=opening?.CanChooseKickoff==true,openingWinnerIsHome=opening?.WinnerIsHome==true,openingSetup=opening?.Result,roomSessionId=roomSessionId,roomStartedUtc=roomStartedUtc});
         }
         public OnlineCommandReply Submit(string connection,OnlineDraftRequest request)
@@ -182,12 +182,13 @@ namespace CounterAttack.Online
             if(receipts.TryGetValue(key,out var receipt))return receipt.body==body?new(OnlineCommandStatus.Duplicate,receipt.revision):Reply(OnlineCommandStatus.SequenceConflict);
             if(request.sequence<=(actor==OnlineTeam.Home?homeSequence:awaySequence))return Reply(OnlineCommandStatus.StaleSequence);
             if(!protocol.BothConnected)return Reply(OnlineCommandStatus.Disconnected);
-            bool arcadePick=phase=="pick" && Repeatable && request.intent==OnlineDraftIntent.Pick;
+            bool arcadeEdit=ArcadePoolOpen && (request.intent==OnlineDraftIntent.ReturnToPool
+                || phase=="pick" && request.intent==OnlineDraftIntent.Pick);
             bool wasGoalkeeperPhase=goalkeeperPhase;
-            long ownPickRevision=actor==OnlineTeam.Home?homeLastPickRevision:awayLastPickRevision;
-            // A peer filling their own Arcade slots does not invalidate our exact-slot pick.
-            if(request.revision!=revision && (!arcadePick || request.revision>revision
-                || request.revision<Math.Max(arcadeRevisionFloor,ownPickRevision)))return Reply(OnlineCommandStatus.StaleRevision);
+            long ownPoolEditRevision=actor==OnlineTeam.Home?homeLastPoolEditRevision:awayLastPoolEditRevision;
+            // Independent Arcade pool edits can overlap on opposite rosters.
+            if(request.revision!=revision && (!arcadeEdit || request.revision>revision
+                || request.revision<Math.Max(arcadeRevisionFloor,ownPoolEditRevision)))return Reply(OnlineCommandStatus.StaleRevision);
             if(phase=="room-ready")return Reply(OnlineCommandStatus.NotReady);
             var roster=actor==OnlineTeam.Home?home:away;
             switch(request.intent)
@@ -211,7 +212,7 @@ namespace CounterAttack.Online
                     if(FreeSelection)
                     {
                         if(!Repeatable)pool.Remove(card);
-                        if(StageFull(home) && StageFull(away)){if(goalkeeperPhase)BeginOutfield();else phase="review";}
+                        if(StageFull(home) && StageFull(away)){if(goalkeeperPhase && !Repeatable)BeginOutfield();else phase="review";}
                         else if(!Repeatable)turn=Other(turn);
                         break;
                     }
@@ -224,8 +225,19 @@ namespace CounterAttack.Online
                     if(phase is not ("pick" or "review") || from<0 || to<0 || from>=roster.Length || to>=roster.Length || from==to || ((from is 0 or 11)!=(to is 0 or 11)) || roster[from]==null)return Reply(OnlineCommandStatus.IllegalAction);
                     (roster[from],roster[to])=(roster[to],roster[from]);homeReady=awayReady=false;break;
                 case OnlineDraftIntent.Ready:
-                    if(phase!="review" || home.Any(c=>c==null) || away.Any(c=>c==null))return Reply(OnlineCommandStatus.NotReady);
-                    if(actor==OnlineTeam.Home)homeReady=true;else awayReady=true;break;
+                    if(phase!="review" || !StageFull(home) || !StageFull(away))return Reply(OnlineCommandStatus.NotReady);
+                    if(actor==OnlineTeam.Home)homeReady=true;else awayReady=true;
+                    if(goalkeeperPhase && homeReady && awayReady)BeginOutfield();
+                    break;
+                case OnlineDraftIntent.ReturnToPool:
+                    if(!ArcadePoolOpen)return Reply(OnlineCommandStatus.NotReady);
+                    int returned=request.slot-1;
+                    if(returned<0 || returned>=roster.Length || ((returned is 0 or 11)!=goalkeeperPhase)
+                        || roster[returned]==null || roster[returned].id!=request.cardId)return Reply(OnlineCommandStatus.IllegalAction);
+                    roster[returned]=null;
+                    homeReady=awayReady=false;
+                    phase="pick";
+                    break;
                 case OnlineDraftIntent.Unready:
                     if(phase is "opening-roll" or "opening-choice")return Reply(OnlineCommandStatus.NotReady);
                     if(actor==OnlineTeam.Home)homeReady=false;else awayReady=false;break;
@@ -241,10 +253,10 @@ namespace CounterAttack.Online
                     if(opening.IsComplete){phase="room-ready";roomSessionId=Guid.NewGuid().ToString("N");roomStartedUtc=DateTime.UtcNow.ToString("O");}break;
             }
             revision++;
-            if(!arcadePick || phase!="pick" || goalkeeperPhase!=wasGoalkeeperPhase)
+            if(!arcadeEdit || !ArcadePoolOpen || goalkeeperPhase!=wasGoalkeeperPhase)
                 arcadeRevisionFloor=revision;
-            if(actor==OnlineTeam.Home){homeSequence=request.sequence;if(arcadePick)homeLastPickRevision=revision;}
-            else{awaySequence=request.sequence;if(arcadePick)awayLastPickRevision=revision;}
+            if(actor==OnlineTeam.Home){homeSequence=request.sequence;if(arcadeEdit)homeLastPoolEditRevision=revision;}
+            else{awaySequence=request.sequence;if(arcadeEdit)awayLastPoolEditRevision=revision;}
             receipts.Add(key,(body,revision));receiptOrder.Enqueue(key);while(receiptOrder.Count>128)receipts.Remove(receiptOrder.Dequeue());return Reply(OnlineCommandStatus.Accepted);
         }
         private static OnlineTeam Other(OnlineTeam team)=>team==OnlineTeam.Home?OnlineTeam.Away:OnlineTeam.Home;

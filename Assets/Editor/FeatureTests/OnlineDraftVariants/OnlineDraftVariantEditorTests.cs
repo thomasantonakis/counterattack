@@ -25,16 +25,23 @@ public sealed class OnlineDraftVariantEditorTests
         settings.includeNonTabletopia=settings.includeInternationals=settings.includeNonTabletopiaGK=settings.includeInternationalsGK=true;
         Create(hostAway,settings);Assert.That(replica.Apply(authority.Capture()),Is.True);
         int selections=0;
-        for(int step=0;step<100 && authority.Capture().phase!="review";step++)
+        for(int step=0;step<100;step++)
         {
             var s=authority.Capture();
-            if(s.phase=="roll"){Submit(s.turn,OnlineDraftIntent.Roll);continue;}
             bool keeper=s.selection=="goalkeepers";
+            if(s.phase=="review")
+            {
+                if(!keeper)break;
+                Submit(OnlineTeam.Home,OnlineDraftIntent.Ready);
+                Submit(OnlineTeam.Away,OnlineDraftIntent.Ready);
+                continue;
+            }
+            if(s.phase=="roll"){Submit(s.turn,OnlineDraftIntent.Roll);continue;}
             OnlineTeam actor=s.turn;
             if(s.repeatable)actor=s.home.Where((_,i)=>(i is 0 or 11)==keeper).Any(c=>c==null)?OnlineTeam.Home:OnlineTeam.Away;
             var roster=actor==OnlineTeam.Home?s.home:s.away;
             int slot=Enumerable.Range(0,roster.Length).First(i=>(i is 0 or 11)==keeper && roster[i]==null)+1;
-            string id=s.freeSelection?s.available.First():s.cards.First().id;
+            string id=s.freeSelection?s.available.First():s.cards.First(card=>card!=null).id;
             Submit(actor,OnlineDraftIntent.Pick,id,slot);selections++;
         }
         var final=authority.Capture();Assert.That(final.phase,Is.EqualTo("review"));Assert.That(final.home.Concat(final.away).All(c=>c!=null),Is.True);

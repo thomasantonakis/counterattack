@@ -85,10 +85,19 @@ namespace CounterAttack.Online
         }
         public void OnDrop(PointerEventData eventData)
         {
-            if(card || IsPoolRow || view==null || eventData?.pointerDrag==null)return;
+            if(IsPoolRow){DropOnPool(view,eventData);return;}
+            if(card || view==null || eventData?.pointerDrag==null)return;
             var source=eventData.pointerDrag.GetComponent<OnlineDraftClickTarget>();if(source==null || source.selection==null)return;
             if(source.view!=view){source.Cancel();return;}
             var pending=source.selection;source.Restore();view.CompleteDrag(pending,team,index);
+        }
+        internal static void DropOnPool(OnlineDraftView destination, PointerEventData eventData)
+        {
+            var source = eventData?.pointerDrag?.GetComponent<OnlineDraftClickTarget>();
+            if (destination == null || source == null || source.view != destination || source.selection == null) return;
+            var pending = source.selection;
+            source.Restore();
+            destination.CompletePoolReturn(pending);
         }
         public void OnEndDrag(PointerEventData eventData)=>Cancel();
         internal bool CanPreviewDrop(OnlineDraftClickTarget target)

@@ -10,14 +10,14 @@ using CounterAttack.Online;
 public static class RoomSaveService
 {
     internal static bool CanCaptureOnline(MatchManager match, OnlineMatchProtocol protocol, OnlineSharedPause pause,
-        OnlineGroundPassState publication, out string reason)
+        OnlineGroundPassState publication, out string reason, bool peerDeparted = false)
     {
         if (OnlineRoomSession.Current?.HasInitialData != true || OnlineRoomSession.IsGuest
             || protocol.HostTeam != OnlineTeam.Home || !match.IsOnlineAuthorityControlled)
             reason = "Only the host can save this online match.";
-        else if (!protocol.BothConnected || pause.ConnectionHeld || publication == null)
+        else if (publication == null || !peerDeparted && (!protocol.BothConnected || pause.ConnectionHeld))
             reason = "Wait for both managers to connect before saving.";
-        else if (!pause.IsPaused || publication.sharedPauseRevision != pause.Revision)
+        else if (peerDeparted ? !match.IsPauseMenuOpen : !pause.IsPaused || publication.sharedPauseRevision != pause.Revision)
             reason = "Pause the match before saving.";
         else if (!OnlineCheckpointStore.SupportedState(match.currentState.ToString()) || publication.introPending
             || publication.coin != null || publication.shootout != null || publication.matchComplete
@@ -30,7 +30,8 @@ public static class RoomSaveService
             || match.shotManager?.isWaitingForSnapshotDecisionFromLoose == true
             || match.shotManager?.isWaitingForShotCommitConfirmation == true
             || match.DecisionTiming.HasRollWait || MatchManager.TimingResultBlocked)
-            reason = "Finish the current action, restart, or roll. Save at the next action choice.";
+            reason = peerDeparted ? "No checkpoint is available while an action, restart, or roll is in progress."
+                : "Finish the current action, restart, or roll. Save at the next action choice.";
         else
             return match.CanCreateRuntimeSnapshot(out reason);
         return false;

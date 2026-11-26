@@ -263,12 +263,43 @@ public sealed partial class OnlineDraftSceneFixture
             Assert.That(client.Capture().selection, Is.EqualTo(keepers ? "goalkeepers" : "outfielders"));
             if (keepers)
             {
-                Assert.That(view.poolFilters[0].interactable, Is.False);
+                Assert.That(view.poolFilters[0].interactable, Is.True);
                 Assert.That(replica.poolFilters[0].interactable, Is.True);
                 ClickPool(replica.poolRows.First(row => row.PoolCard?.id == shared.id), 2);
                 Flush();
+                Assert.That(client.Phase, Is.EqualTo("review"));
+                Assert.That(view.poolTable.activeInHierarchy && replica.poolTable.activeInHierarchy, Is.True);
+                replica.actionButton.onClick.Invoke();
+                Flush();
+                Assert.That(view.poolTable.activeInHierarchy && replica.poolTable.activeInHierarchy, Is.True);
+                var rosterSlot = Slots(view, client.Team)[second - 1].GetComponent<OnlineDraftClickTarget>();
+                var rosterDrag = BeginPoolDrag(rosterSlot);
+                Assert.That(ExecuteEvents.Execute(view.poolTable, rosterDrag, ExecuteEvents.dropHandler), Is.True);
+                ExecuteEvents.Execute(rosterSlot.gameObject, rosterDrag, ExecuteEvents.endDragHandler);
+                Flush();
+                Assert.That(Roster(client)[second - 1], Is.Null);
+                Assert.That(Roster(peer)[second - 1].id, Is.EqualTo(shared.id));
+                Assert.That(client.Capture().homeReady || client.Capture().awayReady, Is.False);
+                leftDrag = BeginPoolDrag(left);
+                FinishPoolDrag(left, leftDrag, Slots(view, client.Team)[second - 1]);
+                Flush();
+                view.actionButton.onClick.Invoke();
+                Flush();
+                replica.actionButton.onClick.Invoke();
+                Flush();
+                Assert.That(client.Capture().selection, Is.EqualTo("outfielders"));
                 Assert.That(view.poolFilters[0].text, Is.Empty);
                 Assert.That(replica.poolFilters[0].text, Is.Empty);
+            }
+            else
+            {
+                var rosterSlot = Slots(replica, peer.Team)[first - 1].GetComponent<OnlineDraftClickTarget>();
+                var rosterDrag = BeginPoolDrag(rosterSlot);
+                Assert.That(ExecuteEvents.Execute(replica.poolRows[0].gameObject, rosterDrag, ExecuteEvents.dropHandler), Is.True);
+                ExecuteEvents.Execute(rosterSlot.gameObject, rosterDrag, ExecuteEvents.endDragHandler);
+                Flush();
+                Assert.That(Roster(peer)[first - 1], Is.Null);
+                Assert.That(Roster(client)[first - 1].id, Is.EqualTo(shared.id));
             }
         }
     }

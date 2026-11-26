@@ -51,7 +51,11 @@ namespace CounterAttack.Online
             }
         }
 
-        private bool CanBrowsePool() => activeDrag == null && rendered?.freeSelection == true && CanPick(rendered);
+        private static bool IsPoolOpen(OnlineDraftState state) => state?.freeSelection == true
+            && (state.phase == "pick" || state.repeatable && state.phase == "review" && !(state.homeReady && state.awayReady));
+
+        private bool CanBrowsePool() => activeDrag == null && IsPoolOpen(rendered)
+            && !watching && client?.Connected == true && !client.Pending && (rendered.repeatable || CanPick(rendered));
 
         private bool CanPick(OnlineDraftState state)
         {
@@ -73,7 +77,7 @@ namespace CounterAttack.Online
         internal void SelectPoolCard(string id, bool quickPick)
         {
             var state = rendered;
-            if (!CanBrowsePool() || !state.available.Contains(id)) return;
+            if (!CanBrowsePool() || !CanPick(state) || !state.available.Contains(id)) return;
             selected = id;
             selectedSlot = 0;
             if (quickPick)
@@ -109,7 +113,7 @@ namespace CounterAttack.Online
         {
             if (poolTable == null) return;
             BindPool();
-            bool visible = state?.freeSelection == true && state.phase == "pick" && !watching;
+            bool visible = IsPoolOpen(state) && !watching;
             poolTable.SetActive(visible);
             if (!visible) return;
 

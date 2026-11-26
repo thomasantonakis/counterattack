@@ -93,11 +93,11 @@ public sealed class OnlineDraftPolishSceneFixture
         Assert.That(filtered.All(value => value >= 2), Is.True);
     }
 
-    public IEnumerator RunDeparture(bool inDraft)
+    public IEnumerator RunDeparture(bool inDraft, bool hostLeaves)
     {
         var link = new OnlineDraftReturnTransport(inDraft ? OnlineSetupAgreementEditorTests.Valid() : OnlineModeMenu.HostDefaults(),
             startDraft: inDraft);
-        yield return Load(inDraft ? "Draft" : "CreateNewGameScene", link.Host);
+        yield return Load(inDraft ? "Draft" : "CreateNewGameScene", hostLeaves ? link.Guest : link.Host);
         if (!inDraft)
         {
             var setup = Object.FindAnyObjectByType<OnlineSetupNetworkPanel>();
@@ -107,6 +107,9 @@ public sealed class OnlineDraftPolishSceneFixture
                 Assert.That(field.placeholder.GetComponent<TMP_Text>().text, Is.Not.Empty);
             }
             Assert.That(setup.setup.createGameButton.interactable, Is.False);
+            Assert.That(setup.panel.activeSelf, Is.False);
+            Assert.That(setup.sessionLobbyCode.gameObject.activeInHierarchy && setup.sessionLobbyCode.readOnly, Is.True);
+            Assert.That(setup.sessionLobbyCode.text, Is.EqualTo("AB12CD34"));
         }
         var panel = Object.FindAnyObjectByType<OnlineConnectionPanel>();
         var rect = (RectTransform)panel.transform;
@@ -116,9 +119,13 @@ public sealed class OnlineDraftPolishSceneFixture
         float originalFontSize = label.fontSize;
         Assert.That(rect.anchoredPosition, Is.Not.EqualTo(Vector2.zero));
 
-        link.Guest.Leave();
+        (hostLeaves ? (OnlineSessionChannel)link.Host : link.Guest).Leave();
         link.Flush();
-        yield return null;
+        for (int frame = 0; frame < 4; frame++)
+        {
+            yield return null;
+            if (frame == 0) rect.anchoredPosition = new Vector2(0, -340);
+        }
         Canvas.ForceUpdateCanvases();
         label.ForceMeshUpdate();
         Assert.That(rect.anchorMin, Is.EqualTo(new Vector2(.5f, .5f)));
@@ -133,6 +140,7 @@ public sealed class OnlineDraftPolishSceneFixture
         var leave = inDraft ? Object.FindAnyObjectByType<OnlineDraftView>().leaveButton
             : Object.FindAnyObjectByType<OnlineSetupNetworkPanel>().leaveButton;
         Assert.That(leave.interactable, Is.True);
+        Assert.That(leave.gameObject.activeInHierarchy, Is.True);
     }
 
     private IEnumerator Load(string scene, OnlineSessionChannel channel)
@@ -147,6 +155,7 @@ public sealed class OnlineDraftPolishSceneFixture
         app.SetSelectedRoomGameMode(ApplicationManager.OnlineGameMode);
         session = new GameObject("Draft presentation test session").AddComponent<OnlineFrontendSession>();
         typeof(OnlineFrontendSession).GetField("channel", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(session, channel);
+        typeof(OnlineFrontendSession).GetProperty(nameof(OnlineFrontendSession.LobbyCode)).SetValue(session, "AB12CD34");
         yield return EditorSceneManager.LoadSceneAsyncInPlayMode($"Assets/Scenes/{scene}.unity", new LoadSceneParameters(LoadSceneMode.Single));
         yield return null;
     }

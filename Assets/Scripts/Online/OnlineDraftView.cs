@@ -222,12 +222,13 @@ namespace CounterAttack.Online
             RenderRolls(s, client.Connected && !client.Pending && s.turn == client.Team);
             string team=s.turn==OnlineTeam.Home?s.settings.homeTeamName:s.settings.awayTeamName;
             sourceUi.draftTurnText.text=s.phase is "roll" or "opening-roll"?team+" rolls":s.phase=="opening-choice"?team+" chooses"
-                :s.phase is "roll-result" or "opening-result"?"Roll results":s.phase=="pick"?s.repeatable?"Choose your "+s.selection:team+" picks":"Draft complete";
-            sourceUi.draftBatchText.text=s.freeSelection && s.phase=="pick" && poolTable!=null
+                :s.phase is "roll-result" or "opening-result"?"Roll results":s.phase=="pick"?s.repeatable?"Choose your "+s.selection:team+" picks"
+                :s.phase=="review" && s.selection=="goalkeepers"?"Review keepers":"Draft complete";
+            sourceUi.draftBatchText.text=IsPoolOpen(s) && poolTable!=null
                 ? $"{s.selection} · {poolCount} available · Page {page+1} / {PoolPageCount}"
                 : s.freeSelection ? s.selection : "Batch "+s.batch+" / "+s.totalBatches+" · Home roll "+s.homeRoll+" · Away roll "+s.awayRoll;
             bool localReady=client.Team==OnlineTeam.Home?s.homeReady:s.awayReady;
-            string label=s.phase is "roll" or "opening-roll"?"Roll":client.IsHost && s.homeReady && s.awayReady?"Start match":localReady?"Waiting for player":"Confirm roster";
+            string label=s.phase is "roll" or "opening-roll"?"Roll":client.IsHost && s.homeReady && s.awayReady?"Start match":localReady?"Waiting for player":s.selection=="goalkeepers"?"Confirm keepers":"Confirm roster";
             actionButton.GetComponentInChildren<TMP_Text>(true).text=label;
             actionButton.interactable=client.Connected && !client.Pending && ((s.phase is "roll" or "opening-roll") && s.turn==client.Team || s.phase=="review" && (!localReady || client.IsHost && s.homeReady && s.awayReady));
             if(rollPanelButton!=null)
@@ -236,7 +237,7 @@ namespace CounterAttack.Online
                 actionButton.gameObject.SetActive(s.phase=="review");
             }
             sourceUi.draftMetaText.text=!client.Connected?"Connection interrupted. Draft is held.":s.phase=="room-ready"?"Opening choices agreed. Preparing match...":client.Pending?"Sending selection...":s.phase=="opening-choice"?s.turn==client.Team?"Choose kickoff or your attacking direction.":"Waiting for the other manager's opening choice."
-                :activeDrag!=null?"Drop onto one of your own roster slots.":selected!=null?"Select a destination slot in your roster.":selectedSlot>0?"Select another own slot to swap with number "+selectedSlot+"."
+                :activeDrag!=null?s.repeatable && !activeDrag.card && IsPoolOpen(s) && activeDrag.goalkeeper==(s.selection=="goalkeepers")?"Drop onto the pool or another eligible slot.":"Drop onto one of your own roster slots.":selected!=null?"Select a destination slot in your roster.":selectedSlot>0?"Select another own slot to swap with number "+selectedSlot+"."
                 :s.phase=="pick" && s.freeSelection?CanPick(s)?"Drag to an empty roster slot or double-click to fill the next slot.":s.repeatable?"Waiting for the other manager to finish.":$"Waiting for {team} to pick."
                 :s.phase=="pick"?"Select a card, then your preferred slot. Select two own slots to swap.":s.phase=="review"?"Review your roster and confirm. Changes clear both confirmations.":"Each manager rolls for their own team.";
         }

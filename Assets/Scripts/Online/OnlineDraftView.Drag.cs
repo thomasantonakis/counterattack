@@ -181,6 +181,20 @@ namespace CounterAttack.Online
             return GoalkeeperSlot(slot)==selection.goalkeeper && (selection.card || slot!=selection.index);
         }
 
+        internal void CompletePoolReturn(OnlineDraftDragSelection selection)
+        {
+            bool canReturn = DragIsCurrent(selection) && !selection.card && rendered.repeatable
+                && IsPoolOpen(rendered) && selection.goalkeeper == (rendered.selection == "goalkeepers");
+            if (!canReturn)
+            {
+                CancelDrag(selection);
+                return;
+            }
+            activeDrag = null;
+            client.PublishDrag(null, 0, 0, 0);
+            if (!client.Request(OnlineDraftIntent.ReturnToPool, selection.id, selection.index)) RefreshAfterDrag();
+        }
+
         private void InvalidateLocalDrag()
         {
             if(activeDrag==null)return;

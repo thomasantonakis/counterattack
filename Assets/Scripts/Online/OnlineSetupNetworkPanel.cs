@@ -13,6 +13,7 @@ namespace CounterAttack.Online
         public GameObject panel;
         public Button hostButton,joinButton,leaveButton,copyButton;
         public TMP_InputField lobbyCode;
+        public TMP_InputField sessionLobbyCode;
         public Toggle relayOnly;
         public TMP_Text connectionStatus;
         public OnlineFrontendSession sessionPrefab;
@@ -184,6 +185,19 @@ namespace CounterAttack.Online
             var current=OnlineFrontendSession.Current;
             if(bound==null && current!=null)Bind(current);
             bool idle=current==null;
+            bool showLobbyCode = !string.IsNullOrEmpty(current?.LobbyCode);
+            bool departed = current?.PeerDeparted == true;
+            if (sessionLobbyCode != null)
+            {
+                sessionLobbyCode.gameObject.SetActive(showLobbyCode);
+                sessionLobbyCode.SetTextWithoutNotify(showLobbyCode ? current.LobbyCode ?? string.Empty : string.Empty);
+                panel.SetActive(!showLobbyCode || departed || current.Error != null);
+                hostButton.gameObject.SetActive(!showLobbyCode && !joining);
+                lobbyCode.gameObject.SetActive(!showLobbyCode && !joining);
+                copyButton.gameObject.SetActive(!showLobbyCode && !joining);
+                connectionStatus.gameObject.SetActive(!showLobbyCode || !departed && current.Error != null);
+                if (view.status != null && showLobbyCode) view.status.gameObject.SetActive(false);
+            }
             hostButton.interactable=joinButton.interactable=idle && sessionPrefab!=null;
             leaveButton.interactable=joining || !idle;copyButton.interactable=current?.LobbyCode!=null;
             lobbyCode.readOnly=true;

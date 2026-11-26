@@ -45,7 +45,15 @@ namespace CounterAttack.Online
         public bool Apply(OnlineSetupState snapshot)
         {
             if(!CanApply(snapshot))return false;
-            if(state!=null && snapshot.connectionRevision!=state.connectionRevision)pending=null;
+            long confirmedSequence = Team == OnlineTeam.Home ? snapshot.homeSequence : snapshot.awaySequence;
+            if (state != null && snapshot.connectionRevision != state.connectionRevision)
+            {
+                // The reconnected snapshot can carry the acknowledgement whose reply was lost.
+                if (pending?.sequence == confirmedSequence && pending.intent is OnlineSetupIntent.Confirm or OnlineSetupIntent.Edit
+                    && pendingEditVersion == editVersion)
+                    draft = null;
+                pending = null;
+            }
             if(Phase=="draft-ready" && snapshot.phase=="setup")
             {agreed=false;pending=null;draft=null;}
             if(state!=null && state.settings.matchType!=snapshot.settings.matchType && draft?.matchType!=snapshot.settings.matchType)
@@ -54,7 +62,7 @@ namespace CounterAttack.Online
                 pending=null;
             }
             state=JsonConvert.DeserializeObject<OnlineSetupState>(JsonConvert.SerializeObject(snapshot));
-            nextSequence=Math.Max(nextSequence,Team==OnlineTeam.Home?state.homeSequence:state.awaySequence);
+            nextSequence=Math.Max(nextSequence,confirmedSequence);
             Changed?.Invoke();
             if(!agreed && state.phase=="draft-ready" && state.connected)
             {agreed=true;DraftAgreed?.Invoke(OnlineSetupRules.Copy(state.settings));}

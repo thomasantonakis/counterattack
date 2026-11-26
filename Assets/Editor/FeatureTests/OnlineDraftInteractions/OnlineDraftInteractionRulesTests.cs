@@ -135,6 +135,8 @@ public sealed class OnlineDraftInteractionRulesTests
         Assert.That(Submit(second, OnlineDraftIntent.Pick, keeper, 1, initial.revision), Is.EqualTo(OnlineCommandStatus.Accepted));
         Assert.That(draft.Capture().selection, Is.EqualTo("goalkeepers"));
         Assert.That(Submit(second, OnlineDraftIntent.Pick, keeper, 12), Is.EqualTo(OnlineCommandStatus.Accepted));
+        Assert.That(Submit(first, OnlineDraftIntent.Ready), Is.EqualTo(OnlineCommandStatus.Accepted));
+        Assert.That(Submit(second, OnlineDraftIntent.Ready), Is.EqualTo(OnlineCommandStatus.Accepted));
         var outfield = draft.Capture();
         Assert.That((outfield.phase, outfield.selection, outfield.repeatable), Is.EqualTo(("pick", "outfielders", true)));
         Assert.That(outfield.home.Concat(outfield.away).Where(card => card != null).Select(card => card.id), Is.EqualTo(Enumerable.Repeat(keeper, 4)));

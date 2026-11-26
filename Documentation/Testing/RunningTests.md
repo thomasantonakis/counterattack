@@ -627,6 +627,10 @@ not standalone player test builds.
 
 ## Online Draft focused filters
 
+Use category `OnlineDraftDeparture` for Arcade pool returns and the confirmation
+boundary, terminal peer departure, and the Room's Pause, checkpoint and lobby-code
+controls. See the [departure and Arcade checklist](../../Assets/Editor/FeatureTests/OnlineDraftDeparture/Verification.md).
+
 Use category `OnlineDraftPolish` for Hot Seat dice cue and timing parity,
 required online team names, goalkeeper dribbling, and the pre-match departure
 notice. The authored pool height is checked by

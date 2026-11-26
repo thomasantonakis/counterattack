@@ -16,6 +16,7 @@ public class PauseMenuManager : MonoBehaviour
     private static readonly Color CardStatusColor = new Color32(30, 69, 89, 255);
 
     public GameObject pausePanel;  // Reference to the Pause Panel
+    public TMP_InputField onlineLobbyCode;
     public Button resumeButton;
     public Button saveMatchButton;
     public Button saveMatchAsButton;

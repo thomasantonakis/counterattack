@@ -30,6 +30,6 @@ public sealed class OnlineDraftPolishPlayModeTests
         => (IEnumerator)Bridge.GetMethod("RunKeeperRatings").Invoke(fixture, null);
 
     [UnityTest]
-    public IEnumerator ExplicitDepartureCentersTheConnectionPanel([Values(true, false)] bool inDraft)
-        => (IEnumerator)Bridge.GetMethod("RunDeparture").Invoke(fixture, new object[] { inDraft });
+    public IEnumerator ExplicitDepartureCentersTheConnectionPanel([Values(true, false)] bool inDraft, [Values(true, false)] bool hostLeaves)
+        => (IEnumerator)Bridge.GetMethod("RunDeparture").Invoke(fixture, new object[] { inDraft, hostLeaves });
 }
