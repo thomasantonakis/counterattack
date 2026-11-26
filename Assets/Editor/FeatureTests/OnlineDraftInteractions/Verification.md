@@ -20,6 +20,8 @@ Unity 6000.5.3f1 reported zero compile errors. Native XML and per-case progress 
 
 Broader affected coverage includes `OnlineDraftDragPlayModeTests` in `Assets/Tests/PlayMode/Features/OnlineDraftDrag/` for dealt-card and existing-roster gestures, and `OnlineDraftVariantEditorTests` in `Assets/Editor/FeatureTests/OnlineDraftVariants/` for the complete mode matrix. Packaged cross-platform EOS verification remains pending.
 
+The presentation follow-up reproduced overlapping rows on the prior build in `20261126T162534994Z`. The table now uses the offline panel dimensions outside the dealt-card grid, with a vertical layout for rows and pagination below the viewport. Both manager views use the authored player card for pool drags. Empty averages show neutral badges and populated averages use the existing rating colors. Compilation finished with zero errors. The updated PlayMode interactions and layout fixture passed 9 cases in `20261126T163332913Z` and the scene variant fixture passed 11 in `20261126T163429411Z`, with zero failures or skips. The populated Editor capture is `TestResults/GameplayRegression/Runs/online-draft-layout-final.png`.
+
 ## Packaged verification
 
 Use the same commit on both machines. Follow the platform setup guide and open Unity manually in each checkout before running the commands. Exercise Free GK followed by Free Regular, Arcade GK followed by Arcade outfield, and a spectator joining during the keeper roll.

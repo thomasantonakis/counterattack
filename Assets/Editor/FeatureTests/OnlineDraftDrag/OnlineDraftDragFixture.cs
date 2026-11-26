@@ -90,7 +90,7 @@ public sealed partial class OnlineDraftSceneFixture
                 Assert.That(border.gameObject.activeSelf, Is.True);
             if (invalidBegin || branch is "foreign" or "same" or "kind")
                 Assert.That(border.gameObject.activeSelf, Is.False);
-            if(poolRow)Assert.That(view.poolDragGhost.gameObject.activeInHierarchy,Is.True,"The authored row preview follows the drag");
+            if(poolRow)Assert.That(view.localPoolDragPreview.gameObject.activeInHierarchy,Is.True,"The authored player card follows the drag");
             else if(!invalidBegin)Assert.That(Vector2.Distance(rect.anchoredPosition,original),Is.GreaterThan(1),"The existing authored card follows the drag");
             if(branch=="disconnect"){if(ReferenceEquals(client,host.Draft))host.TransportLost();else guest.TransportLost();}
             if(branch=="reconnect")
@@ -132,7 +132,7 @@ public sealed partial class OnlineDraftSceneFixture
             Assert.That(group.blocksRaycasts,Is.EqualTo(!emptyOffer && raycasts));
             Assert.That(Object.FindObjectsByType<Transform>(FindObjectsInactive.Include,FindObjectsSortMode.None).Length,Is.EqualTo(hierarchy),"Drag reuses authored objects without runtime placeholders");Assert.That(UnityEngine.Random.state,Is.EqualTo(randomBefore));
             Assert.That(border.gameObject.activeSelf, Is.False);
-            if(poolRow)Assert.That(view.poolDragGhost.gameObject.activeSelf,Is.False);
+            if(poolRow)Assert.That(view.localPoolDragPreview.gameObject.activeSelf,Is.False);
             Assert.That(app.LastSavedFileName,Is.EqualTo(previousSave));Assert.That(app.HasExplicitSaveContext,Is.EqualTo(explicitSave));
         }
         finally{client.Requested-=observe;ExecuteEvents.Execute(start.gameObject,data,ExecuteEvents.endDragHandler);}

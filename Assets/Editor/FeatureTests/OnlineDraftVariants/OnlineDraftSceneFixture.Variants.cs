@@ -34,7 +34,7 @@ public sealed partial class OnlineDraftSceneFixture
             settings.draft=arcade?"Arcade":"Free Regular";
             settings.squadSize="18";
         }
-        else settings.draft=mode=="FreeDragDifferentPage"?"Free Regular":mode;
+        else settings.draft=mode is "FreeDragDifferentPage" or "PoolLayout"?"Free Regular":mode;
         var version=new OnlineCompatibility(OnlineSessionWire.Version,"draft-variant-scene","catalog");
         var protocol=new OnlineMatchProtocol("draft-variant-scene","home","away",hostAccount,version);protocol.BindAuthenticatedAccount(hostAccount,"host",version);
         host=new(protocol,"host",guestAccount,settings,()=>0);guest=new(protocol.MatchId,hostAccount,version,protocol.HostTeam,()=>0);
@@ -62,6 +62,11 @@ public sealed partial class OnlineDraftSceneFixture
                 {var s=client.Capture();if(s.turn==client.Team)view.actionButton.onClick.Invoke();else Client(s.turn).Request(OnlineDraftIntent.Roll);Flush();}
             }
             var state=client.Capture();Assert.That(state.freeSelection,Is.True);
+            if(mode=="PoolLayout")
+            {
+                yield return VerifyPoolLayout(view);
+                yield break;
+            }
             if(mode=="FreeDragDifferentPage")
             {
                 var sender=Client(state.turn);

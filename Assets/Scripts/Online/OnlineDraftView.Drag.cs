@@ -24,6 +24,7 @@ namespace CounterAttack.Online
         private OnlineDraftDragSelection activeDrag;
         private RectTransform remoteDragRect;
         public PlayerCard freeDraftDragPreview;
+        public PlayerCard localPoolDragPreview;
         private Vector2 remoteDragOrigin;
         private Canvas remoteDragCanvas;
         private bool remoteDragSorting;
@@ -64,9 +65,8 @@ namespace CounterAttack.Online
                 var preview=(RectTransform)freeDraftDragPreview.transform;
                 if(!freeDraftDragPreview.gameObject.activeSelf || previewedOffer!=frame.cardId)
                 {
-                    freeDraftDragPreview.UpdatePlayerCard(Player(offered));
+                    PresentPoolDragCard(freeDraftDragPreview, offered);
                     previewedOffer=frame.cardId;
-                    freeDraftDragPreview.gameObject.SetActive(true);
                 }
                 preview.position=source.position+sourcePanel.TransformVector(Vector2.Scale(sourcePanel.rect.size,new Vector2(frame.x,frame.y)));
                 remoteDragRevision=frame.revision;
@@ -103,6 +103,13 @@ namespace CounterAttack.Online
             remoteDragRect=target;
             remoteDragRevision=frame.revision;
             target.anchoredPosition=remoteDragOrigin+Vector2.Scale(parent.rect.size,new Vector2(frame.x,frame.y));
+        }
+
+        internal static void PresentPoolDragCard(PlayerCard preview, OnlineDraftCard candidate)
+        {
+            preview.UpdatePlayerCard(Player(candidate));
+            if (candidate.goalkeeper) preview.playerNameText.text = "GK · " + candidate.name;
+            preview.gameObject.SetActive(true);
         }
 
         private void ClearRemoteDrag()

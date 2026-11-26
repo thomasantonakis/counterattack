@@ -15,7 +15,6 @@ namespace CounterAttack.Online
         public Button[] poolHeaders;
         public TMP_InputField[] poolFilters;
         public OnlineDraftClickTarget[] poolRows;
-        public OnlineDraftClickTarget poolDragGhost;
 
         private readonly string[] filters = new string[10];
         private int sortColumn = -1;
@@ -126,7 +125,7 @@ namespace CounterAttack.Online
                 input.interactable = enabled;
                 string column = ColumnLabel(i, keeper);
                 poolHeaders[i].GetComponentInChildren<TMP_Text>().text = i == sortColumn
-                    ? column + (ascending ? " ↑" : " ↓") : column;
+                    ? column + (ascending ? " ^" : " v") : column;
             }
             var focus = EventSystem.current?.currentSelectedGameObject;
             if (!canBrowse && focus != null && (focus.transform.IsChildOf(poolTable.transform)
@@ -183,7 +182,7 @@ namespace CounterAttack.Online
             0 => card.name, 1 => DraftManager.AbbreviateNationality(card.country), _ => card.type
         }) ?? string.Empty;
 
-        private static int StatValue(OnlineDraftCard card, int column) => column switch
+        internal static int StatValue(OnlineDraftCard card, int column) => column switch
         {
             2 => card.pace, 3 => card.dribbling, 4 => card.goalkeeper ? card.aerial : card.heading,
             5 => card.highPass, 6 => card.resilience, 7 => card.goalkeeper ? card.saving : card.shooting,

@@ -296,8 +296,8 @@ namespace CounterAttack.Online
                 }
             }
             Roster(homeSlots,s.home);Roster(awaySlots,s.away);
-            source.UpdateTeamAverages(homeSlots[0].transform.parent, source.homeAveragePanel.transform, s.home.Length);
-            source.UpdateTeamAverages(awaySlots[0].transform.parent, source.awayAveragePanel.transform, s.away.Length);
+            source.UpdateTeamAverages(homeSlots[0].transform.parent, source.homeAveragePanel.transform, s.home.Length, showEmptyBadges: true);
+            source.UpdateTeamAverages(awaySlots[0].transform.parent, source.awayAveragePanel.transform, s.away.Length, showEmptyBadges: true);
         }
 
         private void RenderRolls(OnlineDraftState s, bool ownsRoll)

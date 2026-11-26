@@ -134,8 +134,8 @@ public sealed partial class OnlineDraftSceneFixture
         }
         Assert.That(app.LastSavedFileName,Is.EqualTo(previousSave));Assert.That(app.HasExplicitSaveContext,Is.EqualTo(explicitSave));
         Assert.That(Object.FindObjectsByType<OnlineDraftClickTarget>(FindObjectsInactive.Include).Length,
-            Is.EqualTo(view.homeSlots.Length + view.awaySlots.Length + view.cards.Length + view.poolRows.Length + 1),
-            "Projection uses authored controls only, including the hidden pool and drag preview");
+            Is.EqualTo(view.homeSlots.Length + view.awaySlots.Length + view.cards.Length + view.poolRows.Length),
+            "Projection uses authored controls only, including the hidden pool rows");
     }
     public IEnumerator Cleanup()
     {

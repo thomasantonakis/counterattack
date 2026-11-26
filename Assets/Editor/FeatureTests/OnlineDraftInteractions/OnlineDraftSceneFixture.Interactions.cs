@@ -92,7 +92,7 @@ public sealed partial class OnlineDraftSceneFixture
         yield return null;
         Assert.That(view.sourceUi.draftTurnText.text, Is.EqualTo("Managers choose outfielders"));
         Assert.That(view.sourceUi.draftBatchText.text, Is.EqualTo("outfielders"));
-        Assert.That(view.poolTable.activeSelf || view.poolDragGhost.gameObject.activeSelf, Is.False);
+        Assert.That(view.poolTable.activeSelf || view.localPoolDragPreview.gameObject.activeSelf, Is.False);
         Assert.That(view.poolFilters.All(input => !input.interactable), Is.True);
         Assert.That(view.homeSlots[0].transform.Find("ContentWrapper/PlayerNameInSlot").GetComponent<TMP_Text>().text,
             Is.EqualTo(keeper.name));
@@ -161,7 +161,7 @@ public sealed partial class OnlineDraftSceneFixture
             replica.poolHeaders[0].onClick.Invoke();
             ClickPool(replica.poolRows[0], 2);
             var ignoredDrag = BeginPoolDrag(replica.poolRows[0]);
-            Assert.That(replica.poolDragGhost.gameObject.activeSelf, Is.False);
+            Assert.That(replica.localPoolDragPreview.gameObject.activeSelf, Is.False);
             HoverPoolDrop(replica.poolRows[0], ignoredDrag, Slots(replica, peer.Team)[first - 1], false);
             Flush();
             Assert.That(client.Capture().revision, Is.EqualTo(before.revision));
@@ -175,18 +175,23 @@ public sealed partial class OnlineDraftSceneFixture
             Assert.That(view.poolRows.Where(r => r.PoolCard != null).All(r => r.PoolCard.name.Contains(selected.name)), Is.True);
             var row = view.poolRows[0];
             var drag = BeginPoolDrag(row);
-            Assert.That(view.poolDragGhost.gameObject.activeSelf, Is.True);
+            Assert.That(view.localPoolDragPreview.gameObject.activeSelf, Is.True);
             HoverPoolDrop(row, drag, Slots(view, peer.Team)[first - 1], false);
             HoverPoolDrop(row, drag, Slots(view, client.Team)[keeper ? 1 : 0], false);
             HoverPoolDrop(row, drag, Slots(view, client.Team)[first - 1], true);
             Flush();
+            Assert.That(view.localPoolDragPreview.assignedPlayer.Name, Is.EqualTo(selected.name));
+            Assert.That(replica.freeDraftDragPreview.assignedPlayer.Name, Is.EqualTo(selected.name));
+            Assert.That(view.localPoolDragPreview.playerNameText.text, Is.EqualTo(replica.freeDraftDragPreview.playerNameText.text));
+            Assert.That(((RectTransform)view.localPoolDragPreview.transform).rect.size,
+                Is.EqualTo(((RectTransform)replica.freeDraftDragPreview.transform).rect.size));
             FinishPoolDrag(row, drag, Slots(view, client.Team)[first - 1]);
             Flush();
             Assert.That(Roster(client)[first - 1].id, Is.EqualTo(selected.id));
             Assert.That(client.Capture().available, Does.Not.Contain(selected.id));
             Assert.That(replica.poolFilters[0].interactable && replica.poolHeaders[0].interactable, Is.True);
             Assert.That(view.poolFilters[0].interactable || view.poolHeaders[0].interactable, Is.False);
-            Assert.That(view.poolDragGhost.gameObject.activeSelf, Is.False);
+            Assert.That(view.localPoolDragPreview.gameObject.activeSelf, Is.False);
 
             string peerPick = replica.poolRows[0].PoolCard.id;
             ClickPool(replica.poolRows[0], 2);
@@ -217,7 +222,7 @@ public sealed partial class OnlineDraftSceneFixture
             Assert.That(RowIds(replica), Does.Not.Contain(shared.id));
             Assert.That(view.poolFilters[0].text, Is.EqualTo(shared.name));
             Assert.That(replica.poolFilters[0].text, Is.EqualTo(other));
-            Assert.That(view.poolHeaders[0].GetComponentInChildren<TMP_Text>().text, Does.EndWith("↑"));
+            Assert.That(view.poolHeaders[0].GetComponentInChildren<TMP_Text>().text, Does.EndWith("^"));
             Assert.That(replica.poolHeaders[0].GetComponentInChildren<TMP_Text>().text, Is.EqualTo("Name"));
 
             var left = view.poolRows.First(row => row.PoolCard?.id == shared.id);
@@ -226,14 +231,14 @@ public sealed partial class OnlineDraftSceneFixture
             var rightDrag = BeginPoolDrag(right);
             Assert.That(left.view, Is.SameAs(view));
             Assert.That(right.view, Is.SameAs(replica));
-            Assert.That(view.poolDragGhost.gameObject.activeSelf, Is.True, $"{client.Team} pool drag starts");
-            Assert.That(replica.poolDragGhost.gameObject.activeSelf, Is.True, $"{peer.Team} pool drag starts");
+            Assert.That(view.localPoolDragPreview.gameObject.activeSelf, Is.True, $"{client.Team} pool drag starts");
+            Assert.That(replica.localPoolDragPreview.gameObject.activeSelf, Is.True, $"{peer.Team} pool drag starts");
             int first = keepers ? 1 : 2;
             HoverPoolDrop(left, leftDrag, Slots(view, client.Team)[first - 1], true);
             HoverPoolDrop(right, rightDrag, Slots(replica, peer.Team)[first - 1], true);
             Flush();
             Assert.That(replica.freeDraftDragPreview.gameObject.activeSelf, Is.True);
-            Assert.That(replica.poolDragGhost.gameObject.activeSelf && view.poolDragGhost.gameObject.activeSelf, Is.True);
+            Assert.That(replica.localPoolDragPreview.gameObject.activeSelf && view.localPoolDragPreview.gameObject.activeSelf, Is.True);
             Assert.That(RowIds(replica), Does.Not.Contain(shared.id));
             ExecuteEvents.Execute(left.gameObject, leftDrag, ExecuteEvents.endDragHandler);
             ExecuteEvents.Execute(right.gameObject, rightDrag, ExecuteEvents.endDragHandler);

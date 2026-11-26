@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using TMPro;
+using UnityEngine.UI;
 namespace CounterAttack.Online
 {
     public sealed class OnlineDraftClickTarget:MonoBehaviour,IPointerClickHandler,IBeginDragHandler,IDragHandler,IEndDragHandler,IDropHandler
@@ -21,12 +22,20 @@ namespace CounterAttack.Online
         private bool previousOverrideSorting;
         private int previousSortingOrder;
         private PlayerSlotDropHandler highlightedSlot;
+        private Image[] poolBadges;
         internal void BindPoolCard(OnlineDraftCard candidate)
         {
             PoolCard = candidate;
-            if (candidate != null)
-                for (int column = 0; column < poolCells.Length; column++)
-                    poolCells[column].text = OnlineDraftView.CellValue(candidate, column);
+            if (candidate == null) return;
+            poolBadges ??= new Image[poolCells.Length];
+            for (int column = 0; column < poolCells.Length; column++)
+            {
+                poolCells[column].text = OnlineDraftView.CellValue(candidate, column);
+                if (column < 2 || column > 8) continue;
+                poolBadges[column] ??= poolCells[column].transform.parent.GetComponentInChildren<Image>(true);
+                var badge = poolBadges[column];
+                if (badge != null) badge.color = view.source.GetAttributeColor(OnlineDraftView.StatValue(candidate, column));
+            }
         }
 
         public void OnPointerClick(PointerEventData eventData)
@@ -40,17 +49,15 @@ namespace CounterAttack.Online
         {
             if(view==null || eventData==null || eventData.button!=PointerEventData.InputButton.Left || selection!=null)return;
             var rect=GetComponent<RectTransform>();var group=GetComponent<CanvasGroup>();
-            if(rect==null || group==null || IsPoolRow && (PoolCard==null || view.poolDragGhost==null)
+            if(rect==null || group==null || IsPoolRow && (PoolCard==null || view.localPoolDragPreview==null)
                 || !view.TryBeginDrag(this,out var pending))return;
             if(IsPoolRow)
             {
-                var ghost=view.poolDragGhost;
-                ghost.BindPoolCard(PoolCard);
-                var ghostRect=(RectTransform)ghost.transform;
-                ghostRect.sizeDelta=rect.rect.size;
-                ghostRect.position=rect.position;
-                ghost.gameObject.SetActive(true);
-                rect=ghostRect;
+                var preview=view.localPoolDragPreview;
+                OnlineDraftView.PresentPoolDragCard(preview, PoolCard);
+                rect=(RectTransform)preview.transform;
+                if(RectTransformUtility.ScreenPointToWorldPointInRectangle((RectTransform)rect.parent,eventData.position,eventData.pressEventCamera,out var start))
+                    rect.position=start;
             }
             selection=pending;draggedRect=rect;dragGroup=group;originalParent=rect.parent;originalPosition=rect.anchoredPosition;originalAlpha=group.alpha;originalRaycasts=group.blocksRaycasts;
             RectTransformUtility.ScreenPointToWorldPointInRectangle(originalParent as RectTransform??rect,eventData.position,eventData.pressEventCamera,out var point);pointerOffset=rect.position-point;
@@ -102,7 +109,7 @@ namespace CounterAttack.Online
                 dragCanvas.overrideSorting=previousOverrideSorting;
             }
             PlayerSlotDropHandler.ClearDropTarget(ref highlightedSlot);
-            if(IsPoolRow && view!=null && view.poolDragGhost!=null)view.poolDragGhost.gameObject.SetActive(false);
+            if(IsPoolRow && view!=null && view.localPoolDragPreview!=null)view.localPoolDragPreview.gameObject.SetActive(false);
             dragCanvas=null;
             draggedRect=null;dragGroup=null;originalParent=null;
         }

@@ -30,4 +30,8 @@ public sealed class OnlineDraftInteractionsPlayModeTests
     [UnityTest]
     public IEnumerator SpectatorJoinsKeeperRollAndFollowsArcadeOutfieldReadOnly()
         => (IEnumerator)Bridge.GetMethod("RunSpectatorPool").Invoke(fixture, null);
+
+    [UnityTest]
+    public IEnumerator PoolRowsAndPageControlsFitBetweenTheRosters([Values(true, false)] bool localHome)
+        => (IEnumerator)Bridge.GetMethod("RunVariant").Invoke(fixture, new object[] { "PoolLayout", localHome });
 }
