@@ -57,6 +57,8 @@ public sealed partial class OnlineDraftSceneFixture
         Assert.That(previous.yMax, Is.LessThanOrEqualTo(viewport.yMin + 1), layout);
         Assert.That(previous.yMin, Is.EqualTo(tableRect.yMin).Within(1), layout);
         Assert.That(viewport.width, Is.EqualTo(tableRect.width).Within(1), layout);
+        Assert.That(LayoutRect((RectTransform)rows[rows.Length - 1].transform, canvas).yMin,
+            Is.EqualTo(viewport.yMin).Within(4), "A full page uses the viewport height above pagination");
         CheckAverageBadges(view, empty: false);
     }
 

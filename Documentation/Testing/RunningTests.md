@@ -627,6 +627,11 @@ not standalone player test builds.
 
 ## Online Draft focused filters
 
+Use category `OnlineDraftPolish` for Hot Seat dice cue and timing parity,
+required online team names, goalkeeper dribbling, and the pre-match departure
+notice. The authored pool height is checked by
+`PoolRowsAndPageControlsFitBetweenTheRosters`. See the [polish checklist](../../Assets/Editor/FeatureTests/OnlineDraftPolish/Verification.md).
+
 Use `OnlineDraftReturnEditorTests` and `OnlineDraftReturnPlayModeTests`, category
 `OnlineDraftReturn`, for the Draft footer's **Back to Match Setup** action, both
 manager roles, a fresh draft after reconfirmation and stale packet rejection.

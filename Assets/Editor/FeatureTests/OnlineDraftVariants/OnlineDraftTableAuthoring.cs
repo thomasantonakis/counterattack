@@ -12,6 +12,8 @@ using Object = UnityEngine.Object;
 
 public static class OnlineDraftTableAuthoring
 {
+    private const int RowsPerPage = 18;
+
     [CliCommand("author_online_draft_table", "Copy the FreeDraft table into the online Draft scene and wire its controls")]
     public static string Prepare()
     {
@@ -36,6 +38,18 @@ public static class OnlineDraftTableAuthoring
             var cardPanel = view.cards[0].transform.parent;
             if (view.poolTable != null)
             {
+                int existingRows = view.poolRows.Length;
+                if (existingRows < RowsPerPage)
+                {
+                    Array.Resize(ref view.poolRows, RowsPerPage);
+                    for (int i = existingRows; i < RowsPerPage; i++)
+                    {
+                        var row = Object.Instantiate(view.poolRows[0], view.poolScroll.content);
+                        row.name = $"PoolRow{i + 1}";
+                        row.gameObject.SetActive(false);
+                        view.poolRows[i] = row;
+                    }
+                }
                 ApplyLayout(view, cardPanel.parent, panelSize, panelPosition);
                 AuthorLocalPreview(view, cardPanel.parent);
                 Save(scene, view);
@@ -75,7 +89,7 @@ public static class OnlineDraftTableAuthoring
                 return target;
             }
 
-            view.poolRows = new OnlineDraftClickTarget[8];
+            view.poolRows = new OnlineDraftClickTarget[RowsPerPage];
             for (int i = view.poolRows.Length - 1; i >= 0; i--)
             {
                 var row = i == 0 ? template : Object.Instantiate(template, content);
@@ -90,7 +104,7 @@ public static class OnlineDraftTableAuthoring
             AuthorLocalPreview(view, cardPanel.parent);
             table.SetActive(false);
             Save(scene, view);
-            return "Authored the online pool table, eight rows and matching drag cards";
+            return "Authored the online pool table, full-height page and matching drag cards";
         }
         finally
         {

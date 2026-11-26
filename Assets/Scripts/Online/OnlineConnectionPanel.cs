@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace CounterAttack.Online
 {
@@ -14,9 +15,28 @@ namespace CounterAttack.Online
         private OnlineFrontendSession observedSession;
         private OnlineConnectionQuality observedState;
         private double nextRefresh;
+        private RectTransform rect;
+        private Image background;
+        private Vector2 normalAnchorMin, normalAnchorMax, normalPivot, normalPosition;
+        private Vector3 normalScale;
+        private Color normalColor;
+        private float normalFontMin, normalFontMax;
+        private int normalSibling;
+        private bool showingDeparture;
 
         private void OnEnable()
         {
+            rect = (RectTransform)transform;
+            background = GetComponent<Image>();
+            normalAnchorMin = rect.anchorMin;
+            normalAnchorMax = rect.anchorMax;
+            normalPivot = rect.pivot;
+            normalPosition = rect.anchoredPosition;
+            normalScale = rect.localScale;
+            normalSibling = rect.GetSiblingIndex();
+            normalColor = background.color;
+            normalFontMin = reading.fontSizeMin;
+            normalFontMax = reading.fontSizeMax;
             observedSession = null;
             nextRefresh = 0;
             Update();
@@ -35,6 +55,9 @@ namespace CounterAttack.Online
                 roomRulesButton.SetActive(!visible);
             if (onlineRoomRulesButton != null && onlineRoomRulesButton.activeSelf != visible)
                 onlineRoomRulesButton.SetActive(visible);
+            bool departed = visible && session?.PeerLeftPregame == true;
+            if (showingDeparture != departed) SetDeparturePresentation(departed);
+            if (departed) return;
             if (!visible)
             {
                 observedSession = null;
@@ -73,6 +96,32 @@ namespace CounterAttack.Online
             string label = $"Connection: {status}\nPing: {ping}";
             if (reading.text != label)
                 reading.text = label;
+        }
+
+        private void OnDisable()
+        {
+            if (showingDeparture) SetDeparturePresentation(false);
+        }
+
+        private void SetDeparturePresentation(bool departed)
+        {
+            showingDeparture = departed;
+            var center = new Vector2(.5f, .5f);
+            rect.anchorMin = departed ? center : normalAnchorMin;
+            rect.anchorMax = departed ? center : normalAnchorMax;
+            rect.pivot = departed ? center : normalPivot;
+            rect.anchoredPosition = departed ? Vector2.zero : normalPosition;
+            rect.localScale = departed ? normalScale * 3f : normalScale;
+            background.color = departed ? new Color32(135, 28, 37, 255) : normalColor;
+            reading.fontSizeMin = departed ? 18 : normalFontMin;
+            reading.fontSizeMax = departed ? 24 : normalFontMax;
+            if (departed)
+            {
+                rect.SetAsLastSibling();
+                reading.text = "Connection closed\nThe other manager left.\nPress Leave session to exit.";
+            }
+            else rect.SetSiblingIndex(normalSibling);
+            nextRefresh = 0;
         }
     }
 }

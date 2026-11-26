@@ -206,7 +206,7 @@ namespace CounterAttack.Online
                 halfDuration=45,numberOfHalfs=2,tiebreaker="Extra Time & Penalties",playerAssistance=2,
                 matchType="Regular",squadSize="16",draft="Regular",gkDraft="Deal",referee="Random",
                 weatherConditions="Clear",fixtureLighting="MidAfternoon",ballColor="White",
-                includeTabletopia=true,includeTabletopiaGK=true,homeTeamName="Home",awayTeamName="Away"
+                includeTabletopia=true,includeTabletopiaGK=true,homeTeamName=string.Empty,awayTeamName=string.Empty
             };
             var kits=TokenKitCatalog.GetAllPresets();
             var players=kits.Where(kit=>!kit.Id.StartsWith("gk")).OrderBy(kit=>kit.Id=="088"?0:kit.Id=="021"?1:2).ToArray();

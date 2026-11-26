@@ -86,8 +86,15 @@ public sealed partial class OnlineDraftSceneFixture
             if(!state.repeatable && state.turn!=client.Team)
             {bool keeper=state.selection=="goalkeepers";Client(state.turn).Request(OnlineDraftIntent.Pick,state.available[0],keeper?1:2);Flush();}
             state=client.Capture();long revision=state.revision;string first=view.poolRows[0].PoolCard.id;
-            view.nextPageButton.onClick.Invoke();Assert.That(client.Capture().revision,Is.EqualTo(revision),"Browsing never sends a rules command");
-            Assert.That(view.poolRows[0].PoolCard.id,Is.Not.EqualTo(first));string id=state.available[view.poolRows.Length];
+            string id=first;
+            if(state.available.Length>view.poolRows.Length)
+            {
+                view.nextPageButton.onClick.Invoke();
+                Assert.That(client.Capture().revision,Is.EqualTo(revision),"Browsing never sends a rules command");
+                Assert.That(view.poolRows[0].PoolCard.id,Is.Not.EqualTo(first));
+                id=state.available[view.poolRows.Length];
+            }
+            else Assert.That(view.nextPageButton.gameObject.activeSelf,Is.False);
             bool gk=state.selection=="goalkeepers";ClickPool(view.poolRows[0]);view.SelectSlot(client.Team,gk?1:2);Flush();
             var after=client.Capture();Assert.That((localHome?after.home:after.away)[gk?0:1].id,Is.EqualTo(id));
             if(gk)Assert.That(view.poolHeaders[7].GetComponentInChildren<TMPro.TMP_Text>().text,Is.EqualTo("Sv"));

@@ -79,7 +79,7 @@ public sealed partial class OnlineDraftSceneFixture
         Assert.That(view.source.draftOrderPanel.awayResult.text, Is.EqualTo("Roll 2"));
         Assert.That(view.rollPanelButton.gameObject.activeSelf, Is.False);
 
-        time = 5;
+        time = 2;
         Assert.That(draft.AdvanceRollResult(), Is.True);
         for (int i = 0; i < 4; i++)
         {

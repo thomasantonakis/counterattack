@@ -43,11 +43,14 @@ namespace CounterAttack.Online
             s.homeGKKit=TokenKitCatalog.GetPresetByIdOrAlias(s.homeGKKit)?.Id??s.homeGKKit;
             s.awayGKKit=TokenKitCatalog.GetPresetByIdOrAlias(s.awayGKKit)?.Id??s.awayGKKit;return s;
         }
-        public static string Validate(GameSettings s)
+        public static string Validate(GameSettings s, bool allowUnnamedTeams=false)
         {
             if(s==null)return "Settings are required";
-            if(new[]{s.homeTeamName,s.awayTeamName}.Any(n=>string.IsNullOrWhiteSpace(n) || n.Length>20 || n.Any(char.IsControl)))return "Team names must contain 1 to 20 printable characters";
-            if(string.Equals(s.homeTeamName,s.awayTeamName,StringComparison.OrdinalIgnoreCase))return "Both team names must differ";
+            bool namesRequired=!allowUnnamedTeams || s.matchType=="International";
+            if(new[]{s.homeTeamName ?? "",s.awayTeamName ?? ""}.Any(n=>n.Length>20 || n.Any(char.IsControl) || namesRequired && string.IsNullOrWhiteSpace(n)))
+                return "Team names must contain 1 to 20 printable characters";
+            if(!string.IsNullOrWhiteSpace(s.homeTeamName) && string.Equals(s.homeTeamName,s.awayTeamName,StringComparison.OrdinalIgnoreCase))
+                return "Both team names must differ";
             if(s.halfDuration<15 || s.halfDuration>60 || s.numberOfHalfs is <1 or >2 || s.playerAssistance is <1 or >3)return "Invalid duration, halves or assistance";
             if(!One(s.tiebreaker,"None","Penalties","Extra Time","Extra Time & Penalties")
                 || (s.halfDuration!=45 || s.numberOfHalfs!=2) && s.tiebreaker.Contains("Extra Time"))return "Invalid tiebreaker";

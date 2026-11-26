@@ -6,7 +6,7 @@
 
 Run `OnlineDraftReturnEditorTests` in EditMode and `OnlineDraftReturnPlayModeTests` in PlayMode, or use the `OnlineDraftReturn` category. These tests use serialized manager channels and the authored Draft and Create New Game scenes. They do not require an EOS lobby.
 
-The return command uses `session-wire-v7` and `frontend-rules-v13`. Rebuild both managers at the same commit for paired verification.
+The current manager compatibility labels are `session-wire-v7` and `frontend-rules-v14`. Rebuild both managers at the same commit for paired verification.
 
 Unity compilation finished with zero errors. `20261126T165057715Z` recorded 3 EditMode passes and `20261126T165128898Z` recorded 2 PlayMode passes, with zero failures or skips. Native XML and per-case progress are under `TestResults/GameplayRegression/Runs/`.
 

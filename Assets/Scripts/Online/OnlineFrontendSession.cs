@@ -87,6 +87,7 @@ namespace CounterAttack.Online
         }
 
         internal OnlineConnectionReading CaptureConnection() => channel.Latency.CaptureConnection();
+        internal bool PeerLeftPregame => !stop && roomLaunch == null && channel?.PeerLeft == true;
         public int QueuedPackets=>outgoing.Count;
         private OnlineSessionChannel channel;
         private OnlineFrontendRecovery recovery;
@@ -135,7 +136,7 @@ namespace CounterAttack.Online
         public void Host(GameSettings settings,bool forceRelay=false)
         {
             if(Busy || running!=null)throw new InvalidOperationException("An online session is already running");
-            initial=OnlineSetupRules.Normalize(settings);var invalid=OnlineSetupRules.Validate(initial);
+            initial=OnlineSetupRules.Normalize(settings);var invalid=OnlineSetupRules.Validate(initial,allowUnnamedTeams:true);
             if(!string.IsNullOrEmpty(invalid))throw new ArgumentException(invalid,nameof(settings));
             spectatorAdmission = new OnlineSpectatorAdmission();
             Begin(true,null,forceRelay);

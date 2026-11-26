@@ -47,9 +47,9 @@ public sealed class OnlineDraftChannelEditorTests
         Assert.That(host.Draft.Phase,Is.EqualTo("roll-result"));
         Assert.That(guest.Draft.Phase,Is.EqualTo("roll-result"));
         Assert.That(guest.Draft.Capture().awayRoll,Is.EqualTo(1));
-        now=4.99;host.Tick();Flush();
+        now=1.99;host.Tick();Flush();
         Assert.That(guest.Draft.Phase,Is.EqualTo("roll-result"));
-        now=5;host.Tick();Flush();
+        now=2;host.Tick();Flush();
         Assert.That(guest.Draft.Phase,Is.EqualTo("pick"));
         while(host.Draft.Phase=="pick")Pick();
         host.Draft.Request(OnlineDraftIntent.Ready);Flush();
@@ -58,7 +58,7 @@ public sealed class OnlineDraftChannelEditorTests
         Roll();
         Assert.That(guest.Draft.Phase,Is.EqualTo("opening-result"));
         Assert.That(guest.Draft.Capture().openingCanChooseKickoff,Is.False);
-        now=10;host.Tick();Flush();
+        now=4;host.Tick();Flush();
         Assert.That(guest.Draft.Phase,Is.EqualTo("opening-choice"));
         Assert.That(guest.Draft.Capture().openingCanChooseKickoff,Is.True);
     }

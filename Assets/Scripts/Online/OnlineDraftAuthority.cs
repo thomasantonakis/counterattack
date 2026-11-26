@@ -128,7 +128,7 @@ namespace CounterAttack.Online
                 automaticRollDeadline=null;
                 return false;
             }
-            automaticRollDeadline??=rollClock()+5;
+            automaticRollDeadline??=rollClock()+DecisionTimingConfig.AutomaticRollSeconds;
             if(rollClock()<automaticRollDeadline.Value)return false;
             ResolveRoll(turn);
             revision=checked(revision+1);
@@ -146,7 +146,7 @@ namespace CounterAttack.Online
             else
             {
                 phase=phase=="opening-roll"?"opening-result":"roll-result";
-                rollResultDeadline=rollClock()+5;
+                rollResultDeadline=rollClock()+DraftOrderPanelController.RollResultSeconds;
             }
         }
         private void CompleteRoll(bool openingRoll)

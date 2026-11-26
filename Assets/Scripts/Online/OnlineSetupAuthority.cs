@@ -29,7 +29,7 @@ namespace CounterAttack.Online
         public OnlineSetupAuthority(OnlineMatchProtocol protocol,GameSettings initial)
         {
             this.protocol=protocol??throw new ArgumentNullException(nameof(protocol));
-            settings=OnlineSetupRules.Normalize(initial);var error=OnlineSetupRules.Validate(settings);
+            settings=OnlineSetupRules.Normalize(initial);var error=OnlineSetupRules.Validate(settings,allowUnnamedTeams:true);
             if(!string.IsNullOrEmpty(error))throw new ArgumentException(error,nameof(initial));
             connectionRevision=protocol.ConnectionRevision;
         }
@@ -89,16 +89,21 @@ namespace CounterAttack.Online
             }
             if(next!=null)
             {
-                next=OnlineSetupRules.Normalize(next);if(!string.IsNullOrEmpty(OnlineSetupRules.Validate(next)))return Reply(OnlineCommandStatus.IllegalAction);
+                next=OnlineSetupRules.Normalize(next);
+                if(!string.IsNullOrEmpty(OnlineSetupRules.Validate(next,allowUnnamedTeams:request.intent!=OnlineSetupIntent.Confirm)))return Reply(OnlineCommandStatus.IllegalAction);
                 if(JsonConvert.SerializeObject(next)!=JsonConvert.SerializeObject(settings))
                 {settings=next;homeReady=awayReady=false;configurationRevision=checked(configurationRevision+1);}
                 if(request.intent==OnlineSetupIntent.Confirm){if(actor==OnlineTeam.Home)homeReady=true;else awayReady=true;}
             }
             else switch(request.intent)
             {
-                case OnlineSetupIntent.Ready:if(actor==OnlineTeam.Home)homeReady=true;else awayReady=true;break;
+                case OnlineSetupIntent.Ready:
+                    if(!string.IsNullOrEmpty(OnlineSetupRules.Validate(settings)))return Reply(OnlineCommandStatus.NotReady);
+                    if(actor==OnlineTeam.Home)homeReady=true;else awayReady=true;break;
                 case OnlineSetupIntent.Unready:if(actor==OnlineTeam.Home)homeReady=false;else awayReady=false;break;
-                case OnlineSetupIntent.Start:if(!homeReady || !awayReady)return Reply(OnlineCommandStatus.NotReady);started=true;break;
+                case OnlineSetupIntent.Start:
+                    if(!homeReady || !awayReady || !string.IsNullOrEmpty(OnlineSetupRules.Validate(settings)))return Reply(OnlineCommandStatus.NotReady);
+                    started=true;break;
                 case OnlineSetupIntent.BackToSetup:started=false;homeReady=awayReady=false;break;
             }
             revision=checked(revision+1);sequence[actor]=request.sequence;receipts.Add(key,(body,revision));receiptOrder.Enqueue(key);

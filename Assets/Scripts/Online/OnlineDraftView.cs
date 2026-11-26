@@ -86,7 +86,7 @@ namespace CounterAttack.Online
         }
         public void Configure(OnlineDraftClient owner)
         {
-            if(client!=owner){InvalidateLocalDrag();ResetPool();selectedSlot=0;}
+            if(client!=owner){InvalidateLocalDrag();ResetPool();selectedSlot=0;StopRollWiggle();lastAudibleRollState=null;}
             if(client!=null){client.Changed-=Render;client.DragReceived-=RenderRemoteDrag;}
             ClearRemoteDrag();
             online=true;OwnScene();client=owner??throw new ArgumentNullException(nameof(owner));client.Changed+=Render;client.DragReceived+=RenderRemoteDrag;Render();
@@ -159,6 +159,7 @@ namespace CounterAttack.Online
         private void LateUpdate()
         {
             if(!online)return;
+            TickRollWiggle();
             if (watching)
             {
                 RenderSpectating();
@@ -175,8 +176,8 @@ namespace CounterAttack.Online
             if (dice == null) return;
             int remaining = Mathf.Max(0, Mathf.CeilToInt((float)(rollPromptDeadline - Time.realtimeSinceStartupAsDouble)));
             string team = rendered.turn == OnlineTeam.Home ? rendered.settings.homeTeamName : rendered.settings.awayTeamName;
-            dice.footer.text = !client.Connected ? "Reconnecting" : rendered.turn == client.Team
-                ? $"Press [R] to roll · Auto-roll in {remaining}s" : $"{team} rolls in {remaining}s";
+            dice.footer.text = !client.Connected ? "Reconnecting"
+                : $"{team} manager · {(rendered.turn == client.Team ? "Press [R] to roll" : "Waiting for roll")} · Auto-roll in {remaining}s";
         }
         private void Render()
         {
@@ -184,7 +185,8 @@ namespace CounterAttack.Online
             var s=client?.Capture();
             if(s!=null && (rendered==null || s.phase!=rendered.phase || s.turn!=rendered.turn
                 || s.rollRound!=rendered.rollRound || s.connectionRevision!=rendered.connectionRevision))
-                rollPromptDeadline=Time.realtimeSinceStartupAsDouble+5;
+                rollPromptDeadline=Time.realtimeSinceStartupAsDouble+DecisionTimingConfig.AutomaticRollSeconds;
+            PresentRollAudio(s,client?.Connected==true);
             rendered=s;
             if(s==null || !client.Connected || s.revision!=remoteDragRevision)ClearRemoteDrag();
             if(activeDrag!=null && !DragIsCurrent(activeDrag))InvalidateLocalDrag();
@@ -219,7 +221,8 @@ namespace CounterAttack.Online
             }
             RenderRolls(s, client.Connected && !client.Pending && s.turn == client.Team);
             string team=s.turn==OnlineTeam.Home?s.settings.homeTeamName:s.settings.awayTeamName;
-            sourceUi.draftTurnText.text=s.phase is "roll" or "opening-roll"?team+" rolls":s.phase=="opening-choice"?team+" chooses":s.phase=="pick"?s.repeatable?"Choose your "+s.selection:team+" picks":"Draft complete";
+            sourceUi.draftTurnText.text=s.phase is "roll" or "opening-roll"?team+" rolls":s.phase=="opening-choice"?team+" chooses"
+                :s.phase is "roll-result" or "opening-result"?"Roll results":s.phase=="pick"?s.repeatable?"Choose your "+s.selection:team+" picks":"Draft complete";
             sourceUi.draftBatchText.text=s.freeSelection && s.phase=="pick" && poolTable!=null
                 ? $"{s.selection} · {poolCount} available · Page {page+1} / {PoolPageCount}"
                 : s.freeSelection ? s.selection : "Batch "+s.batch+" / "+s.totalBatches+" · Home roll "+s.homeRoll+" · Away roll "+s.awayRoll;
@@ -273,6 +276,7 @@ namespace CounterAttack.Online
             state.settings = OnlineSpectatorPregameWire.ReadSettings(publication);
             if (state.settings == null) return;
             RenderRosters(state);
+            PresentRollAudio(state, connected: true);
             RenderRolls(state, ownsRoll: false);
 
             string team = state.turn == OnlineTeam.Home ? state.settings.homeTeamName : state.settings.awayTeamName;
@@ -323,12 +327,14 @@ namespace CounterAttack.Online
                             : s.turn == OnlineTeam.Home ? "home" : "away",
                         homeRoll = s.homeRoll, awayRoll = s.awayRoll, winnerHome = s.openingWinnerIsHome,
                         choosingHome = s.turn == OnlineTeam.Home, canChooseKickoff = s.openingCanChooseKickoff
-                    }, ownsRoll, viewOnly: watching);
+                    }, ownsRoll, viewOnly: watching, draftPresentation: true);
             else coin?.HidePublishedToss();
             var dice=source.draftOrderPanel;
             if(dice!=null)
             {
-                dice.visuals.SetActive(rolling || rollResult);
+                bool show = rolling || rollResult;
+                if (show && !dice.visuals.activeSelf) dice.visuals.transform.SetAsLastSibling();
+                dice.visuals.SetActive(show);
                 if(rolling || rollResult)
                 {
                     if(rollPanelHeight<=0)rollPanelHeight=dice.panel.rect.height;
@@ -339,13 +345,15 @@ namespace CounterAttack.Online
                     var awayPalette=TokenKitCatalog.GetInstructionPalette(TokenKitCatalog.ResolveStyle(s.settings.awayKit));
                     dice.homeDie.SetTeamColors(homePalette.Primary,homePalette.Secondary);
                     dice.awayDie.SetTeamColors(awayPalette.Primary,awayPalette.Secondary);
-                    dice.homeResult.text=s.homeRoll==0?"Waiting for roll":"Roll "+s.homeRoll;
-                    dice.awayResult.text=s.awayRoll==0?"Waiting for roll":"Roll "+s.awayRoll;
-                    string winner=s.homeRoll==s.awayRoll?"Tie. Roll again.":(s.homeRoll>s.awayRoll?s.settings.homeTeamName:s.settings.awayTeamName)+" wins the roll";
-                    dice.outcome.text=rollResult?winner:"Round "+s.rollRound+" - Highest roll drafts first";
-                    dice.footer.text=string.Empty;
+                    dice.homeResult.text=s.homeRoll==0?string.Empty:"Roll "+s.homeRoll;
+                    dice.awayResult.text=s.awayRoll==0?(s.turn==OnlineTeam.Home?"Waiting for roll":string.Empty):"Roll "+s.awayRoll;
+                    bool tied=s.homeRoll==s.awayRoll;
+                    string winner=tied?"TIE · Both managers roll again":(s.homeRoll>s.awayRoll?s.settings.homeTeamName:s.settings.awayTeamName)+" drafts first";
+                    dice.outcome.text=rollResult?winner:"Highest roll drafts first";
+                    dice.footer.text=rollResult?(tied?"New rolls in 2 seconds":"Draft begins in 2 seconds"):string.Empty;
                     CoinTossPanelController.PresentDie(dice.homeDie, s.homeRoll, rolling && s.turn == OnlineTeam.Home);
                     CoinTossPanelController.PresentDie(dice.awayDie, s.awayRoll, rolling && s.turn == OnlineTeam.Away);
+                    dice.Fit();
                 }
             }
         }

@@ -31,7 +31,7 @@ namespace CounterAttack.Online
                 int column = index;
                 poolHeaders[column].onClick.AddListener(() =>
                 {
-                    if (!CanEditPoolColumn(column)) return;
+                    if (!CanBrowsePool()) return;
                     ascending = sortColumn != column ? IsTextColumn(column) : !ascending;
                     sortColumn = column;
                     ResetPoolPage();
@@ -39,7 +39,7 @@ namespace CounterAttack.Online
                 });
                 poolFilters[column].onValueChanged.AddListener(value =>
                 {
-                    if (!CanEditPoolColumn(column))
+                    if (!CanBrowsePool())
                     {
                         poolFilters[column].SetTextWithoutNotify(filters[column] ?? string.Empty);
                         return;
@@ -52,7 +52,6 @@ namespace CounterAttack.Online
         }
 
         private bool CanBrowsePool() => activeDrag == null && rendered?.freeSelection == true && CanPick(rendered);
-        private bool CanEditPoolColumn(int column) => CanBrowsePool() && (column != 3 || rendered.selection != "goalkeepers");
 
         private bool CanPick(OnlineDraftState state)
         {
@@ -118,7 +117,7 @@ namespace CounterAttack.Online
             bool keeper = state.selection == "goalkeepers";
             for (int i = 0; i < filters.Length; i++)
             {
-                bool enabled = canBrowse && (!keeper || i != 3);
+                bool enabled = canBrowse;
                 poolHeaders[i].interactable = enabled;
                 var input = poolFilters[i];
                 if (!enabled && input.isFocused) input.DeactivateInputField();
@@ -153,7 +152,7 @@ namespace CounterAttack.Online
         {
             for (int i = 0; i < filters.Length; i++)
             {
-                if (string.IsNullOrWhiteSpace(filters[i]) || (card.goalkeeper && i == 3)) continue;
+                if (string.IsNullOrWhiteSpace(filters[i])) continue;
                 if (IsTextColumn(i))
                 {
                     if (TextValue(card, i).IndexOf(filters[i].Trim(), StringComparison.OrdinalIgnoreCase) < 0) return false;
@@ -173,7 +172,7 @@ namespace CounterAttack.Online
         }
 
         internal static string CellValue(OnlineDraftCard card, int column) => IsTextColumn(column) ? TextValue(card, column)
-            : card.goalkeeper && column == 3 ? "–" : StatValue(card, column).ToString();
+            : StatValue(card, column).ToString();
 
         private static bool IsTextColumn(int column) => column is 0 or 1 or 9;
 

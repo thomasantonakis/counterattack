@@ -39,7 +39,7 @@ namespace CounterAttack.Online
             if(snapshot==null || snapshot.matchId!=matchId || snapshot.revision<0 || snapshot.configurationRevision<0
                 || snapshot.configurationRevision>snapshot.revision || snapshot.connectionRevision<0 || snapshot.homeSequence<0 || snapshot.awaySequence<0
                 || !Enum.IsDefined(typeof(OnlineTeam),snapshot.hostTeam) || snapshot.phase!="setup" && snapshot.phase!="draft-ready"
-                || !string.IsNullOrEmpty(OnlineSetupRules.Validate(snapshot.settings)))return false;
+                || !string.IsNullOrEmpty(OnlineSetupRules.Validate(snapshot.settings,allowUnnamedTeams:snapshot.phase=="setup")))return false;
             return state==null || snapshot.revision>state.revision || snapshot.revision==state.revision && JsonConvert.SerializeObject(snapshot)==JsonConvert.SerializeObject(state);
         }
         public bool Apply(OnlineSetupState snapshot)
@@ -69,7 +69,7 @@ namespace CounterAttack.Online
         {
             if(state?.phase!="setup" || !Connected || Pending || !Dirty || rejectedEditVersion==editVersion)return;
             var candidate=OnlineSetupRules.Normalize(OnlineSetupRules.MergeOwnedSelection(state.settings,draft,Team,IsHost));
-            if(string.IsNullOrEmpty(OnlineSetupRules.Validate(candidate)))Send(OnlineSetupIntent.Edit);
+            if(string.IsNullOrEmpty(OnlineSetupRules.Validate(candidate,allowUnnamedTeams:true)))Send(OnlineSetupIntent.Edit);
             else if(LocalReady)Send(OnlineSetupIntent.Unready);
         }
         public bool Confirm(GameSettings proposed)

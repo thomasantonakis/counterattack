@@ -76,23 +76,25 @@ internal sealed class OnlineDraftReturnTransport
     internal OnlineSetupGuestChannel Guest { get; }
     internal Queue<byte[]> ToHost { get; } = new();
     internal int GuestAgreements { get; private set; }
+    internal double Now { get; set; }
     private readonly Queue<byte[]> toGuest = new();
     private readonly Queue<int> rolls = new();
 
-    internal OnlineDraftReturnTransport()
+    internal OnlineDraftReturnTransport(GameSettings settings = null, bool startDraft = true, bool timed = false)
     {
         var compatibility = new OnlineCompatibility(OnlineSessionWire.Version, "draft-return-rules", "catalog");
         var protocol = new OnlineMatchProtocol("draft-return", HostAccount, GuestAccount, HostAccount, compatibility);
         protocol.BindAuthenticatedAccount(HostAccount, "host", compatibility);
-        Host = new OnlineSetupHostChannel(protocol, "host", GuestAccount, OnlineSetupAgreementEditorTests.Valid(), () => 0);
-        Guest = new OnlineSetupGuestChannel(protocol.MatchId, HostAccount, compatibility, protocol.HostTeam, () => 0);
-        Host.EnableDraft(settings => new OnlineDraftAuthority(protocol, settings, OnlineDraftCatalog.Load(), _ => 0, rolls.Dequeue));
+        Host = new OnlineSetupHostChannel(protocol, "host", GuestAccount, settings ?? OnlineSetupAgreementEditorTests.Valid(), () => Now);
+        Guest = new OnlineSetupGuestChannel(protocol.MatchId, HostAccount, compatibility, protocol.HostTeam, () => Now);
+        Host.EnableDraft(agreed => new OnlineDraftAuthority(protocol, agreed, OnlineDraftCatalog.Load(), _ => 0, rolls.Dequeue,
+            timed ? () => Now : null));
         Host.Outgoing += toGuest.Enqueue;
         Guest.Outgoing += ToHost.Enqueue;
         Guest.Client.DraftAgreed += _ => GuestAgreements++;
         Host.Begin();
         Flush();
-        Agree();
+        if (startDraft) Agree();
     }
 
     internal void Agree()
@@ -108,10 +110,15 @@ internal sealed class OnlineDraftReturnTransport
 
     internal void Roll()
     {
-        rolls.Enqueue(6);
-        rolls.Enqueue(1);
+        QueueRolls(6, 1);
         Request(Host.Draft, OnlineDraftIntent.Roll);
         Request(Guest.Draft, OnlineDraftIntent.Roll);
+    }
+
+    internal void QueueRolls(int home, int away)
+    {
+        rolls.Enqueue(home);
+        rolls.Enqueue(away);
     }
 
     internal void Pick()

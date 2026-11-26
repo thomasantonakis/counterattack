@@ -62,7 +62,7 @@ public sealed class OnlineDraftInteractionRulesTests
             now += 5;
             Assert.That(draft.AdvanceAutomaticRoll(), Is.True);
             Assert.That(draft.Capture().phase, Is.EqualTo("roll-result"));
-            now += 4.5;
+            now += 1.5;
             Assert.That(draft.AdvanceRollResult(), Is.False);
             now += .5;
             Assert.That(draft.AdvanceRollResult(), Is.True);
@@ -74,7 +74,7 @@ public sealed class OnlineDraftInteractionRulesTests
             dice.Enqueue(awayWins ? 6 : 1);
             Assert.That(Submit(OnlineTeam.Home, OnlineDraftIntent.Roll), Is.EqualTo(OnlineCommandStatus.Accepted));
             Assert.That(Submit(OnlineTeam.Away, OnlineDraftIntent.Roll), Is.EqualTo(OnlineCommandStatus.Accepted));
-            now += 4.5;
+            now += 1.5;
             Assert.That(draft.AdvanceRollResult(), Is.False);
             now += .5;
             Assert.That(draft.AdvanceRollResult(), Is.True);
