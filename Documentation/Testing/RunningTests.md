@@ -627,6 +627,11 @@ not standalone player test builds.
 
 ## Online Draft focused filters
 
+Use `OnlineDraftReturnEditorTests` and `OnlineDraftReturnPlayModeTests`, category
+`OnlineDraftReturn`, for the Draft footer's **Back to Match Setup** action, both
+manager roles, a fresh draft after reconfirmation and stale packet rejection.
+See the [return-to-setup checklist](../../Assets/Editor/FeatureTests/OnlineDraftReturn/Verification.md).
+
 Free and Arcade interactions use EditMode `OnlineDraftInteractionRulesTests`
 and PlayMode `OnlineDraftInteractionsPlayModeTests`, category
 `OnlineDraftInteractions`. They cover keeper/outfield roll parity, exact slot

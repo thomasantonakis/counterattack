@@ -14,6 +14,8 @@ namespace CounterAttack.Online
         public bool LocalReady=>state!=null && (Team==OnlineTeam.Home?state.homeReady:state.awayReady);
         public bool BothReady=>state?.homeReady==true && state.awayReady;
         public bool Connected=>state?.connected==true && transportAvailable;
+        public string Phase=>state?.phase;
+        public bool CanReturnToSetup=>Phase=="draft-ready" && Connected && !Pending;
         public OnlineCommandStatus? LastReply {get;private set;}
         public bool CanConfirm=>state?.phase=="setup" && Connected && !Pending && (!LocalReady || Dirty || IsHost && BothReady);
         private readonly string matchId;
@@ -44,6 +46,8 @@ namespace CounterAttack.Online
         {
             if(!CanApply(snapshot))return false;
             if(state!=null && snapshot.connectionRevision!=state.connectionRevision)pending=null;
+            if(Phase=="draft-ready" && snapshot.phase=="setup")
+            {agreed=false;pending=null;draft=null;}
             if(state!=null && state.settings.matchType!=snapshot.settings.matchType && draft?.matchType!=snapshot.settings.matchType)
             {
                 draft=null;
@@ -76,6 +80,12 @@ namespace CounterAttack.Online
             if(IsHost && BothReady && !Dirty && JsonConvert.SerializeObject(candidate)==JsonConvert.SerializeObject(state.settings))
             {Send(OnlineSetupIntent.Start);return true;}
             draft=OnlineSetupRules.Copy(proposed);editVersion=checked(editVersion+1);Send(OnlineSetupIntent.Confirm);return true;
+        }
+        public bool ReturnToSetup()
+        {
+            if(!CanReturnToSetup || Requested==null)return false;
+            Send(OnlineSetupIntent.BackToSetup);
+            return true;
         }
         private void Send(OnlineSetupIntent intent)
         {

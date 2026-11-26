@@ -19,6 +19,7 @@ namespace CounterAttack.Online
         public PlayerSlotDropHandler[] homeSlots,awaySlots;
         public PlayerCard[] cards;
         public Button actionButton,leaveButton;
+        public Button backToMatchSetupButton;
         public Button rollPanelButton;
         private float rollPanelHeight;
         private double rollPromptDeadline;
@@ -45,6 +46,7 @@ namespace CounterAttack.Online
         private void OwnScene()
         {
             foreach(var root in onlineRoots)if(root!=null)root.SetActive(online);
+            if(backToMatchSetupButton!=null)backToMatchSetupButton.gameObject.SetActive(online && !watching);
             if(!online)
             {
                 foreach(var button in new[]{rollPanelButton,kickoffChoiceButton,leftChoiceButton,rightChoiceButton})
@@ -75,6 +77,7 @@ namespace CounterAttack.Online
                 return;
             }
             actionButton.onClick.AddListener(Act);leaveButton.onClick.AddListener(Leave);
+            if(backToMatchSetupButton!=null)backToMatchSetupButton.onClick.AddListener(BackToMatchSetup);
             if(rollPanelButton!=null)rollPanelButton.onClick.AddListener(Act);
             if(previousPageButton!=null)previousPageButton.onClick.AddListener(()=>ChangePage(-1));
             if(nextPageButton!=null)nextPageButton.onClick.AddListener(()=>ChangePage(1));
@@ -149,6 +152,10 @@ namespace CounterAttack.Online
             OnlineFrontendSession.Current?.Close();
             SceneManager.LoadScene("MainMenu");
         }
+        private void BackToMatchSetup()
+        {
+            if(session?.ReturnToMatchSetup()==true)MenuAudioPlayer.Play(GameplayAudioPool.MenuBack);
+        }
         private void LateUpdate()
         {
             if(!online)return;
@@ -157,6 +164,7 @@ namespace CounterAttack.Online
                 RenderSpectating();
                 return;
             }
+            if(backToMatchSetupButton!=null)backToMatchSetupButton.interactable=session?.CanReturnToMatchSetup==true;
             if(Input.GetKeyDown(KeyCode.R) && client?.Capture()?.phase is "roll" or "opening-roll")Act();
             var dice = rendered?.phase switch
             {

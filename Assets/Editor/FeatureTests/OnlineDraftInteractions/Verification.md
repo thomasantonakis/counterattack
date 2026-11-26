@@ -6,7 +6,7 @@
 - [x] Give each Arcade manager a separate filter and sort state. Keep candidates available after picks. Accept crossing picks when intervening commands only filled the other roster in the same stage.
 - [x] Project the public stage, rolls and accepted rosters to spectators with the manager controls hidden.
 
-Run `OnlineDraftInteractionRulesTests` in EditMode and `OnlineDraftInteractionsPlayModeTests` in PlayMode, or select category `OnlineDraftInteractions`. The authored scene tests use two serialized manager clients and a separate spectator case. The online Rules label is `frontend-rules-v12`.
+Run `OnlineDraftInteractionRulesTests` in EditMode and `OnlineDraftInteractionsPlayModeTests` in PlayMode, or select category `OnlineDraftInteractions`. The authored scene tests use two serialized manager clients and a separate spectator case. See [Draft return to setup](../OnlineDraftReturn/Verification.md) for the current compatibility labels.
 
 ## Editor verification
 

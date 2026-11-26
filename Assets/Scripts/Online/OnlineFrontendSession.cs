@@ -18,6 +18,10 @@ namespace CounterAttack.Online
         public event Action<GameSettings> DraftAgreed;
         public event Action<OnlineDraftClient> DraftAvailable;
         public OnlineDraftClient Draft=>channel?.Draft;
+        internal bool CanReturnToMatchSetup => !IsSpectator && !stop && roomLaunch == null
+            && Draft is { Connected: true, Pending: false } && Draft.Phase != "room-ready"
+            && Client?.CanReturnToSetup == true;
+        internal bool ReturnToMatchSetup() => CanReturnToMatchSetup && Client.ReturnToSetup();
         public event Action<MatchManager.GameData> RoomPrepared;
         private MatchManager.GameData roomLaunch;
         private OnlineRoomLaunchLifetime roomLifetime;
@@ -486,6 +490,14 @@ namespace CounterAttack.Online
         }
         private void Update()
         {
+            if(!IsSpectator && !stop && roomLaunch==null && announcedDraft!=null && Draft==null && Client?.Phase=="setup"
+                && SceneManager.GetActiveScene().name=="Draft")
+            {
+                announcedDraft=null;
+                agreedSettings=null;
+                SceneManager.LoadScene("CreateNewGameScene");
+                return;
+            }
             if(Draft!=null && !ReferenceEquals(announcedDraft,Draft))
             {
                 announcedDraft=Draft;DraftAvailable?.Invoke(Draft);
@@ -531,7 +543,7 @@ namespace CounterAttack.Online
 
         private void OnAgreed(GameSettings settings)
         {
-            if(agreedSettings!=null)return;agreedSettings=OnlineSetupRules.Copy(settings);Status="Both managers agreed. Preparing Draft...";
+            agreedSettings=OnlineSetupRules.Copy(settings);Status="Both managers agreed. Preparing Draft...";
             DraftAgreed?.Invoke(OnlineSetupRules.Copy(settings));
         }
         public void Close()
