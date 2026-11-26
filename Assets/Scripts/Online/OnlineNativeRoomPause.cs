@@ -57,14 +57,19 @@ namespace CounterAttack.Online
             view.backToMainMenuButton.onClick.AddListener(BackToMainMenu);
             view.quitButton?.onClick.AddListener(() => view.QuitConfirmation.ShowQuit(
                 () => OnlineFrontendSession.Current?.Close()));
-            view.editSettings.onClick.AddListener(() => { editing = true; Refresh(); });
+            view.editSettings.onClick.AddListener(() =>
+            {
+                MenuAudioPlayer.Play(GameplayAudioPool.MenuAdvance);
+                editing = true;
+                Refresh();
+            });
             view.editSettingsBackButton.onClick.AddListener(() => CloseSettings());
             view.saveMatchButton.interactable = false;
             view.saveMatchAsButton.interactable = false;
             view.saveMatchButton.onClick.AddListener(() => commitSave?.Invoke(null, null));
             view.saveMatchAsButton.onClick.AddListener(() => OpenSaveAs());
             view.saveAsSaveButton.onClick.AddListener(() => commitSave?.Invoke(view.saveNameInput.text.Trim(), afterNamedSave));
-            view.saveAsCancelButton.onClick.AddListener(CloseSaveAs);
+            view.saveAsCancelButton.onClick.AddListener(CancelSaveAs);
             view.captureLogFileButton.interactable = false;
             view.substitutionsButton.interactable = false;
             if (substitutions != null)
@@ -85,6 +90,7 @@ namespace CounterAttack.Online
                         board.controls.OpenSubstitutionReview();
                         return;
                     }
+                    MenuAudioPlayer.Play(GameplayAudioPool.MenuAdvance);
                     selectingPlayers = true;
                     RefreshSubstitutions();
                     Refresh();
@@ -172,6 +178,7 @@ namespace CounterAttack.Online
                         match = data
                     };
                     selectedSave = store.Save(checkpoint, requestedName == null ? selectedSave : null);
+                    if (namingSave && onSaved == null) MenuAudioPlayer.Play(GameplayAudioPool.MenuBack);
                     CloseSaveAs();
                     ShowSaveMessage($"Saved {checkpoint.displayName}.");
                 }
@@ -220,7 +227,8 @@ namespace CounterAttack.Online
                 ShowSaveMessage(reason);
                 return;
             }
-            view.LeaveMatchConfirmation.TryClose();
+            if (view.LeaveMatchConfirmation.IsOpen) view.LeaveMatchConfirmation.Close(playBackCue: false);
+            MenuAudioPlayer.Play(GameplayAudioPool.MenuAdvance);
             afterNamedSave = onSaved;
             var settings = board.match.gameData.gameSettings;
             namingSave = true;
@@ -237,6 +245,12 @@ namespace CounterAttack.Online
             afterNamedSave = null;
             namingSave = false;
             Refresh();
+        }
+
+        private void CancelSaveAs()
+        {
+            MenuAudioPlayer.Play(GameplayAudioPool.MenuBack);
+            CloseSaveAs();
         }
 
         private void ShowSaveMessage(string message)
@@ -289,6 +303,7 @@ namespace CounterAttack.Online
         private bool CloseSettings()
         {
             if (!editing) return false;
+            MenuAudioPlayer.Play(GameplayAudioPool.MenuBack);
             editing = false;
             Refresh();
             return true;
@@ -299,15 +314,20 @@ namespace CounterAttack.Online
             if (view.LeaveMatchConfirmation.TryClose() || view.QuitConfirmation?.TryClose() == true) return true;
             if (namingSave)
             {
-                CloseSaveAs();
+                CancelSaveAs();
                 return true;
             }
             if (state?.substitutionReview != null && terminalMessage == null)
             {
-                if (substitutions.backButton.interactable) board.controls.FinishSubstitutionReview(false);
+                if (substitutions.backButton.interactable)
+                {
+                    MenuAudioPlayer.Play(GameplayAudioPool.MenuBack);
+                    board.controls.FinishSubstitutionReview(false);
+                }
                 return true;
             }
             if (!selectingPlayers) return CloseSettings();
+            MenuAudioPlayer.Play(GameplayAudioPool.MenuBack);
             selectingPlayers = false;
             Refresh();
             return true;

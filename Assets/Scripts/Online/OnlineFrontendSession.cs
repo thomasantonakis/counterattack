@@ -210,6 +210,7 @@ namespace CounterAttack.Online
 
         internal void LeaveSpectating()
         {
+            MenuAudioPlayer.Play(GameplayAudioPool.MenuBack);
             Close();
             SceneManager.LoadScene(OnlineModeMenu.SceneName);
         }

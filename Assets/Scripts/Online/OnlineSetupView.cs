@@ -35,7 +35,10 @@ namespace CounterAttack.Online
         }
         public void RefreshSelections(){renderedRevision=-1;Render();}
         private void Confirm(GameSettings selections)
-        {if(!client.Confirm(selections) && status!=null)status.text="Review your selections before confirming.";}
+        {
+            if (client.Confirm(selections)) MenuAudioPlayer.Play(GameplayAudioPool.MenuAdvance);
+            else if (status != null) status.text = "Review your selections before confirming.";
+        }
         private void Edited()
         {
             if(applying || client==null || setup.IsApplyingMatchType)return;

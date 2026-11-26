@@ -64,7 +64,9 @@ public sealed class MenuConfirmation : MonoBehaviour
         return true;
     }
 
-    public void Close()
+    public void Close() => Close(playBackCue: true);
+
+    public void Close(bool playBackCue)
     {
         gameObject.SetActive(false);
         confirm = null;
@@ -72,7 +74,7 @@ public sealed class MenuConfirmation : MonoBehaviour
         EventSystem.current?.SetSelectedGameObject(
             previousSelection != null && previousSelection.activeInHierarchy ? previousSelection : null);
         previousSelection = null;
-        MenuAudioPlayer.Play(GameplayAudioPool.MenuBack);
+        if (playBackCue) MenuAudioPlayer.Play(GameplayAudioPool.MenuBack);
     }
 
     public void ShowError(string message)

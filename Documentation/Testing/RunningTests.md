@@ -351,6 +351,11 @@ pre-match dice. Match dice audio: `GameplayDiceAudioPlayModeTests` under
 pending listening checks are in the respective feature TASKS.md files and
 `Documentation/Plans/UiAudio.md`. No whole gameplay suites were run.
 
+For multiplayer menu audio, run `OnlineMenuAudioPlayModeTests` under
+`Assets/Tests/PlayMode/Features/OnlineMenuAudio/` (category `OnlineMenuAudio`).
+It exercises lobby and checkpoint navigation, online draft paging, and the
+Room pause menu and Rules Viewer using their authored controls.
+
 Recovery audio: run only `GameplayRecoveryAudioPlayModeTests` (category
 `GameplayRecoveryAudio`) under `Assets/Tests/PlayMode/Features/GameplayAudio/Recovery/`.
 Latest: 41 passed, zero failed/skipped; Editor compilation clean. Native artifact

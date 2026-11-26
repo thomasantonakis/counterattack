@@ -105,7 +105,16 @@ namespace CounterAttack.Online
             }
             Render();
         }
-        public void ChangePage(int delta){ClearRemoteDrag();page=Mathf.Max(0,page+delta);selected=null;Render();}
+        public void ChangePage(int delta)
+        {
+            int previousPage = page;
+            ClearRemoteDrag();
+            page = Mathf.Max(0, page + delta);
+            selected = null;
+            Render();
+            if (client?.Capture()?.freeSelection == true && page != previousPage)
+                MenuAudioPlayer.Play(page > previousPage ? GameplayAudioPool.MenuAdvance : GameplayAudioPool.MenuBack);
+        }
         private OnlineDraftCard[] DisplayedCards(OnlineDraftState s)
         {
             if(!s.freeSelection)return s.cards;
@@ -129,19 +138,29 @@ namespace CounterAttack.Online
         public void Act()
         {
             var s=client?.Capture();if(s==null)return;
-            if(s.phase is "roll" or "opening-roll" && s.turn==client.Team)client.Request(OnlineDraftIntent.Roll);
+            if (s.phase is "roll" or "opening-roll" && s.turn == client.Team)
+            {
+                if (client.Request(OnlineDraftIntent.Roll)) MenuAudioPlayer.Play(GameplayAudioPool.MenuSelect);
+            }
             else if(s.phase=="review")
             {
                 bool ready=client.Team==OnlineTeam.Home?s.homeReady:s.awayReady;
-                if(!ready)client.Request(OnlineDraftIntent.Ready);
-                else if(client.IsHost && s.homeReady && s.awayReady)client.Request(OnlineDraftIntent.Start);
+                if (!ready && client.Request(OnlineDraftIntent.Ready)) MenuAudioPlayer.Play(GameplayAudioPool.MenuAdvance);
+                else if (ready && client.IsHost && s.homeReady && s.awayReady && client.Request(OnlineDraftIntent.Start))
+                    MenuAudioPlayer.Play(GameplayAudioPool.MenuAdvance);
             }
         }
         public void Choose(CoinTossChoice choice)
-        {var s=client?.Capture();if(s?.phase=="opening-choice" && s.turn==client.Team)client.Request(OnlineDraftIntent.Choose,choice:choice);}
+        {
+            var state = client?.Capture();
+            if (state?.phase == "opening-choice" && state.turn == client.Team
+                && client.Request(OnlineDraftIntent.Choose, choice: choice))
+                MenuAudioPlayer.Play(GameplayAudioPool.MenuAdvance);
+        }
         public void Leave()
         {
             if (watching) { session.LeaveSpectating(); return; }
+            MenuAudioPlayer.Play(GameplayAudioPool.MenuBack);
             OnlineFrontendSession.Current?.Close();
             SceneManager.LoadScene("MainMenu");
         }

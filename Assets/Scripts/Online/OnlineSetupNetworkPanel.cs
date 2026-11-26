@@ -76,7 +76,13 @@ namespace CounterAttack.Online
             if(!online || OnlineFrontendSession.Current!=null)return;
             if(!setup.TryCaptureOnlineSetupSettings(out var settings,out var error)){Show(error);return;}
             startError=null;
-            try{var session=Instantiate(sessionPrefab);Bind(session);session.Host(settings,relayOnly!=null && relayOnly.isOn);}
+            try
+            {
+                var session = Instantiate(sessionPrefab);
+                Bind(session);
+                session.Host(settings, relayOnly != null && relayOnly.isOn);
+                MenuAudioPlayer.Play(GameplayAudioPool.MenuAdvance);
+            }
             catch(Exception connectionError){startError=connectionError.Message;Show(startError);bound?.Close();}
         }
         public void Join()
@@ -90,7 +96,13 @@ namespace CounterAttack.Online
             startError=null;
             // Menu-driven joins open setup with placeholder values.
             pendingSetupSelection=joining?null:setup.CaptureOnlineSetupDraft();
-            try{var session=Instantiate(sessionPrefab);Bind(session);session.Join(code,relayOnly!=null && relayOnly.isOn);}
+            try
+            {
+                var session = Instantiate(sessionPrefab);
+                Bind(session);
+                session.Join(code, relayOnly != null && relayOnly.isOn);
+                if (!joining) MenuAudioPlayer.Play(GameplayAudioPool.MenuAdvance);
+            }
             catch(Exception connectionError){startError=connectionError.Message;Show(startError);bound?.Close();}
         }
         private void Bind(OnlineFrontendSession session)
@@ -139,7 +151,13 @@ namespace CounterAttack.Online
                 return;
             }
             startError = null;
-            if(bound!=null){bound.Close();view.Unbind();GuardLocalSave();}
+            if (bound != null)
+            {
+                MenuAudioPlayer.Play(GameplayAudioPool.MenuBack);
+                bound.Close();
+                view.Unbind();
+                GuardLocalSave();
+            }
         }
         public void CopyLobbyCode()
         {if(bound?.LobbyCode!=null)GUIUtility.systemCopyBuffer=bound.LobbyCode;}

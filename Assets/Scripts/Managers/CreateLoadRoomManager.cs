@@ -111,7 +111,7 @@ public class CreateLoadRoomManager : MonoBehaviour
         }
         if (loadBrowserStatusText != null) loadBrowserStatusText.text = string.Empty;
         RebuildSaveRows();
-        MenuAudioPlayer.Play(GameplayAudioPool.MenuAdvance);
+        if (!onlineBrowser) MenuAudioPlayer.Play(GameplayAudioPool.MenuAdvance);
         Debug.Log($"Opening {selectedGameMode} save browser");
     }
 
@@ -329,7 +329,11 @@ public class CreateLoadRoomManager : MonoBehaviour
                     "LastActivityAt" => save.SavedUtc.ToLocalTime().ToString("g"),
                     _ => ""
                 };
-                CreateSaveRow(save.DisplayName, columns, Value, () => OnlineModeMenu.OpenCheckpointLobby(save.Slot));
+                CreateSaveRow(save.DisplayName, columns, Value, () =>
+                {
+                    MenuAudioPlayer.Play(GameplayAudioPool.MenuAdvance);
+                    OnlineModeMenu.OpenCheckpointLobby(save.Slot);
+                });
             }
         }
         catch (Exception error) when (error is System.IO.IOException or UnauthorizedAccessException)

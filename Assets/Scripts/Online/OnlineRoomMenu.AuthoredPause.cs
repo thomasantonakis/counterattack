@@ -27,6 +27,7 @@ namespace CounterAttack.Online
                 () => OnlineFrontendSession.Current?.Close()));
             roomPause.editSettings.onClick.AddListener(() =>
             {
+                MenuAudioPlayer.Play(GameplayAudioPool.MenuAdvance);
                 settingsOpen = true;
                 RefreshRoomPause();
             });
@@ -62,6 +63,7 @@ namespace CounterAttack.Online
 
         private void CloseRoomSettings()
         {
+            if (settingsOpen) MenuAudioPlayer.Play(GameplayAudioPool.MenuBack);
             settingsOpen = false;
             RefreshRoomPause();
         }
