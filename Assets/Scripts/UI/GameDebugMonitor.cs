@@ -98,7 +98,11 @@ public partial class GameDebugMonitor : MonoBehaviour
 
     void Update()
     {
-        if (CounterAttack.Online.OnlineRoomSession.Current?.HasInitialData == true) return;
+        if (CounterAttack.Online.OnlineRoomSession.Current?.HasInitialData == true)
+        {
+            RefreshDecisionMakingPanelVisibility(false);
+            return;
+        }
         UpdateInstructionText();
         if (isVisible)
         {
@@ -112,9 +116,9 @@ public partial class GameDebugMonitor : MonoBehaviour
 
     void Start()
     {
-        if (CounterAttack.Online.OnlineRoomSession.IsGuest) return;
         LinkRoomSceneComponents();
         CacheInstructionPanelImage();
+        if (CounterAttack.Online.OnlineRoomSession.IsGuest) return;
         RefreshInstructionPalettes();
     }
 
@@ -211,6 +215,7 @@ public partial class GameDebugMonitor : MonoBehaviour
     {
         if (CounterAttack.Online.OnlineRoomSession.Current?.HasInitialData == true)
         {
+            RefreshDecisionMakingPanelVisibility(false);
             RefreshOnlineInstructionPalette();
             return;
         }
