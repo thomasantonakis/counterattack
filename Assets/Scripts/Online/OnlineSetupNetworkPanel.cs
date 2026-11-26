@@ -1,4 +1,5 @@
 using System;
+using Newtonsoft.Json.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -22,11 +23,30 @@ namespace CounterAttack.Online
         private bool online;
         private bool joining;
         private string startError;
+        private bool watching;
+        private JObject displayedPublication;
+        private GameSettings lastValidEarlySetup;
         private void Start()
         {
             online=ApplicationManager.Instance?.SelectedRoomGameMode==ApplicationManager.OnlineGameMode;
             if(panel!=null)panel.SetActive(online);
             if(!online)return;
+            if (OnlineFrontendSession.Current is { IsSpectator: true } spectator)
+            {
+                watching = true;
+                bound = spectator;
+                GuardLocalSave();
+                setup.enabled = false; // Disable scene keyboard shortcuts after the authored controls initialize.
+                LockSpectatorControls();
+                foreach (var control in new Selectable[] { hostButton, joinButton, copyButton, lobbyCode, relayOnly, setup.createGameButton })
+                    if (control != null) control.gameObject.SetActive(false);
+                leaveButton.gameObject.SetActive(true);
+                leaveButton.onClick.AddListener(spectator.LeaveSpectating);
+                var label = leaveButton.GetComponentInChildren<TMP_Text>(true);
+                if (label != null) label.text = "Leave";
+                RefreshSpectator();
+                return;
+            }
             lobbyCode.characterLimit = OnlineSpectatorAdmission.CodeLength;
             if(string.IsNullOrWhiteSpace(setup.homeTeamInputField.text))setup.homeTeamInputField.SetTextWithoutNotify("Home");
             if(string.IsNullOrWhiteSpace(setup.awayTeamInputField.text))setup.awayTeamInputField.SetTextWithoutNotify("Away");
@@ -82,12 +102,21 @@ namespace CounterAttack.Online
             {
                 setup.ApplyOnlineSetupSettings(settings, ownsHome: true);
                 preparingHostSetup = true;
+                lastValidEarlySetup = settings;
+                bound.CaptureEarlySpectatorSetup = CaptureEarlySetup;
             }
+        }
+        private GameSettings CaptureEarlySetup()
+        {
+            if (setup.TryCaptureOnlineSetupSettings(out var settings, out _))
+                lastValidEarlySetup = settings;
+            return lastValidEarlySetup;
         }
         private void Connected(OnlineSetupClient client)
         {
             if (preparingHostSetup)
             {
+                bound.CaptureEarlySpectatorSetup = null;
                 pendingSetupSelection = setup.CaptureOnlineSetupDraft();
                 preparingHostSetup = false;
             }
@@ -114,7 +143,35 @@ namespace CounterAttack.Online
         }
         public void CopyLobbyCode()
         {if(bound?.LobbyCode!=null)GUIUtility.systemCopyBuffer=bound.LobbyCode;}
-        private void LateUpdate(){if(online)Refresh();}
+        private void LateUpdate()
+        {
+            if (watching) RefreshSpectator();
+            else if (online) Refresh();
+        }
+        private void RefreshSpectator()
+        {
+            Show(bound.Error ?? "Spectating match setup");
+            var publication = bound.SpectatorPublication;
+            if (publication == displayedPublication || (string)publication?["stage"] != "setup") return;
+            if (!JToken.DeepEquals(displayedPublication?["settings"], publication["settings"])
+                || !JToken.DeepEquals(displayedPublication?["teams"], publication["teams"]))
+            {
+                var settings = OnlineSpectatorPregameWire.ReadSettings(publication);
+                if (settings != null)
+                {
+                    setup.ApplyOnlineSetupSettings(settings);
+                    LockSpectatorControls();
+                }
+            }
+            displayedPublication = publication;
+            setup.createGameButton.interactable = false;
+        }
+        private void LockSpectatorControls()
+        {
+            foreach (var root in gameObject.scene.GetRootGameObjects())
+            foreach (var control in root.GetComponentsInChildren<Selectable>(true))
+                control.interactable = control == leaveButton;
+        }
         private void Refresh()
         {
             var current=OnlineFrontendSession.Current;
@@ -141,6 +198,8 @@ namespace CounterAttack.Online
         }
         private void OnDestroy()
         {
+            if (watching) return;
+            if (bound != null && preparingHostSetup) bound.CaptureEarlySpectatorSetup = null;
             if(bound!=null)bound.ClientAvailable-=Connected;
             if(seededClient!=null)seededClient.Changed-=SeedSetupSelection;
             // Leaving setup before agreement cancels its native lifetime; agreed

@@ -94,7 +94,8 @@ public class CameraController : MonoBehaviour
     }
 
     private bool IsCameraInputBlocked => onlinePresentationHeld || RoomInputOwnership.BlocksCamera
-        || GameInputManager.IsPresentationModalActive && !HeaderChallengePanelController.IsVisible
+        || !CounterAttack.Online.OnlineRoomSession.IsSpectator
+            && GameInputManager.IsPresentationModalActive && !HeaderChallengePanelController.IsVisible
             && !DuelResolutionPanelController.IsVisible && !StoppageActionsPanelController.IsVisible
         || MatchManager.Instance?.IsPauseMenuOpen == true;
 

@@ -124,7 +124,8 @@ public partial class CreateNewGameManager
         settings.awayKit = (finalizeForLocalSave ? selectedAwayKit?.DisplayName : selectedAwayKit?.Id) ?? GetSelectedKitPresetId(awayKitDropdown);
         settings.homeGKKit = (finalizeForLocalSave ? selectedHomeGKKit?.DisplayName : selectedHomeGKKit?.Id) ?? GetSelectedKitPresetId(homeGKKitDropdown);
         settings.awayGKKit = (finalizeForLocalSave ? selectedAwayGKKit?.DisplayName : selectedAwayGKKit?.Id) ?? GetSelectedKitPresetId(awayGKKitDropdown);
-        Debug.Log($"[CreateNewGameManager] Selected kits: Home '{settings.homeKit}' (id '{selectedHomeKit?.Id ?? string.Empty}'), Away '{settings.awayKit}' (id '{selectedAwayKit?.Id ?? string.Empty}'), Home GK '{settings.homeGKKit}' (id '{selectedHomeGKKit?.Id ?? string.Empty}'), Away GK '{settings.awayGKKit}' (id '{selectedAwayGKKit?.Id ?? string.Empty}').");
+        if (finalizeForLocalSave)
+            Debug.Log($"[CreateNewGameManager] Selected kits: Home '{settings.homeKit}' (id '{selectedHomeKit?.Id ?? string.Empty}'), Away '{settings.awayKit}' (id '{selectedAwayKit?.Id ?? string.Empty}'), Home GK '{settings.homeGKKit}' (id '{selectedHomeGKKit?.Id ?? string.Empty}'), Away GK '{settings.awayGKKit}' (id '{selectedAwayGKKit?.Id ?? string.Empty}').");
 
         return settings;
     }

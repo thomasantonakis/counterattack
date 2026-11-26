@@ -163,7 +163,7 @@ namespace CounterAttack.Online
         private void OnDestroy()
         {
             DisposeRoleLookup();
-            if(!proceeding && joiningSession!=null && !joiningSession.LaunchingRoom)joiningSession.Close();
+            if(!proceeding && joiningSession!=null && !joiningSession.LaunchingRoom && joiningSession.SpectatorScene == null)joiningSession.Close();
             if(!proceeding && hostedSession!=null && !hostedSession.LaunchingRoom)hostedSession.Close();
         }
 

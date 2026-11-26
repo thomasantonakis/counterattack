@@ -58,11 +58,16 @@ public sealed class OnlineSpectatorStreamEditorTests
     public void FollowsPregameStagesWithTheSameMatchIdentityAsRoom()
     {
         var stream = new OnlineSpectatorStream(Match);
-        var settings = new GameSettings { homeTeamName = "Home club", homeKit = "kit-home" };
+        var settings = new GameSettings
+        {
+            homeTeamName = "Home club", homeKit = "kit-home", halfDuration = 45,
+            referee = "Random", homeRoomPersona = "private-persona"
+        };
         var setup = new OnlineSetupState { matchId = "manager-match", settings = settings, homeSequence = 85 };
         var draft = new OnlineDraftState
         {
             matchId = "manager-match", phase = "pick", settings = settings, roomSessionId = "private-save-session",
+            homeRoll = 4, awayRoll = 2, selection = "private-selection",
             cards = new[] { new OnlineDraftCard { name = "private-offer" } },
             home = new[] { null, new OnlineDraftCard { id = "o0042", name = "Revealed Pick" } }
         };
@@ -74,13 +79,16 @@ public sealed class OnlineSpectatorStreamEditorTests
         Assert.That(Deliver(stream, setupPacket), Is.True);
         Assert.That((string)stream.Latest["stage"], Is.EqualTo("setup"));
         Assert.That((string)stream.Latest["teams"]["home"]["kit"], Is.EqualTo("kit-home"));
-        Assert.That(stream.Latest.ToString(), Does.Not.Contain("homeSequence"));
+        Assert.That((int)stream.Latest["settings"]["halfDuration"], Is.EqualTo(45));
+        Assert.That(stream.Latest.ToString(), Does.Not.Contain("homeSequence").And.Not.Contain("private-persona"));
 
         Assert.That(OnlineSpectatorPregameWire.TryEncode(Match, 3, settings, setup, draft, out var draftPacket), Is.True);
         Assert.That(Deliver(stream, draftPacket), Is.True);
         Assert.That((string)stream.Latest["stage"], Is.EqualTo("draft"));
         Assert.That((string)stream.Latest["draft"]["home"][1]["name"], Is.EqualTo("Revealed Pick"));
-        Assert.That(stream.Latest.ToString(), Does.Not.Contain("private-offer").And.Not.Contain("private-save-session"));
+        Assert.That((int)stream.Latest["draft"]["homeRoll"], Is.EqualTo(4));
+        Assert.That(stream.Latest.ToString(),
+            Does.Not.Contain("private-offer").And.Not.Contain("private-save-session").And.Not.Contain("private-selection"));
         Assert.That(Deliver(stream, Snapshot(Match, 4)), Is.True);
         Assert.That(Deliver(stream, draftPacket), Is.False);
         Assert.That(OnlineSpectatorPregameWire.TryEncode(Match, 5, settings, setup, draft, out var oldStage), Is.True);

@@ -1,6 +1,7 @@
 using System;
 using System.Globalization;
 using System.Linq;
+using Newtonsoft.Json.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -160,7 +161,37 @@ namespace CounterAttack.Online
                 new Panel(stoppage.visuals, stoppageOverlay, () => stoppage.IsOpen, () => stoppage.IsOnlineResultReady,
                     () => stoppage.Dismiss(), stoppage.FitAndClamp)
             };
-            board.controls.RollEscapeHandler = HandleEscape;
+            if (board.controls != null) board.controls.RollEscapeHandler = HandleEscape;
+        }
+
+        internal void ApplySpectator(JToken publication, bool held)
+        {
+            int index = (int?)publication?["panel"] ?? -1;
+            for (int i = 0; i < panels.Length; i++)
+            {
+                var panel = panels[i];
+                if (i != index || held || publication["active"] == null)
+                {
+                    panel.root.SetActive(false);
+                    continue;
+                }
+                var frame = panel.Capture(index, 0);
+                frame.active = publication["active"].ToObject<bool[]>();
+                var faces = publication["faces"].ToArray();
+                frame.dice = faces.Select(face => (int)face["value"]).ToArray();
+                frame.diceAnimating = faces.Select(face => (bool)face["rolling"]).ToArray();
+                frame.diceAllowJackpot = new bool[faces.Length];
+                frame.labels = new string[frame.labels.Length];
+                var title = index switch { 0 => duel.title, 1 => header.title, _ => stoppage.title };
+                int titleIndex = Array.IndexOf(panel.labels, title);
+                if (titleIndex >= 0)
+                    frame.labels[titleIndex] = index switch { 0 => "DUEL", 1 => "HEADER CHALLENGE", _ => "STOPPAGE ACTIONS" };
+                frame.attackColumnX = (float?)publication["attackColumnX"] ?? -1f;
+                if (index == 0)
+                    duel.ApplyOnlineLayout((bool?)publication["duelExpanded"] == true, (bool?)publication["recoveryAttached"] == true);
+                panel.Display(frame);
+                panel.overlay.interactable = panel.overlay.blocksRaycasts = false;
+            }
         }
 
         public OnlineRollPanelFrame Capture(long rollSequence)

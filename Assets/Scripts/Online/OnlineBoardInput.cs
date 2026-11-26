@@ -48,10 +48,11 @@ namespace CounterAttack.Online
         }
         public bool TryKey(KeyCode key)
         {
+            if (OnlineRoomSession.IsSpectator && key != KeyCode.Space) return false;
             if (KeyboardOwnedByUI(key) && !CanRollCoinFromBoard(key)) return false;
             if (key != KeyCode.Space) return Submit(OnlineBoardActionPicker.Key(state,key));
             if (RoomInputOwnership.IntroActive || RulesViewer.IsOpen
-                || GameInputManager.IsPresentationModalActive) return false;
+                || !OnlineRoomSession.IsSpectator && GameInputManager.IsPresentationModalActive) return false;
             var card = RoomInspectionCard.Instance;
             if (card == null) return false;
             if (card.IsOpen)
@@ -99,13 +100,16 @@ namespace CounterAttack.Online
                     if (Input.GetKeyDown(key) && !KeyboardOwnedByUI(key))
                         camera.TryHandlePresetKey(new KeyPressData(key, shift, ctrl: false, alt: false));
             }
-            foreach(var key in Keys)if(Input.GetKeyDown(key)){TryKey(key);break;}
+            bool spectator = OnlineRoomSession.IsSpectator;
+            if (!spectator)
+                foreach(var key in Keys)if(Input.GetKeyDown(key)){TryKey(key);break;}
             if(board.boardCamera==null)return;
             bool overUi=PointerOwnedByUI();
             var ray=board.boardCamera.ScreenPointToRay(Input.mousePosition);
-            PresentHover(ray,!overUi && !GameInputManager.IsPresentationModalActive);
+            PresentHover(ray,!overUi && (spectator || !GameInputManager.IsPresentationModalActive));
             if (Input.GetKeyDown(KeyCode.Space) && TryKey(KeyCode.Space))
             { pressArmed=false;return; }
+            if (spectator) return;
             if(Input.GetMouseButtonDown(0))
             { pressArmed=!overUi && !Input.GetMouseButton(1);pressPosition=Input.mousePosition; }
             float threshold=roomPresentation!=null?roomPresentation.dragThreshold:10f;

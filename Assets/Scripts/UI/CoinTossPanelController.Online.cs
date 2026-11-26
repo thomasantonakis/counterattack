@@ -40,7 +40,7 @@ public sealed partial class CoinTossPanelController
     }
 
     internal void PresentPublishedToss(string home, string away, string homeKit, string awayKit,
-        OnlineCoinTossSnapshot toss, bool ownsTurn)
+        OnlineCoinTossSnapshot toss, bool ownsTurn, bool viewOnly = false)
     {
         if (!nativeProjectionVisible)
         {
@@ -73,15 +73,15 @@ public sealed partial class CoinTossPanelController
             : $"{team} manager · {(ownsTurn ? "Press [R] to roll" : "Waiting for roll")}";
         if (toss.rollSeconds.HasValue && toss.stage is "home" or "away")
             dicePanel.footer.text += $" · Auto-roll in {toss.rollSeconds.Value}s";
-        choices.SetActive(choosing);
+        choices.SetActive(choosing && !viewOnly);
         kickoffButton.gameObject.SetActive(toss.canChooseKickoff);
         kickoffButton.interactable = choosing && ownsTurn && toss.canChooseKickoff;
         leftToRightButton.interactable = rightToLeftButton.interactable = choosing && ownsTurn;
         SetLabel(kickoffButton, penalties ? "Take the First Penalty" : "Take Kick Off");
         SetLabel(leftToRightButton, penalties ? "Left Side" : "Attack Left to Right");
         SetLabel(rightToLeftButton, penalties ? "Right Side" : "Attack Right to Left");
-        dicePanel.panel.sizeDelta = new Vector2(1440, choosing ? 1080 : 720);
-        SetTop(dicePanel.footer.rectTransform, choosing ? 995 : 625);
+        dicePanel.panel.sizeDelta = new Vector2(1440, choosing && !viewOnly ? 1080 : 720);
+        SetTop(dicePanel.footer.rectTransform, choosing && !viewOnly ? 995 : 625);
         dicePanel.Fit();
     }
     internal static void PresentDie(DuelDieView die, int roll, bool shouldAnimate)

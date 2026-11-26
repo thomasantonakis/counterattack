@@ -104,6 +104,38 @@ public sealed class OnlineSpectatorRoomWireEditorTests
     }
 
     [Test]
+    public void MotionPublishesOnlyVisibleOnPitchActorsDuringCommittedMovement()
+    {
+        var state = State();
+        state.tokens = new[]
+        {
+            new OnlineGroundPassTokenState { id = "home:9", onBoard = true, visible = true },
+            new OnlineGroundPassTokenState { id = "home:12", onBoard = false, visible = true },
+            new OnlineGroundPassTokenState { id = "away:2", onBoard = true, visible = false }
+        };
+        state.roomPose = new OnlineGroundPassPresentation
+        {
+            matchId = "private-manager-id",
+            ballX = 7, ballY = 2, ballZ = 3,
+            players = new[]
+            {
+                new OnlinePlayerPresentation { id = "home:9", x = 2, y = 1, z = 3 },
+                new OnlinePlayerPresentation { id = "home:12", x = 123 },
+                new OnlinePlayerPresentation { id = "away:2", x = 456 }
+            }
+        };
+        Assert.That(Encode(state)["pose"], Is.Null);
+        state.playerMoving = true;
+        var pose = Encode(state)["pose"];
+        Assert.That(pose["ball"], Is.Null);
+        Assert.That(((JArray)pose["players"]).Count, Is.EqualTo(1));
+        Assert.That((string)pose["players"][0]["id"], Is.EqualTo("home:9"));
+        Assert.That(pose.ToString(), Does.Not.Contain("private-manager-id"));
+        state.ballOnBoard = state.ballMoving = true;
+        Assert.That((float)Encode(state)["pose"]["ball"]["y"], Is.EqualTo(2));
+    }
+
+    [Test]
     public void RejectsOtherCatalogsAndOversizedPublications()
     {
         var state = State();

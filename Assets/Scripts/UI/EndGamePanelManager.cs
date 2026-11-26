@@ -86,7 +86,8 @@ public class EndGamePanelManager : MonoBehaviour
         if (guest)
         {
             manager.GetComponent<PostMatchReportController>()?.SetHistoryAvailable(false);
-            manager.recapText.text = "Receiving Pitch and Luck history from the host…";
+            if (!CounterAttack.Online.OnlineRoomSession.IsSpectator)
+                manager.recapText.text = "Receiving Pitch and Luck history from the host…";
         }
     }
 
