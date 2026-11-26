@@ -15,7 +15,7 @@ public sealed partial class OnlineDraftSceneFixture
 {
     private OnlineFrontendSession draftSpectator;
 
-    public IEnumerator RunSpectatorPool()
+    private IEnumerator OpenSpectatorSession()
     {
         Assert.That(OnlineFrontendSession.Current, Is.Null);
         app = ApplicationManager.Instance;
@@ -31,6 +31,97 @@ public sealed partial class OnlineDraftSceneFixture
         draftSpectator = Object.Instantiate(menu.sessionPrefab);
         var type = typeof(OnlineFrontendSession);
         type.GetProperty("IsSpectator", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(draftSpectator, true);
+        type.GetProperty(nameof(OnlineFrontendSession.LobbyCode)).SetValue(draftSpectator, "AB12CD34");
+    }
+
+    public IEnumerator RunSpectatorExit(string mode)
+    {
+        yield return OpenSpectatorSession();
+        var settings = OnlineSetupAgreementEditorTests.Valid();
+        settings.draft = mode == "Setup" ? "Regular" : mode;
+        const string matchId = "spectator-pregame-exit";
+        bool setupScene = mode == "Setup";
+        var draft = setupScene ? null : new OnlineDraftState
+        {
+            settings = settings, phase = "pick", selection = "outfielders", turn = OnlineTeam.Home,
+            freeSelection = mode != "Regular", repeatable = mode == "Arcade",
+            home = new OnlineDraftCard[16], away = new OnlineDraftCard[16],
+            cards = new[] { OnlineDraftCatalog.Load().First(card => !card.goalkeeper) }
+        };
+        Assert.That(OnlineSpectatorPregameWire.TryEncode(matchId, 1, settings,
+            setupScene ? new OnlineSetupState { settings = settings } : null, draft, out var payload), Is.True);
+        var stream = new OnlineSpectatorStream(matchId);
+        foreach (var packet in stream.Encode(payload)) stream.Receive(packet, packet.Length);
+        var type = typeof(OnlineFrontendSession);
+        type.GetProperty("SpectatorPublication").SetValue(draftSpectator, stream.Latest);
+        type.GetMethod("FollowSpectatorStage", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(draftSpectator, null);
+        yield return WaitForSpectatorScene(setupScene ? "CreateNewGameScene" : "Draft");
+
+        Button back;
+        TMP_InputField code;
+        if (setupScene)
+        {
+            var view = Object.FindAnyObjectByType<OnlineSetupNetworkPanel>();
+            back = view.backButton;
+            code = view.sessionLobbyCode;
+            Assert.That(view.setup.homeTeamInputField.interactable, Is.False);
+        }
+        else
+        {
+            var view = Object.FindAnyObjectByType<OnlineDraftView>();
+            back = view.leaveButton;
+            code = view.sessionLobbyCode;
+            Assert.That(view.backToMatchSetupButton.gameObject.activeSelf, Is.False);
+            Assert.That(view.actionButton.interactable, Is.False);
+        }
+        Assert.That(code.gameObject.activeInHierarchy && code.interactable && code.readOnly, Is.True);
+        Assert.That(code.text, Is.EqualTo("AB12CD34"));
+        Assert.That(code.textComponent.fontSize, Is.EqualTo(24f));
+        var title = code.GetComponent<OnlineLobbyCodeTitle>().title;
+        var rect = (RectTransform)code.transform;
+        Assert.That(rect.localPosition.x - title.textBounds.max.x, Is.EqualTo(16f).Within(.1f));
+        var glyphSize = code.textComponent.GetPreferredValues(code.text);
+        Assert.That(rect.rect.width - glyphSize.x, Is.InRange(19f, 22f));
+        Assert.That(rect.rect.height - glyphSize.y, Is.InRange(11f, 14f));
+        string originalClipboard = GUIUtility.systemCopyBuffer;
+        try
+        {
+            code.selectionStringAnchorPosition = 0;
+            code.selectionStringFocusPosition = code.text.Length;
+            var modifier = SystemInfo.operatingSystemFamily == OperatingSystemFamily.MacOSX
+                ? EventModifiers.Command : EventModifiers.Control;
+            typeof(TMP_InputField).GetMethod("KeyPressed", BindingFlags.Instance | BindingFlags.NonPublic)
+                .Invoke(code, new object[] { new Event { type = EventType.KeyDown, keyCode = KeyCode.C, modifiers = modifier } });
+            Assert.That(GUIUtility.systemCopyBuffer, Is.EqualTo(code.text));
+        }
+        finally { GUIUtility.systemCopyBuffer = originalClipboard; }
+        Assert.That(back.gameObject.activeInHierarchy && back.interactable, Is.True);
+        var label = back.GetComponentInChildren<TMP_Text>(true);
+        label.ForceMeshUpdate();
+        Assert.That(label.text, Is.EqualTo("Back to Online Menu"));
+        Assert.That(label.textInfo.lineCount, Is.EqualTo(1));
+        Assert.That(label.textBounds.size.x, Is.LessThanOrEqualTo(label.rectTransform.rect.width + 1));
+        ExecuteEvents.Execute(back.gameObject, new PointerEventData(EventSystem.current)
+        {
+            button = PointerEventData.InputButton.Left
+        }, ExecuteEvents.pointerClickHandler);
+        yield return WaitForSpectatorScene(OnlineModeMenu.SceneName);
+        Assert.That(OnlineFrontendSession.Current, Is.Null);
+    }
+
+    private static IEnumerator WaitForSpectatorScene(string scene)
+    {
+        float deadline = Time.realtimeSinceStartup + 8;
+        while (SceneManager.GetActiveScene().name != scene && Time.realtimeSinceStartup < deadline) yield return null;
+        Assert.That(SceneManager.GetActiveScene().name, Is.EqualTo(scene));
+        yield return null;
+        yield return null;
+    }
+
+    public IEnumerator RunSpectatorPool()
+    {
+        yield return OpenSpectatorSession();
+        var type = typeof(OnlineFrontendSession);
         var follow = type.GetMethod("FollowSpectatorStage", BindingFlags.NonPublic | BindingFlags.Instance);
         const string matchId = "spectator-draft-pool";
         var stream = new OnlineSpectatorStream(matchId);

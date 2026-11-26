@@ -12,6 +12,7 @@ namespace CounterAttack.Online
         public OnlineSetupView view;
         public GameObject panel;
         public Button hostButton,joinButton,leaveButton,copyButton;
+        public Button backButton;
         public TMP_InputField lobbyCode;
         public TMP_InputField sessionLobbyCode;
         public Toggle relayOnly;
@@ -30,7 +31,8 @@ namespace CounterAttack.Online
         private TMP_Text leaveLabel;
         private void Start()
         {
-            online=ApplicationManager.Instance?.SelectedRoomGameMode==ApplicationManager.OnlineGameMode;
+            online=OnlineFrontendSession.Current?.IsSpectator == true
+                || ApplicationManager.Instance?.SelectedRoomGameMode==ApplicationManager.OnlineGameMode;
             if(panel!=null)panel.SetActive(online);
             if(!online)return;
             if (OnlineFrontendSession.Current is { IsSpectator: true } spectator)
@@ -42,10 +44,8 @@ namespace CounterAttack.Online
                 LockSpectatorControls();
                 foreach (var control in new Selectable[] { hostButton, joinButton, copyButton, lobbyCode, relayOnly, setup.createGameButton })
                     if (control != null) control.gameObject.SetActive(false);
-                leaveButton.gameObject.SetActive(true);
-                leaveButton.onClick.AddListener(spectator.LeaveSpectating);
-                var label = leaveButton.GetComponentInChildren<TMP_Text>(true);
-                if (label != null) label.text = "Leave";
+                leaveButton.gameObject.SetActive(false);
+                OnlineModeMenu.LabelSpectatorBackButton(backButton);
                 RefreshSpectator();
                 return;
             }
@@ -158,6 +158,8 @@ namespace CounterAttack.Online
         }
         private void RefreshSpectator()
         {
+            OnlineLobbyCodeTitle.Show(sessionLobbyCode, bound.LobbyCode);
+            panel.SetActive(bound.Error != null);
             Show(bound.Error ?? "Spectating match setup");
             var publication = bound.SpectatorPublication;
             if (publication == displayedPublication || (string)publication?["stage"] != "setup") return;
@@ -178,7 +180,7 @@ namespace CounterAttack.Online
         {
             foreach (var root in gameObject.scene.GetRootGameObjects())
             foreach (var control in root.GetComponentsInChildren<Selectable>(true))
-                control.interactable = control == leaveButton;
+                control.interactable = control == backButton || control == sessionLobbyCode;
         }
         private void Refresh()
         {
@@ -189,8 +191,7 @@ namespace CounterAttack.Online
             bool departed = current?.PeerDeparted == true;
             if (sessionLobbyCode != null)
             {
-                sessionLobbyCode.gameObject.SetActive(showLobbyCode);
-                sessionLobbyCode.SetTextWithoutNotify(showLobbyCode ? current.LobbyCode ?? string.Empty : string.Empty);
+                OnlineLobbyCodeTitle.Show(sessionLobbyCode, current?.LobbyCode);
                 panel.SetActive(!showLobbyCode || departed || current.Error != null);
                 hostButton.gameObject.SetActive(!showLobbyCode && !joining);
                 lobbyCode.gameObject.SetActive(!showLobbyCode && !joining);

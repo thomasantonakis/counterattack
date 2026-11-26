@@ -32,6 +32,11 @@ public sealed class OnlineDraftInteractionsPlayModeTests
         => (IEnumerator)Bridge.GetMethod("RunSpectatorPool").Invoke(fixture, null);
 
     [UnityTest]
+    public IEnumerator SpectatorCanCopyCodeAndReturnToOnlineMenu(
+        [Values("Setup", "Regular", "Free Regular", "Arcade")] string mode)
+        => (IEnumerator)Bridge.GetMethod("RunSpectatorExit").Invoke(fixture, new object[] { mode });
+
+    [UnityTest]
     public IEnumerator PoolRowsAndPageControlsFitBetweenTheRosters([Values(true, false)] bool localHome)
         => (IEnumerator)Bridge.GetMethod("RunVariant").Invoke(fixture, new object[] { "PoolLayout", localHome });
 }

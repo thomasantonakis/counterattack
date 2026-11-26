@@ -23,3 +23,19 @@ Unity 6000.5.3f1 compiled with zero errors. The completed runs below had zero fa
 | EditMode draft variant matrix | 38 | `20261126T213220907Z` |
 | EditMode Arcade returns and terminal transport | 4 | `20261126T213445138Z` |
 | EditMode frontend recovery | 16 | `20261126T213432085Z` |
+
+## Spectator navigation and pre-match lobby code
+
+- [x] Spectators can use **Back to Online Menu** from match setup and Regular, Free and Arcade drafts.
+- [x] Both scene titles have the Room's selectable 24-point code field, fitted to the displayed code with padding.
+
+Run `SpectatorCanCopyCodeAndReturnToOnlineMenu` in PlayMode for the four screen and mode combinations. It verifies title placement, text padding, the native copy shortcut and the actual Back button click.
+
+Unity compiled with zero errors. All runs finished with zero failures or skips.
+
+| Scope | Passed | Run |
+| --- | ---: | --- |
+| Draft interactions, including navigation and the code field | 13 | `20261126T220615651Z` |
+| Spectator flow from setup through Room and late joining | 2 | `20261126T220734623Z` |
+| Manager departure from Draft and setup | 4 | `20261126T220846728Z` |
+| Final spectator navigation, code field and single-line Back label | 4 | `20261126T221015582Z` |

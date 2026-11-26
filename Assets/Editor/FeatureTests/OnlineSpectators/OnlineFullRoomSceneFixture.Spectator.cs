@@ -67,7 +67,7 @@ public sealed partial class OnlineFullRoomSceneFixture
             Assert.That(setupView.setup.homeTeamInputField.text, Is.EqualTo("First Home"));
             Assert.That(setupView.setup.homeTeamInputField.interactable, Is.False);
             Assert.That(setupView.setup.createGameButton.gameObject.activeSelf, Is.False);
-            Assert.That(setupView.leaveButton.IsInteractable(), Is.True);
+            Assert.That(setupView.backButton.IsInteractable(), Is.True);
             setup.homeTeamName = "Public Home";
             Assert.That(OnlineSpectatorPregameWire.TryEncode(matchId, 2, setup,
                 new OnlineSetupState { settings = setup }, null, out payload), Is.True);

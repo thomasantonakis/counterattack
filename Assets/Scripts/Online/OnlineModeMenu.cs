@@ -38,6 +38,15 @@ namespace CounterAttack.Online
         private static string pendingJoinCode;
         private static string roomFailure;
 
+        internal static void LabelSpectatorBackButton(Button button)
+        {
+            var label = button.GetComponentInChildren<TMP_Text>(true);
+            label.text = "Back to Online Menu";
+            if (!label.enableAutoSizing) label.fontSizeMax = label.fontSize;
+            label.enableAutoSizing = true;
+            label.textWrappingMode = TextWrappingModes.NoWrap;
+        }
+
         internal static void ReturnFromFailedRoom(string message)
         {
             roomFailure = message;

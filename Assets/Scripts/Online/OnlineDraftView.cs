@@ -20,6 +20,7 @@ namespace CounterAttack.Online
         public PlayerCard[] cards;
         public Button actionButton,leaveButton;
         public Button backToMatchSetupButton;
+        public TMP_InputField sessionLobbyCode;
         public Button rollPanelButton;
         private float rollPanelHeight;
         private double rollPromptDeadline;
@@ -159,6 +160,7 @@ namespace CounterAttack.Online
         private void LateUpdate()
         {
             if(!online)return;
+            OnlineLobbyCodeTitle.Show(sessionLobbyCode, session?.LobbyCode);
             TickRollWiggle();
             if (watching)
             {
@@ -247,7 +249,7 @@ namespace CounterAttack.Online
             foreach (var root in gameObject.scene.GetRootGameObjects())
             {
                 foreach (var control in root.GetComponentsInChildren<Selectable>(true))
-                    control.interactable = control == leaveButton;
+                    control.interactable = control == leaveButton || control == sessionLobbyCode;
                 foreach (var drag in root.GetComponentsInChildren<PlayerSlotDragHandler>(true)) drag.enabled = false;
                 foreach (var drag in root.GetComponentsInChildren<PlayerCardDragHandler>(true)) drag.enabled = false;
                 foreach (var target in root.GetComponentsInChildren<OnlineDraftClickTarget>(true)) target.enabled = false;
@@ -257,6 +259,7 @@ namespace CounterAttack.Online
                 kickoffChoiceButton, leftChoiceButton, rightChoiceButton })
                 if (button != null) button.gameObject.SetActive(false);
             foreach (var card in cards) card.gameObject.SetActive(false);
+            OnlineModeMenu.LabelSpectatorBackButton(leaveButton);
             leaveButton.onClick.AddListener(Leave);
             RenderSpectating();
         }
