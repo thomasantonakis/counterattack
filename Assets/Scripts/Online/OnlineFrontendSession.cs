@@ -18,6 +18,10 @@ namespace CounterAttack.Online
         public event Action<GameSettings> DraftAgreed;
         public event Action<OnlineDraftClient> DraftAvailable;
         public OnlineDraftClient Draft=>channel?.Draft;
+        internal bool CanReturnToMatchSetup => !IsSpectator && !stop && roomLaunch == null
+            && Draft is { Connected: true, Pending: false } && Draft.Phase != "room-ready"
+            && Client?.CanReturnToSetup == true;
+        internal bool ReturnToMatchSetup() => CanReturnToMatchSetup && Client.ReturnToSetup();
         public event Action<MatchManager.GameData> RoomPrepared;
         private MatchManager.GameData roomLaunch;
         private OnlineRoomLaunchLifetime roomLifetime;
@@ -83,12 +87,14 @@ namespace CounterAttack.Online
         }
 
         internal OnlineConnectionReading CaptureConnection() => channel.Latency.CaptureConnection();
+        internal bool PeerLeftPregame => roomLaunch == null && PeerDeparted;
+        internal bool PeerDeparted => !stop && channel?.PeerLeft == true;
         public int QueuedPackets=>outgoing.Count;
         private OnlineSessionChannel channel;
         private OnlineFrontendRecovery recovery;
         private ulong requestNotification,closedNotification;
         private IDisposable connectionNotifications;
-        private bool connectionLost;
+        private bool connectionLost, peerClosedConnection;
         private readonly Queue<byte[]> outgoing=new();
         private readonly byte[] receiveBuffer=new byte[1170];
         private IEnumerator probe;
@@ -131,7 +137,7 @@ namespace CounterAttack.Online
         public void Host(GameSettings settings,bool forceRelay=false)
         {
             if(Busy || running!=null)throw new InvalidOperationException("An online session is already running");
-            initial=OnlineSetupRules.Normalize(settings);var invalid=OnlineSetupRules.Validate(initial);
+            initial=OnlineSetupRules.Normalize(settings);var invalid=OnlineSetupRules.Validate(initial,allowUnnamedTeams:true);
             if(!string.IsNullOrEmpty(invalid))throw new ArgumentException(invalid,nameof(settings));
             spectatorAdmission = new OnlineSpectatorAdmission();
             Begin(true,null,forceRelay);
@@ -241,7 +247,8 @@ namespace CounterAttack.Online
                 ? EOSStandalonePacketProbe.HostProbe(RunDirectory, Exchange, route, OnLobbyCodePublished,
                     onLobbyCreated: id => lobbyId = id, liveAdmission: spectatorAdmission,
                     openViewing: OpenViewing, closeViewing: CloseViewing,
-                    requiredHost: resumeCheckpoint?.hostAccount, requiredGuest: resumeCheckpoint?.guestAccount)
+                    requiredHost: resumeCheckpoint?.hostAccount, requiredGuest: resumeCheckpoint?.guestAccount,
+                    hostIsLeaving: () => stop)
                 : EOSStandalonePacketProbe.GuestProbe(code, watching ? WatchExchange : Exchange, route,
                     searchByCode: true, watchLobby: watching);
             running=StartCoroutine(Run());
@@ -323,8 +330,9 @@ namespace CounterAttack.Online
                 while(!disposed)
                 {
                     session.Tick();
-                    if(connectionLost){connectionLost=false;recovery.ConnectionLost();}
-                    Flush();Poll();PollReturningGuest();recovery.Tick();channel.Tick();Flush();
+                    // Drain an explicit leave before a close callback can rotate the nonce.
+                    Poll();
+                    if(peerClosedConnection)channel.MarkPeerLeft();
                     if(channel.Fault!=null)throw new InvalidOperationException(channel.Fault);
                     if(channel.PeerLeft)
                     {
@@ -332,10 +340,18 @@ namespace CounterAttack.Online
                         if (roomLifetime?.Session.IsResuming == true && roomBoard == null)
                             throw new InvalidOperationException("The other manager cancelled the resume.");
                         Status="The other manager left the session.";
-                        roomBoard?.PresentSessionDeparture("The other manager left the match. Return to the main menu.");
+                        if (roomBoard != null)
+                        {
+                            roomBoard.controls?.SetConnected(false);
+                            roomBoard.PresentSessionDeparture("The other manager left the match.", allowCheckpoint: Hosting);
+                            // Hold the authority and its checkpoint binding until the remaining manager exits.
+                            while (!disposed && !stop) yield return null;
+                        }
                         break;
                     }
                     if(stop)break;
+                    if(connectionLost){connectionLost=false;recovery.ConnectionLost();}
+                    Flush();PollReturningGuest();recovery.Tick();channel.Tick();Flush();
                     exchangedHello |= channel.Ready;
                     if ((!exchangedHello || HostingResume && roomLaunch == null)
                         && Time.realtimeSinceStartupAsDouble > handshakeDeadline)
@@ -419,14 +435,27 @@ namespace CounterAttack.Online
             });
             var closed=new AddNotifyPeerConnectionClosedOptions{LocalUserId=native.UserId,SocketId=socket};
             closedNotification=p2p.AddNotifyPeerConnectionClosed(ref closed,null,(ref OnRemoteConnectionClosedInfo info)=>
-            {if(SamePeer(info.RemoteUserId,info.SocketId))connectionLost=true;});
+            {
+                if(!SamePeer(info.RemoteUserId,info.SocketId))return;
+                if(info.Reason==ConnectionClosedReason.ClosedByPeer)peerClosedConnection=true;
+                else connectionLost=true;
+            });
+            var lobby=native.Platform.GetLobbyInterface();
+            var memberOptions=new AddNotifyLobbyMemberStatusReceivedOptions();
+            ulong membership=lobby.AddNotifyLobbyMemberStatusReceived(ref memberOptions,null,(ref LobbyMemberStatusReceivedCallbackInfo info)=>
+            {
+                if(info.LobbyId!=lobbyId)return;
+                if(info.CurrentStatus==LobbyMemberStatus.Closed || (info.CurrentStatus is LobbyMemberStatus.Left or LobbyMemberStatus.Kicked
+                    && info.TargetUserId?.ToString()==peer?.ToString()))peerClosedConnection=true;
+            });
             ulong requestId=requestNotification,closedId=closedNotification;
             connectionNotifications=native.OwnNativeSubscription(()=>
             {
                 if(requestId!=0)p2p.RemoveNotifyPeerConnectionRequest(requestId);
                 if(closedId!=0)p2p.RemoveNotifyPeerConnectionClosed(closedId);
+                if(membership!=0)lobby.RemoveNotifyLobbyMemberStatusReceived(membership);
             });
-            if(requestId==0 || closedId==0){RemoveConnectionNotifications();throw new InvalidOperationException("Could not observe online connection recovery");}
+            if(requestId==0 || closedId==0 || membership==0){RemoveConnectionNotifications();throw new InvalidOperationException("Could not observe online connection recovery");}
         }
         private void RemoveConnectionNotifications()
         {
@@ -473,19 +502,29 @@ namespace CounterAttack.Online
         }
         private void Poll()
         {
+            if(channel.PeerLeft)return;
             var p2p=native.Platform.GetP2PInterface();var options=new ReceivePacketOptions{LocalUserId=native.UserId,MaxDataSizeBytes=(uint)receiveBuffer.Length,RequestedChannel=OnlineFrontendSessionPolicy.Channel};
             for(int i=0;i<128;i++)
             {
                 ProductUserId sender=null;var receivedSocket=new SocketId();
                 var result=p2p.ReceivePacket(ref options,ref sender,ref receivedSocket,out var channelId,new ArraySegment<byte>(receiveBuffer),out var size);
-                if(result==Result.NotFound)return;
+                if(result==Result.NotFound || peerClosedConnection && result==Result.NoConnection)return;
                 if(result!=Result.Success)throw new IOException("Receiving online session data failed: "+result);
                 if(sender?.ToString()!=peer.ToString() || channelId!=OnlineFrontendSessionPolicy.Channel || receivedSocket.SocketName!=socket.SocketName)continue;
                 bytesReceived+=size;channel.Receive(sender.ToString(),receiveBuffer,(int)size);
+                if(channel.PeerLeft)return;
             }
         }
         private void Update()
         {
+            if(!IsSpectator && !stop && roomLaunch==null && announcedDraft!=null && Draft==null && Client?.Phase=="setup"
+                && SceneManager.GetActiveScene().name=="Draft")
+            {
+                announcedDraft=null;
+                agreedSettings=null;
+                SceneManager.LoadScene("CreateNewGameScene");
+                return;
+            }
             if(Draft!=null && !ReferenceEquals(announcedDraft,Draft))
             {
                 announcedDraft=Draft;DraftAvailable?.Invoke(Draft);
@@ -531,7 +570,7 @@ namespace CounterAttack.Online
 
         private void OnAgreed(GameSettings settings)
         {
-            if(agreedSettings!=null)return;agreedSettings=OnlineSetupRules.Copy(settings);Status="Both managers agreed. Preparing Draft...";
+            agreedSettings=OnlineSetupRules.Copy(settings);Status="Both managers agreed. Preparing Draft...";
             DraftAgreed?.Invoke(OnlineSetupRules.Copy(settings));
         }
         public void Close()

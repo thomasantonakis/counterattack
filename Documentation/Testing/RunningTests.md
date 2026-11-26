@@ -627,6 +627,26 @@ not standalone player test builds.
 
 ## Online Draft focused filters
 
+Use category `OnlineDraftDeparture` for Arcade pool returns and the confirmation
+boundary, terminal peer departure, and the Room's Pause, checkpoint and lobby-code
+controls. See the [departure and Arcade checklist](../../Assets/Editor/FeatureTests/OnlineDraftDeparture/Verification.md).
+
+Use category `OnlineDraftPolish` for Hot Seat dice cue and timing parity,
+required online team names, goalkeeper dribbling, and the pre-match departure
+notice. The authored pool height is checked by
+`PoolRowsAndPageControlsFitBetweenTheRosters`. See the [polish checklist](../../Assets/Editor/FeatureTests/OnlineDraftPolish/Verification.md).
+
+Use `OnlineDraftReturnEditorTests` and `OnlineDraftReturnPlayModeTests`, category
+`OnlineDraftReturn`, for the Draft footer's **Back to Match Setup** action, both
+manager roles, a fresh draft after reconfirmation and stale packet rejection.
+See the [return-to-setup checklist](../../Assets/Editor/FeatureTests/OnlineDraftReturn/Verification.md).
+
+Free and Arcade interactions use EditMode `OnlineDraftInteractionRulesTests`
+and PlayMode `OnlineDraftInteractionsPlayModeTests`, category
+`OnlineDraftInteractions`. They cover keeper/outfield roll parity, exact slot
+eligibility, local controls for both managers, crossing Arcade picks and the
+spectator Draft view. See the [feature checklist](../../Assets/Editor/FeatureTests/OnlineDraftInteractions/Verification.md).
+
 Regular Draft: EditMode `OnlineDraftAuthorityEditorTests` (40) and
 `OnlineDraftChannelEditorTests` (16); PlayMode `OnlineDraftScenePlayModeTests` (20).
 Variants: EditMode `OnlineDraftVariantEditorTests` (38),

@@ -37,7 +37,10 @@ public sealed class OnlineModeNavigationEditorTests
             Assert.That(menu.lobbyCode.targetGraphic.GetComponent<Outline>(),Is.Not.Null);
             Assert.That(menu.hostCode.readOnly,Is.True);
             Assert.That(menu.sessionPrefab,Is.Not.Null);
-            Assert.That(OnlineSetupRules.Validate(OnlineModeMenu.HostDefaults()),Is.Empty);
+            var defaults=OnlineModeMenu.HostDefaults();
+            Assert.That(defaults.homeTeamName,Is.Empty);
+            Assert.That(defaults.awayTeamName,Is.Empty);
+            Assert.That(OnlineSetupRules.Validate(defaults,allowUnnamedTeams:true),Is.Empty);
             menu.lobbyCode.SetTextWithoutNotify("invalid");
             menu.Join();
             Assert.That(menu.status.text, Does.Contain("8-character"));

@@ -257,7 +257,7 @@ namespace CounterAttack.Online
             HasOnlineReportHistory = true;
         }
 
-        internal void PresentSessionDeparture(string message)
+        internal void PresentSessionDeparture(string message, bool allowCheckpoint = false)
         {
             if (HasOnlineConclusion)
             {
@@ -266,7 +266,7 @@ namespace CounterAttack.Online
                 return;
             }
             menu?.PresentPeerDeparture();
-            nativePause?.PresentClosedMatch(message);
+            nativePause?.PresentClosedMatch(message, allowCheckpoint);
         }
 
         private Vector3 Center(int x, int z) => grid.GetHexCenterForCoordinates(new Vector3Int(x, 0, z));

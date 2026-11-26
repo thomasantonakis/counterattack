@@ -963,6 +963,7 @@ public sealed partial class OnlineFullRoomSceneFixture
     public IEnumerator Cleanup()
     {
         if(app==null)yield break;
+        if (departureFrontend != null) departureFrontend.Close();
         pause?.Dispose();pause=null;
         yield return EditorSceneManager.LoadSceneAsyncInPlayMode("Assets/Scenes/MainMenu.unity",new LoadSceneParameters(LoadSceneMode.Single));session?.Dispose();session=null;
         if(previousExplicit)app.SetActiveSaveFilePath(previousPath);else{app.ClearActiveSaveContext();app.LastSavedFileName=previousPath;}app.SetSelectedRoomGameMode(previousMode);

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 namespace CounterAttack.Online
 {
-    public enum OnlineSetupIntent { Team, Settings, Ready, Unready, Start, Confirm, Edit }
+    public enum OnlineSetupIntent { Team, Settings, Ready, Unready, Start, Confirm, Edit, BackToSetup }
     [Serializable] public sealed class OnlineSetupTeam { public string name,kit,goalkeeperKit; }
     [Serializable] public sealed class OnlineSetupRequest
     {
@@ -29,7 +29,7 @@ namespace CounterAttack.Online
         public OnlineSetupAuthority(OnlineMatchProtocol protocol,GameSettings initial)
         {
             this.protocol=protocol??throw new ArgumentNullException(nameof(protocol));
-            settings=OnlineSetupRules.Normalize(initial);var error=OnlineSetupRules.Validate(settings);
+            settings=OnlineSetupRules.Normalize(initial);var error=OnlineSetupRules.Validate(settings,allowUnnamedTeams:true);
             if(!string.IsNullOrEmpty(error))throw new ArgumentException(error,nameof(initial));
             connectionRevision=protocol.ConnectionRevision;
         }
@@ -58,7 +58,8 @@ namespace CounterAttack.Online
             if(request.sequence<=sequence[actor])return Reply(OnlineCommandStatus.StaleSequence);
             if(!protocol.BothConnected)return Reply(OnlineCommandStatus.Disconnected);
             if(request.revision!=revision)return Reply(OnlineCommandStatus.StaleRevision);
-            if(started)return Reply(OnlineCommandStatus.NotReady);
+            bool returningToSetup=request.intent==OnlineSetupIntent.BackToSetup;
+            if(started!=returningToSetup)return Reply(OnlineCommandStatus.NotReady);
             if(request.intent is OnlineSetupIntent.Confirm or OnlineSetupIntent.Edit)
             {
                 if(request.team==null)return Reply(OnlineCommandStatus.InvalidCommand);
@@ -88,16 +89,22 @@ namespace CounterAttack.Online
             }
             if(next!=null)
             {
-                next=OnlineSetupRules.Normalize(next);if(!string.IsNullOrEmpty(OnlineSetupRules.Validate(next)))return Reply(OnlineCommandStatus.IllegalAction);
+                next=OnlineSetupRules.Normalize(next);
+                if(!string.IsNullOrEmpty(OnlineSetupRules.Validate(next,allowUnnamedTeams:request.intent!=OnlineSetupIntent.Confirm)))return Reply(OnlineCommandStatus.IllegalAction);
                 if(JsonConvert.SerializeObject(next)!=JsonConvert.SerializeObject(settings))
                 {settings=next;homeReady=awayReady=false;configurationRevision=checked(configurationRevision+1);}
                 if(request.intent==OnlineSetupIntent.Confirm){if(actor==OnlineTeam.Home)homeReady=true;else awayReady=true;}
             }
             else switch(request.intent)
             {
-                case OnlineSetupIntent.Ready:if(actor==OnlineTeam.Home)homeReady=true;else awayReady=true;break;
+                case OnlineSetupIntent.Ready:
+                    if(!string.IsNullOrEmpty(OnlineSetupRules.Validate(settings)))return Reply(OnlineCommandStatus.NotReady);
+                    if(actor==OnlineTeam.Home)homeReady=true;else awayReady=true;break;
                 case OnlineSetupIntent.Unready:if(actor==OnlineTeam.Home)homeReady=false;else awayReady=false;break;
-                case OnlineSetupIntent.Start:if(!homeReady || !awayReady)return Reply(OnlineCommandStatus.NotReady);started=true;break;
+                case OnlineSetupIntent.Start:
+                    if(!homeReady || !awayReady || !string.IsNullOrEmpty(OnlineSetupRules.Validate(settings)))return Reply(OnlineCommandStatus.NotReady);
+                    started=true;break;
+                case OnlineSetupIntent.BackToSetup:started=false;homeReady=awayReady=false;break;
             }
             revision=checked(revision+1);sequence[actor]=request.sequence;receipts.Add(key,(body,revision));receiptOrder.Enqueue(key);
             while(receiptOrder.Count>128)receipts.Remove(receiptOrder.Dequeue());return Reply(OnlineCommandStatus.Accepted);

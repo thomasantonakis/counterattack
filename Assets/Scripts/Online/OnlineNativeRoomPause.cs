@@ -29,6 +29,7 @@ namespace CounterAttack.Online
         private Action<string, Action> commitSave;
         private Action afterNamedSave;
         private string terminalMessage;
+        private bool allowDepartedCheckpoint;
         private SubstitutionMenuView substitutions;
         private SubstitutionDropdownRowView localRow;
         private OnlineGroundPassTokenState[] outgoing = Array.Empty<OnlineGroundPassTokenState>();
@@ -123,8 +124,8 @@ namespace CounterAttack.Online
             durableMatchId = OnlineRoomSession.Current?.DurableMatch ?? durableMatchId;
             string Guard()
             {
-                var publication = state;
-                return RoomSaveService.CanCaptureOnline(board.match, protocol, pause, publication, out string reason)
+                var publication = allowDepartedCheckpoint ? pause.Capture(authority) : state;
+                return RoomSaveService.CanCaptureOnline(board.match, protocol, pause, publication, out string reason, allowDepartedCheckpoint)
                     ? null : reason;
             }
             saveUnavailable = Guard;
@@ -132,7 +133,7 @@ namespace CounterAttack.Online
             {
                 // Capture and write synchronously on the same authority thread as command admission.
                 var current = pause.Capture(authority);
-                if (!RoomSaveService.CanCaptureOnline(board.match, protocol, pause, current, out var reason))
+                if (!RoomSaveService.CanCaptureOnline(board.match, protocol, pause, current, out var reason, allowDepartedCheckpoint))
                 {
                     ShowSaveMessage(reason);
                     return;
@@ -206,8 +207,9 @@ namespace CounterAttack.Online
 
         private void LeaveMatch()
         {
-            if (OnlineFrontendSession.Current != null) OnlineFrontendSession.Current.Close();
-            else OnlineRoomSession.Current?.Dispose();
+            if (terminalMessage != null) Time.timeScale = 1;
+            OnlineFrontendSession.Current?.Close();
+            OnlineRoomSession.Current?.Dispose();
             MenuAudioPlayer.Play(GameplayAudioPool.MenuBack);
             SceneManager.LoadScene("MainMenu");
         }
@@ -269,14 +271,17 @@ namespace CounterAttack.Online
             else if (selectingPlayers) RefreshSubstitutions();
         }
 
-        internal void PresentClosedMatch(string message)
+        internal void PresentClosedMatch(string message, bool allowCheckpoint = false)
         {
             terminalMessage = message;
+            allowDepartedCheckpoint = allowCheckpoint && saveUnavailable != null;
             editing = false;
             board.rollPanels.HideAfterDeparture();
             board.match.coinTossPanel?.HidePublishedToss();
             if (board.nativeShootout != null) board.nativeShootout.gameObject.SetActive(false);
             if (RoomInputOwnership.IntroActive) RoomMatchIntro.Instance.Skip();
+            board.match.SetPauseMenuOpen(true);
+            Time.timeScale = 0;
             Refresh();
         }
 
@@ -405,27 +410,39 @@ namespace CounterAttack.Online
         {
             bool paused = state?.isSharedPaused == true;
             bool reconnecting = state?.connectionHeld == true;
-            bool resuming = state?.resumePending == true;
+            bool resuming = terminalMessage == null && state?.resumePending == true;
             bool reviewing = state?.substitutionReview != null && terminalMessage == null;
             if (!paused || reconnecting || terminalMessage != null || reviewing)
             {
                 editing = false;
                 selectingPlayers = false;
-                namingSave = false;
-                afterNamedSave = null;
-                saveMessage = null;
-                view.LeaveMatchConfirmation.TryClose();
+                if (!allowDepartedCheckpoint)
+                {
+                    namingSave = false;
+                    afterNamedSave = null;
+                    saveMessage = null;
+                    view.LeaveMatchConfirmation.TryClose();
+                }
             }
             if (substitutions != null) substitutions.gameObject.SetActive(selectingPlayers || reviewing);
             bool showPause = (paused || reconnecting || resuming || terminalMessage != null) && !editing && !selectingPlayers && !reviewing && !namingSave;
-            if (showPause && !view.pausePanel.activeSelf)
+            if (showPause && (!view.pausePanel.activeSelf || terminalMessage != null))
                 view.pausePanel.transform.SetAsLastSibling();
             view.pausePanel.SetActive(showPause);
+            if (view.onlineLobbyCode != null)
+            {
+                string code = OnlineFrontendSession.Current?.LobbyCode;
+                view.onlineLobbyCode.gameObject.SetActive(showPause && !string.IsNullOrEmpty(code));
+                if (view.onlineLobbyCode.text != code)
+                    view.onlineLobbyCode.SetTextWithoutNotify(code ?? string.Empty);
+            }
+            if (namingSave && terminalMessage != null)
+                view.saveAsOverlay.transform.SetAsLastSibling();
             view.saveAsOverlay.SetActive(namingSave);
             view.editSettingsPanel.SetActive(editing);
             string checkpointReason = saveUnavailable?.Invoke();
-            bool canSave = showPause && saveUnavailable != null && checkpointReason == null && terminalMessage == null;
-            view.saveMatchButton.interactable = canSave && selectedSave.HasValue;
+            bool canSave = showPause && saveUnavailable != null && checkpointReason == null && (terminalMessage == null || allowDepartedCheckpoint);
+            view.saveMatchButton.interactable = canSave && (selectedSave.HasValue || allowDepartedCheckpoint);
             view.saveMatchAsButton.interactable = canSave;
             if (resumeLabel != null) resumeLabel.text = resuming ? "Ready" : normalResumeLabel;
             if (leaveLabel != null) leaveLabel.text = resuming ? "Cancel Resume" : normalLeaveLabel;
@@ -442,7 +459,7 @@ namespace CounterAttack.Online
             view.RefreshPauseActionColors();
             view.pauseSaveStatusText.gameObject.SetActive(showPause);
             view.pauseSaveStatusText.color = new Color32(30, 69, 89, 255);
-            view.pauseSaveStatusText.text = terminalMessage ?? (reconnecting ? "Reconnecting. The match is held."
+            view.pauseSaveStatusText.text = terminalMessage != null ? saveMessage ?? (checkpointReason == null ? terminalMessage : $"{terminalMessage}\n{checkpointReason}") : (reconnecting ? "Reconnecting. The match is held."
                 : resuming ? ResumeStatus()
                 : state?.keeperActionBlocked == true ? state.keeperActionReason
                 : saveMessage ?? checkpointReason ?? (canSave ? "Checkpoint available. Select Save Match As." : null) ??

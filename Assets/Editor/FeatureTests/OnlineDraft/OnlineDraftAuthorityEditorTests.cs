@@ -37,9 +37,9 @@ public sealed class OnlineDraftAuthorityEditorTests
         Assert.That(result.awayRoll,Is.EqualTo(tie?6:1));
         Assert.That(result.cards,Is.Empty);
         Assert.That(Submit(OnlineTeam.Home,OnlineDraftIntent.Roll),Is.EqualTo(OnlineCommandStatus.NotReady));
-        now=8.999;
+        now=5.999;
         Assert.That(draft.AdvanceRollResult(),Is.False);
-        now=9;
+        now=6;
         Assert.That(draft.AdvanceRollResult(),Is.True);
         Assert.That(draft.Capture().phase,Is.EqualTo(tie?"roll":"pick"));
         Assert.That(draft.AdvanceRollResult(),Is.False);

@@ -38,6 +38,15 @@ namespace CounterAttack.Online
         private static string pendingJoinCode;
         private static string roomFailure;
 
+        internal static void LabelSpectatorBackButton(Button button)
+        {
+            var label = button.GetComponentInChildren<TMP_Text>(true);
+            label.text = "Back to Online Menu";
+            if (!label.enableAutoSizing) label.fontSizeMax = label.fontSize;
+            label.enableAutoSizing = true;
+            label.textWrappingMode = TextWrappingModes.NoWrap;
+        }
+
         internal static void ReturnFromFailedRoom(string message)
         {
             roomFailure = message;
@@ -206,7 +215,7 @@ namespace CounterAttack.Online
                 halfDuration=45,numberOfHalfs=2,tiebreaker="Extra Time & Penalties",playerAssistance=2,
                 matchType="Regular",squadSize="16",draft="Regular",gkDraft="Deal",referee="Random",
                 weatherConditions="Clear",fixtureLighting="MidAfternoon",ballColor="White",
-                includeTabletopia=true,includeTabletopiaGK=true,homeTeamName="Home",awayTeamName="Away"
+                includeTabletopia=true,includeTabletopiaGK=true,homeTeamName=string.Empty,awayTeamName=string.Empty
             };
             var kits=TokenKitCatalog.GetAllPresets();
             var players=kits.Where(kit=>!kit.Id.StartsWith("gk")).OrderBy(kit=>kit.Id=="088"?0:kit.Id=="021"?1:2).ToArray();

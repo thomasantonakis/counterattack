@@ -14,6 +14,8 @@ namespace CounterAttack.Online
         public bool LocalReady=>state!=null && (Team==OnlineTeam.Home?state.homeReady:state.awayReady);
         public bool BothReady=>state?.homeReady==true && state.awayReady;
         public bool Connected=>state?.connected==true && transportAvailable;
+        public string Phase=>state?.phase;
+        public bool CanReturnToSetup=>Phase=="draft-ready" && Connected && !Pending;
         public OnlineCommandStatus? LastReply {get;private set;}
         public bool CanConfirm=>state?.phase=="setup" && Connected && !Pending && (!LocalReady || Dirty || IsHost && BothReady);
         private readonly string matchId;
@@ -37,20 +39,30 @@ namespace CounterAttack.Online
             if(snapshot==null || snapshot.matchId!=matchId || snapshot.revision<0 || snapshot.configurationRevision<0
                 || snapshot.configurationRevision>snapshot.revision || snapshot.connectionRevision<0 || snapshot.homeSequence<0 || snapshot.awaySequence<0
                 || !Enum.IsDefined(typeof(OnlineTeam),snapshot.hostTeam) || snapshot.phase!="setup" && snapshot.phase!="draft-ready"
-                || !string.IsNullOrEmpty(OnlineSetupRules.Validate(snapshot.settings)))return false;
+                || !string.IsNullOrEmpty(OnlineSetupRules.Validate(snapshot.settings,allowUnnamedTeams:snapshot.phase=="setup")))return false;
             return state==null || snapshot.revision>state.revision || snapshot.revision==state.revision && JsonConvert.SerializeObject(snapshot)==JsonConvert.SerializeObject(state);
         }
         public bool Apply(OnlineSetupState snapshot)
         {
             if(!CanApply(snapshot))return false;
-            if(state!=null && snapshot.connectionRevision!=state.connectionRevision)pending=null;
+            long confirmedSequence = Team == OnlineTeam.Home ? snapshot.homeSequence : snapshot.awaySequence;
+            if (state != null && snapshot.connectionRevision != state.connectionRevision)
+            {
+                // The reconnected snapshot can carry the acknowledgement whose reply was lost.
+                if (pending?.sequence == confirmedSequence && pending.intent is OnlineSetupIntent.Confirm or OnlineSetupIntent.Edit
+                    && pendingEditVersion == editVersion)
+                    draft = null;
+                pending = null;
+            }
+            if(Phase=="draft-ready" && snapshot.phase=="setup")
+            {agreed=false;pending=null;draft=null;}
             if(state!=null && state.settings.matchType!=snapshot.settings.matchType && draft?.matchType!=snapshot.settings.matchType)
             {
                 draft=null;
                 pending=null;
             }
             state=JsonConvert.DeserializeObject<OnlineSetupState>(JsonConvert.SerializeObject(snapshot));
-            nextSequence=Math.Max(nextSequence,Team==OnlineTeam.Home?state.homeSequence:state.awaySequence);
+            nextSequence=Math.Max(nextSequence,confirmedSequence);
             Changed?.Invoke();
             if(!agreed && state.phase=="draft-ready" && state.connected)
             {agreed=true;DraftAgreed?.Invoke(OnlineSetupRules.Copy(state.settings));}
@@ -65,7 +77,7 @@ namespace CounterAttack.Online
         {
             if(state?.phase!="setup" || !Connected || Pending || !Dirty || rejectedEditVersion==editVersion)return;
             var candidate=OnlineSetupRules.Normalize(OnlineSetupRules.MergeOwnedSelection(state.settings,draft,Team,IsHost));
-            if(string.IsNullOrEmpty(OnlineSetupRules.Validate(candidate)))Send(OnlineSetupIntent.Edit);
+            if(string.IsNullOrEmpty(OnlineSetupRules.Validate(candidate,allowUnnamedTeams:true)))Send(OnlineSetupIntent.Edit);
             else if(LocalReady)Send(OnlineSetupIntent.Unready);
         }
         public bool Confirm(GameSettings proposed)
@@ -76,6 +88,12 @@ namespace CounterAttack.Online
             if(IsHost && BothReady && !Dirty && JsonConvert.SerializeObject(candidate)==JsonConvert.SerializeObject(state.settings))
             {Send(OnlineSetupIntent.Start);return true;}
             draft=OnlineSetupRules.Copy(proposed);editVersion=checked(editVersion+1);Send(OnlineSetupIntent.Confirm);return true;
+        }
+        public bool ReturnToSetup()
+        {
+            if(!CanReturnToSetup || Requested==null)return false;
+            Send(OnlineSetupIntent.BackToSetup);
+            return true;
         }
         private void Send(OnlineSetupIntent intent)
         {

@@ -12,7 +12,9 @@ namespace CounterAttack.Online
         public OnlineSetupView view;
         public GameObject panel;
         public Button hostButton,joinButton,leaveButton,copyButton;
+        public Button backButton;
         public TMP_InputField lobbyCode;
+        public TMP_InputField sessionLobbyCode;
         public Toggle relayOnly;
         public TMP_Text connectionStatus;
         public OnlineFrontendSession sessionPrefab;
@@ -26,9 +28,11 @@ namespace CounterAttack.Online
         private bool watching;
         private JObject displayedPublication;
         private GameSettings lastValidEarlySetup;
+        private TMP_Text leaveLabel;
         private void Start()
         {
-            online=ApplicationManager.Instance?.SelectedRoomGameMode==ApplicationManager.OnlineGameMode;
+            online=OnlineFrontendSession.Current?.IsSpectator == true
+                || ApplicationManager.Instance?.SelectedRoomGameMode==ApplicationManager.OnlineGameMode;
             if(panel!=null)panel.SetActive(online);
             if(!online)return;
             if (OnlineFrontendSession.Current is { IsSpectator: true } spectator)
@@ -40,16 +44,17 @@ namespace CounterAttack.Online
                 LockSpectatorControls();
                 foreach (var control in new Selectable[] { hostButton, joinButton, copyButton, lobbyCode, relayOnly, setup.createGameButton })
                     if (control != null) control.gameObject.SetActive(false);
-                leaveButton.gameObject.SetActive(true);
-                leaveButton.onClick.AddListener(spectator.LeaveSpectating);
-                var label = leaveButton.GetComponentInChildren<TMP_Text>(true);
-                if (label != null) label.text = "Leave";
+                leaveButton.gameObject.SetActive(false);
+                OnlineModeMenu.LabelSpectatorBackButton(backButton);
                 RefreshSpectator();
                 return;
             }
             lobbyCode.characterLimit = OnlineSpectatorAdmission.CodeLength;
-            if(string.IsNullOrWhiteSpace(setup.homeTeamInputField.text))setup.homeTeamInputField.SetTextWithoutNotify("Home");
-            if(string.IsNullOrWhiteSpace(setup.awayTeamInputField.text))setup.awayTeamInputField.SetTextWithoutNotify("Away");
+            if(OnlineFrontendSession.Current==null)
+            {
+                setup.homeTeamInputField.SetTextWithoutNotify(string.Empty);
+                setup.awayTeamInputField.SetTextWithoutNotify(string.Empty);
+            }
             GuardLocalSave();hostButton.onClick.AddListener(Host);joinButton.onClick.AddListener(Join);
             leaveButton.onClick.AddListener(Leave);copyButton.onClick.AddListener(CopyLobbyCode);
             if(OnlineFrontendSession.Current!=null)Bind(OnlineFrontendSession.Current);
@@ -59,7 +64,7 @@ namespace CounterAttack.Online
             joinButton.gameObject.SetActive(false);
             lobbyCode.gameObject.SetActive(!joining);
             copyButton.gameObject.SetActive(!joining);
-            var leaveLabel = leaveButton.GetComponentInChildren<TMP_Text>();
+            leaveLabel = leaveButton.GetComponentInChildren<TMP_Text>();
             if (joining && leaveLabel != null) leaveLabel.text = "Cancel / Back";
             if (!joining && OnlineFrontendSession.Current == null) Show("Host a session and share its lobby code.");
             if (joining && OnlineFrontendSession.Current == null)
@@ -74,7 +79,9 @@ namespace CounterAttack.Online
         public void Host()
         {
             if(!online || OnlineFrontendSession.Current!=null)return;
-            if(!setup.TryCaptureOnlineSetupSettings(out var settings,out var error)){Show(error);return;}
+            var settings=OnlineSetupRules.Normalize(setup.CaptureOnlineSetupDraft());
+            var error=OnlineSetupRules.Validate(settings,allowUnnamedTeams:true);
+            if(!string.IsNullOrEmpty(error)){Show(error);return;}
             startError=null;
             try{var session=Instantiate(sessionPrefab);Bind(session);session.Host(settings,relayOnly!=null && relayOnly.isOn);}
             catch(Exception connectionError){startError=connectionError.Message;Show(startError);bound?.Close();}
@@ -108,7 +115,8 @@ namespace CounterAttack.Online
         }
         private GameSettings CaptureEarlySetup()
         {
-            if (setup.TryCaptureOnlineSetupSettings(out var settings, out _))
+            var settings = OnlineSetupRules.Normalize(setup.CaptureOnlineSetupDraft());
+            if (string.IsNullOrEmpty(OnlineSetupRules.Validate(settings, allowUnnamedTeams: true)))
                 lastValidEarlySetup = settings;
             return lastValidEarlySetup;
         }
@@ -150,6 +158,8 @@ namespace CounterAttack.Online
         }
         private void RefreshSpectator()
         {
+            OnlineLobbyCodeTitle.Show(sessionLobbyCode, bound.LobbyCode);
+            panel.SetActive(bound.Error != null);
             Show(bound.Error ?? "Spectating match setup");
             var publication = bound.SpectatorPublication;
             if (publication == displayedPublication || (string)publication?["stage"] != "setup") return;
@@ -170,13 +180,25 @@ namespace CounterAttack.Online
         {
             foreach (var root in gameObject.scene.GetRootGameObjects())
             foreach (var control in root.GetComponentsInChildren<Selectable>(true))
-                control.interactable = control == leaveButton;
+                control.interactable = control == backButton || control == sessionLobbyCode;
         }
         private void Refresh()
         {
             var current=OnlineFrontendSession.Current;
             if(bound==null && current!=null)Bind(current);
             bool idle=current==null;
+            bool showLobbyCode = !string.IsNullOrEmpty(current?.LobbyCode);
+            bool departed = current?.PeerDeparted == true;
+            if (sessionLobbyCode != null)
+            {
+                OnlineLobbyCodeTitle.Show(sessionLobbyCode, current?.LobbyCode);
+                panel.SetActive(!showLobbyCode || departed || current.Error != null);
+                hostButton.gameObject.SetActive(!showLobbyCode && !joining);
+                lobbyCode.gameObject.SetActive(!showLobbyCode && !joining);
+                copyButton.gameObject.SetActive(!showLobbyCode && !joining);
+                connectionStatus.gameObject.SetActive(!showLobbyCode || !departed && current.Error != null);
+                if (view.status != null && showLobbyCode) view.status.gameObject.SetActive(false);
+            }
             hostButton.interactable=joinButton.interactable=idle && sessionPrefab!=null;
             leaveButton.interactable=joining || !idle;copyButton.interactable=current?.LobbyCode!=null;
             lobbyCode.readOnly=true;
@@ -191,6 +213,7 @@ namespace CounterAttack.Online
                 if(!ReferenceEquals(bound,null)){view.Unbind();bound=null;preparingHostSetup=false;GuardLocalSave();Show(startError ?? "Host a session and share its lobby code.");}
                 return;
             }
+            if (current.PeerLeftPregame && leaveLabel != null) leaveLabel.text = "Leave session";
             if (current.Error != null) { Show(current.Error); return; }
             if (startError != null) { Show(startError); return; }
             var latency=current.Latency;string role=current.Client==null?"":current.Client.Team==OnlineTeam.Home?" You manage Home.":" You manage Away.";

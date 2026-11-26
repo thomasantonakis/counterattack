@@ -40,7 +40,7 @@ public sealed partial class CoinTossPanelController
     }
 
     internal void PresentPublishedToss(string home, string away, string homeKit, string awayKit,
-        OnlineCoinTossSnapshot toss, bool ownsTurn, bool viewOnly = false)
+        OnlineCoinTossSnapshot toss, bool ownsTurn, bool viewOnly = false, bool draftPresentation = false)
     {
         if (!nativeProjectionVisible)
         {
@@ -73,6 +73,12 @@ public sealed partial class CoinTossPanelController
             : $"{team} manager · {(ownsTurn ? "Press [R] to roll" : "Waiting for roll")}";
         if (toss.rollSeconds.HasValue && toss.stage is "home" or "away")
             dicePanel.footer.text += $" · Auto-roll in {toss.rollSeconds.Value}s";
+        if (draftPresentation && toss.stage == "result")
+        {
+            bool tied = toss.homeRoll == toss.awayRoll;
+            if (!tied) dicePanel.outcome.text = $"{(toss.homeRoll > toss.awayRoll ? home : away)} wins the coin toss";
+            dicePanel.footer.text = tied ? "New rolls in 2 seconds" : "Choices open in 2 seconds";
+        }
         choices.SetActive(choosing && !viewOnly);
         kickoffButton.gameObject.SetActive(toss.canChooseKickoff);
         kickoffButton.interactable = choosing && ownsTurn && toss.canChooseKickoff;

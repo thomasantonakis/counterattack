@@ -10,12 +10,13 @@ namespace CounterAttack.Online
         private List<OnlineDraftCard> pool=new(),outfieldPool=new();
         private bool FreeSelection=>goalkeeperPhase || settings.draft!="Regular";
         private bool Repeatable=>goalkeeperPhase?settings.gkDraft=="Arcade":settings.draft=="Arcade";
+        private bool ArcadePoolOpen=>Repeatable && (phase=="pick" || phase=="review" && !(homeReady && awayReady));
         private static IOrderedEnumerable<OnlineDraftCard> RankKeepers(IEnumerable<OnlineDraftCard> cards)=>cards.OrderByDescending(c=>c.saving).ThenByDescending(c=>c.handling).ThenByDescending(c=>c.pace).ThenByDescending(c=>c.aerial).ThenByDescending(c=>c.name);
         private static IOrderedEnumerable<OnlineDraftCard> RankOutfield(IEnumerable<OnlineDraftCard> cards)=>cards.OrderByDescending(c=>c.shooting+c.dribbling+c.pace+c.tackling+c.heading).ThenByDescending(c=>c.shooting).ThenByDescending(c=>c.pace).ThenByDescending(c=>c.dribbling).ThenByDescending(c=>c.tackling).ThenByDescending(c=>c.name);
         private bool StageFull(OnlineDraftCard[] roster)=>roster.Where((_,i)=>(i is 0 or 11)==goalkeeperPhase).All(c=>c!=null);
         private void BeginOutfield()
         {
-            goalkeeperPhase=false;homeRoll=awayRoll=0;round=1;turn=OnlineTeam.Home;
+            goalkeeperPhase=false;homeReady=awayReady=false;homeRoll=awayRoll=0;round=1;turn=OnlineTeam.Home;
             if(settings.draft=="Regular")phase="roll";
             else{pool=outfieldPool;phase=settings.draft=="Arcade"?"pick":"roll";}
         }

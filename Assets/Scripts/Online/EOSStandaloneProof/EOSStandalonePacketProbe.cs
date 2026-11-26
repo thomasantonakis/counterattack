@@ -87,7 +87,8 @@ internal sealed class EOSStandalonePacketProbe
         Action<string> onCodePublished = null, EOSStandaloneSession watchOwner = null,
         EOSWatchLobbyProof.Admission admission = null, Action<string> onLobbyCreated = null,
         OnlineSpectatorAdmission liveAdmission = null, Action<EOSStandaloneSession, string> openViewing = null,
-        Action closeViewing = null, string requiredHost = null, string requiredGuest = null)
+        Action closeViewing = null, string requiredHost = null, string requiredGuest = null,
+        Func<bool> hostIsLeaving = null)
     {
         bool watchLobby = watchOwner != null;
         byte probeChannel = watchLobby ? WatchProbeChannel : ManagerProbeChannel;
@@ -311,12 +312,12 @@ internal sealed class EOSStandalonePacketProbe
             }
 
             deadline = Time.realtimeSinceStartupAsDouble + 60;
-            while (!guestLeft && Time.realtimeSinceStartupAsDouble < deadline)
+            while (!guestLeft && hostIsLeaving?.Invoke() != true && Time.realtimeSinceStartupAsDouble < deadline)
             {
                 session.Tick();
                 yield return null;
             }
-            EOSProofCheck.Require(guestLeft, "The acknowledged guest did not leave the lobby");
+            EOSProofCheck.Require(guestLeft || hostIsLeaving?.Invoke() == true, "The acknowledged guest did not leave the lobby");
 
             var closeAfterExchange = new CloseConnectionOptions
             {

@@ -16,6 +16,96 @@ public sealed partial class OnlineFullRoomSceneFixture
     public IEnumerator RunCheckpointAtNewBoundary(bool homeAttacks, string boundary)
         => RunCheckpointRoundTrip(homeAttacks, false, false, false, boundary);
 
+    private OnlineFrontendSession departureFrontend;
+
+    private IEnumerator VerifyDeparturePause(OnlineGroundPassBoard board, PauseMenuManager view,
+        OnlineMatchProtocol protocol, OnlineCheckpointStore store, bool hostRemains)
+    {
+        var link = new OnlineDraftReturnTransport(startDraft: false);
+        OnlineSessionChannel local = hostRemains ? link.Host : link.Guest;
+        departureFrontend = new GameObject("Room departure session").AddComponent<OnlineFrontendSession>();
+        const BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
+        typeof(OnlineFrontendSession).GetField("channel", flags).SetValue(departureFrontend, local);
+        const string code = "AB12CD34";
+        typeof(OnlineFrontendSession).GetProperty(nameof(OnlineFrontendSession.LobbyCode)).SetValue(departureFrontend, code);
+        (hostRemains ? (OnlineSessionChannel)link.Guest : link.Host).Leave();
+        link.Flush();
+        if (hostRemains) protocol.Disconnect("guest");
+        board.controls.SetConnected(false);
+        typeof(OnlineGroundPassBoard).GetMethod("PresentSessionDeparture", flags).Invoke(board,
+            new object[] { "The other manager left the match.", hostRemains });
+        yield return null;
+        yield return null;
+
+        var connection = Object.FindAnyObjectByType<OnlineConnectionPanel>();
+        var notice = (RectTransform)connection.transform;
+        Assert.That(notice.parent, Is.SameAs(view.pausePanel.transform.parent));
+        Assert.That(notice.GetSiblingIndex(), Is.LessThan(view.pausePanel.transform.GetSiblingIndex()));
+        var card = (RectTransform)view.pausePanel.transform.GetChild(0);
+        var canvas = (RectTransform)notice.parent;
+        Assert.That(canvas.InverseTransformPoint(notice.position).x, Is.EqualTo(canvas.rect.center.x).Within(.1f));
+        Assert.That(canvas.InverseTransformPoint(card.position).x, Is.EqualTo(canvas.rect.center.x).Within(.1f));
+        float noticeBottom = canvas.InverseTransformPoint(notice.TransformPoint(new Vector2(0, notice.rect.yMin))).y;
+        float cardTop = canvas.InverseTransformPoint(card.TransformPoint(new Vector2(0, card.rect.yMax))).y;
+        Assert.That(noticeBottom, Is.GreaterThan(cardTop), "The red notice sits above the centered Pause card");
+        var reading = connection.GetComponentInChildren<TMPro.TMP_Text>();
+        reading.ForceMeshUpdate();
+        Assert.That(reading.text, Does.Contain("Connection closed"));
+        Assert.That(reading.textInfo.lineCount, Is.EqualTo(3));
+        Assert.That(Time.timeScale, Is.Zero);
+        Assert.That(view.pausePanel.activeInHierarchy, Is.True);
+        Assert.That(view.resumeButton.interactable, Is.False);
+        Assert.That(view.backToMainMenuButton.interactable, Is.True);
+        Assert.That(view.saveMatchButton.interactable, Is.EqualTo(hostRemains));
+        Assert.That(view.saveMatchAsButton.interactable, Is.EqualTo(hostRemains));
+        var field = view.onlineLobbyCode;
+        Assert.That(field.gameObject.activeInHierarchy && field.readOnly && field.interactable, Is.True);
+        Assert.That(field.text, Is.EqualTo(code));
+        string originalClipboard = GUIUtility.systemCopyBuffer;
+        try
+        {
+            field.selectionStringAnchorPosition = 0;
+            field.selectionStringFocusPosition = code.Length;
+            var modifier = SystemInfo.operatingSystemFamily == OperatingSystemFamily.MacOSX
+                ? EventModifiers.Command : EventModifiers.Control;
+            typeof(TMPro.TMP_InputField).GetMethod("KeyPressed", flags).Invoke(field,
+                new object[] { new Event { type = EventType.KeyDown, keyCode = KeyCode.C, modifiers = modifier } });
+            Assert.That(GUIUtility.systemCopyBuffer, Is.EqualTo(code));
+        }
+        finally { GUIUtility.systemCopyBuffer = originalClipboard; }
+
+        if (hostRemains)
+        {
+            view.saveMatchAsButton.onClick.Invoke();
+            Assert.That(view.saveAsOverlay.activeInHierarchy, Is.True);
+            Assert.That(view.saveAsOverlay.transform.GetSiblingIndex(), Is.GreaterThan(notice.GetSiblingIndex()));
+            view.saveNameInput.SetTextWithoutNotify("Guest left");
+            view.saveAsSaveButton.onClick.Invoke();
+            Assert.That(store.Browse(out _).Single().DisplayName, Is.EqualTo("Guest left"));
+            view.saveMatchButton.onClick.Invoke();
+            Assert.That(store.Browse(out _).Count, Is.EqualTo(1));
+            view.backToMainMenuButton.onClick.Invoke();
+            Assert.That(GetLeaveConfirmation(view).IsOpen, Is.True);
+        }
+        else
+        {
+            view.backToMainMenuButton.onClick.Invoke();
+            yield return WaitForMainMenuAfterLeaving();
+            Assert.That(Time.timeScale, Is.EqualTo(1));
+        }
+    }
+
+    public IEnumerator RunDepartedGuestRoom()
+    {
+        InitializeFixture();
+        SuppressLegacyRoomRunner();
+        var data = Data(16, false, useFrontendSeats: true);
+        yield return LoadNativeRoom(data, true, "room-departure-guest");
+        var board = Object.FindAnyObjectByType<OnlineRoomStartup>().Board;
+        var view = Object.FindAnyObjectByType<PauseMenuManager>(FindObjectsInactive.Include);
+        yield return VerifyDeparturePause(board, view, null, null, hostRemains: false);
+    }
+
     private IEnumerator RunCheckpointRoundTrip(bool homeAttacks, bool afterMovement, bool finishReport, bool expectHistory, string boundary)
     {
         InitializeFixture();
@@ -102,6 +192,11 @@ public sealed partial class OnlineFullRoomSceneFixture
             yield return null;
 
         Assert.That(board.match.currentState, Is.EqualTo(expectedAfterPass));
+        if (boundary == "guest-left")
+        {
+            yield return VerifyDeparturePause(board, view, protocol, store, hostRemains: true);
+            yield break;
+        }
         if (boundary == "loose")
         {
             Assert.That(board.match.attackHasPossession, Is.False);

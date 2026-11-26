@@ -4,6 +4,8 @@ using UnityEngine;
 /// <summary>Scene-authored first-pick and coin-toss roll-offs. Animation never consumes gameplay randomness.</summary>
 public sealed partial class DraftOrderPanelController : MonoBehaviour
 {
+    public const float RollResultSeconds = 2f;
+    public const float RollWiggleDelaySeconds = .25f;
     public GameObject visuals;
     public RectTransform panel;
     public TMP_Text title, homeTeam, awayTeam, homeResult, awayResult, outcome, footer;
@@ -138,7 +140,7 @@ public sealed partial class DraftOrderPanelController : MonoBehaviour
         awayResult.text = result;
         outcome.text = homeScore == awayScore ? "TIE · Both managers roll again"
             : $"{(homeScore > awayScore ? homeTeam.text : awayTeam.text)} {(coinToss ? "wins the coin toss" : "drafts first")}";
-        resultUntil = Time.unscaledTime + 2f;
+        resultUntil = Time.unscaledTime + RollResultSeconds;
         stage = Stage.Result;
         footer.text = homeScore == awayScore ? "New rolls in 2 seconds"
             : coinToss ? "Choices open in 2 seconds" : "Draft begins in 2 seconds";
@@ -171,7 +173,7 @@ public sealed partial class DraftOrderPanelController : MonoBehaviour
 
     private void BeginRollWait()
     {
-        wiggleDeadline = Time.unscaledTime + .25f;
+        wiggleDeadline = Time.unscaledTime + RollWiggleDelaySeconds;
         wigglePlayed = false;
     }
 

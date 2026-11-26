@@ -20,6 +20,8 @@ public sealed class MenuConfirmation : MonoBehaviour
     private void Awake()
     {
         backButton.onClick.AddListener(Close);
+        if (backButton.transition == Selectable.Transition.Animation)
+            backButton.gameObject.AddComponent<MenuConfirmationBackHover>();
         confirmButton.onClick.AddListener(Confirm);
         if (alternativeButton != null)
             alternativeButton.onClick.AddListener(ChooseAlternative);
