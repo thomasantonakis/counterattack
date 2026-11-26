@@ -14,4 +14,6 @@ public sealed class OnlineFrontendEntryPlayModeTests
     {if(fixture!=null)yield return (IEnumerator)Bridge.GetMethod("Cleanup").Invoke(fixture,null);fixture=null;}
     [UnityTest] public IEnumerator NormalMenuEntry([Values("entry","offline","invalid-join","save-guard","persistent-lifetime","back")]string branch)
         =>(IEnumerator)Bridge.GetMethod("Run").Invoke(fixture,new object[]{branch});
+    [UnityTest] public IEnumerator HostSetupNavigation([Values("host-early-setup","host-auto-setup")]string branch)
+        =>(IEnumerator)Bridge.GetMethod("Run").Invoke(fixture,new object[]{branch});
 }

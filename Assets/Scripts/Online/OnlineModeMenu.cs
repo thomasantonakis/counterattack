@@ -95,7 +95,7 @@ namespace CounterAttack.Online
 
         public void ContinueToMatchSetup()
         {
-            if (hostedSession?.Client?.Connected != true || proceeding || hostedSession.HostingResume) return;
+            if (hostedSession?.LobbyCode == null || proceeding || hostedSession.HostingResume) return;
             proceeding = true;
             OpenSetup(null);
         }
@@ -127,6 +127,11 @@ namespace CounterAttack.Online
             }
             bool hosting=hostedSession!=null;
             var code=hosting?hostedSession.LobbyCode:null;
+            if (code != null && !hostedSession.HostingResume && hostedSession.Client?.Connected == true)
+            {
+                ContinueToMatchSetup();
+                return;
+            }
             hostCode.gameObject.SetActive(hosting);
             copyButton.gameObject.SetActive(hosting);
             continueButton.gameObject.SetActive(hosting && !hostedSession.HostingResume);
@@ -137,7 +142,7 @@ namespace CounterAttack.Online
                 if (label != null) label.text = hosting && hostedSession.HostingResume ? "Cancel Load" : "Load Match";
             }
             copyButton.interactable=code!=null;
-            continueButton.interactable=hostedSession?.Client?.Connected==true;
+            continueButton.interactable=code!=null;
             if(!hosting)return;
             if(hostCode.text!=(code??string.Empty))hostCode.SetTextWithoutNotify(code??string.Empty);
             var hostStatus = hostedSession.Error ?? hostedSession.Status;

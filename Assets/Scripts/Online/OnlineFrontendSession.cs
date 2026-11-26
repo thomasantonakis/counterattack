@@ -61,6 +61,7 @@ namespace CounterAttack.Online
         public bool Busy {get;private set;}
         public bool Hosting {get;private set;}
         public GameSettings AgreedSettings=>OnlineSetupRules.Copy(agreedSettings);
+        internal GameSettings CaptureHostedSetup() => Hosting && !HostingResume ? OnlineSetupRules.Copy(initial) : null;
         public OnlineLatencySummary Latency=>channel?.Latency.Capture()??new OnlineLatencySummary();
         public int QueuedPackets=>outgoing.Count;
         private OnlineSessionChannel channel;

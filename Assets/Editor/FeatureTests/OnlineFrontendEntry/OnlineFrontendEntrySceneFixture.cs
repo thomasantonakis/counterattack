@@ -47,6 +47,11 @@ public sealed class OnlineFrontendEntrySceneFixture
                 Assert.That(SceneManager.GetActiveScene().name, Is.EqualTo(OnlineModeMenu.SceneName));
                 yield break;
             }
+            if (branch is "host-early-setup" or "host-auto-setup")
+            {
+                yield return RunHostSetup(onlineMenu, early: branch == "host-early-setup");
+                yield break;
+            }
             onlineMenu.Host();
         }
         yield return null;yield return null;
@@ -117,6 +122,51 @@ public sealed class OnlineFrontendEntrySceneFixture
         }
         Assert.That(app.LastSavedFileName,Is.EqualTo(previousSave));Assert.That(app.HasExplicitSaveContext,Is.EqualTo(previousExplicit));
     }
+
+    private static IEnumerator RunHostSetup(OnlineModeMenu menu, bool early)
+    {
+        const BindingFlags privateFields = BindingFlags.Instance | BindingFlags.NonPublic;
+        var session = Object.Instantiate(menu.sessionPrefab);
+        var initial = OnlineSetupAgreementEditorTests.Valid();
+        typeof(OnlineFrontendSession).GetProperty(nameof(session.Hosting)).SetValue(session, true);
+        typeof(OnlineFrontendSession).GetProperty(nameof(session.LobbyCode)).SetValue(session, "00A7F29C");
+        typeof(OnlineFrontendSession).GetField("initial", privateFields).SetValue(session, initial);
+        typeof(OnlineModeMenu).GetField("hostedSession", privateFields).SetValue(menu, session);
+        yield return null;
+
+        Assert.That(SceneManager.GetActiveScene().name, Is.EqualTo(OnlineModeMenu.SceneName));
+        Assert.That(menu.continueButton.IsInteractable(), Is.True);
+        Assert.That(session.Client, Is.Null);
+        if (early)
+        {
+            menu.continueButton.onClick.Invoke();
+            yield return null;
+            yield return null;
+            Assert.That(SceneManager.GetActiveScene().name, Is.EqualTo("CreateNewGameScene"));
+            var panel = Object.FindAnyObjectByType<OnlineSetupNetworkPanel>();
+            Assert.That(panel.setup.homeTeamInputField.text, Is.EqualTo(initial.homeTeamName));
+            Assert.That(panel.setup.createGameButton.interactable, Is.False);
+            panel.setup.homeTeamInputField.SetTextWithoutNotify("Early Home");
+        }
+
+        var compatibility = OnlineFrontendSessionPolicy.Compatibility();
+        var protocol = OnlineFrontendSessionPolicy.CreateMatchProtocol("host-setup-test", "home", "away", compatibility);
+        Assert.That(protocol.BindAuthenticatedAccount("home", "host", compatibility), Is.True);
+        Assert.That(protocol.BindAuthenticatedAccount("away", "guest", compatibility), Is.True);
+        var channel = new OnlineSetupHostChannel(protocol, "host", "away", initial, () => Time.realtimeSinceStartupAsDouble);
+        channel.Begin();
+        typeof(OnlineFrontendSession).GetField("channel", privateFields).SetValue(session, channel);
+        var clientAvailable = (System.Action<OnlineSetupClient>)typeof(OnlineFrontendSession)
+            .GetField(nameof(OnlineFrontendSession.ClientAvailable), privateFields).GetValue(session);
+        clientAvailable?.Invoke(channel.Client);
+        yield return null;
+        yield return null;
+        Assert.That(SceneManager.GetActiveScene().name, Is.EqualTo("CreateNewGameScene"));
+        Assert.That(OnlineFrontendSession.Current, Is.SameAs(session));
+        if (early)
+            Assert.That(channel.Client.ViewSettings().homeTeamName, Is.EqualTo("Early Home"));
+    }
+
     public IEnumerator Cleanup()
     {
         if(!initialized)yield break;

@@ -17,7 +17,8 @@ namespace CounterAttack.Online
         public OnlineFrontendSession sessionPrefab;
         private OnlineFrontendSession bound;
         private OnlineSetupClient seededClient;
-        private GameSettings pendingGuestSelection;
+        private GameSettings pendingSetupSelection;
+        private bool preparingHostSetup;
         private bool online;
         private bool joining;
         private string startError;
@@ -68,7 +69,7 @@ namespace CounterAttack.Online
             }
             startError=null;
             // Menu-driven joins open setup with placeholder values.
-            pendingGuestSelection=joining?null:setup.CaptureOnlineSetupDraft();
+            pendingSetupSelection=joining?null:setup.CaptureOnlineSetupDraft();
             try{var session=Instantiate(sessionPrefab);Bind(session);session.Join(code,relayOnly!=null && relayOnly.isOn);}
             catch(Exception connectionError){startError=connectionError.Message;Show(startError);bound?.Close();}
         }
@@ -77,18 +78,28 @@ namespace CounterAttack.Online
             if(bound!=null)bound.ClientAvailable-=Connected;
             bound=session;bound.ClientAvailable+=Connected;
             if(bound.Client!=null)Connected(bound.Client);
+            else if(bound.CaptureHostedSetup() is { } settings)
+            {
+                setup.ApplyOnlineSetupSettings(settings, ownsHome: true);
+                preparingHostSetup = true;
+            }
         }
         private void Connected(OnlineSetupClient client)
         {
+            if (preparingHostSetup)
+            {
+                pendingSetupSelection = setup.CaptureOnlineSetupDraft();
+                preparingHostSetup = false;
+            }
             view.Configure(client);
-            if(pendingGuestSelection==null)return;
-            seededClient=client;seededClient.Changed+=SeedGuestSelection;SeedGuestSelection();
+            if(pendingSetupSelection==null)return;
+            seededClient=client;seededClient.Changed+=SeedSetupSelection;SeedSetupSelection();
         }
-        private void SeedGuestSelection()
+        private void SeedSetupSelection()
         {
-            if(seededClient?.Capture()==null || pendingGuestSelection==null)return;
-            var proposed=pendingGuestSelection;pendingGuestSelection=null;
-            var client=seededClient;client.Changed-=SeedGuestSelection;seededClient=null;
+            if(seededClient?.Capture()==null || pendingSetupSelection==null)return;
+            var proposed=pendingSetupSelection;pendingSetupSelection=null;
+            var client=seededClient;client.Changed-=SeedSetupSelection;seededClient=null;
             client.Edit(proposed);view.RefreshSelections();
         }
         public void Leave()
@@ -120,7 +131,7 @@ namespace CounterAttack.Online
             if(current?.Client==null)setup.createGameButton.interactable=false;
             if(current==null)
             {
-                if(!ReferenceEquals(bound,null)){view.Unbind();bound=null;GuardLocalSave();Show(startError ?? "Host a session and share its lobby code.");}
+                if(!ReferenceEquals(bound,null)){view.Unbind();bound=null;preparingHostSetup=false;GuardLocalSave();Show(startError ?? "Host a session and share its lobby code.");}
                 return;
             }
             if (current.Error != null) { Show(current.Error); return; }
@@ -131,7 +142,7 @@ namespace CounterAttack.Online
         private void OnDestroy()
         {
             if(bound!=null)bound.ClientAvailable-=Connected;
-            if(seededClient!=null)seededClient.Changed-=SeedGuestSelection;
+            if(seededClient!=null)seededClient.Changed-=SeedSetupSelection;
             // Leaving setup before agreement cancels its native lifetime; agreed
             // sessions remain alive for the scene-transition coordinator.
             if(bound!=null && bound.AgreedSettings==null && !bound.LaunchingRoom)bound.Close();
