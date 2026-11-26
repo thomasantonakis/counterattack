@@ -519,7 +519,7 @@ internal sealed class EOSStandalonePacketProbe
         {
             matchCode = lookupCode;
             if (watchLobby)
-                matchCode += OnlineSpectatorAdmission.ViewerCompatibilitySuffix(OnlineFrontendSessionPolicy.Compatibility());
+                matchCode += OnlineSpectatorAdmission.ViewerCompatibilitySuffix;
         }
 
         var session = new EOSStandaloneSession();

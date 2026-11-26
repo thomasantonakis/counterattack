@@ -8,10 +8,12 @@ namespace CounterAttack.Online
 {
     internal static class OnlineSpectatorRoomProjection
     {
+        private static readonly Lazy<GameSettings> FallbackKits = new(OnlineModeMenu.HostDefaults);
+
         internal static MatchManager.GameData Bootstrap(JObject snapshot)
         {
             var settings = ReadSettings(snapshot);
-            if (settings == null || !OnlineRoomSettings.Valid(OnlineRoomSettings.Capture(settings))) return null;
+            if (settings == null) return null;
 
             var data = new MatchManager.GameData
             {
@@ -59,8 +61,21 @@ namespace CounterAttack.Online
             settings.awayTeamName = (string)snapshot["away"]?["name"];
             if (settings.referee is not ("Webster - 2" or "Castolo - 3" or "Bakker - 4" or "Read - 5"))
                 settings.referee = "Webster - 2";
+            if (!HasKit(settings.homeKit, keeper: false) || !HasKit(settings.awayKit, keeper: false)
+                || !HasKit(settings.homeGKKit, keeper: true) || !HasKit(settings.awayGKKit, keeper: true))
+            {
+                var kits = FallbackKits.Value;
+                settings.homeKit = kits.homeKit;
+                settings.awayKit = kits.awayKit;
+                settings.homeGKKit = kits.homeGKKit;
+                settings.awayGKKit = kits.awayGKKit;
+            }
             return settings;
         }
+
+        private static bool HasKit(string id, bool keeper) =>
+            TokenKitCatalog.GetPresetByIdOrAlias(id) is { } kit
+            && kit.Id.StartsWith("gk", StringComparison.OrdinalIgnoreCase) == keeper;
 
         internal static OnlineGroundPassState Read(JObject snapshot, PlayerTokenManager tokens)
         {

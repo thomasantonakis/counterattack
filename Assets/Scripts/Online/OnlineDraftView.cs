@@ -252,9 +252,6 @@ namespace CounterAttack.Online
             if (state?.home == null || state.away == null) return;
             state.settings = OnlineSpectatorPregameWire.ReadSettings(publication);
             if (state.settings == null) return;
-            localCatalog ??= OnlineDraftCatalog.Load().ToDictionary(card => card.id);
-            state.home = state.home.Select(ResolvePublishedCard).ToArray();
-            state.away = state.away.Select(ResolvePublishedCard).ToArray();
             RenderRosters(state);
             RenderRolls(state, ownsRoll: false);
 
@@ -270,9 +267,6 @@ namespace CounterAttack.Online
             sourceUi.draftBatchText.text = state.totalBatches > 0 && state.phase == "pick"
                 ? $"Batch {state.batch} / {state.totalBatches}" : string.Empty;
         }
-
-        private OnlineDraftCard ResolvePublishedCard(OnlineDraftCard card) =>
-            card?.id != null && localCatalog.TryGetValue(card.id, out var catalogCard) ? catalogCard : card;
 
         private void RenderRosters(OnlineDraftState s)
         {

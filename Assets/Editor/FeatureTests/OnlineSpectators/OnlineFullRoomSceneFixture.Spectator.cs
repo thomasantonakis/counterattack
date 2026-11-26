@@ -92,7 +92,13 @@ public sealed partial class OnlineFullRoomSceneFixture
             Assert.That(draftView.actionButton.gameObject.activeSelf, Is.False);
             Assert.That(draftView.cards.All(card => !card.gameObject.activeSelf), Is.True);
             Assert.That(draftView.source.homeTeamName.text, Is.EqualTo("Public Home"));
-            var pick = picks.First(card => !card.goalkeeper);
+            var pick = new OnlineDraftCard
+            {
+                id = picks.First(card => !card.goalkeeper).id,
+                name = "Public pick from a different catalog",
+                country = "Scotland",
+                pace = 6
+            };
             draft.home[1] = pick;
             Assert.That(OnlineSpectatorPregameWire.TryEncode(matchId, 4, setup, null, draft, out payload), Is.True);
             Publish(payload);
@@ -106,6 +112,7 @@ public sealed partial class OnlineFullRoomSceneFixture
         room.half = 2;
         room.regulationSeconds = 120;
         room.homeScorers = new[] { new MatchManager.GoalEvent { scorer = "Published scorer", minute = 48 } };
+        if (late) data.gameSettings.homeKit = "kit-absent-from-viewer";
         Assert.That(OnlineSpectatorRoomWire.TryEncode(room, data.gameSettings, 5, out var roomPayload), Is.True);
         Publish(roomPayload);
         yield return WaitForScene("Room");
@@ -116,6 +123,8 @@ public sealed partial class OnlineFullRoomSceneFixture
         yield return null;
         Assert.That(startup.Board, Is.Not.Null, startup.Failure ?? "Room startup timed out");
         var board = startup.Board;
+        if (late)
+            Assert.That(board.match.gameData.gameSettings.homeKit, Is.EqualTo(OnlineModeMenu.HostDefaults().homeKit));
         Assert.That(board.controls, Is.Null);
         Assert.That(board.match.IsGameplayInputBlocked, Is.True);
         Assert.That(OnlineRoomSession.Current.AuthoritySavePath, Is.Null);

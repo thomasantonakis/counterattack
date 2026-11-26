@@ -71,7 +71,9 @@ namespace CounterAttack.Online
         private static object Roster(OnlineDraftCard[] cards) =>
             (cards ?? Array.Empty<OnlineDraftCard>()).Select(card => card == null ? null : new
             {
-                card.id, card.name, card.country, card.goalkeeper
+                card.id, card.name, card.country, card.goalkeeper, card.type, card.squadNumber,
+                card.pace, card.dribbling, card.heading, card.highPass, card.resilience,
+                card.shooting, card.tackling, card.saving, card.handling, card.aerial
             });
     }
 }

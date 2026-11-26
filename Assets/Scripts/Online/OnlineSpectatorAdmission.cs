@@ -35,8 +35,17 @@ namespace CounterAttack.Online
         internal static string MatchIdentity(string code) => "spectator-" + Lookup(code);
         internal static string AwayReservation(string code, string identity) => Lookup(code + ":away:" + identity);
 
-        internal static string ViewerCompatibilitySuffix(OnlineCompatibility compatibility) =>
-            ":" + OnlineSpectatorRoomWire.Version + ":" + compatibility.Protocol + ":" + compatibility.Rules + ":" + compatibility.Catalog;
+        // Keep the viewer contract independent of game releases and manager compatibility.
+        internal static string ViewerCompatibilitySuffix => ":" + OnlineSpectatorRoomWire.Version;
+
+        internal static string ViewerHelloCode(string hello, string lobbyId)
+        {
+            string prefix = "ca-m0-hello:" + lobbyId;
+            string suffix = ViewerCompatibilitySuffix;
+            return hello != null && hello.Length == prefix.Length + CodeLength + suffix.Length
+                && hello.StartsWith(prefix, StringComparison.Ordinal) && hello.EndsWith(suffix, StringComparison.Ordinal)
+                ? hello.Substring(prefix.Length, CodeLength) : null;
+        }
 
         // Call on the session thread with the identity supplied by the authenticated transport.
         public bool TryAdmitAway(string authenticatedPeer, string code) =>

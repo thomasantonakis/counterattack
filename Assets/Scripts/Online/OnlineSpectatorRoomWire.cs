@@ -9,6 +9,8 @@ namespace CounterAttack.Online
     // directly or copy a nested manager object that carries choices or commands.
     public static class OnlineSpectatorRoomWire
     {
+        // The live viewer baseline survives game releases. Any future incompatible
+        // format needs a separate contract and continued support for this baseline.
         public const int Version = 2;
         public const int MaxBytes = 65536;
 

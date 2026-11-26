@@ -1,8 +1,30 @@
 using CounterAttack.Online;
 using NUnit.Framework;
+using System.Reflection;
 
 public sealed class OnlineSpectatorAdmissionEditorTests
 {
+    [Test]
+    public void ViewerHelloUsesOnlyTheBaselineAndPreservesMatchCodeValidation()
+    {
+        const string lobby = "spectator-lobby";
+        var match = new OnlineSpectatorAdmission();
+        const BindingFlags policy = BindingFlags.Static | BindingFlags.NonPublic;
+        var suffix = (string)typeof(OnlineSpectatorAdmission).GetProperty("ViewerCompatibilitySuffix", policy).GetValue(null);
+        var read = typeof(OnlineSpectatorAdmission).GetMethod("ViewerHelloCode", policy);
+        string prefix = "ca-m0-hello:" + lobby;
+        string Parse(string hello, string onLobby = lobby) =>
+            (string)read.Invoke(null, new object[] { hello, onLobby });
+
+        Assert.That(suffix, Is.EqualTo(":2"));
+        Assert.That(match.TryAdmitViewer("viewer", Parse(prefix + match.MatchCode + suffix)), Is.True);
+        Assert.That(Parse(prefix + match.MatchCode + suffix, "another-lobby"), Is.Null);
+        Assert.That(Parse(prefix + match.MatchCode + ":1"), Is.Null);
+        Assert.That(Parse(prefix + match.MatchCode + ":3"), Is.Null, "New clients must use the shared v2 baseline");
+        var incorrectCode = match.MatchCode == "00000000" ? "00000001" : "00000000";
+        Assert.That(match.TryAdmitViewer("wrong-code", Parse(prefix + incorrectCode + suffix)), Is.False);
+    }
+
     [TestCase(true, false, false)]
     [TestCase(true, true, true)]
     [TestCase(false, false, true)]

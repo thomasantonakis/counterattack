@@ -26,3 +26,5 @@ Run `OnlineSpectatorViewPlayModeTests` for the authored spectator views. The fix
 - [ ] Verify EOS delivery, camera and white pointer appearance on three packaged clients. Repeat with a viewer joining during Draft and with the viewer capacity filled.
 
 The Unity Editor compiled with zero errors. The focused run passed 2 PlayMode cases and 9 EditMode cases with zero failures or skips. Native XML and progress are under `TestResults/GameplayRegression/Runs/` in `20261126T055216840Z` (view), `20261126T055246142Z` (stream) and `20261126T055256545Z` (Room wire).
+
+The spectator compatibility update passed 12 admission cases, 4 stream cases and both PlayMode cases with zero failures or skips. It verifies the v2-only hello, Draft cards that differ from the local catalog and direct Room entry when the host's kit is unavailable. Native results are under the same directory in `20261126T062523326Z`, `20261126T062533515Z` and `20261126T062548214Z`. A packaged EOS cross-version run remains pending.

@@ -18,7 +18,6 @@ namespace CounterAttack.Online
         private readonly OnlineSpectatorAdmission admission;
         private readonly Capture capture;
         private readonly string matchId;
-        private readonly string compatibilitySuffix;
         private readonly Dictionary<string, EosSpectatorRoomLink> links = new(StringComparer.Ordinal);
         private readonly Dictionary<string, double> pendingMembers = new(StringComparer.Ordinal);
         private readonly byte[] receiveBuffer = new byte[256];
@@ -39,7 +38,6 @@ namespace CounterAttack.Online
             this.admission = admission;
             this.capture = capture;
             matchId = OnlineSpectatorAdmission.MatchIdentity(admission.MatchCode);
-            compatibilitySuffix = OnlineSpectatorAdmission.ViewerCompatibilitySuffix(OnlineFrontendSessionPolicy.Compatibility());
             lobby = session.Platform.GetLobbyInterface();
             p2p = session.Platform.GetP2PInterface();
             startupDeadline = now + 30;
@@ -122,8 +120,6 @@ namespace CounterAttack.Online
 
         private void PollAdmission()
         {
-            string prefix = "ca-m0-hello:" + lobbyId;
-            string suffix = compatibilitySuffix;
             var options = new ReceivePacketOptions
             {
                 LocalUserId = session.UserId, RequestedChannel = EOSStandalonePacketProbe.WatchProbeChannel,
@@ -141,9 +137,7 @@ namespace CounterAttack.Online
                 string identity = sender.ToString();
                 if (!IsMember(identity)) continue;
                 string hello = Encoding.ASCII.GetString(receiveBuffer, 0, (int)count);
-                string code = hello.Length == prefix.Length + OnlineSpectatorAdmission.CodeLength + suffix.Length
-                    && hello.StartsWith(prefix, StringComparison.Ordinal) && hello.EndsWith(suffix, StringComparison.Ordinal)
-                    ? hello.Substring(prefix.Length, OnlineSpectatorAdmission.CodeLength) : null;
+                string code = OnlineSpectatorAdmission.ViewerHelloCode(hello, lobbyId);
                 if (!admission.CanResumeViewer(identity, code) && !admission.TryAdmitViewer(identity, code))
                 {
                     RemoveViewer(identity, kick: true);
