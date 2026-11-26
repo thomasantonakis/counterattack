@@ -1,0 +1,53 @@
+# Online draft interactions handoff
+
+Continue on `feature/online-draft-interactions`, branched from `codex/online-foundation-personal-mac` at `39a3b5ba`. This handoff covers the two managers and spectators in the online `Draft` scene. The implementation belongs in the next session.
+
+## Current behavior
+
+| Setup | Draft stage | Current behavior |
+| --- | --- | --- |
+| Regular match, GK **Free** | Goalkeepers | Uses the same host-owned draft roll-off and authored roll panel as Regular and Free Regular outfielders. |
+| Regular match, GK **Arcade** | Goalkeepers | Goes directly to repeatable picks. Arcade outfielders do the same. |
+| Regular match, GK **Deal** | Goalkeepers | Authority assigns both keeper pairs before outfield drafting. |
+| International match | Both | Preset national rosters go directly to review. |
+
+- The draft-order “coinflip” is the two-dice roll-off. `OnlineDraftAuthority.ResolveRoll` and `CompleteRoll` handle Home then Away, turn ownership, a fresh round on a tie, and first pick for the higher roll. The timed host path rolls automatically after five seconds per manager and holds the result for five seconds. `BeginOutfield` resets the dice and round after the GK stage. `OnlineDraftView.RenderRolls` uses one panel for draft-order rolls. The separate post-draft match-opening coin toss has kickoff and direction choices.
+- Arcade GK and Arcade outfield both skip the draft-order roll. Each stage starts with both managers eligible to pick for their own roster as soon as the draft is connected. Roll parity applies to Free GK and the outfield modes that use the roll-off.
+- All supported online variants use `Assets/Scenes/Draft.unity`. `OnlineDraftView` projects free pools through four paged cards and resolves IDs against the local catalog. It has no sortable or filterable table. `Assets/Scenes/FreeDraft.unity`, `DraftManager`, `FreeDraftTableFilterField` and `FreeDraftTableRowDragHandler` provide an offline reference for columns, filters, sorting and drag behavior.
+- The authority already derives roster ownership from the authenticated sender. It alternates Free picks and consumes each chosen ID. Arcade picks bypass the turn check and retain the ID, so both teams and multiple slots on a single team can already contain the same candidate. A global revision still serializes simultaneous requests. One otherwise legal Arcade request can currently receive `StaleRevision`.
+- Free-pool drag currently reuses `OnlineDraftClickTarget` and indexes the four visible cards. The remote preview anchors to the receiver’s card index. Sorting, filtering or scrolling each table independently makes that anchor unsuitable. The current `Pick` command redirects some invalid GK destinations and falls forward on occupied slots. The current hover check tests slot kind and ownership but does not test occupancy.
+- `OnlineSpectatorPregameWire` publishes phase, turn, rolls and rosters. `OnlineDraftView.RenderSpectating` presents that public state with no manager client. It currently uses a single-team “picks” label during Arcade too.
+
+## Baseline validation
+
+The live Unity Editor was ready and finished reloading before the tests. This documentation-only handoff did not trigger a separate compilation.
+
+- EditMode `OnlineDraftAuthorityEditorTests.CompletedRollHoldsBeforePicksOrReroll` passed both decisive and tied roll cases. Results were 2 passed, 0 failed, 0 skipped in `TestResults/GameplayRegression/Runs/20261126T101636632Z/results.xml`.
+- PlayMode `OnlineDraftVariantScenePlayModeTests.AuthoredPoolSelection` passed the two `FullMixed` cases, with Home and Away each driving the authored view through Free GK and Free Regular outfield. Results were 2 passed, 0 failed, 0 skipped in `TestResults/GameplayRegression/Runs/20261126T101758750Z/results.xml`.
+- The Arcade roll behavior was checked in source. A direct timed GK versus outfielder parity test and paired manager/spectator acceptance remain for the implementation.
+
+## Implementation plan
+
+1. **Verify draft-order parity.** Add deterministic authority coverage that compares the GK Free stage with the outfield roll-off, plus one authored-scene comparison. Exercise both winners, a tie, automatic roll and result hold, different host assignments, and the fresh outfield roll after the GK phase when the outfield mode uses it. Assert that both Arcade stages enter `pick` directly. Keep the International and match-opening paths separate.
+2. **Author a shared online pool table in Draft.** Provide the scroll area, row and drag-preview templates, sort headers and filter inputs in edit mode. Use snapshots for available IDs and the bundled catalog for display attributes. Reuse offline formatting and filter semantics where practical, with online commands routed through `OnlineDraftView` and `OnlineDraftClient`. Keep sort, filter, scroll and focus state on each view. Preserve it when roster snapshots arrive within a phase, and initialize the appropriate columns and controls at a GK/outfielder phase change. Bind row actions to candidate ID, even after the visible ordering changes.
+3. **Apply Free turn and slot rules consistently.** Gate filter edits, header clicks, keyboard focus, candidate selection, drag initiation, drops and double-click on a connected local manager in the current `pick` turn. Disable and defocus controls when ownership changes. Use the same acceptance check for hover and release. Explicit row drops target an empty, visible slot in the local manager’s roster, GK slots 1 and 12 or outfield slots 2–11 and 13 through the configured squad size. Double-click selects the next eligible empty slot and submits the same authenticated `Pick`. Validate the exact destination for free-pool picks in the authority so an invalid or stale drop cannot silently fill another slot. Preserve the dealt-card destination behavior and the existing own-roster swap flow.
+4. **Enable two independent Arcade views.** Use the same table and slot constraints with both managers enabled during `pick` whenever their own roster has an eligible slot. Leave a successful candidate visible and reusable in both lists. Test two picks submitted from the same revision. If the second receives a stale reply, recover from the latest authoritative snapshot only while the original card and exact destination remain valid in the same stage and connection. Bound any retry and surface a rejected drop with the row restored. Keep revision and receipt checks for authoritative changes. Wait for both rosters before advancing.
+5. **Keep drag feedback accurate.** Show the local target highlight on both Home and Away clients when each is eligible. Clear it on exit, cancellation, reply, turn or phase change, and disconnect. Use stable candidate identity for the existing partner preview. If retaining preview motion for rows, anchor it in a shared roster coordinate space or a dedicated authored preview area that works even when the receiver has filtered the candidate out. Account for the current `OnlineDraftDragFrame.offerIndex` bounds and coordinate semantics before changing the frame. Preserve the regular four-card preview and avoid moving the receiver’s actual row. Test simultaneous Arcade drags and ensure neither side clears or moves the other’s local drag.
+6. **Keep spectators read-only.** Render public roll phases, accepted rosters and accurate turn or simultaneous-selection text. Derive the stage identity from public metadata and include the minimum additional metadata if required. Keep manager inputs, candidate table controls and manager-local browsing state out of the spectator path. Verify a spectator joining during the draft sees current public state and continues across the GK-to-outfield transition.
+
+## Focused verification for the implementation
+
+Create a dedicated `OnlineDraftInteractions` feature folder and checklist following the existing editor-bridge and PlayMode test structure. Use rigged rolls and the real online authority, serialized setup channels and authored Draft scene. Run only the new fixtures by explicit filter and retain native XML and per-case progress under `TestResults/GameplayRegression/Runs/`.
+
+| Test area | Cases to cover |
+| --- | --- |
+| Roll-off | Free GK versus Free Regular and dealt-card outfield roll. Home and Away winners, tie and retry, timeout, result hold, new outfield roll where applicable, Deal skips the GK roll, and both Arcade stages open directly for picks. |
+| Free GK and Free Regular | Both host assignments and both local sides. Inactive manager cannot mutate filters or sort, select, drag or quick-pick. After an accepted pick, the new manager gains control and the selected candidate disappears from both lists. Verify valid highlights and rejects for wrong panel, wrong slot kind, filled slot and stale gesture. Cover both keeper slots and an 18-player bench slot. |
+| Arcade GK and outfield | Two different filters and sort orders with simultaneous eligible drags, duplicate picks on both teams and on one team, collision/revision recovery, one roster filling first, and stage completion when both fill. |
+| Spectators | Late join and phase changes, dice and accepted rosters visible, Arcade status accurate, no manager commands or list state. |
+
+Existing related coverage for broader user-run verification includes `Assets/Editor/FeatureTests/OnlineDraft/` (`OnlineDraftAuthorityEditorTests`, `OnlineDraftChannelEditorTests`), `Assets/Editor/FeatureTests/OnlineDraftVariants/` (`OnlineDraftVariantEditorTests`), `Assets/Tests/PlayMode/Features/OnlineDraft/` (`OnlineDraftScenePlayModeTests`), `Assets/Tests/PlayMode/Features/OnlineDraftVariants/` (`OnlineDraftVariantScenePlayModeTests`), `Assets/Tests/PlayMode/Features/OnlineDraftDrag/` (`OnlineDraftDragPlayModeTests`), and `Assets/Tests/PlayMode/Features/OnlineSpectators/` (`OnlineSpectatorViewPlayModeTests`). The off-page Free drag case in the variants fixture is a useful reference for a candidate hidden on the other manager’s screen.
+
+For the implementation PR, ask about the game version before preparing the product change. Judge compatibility against the live target. Exact destination validation changes accepted actions and calls for a Rules bump. A change to network message meaning or required fields may also require a Protocol bump. The documentation handoff itself is Compatible.
+
+When handing off paired acceptance, use the same feature commit on macOS and Windows and provide the branch checkout, fast-forward pull, commit print, and packaged build/launch commands using the repository scripts. Exercise one Free GK plus Free Regular match, one Arcade GK plus Arcade outfield match, and a spectator across a draft phase change.
