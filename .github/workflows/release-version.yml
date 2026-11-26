@@ -27,8 +27,8 @@ jobs:
           BASE_BRANCH: ${{ github.event.pull_request.base.ref || github.ref_name }}
         run: |
           if [[ "${BASE_BRANCH}" == "master" ]]; then
-            prefix="v0.9."
-            initial="0.9.3"
+            prefix="v0.11."
+            initial="0.11.0"
           else
             prefix="v0.10."
             initial="0.10.20"
