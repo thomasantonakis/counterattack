@@ -296,6 +296,13 @@ namespace CounterAttack.Online
                 && (!CanManageSubstitutions || !state.substitutionsAvailable))return;
             if(action.StartsWith("keeper.nominate:",StringComparison.Ordinal) && !CanNominateKeeper)return;
             if(action==OnlineSharedPause.ResumeAction && !CanResume)return;
+            if (Requested != null)
+            {
+                if (action is OnlineSharedPause.RequestAction or OnlineSharedPause.ResumeReadyAction or OnlineSubstitutionReview.OpenAction)
+                    MenuAudioPlayer.Play(GameplayAudioPool.MenuAdvance);
+                else if (action == OnlineSharedPause.ResumeAction)
+                    MenuAudioPlayer.Play(GameplayAudioPool.MenuBack);
+            }
             Emit(new OnlineGroundPassMessage { kind = "control", matchId = state.matchId, sequence = checked(++controlSequence),
                 revision = state.sharedPauseRevision,
                 decisionId = action == OnlineSharedPause.ResumeReadyAction ? "resume-ready" : shootout?"shootout-order":"shared-pause",

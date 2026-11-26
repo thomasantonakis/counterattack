@@ -46,7 +46,6 @@ namespace CounterAttack.Online
 
         private void OnEnable()
         {
-            lobbyCode.characterLimit = OnlineSpectatorAdmission.CodeLength;
             lobbyCode.onValueChanged.AddListener(UpdateJoinAvailability);
             UpdateJoinAvailability(lobbyCode.text);
             if (roomFailure != null)
@@ -86,6 +85,7 @@ namespace CounterAttack.Online
                 var defaults=HostDefaults();
                 hostedSession=Instantiate(sessionPrefab);
                 hostedSession.Host(defaults);
+                MenuAudioPlayer.Play(GameplayAudioPool.MenuAdvance);
             }
             catch(System.Exception error)
             {
@@ -98,6 +98,7 @@ namespace CounterAttack.Online
         {
             if (hostedSession?.LobbyCode == null || proceeding || hostedSession.HostingResume) return;
             proceeding = true;
+            MenuAudioPlayer.Play(GameplayAudioPool.MenuAdvance);
             OpenSetup(null);
         }
 
@@ -159,7 +160,7 @@ namespace CounterAttack.Online
 
         private void UpdateJoinAvailability(string input)
         {
-            joinButton.interactable = !string.IsNullOrWhiteSpace(input);
+            joinButton.interactable = OnlineFrontendSessionPolicy.ValidLobbyCode(input);
         }
 
         private void OnDestroy()
@@ -174,11 +175,13 @@ namespace CounterAttack.Online
             if (hostedSession != null && hostedSession.HostingResume)
             {
                 hostedSession.Close();
+                MenuAudioPlayer.Play(GameplayAudioPool.MenuBack);
                 lastHostStatus = null;
                 status.text = "Closing the resume lobby…";
                 return;
             }
             if (hostedSession != null || SessionIsClosing()) return;
+            MenuAudioPlayer.Play(GameplayAudioPool.MenuAdvance);
             CreateLoadRoomManager.OpenOnlineBrowser();
         }
 
@@ -242,6 +245,7 @@ namespace CounterAttack.Online
             }
             if (SessionIsClosing()) return;
 
+            MenuAudioPlayer.Play(GameplayAudioPool.MenuAdvance);
             if (roleCard == null)
             {
                 OpenSetup(code);
@@ -298,6 +302,7 @@ namespace CounterAttack.Online
                 joiningSession = Instantiate(sessionPrefab);
                 if (away) joiningSession.Join(roleCode);
                 else joiningSession.Watch(roleCode);
+                MenuAudioPlayer.Play(GameplayAudioPool.MenuAdvance);
                 SetRoleOptions(null);
             }
             catch (Exception failure)
@@ -316,6 +321,7 @@ namespace CounterAttack.Online
             joiningSession?.Close();
             joiningSession = null;
             roleCode = null;
+            MenuAudioPlayer.Play(GameplayAudioPool.MenuBack);
             SetRoleCardVisible(false);
         }
 
@@ -335,14 +341,19 @@ namespace CounterAttack.Online
         public void Back()
         {
             if (roleCard != null && roleCard.activeSelf) CancelRoleChoice();
-            else SceneManager.LoadScene("MainMenu");
+            else
+            {
+                MenuAudioPlayer.Play(GameplayAudioPool.MenuBack);
+                SceneManager.LoadScene("MainMenu");
+            }
         }
 
         public void Exit() => quitConfirmation.ShowQuit();
 
         public static bool TryReadLobbyCode(string input, out string code)
         {
-            return OnlineFrontendSessionPolicy.TryNormalizeLobbyCode(input, out code);
+            code = OnlineFrontendSessionPolicy.ValidLobbyCode(input) ? input.ToUpperInvariant() : null;
+            return code != null;
         }
 
         public static string TakeJoinCode()

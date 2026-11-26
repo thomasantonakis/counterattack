@@ -37,7 +37,9 @@ public sealed partial class OnlineDraftSceneFixture
         hostAccount=hostAway?"away":"home";guestAccount=hostAway?"home":"away";
         var version=new OnlineCompatibility(OnlineSessionWire.Version,"draft-scene","catalog");
         var protocol=new OnlineMatchProtocol("draft-scene","home","away",hostAccount,version);protocol.BindAuthenticatedAccount(hostAccount,"host",version);
-        host=new(protocol,"host",guestAccount,branch.StartsWith("drag-",System.StringComparison.Ordinal)?DragSettings(branch):OnlineSetupAgreementEditorTests.Valid(),()=>0);
+        var settings=branch.StartsWith("drag-",System.StringComparison.Ordinal)?DragSettings(branch):OnlineSetupAgreementEditorTests.Valid();
+        if (branch == "menu-audio") settings.draft = "Free Regular";
+        host=new(protocol,"host",guestAccount,settings,()=>0);
         guest=new(protocol.MatchId,hostAccount,version,protocol.HostTeam,()=>0);
         host.EnableDraft(s=>new OnlineDraftAuthority(protocol,s,OnlineDraftCatalog.Load(),_=>0,()=>rolls.Dequeue()));
         host.Outgoing+=toGuest.Enqueue;guest.Outgoing+=toHost.Enqueue;host.Begin();Flush();
@@ -55,6 +57,11 @@ public sealed partial class OnlineDraftSceneFixture
         if(client.Team==OnlineTeam.Home){Assert.That(view.actionButton.interactable,Is.True);view.actionButton.onClick.Invoke();Flush();Client(OnlineTeam.Away).Request(OnlineDraftIntent.Roll);Flush();}
         else{Assert.That(view.actionButton.interactable,Is.False);Client(OnlineTeam.Home).Request(OnlineDraftIntent.Roll);Flush();Assert.That(view.actionButton.interactable,Is.True);view.actionButton.onClick.Invoke();Flush();}
         Assert.That(view.source.draftOrderPanel.visuals.activeSelf,Is.False);Assert.That(view.cards.All(c=>c.gameObject.activeInHierarchy),Is.True);
+        if (branch == "menu-audio")
+        {
+            yield return CheckPageSounds(view);
+            yield break;
+        }
         if (branch == "team-average")
         {
             for (int i = 0; i < 40 && host.Draft.Capture().phase == "pick"; i++) Pick();

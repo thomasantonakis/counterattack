@@ -1341,6 +1341,7 @@ GameObject:
   - component: {fileID: 130464273}
   - component: {fileID: 130464272}
   - component: {fileID: 130464275}
+  - component: {fileID: 130464276}
   m_Layer: 0
   m_Name: OnlineChooseKickoff
   m_TagString: Untagged
@@ -1712,6 +1713,7 @@ GameObject:
   - component: {fileID: 150957863}
   - component: {fileID: 150957862}
   - component: {fileID: 150957865}
+  - component: {fileID: 150957866}
   m_Layer: 0
   m_Name: OnlineChooseAttack right to left
   m_TagString: Untagged
@@ -2022,6 +2024,7 @@ GameObject:
   - component: {fileID: 168336567}
   - component: {fileID: 168336566}
   - component: {fileID: 168336565}
+  - component: {fileID: 168336568}
   m_Layer: 0
   m_Name: OnlinePreviousPage
   m_TagString: Untagged
@@ -6791,6 +6794,7 @@ GameObject:
   - component: {fileID: 683035143}
   - component: {fileID: 683035142}
   - component: {fileID: 683035141}
+  - component: {fileID: 683035144}
   m_Layer: 0
   m_Name: OnlineDraftAction
   m_TagString: Untagged
@@ -10423,6 +10427,7 @@ GameObject:
   - component: {fileID: 1062929822}
   - component: {fileID: 1062929821}
   - component: {fileID: 1062929820}
+  - component: {fileID: 1062929823}
   m_Layer: 0
   m_Name: OnlineNextPage
   m_TagString: Untagged
@@ -12039,6 +12044,7 @@ GameObject:
   - component: {fileID: 1249140848}
   - component: {fileID: 1249140847}
   - component: {fileID: 1249140849}
+  - component: {fileID: 1249140850}
   m_Layer: 0
   m_Name: Roll
   m_TagString: Untagged
@@ -12866,6 +12872,7 @@ GameObject:
   - component: {fileID: 1356979756}
   - component: {fileID: 1356979755}
   - component: {fileID: 1356979754}
+  - component: {fileID: 1356979757}
   m_Layer: 0
   m_Name: OnlineDraftLeave
   m_TagString: Untagged
@@ -12981,6 +12988,7 @@ GameObject:
   - component: {fileID: 1361226993}
   - component: {fileID: 1361226992}
   - component: {fileID: 1361226995}
+  - component: {fileID: 1361226996}
   m_Layer: 0
   m_Name: OnlineChooseAttack left to right
   m_TagString: Untagged
@@ -20322,3 +20330,107 @@ SceneRoots:
   - {fileID: 1269659674}
   - {fileID: 1503173696}
   - {fileID: 1237349699}
+--- !u!114 &130464276
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 130464270}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 0
+--- !u!114 &150957866
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 150957860}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 0
+--- !u!114 &168336568
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 168336563}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 0
+--- !u!114 &683035144
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 683035139}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 0
+--- !u!114 &1062929823
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1062929818}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 0
+--- !u!114 &1249140850
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1249140844}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 0
+--- !u!114 &1356979757
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1356979752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 0
+--- !u!114 &1361226996
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1361226990}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be9b44987c064ba6ab741c15a8c4d71, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::MenuAudioFeedback
+  buttonSelection: 0

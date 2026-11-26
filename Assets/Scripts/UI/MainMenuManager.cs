@@ -19,6 +19,7 @@ public class MainMenuManager : MonoBehaviour
     public void PlayMultiPlayerGame()
     {
         ApplicationManager.EnsureInstanceExists();
+        MenuAudioPlayer.Play(GameplayAudioPool.MenuAdvance);
         SceneManager.LoadScene(CounterAttack.Online.OnlineModeMenu.SceneName);
     }
 

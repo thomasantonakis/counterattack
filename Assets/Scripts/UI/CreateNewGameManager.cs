@@ -2012,6 +2012,7 @@ public partial class CreateNewGameManager : MonoBehaviour
 
     public void BackToCreateLoadRoomMenu()
     {
+        MenuAudioPlayer.Play(GameplayAudioPool.MenuBack);
         if(string.Equals(GetRequestedCreateLoadGameMode(),ApplicationManager.OnlineGameMode,StringComparison.OrdinalIgnoreCase))
         {CounterAttack.Online.OnlineFrontendSession.Current?.Close();SceneManager.LoadScene(CounterAttack.Online.OnlineModeMenu.SceneName);return;}
 
@@ -2019,7 +2020,6 @@ public partial class CreateNewGameManager : MonoBehaviour
         PlayerPrefs.Save();
         ApplicationManager.EnsureInstanceExists();
         ApplicationManager.Instance.SetSelectedRoomGameMode(GetSelectedCreateMenuGameMode());
-        MenuAudioPlayer.Play(GameplayAudioPool.MenuBack);
         SceneManager.LoadScene(CreateLoadRoomSceneName);
     }
 

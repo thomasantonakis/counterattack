@@ -95,6 +95,7 @@ public sealed class RulesViewer : MonoBehaviour, IPointerClickHandler
         // that existing pause; the instruction-box shortcut leaves gameplay live.
         surface.SetActive(true);
         IsOpen = true;
+        MenuAudioPlayer.Play(GameplayAudioPool.MenuAdvance);
         Canvas.ForceUpdateCanvases();
         for (int i = 0; i < entries.Length; i++)
         {
@@ -115,6 +116,7 @@ public sealed class RulesViewer : MonoBehaviour, IPointerClickHandler
     public void Close()
     {
         if (!surface.activeSelf) return;
+        MenuAudioPlayer.Play(GameplayAudioPool.MenuBack);
         savedPosition = article.verticalNormalizedPosition;
         CaptureScroll(true);
         savedQuery = search.text;
@@ -218,6 +220,7 @@ public sealed class RulesViewer : MonoBehaviour, IPointerClickHandler
 
     void Jump(int index, bool remember = true)
     {
+        if (remember) MenuAudioPlayer.Play(GameplayAudioPool.MenuAdvance);
         if (remember) CaptureScroll(true);
         Canvas.ForceUpdateCanvases();
         article.StopMovement();
@@ -235,6 +238,7 @@ public sealed class RulesViewer : MonoBehaviour, IPointerClickHandler
     {
         CaptureScroll(true);
         if (historyIndex + delta < 0 || historyIndex + delta >= History.Count) return;
+        MenuAudioPlayer.Play(delta > 0 ? GameplayAudioPool.MenuAdvance : GameplayAudioPool.MenuBack);
         historyIndex += delta;
         article.StopMovement();
         article.verticalNormalizedPosition = History[historyIndex];
@@ -265,6 +269,7 @@ public sealed class RulesViewer : MonoBehaviour, IPointerClickHandler
     public void StepMatch(int direction)
     {
         if (matches.Count == 0) return;
+        MenuAudioPlayer.Play(direction > 0 ? GameplayAudioPool.MenuAdvance : GameplayAudioPool.MenuBack);
         SelectMatch(activeMatch < 0 ? (direction > 0 ? 0 : matches.Count - 1) : (activeMatch + direction + matches.Count) % matches.Count);
     }
 

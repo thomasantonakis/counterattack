@@ -60,6 +60,7 @@ namespace CounterAttack.Online
         }
         public void Leave()
         {
+            MenuAudioPlayer.Play(GameplayAudioPool.MenuBack);
             if(OnlineFrontendSession.Current!=null)OnlineFrontendSession.Current.Close();
             else OnlineRoomSession.Current?.Dispose();
             SceneManager.LoadScene("MainMenu");

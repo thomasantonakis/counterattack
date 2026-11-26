@@ -459,6 +459,7 @@ public class PauseMenuManager : MonoBehaviour
         UpdateSaveAsPreview(saveNameInput.text);
         saveModalStatusText.text = string.Empty;
         SetOverwriteConfirmActive(false);
+        MenuAudioPlayer.Play(GameplayAudioPool.MenuAdvance);
         saveAsOverlay.SetActive(true);
     }
 
