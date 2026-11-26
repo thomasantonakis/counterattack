@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Linq;
+using Newtonsoft.Json.Linq;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace CounterAttack.Online
 {
@@ -32,6 +35,49 @@ namespace CounterAttack.Online
                 if (root != null) root.SetActive(false);
             }
             GuestConfigured = true;
+        }
+
+        private IEnumerator WatchRoom(OnlineGroundPassBoard board, PauseMenuManager menu)
+        {
+            var session = OnlineFrontendSession.Current;
+            foreach (var button in menu.pausePanel.GetComponentsInChildren<Button>(true))
+                if (button != menu.resumeButton && button != menu.backToMainMenuButton
+                    && button.GetComponent<RulesViewerOpener>() == null)
+                    button.gameObject.SetActive(false);
+            menu.backToMainMenuButton.onClick.AddListener(session.LeaveSpectating);
+            menu.backToMainMenuButton.GetComponentInChildren<TMP_Text>(true).text = "Leave";
+            bool localMenu = false;
+            menu.resumeButton.onClick.AddListener(() => localMenu = false);
+            menu.resumeButton.GetComponentInChildren<TMP_Text>(true).text = "Back to match";
+            OnlineGroundPassState state = null;
+            JObject displayed = null;
+            while (session != null)
+            {
+                var publication = session.SpectatorPublication;
+                if (publication != displayed && (string)publication?["stage"] == "room")
+                {
+                    state = OnlineSpectatorRoomProjection.Read(publication, board.match.playerTokenManager);
+                    board.DisplaySpectator(state, publication);
+                    displayed = publication;
+                }
+                if (Input.GetKeyUp(KeyCode.Escape) && !RoomInputOwnership.ReservePauseEscape)
+                {
+                    if (RoomInputOwnership.CardOpen) RoomInspectionCard.Instance.Close();
+                    else localMenu = !localMenu;
+                }
+                bool paused = state?.isSharedPaused == true;
+                bool held = state?.connectionHeld == true;
+                bool shared = paused || held;
+                bool show = !EndGamePanelManager.IsVisible && (shared || localMenu || session.Error != null);
+                if (show && !menu.pausePanel.activeSelf)
+                    menu.pausePanel.transform.SetAsLastSibling();
+                menu.pausePanel.SetActive(show);
+                menu.resumeButton.interactable = !shared && session.Error == null;
+                menu.pauseSaveStatusText.gameObject.SetActive(show);
+                menu.pauseSaveStatusText.text = session.Error ?? (held ? "Waiting for the managers to reconnect"
+                    : paused ? "The managers paused the match" : "Spectating the match");
+                yield return null;
+            }
         }
 
         private IEnumerator Start()
@@ -77,10 +123,18 @@ namespace CounterAttack.Online
             match.OnlineInstructionMonitor = board.instructionMonitor;
             match.OnlineEventBanner = GetComponentInRoom<MatchEventBannerController>();
             match.OnlinePitchLines = GetComponentInRoom<PitchLines>();
-            board.controls = gameObject.AddComponent<OnlineGroundPassControls>();
             board.boardInput = gameObject.AddComponent<OnlineBoardInput>();
             board.boardInput.board = board;
             board.rollPanels = gameObject.AddComponent<OnlineRoomRollPanels>();
+            if (OnlineRoomSession.IsSpectator)
+            {
+                board.rollPanels.BindRoom(board, GetComponentInRoom<DuelResolutionPanelController>(),
+                    GetComponentInRoom<HeaderChallengePanelController>(), GetComponentInRoom<StoppageActionsPanelController>());
+                Board = board;
+                yield return WatchRoom(board, GetComponentInRoom<PauseMenuManager>());
+                yield break;
+            }
+            board.controls = gameObject.AddComponent<OnlineGroundPassControls>();
             board.rollPanels.BindRoom(board, GetComponentInRoom<DuelResolutionPanelController>(),
                 GetComponentInRoom<HeaderChallengePanelController>(), GetComponentInRoom<StoppageActionsPanelController>());
             match.OnlineRollPanels = board.rollPanels;

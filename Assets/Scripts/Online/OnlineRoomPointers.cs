@@ -36,7 +36,7 @@ namespace CounterAttack.Online
         {
             if (board == null || held || !Application.isFocused || GameInputManager.IsCameraPointerOverUi)
                 return new OnlineRoomPointer();
-            int icon = Input.GetMouseButton(1) ? 2 : Input.GetMouseButton(0) ? 1 : 0;
+            int icon = Input.GetMouseButton(1) ? 2 : !OnlineRoomSession.IsSpectator && Input.GetMouseButton(0) ? 1 : 0;
             return CaptureBoardPointer(Input.mousePosition, icon);
         }
 
@@ -89,7 +89,7 @@ namespace CounterAttack.Online
                 Cursor.visible = false;
             }
             if (!hideNative) RestoreCursor();
-            var other = held || Time.unscaledTimeAsDouble - remoteReceivedAt > 0.6 ? null : remote;
+            var other = OnlineRoomSession.IsSpectator || held || Time.unscaledTimeAsDouble - remoteReceivedAt > 0.6 ? null : remote;
             Draw(remoteMarker, remoteIcon, other, home ? settings?.awayKit : settings?.homeKit);
             board.boardInput?.PresentPeerHover(other);
         }
@@ -108,7 +108,8 @@ namespace CounterAttack.Online
             marker.gameObject.SetActive(visible);
             if (visible)
             {
-                marker.color = TokenKitCatalog.ResolveInstructionPalette(kit, Color.white, Color.black).Primary;
+                marker.color = OnlineRoomSession.IsSpectator ? Color.white
+                    : TokenKitCatalog.ResolveInstructionPalette(kit, Color.white, Color.black).Primary;
                 marker.rectTransform.anchoredPosition = local;
                 if (icon != null)
                 {

@@ -77,9 +77,10 @@ public sealed class OnlineModeNavigationEditorTests
             hostRow.GetWorldCorners(corners);
             float hostTop = card.InverseTransformPoint(corners[1]).y;
             Assert.That(hostTop, Is.LessThan(headerBottom), "The heading must clear the Host row");
-            CollectionAssert.AreEqual(new[] { "CreateNewMatchButton", "LoadMatchButton", "Lobby Code",
-                    "Connection Status", "BackToMainMenuButton" },
+            CollectionAssert.AreEqual(new[] { "CreateNewMatchButton", "Connection Status", "LoadMatchButton",
+                    "Lobby Code", "OnlineLoadMatchButton", "BackToMainMenuButton" },
                 rows.Cast<Transform>().Where(row => row.gameObject.activeSelf).Select(row => row.name).ToArray());
+            Assert.That(menu.loadMatchButton, Is.SameAs(rows.Find("OnlineLoadMatchButton").GetComponent<Button>()));
 
             foreach (var screen in new[] { new Vector2(2560, 1080), new Vector2(1024, 768), new Vector2(720, 960) })
             {
@@ -96,6 +97,49 @@ public sealed class OnlineModeNavigationEditorTests
                     Assert.That(point.y, Is.InRange(0, bounds.y));
                 }
             }
+        });
+    }
+
+    [Test]
+    public void AuthoredJoinCardOffersOnlyAvailableRoles()
+    {
+        WithMenu(menu =>
+        {
+            Assert.That(menu.roleCard, Is.Not.Null);
+            Assert.That(menu.roleCard.activeSelf, Is.False);
+            var rows = menu.roleCard.transform.Find("WhiteBkg/ButtonsPanel");
+            Assert.That(rows.GetComponent<VerticalLayoutGroup>(), Is.Not.Null);
+            Assert.That(menu.awayRoleButton.transform.parent, Is.SameAs(rows));
+            Assert.That(menu.spectatorRoleButton.transform.parent, Is.SameAs(rows));
+            Assert.That(menu.awayRoleButton.onClick.GetPersistentMethodName(0), Is.EqualTo(nameof(menu.SelectAway)));
+            Assert.That(menu.spectatorRoleButton.onClick.GetPersistentMethodName(0), Is.EqualTo(nameof(menu.SelectSpectator)));
+            var back = rows.Find("BackToCodeButton").GetComponent<Button>();
+            Assert.That(back.onClick.GetPersistentMethodName(0), Is.EqualTo(nameof(menu.CancelRoleChoice)));
+            const System.Reflection.BindingFlags flags = System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic;
+            var show = typeof(OnlineModeMenu).GetMethod("SetRoleCardVisible", flags);
+            var options = typeof(OnlineModeMenu).GetMethod("SetRoleOptions", flags);
+            show.Invoke(menu, new object[] { true });
+            options.Invoke(menu, new object[] { new OnlineMatchRoleOptions(true, true, true) });
+            Assert.That(menu.awayRoleButton.gameObject.activeInHierarchy, Is.True);
+            Assert.That(menu.spectatorRoleButton.gameObject.activeInHierarchy, Is.True);
+            Assert.That(menu.awayRoleButton.IsInteractable(), Is.True);
+            Assert.That(menu.spectatorRoleButton.IsInteractable(), Is.True);
+            Assert.That(menu.mainCard.interactable, Is.False);
+
+            options.Invoke(menu, new object[] { new OnlineMatchRoleOptions(true, false, true) });
+            Assert.That(menu.awayRoleButton.gameObject.activeInHierarchy, Is.False);
+            Assert.That(menu.spectatorRoleButton.gameObject.activeInHierarchy, Is.True);
+            Assert.That(menu.spectatorRoleButton.IsInteractable(), Is.True);
+            options.Invoke(menu, new object[] { new OnlineMatchRoleOptions(true, true, false) });
+            Assert.That(menu.awayRoleButton.gameObject.activeInHierarchy, Is.True);
+            Assert.That(menu.spectatorRoleButton.gameObject.activeInHierarchy, Is.False);
+            Assert.That(menu.roleStatus.text, Does.Contain("Spectating is unavailable"));
+            options.Invoke(menu, new object[] { new OnlineMatchRoleOptions(false, false, false) });
+            Assert.That(menu.spectatorRoleButton.gameObject.activeInHierarchy, Is.False);
+            Assert.That(menu.roleStatus.text, Does.Contain("No active match"));
+            menu.CancelRoleChoice();
+            Assert.That(menu.roleCard.activeSelf, Is.False);
+            Assert.That(menu.mainCard.interactable, Is.True);
         });
     }
 

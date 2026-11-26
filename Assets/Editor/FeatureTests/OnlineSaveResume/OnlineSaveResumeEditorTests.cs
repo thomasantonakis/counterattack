@@ -58,10 +58,11 @@ public sealed class OnlineSaveResumeEditorTests
 
     [TestCase("session-wire-v3", "frontend-rules-v9")]
     [TestCase("session-wire-v4", "frontend-rules-v10")]
+    [TestCase("session-wire-v5", "frontend-rules-v11")]
     public void PriorOnlineCheckpointRetainsItsStatisticsAcrossTheReportUpgrade(string priorProtocol, string priorRules)
     {
         var oldStore = new OnlineCheckpointStore(directory, new OnlineCompatibility(priorProtocol, priorRules, "catalog"));
-        var newStore = new OnlineCheckpointStore(directory, new OnlineCompatibility("session-wire-v5", "frontend-rules-v11", "catalog"));
+        var newStore = new OnlineCheckpointStore(directory, new OnlineCompatibility(OnlineSessionWire.Version, "frontend-rules-v11", "catalog"));
         var checkpoint = Checkpoint();
         checkpoint.protocol = priorProtocol;
         checkpoint.rules = priorRules;

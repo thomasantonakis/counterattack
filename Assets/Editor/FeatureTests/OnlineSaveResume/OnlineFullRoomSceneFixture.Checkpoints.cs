@@ -190,7 +190,10 @@ public sealed partial class OnlineFullRoomSceneFixture
 
         yield return EditorSceneManager.LoadSceneAsyncInPlayMode("Assets/Scenes/OnlineModeMenu.unity", new LoadSceneParameters(LoadSceneMode.Single));
         var menu = Object.FindAnyObjectByType<OnlineModeMenu>();
-        Assert.That(menu.lobbyCode.characterLimit, Is.EqualTo(8));
+        Assert.That(menu.lobbyCode.characterLimit, Is.EqualTo(OnlineSpectatorAdmission.CodeLength));
+        Assert.That(menu.lobbyCode.characterValidation, Is.EqualTo(TMPro.TMP_InputField.CharacterValidation.None));
+        Assert.That(OnlineModeMenu.TryReadLobbyCode("00a7f29c", out var parsedCode), Is.True);
+        Assert.That(parsedCode, Is.EqualTo("00A7F29C"));
         Assert.That(menu.loadMatchButton.gameObject.activeInHierarchy, Is.True);
         void BindTestStore(Scene scene, LoadSceneMode mode)
         {

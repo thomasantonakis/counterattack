@@ -3,6 +3,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Linq;
+using System;
+using System.Collections;
 
 namespace CounterAttack.Online
 {
@@ -16,9 +18,19 @@ namespace CounterAttack.Online
         public Button continueButton;
         public Button joinButton;
         public OnlineFrontendSession sessionPrefab;
+        public CanvasGroup mainCard;
+        public GameObject roleCard;
+        public Button awayRoleButton, spectatorRoleButton;
+        public TMP_Text roleStatus;
         public Button loadMatchButton;
         private static System.Guid? pendingCheckpoint;
         private OnlineFrontendSession hostedSession;
+        private OnlineFrontendSession joiningSession;
+        private IEnumerator roleLookup;
+        private Coroutine findingRoles;
+        private OnlineMatchRoleOptions roleOptions;
+        private string roleCode;
+        private bool joiningAway;
         private bool proceeding;
         private string lastHostStatus;
 
@@ -33,7 +45,7 @@ namespace CounterAttack.Online
 
         private void OnEnable()
         {
-            lobbyCode.characterLimit = OnlineFrontendSessionPolicy.LobbyCodeLength;
+            lobbyCode.characterLimit = OnlineSpectatorAdmission.CodeLength;
             lobbyCode.onValueChanged.AddListener(UpdateJoinAvailability);
             UpdateJoinAvailability(lobbyCode.text);
             if (roomFailure != null)
@@ -95,8 +107,31 @@ namespace CounterAttack.Online
 
         private void Update()
         {
+            if (joiningSession != null)
+            {
+                if (joiningAway && joiningSession.Client?.Connected == true)
+                {
+                    proceeding = true;
+                    OpenSetup(roleCode);
+                    return;
+                }
+                var stage = (string)joiningSession.SpectatorPublication?["stage"];
+                roleStatus.text = joiningSession.Error ?? (stage switch
+                {
+                    "lobby" => "Spectating the lobby",
+                    "setup" => "Spectating match setup",
+                    "draft" => "Spectating Draft",
+                    "room" => "Spectating the match",
+                    _ => joiningSession.Status
+                });
+            }
             bool hosting=hostedSession!=null;
             var code=hosting?hostedSession.LobbyCode:null;
+            if (code != null && !hostedSession.HostingResume && hostedSession.Client?.Connected == true)
+            {
+                ContinueToMatchSetup();
+                return;
+            }
             hostCode.gameObject.SetActive(hosting);
             copyButton.gameObject.SetActive(hosting);
             continueButton.gameObject.SetActive(hosting && !hostedSession.HostingResume);
@@ -111,6 +146,8 @@ namespace CounterAttack.Online
             if(!hosting)return;
             if(hostCode.text!=(code??string.Empty))hostCode.SetTextWithoutNotify(code??string.Empty);
             var hostStatus = hostedSession.Error ?? hostedSession.Status;
+            if (hostedSession.Error == null && hostedSession.SpectatorError != null)
+                hostStatus += "\nSpectate unavailable. " + hostedSession.SpectatorError;
             if (hostStatus != lastHostStatus)
             {
                 lastHostStatus = hostStatus;
@@ -125,6 +162,8 @@ namespace CounterAttack.Online
 
         private void OnDestroy()
         {
+            DisposeRoleLookup();
+            if(!proceeding && joiningSession!=null && !joiningSession.LaunchingRoom && joiningSession.SpectatorScene == null)joiningSession.Close();
             if(!proceeding && hostedSession!=null && !hostedSession.LaunchingRoom)hostedSession.Close();
         }
 
@@ -186,6 +225,7 @@ namespace CounterAttack.Online
 
         public void Join()
         {
+            if (roleCard != null && roleCard.activeSelf) return;
             if (!TryReadLobbyCode(lobbyCode.text, out var code))
             {
                 status.text = OnlineFrontendSessionPolicy.LobbyCodePrompt;
@@ -200,10 +240,101 @@ namespace CounterAttack.Online
             }
             if (SessionIsClosing()) return;
 
-            OpenSetup(code);
+            if (roleCard == null)
+            {
+                OpenSetup(code);
+                return;
+            }
+            roleCode = code;
+            SetRoleCardVisible(true);
+            SetRoleOptions(null);
+            roleStatus.text = "Checking Match Code…";
+            findingRoles = StartCoroutine(FindRoles(code));
         }
 
-        public void Back() => SceneManager.LoadScene("MainMenu");
+        private IEnumerator FindRoles(string code)
+        {
+            yield return null;
+            roleLookup = OnlineMatchRoleLookup.Find(code, SetRoleOptions);
+            string error = null;
+            while (true)
+            {
+                bool advance = false;
+                try { advance = roleLookup.MoveNext(); }
+                catch (Exception failure) { error = failure.Message; }
+                if (!advance) break;
+                yield return roleLookup.Current;
+            }
+            DisposeRoleLookup();
+            findingRoles = null;
+            if (error != null) roleStatus.text = error;
+        }
+
+        private void SetRoleOptions(OnlineMatchRoleOptions options)
+        {
+            roleOptions = options;
+            awayRoleButton.interactable = options?.CanJoinAway == true;
+            spectatorRoleButton.interactable = options?.CanSpectate == true;
+            awayRoleButton.gameObject.SetActive(awayRoleButton.interactable);
+            spectatorRoleButton.gameObject.SetActive(spectatorRoleButton.interactable);
+            if (options == null) return;
+            roleStatus.text = !options.Found ? "No active match found for this code."
+                : !options.CanJoinAway && !options.CanSpectate ? "This match has no open roles."
+                : !options.CanSpectate ? "Spectating is unavailable for this match." : string.Empty;
+        }
+
+        public void SelectAway() => SelectRole(away: true);
+        public void SelectSpectator() => SelectRole(away: false);
+
+        private void SelectRole(bool away)
+        {
+            if (joiningSession != null || roleOptions == null || sessionPrefab == null
+                || (away ? !roleOptions.CanJoinAway : !roleOptions.CanSpectate)) return;
+            try
+            {
+                joiningAway = away;
+                joiningSession = Instantiate(sessionPrefab);
+                if (away) joiningSession.Join(roleCode);
+                else joiningSession.Watch(roleCode);
+                SetRoleOptions(null);
+            }
+            catch (Exception failure)
+            {
+                roleStatus.text = failure.Message;
+                joiningSession?.Close();
+                joiningSession = null;
+            }
+        }
+
+        public void CancelRoleChoice()
+        {
+            if (findingRoles != null) StopCoroutine(findingRoles);
+            findingRoles = null;
+            DisposeRoleLookup();
+            joiningSession?.Close();
+            joiningSession = null;
+            roleCode = null;
+            SetRoleCardVisible(false);
+        }
+
+        private void DisposeRoleLookup()
+        {
+            (roleLookup as IDisposable)?.Dispose();
+            roleLookup = null;
+        }
+
+        private void SetRoleCardVisible(bool visible)
+        {
+            roleCard.SetActive(visible);
+            mainCard.alpha = visible ? 0 : 1;
+            mainCard.interactable = mainCard.blocksRaycasts = !visible;
+        }
+
+        public void Back()
+        {
+            if (roleCard != null && roleCard.activeSelf) CancelRoleChoice();
+            else SceneManager.LoadScene("MainMenu");
+        }
 
         public void Exit() => Application.Quit();
 

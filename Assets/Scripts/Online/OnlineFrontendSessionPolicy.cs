@@ -20,7 +20,9 @@ namespace CounterAttack.Online
             => new(matchId, hostAccount, guestAccount, hostAccount, compatibility);
 
         public static RelayControl Route(bool relayOnly)=>relayOnly?RelayControl.ForceRelays:RelayControl.AllowRelays;
-        public const string LobbyCodePrompt = "Enter the 8-character lobby code shared by the host.";
+        public const string LobbyCodePrompt = "Enter the 8-character Match Code (0–9, A–F) shared by the host.";
+        public static bool IsMatchCodeReady(bool viewingEnabled, bool watchLobbyAdvertised) =>
+            !viewingEnabled || watchLobbyAdvertised;
         internal const string LobbyCodeAttribute = "COUNTERATTACK_JOIN_CODE";
 
         public static bool ValidLobbyCode(string code) =>

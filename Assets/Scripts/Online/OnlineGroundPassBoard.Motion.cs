@@ -11,11 +11,14 @@ namespace CounterAttack.Online
         private int presentationTrackCount;
         private Vector3 presentationBallStart,presentationBallTarget;
         private float presentationElapsed;
+        private float presentationDuration;
         private bool presentationMoving,presentationHeld;
         private long presentationFrame=-1,presentationPublication=-1;
         private void ResetPresentationMotion(bool held)
         {presentationMoving=false;presentationHeld=held;}
-        public void QueuePresentation(OnlineGroundPassPresentation frame)
+        public void QueuePresentation(OnlineGroundPassPresentation frame) => QueuePresentation(frame, PresentationInterval);
+
+        private void QueuePresentation(OnlineGroundPassPresentation frame, float duration)
         {
             if(!liveFullRoom){DisplayPresentation(frame);return;}
             if(!OnlineRoomSession.IsGuest || presentationHeld)return;
@@ -31,19 +34,19 @@ namespace CounterAttack.Online
                 if(index<0)continue;
                 var displayed=displayedTokens[index];presentationTracks[presentationTrackCount++]=new MotionTrack{transform=displayed,start=displayed.position,target=new Vector3(player.x,player.y,player.z)};
             }
-            presentationElapsed=0;presentationMoving=true;
+            presentationElapsed=0;presentationDuration=duration;presentationMoving=true;
         }
         internal void AdvancePresentation(float seconds)
         {
             if(!presentationMoving || !OnlineRoomSession.IsGuest)return;
             if(float.IsNaN(seconds) || float.IsInfinity(seconds) || seconds<0)throw new ArgumentOutOfRangeException(nameof(seconds));
-            presentationElapsed=Mathf.Min(PresentationInterval,presentationElapsed+seconds);float t=presentationElapsed/PresentationInterval;
+            presentationElapsed=Mathf.Min(presentationDuration,presentationElapsed+seconds);float t=presentationElapsed/presentationDuration;
             displayedBall.position=Vector3.Lerp(presentationBallStart,presentationBallTarget,t);
             for(int i=0;i<presentationTrackCount;i++)
             {
                 var track=presentationTracks[i];if(track.transform!=null)track.transform.position=Vector3.Lerp(track.start,track.target,t);
             }
-            if(presentationElapsed>=PresentationInterval)presentationMoving=false;
+            if(presentationElapsed>=presentationDuration)presentationMoving=false;
         }
     }
 }

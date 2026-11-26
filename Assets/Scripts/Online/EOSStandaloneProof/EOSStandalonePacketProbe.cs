@@ -11,8 +11,12 @@ using UnityEngine;
 
 internal sealed class EOSStandalonePacketProbe
 {
-    private const byte ProbeChannel = 7;
-    private const string LobbyBucket = "counterattack-m0-p2p";
+    internal const byte ManagerProbeChannel = 7;
+    internal const byte WatchProbeChannel = 41;
+    internal const string WatchLobbyFileName = "watch-lobby-id.txt";
+    internal const string LobbyBucket = "counterattack-m0-p2p";
+    private const string WatchLobbyBucket = "counterattack-watch-proof";
+    internal const string LiveWatchLobbyBucket = "counterattack-watch-v1";
 
     private static IEnumerator Login(EOSStandaloneSession session)
     {
@@ -21,8 +25,8 @@ internal sealed class EOSStandalonePacketProbe
             yield return login.Current;
     }
 
-    private static SocketId ProbeSocket(string lobbyId) =>
-        new SocketId { SocketName = "ca-m0-" + lobbyId.Substring(0, Math.Min(24, lobbyId.Length)) };
+    internal static SocketId ProbeSocket(string lobbyId, bool watchLobby) =>
+        new SocketId { SocketName = (watchLobby ? "ca-watch-" : "ca-m0-") + lobbyId.Substring(0, Math.Min(watchLobby ? 23 : 24, lobbyId.Length)) };
 
     private static byte[] ProbeBytes(string prefix, string lobbyId) =>
         Encoding.ASCII.GetBytes(prefix + lobbyId);
@@ -39,7 +43,7 @@ internal sealed class EOSStandalonePacketProbe
     private static AttributeData JoinCodeAttribute(string code) =>
         new AttributeData { Key = OnlineFrontendSessionPolicy.LobbyCodeAttribute, Value = code };
 
-    private static IEnumerator<object> PublishJoinCode(EOSStandaloneSession session, LobbyInterface lobby,
+    internal static IEnumerator<object> PublishJoinCode(EOSStandaloneSession session, LobbyInterface lobby,
         Utf8String lobbyId, string code)
     {
         var options = new UpdateLobbyModificationOptions { LocalUserId = session.UserId, LobbyId = lobbyId };
@@ -80,11 +84,16 @@ internal sealed class EOSStandalonePacketProbe
 
     internal static IEnumerator HostProbe(string outputDirectory,
         Func<EOSStandaloneSession, ProductUserId, SocketId, string, IEnumerator> exchange = null, RelayControl relayControl=RelayControl.ForceRelays,
-        Action<string> onCodePublished = null, string requiredHost = null, string requiredGuest = null)
+        Action<string> onCodePublished = null, EOSStandaloneSession watchOwner = null,
+        EOSWatchLobbyProof.Admission admission = null, Action<string> onLobbyCreated = null,
+        OnlineSpectatorAdmission liveAdmission = null, Action<EOSStandaloneSession, string> openViewing = null,
+        Action closeViewing = null, string requiredHost = null, string requiredGuest = null)
     {
-        var lobbyIdFile = Path.Combine(outputDirectory, "lobby-id.txt");
+        bool watchLobby = watchOwner != null;
+        byte probeChannel = watchLobby ? WatchProbeChannel : ManagerProbeChannel;
+        var lobbyIdFile = Path.Combine(outputDirectory, watchLobby ? WatchLobbyFileName : "lobby-id.txt");
 
-        var session = new EOSStandaloneSession();
+        var session = watchOwner ?? new EOSStandaloneSession();
         LobbyInterface lobby = null;
         P2PInterface p2p = null;
         Utf8String lobbyId = null;
@@ -94,9 +103,12 @@ internal sealed class EOSStandalonePacketProbe
         bool lobbyDestroyed = false;
         try
         {
-            var login = Login(session);
-            while (login.MoveNext())
-                yield return login.Current;
+            if (!watchLobby)
+            {
+                var login = Login(session);
+                while (login.MoveNext())
+                    yield return login.Current;
+            }
 
             if (requiredHost != null && session.UserId.ToString() != requiredHost)
                 throw new InvalidOperationException("Use the original host's EOS profile to load this match.");
@@ -115,7 +127,7 @@ internal sealed class EOSStandalonePacketProbe
                 PermissionLevel = LobbyPermissionLevel.Joinviapresence,
                 PresenceEnabled = false,
                 AllowInvites = false,
-                BucketId = LobbyBucket,
+                BucketId = watchLobby ? WatchLobbyBucket : LobbyBucket,
                 DisableHostMigration = true,
                 EnableRTCRoom = false
             };
@@ -135,7 +147,8 @@ internal sealed class EOSStandalonePacketProbe
             EOSProofCheck.Require(!(string.IsNullOrEmpty(lobbyId)), "P2P coordination lobby ID");
 
             var lobbyIdText = lobbyId.ToString();
-            var socket = ProbeSocket(lobbyIdText);
+            onLobbyCreated?.Invoke(lobbyIdText);
+            var socket = ProbeSocket(lobbyIdText, watchLobby);
             string joinedGuestId = null;
             string requestedGuestId = null;
             bool guestLeft = false;
@@ -148,7 +161,8 @@ internal sealed class EOSStandalonePacketProbe
                         return;
                     var target = info.TargetUserId.ToString();
                     if (info.CurrentStatus == LobbyMemberStatus.Joined &&
-                        !string.Equals(target, session.UserId.ToString(), StringComparison.Ordinal))
+                        !string.Equals(target, session.UserId.ToString(), StringComparison.Ordinal) &&
+                        (liveAdmission == null || acceptedGuest == null))
                     {
                         if (requiredGuest != null && target != requiredGuest)
                         {
@@ -191,67 +205,89 @@ internal sealed class EOSStandalonePacketProbe
 
             if (onCodePublished != null)
             {
-                var code = OnlineFrontendSessionPolicy.GenerateLobbyCode();
-                using var publish = PublishJoinCode(session, lobby, lobbyId, code);
+                var code = liveAdmission?.MatchCode ?? OnlineFrontendSessionPolicy.GenerateLobbyCode();
+                var lookup = liveAdmission != null ? OnlineSpectatorAdmission.Lookup(code) : code;
+                using var publish = PublishJoinCode(session, lobby, lobbyId, lookup);
                 while (publish.MoveNext())
                     yield return publish.Current;
+                if (liveAdmission != null && requiredGuest != null)
+                    PublishAwayReservation(session, lobby, lobbyId, code, requiredGuest);
                 onCodePublished(code);
             }
 
-            File.WriteAllText(lobbyIdFile, lobbyIdText);
-            deadline = Time.realtimeSinceStartupAsDouble + 900;
-            while ((joinedGuestId == null || requestedGuestId == null) &&
-                   Time.realtimeSinceStartupAsDouble < deadline)
+            openViewing?.Invoke(session, lobbyIdText);
+            File.WriteAllText(lobbyIdFile, admission?.Handoff(lobbyIdText) ?? lobbyIdText);
+            if (liveAdmission != null)
             {
-                session.Tick();
-                yield return null;
+                var admit = AdmitLiveManager(session, lobby, p2p, lobbyId, socket, liveAdmission,
+                    identity => acceptedGuest = identity);
+                while (admit.MoveNext()) yield return admit.Current;
+                joinedGuestId = acceptedGuest.ToString();
+                guestLeft = false;
             }
-            EOSProofCheck.Require(joinedGuestId != null, "A distinct guest did not join the lobby");
-            EOSProofCheck.Require(requestedGuestId == joinedGuestId, "The P2P requester was not the joined lobby member");
-
-            acceptedGuest = ProductUserId.FromString(joinedGuestId);
-            EOSProofCheck.Require(acceptedGuest != null, "Joined guest product user ID");
-            EOSProofCheck.Require(acceptedGuest.IsValid(), "Joined guest product user ID validity");
-            var accept = new AcceptConnectionOptions
+            else
             {
-                LocalUserId = session.UserId,
-                RemoteUserId = acceptedGuest,
-                SocketId = socket
-            };
-            EOSProofCheck.Require(p2p.AcceptConnection(ref accept) == Result.Success, "Accepting the joined guest's P2P connection");
-
-            var expectedHello = ProbeBytes("ca-m0-hello:", lobbyIdText);
-            var buffer = new byte[256];
-            var receiveOptions = new ReceivePacketOptions
-            {
-                LocalUserId = session.UserId,
-                MaxDataSizeBytes = (uint)buffer.Length,
-                RequestedChannel = ProbeChannel
-            };
-            bool helloReceived = false;
-            deadline = Time.realtimeSinceStartupAsDouble + 180;
-            while (!helloReceived && Time.realtimeSinceStartupAsDouble < deadline)
-            {
-                session.Tick();
-                ProductUserId sender = null;
-                var receivedSocket = new SocketId();
-                var result = p2p.ReceivePacket(ref receiveOptions, ref sender, ref receivedSocket,
-                    out var channel, new ArraySegment<byte>(buffer), out var bytesWritten);
-                EOSProofCheck.Require(result == Result.Success || result == Result.NotFound, "Receiving P2P hello");
-                if (result == Result.Success)
+                deadline = Time.realtimeSinceStartupAsDouble + 900;
+                while ((joinedGuestId == null || requestedGuestId == null) &&
+                       Time.realtimeSinceStartupAsDouble < deadline)
                 {
-                    if (requiredGuest != null && sender?.ToString() != requiredGuest) continue;
-                    EOSProofCheck.Require(sender?.ToString() == joinedGuestId, "P2P hello sender");
-                    EOSProofCheck.Require(receivedSocket.SocketName == socket.SocketName, "P2P hello socket");
-                    EOSProofCheck.Require(channel == ProbeChannel, "P2P hello channel");
-                    EOSProofCheck.Require(bytesWritten == (uint)expectedHello.Length, "P2P hello byte count");
-                    for (var i = 0; i < expectedHello.Length; i++)
-                        EOSProofCheck.Require(buffer[i] == expectedHello[i], "P2P hello payload byte " + i);
-                    helloReceived = true;
+                    session.Tick();
+                    yield return null;
                 }
-                yield return null;
+                EOSProofCheck.Require(joinedGuestId != null, "A distinct guest did not join the lobby");
+                EOSProofCheck.Require(requestedGuestId == joinedGuestId, "The P2P requester was not the joined lobby member");
+
+                acceptedGuest = ProductUserId.FromString(joinedGuestId);
+                EOSProofCheck.Require(acceptedGuest != null, "Joined guest product user ID");
+                EOSProofCheck.Require(acceptedGuest.IsValid(), "Joined guest product user ID validity");
+                var accept = new AcceptConnectionOptions
+                {
+                    LocalUserId = session.UserId,
+                    RemoteUserId = acceptedGuest,
+                    SocketId = socket
+                };
+                EOSProofCheck.Require(p2p.AcceptConnection(ref accept) == Result.Success, "Accepting the joined guest's P2P connection");
+
+                var expectedHello = ProbeBytes("ca-m0-hello:", lobbyIdText);
+                var buffer = new byte[256];
+                var receiveOptions = new ReceivePacketOptions
+                {
+                    LocalUserId = session.UserId,
+                    MaxDataSizeBytes = (uint)buffer.Length,
+                    RequestedChannel = probeChannel
+                };
+                bool helloReceived = false;
+                deadline = Time.realtimeSinceStartupAsDouble + 180;
+                while (!helloReceived && Time.realtimeSinceStartupAsDouble < deadline)
+                {
+                    session.Tick();
+                    ProductUserId sender = null;
+                    var receivedSocket = new SocketId();
+                    var result = p2p.ReceivePacket(ref receiveOptions, ref sender, ref receivedSocket,
+                        out var channel, new ArraySegment<byte>(buffer), out var bytesWritten);
+                    EOSProofCheck.Require(result == Result.Success || result == Result.NotFound, "Receiving P2P hello");
+                    if (result == Result.Success)
+                    {
+                        if (requiredGuest != null && sender?.ToString() != requiredGuest) continue;
+                        EOSProofCheck.Require(sender?.ToString() == joinedGuestId, "P2P hello sender");
+                        EOSProofCheck.Require(receivedSocket.SocketName == socket.SocketName, "P2P hello socket");
+                        EOSProofCheck.Require(channel == probeChannel, "P2P hello channel");
+                        int admissionLength = admission == null ? 0 : OnlineSpectatorAdmission.CodeLength;
+                        EOSProofCheck.Require(bytesWritten == (uint)(expectedHello.Length + admissionLength), "P2P hello byte count");
+                        for (var i = 0; i < expectedHello.Length; i++)
+                            EOSProofCheck.Require(buffer[i] == expectedHello[i], "P2P hello payload byte " + i);
+                        if (admission != null)
+                        {
+                            var code = Encoding.ASCII.GetString(buffer, expectedHello.Length, admissionLength);
+                            EOSProofCheck.Require(admission.TryAdmit(joinedGuestId, code), "Match Code or role admission rejected");
+                        }
+                        helloReceived = true;
+                    }
+                    yield return null;
+                }
+                EOSProofCheck.Require(helloReceived, "No P2P hello arrived from the joined guest");
+
             }
-            EOSProofCheck.Require(helloReceived, "No P2P hello arrived from the joined guest");
 
             var ack = ProbeBytes("ca-m0-ack:", lobbyIdText);
             var send = new SendPacketOptions
@@ -259,7 +295,7 @@ internal sealed class EOSStandalonePacketProbe
                 LocalUserId = session.UserId,
                 RemoteUserId = acceptedGuest,
                 SocketId = socket,
-                Channel = ProbeChannel,
+                Channel = probeChannel,
                 Data = new ArraySegment<byte>(ack),
                 AllowDelayedDelivery = true,
                 Reliability = PacketReliability.ReliableOrdered,
@@ -319,13 +355,15 @@ internal sealed class EOSStandalonePacketProbe
         }
         finally
         {
+            closeViewing?.Invoke();
             if (p2p != null && acceptedGuest != null && session.Platform != null)
             {
+                admission?.Release(acceptedGuest.ToString());
                 var close = new CloseConnectionOptions
                 {
                     LocalUserId = session.UserId,
                     RemoteUserId = acceptedGuest,
-                    SocketId = ProbeSocket(lobbyId.ToString())
+                    SocketId = ProbeSocket(lobbyId.ToString(), watchLobby)
                 };
                 p2p.CloseConnection(ref close);
             }
@@ -344,18 +382,145 @@ internal sealed class EOSStandalonePacketProbe
             }
             if (File.Exists(lobbyIdFile))
                 File.Delete(lobbyIdFile);
-            session.Dispose();
+            if (!watchLobby)
+                session.Dispose();
         }
+    }
+
+    private static IEnumerator AdmitLiveManager(EOSStandaloneSession session, LobbyInterface lobby,
+        P2PInterface p2p, Utf8String lobbyId, SocketId socket,
+        OnlineSpectatorAdmission admission, Action<ProductUserId> admitted)
+    {
+        var buffer = new byte[256];
+        var receive = new ReceivePacketOptions
+        {
+            LocalUserId = session.UserId, MaxDataSizeBytes = (uint)buffer.Length, RequestedChannel = ManagerProbeChannel
+        };
+        string prefix = "ca-m0-hello:" + lobbyId;
+        string candidate = null;
+        string pendingCode = null;
+        double candidateDeadline = 0, nextInspection = 0;
+        double deadline = Time.realtimeSinceStartupAsDouble + 900;
+        while (Time.realtimeSinceStartupAsDouble < deadline)
+        {
+            session.Tick();
+            double now = Time.realtimeSinceStartupAsDouble;
+            if (now >= nextInspection)
+            {
+                nextInspection = now + .25;
+                var members = EosLiveSpectators.ReadMembers(session, lobby, lobbyId);
+                if (members != null)
+                {
+                    string member = System.Linq.Enumerable.FirstOrDefault(members);
+                    if (member != candidate)
+                    {
+                        candidate = member;
+                        pendingCode = null;
+                        candidateDeadline = now + 12;
+                    }
+                    if (candidate != null && now >= candidateDeadline)
+                    {
+                        RejectManager(session, lobby, p2p, lobbyId, socket, ProductUserId.FromString(candidate));
+                        candidate = null;
+                        pendingCode = null;
+                    }
+                    if (candidate != null)
+                    {
+                        var accept = new AcceptConnectionOptions
+                        {
+                            LocalUserId = session.UserId, RemoteUserId = ProductUserId.FromString(candidate), SocketId = socket
+                        };
+                        p2p.AcceptConnection(ref accept);
+                    }
+                }
+            }
+            if (pendingCode != null && admission.TryAdmitAway(candidate, pendingCode))
+            {
+                PublishAwayReservation(session, lobby, lobbyId, admission.MatchCode, candidate);
+                admitted(ProductUserId.FromString(candidate));
+                yield break;
+            }
+            for (int i = 0; i < 8; i++)
+            {
+                ProductUserId sender = null;
+                var actualSocket = new SocketId();
+                var result = p2p.ReceivePacket(ref receive, ref sender, ref actualSocket, out var channel,
+                    new ArraySegment<byte>(buffer), out var size);
+                if (result == Result.NotFound) break;
+                if (result != Result.Success || candidate == null || candidate != sender?.ToString()
+                    || channel != ManagerProbeChannel || actualSocket.SocketName != socket.SocketName) continue;
+                string hello = Encoding.ASCII.GetString(buffer, 0, (int)size);
+                string code = hello.Length == prefix.Length + OnlineSpectatorAdmission.CodeLength
+                    && hello.StartsWith(prefix, StringComparison.Ordinal) ? hello.Substring(prefix.Length) : null;
+                if (admission.TryAdmitAway(candidate, code, out bool waitingForViewerLeave))
+                {
+                    PublishAwayReservation(session, lobby, lobbyId, admission.MatchCode, candidate);
+                    admitted(sender);
+                    yield break;
+                }
+                if (waitingForViewerLeave)
+                {
+                    pendingCode = code;
+                    continue;
+                }
+                RejectManager(session, lobby, p2p, lobbyId, socket, sender);
+                candidate = null;
+                pendingCode = null;
+            }
+            yield return null;
+        }
+        throw new EOSProofFailure("No Away manager presented a valid Match Code");
+    }
+
+    private static void PublishAwayReservation(EOSStandaloneSession session, LobbyInterface lobby, Utf8String lobbyId,
+        string matchCode, string identity)
+    {
+        var options = new UpdateLobbyModificationOptions { LocalUserId = session.UserId, LobbyId = lobbyId };
+        if (lobby.UpdateLobbyModification(ref options, out var modification) != Result.Success) return;
+        try
+        {
+            var attribute = new LobbyModificationAddAttributeOptions
+            {
+                Visibility = LobbyAttributeVisibility.Public,
+                Attribute = new AttributeData
+                {
+                    Key = OnlineSpectatorAdmission.AwayReservationAttribute,
+                    Value = OnlineSpectatorAdmission.AwayReservation(matchCode, identity)
+                }
+            };
+            if (modification.AddAttribute(ref attribute) != Result.Success) return;
+            var update = new UpdateLobbyOptions { LobbyModificationHandle = modification };
+            lobby.UpdateLobby(ref update, null, (ref UpdateLobbyCallbackInfo _) => { });
+        }
+        finally { modification.Release(); }
+    }
+
+    private static void RejectManager(EOSStandaloneSession session, LobbyInterface lobby, P2PInterface p2p,
+        Utf8String lobbyId, SocketId socket, ProductUserId peer)
+    {
+        var close = new CloseConnectionOptions { LocalUserId = session.UserId, RemoteUserId = peer, SocketId = socket };
+        p2p.CloseConnection(ref close);
+        var kick = new KickMemberOptions { LocalUserId = session.UserId, LobbyId = lobbyId, TargetUserId = peer };
+        lobby.KickMember(ref kick, null, (ref KickMemberCallbackInfo _) => { });
     }
 
     internal static IEnumerator GuestProbe(string inputLobby,
         Func<EOSStandaloneSession, ProductUserId, SocketId, string, IEnumerator> exchange = null,
-        RelayControl relayControl = RelayControl.ForceRelays, bool searchByCode = false)
+        RelayControl relayControl = RelayControl.ForceRelays, bool searchByCode = false, bool watchLobby = false,
+        string matchCode = null)
     {
+        byte probeChannel = watchLobby ? WatchProbeChannel : ManagerProbeChannel;
         string lobbyId = searchByCode ? null : inputLobby;
-        EOSProofCheck.Require(searchByCode ? OnlineFrontendSessionPolicy.ValidLobbyCode(inputLobby) :
+        string lookupCode = null;
+        EOSProofCheck.Require(searchByCode ? OnlineFrontendSessionPolicy.TryNormalizeLobbyCode(inputLobby, out lookupCode) :
             inputLobby != null && inputLobby.Length == 32,
             searchByCode ? OnlineFrontendSessionPolicy.LobbyCodePrompt : "Expected a 32-character lobby ID");
+        if (searchByCode)
+        {
+            matchCode = lookupCode;
+            if (watchLobby)
+                matchCode += OnlineSpectatorAdmission.ViewerCompatibilitySuffix;
+        }
 
         var session = new EOSStandaloneSession();
         LobbySearch search = null;
@@ -384,13 +549,13 @@ internal sealed class EOSStandalonePacketProbe
             {
                 var parameter = new LobbySearchSetParameterOptions
                 {
-                    Parameter = JoinCodeAttribute(inputLobby),
+                    Parameter = JoinCodeAttribute(OnlineSpectatorAdmission.Lookup(lookupCode)),
                     ComparisonOp = ComparisonOp.Equal
                 };
                 EOSProofCheck.Require(search.SetParameter(ref parameter) == Result.Success, "Searching by the lobby code");
                 var bucket = new LobbySearchSetParameterOptions
                 {
-                    Parameter = new AttributeData { Key = LobbyInterface.SEARCH_BUCKET_ID, Value = LobbyBucket },
+                    Parameter = new AttributeData { Key = LobbyInterface.SEARCH_BUCKET_ID, Value = watchLobby ? LiveWatchLobbyBucket : LobbyBucket },
                     ComparisonOp = ComparisonOp.Equal
                 };
                 EOSProofCheck.Require(search.SetParameter(ref bucket) == Result.Success, "Scoping the lobby-code search");
@@ -402,7 +567,7 @@ internal sealed class EOSStandalonePacketProbe
             }
 
             var deadline = Time.realtimeSinceStartupAsDouble + 25;
-            var retryUntil = Time.realtimeSinceStartupAsDouble + 5;
+            var retryUntil = Time.realtimeSinceStartupAsDouble + (watchLobby ? 12 : 5);
             uint matches;
             do
             {
@@ -474,17 +639,17 @@ internal sealed class EOSStandalonePacketProbe
                 yield return null;
             }
             EOSProofCheck.Require(joinResult.HasValue, "Joining P2P host lobby timed out");
-            EOSProofCheck.Require(joinResult.Value == Result.Success, "Joining P2P host lobby");
+            EOSProofCheck.Require(joinResult.Value == Result.Success, "Joining P2P host lobby: " + joinResult.Value);
             joined = true;
 
-            var socket = ProbeSocket(lobbyId);
-            var hello = ProbeBytes("ca-m0-hello:", lobbyId);
+            var socket = ProbeSocket(lobbyId, watchLobby);
+            var hello = ProbeBytes("ca-m0-hello:", lobbyId + matchCode);
             var send = new SendPacketOptions
             {
                 LocalUserId = session.UserId,
                 RemoteUserId = hostId,
                 SocketId = socket,
-                Channel = ProbeChannel,
+                Channel = probeChannel,
                 Data = new ArraySegment<byte>(hello),
                 AllowDelayedDelivery = true,
                 Reliability = PacketReliability.ReliableOrdered,
@@ -498,15 +663,18 @@ internal sealed class EOSStandalonePacketProbe
             {
                 LocalUserId = session.UserId,
                 MaxDataSizeBytes = (uint)buffer.Length,
-                RequestedChannel = ProbeChannel
+                RequestedChannel = probeChannel
             };
             bool ackReceived = false;
-            deadline = Time.realtimeSinceStartupAsDouble + 180;
+            deadline = Time.realtimeSinceStartupAsDouble + (searchByCode ? 18 : 180);
             while (!ackReceived && Time.realtimeSinceStartupAsDouble < deadline)
             {
                 session.Tick();
                 if (removed)
-                    throw new InvalidOperationException("This lobby is reserved for the original guest's EOS profile.");
+                    throw new InvalidOperationException(watchLobby ? "The host declined the spectator join."
+                        : searchByCode && OnlineMatchRoleLookup.IsAwayReservedForSomeoneElse(details, lookupCode, session.UserId)
+                            ? "Away is reserved for the original manager."
+                            : "The host declined the Away join. Try again.");
                 ProductUserId sender = null;
                 var receivedSocket = new SocketId();
                 var result = p2p.ReceivePacket(ref receive, ref sender, ref receivedSocket,
@@ -516,7 +684,7 @@ internal sealed class EOSStandalonePacketProbe
                 {
                     EOSProofCheck.Require(sender?.ToString() == hostId.ToString(), "P2P acknowledgement sender");
                     EOSProofCheck.Require(receivedSocket.SocketName == socket.SocketName, "P2P acknowledgement socket");
-                    EOSProofCheck.Require(channel == ProbeChannel, "P2P acknowledgement channel");
+                    EOSProofCheck.Require(channel == probeChannel, "P2P acknowledgement channel");
                     EOSProofCheck.Require(bytesWritten == (uint)expectedAck.Length, "P2P acknowledgement byte count");
                     for (var i = 0; i < expectedAck.Length; i++)
                         EOSProofCheck.Require(buffer[i] == expectedAck[i], "P2P acknowledgement payload byte " + i);
@@ -554,7 +722,7 @@ internal sealed class EOSStandalonePacketProbe
                 {
                     LocalUserId = session.UserId,
                     RemoteUserId = hostId,
-                    SocketId = ProbeSocket(lobbyId)
+                    SocketId = ProbeSocket(lobbyId, watchLobby)
                 };
                 p2p.CloseConnection(ref close);
             }

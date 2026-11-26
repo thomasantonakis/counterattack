@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Newtonsoft.Json.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -46,6 +47,7 @@ namespace CounterAttack.Online
         public OnlineGroundPassControls controls;
         private MatchManager previousMatch;
         private bool ownsMatch;
+        private bool spectatorBoardPresented;
 
         public void InitializeAuthority()
         {
@@ -89,6 +91,47 @@ namespace CounterAttack.Online
             // Real outcome entry point; managers remain disabled to suppress unrelated
             // startup/input/AI loops. Explicit ground-pass coroutines run on active hosts.
             match.BroadcastSafeEndofMovementPhase(countMovementAction: false, triggerFinalThird: false);
+        }
+
+        internal void DisplaySpectator(OnlineGroundPassState state, JObject publication)
+        {
+            bool held = state.isSharedPaused || state.connectionHeld;
+            ResetPresentationMotion(held);
+            bool smooth = spectatorBoardPresented && !held && publication["pose"] != null;
+            var lastBall = displayedBall.position;
+            var lastPlayers = smooth ? displayedTokens.Select(token => token.position).ToArray() : null;
+            match.ApplyOnlineReplicaMatchState(state);
+            displayedBall.gameObject.SetActive(state.ballOnBoard);
+            var motion = OnlineSpectatorRoomProjection.ReadMotion(publication, displayedBall.position);
+            if (motion != null && smooth)
+            {
+                if (publication["pose"]["ball"] != null) displayedBall.position = lastBall;
+                foreach (var player in motion.players ?? Array.Empty<OnlinePlayerPresentation>())
+                {
+                    int index = Array.FindIndex(tokens, token => OnlineRollPublication.ActorId(token) == player.id);
+                    if (index >= 0) displayedTokens[index].position = lastPlayers[index];
+                }
+                QueuePresentation(motion, 0.25f);
+            }
+            else if (motion != null) DisplayPresentation(motion);
+            spectatorBoardPresented = true;
+            liveScoreboard?.RefreshPublishedOnlineState();
+            match.matchStatsUI?.UpdateStatsUI();
+            match.OnlineEventBanner?.ApplyOnlinePublication(state.banners);
+            rollPanels?.ApplySpectator(publication["dice"], held);
+            var coin = match.coinTossPanel;
+            if (state.coin == null || held) coin?.HidePublishedToss();
+            else
+            {
+                var settings = match.gameData.gameSettings;
+                coin?.PresentPublishedToss(settings.homeTeamName, settings.awayTeamName, settings.homeKit,
+                    settings.awayKit, state.coin, ownsTurn: false, viewOnly: true);
+            }
+            instructionMonitor?.DisplayOnlineInstruction(new OnlineInstructionObservation
+            {
+                text = state.matchComplete ? "Full time" : "Spectating the match"
+            }, blocked: false);
+            if (state.matchComplete) EndGamePanelManager.ShowPublishedOnlineConclusion(state);
         }
 
         public void Display(OnlineGroundPassState state, string role)

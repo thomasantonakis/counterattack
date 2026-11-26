@@ -30,6 +30,10 @@ namespace CounterAttack.Online
         private readonly Action pollOverride;
         private readonly Func<double> recoveryClock;
         private bool manualTransport, transportUnavailable, peerLeft;
+        private OnlineGroundPassState latestHostRoomState;
+        internal bool TryEncodeSpectatorRoom(string spectatorMatchId, long sequence, out byte[] payload) =>
+            OnlineSpectatorRoomWire.TryEncode(latestHostRoomState, board.match.gameData?.gameSettings,
+                spectatorMatchId, sequence, out payload);
         private bool ContinuousManualSession=>board.continuousManualSession || Environment.GetCommandLineArgs().Contains("-ca-online-continuous");
         private string SessionCatalog=>board.liveFullRoom?OnlineFullRoomBootstrap.Catalog:OnlineManualSessionPolicy.Catalog(ContinuousManualSession);
         private string HostConnection => board.usesNativeRoom ? "host-home" : "host-away";
