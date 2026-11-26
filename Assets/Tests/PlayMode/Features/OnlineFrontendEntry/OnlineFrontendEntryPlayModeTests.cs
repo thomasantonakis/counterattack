@@ -16,4 +16,6 @@ public sealed class OnlineFrontendEntryPlayModeTests
         =>(IEnumerator)Bridge.GetMethod("Run").Invoke(fixture,new object[]{branch});
     [UnityTest] public IEnumerator HostSetupNavigation([Values("host-early-setup","host-auto-setup")]string branch)
         =>(IEnumerator)Bridge.GetMethod("Run").Invoke(fixture,new object[]{branch});
+    [UnityTest] public IEnumerator JoinMatchRequiresExactlyEightTypedOrPastedCharacters()
+        =>(IEnumerator)Bridge.GetMethod("Run").Invoke(fixture,new object[]{"join-code-length"});
 }

@@ -43,6 +43,14 @@ for ((i=0; i<600; i++)); do
         printf '%s\n' "$status" | jq '.data.result | {status, result, totalErrors, totalWarnings, errors, warnings}'
         printf '%s\n' "$status" | jq -e '.data.result.result == "Succeeded"' >/dev/null
         if [ "$mode" = game ]; then
+            # Unity can leave a Mono crash report at the root of a reused app
+            # bundle. macOS rejects that bundle when EOS requests Keychain access.
+            for crash_report in "$output"/mono_crash.*.json; do
+                [ -f "$crash_report" ] || continue
+                mkdir -p "$report_dir/prior-player-crashes"
+                mv "$crash_report" "$report_dir/prior-player-crashes/"
+            done
+            codesign --verify --strict "$output"
             printf 'Normal-scene Mac build ready. Manual launch: open Build/OnlineGame/Mac/Counterattack.app\n'
             printf 'Full Room handoff is implemented; paired internet acceptance and remaining match menus are still pending.\n'
         else

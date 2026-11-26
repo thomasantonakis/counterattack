@@ -46,7 +46,6 @@ namespace CounterAttack.Online
 
         private void OnEnable()
         {
-            lobbyCode.characterLimit = OnlineSpectatorAdmission.CodeLength;
             lobbyCode.onValueChanged.AddListener(UpdateJoinAvailability);
             UpdateJoinAvailability(lobbyCode.text);
             if (roomFailure != null)
@@ -161,7 +160,7 @@ namespace CounterAttack.Online
 
         private void UpdateJoinAvailability(string input)
         {
-            joinButton.interactable = !string.IsNullOrWhiteSpace(input);
+            joinButton.interactable = OnlineFrontendSessionPolicy.ValidLobbyCode(input);
         }
 
         private void OnDestroy()
@@ -353,7 +352,8 @@ namespace CounterAttack.Online
 
         public static bool TryReadLobbyCode(string input, out string code)
         {
-            return OnlineFrontendSessionPolicy.TryNormalizeLobbyCode(input, out code);
+            code = OnlineFrontendSessionPolicy.ValidLobbyCode(input) ? input.ToUpperInvariant() : null;
+            return code != null;
         }
 
         public static string TakeJoinCode()

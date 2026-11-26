@@ -38,6 +38,11 @@ public sealed class OnlineFrontendEntrySceneFixture
             Assert.That(SceneManager.GetActiveScene().name, Is.EqualTo(OnlineModeMenu.SceneName));
             var onlineMenu = Object.FindAnyObjectByType<OnlineModeMenu>();
             Assert.That(onlineMenu, Is.Not.Null);
+            if (branch == "join-code-length")
+            {
+                yield return VerifyJoinCodeInput(onlineMenu);
+                yield break;
+            }
             if (branch == "invalid-join")
             {
                 onlineMenu.lobbyCode.text = "bad";
@@ -121,6 +126,40 @@ public sealed class OnlineFrontendEntrySceneFixture
             Assert.That(SceneManager.GetActiveScene().name,Is.EqualTo(OnlineModeMenu.SceneName));
         }
         Assert.That(app.LastSavedFileName,Is.EqualTo(previousSave));Assert.That(app.HasExplicitSaveContext,Is.EqualTo(previousExplicit));
+    }
+
+    private static IEnumerator VerifyJoinCodeInput(OnlineModeMenu menu)
+    {
+        var field = menu.lobbyCode;
+        Assert.That(menu.joinButton.interactable, Is.False);
+        field.ActivateInputField();
+        yield return null;
+        foreach (char character in "00a7f29")
+            field.ProcessEvent(new Event { type = EventType.KeyDown, character = character });
+        Assert.That(field.text, Is.EqualTo("00a7f29"));
+        Assert.That(menu.joinButton.interactable, Is.False);
+        field.ProcessEvent(new Event { type = EventType.KeyDown, character = 'c' });
+        Assert.That(menu.joinButton.interactable, Is.True);
+        field.text = "00a7f29";
+        Assert.That(menu.joinButton.interactable, Is.False);
+
+        // TextMeshPro forwards its Paste shortcut to Append(string).
+        var paste = typeof(TMPro.TMP_InputField).GetMethod("Append", BindingFlags.Instance | BindingFlags.NonPublic,
+            null, new[] { typeof(string) }, null);
+        void Paste(string value)
+        {
+            field.text = string.Empty;
+            paste.Invoke(field, new object[] { value });
+            Assert.That(field.text, Is.EqualTo(value));
+        }
+        Paste("00a7f29c0");
+        Assert.That(menu.joinButton.interactable, Is.False);
+        Paste("00a7f29G");
+        Assert.That(menu.joinButton.interactable, Is.False);
+        Paste("00a7f29c");
+        Assert.That(menu.joinButton.interactable, Is.True);
+        Assert.That(OnlineModeMenu.TryReadLobbyCode(field.text, out var code), Is.True);
+        Assert.That(code, Is.EqualTo("00A7F29C"));
     }
 
     private static IEnumerator RunHostSetup(OnlineModeMenu menu, bool early)
