@@ -37,6 +37,7 @@ public class PlayerCard : MonoBehaviour, UnityEngine.EventSystems.IPointerClickH
         resilienceValueText.text = player.Resilience.ToString();
         shootingValueText.text = player.Shooting.ToString();
         tacklingValueText.text = player.Tackling.ToString();
+        RefreshAttributeBadges();
         UpdateFlag(player.Country);
     }
 
@@ -57,7 +58,22 @@ public class PlayerCard : MonoBehaviour, UnityEngine.EventSystems.IPointerClickH
         resilienceValueText.text = token.resilience.ToString();
         shootingValueText.text = token.shooting.ToString();
         tacklingValueText.text = token.tackling.ToString();
+        RefreshAttributeBadges();
         UpdateFlag(secondaryText);
+    }
+
+    private void RefreshAttributeBadges()
+    {
+        foreach (var value in new[] { paceValueText, dribblingValueText, headingValueText, highPassValueText, resilienceValueText, shootingValueText, tacklingValueText })
+        {
+            var badge = value.transform.parent.Find(value.name + "Badge");
+            if (badge != null && badge.TryGetComponent<Image>(out var image) && int.TryParse(value.text, out var rating))
+            {
+                if (badge.GetSiblingIndex() > value.transform.GetSiblingIndex())
+                    badge.SetSiblingIndex(value.transform.GetSiblingIndex());
+                image.color = MatchStatsUI.GetInspectionAttributeColor(rating);
+            }
+        }
     }
 
     private void UpdateFlag(string country)

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="10" result="Passed" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-15 18:05:21Z" end-time="2026-11-15 18:05:21Z" duration="0.4340171">
+  <test-suite type="TestSuite" id="2917" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1623" result="Passed" start-time="2026-11-15 18:05:21Z" end-time="2026-11-15 18:05:21Z" duration="0.434017" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="2911" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="1623" result="Passed" start-time="2026-11-15 18:05:21Z" end-time="2026-11-15 18:05:21Z" duration="0.407457" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17216" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="1908" name="OnlineRoomHandoffEditorTests" fullname="OnlineRoomHandoffEditorTests" classname="OnlineRoomHandoffEditorTests" runstate="Runnable" testcasecount="10" result="Passed" start-time="2026-11-15 18:05:21Z" end-time="2026-11-15 18:05:21Z" duration="0.401730" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineRoomHandoff" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="1920" name="FailedLaunchLeavesNoActiveSession" fullname="OnlineRoomHandoffEditorTests.FailedLaunchLeavesNoActiveSession" classname="OnlineRoomHandoffEditorTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-15 18:05:21Z" end-time="2026-11-15 18:05:21Z" duration="0.262006" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1918" name="FailedLaunchLeavesNoActiveSession(False)" fullname="OnlineRoomHandoffEditorTests.FailedLaunchLeavesNoActiveSession(False)" methodname="FailedLaunchLeavesNoActiveSession" classname="OnlineRoomHandoffEditorTests" runstate="Runnable" seed="91905915" result="Passed" start-time="2026-11-15 18:05:21Z" end-time="2026-11-15 18:05:21Z" duration="0.148250" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1919" name="FailedLaunchLeavesNoActiveSession(True)" fullname="OnlineRoomHandoffEditorTests.FailedLaunchLeavesNoActiveSession(True)" methodname="FailedLaunchLeavesNoActiveSession" classname="OnlineRoomHandoffEditorTests" runstate="Runnable" seed="2101785242" result="Passed" start-time="2026-11-15 18:05:21Z" end-time="2026-11-15 18:05:21Z" duration="0.002188" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="1917" name="SessionOwnsAndRestoresSaveContext" fullname="OnlineRoomHandoffEditorTests.SessionOwnsAndRestoresSaveContext" classname="OnlineRoomHandoffEditorTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-11-15 18:05:21Z" end-time="2026-11-15 18:05:21Z" duration="0.129310" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1909" name="SessionOwnsAndRestoresSaveContext(False,False,False)" fullname="OnlineRoomHandoffEditorTests.SessionOwnsAndRestoresSaveContext(False,False,False)" methodname="SessionOwnsAndRestoresSaveContext" classname="OnlineRoomHandoffEditorTests" runstate="Runnable" seed="2026363851" result="Passed" start-time="2026-11-15 18:05:21Z" end-time="2026-11-15 18:05:21Z" duration="0.022119" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1910" name="SessionOwnsAndRestoresSaveContext(False,False,True)" fullname="OnlineRoomHandoffEditorTests.SessionOwnsAndRestoresSaveContext(False,False,True)" methodname="SessionOwnsAndRestoresSaveContext" classname="OnlineRoomHandoffEditorTests" runstate="Runnable" seed="1119692842" result="Passed" start-time="2026-11-15 18:05:21Z" end-time="2026-11-15 18:05:21Z" duration="0.013443" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1911" name="SessionOwnsAndRestoresSaveContext(False,True,False)" fullname="OnlineRoomHandoffEditorTests.SessionOwnsAndRestoresSaveContext(False,True,False)" methodname="SessionOwnsAndRestoresSaveContext" classname="OnlineRoomHandoffEditorTests" runstate="Runnable" seed="1928056326" result="Passed" start-time="2026-11-15 18:05:21Z" end-time="2026-11-15 18:05:21Z" duration="0.011988" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1912" name="SessionOwnsAndRestoresSaveContext(False,True,True)" fullname="OnlineRoomHandoffEditorTests.SessionOwnsAndRestoresSaveContext(False,True,True)" methodname="SessionOwnsAndRestoresSaveContext" classname="OnlineRoomHandoffEditorTests" runstate="Runnable" seed="343061997" result="Passed" start-time="2026-11-15 18:05:21Z" end-time="2026-11-15 18:05:21Z" duration="0.011428" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1913" name="SessionOwnsAndRestoresSaveContext(True,False,False)" fullname="OnlineRoomHandoffEditorTests.SessionOwnsAndRestoresSaveContext(True,False,False)" methodname="SessionOwnsAndRestoresSaveContext" classname="OnlineRoomHandoffEditorTests" runstate="Runnable" seed="1895428257" result="Passed" start-time="2026-11-15 18:05:21Z" end-time="2026-11-15 18:05:21Z" duration="0.013247" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1914" name="SessionOwnsAndRestoresSaveContext(True,False,True)" fullname="OnlineRoomHandoffEditorTests.SessionOwnsAndRestoresSaveContext(True,False,True)" methodname="SessionOwnsAndRestoresSaveContext" classname="OnlineRoomHandoffEditorTests" runstate="Runnable" seed="872924911" result="Passed" start-time="2026-11-15 18:05:21Z" end-time="2026-11-15 18:05:21Z" duration="0.015556" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1915" name="SessionOwnsAndRestoresSaveContext(True,True,False)" fullname="OnlineRoomHandoffEditorTests.SessionOwnsAndRestoresSaveContext(True,True,False)" methodname="SessionOwnsAndRestoresSaveContext" classname="OnlineRoomHandoffEditorTests" runstate="Runnable" seed="1359014968" result="Passed" start-time="2026-11-15 18:05:21Z" end-time="2026-11-15 18:05:21Z" duration="0.012921" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1916" name="SessionOwnsAndRestoresSaveContext(True,True,True)" fullname="OnlineRoomHandoffEditorTests.SessionOwnsAndRestoresSaveContext(True,True,True)" methodname="SessionOwnsAndRestoresSaveContext" classname="OnlineRoomHandoffEditorTests" runstate="Runnable" seed="680798862" result="Passed" start-time="2026-11-15 18:05:21Z" end-time="2026-11-15 18:05:21Z" duration="0.015244" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Saving results to: TestResults\GameplayRegression\Runs\20261115T180521358Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

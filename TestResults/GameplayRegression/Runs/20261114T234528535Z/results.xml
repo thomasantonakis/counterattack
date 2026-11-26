@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="7" result="Passed" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-14 23:45:28Z" end-time="2026-11-14 23:45:28Z" duration="0.0866685">
+  <test-suite type="TestSuite" id="2704" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1431" result="Passed" start-time="2026-11-14 23:45:28Z" end-time="2026-11-14 23:45:28Z" duration="0.086669" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="2697" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="1431" result="Passed" start-time="2026-11-14 23:45:28Z" end-time="2026-11-14 23:45:28Z" duration="0.073502" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="1132" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="1750" name="OnlineRoundTripStatisticsEditorTests" fullname="OnlineRoundTripStatisticsEditorTests" classname="OnlineRoundTripStatisticsEditorTests" runstate="Runnable" testcasecount="7" result="Passed" start-time="2026-11-14 23:45:28Z" end-time="2026-11-14 23:45:28Z" duration="0.064248" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineSessionTransport" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="1758" name="MeasuresBoundedMonotonicRoundTrips" fullname="OnlineRoundTripStatisticsEditorTests.MeasuresBoundedMonotonicRoundTrips" classname="OnlineRoundTripStatisticsEditorTests" runstate="Runnable" testcasecount="7" result="Passed" start-time="2026-11-14 23:45:28Z" end-time="2026-11-14 23:45:28Z" duration="0.063494" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1751" name="MeasuresBoundedMonotonicRoundTrips(&quot;one-clock&quot;)" fullname="OnlineRoundTripStatisticsEditorTests.MeasuresBoundedMonotonicRoundTrips(&quot;one-clock&quot;)" methodname="MeasuresBoundedMonotonicRoundTrips" classname="OnlineRoundTripStatisticsEditorTests" runstate="Runnable" seed="349714095" result="Passed" start-time="2026-11-14 23:45:28Z" end-time="2026-11-14 23:45:28Z" duration="0.001385" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1752" name="MeasuresBoundedMonotonicRoundTrips(&quot;duplicate&quot;)" fullname="OnlineRoundTripStatisticsEditorTests.MeasuresBoundedMonotonicRoundTrips(&quot;duplicate&quot;)" methodname="MeasuresBoundedMonotonicRoundTrips" classname="OnlineRoundTripStatisticsEditorTests" runstate="Runnable" seed="1437699843" result="Passed" start-time="2026-11-14 23:45:28Z" end-time="2026-11-14 23:45:28Z" duration="0.000432" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1753" name="MeasuresBoundedMonotonicRoundTrips(&quot;unknown&quot;)" fullname="OnlineRoundTripStatisticsEditorTests.MeasuresBoundedMonotonicRoundTrips(&quot;unknown&quot;)" methodname="MeasuresBoundedMonotonicRoundTrips" classname="OnlineRoundTripStatisticsEditorTests" runstate="Runnable" seed="1397561231" result="Passed" start-time="2026-11-14 23:45:28Z" end-time="2026-11-14 23:45:28Z" duration="0.000487" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1754" name="MeasuresBoundedMonotonicRoundTrips(&quot;negative&quot;)" fullname="OnlineRoundTripStatisticsEditorTests.MeasuresBoundedMonotonicRoundTrips(&quot;negative&quot;)" methodname="MeasuresBoundedMonotonicRoundTrips" classname="OnlineRoundTripStatisticsEditorTests" runstate="Runnable" seed="219726535" result="Passed" start-time="2026-11-14 23:45:28Z" end-time="2026-11-14 23:45:28Z" duration="0.000250" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1755" name="MeasuresBoundedMonotonicRoundTrips(&quot;pending-bound&quot;)" fullname="OnlineRoundTripStatisticsEditorTests.MeasuresBoundedMonotonicRoundTrips(&quot;pending-bound&quot;)" methodname="MeasuresBoundedMonotonicRoundTrips" classname="OnlineRoundTripStatisticsEditorTests" runstate="Runnable" seed="1249368929" result="Passed" start-time="2026-11-14 23:45:28Z" end-time="2026-11-14 23:45:28Z" duration="0.001411" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1756" name="MeasuresBoundedMonotonicRoundTrips(&quot;samples-bound&quot;)" fullname="OnlineRoundTripStatisticsEditorTests.MeasuresBoundedMonotonicRoundTrips(&quot;samples-bound&quot;)" methodname="MeasuresBoundedMonotonicRoundTrips" classname="OnlineRoundTripStatisticsEditorTests" runstate="Runnable" seed="188985671" result="Passed" start-time="2026-11-14 23:45:28Z" end-time="2026-11-14 23:45:28Z" duration="0.001057" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1757" name="MeasuresBoundedMonotonicRoundTrips(&quot;percentiles&quot;)" fullname="OnlineRoundTripStatisticsEditorTests.MeasuresBoundedMonotonicRoundTrips(&quot;percentiles&quot;)" methodname="MeasuresBoundedMonotonicRoundTrips" classname="OnlineRoundTripStatisticsEditorTests" runstate="Runnable" seed="1081055086" result="Passed" start-time="2026-11-14 23:45:28Z" end-time="2026-11-14 23:45:28Z" duration="0.000249" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Saving results to: TestResults\GameplayRegression\Runs\20261114T234528535Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

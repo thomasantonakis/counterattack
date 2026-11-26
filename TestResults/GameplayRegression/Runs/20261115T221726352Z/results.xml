@@ -1,0 +1,876 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="8" result="Passed" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-15 22:17:26Z" end-time="2026-11-15 22:20:23Z" duration="176.9390231">
+  <test-suite type="TestSuite" id="2722" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1416" result="Passed" start-time="2026-11-15 22:17:26Z" end-time="2026-11-15 22:20:23Z" duration="176.939023" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2719" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1416" result="Passed" start-time="2026-11-15 22:17:26Z" end-time="2026-11-15 22:20:23Z" duration="176.909248" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17216" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="2054" name="OnlineShootoutPlayModeTests" fullname="OnlineShootoutPlayModeTests" classname="OnlineShootoutPlayModeTests" runstate="Runnable" testcasecount="36" result="Passed" start-time="2026-11-15 22:17:26Z" end-time="2026-11-15 22:20:23Z" duration="176.899841" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineShootout" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="2068" name="CompleteShootout" fullname="OnlineShootoutPlayModeTests.CompleteShootout" classname="OnlineShootoutPlayModeTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-11-15 22:17:26Z" end-time="2026-11-15 22:20:23Z" duration="176.889993" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="2060" name="CompleteShootout(False,False,False)" fullname="OnlineShootoutPlayModeTests.CompleteShootout(False,False,False)" methodname="CompleteShootout" classname="OnlineShootoutPlayModeTests" runstate="Runnable" seed="158053801" result="Passed" start-time="2026-11-15 22:17:26Z" end-time="2026-11-15 22:17:48Z" duration="21.716166" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[TokenKitCatalog] Loading kits JSON from Resources path 'Kits/kit-picker-v1-11-supported' (asset: Assets/Resources/Kits/kit-picker-v1-11-supported.json).
+[TokenKitCatalog] Found kits JSON TextAsset 'kit-picker-v1-11-supported' at Resources path 'Kits/kit-picker-v1-11-supported' (32277 characters).
+[TokenKitCatalog] Parsed 101 kit preset(s) from Resources path 'Kits/kit-picker-v1-11-supported'.
+[TokenKitCatalog] Active kit catalog contains 101 kit preset(s).
+MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584951383728
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+[Shootout] Order selection opened with 11 nominees per team.
+Substitutions are no longer available: Penalty shootout
+⚽ Ball just entered the penalty box! Checking if GK should move.
+[Shootout] Home kick 1: 4. Gortz shoots at the left goal.
+Substitutions are no longer available: Committed to Shot
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, 0). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+4. Gortz Penalty Kick roll: 1 + Shooting: 5 = 0
+4. Gortz rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Home miss. Shootout score 0-0.
+Hex (-18, 0, 0) does not have 1. Aziz as its occupying token!
+Hex (-14, 0, 0) does not have 4. Gortz as its occupying token!
+[Shootout] Away kick 2: 3. Vladoiu shoots at the left goal.
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+3. Vladoiu Penalty Kick roll: 6 + Shooting: 5 = 50
+GK has no save interaction after the ball-in-box free move.
+Penalty shootout forcing GK save interaction for 1. Kuzmic at (-18, 0, 0).
+Penalty Kick has reached GK 1. Kuzmic. Press [R] to roll for the save.
+GK 1. Kuzmic rolls 1 + Saving: 5 + Penalty: -2 = 4
+3. Vladoiu Shot roll: 6 + Shooting: 5 = 50
+Get IN!! 3. Vladoiu, buries it to the top corner! Goal!!!
+MoveTokenAlongPath: shouldCarryBall: False
+Token arrived at hex: HexCell [-18, 1]
+[Shootout] Away score. Shootout score 0-1.
+[Shootout] Goal celebration flash.
+[Shootout] Home kick 3: 6. Terto shoots at the left goal.
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, 3). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+6. Terto Penalty Kick roll: 1 + Shooting: 5 = 0
+6. Terto rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Home miss. Shootout score 0-1.
+Hex (-18, 0, 0) does not have 1. Aziz as its occupying token!
+[Shootout] Away kick 4: 6. Delpech shoots at the left goal.
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+6. Delpech Penalty Kick roll: 6 + Shooting: 5 = 50
+GK has no save interaction after the ball-in-box free move.
+Penalty shootout forcing GK save interaction for 1. Kuzmic at (-18, 0, 0).
+Penalty Kick has reached GK 1. Kuzmic. Press [R] to roll for the save.
+GK 1. Kuzmic rolls 1 + Saving: 5 + Penalty: -2 = 4
+6. Delpech Shot roll: 6 + Shooting: 5 = 50
+Get IN!! 6. Delpech, buries it to the top corner! Goal!!!
+MoveTokenAlongPath: shouldCarryBall: False
+Token arrived at hex: HexCell [-18, 1]
+[Shootout] Away score. Shootout score 0-2.
+[Shootout] Goal celebration flash.
+Hex (-14, 0, 0) does not have 6. Delpech as its occupying token!
+[Shootout] Home kick 5: 2. Baez shoots at the left goal.
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, 3). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+2. Baez Penalty Kick roll: 1 + Shooting: 5 = 0
+2. Baez rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Home miss. Shootout score 0-2.
+Hex (-18, 0, 0) does not have 1. Aziz as its occupying token!
+[Shootout] Away kick 6: 2. Aguayo shoots at the left goal.
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+2. Aguayo Penalty Kick roll: 6 + Shooting: 5 = 50
+GK has no save interaction after the ball-in-box free move.
+Penalty shootout forcing GK save interaction for 1. Kuzmic at (-18, 0, 0).
+Penalty Kick has reached GK 1. Kuzmic. Press [R] to roll for the save.
+GK 1. Kuzmic rolls 1 + Saving: 5 + Penalty: -2 = 4
+2. Aguayo Shot roll: 6 + Shooting: 5 = 50
+Get IN!! 2. Aguayo, buries it to the top corner! Goal!!!
+MoveTokenAlongPath: shouldCarryBall: False
+Token arrived at hex: HexCell [-18, 1]
+[Shootout] Away score. Shootout score 0-3.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2061" name="CompleteShootout(False,False,True)" fullname="OnlineShootoutPlayModeTests.CompleteShootout(False,False,True)" methodname="CompleteShootout" classname="OnlineShootoutPlayModeTests" runstate="Runnable" seed="783439756" result="Passed" start-time="2026-11-15 22:17:48Z" end-time="2026-11-15 22:18:08Z" duration="19.954340" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584951510420
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+[Shootout] Order selection opened with 11 nominees per team.
+Substitutions are no longer available: Penalty shootout
+⚽ Ball just entered the penalty box! Checking if GK should move.
+[Shootout] Home kick 1: 4. Gortz shoots at the right goal.
+Substitutions are no longer available: Committed to Shot
+Penalty Shootout Kick initiated. Random target selected at (19, 0, 0). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+4. Gortz Penalty Kick roll: 1 + Shooting: 5 = 0
+4. Gortz rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Home miss. Shootout score 0-0.
+Hex (18, 0, 0) does not have 1. Aziz as its occupying token!
+Hex (14, 0, 0) does not have 4. Gortz as its occupying token!
+[Shootout] Away kick 2: 3. Vladoiu shoots at the right goal.
+Penalty Shootout Kick initiated. Random target selected at (19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+3. Vladoiu Penalty Kick roll: 6 + Shooting: 5 = 50
+GK has no save interaction after the ball-in-box free move.
+Penalty shootout forcing GK save interaction for 1. Kuzmic at (18, 0, 0).
+Penalty Kick has reached GK 1. Kuzmic. Press [R] to roll for the save.
+GK 1. Kuzmic rolls 1 + Saving: 5 + Penalty: -2 = 4
+3. Vladoiu Shot roll: 6 + Shooting: 5 = 50
+Get IN!! 3. Vladoiu, buries it to the top corner! Goal!!!
+MoveTokenAlongPath: shouldCarryBall: False
+Token arrived at hex: HexCell [18, 1]
+[Shootout] Away score. Shootout score 0-1.
+[Shootout] Goal celebration flash.
+[Shootout] Home kick 3: 6. Terto shoots at the right goal.
+Penalty Shootout Kick initiated. Random target selected at (19, 0, 3). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+6. Terto Penalty Kick roll: 1 + Shooting: 5 = 0
+6. Terto rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Home miss. Shootout score 0-1.
+[Shootout] Away kick 4: 6. Delpech shoots at the right goal.
+Penalty Shootout Kick initiated. Random target selected at (19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+6. Delpech Penalty Kick roll: 6 + Shooting: 5 = 50
+GK has no save interaction after the ball-in-box free move.
+Penalty shootout forcing GK save interaction for 1. Kuzmic at (18, 0, 0).
+Penalty Kick has reached GK 1. Kuzmic. Press [R] to roll for the save.
+GK 1. Kuzmic rolls 1 + Saving: 5 + Penalty: -2 = 4
+6. Delpech Shot roll: 6 + Shooting: 5 = 50
+Get IN!! 6. Delpech, buries it to the top corner! Goal!!!
+MoveTokenAlongPath: shouldCarryBall: False
+Token arrived at hex: HexCell [18, 1]
+[Shootout] Away score. Shootout score 0-2.
+[Shootout] Goal celebration flash.
+Hex (14, 0, 0) does not have 6. Delpech as its occupying token!
+[Shootout] Home kick 5: 2. Baez shoots at the right goal.
+Penalty Shootout Kick initiated. Random target selected at (19, 0, 3). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+2. Baez Penalty Kick roll: 1 + Shooting: 5 = 0
+2. Baez rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Home miss. Shootout score 0-2.
+Hex (18, 0, 0) does not have 1. Aziz as its occupying token!
+[Shootout] Away kick 6: 2. Aguayo shoots at the right goal.
+Penalty Shootout Kick initiated. Random target selected at (19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+2. Aguayo Penalty Kick roll: 6 + Shooting: 5 = 50
+GK has no save interaction after the ball-in-box free move.
+Penalty shootout forcing GK save interaction for 1. Kuzmic at (18, 0, 0).
+Penalty Kick has reached GK 1. Kuzmic. Press [R] to roll for the save.
+GK 1. Kuzmic rolls 1 + Saving: 5 + Penalty: -2 = 4
+2. Aguayo Shot roll: 6 + Shooting: 5 = 50
+Get IN!! 2. Aguayo, buries it to the top corner! Goal!!!
+MoveTokenAlongPath: shouldCarryBall: False
+Token arrived at hex: HexCell [18, 1]
+[Shootout] Away score. Shootout score 0-3.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2062" name="CompleteShootout(False,True,False)" fullname="OnlineShootoutPlayModeTests.CompleteShootout(False,True,False)" methodname="CompleteShootout" classname="OnlineShootoutPlayModeTests" runstate="Runnable" seed="1708201655" result="Passed" start-time="2026-11-15 22:18:08Z" end-time="2026-11-15 22:18:32Z" duration="23.862765" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584951637112
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+[Shootout] Order selection opened with 11 nominees per team.
+Substitutions are no longer available: Penalty shootout
+⚽ Ball just entered the penalty box! Checking if GK should move.
+[Shootout] Home kick 1: 4. Gortz shoots at the left goal.
+Substitutions are no longer available: Committed to Shot
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, 0). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+4. Gortz Penalty Kick roll: 1 + Shooting: 5 = 0
+4. Gortz rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Home miss. Shootout score 0-0.
+Hex (-18, 0, 0) does not have 1. Aziz as its occupying token!
+Hex (-14, 0, 0) does not have 4. Gortz as its occupying token!
+[Shootout] Away kick 2: 3. Vladoiu shoots at the left goal.
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+3. Vladoiu Penalty Kick roll: 1 + Shooting: 5 = 0
+3. Vladoiu rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Away miss. Shootout score 0-0.
+[Shootout] Home kick 3: 6. Terto shoots at the left goal.
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+6. Terto Penalty Kick roll: 1 + Shooting: 5 = 0
+6. Terto rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Home miss. Shootout score 0-0.
+Hex (-18, 0, 0) does not have 1. Aziz as its occupying token!
+[Shootout] Away kick 4: 6. Delpech shoots at the left goal.
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+6. Delpech Penalty Kick roll: 1 + Shooting: 5 = 0
+6. Delpech rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Away miss. Shootout score 0-0.
+Hex (-14, 0, 0) does not have 6. Delpech as its occupying token!
+[Shootout] Home kick 5: 2. Baez shoots at the left goal.
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+2. Baez Penalty Kick roll: 1 + Shooting: 5 = 0
+2. Baez rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Home miss. Shootout score 0-0.
+Hex (-18, 0, 0) does not have 1. Aziz as its occupying token!
+[Shootout] Away kick 6: 2. Aguayo shoots at the left goal.
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+2. Aguayo Penalty Kick roll: 1 + Shooting: 5 = 0
+2. Aguayo rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Away miss. Shootout score 0-0.
+[Shootout] Home kick 7: 11. Goaley shoots at the left goal.
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+11. Goaley Penalty Kick roll: 1 + Shooting: 5 = 0
+11. Goaley rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Home miss. Shootout score 0-0.
+Hex (-18, 0, 0) does not have 1. Aziz as its occupying token!
+[Shootout] Away kick 8: 11. Gilbert shoots at the left goal.
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+11. Gilbert Penalty Kick roll: 1 + Shooting: 5 = 0
+11. Gilbert rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Away miss. Shootout score 0-0.
+Hex (-14, 0, 0) does not have 11. Gilbert as its occupying token!
+[Shootout] Home kick 9: 8. Gaham shoots at the left goal.
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+8. Gaham Penalty Kick roll: 1 + Shooting: 5 = 0
+8. Gaham rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Home miss. Shootout score 0-0.
+Hex (-18, 0, 0) does not have 1. Aziz as its occupying token!
+Hex (-14, 0, 0) does not have 8. Gaham as its occupying token!
+[Shootout] Away kick 10: 8. Walton shoots at the left goal.
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+8. Walton Penalty Kick roll: 1 + Shooting: 5 = 0
+8. Walton rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Away miss. Shootout score 0-0.
+[Shootout] Home kick 11: 7. Savvakis shoots at the left goal.
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+7. Savvakis Penalty Kick roll: 1 + Shooting: 5 = 0
+7. Savvakis rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Home miss. Shootout score 0-0.
+Hex (-18, 0, 0) does not have 1. Aziz as its occupying token!
+[Shootout] Away kick 12: 7. Werdekker shoots at the left goal.
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+7. Werdekker Penalty Kick roll: 6 + Shooting: 5 = 50
+GK has no save interaction after the ball-in-box free move.
+Penalty shootout forcing GK save interaction for 1. Kuzmic at (-18, 0, 0).
+Penalty Kick has reached GK 1. Kuzmic. Press [R] to roll for the save.
+GK 1. Kuzmic rolls 1 + Saving: 5 + Penalty: -2 = 4
+7. Werdekker Shot roll: 6 + Shooting: 5 = 50
+Get IN!! 7. Werdekker, buries it to the top corner! Goal!!!
+MoveTokenAlongPath: shouldCarryBall: False
+Token arrived at hex: HexCell [-18, 1]
+[Shootout] Away score. Shootout score 0-1.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2063" name="CompleteShootout(False,True,True)" fullname="OnlineShootoutPlayModeTests.CompleteShootout(False,True,True)" methodname="CompleteShootout" classname="OnlineShootoutPlayModeTests" runstate="Runnable" seed="1801598471" result="Passed" start-time="2026-11-15 22:18:32Z" end-time="2026-11-15 22:18:55Z" duration="23.852666" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584951763804
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+[Shootout] Order selection opened with 11 nominees per team.
+Substitutions are no longer available: Penalty shootout
+⚽ Ball just entered the penalty box! Checking if GK should move.
+[Shootout] Home kick 1: 4. Gortz shoots at the right goal.
+Substitutions are no longer available: Committed to Shot
+Penalty Shootout Kick initiated. Random target selected at (19, 0, 0). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+4. Gortz Penalty Kick roll: 1 + Shooting: 5 = 0
+4. Gortz rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Home miss. Shootout score 0-0.
+Hex (18, 0, 0) does not have 1. Aziz as its occupying token!
+Hex (14, 0, 0) does not have 4. Gortz as its occupying token!
+[Shootout] Away kick 2: 3. Vladoiu shoots at the right goal.
+Penalty Shootout Kick initiated. Random target selected at (19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+3. Vladoiu Penalty Kick roll: 1 + Shooting: 5 = 0
+3. Vladoiu rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Away miss. Shootout score 0-0.
+[Shootout] Home kick 3: 6. Terto shoots at the right goal.
+Penalty Shootout Kick initiated. Random target selected at (19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+6. Terto Penalty Kick roll: 1 + Shooting: 5 = 0
+6. Terto rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Home miss. Shootout score 0-0.
+[Shootout] Away kick 4: 6. Delpech shoots at the right goal.
+Penalty Shootout Kick initiated. Random target selected at (19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+6. Delpech Penalty Kick roll: 1 + Shooting: 5 = 0
+6. Delpech rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Away miss. Shootout score 0-0.
+Hex (14, 0, 0) does not have 6. Delpech as its occupying token!
+[Shootout] Home kick 5: 2. Baez shoots at the right goal.
+Penalty Shootout Kick initiated. Random target selected at (19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+2. Baez Penalty Kick roll: 1 + Shooting: 5 = 0
+2. Baez rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Home miss. Shootout score 0-0.
+Hex (18, 0, 0) does not have 1. Aziz as its occupying token!
+[Shootout] Away kick 6: 2. Aguayo shoots at the right goal.
+Penalty Shootout Kick initiated. Random target selected at (19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+2. Aguayo Penalty Kick roll: 1 + Shooting: 5 = 0
+2. Aguayo rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Away miss. Shootout score 0-0.
+[Shootout] Home kick 7: 11. Goaley shoots at the right goal.
+Penalty Shootout Kick initiated. Random target selected at (19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+11. Goaley Penalty Kick roll: 1 + Shooting: 5 = 0
+11. Goaley rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Home miss. Shootout score 0-0.
+[Shootout] Away kick 8: 11. Gilbert shoots at the right goal.
+Penalty Shootout Kick initiated. Random target selected at (19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+11. Gilbert Penalty Kick roll: 1 + Shooting: 5 = 0
+11. Gilbert rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Away miss. Shootout score 0-0.
+Hex (14, 0, 0) does not have 11. Gilbert as its occupying token!
+[Shootout] Home kick 9: 8. Gaham shoots at the right goal.
+Penalty Shootout Kick initiated. Random target selected at (19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+8. Gaham Penalty Kick roll: 1 + Shooting: 5 = 0
+8. Gaham rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Home miss. Shootout score 0-0.
+Hex (18, 0, 0) does not have 1. Aziz as its occupying token!
+Hex (14, 0, 0) does not have 8. Gaham as its occupying token!
+[Shootout] Away kick 10: 8. Walton shoots at the right goal.
+Penalty Shootout Kick initiated. Random target selected at (19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+8. Walton Penalty Kick roll: 1 + Shooting: 5 = 0
+8. Walton rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Away miss. Shootout score 0-0.
+[Shootout] Home kick 11: 7. Savvakis shoots at the right goal.
+Penalty Shootout Kick initiated. Random target selected at (19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+7. Savvakis Penalty Kick roll: 1 + Shooting: 5 = 0
+7. Savvakis rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Home miss. Shootout score 0-0.
+[Shootout] Away kick 12: 7. Werdekker shoots at the right goal.
+Penalty Shootout Kick initiated. Random target selected at (19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+7. Werdekker Penalty Kick roll: 6 + Shooting: 5 = 50
+GK has no save interaction after the ball-in-box free move.
+Penalty shootout forcing GK save interaction for 1. Kuzmic at (18, 0, 0).
+Penalty Kick has reached GK 1. Kuzmic. Press [R] to roll for the save.
+GK 1. Kuzmic rolls 1 + Saving: 5 + Penalty: -2 = 4
+7. Werdekker Shot roll: 6 + Shooting: 5 = 50
+Get IN!! 7. Werdekker, buries it to the top corner! Goal!!!
+MoveTokenAlongPath: shouldCarryBall: False
+Token arrived at hex: HexCell [18, 1]
+[Shootout] Away score. Shootout score 0-1.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2064" name="CompleteShootout(True,False,False)" fullname="OnlineShootoutPlayModeTests.CompleteShootout(True,False,False)" methodname="CompleteShootout" classname="OnlineShootoutPlayModeTests" runstate="Runnable" seed="1621249778" result="Passed" start-time="2026-11-15 22:18:55Z" end-time="2026-11-15 22:19:15Z" duration="20.008607" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584951890496
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+[Shootout] Order selection opened with 11 nominees per team.
+Substitutions are no longer available: Penalty shootout
+⚽ Ball just entered the penalty box! Checking if GK should move.
+[Shootout] Away kick 1: 3. Vladoiu shoots at the left goal.
+Substitutions are no longer available: Committed to Shot
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, 0). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+3. Vladoiu Penalty Kick roll: 1 + Shooting: 5 = 0
+3. Vladoiu rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Away miss. Shootout score 0-0.
+[Shootout] Home kick 2: 4. Gortz shoots at the left goal.
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+4. Gortz Penalty Kick roll: 6 + Shooting: 5 = 50
+GK has no save interaction after the ball-in-box free move.
+Penalty shootout forcing GK save interaction for 1. Aziz at (-18, 0, 0).
+Penalty Kick has reached GK 1. Aziz. Press [R] to roll for the save.
+GK 1. Aziz rolls 1 + Saving: 5 + Penalty: -2 = 4
+4. Gortz Shot roll: 6 + Shooting: 5 = 50
+Get IN!! 4. Gortz, buries it to the top corner! Goal!!!
+MoveTokenAlongPath: shouldCarryBall: False
+Token arrived at hex: HexCell [-18, 1]
+[Shootout] Home score. Shootout score 1-0.
+[Shootout] Goal celebration flash.
+[Shootout] Away kick 3: 6. Delpech shoots at the left goal.
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, 3). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+6. Delpech Penalty Kick roll: 1 + Shooting: 5 = 0
+6. Delpech rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Away miss. Shootout score 1-0.
+Hex (-14, 0, 0) does not have 6. Delpech as its occupying token!
+[Shootout] Home kick 4: 6. Terto shoots at the left goal.
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+6. Terto Penalty Kick roll: 6 + Shooting: 5 = 50
+GK has no save interaction after the ball-in-box free move.
+Penalty shootout forcing GK save interaction for 1. Aziz at (-18, 0, 0).
+Penalty Kick has reached GK 1. Aziz. Press [R] to roll for the save.
+GK 1. Aziz rolls 1 + Saving: 5 + Penalty: -2 = 4
+6. Terto Shot roll: 6 + Shooting: 5 = 50
+Get IN!! 6. Terto, buries it to the top corner! Goal!!!
+MoveTokenAlongPath: shouldCarryBall: False
+Token arrived at hex: HexCell [-18, 1]
+[Shootout] Home score. Shootout score 2-0.
+[Shootout] Goal celebration flash.
+[Shootout] Away kick 5: 2. Aguayo shoots at the left goal.
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, 3). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+2. Aguayo Penalty Kick roll: 1 + Shooting: 5 = 0
+2. Aguayo rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Away miss. Shootout score 2-0.
+Hex (-14, 0, 0) does not have 2. Aguayo as its occupying token!
+[Shootout] Home kick 6: 2. Baez shoots at the left goal.
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+2. Baez Penalty Kick roll: 6 + Shooting: 5 = 50
+GK has no save interaction after the ball-in-box free move.
+Penalty shootout forcing GK save interaction for 1. Aziz at (-18, 0, 0).
+Penalty Kick has reached GK 1. Aziz. Press [R] to roll for the save.
+GK 1. Aziz rolls 1 + Saving: 5 + Penalty: -2 = 4
+2. Baez Shot roll: 6 + Shooting: 5 = 50
+Get IN!! 2. Baez, buries it to the top corner! Goal!!!
+MoveTokenAlongPath: shouldCarryBall: False
+Token arrived at hex: HexCell [-18, 1]
+[Shootout] Home score. Shootout score 3-0.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2065" name="CompleteShootout(True,False,True)" fullname="OnlineShootoutPlayModeTests.CompleteShootout(True,False,True)" methodname="CompleteShootout" classname="OnlineShootoutPlayModeTests" runstate="Runnable" seed="2116297036" result="Passed" start-time="2026-11-15 22:19:15Z" end-time="2026-11-15 22:19:35Z" duration="19.803838" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584952017188
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+[Shootout] Order selection opened with 11 nominees per team.
+Substitutions are no longer available: Penalty shootout
+⚽ Ball just entered the penalty box! Checking if GK should move.
+[Shootout] Away kick 1: 3. Vladoiu shoots at the right goal.
+Substitutions are no longer available: Committed to Shot
+Penalty Shootout Kick initiated. Random target selected at (19, 0, 0). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+3. Vladoiu Penalty Kick roll: 1 + Shooting: 5 = 0
+3. Vladoiu rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Away miss. Shootout score 0-0.
+[Shootout] Home kick 2: 4. Gortz shoots at the right goal.
+Penalty Shootout Kick initiated. Random target selected at (19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+4. Gortz Penalty Kick roll: 6 + Shooting: 5 = 50
+GK has no save interaction after the ball-in-box free move.
+Penalty shootout forcing GK save interaction for 1. Aziz at (18, 0, 0).
+Penalty Kick has reached GK 1. Aziz. Press [R] to roll for the save.
+GK 1. Aziz rolls 1 + Saving: 5 + Penalty: -2 = 4
+4. Gortz Shot roll: 6 + Shooting: 5 = 50
+Get IN!! 4. Gortz, buries it to the top corner! Goal!!!
+MoveTokenAlongPath: shouldCarryBall: False
+Token arrived at hex: HexCell [18, 1]
+[Shootout] Home score. Shootout score 1-0.
+[Shootout] Goal celebration flash.
+[Shootout] Away kick 3: 6. Delpech shoots at the right goal.
+Penalty Shootout Kick initiated. Random target selected at (19, 0, 3). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+6. Delpech Penalty Kick roll: 1 + Shooting: 5 = 0
+6. Delpech rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Away miss. Shootout score 1-0.
+Hex (14, 0, 0) does not have 6. Delpech as its occupying token!
+[Shootout] Home kick 4: 6. Terto shoots at the right goal.
+Penalty Shootout Kick initiated. Random target selected at (19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+6. Terto Penalty Kick roll: 6 + Shooting: 5 = 50
+GK has no save interaction after the ball-in-box free move.
+Penalty shootout forcing GK save interaction for 1. Aziz at (18, 0, 0).
+Penalty Kick has reached GK 1. Aziz. Press [R] to roll for the save.
+GK 1. Aziz rolls 1 + Saving: 5 + Penalty: -2 = 4
+6. Terto Shot roll: 6 + Shooting: 5 = 50
+Get IN!! 6. Terto, buries it to the top corner! Goal!!!
+MoveTokenAlongPath: shouldCarryBall: False
+Token arrived at hex: HexCell [18, 1]
+[Shootout] Home score. Shootout score 2-0.
+[Shootout] Goal celebration flash.
+[Shootout] Away kick 5: 2. Aguayo shoots at the right goal.
+Penalty Shootout Kick initiated. Random target selected at (19, 0, 3). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+2. Aguayo Penalty Kick roll: 1 + Shooting: 5 = 0
+2. Aguayo rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Away miss. Shootout score 2-0.
+Hex (14, 0, 0) does not have 2. Aguayo as its occupying token!
+[Shootout] Home kick 6: 2. Baez shoots at the right goal.
+Penalty Shootout Kick initiated. Random target selected at (19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+2. Baez Penalty Kick roll: 6 + Shooting: 5 = 50
+GK has no save interaction after the ball-in-box free move.
+Penalty shootout forcing GK save interaction for 1. Aziz at (18, 0, 0).
+Penalty Kick has reached GK 1. Aziz. Press [R] to roll for the save.
+GK 1. Aziz rolls 1 + Saving: 5 + Penalty: -2 = 4
+2. Baez Shot roll: 6 + Shooting: 5 = 50
+Get IN!! 2. Baez, buries it to the top corner! Goal!!!
+MoveTokenAlongPath: shouldCarryBall: False
+Token arrived at hex: HexCell [18, 1]
+[Shootout] Home score. Shootout score 3-0.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2066" name="CompleteShootout(True,True,False)" fullname="OnlineShootoutPlayModeTests.CompleteShootout(True,True,False)" methodname="CompleteShootout" classname="OnlineShootoutPlayModeTests" runstate="Runnable" seed="1140764600" result="Passed" start-time="2026-11-15 22:19:35Z" end-time="2026-11-15 22:19:59Z" duration="23.893181" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584952143880
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+[Shootout] Order selection opened with 11 nominees per team.
+Substitutions are no longer available: Penalty shootout
+⚽ Ball just entered the penalty box! Checking if GK should move.
+[Shootout] Away kick 1: 3. Vladoiu shoots at the left goal.
+Substitutions are no longer available: Committed to Shot
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, 0). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+3. Vladoiu Penalty Kick roll: 1 + Shooting: 5 = 0
+3. Vladoiu rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Away miss. Shootout score 0-0.
+[Shootout] Home kick 2: 4. Gortz shoots at the left goal.
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+4. Gortz Penalty Kick roll: 1 + Shooting: 5 = 0
+4. Gortz rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Home miss. Shootout score 0-0.
+Hex (-18, 0, 0) does not have 1. Aziz as its occupying token!
+[Shootout] Away kick 3: 6. Delpech shoots at the left goal.
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+6. Delpech Penalty Kick roll: 1 + Shooting: 5 = 0
+6. Delpech rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Away miss. Shootout score 0-0.
+Hex (-14, 0, 0) does not have 6. Delpech as its occupying token!
+[Shootout] Home kick 4: 6. Terto shoots at the left goal.
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+6. Terto Penalty Kick roll: 1 + Shooting: 5 = 0
+6. Terto rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Home miss. Shootout score 0-0.
+Hex (-18, 0, 0) does not have 1. Aziz as its occupying token!
+[Shootout] Away kick 5: 2. Aguayo shoots at the left goal.
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+2. Aguayo Penalty Kick roll: 1 + Shooting: 5 = 0
+2. Aguayo rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Away miss. Shootout score 0-0.
+Hex (-14, 0, 0) does not have 2. Aguayo as its occupying token!
+[Shootout] Home kick 6: 2. Baez shoots at the left goal.
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+2. Baez Penalty Kick roll: 1 + Shooting: 5 = 0
+2. Baez rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Home miss. Shootout score 0-0.
+[Shootout] Away kick 7: 11. Gilbert shoots at the left goal.
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+11. Gilbert Penalty Kick roll: 1 + Shooting: 5 = 0
+11. Gilbert rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Away miss. Shootout score 0-0.
+[Shootout] Home kick 8: 11. Goaley shoots at the left goal.
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+11. Goaley Penalty Kick roll: 1 + Shooting: 5 = 0
+11. Goaley rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Home miss. Shootout score 0-0.
+Hex (-18, 0, 0) does not have 1. Aziz as its occupying token!
+Hex (-14, 0, 0) does not have 11. Goaley as its occupying token!
+[Shootout] Away kick 9: 8. Walton shoots at the left goal.
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+8. Walton Penalty Kick roll: 1 + Shooting: 5 = 0
+8. Walton rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Away miss. Shootout score 0-0.
+[Shootout] Home kick 10: 8. Gaham shoots at the left goal.
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+8. Gaham Penalty Kick roll: 1 + Shooting: 5 = 0
+8. Gaham rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Home miss. Shootout score 0-0.
+Hex (-14, 0, 0) does not have 8. Gaham as its occupying token!
+[Shootout] Away kick 11: 7. Werdekker shoots at the left goal.
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+7. Werdekker Penalty Kick roll: 1 + Shooting: 5 = 0
+7. Werdekker rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Away miss. Shootout score 0-0.
+Hex (-14, 0, 0) does not have 7. Werdekker as its occupying token!
+[Shootout] Home kick 12: 7. Savvakis shoots at the left goal.
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+7. Savvakis Penalty Kick roll: 6 + Shooting: 5 = 50
+GK has no save interaction after the ball-in-box free move.
+Penalty shootout forcing GK save interaction for 1. Aziz at (-18, 0, 0).
+Penalty Kick has reached GK 1. Aziz. Press [R] to roll for the save.
+GK 1. Aziz rolls 1 + Saving: 5 + Penalty: -2 = 4
+7. Savvakis Shot roll: 6 + Shooting: 5 = 50
+Get IN!! 7. Savvakis, buries it to the top corner! Goal!!!
+MoveTokenAlongPath: shouldCarryBall: False
+Token arrived at hex: HexCell [-18, 1]
+[Shootout] Home score. Shootout score 1-0.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2067" name="CompleteShootout(True,True,True)" fullname="OnlineShootoutPlayModeTests.CompleteShootout(True,True,True)" methodname="CompleteShootout" classname="OnlineShootoutPlayModeTests" runstate="Runnable" seed="1323797670" result="Passed" start-time="2026-11-15 22:19:59Z" end-time="2026-11-15 22:20:23Z" duration="23.759523" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584952270572
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+[Shootout] Order selection opened with 11 nominees per team.
+Substitutions are no longer available: Penalty shootout
+⚽ Ball just entered the penalty box! Checking if GK should move.
+[Shootout] Away kick 1: 3. Vladoiu shoots at the right goal.
+Substitutions are no longer available: Committed to Shot
+Penalty Shootout Kick initiated. Random target selected at (19, 0, 0). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+3. Vladoiu Penalty Kick roll: 1 + Shooting: 5 = 0
+3. Vladoiu rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Away miss. Shootout score 0-0.
+[Shootout] Home kick 2: 4. Gortz shoots at the right goal.
+Penalty Shootout Kick initiated. Random target selected at (19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+4. Gortz Penalty Kick roll: 1 + Shooting: 5 = 0
+4. Gortz rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Home miss. Shootout score 0-0.
+[Shootout] Away kick 3: 6. Delpech shoots at the right goal.
+Penalty Shootout Kick initiated. Random target selected at (19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+6. Delpech Penalty Kick roll: 1 + Shooting: 5 = 0
+6. Delpech rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Away miss. Shootout score 0-0.
+Hex (14, 0, 0) does not have 6. Delpech as its occupying token!
+[Shootout] Home kick 4: 6. Terto shoots at the right goal.
+Penalty Shootout Kick initiated. Random target selected at (19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+6. Terto Penalty Kick roll: 1 + Shooting: 5 = 0
+6. Terto rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Home miss. Shootout score 0-0.
+Hex (18, 0, 0) does not have 1. Aziz as its occupying token!
+[Shootout] Away kick 5: 2. Aguayo shoots at the right goal.
+Penalty Shootout Kick initiated. Random target selected at (19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+2. Aguayo Penalty Kick roll: 1 + Shooting: 5 = 0
+2. Aguayo rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Away miss. Shootout score 0-0.
+Hex (14, 0, 0) does not have 2. Aguayo as its occupying token!
+[Shootout] Home kick 6: 2. Baez shoots at the right goal.
+Penalty Shootout Kick initiated. Random target selected at (19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+2. Baez Penalty Kick roll: 1 + Shooting: 5 = 0
+2. Baez rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Home miss. Shootout score 0-0.
+Hex (18, 0, 0) does not have 1. Aziz as its occupying token!
+[Shootout] Away kick 7: 11. Gilbert shoots at the right goal.
+Penalty Shootout Kick initiated. Random target selected at (19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+11. Gilbert Penalty Kick roll: 1 + Shooting: 5 = 0
+11. Gilbert rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Away miss. Shootout score 0-0.
+[Shootout] Home kick 8: 11. Goaley shoots at the right goal.
+Penalty Shootout Kick initiated. Random target selected at (19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+11. Goaley Penalty Kick roll: 1 + Shooting: 5 = 0
+11. Goaley rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Home miss. Shootout score 0-0.
+Hex (14, 0, 0) does not have 11. Goaley as its occupying token!
+[Shootout] Away kick 9: 8. Walton shoots at the right goal.
+Penalty Shootout Kick initiated. Random target selected at (19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+8. Walton Penalty Kick roll: 1 + Shooting: 5 = 0
+8. Walton rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Away miss. Shootout score 0-0.
+[Shootout] Home kick 10: 8. Gaham shoots at the right goal.
+Penalty Shootout Kick initiated. Random target selected at (19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+8. Gaham Penalty Kick roll: 1 + Shooting: 5 = 0
+8. Gaham rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Home miss. Shootout score 0-0.
+Hex (18, 0, 0) does not have 1. Aziz as its occupying token!
+[Shootout] Away kick 11: 7. Werdekker shoots at the right goal.
+Penalty Shootout Kick initiated. Random target selected at (19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+7. Werdekker Penalty Kick roll: 1 + Shooting: 5 = 0
+7. Werdekker rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Away miss. Shootout score 0-0.
+Hex (14, 0, 0) does not have 7. Werdekker as its occupying token!
+[Shootout] Home kick 12: 7. Savvakis shoots at the right goal.
+Penalty Shootout Kick initiated. Random target selected at (19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+7. Savvakis Penalty Kick roll: 6 + Shooting: 5 = 50
+GK has no save interaction after the ball-in-box free move.
+Penalty shootout forcing GK save interaction for 1. Aziz at (18, 0, 0).
+Penalty Kick has reached GK 1. Aziz. Press [R] to roll for the save.
+GK 1. Aziz rolls 1 + Saving: 5 + Penalty: -2 = 4
+7. Savvakis Shot roll: 6 + Shooting: 5 = 50
+Get IN!! 7. Savvakis, buries it to the top corner! Goal!!!
+MoveTokenAlongPath: shouldCarryBall: False
+Token arrived at hex: HexCell [18, 1]
+[Shootout] Home score. Shootout score 1-0.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+Saving results to: TestResults\GameplayRegression\Runs\20261115T221726352Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

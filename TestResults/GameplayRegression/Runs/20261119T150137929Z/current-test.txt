@@ -1,0 +1,1 @@
+EOSStandaloneProofEditorTests.InvalidArgumentsFailBeforeNetworkInitialization("-ca-eos-role")

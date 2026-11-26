@@ -1,0 +1,16 @@
+{"name":"OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(1,\"running\",\"shoot\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(1,\"running\",\"decline\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(1,\"exhausted\",\"shoot\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(1,\"exhausted\",\"decline\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(1,\"away-running\",\"shoot\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(1,\"away-running\",\"decline\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(1,\"away-exhausted\",\"shoot\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(1,\"away-exhausted\",\"decline\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(-1,\"running\",\"shoot\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(-1,\"running\",\"decline\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(-1,\"exhausted\",\"shoot\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(-1,\"exhausted\",\"decline\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(-1,\"away-running\",\"shoot\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(-1,\"away-running\",\"decline\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(-1,\"away-exhausted\",\"shoot\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMovementSnapshotPlayModeTests.OfferedSnapshot(-1,\"away-exhausted\",\"decline\")","status":"Passed","message":"","stackTrace":""}

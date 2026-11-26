@@ -1,0 +1,13 @@
+{"name":"OnlinePickupKeyEditorTests.VCannotGuessAnUnpublishedPickup(\"off-board\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePickupKeyEditorTests.VCannotGuessAnUnpublishedPickup(\"unpublished\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePickupKeyEditorTests.VCannotGuessAnUnpublishedPickup(\"pass\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePickupKeyEditorTests.VCannotGuessAnUnpublishedPickup(\"dribble\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePickupKeyEditorTests.VCannotGuessAnUnpublishedPickup(\"selection\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePickupKeyEditorTests.VCannotGuessAnUnpublishedPickup(\"ambiguous\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePickupKeyEditorTests.VRetainsPublishedKeeperClaim","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePickupKeyEditorTests.VUsesPublishedBallDestination(\"attack\",1)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePickupKeyEditorTests.VUsesPublishedBallDestination(\"attack\",-1)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePickupKeyEditorTests.VUsesPublishedBallDestination(\"defence\",1)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePickupKeyEditorTests.VUsesPublishedBallDestination(\"defence\",-1)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePickupKeyEditorTests.VUsesPublishedBallDestination(\"two-for-two\",1)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePickupKeyEditorTests.VUsesPublishedBallDestination(\"two-for-two\",-1)","status":"Passed","message":"","stackTrace":""}

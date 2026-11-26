@@ -1,0 +1,290 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+namespace CounterAttack.Online
+{
+    // Identity here is supplied by the authenticated transport, never by packet data.
+    public abstract class OnlineSessionChannel
+    {
+        public event Action<byte[]> Outgoing;
+        public string Fault {get;protected set;}
+        public string Nonce {get;protected set;}
+        public bool PeerLeft {get;private set;}
+        public bool PeerResumeFailed {get;private set;}
+        public abstract OnlineSetupClient Client {get;}
+        public OnlineDraftClient Draft {get;protected set;}
+        public MatchManager.GameData ResumeData {get;protected set;}
+        public OnlineRoundTripStatistics Latency {get;}
+        protected readonly string matchId,remoteAccount;
+        protected readonly OnlineCompatibility compatibility;
+        protected readonly Func<double> clock;
+        protected OnlineSessionWire wire=new();
+        private long ping;
+        private double nextHeartbeat;
+        public double LastReceived {get;private set;}
+        protected OnlineSessionChannel(string matchId,string remoteAccount,OnlineCompatibility compatibility,Func<double> monotonicSeconds)
+        {
+            OnlineProtocolIds.Require(matchId,nameof(matchId));OnlineProtocolIds.Require(remoteAccount,nameof(remoteAccount));
+            this.matchId=matchId;this.remoteAccount=remoteAccount;this.compatibility=compatibility??throw new ArgumentNullException(nameof(compatibility));
+            clock=monotonicSeconds??throw new ArgumentNullException(nameof(monotonicSeconds));Latency=new(clock);LastReceived=clock();
+        }
+        protected void Send(OnlineSessionMessage message)
+        {
+            message.matchId=matchId;message.nonce=Nonce;
+            foreach(var packet in OnlineSessionWire.Encode(message))Outgoing?.Invoke(packet);
+        }
+        protected OnlineSessionMessage Hello(OnlineSetupState state=null)=>new(){kind="hello",protocol=compatibility.Protocol,rules=compatibility.Rules,catalog=compatibility.Catalog,state=state};
+        protected bool Compatible(OnlineSessionMessage message)=>message.protocol==compatibility.Protocol && message.rules==compatibility.Rules && message.catalog==compatibility.Catalog;
+        protected static bool ValidNonce(string nonce)=>Guid.TryParseExact(nonce,"N",out var guid) && guid!=Guid.Empty;
+        protected void BindDraftDrag()
+        {
+            var draft=Draft;
+            draft.DragPublished+=frame=>
+            {
+                if(Ready && ReferenceEquals(Draft,draft))Send(new OnlineSessionMessage{kind="draft-drag",draftDrag=frame});
+            };
+        }
+        public bool Receive(string authenticatedAccount,byte[] packet,int length)
+        {
+            if(authenticatedAccount!=remoteAccount || PeerLeft)return false;
+            OnlineSessionMessage message;
+            try{message=wire.Receive(packet,length,true);}catch(InvalidDataException){return false;}
+            if(message==null)return true;
+            if(message.matchId!=matchId)return false;
+            bool accepted;
+            if(message.kind=="hello")accepted=ReceiveHello(message);
+            else
+            {
+                if(message.nonce!=Nonce || !ValidNonce(Nonce))return false;
+                if(message.kind=="leave"){MarkPeerLeft(message.status=="resume-failed");accepted=true;}
+                else if(message.kind=="heartbeat")
+                {
+                    accepted=message.sequence>0 && (message.status=="ping" || message.status=="pong");
+                    if(accepted && message.status=="ping")Send(new OnlineSessionMessage{kind="heartbeat",status="pong",sequence=message.sequence});
+                    else if(accepted)Latency.Replied(message.sequence);
+                }
+                else if(message.kind=="draft-drag")accepted=Ready && Draft?.ReceiveDrag(message.draftDrag)==true;
+                else accepted=Dispatch(message);
+            }
+            if(accepted)LastReceived=clock();return accepted;
+        }
+        public virtual void Tick()
+        {
+            if(!Ready || clock()<nextHeartbeat)return;
+            nextHeartbeat=clock()+1;long sequence=checked(++ping);Latency.Sent(sequence);
+            Send(new OnlineSessionMessage{kind="heartbeat",status="ping",sequence=sequence});
+        }
+        public void Leave(bool resumeFailed=false)
+        {if(ValidNonce(Nonce))Send(new OnlineSessionMessage{kind="leave",status=resumeFailed?"resume-failed":null});TransportLost();}
+        internal void MarkPeerLeft(bool resumeFailed=false)
+        {
+            if(PeerLeft)return;
+            PeerLeft=true;
+            PeerResumeFailed=resumeFailed;
+            TransportLost();
+        }
+        public void TransportLost(){Client.SetTransportAvailable(false);Draft?.SetTransportAvailable(false);Lost();}
+        protected virtual void Lost(){}
+        protected void RestartLiveness(){PeerLeft=false;LastReceived=clock();Client.SetTransportAvailable(true);Draft?.SetTransportAvailable(true);}
+        public abstract bool Ready {get;}
+        protected abstract bool ReceiveHello(OnlineSessionMessage message);
+        protected abstract bool Dispatch(OnlineSessionMessage message);
+    }
+    public sealed class OnlineSetupHostChannel:OnlineSessionChannel
+    {
+        public override OnlineSetupClient Client {get;}
+        public OnlineSetupAuthority Authority {get;}
+        private readonly OnlineMatchProtocol protocol;
+        private readonly string localConnection;
+        private string remoteConnection;
+        public OnlineDraftAuthority DraftAuthority {get;private set;}
+        private Func<GameSettings,OnlineDraftAuthority> draftFactory;
+        private MatchManager.GameData resumeBootstrap;
+        private string resumeToken;
+        public bool ResumeAcknowledged {get;private set;}
+        public override bool Ready=>protocol.BothConnected && Fault==null;
+        public OnlineSetupHostChannel(OnlineMatchProtocol protocol,string localConnection,string peerAccount,GameSettings settings,Func<double> clock)
+            :base(protocol.MatchId,peerAccount,protocol.Compatibility,clock)
+        {
+            this.protocol=protocol;this.localConnection=localConnection;
+            if(!protocol.TryGetTeam(localConnection,out var team) || team!=protocol.HostTeam)throw new ArgumentException("Host connection is not authenticated");
+            Authority=new(protocol,settings);Client=new(protocol.MatchId,protocol.HostTeam);Client.Apply(Authority.Capture());
+            Client.Requested+=Local;
+        }
+        public void Begin()
+        {
+            if(remoteConnection!=null)protocol.Disconnect(remoteConnection);
+            remoteConnection=null;Nonce=Guid.NewGuid().ToString("N");wire=new();Fault=null;Latency.ResetConnection();RestartLiveness();
+            Client.Apply(Authority.Capture());Send(Hello(Authority.Capture()));
+            if(DraftAuthority!=null)Draft.Apply(DraftAuthority.Capture());
+        }
+        public void EnableDraft(Func<GameSettings,OnlineDraftAuthority> factory)=>draftFactory=factory??throw new ArgumentNullException(nameof(factory));
+        internal void EnableResume(MatchManager.GameData bootstrap)
+        {
+            resumeBootstrap = bootstrap ?? throw new ArgumentNullException(nameof(bootstrap));
+            resumeToken = Guid.NewGuid().ToString("N");
+        }
+        public override void Tick()
+        {
+            base.Tick();
+            if(DraftAuthority==null)return;
+            if(DraftAuthority.AdvanceRollResult() || DraftAuthority.AdvanceAutomaticRoll())PublishDraft();
+        }
+        private void PublishDraft()
+        {
+            var setup=Authority.Capture();
+            if(DraftAuthority==null && setup.phase=="draft-ready" && draftFactory!=null)
+            {
+                DraftAuthority=draftFactory(setup.settings);
+                if(DraftAuthority==null)return;
+                Draft=new OnlineDraftClient(matchId,protocol.HostTeam);Draft.Requested+=LocalDraft;BindDraftDrag();
+            }
+            if(DraftAuthority==null)return;
+            var snapshot=DraftAuthority.Capture();
+            if(Ready)Send(new OnlineSessionMessage{kind="draft-state",draftState=snapshot});Draft.Apply(snapshot);
+        }
+        private void LocalDraft(OnlineDraftRequest request)
+        {
+            var reply=DraftAuthority.Submit(localConnection,request);var snapshot=DraftAuthority.Capture();
+            if(Ready)Send(new OnlineSessionMessage{kind="draft-state",draftState=snapshot});
+            Draft.Receive(request.sequence,reply.Status,snapshot);
+        }
+        public void ResendHello()
+        {if(!Ready && ValidNonce(Nonce) && Fault==null && !PeerLeft)Send(Hello(Authority.Capture()));}
+        protected override bool ReceiveHello(OnlineSessionMessage message)
+        {
+            if(message.nonce!=Nonce || !ValidNonce(Nonce))return false;
+            if(!Compatible(message)){Fault="Both games must use the same version and player catalog.";return false;}
+            string connection="frontend-peer-"+Nonce;
+            if(!protocol.BindAuthenticatedAccount(remoteAccount,connection,compatibility))return false;
+            remoteConnection=connection;
+            if (resumeBootstrap != null)
+            {
+                Send(new OnlineSessionMessage {kind="setup-state",state=Authority.Capture()});
+                Send(new OnlineSessionMessage {kind="resume-bootstrap",resumeData=resumeBootstrap,resumeToken=resumeToken});
+                return true;
+            }
+            var state=Authority.Capture();Send(new OnlineSessionMessage{kind="setup-state",state=state});Client.Apply(state);PublishDraft();return true;
+        }
+        protected override void Lost()
+        {
+            if(remoteConnection!=null)protocol.Disconnect(remoteConnection);
+            Client.Apply(Authority.Capture());
+            if(DraftAuthority!=null)Draft.Apply(DraftAuthority.Capture());
+        }
+        private void Local(OnlineSetupRequest request)
+        {
+            if (resumeBootstrap != null) return;
+            var reply=SubmitSetup(localConnection,request);var state=Authority.Capture();
+            Client.Receive(request.sequence,reply.Status,state);
+            if(RetireDraft(request,reply))return;
+            if(Ready)Send(new OnlineSessionMessage{kind="setup-state",state=Authority.Capture()});
+            PublishDraft();
+        }
+        private OnlineCommandReply SubmitSetup(string connection,OnlineSetupRequest request)
+        {
+            if(request.intent==OnlineSetupIntent.BackToSetup && (DraftAuthority==null || DraftAuthority.Capture().phase=="room-ready"))
+                return new OnlineCommandReply(OnlineCommandStatus.NotReady,Authority.Capture().revision);
+            return Authority.Submit(connection,request);
+        }
+        private bool RetireDraft(OnlineSetupRequest request,OnlineCommandReply reply)
+        {
+            if(request.intent!=OnlineSetupIntent.BackToSetup || reply.Status!=OnlineCommandStatus.Accepted)return false;
+            Draft.Requested-=LocalDraft;
+            Draft.SetTransportAvailable(false);
+            Draft=null;
+            DraftAuthority=null;
+            // Give the next draft a fresh packet namespace, including in-flight drag frames.
+            Begin();
+            return true;
+        }
+        protected override bool Dispatch(OnlineSessionMessage message)
+        {
+            if (resumeBootstrap != null)
+            {
+                if (!Ready || message.kind != "resume-ack" || message.resumeToken != resumeToken || ResumeAcknowledged)
+                    return false;
+                ResumeAcknowledged = true;
+                return true;
+            }
+            if(Ready && DraftAuthority!=null && message.kind=="draft-request" && message.draftRequest!=null)
+            {
+                var draftReply=DraftAuthority.Submit(remoteConnection,message.draftRequest);var snapshot=DraftAuthority.Capture();
+                Send(new OnlineSessionMessage{kind="draft-reply",sequence=message.draftRequest.sequence,status=draftReply.Status.ToString(),draftState=snapshot});Draft.Apply(snapshot);return true;
+            }
+            if(!Ready || message.kind!="setup-request" || message.request==null || message.request.matchId!=matchId)return false;
+            var reply=SubmitSetup(remoteConnection,message.request);var state=Authority.Capture();
+            // Queue acknowledgement before a local view can react with another edit.
+            Send(new OnlineSessionMessage{kind="setup-reply",sequence=message.request.sequence,status=reply.Status.ToString(),state=state});
+            Client.Apply(state);if(!RetireDraft(message.request,reply))PublishDraft();return true;
+        }
+    }
+    public sealed class OnlineSetupGuestChannel:OnlineSessionChannel
+    {
+        public override OnlineSetupClient Client {get;}
+        public override bool Ready=>Client.Connected && Fault==null;
+        private readonly OnlineTeam expectedHost;
+        private readonly HashSet<string> retired=new(StringComparer.Ordinal);
+        private readonly Queue<string> order=new();
+        private string resumeToken;
+        public OnlineSetupGuestChannel(string matchId,string hostAccount,OnlineCompatibility compatibility,OnlineTeam expectedHost,Func<double> clock)
+            :base(matchId,hostAccount,compatibility,clock)
+        {
+            this.expectedHost=expectedHost;Client=new(matchId,expectedHost==OnlineTeam.Home?OnlineTeam.Away:OnlineTeam.Home);
+            Client.Requested+=r=>Send(new OnlineSessionMessage{kind="setup-request",request=r});
+        }
+        protected override bool ReceiveHello(OnlineSessionMessage message)
+        {
+            if(!ValidNonce(message.nonce) || retired.Contains(message.nonce) || message.state==null || message.state.hostTeam!=expectedHost)return false;
+            if(!Compatible(message)){Fault="Both games must use the same version and player catalog.";return false;}
+            if(!Client.Apply(message.state))return false;
+            RetireDraftInSetup();
+            if (Nonce != message.nonce) Latency.ResetConnection();
+            if(Nonce!=null && Nonce!=message.nonce)
+            {retired.Add(Nonce);order.Enqueue(Nonce);while(order.Count>64)retired.Remove(order.Dequeue());wire=new();}
+            Nonce=message.nonce;Fault=null;RestartLiveness();Send(Hello());return true;
+        }
+        protected override bool Dispatch(OnlineSessionMessage message)
+        {
+            if (message.kind == "resume-bootstrap")
+            {
+                if (!Ready || !ValidNonce(message.resumeToken) || !OnlineRoomLaunchData.IsResumeBootstrap(message.resumeData)
+                    || resumeToken != null && resumeToken != message.resumeToken)
+                    return false;
+                resumeToken = message.resumeToken;
+                ResumeData ??= message.resumeData;
+                Send(new OnlineSessionMessage {kind="resume-ack",resumeToken=message.resumeToken});
+                return true;
+            }
+            if (ResumeData != null) return false;
+            if(message.kind is "draft-state" or "draft-reply")
+            {
+                if(Client.Capture()?.phase!="draft-ready" || message.draftState?.hostTeam!=expectedHost)return false;
+                if(Draft==null)
+                {
+                    var candidate=new OnlineDraftClient(matchId,Client.Team);if(!candidate.Apply(message.draftState))return false;
+                    Draft=candidate;
+                    candidate.Requested+=r=>
+                    {
+                        if(ReferenceEquals(Draft,candidate))Send(new OnlineSessionMessage{kind="draft-request",draftRequest=r});
+                    };
+                    BindDraftDrag();
+                }
+                if(message.kind=="draft-state")return Draft.Apply(message.draftState);
+                return Enum.TryParse<OnlineCommandStatus>(message.status,out var draftStatus) && Draft.Receive(message.sequence,draftStatus,message.draftState);
+            }
+            if(message.kind=="setup-state" && Client.Apply(message.state))
+            {RetireDraftInSetup();return true;}
+            if(message.kind=="setup-reply" && Enum.TryParse<OnlineCommandStatus>(message.status,out var status)
+                && Client.Receive(message.sequence,status,message.state))
+            {RetireDraftInSetup();return true;}
+            return false;
+        }
+        private void RetireDraftInSetup()
+        {
+            if(Client.Phase!="setup" || Draft==null)return;
+            Draft.SetTransportAvailable(false);
+            Draft=null;
+        }
+    }
+}

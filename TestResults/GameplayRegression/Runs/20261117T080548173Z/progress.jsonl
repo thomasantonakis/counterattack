@@ -1,0 +1,14 @@
+{"name":"OnlineOffTargetCameraPlayModeTests.RealCameraMiss(False,\"flight\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineOffTargetCameraPlayModeTests.RealCameraMiss(False,\"pause-flight\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineOffTargetCameraPlayModeTests.RealCameraMiss(False,\"pause-hold\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineOffTargetCameraPlayModeTests.RealCameraMiss(False,\"hold-flight\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineOffTargetCameraPlayModeTests.RealCameraMiss(False,\"hold-hold\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineOffTargetCameraPlayModeTests.RealCameraMiss(False,\"reset-flight\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineOffTargetCameraPlayModeTests.RealCameraMiss(False,\"reset-hold\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineOffTargetCameraPlayModeTests.RealCameraMiss(True,\"flight\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineOffTargetCameraPlayModeTests.RealCameraMiss(True,\"pause-flight\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineOffTargetCameraPlayModeTests.RealCameraMiss(True,\"pause-hold\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineOffTargetCameraPlayModeTests.RealCameraMiss(True,\"hold-flight\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineOffTargetCameraPlayModeTests.RealCameraMiss(True,\"hold-hold\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineOffTargetCameraPlayModeTests.RealCameraMiss(True,\"reset-flight\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineOffTargetCameraPlayModeTests.RealCameraMiss(True,\"reset-hold\")","status":"Passed","message":"","stackTrace":""}

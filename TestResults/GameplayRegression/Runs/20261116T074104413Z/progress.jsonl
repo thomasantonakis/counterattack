@@ -1,0 +1,10 @@
+{"name":"OnlineControlDecisionEditorTests.AbsentPublicationAndChoicesAreSafe","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineControlDecisionEditorTests.CaptureAllocationDoesNotScaleWithRosterPayload","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineControlDecisionEditorTests.CommandRetainsDisplayedBoundaryAfterPublisherChanges(False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineControlDecisionEditorTests.CommandRetainsDisplayedBoundaryAfterPublisherChanges(True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineControlDecisionEditorTests.PublishedGatesRemainDetached(\"connection\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineControlDecisionEditorTests.PublishedGatesRemainDetached(\"pause\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineControlDecisionEditorTests.PublishedGatesRemainDetached(\"required\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineControlDecisionEditorTests.PublishedGatesRemainDetached(\"forced\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineControlDecisionEditorTests.PublishedGatesRemainDetached(\"emergency\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineControlDecisionEditorTests.PublishedGatesRemainDetached(\"shootout\")","status":"Passed","message":"","stackTrace":""}

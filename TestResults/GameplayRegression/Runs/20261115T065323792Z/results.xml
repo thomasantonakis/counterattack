@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="2" result="Passed" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-15 06:53:23Z" end-time="2026-11-15 06:53:23Z" duration="0.0555786">
+  <test-suite type="TestSuite" id="2905" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1613" result="Passed" start-time="2026-11-15 06:53:23Z" end-time="2026-11-15 06:53:23Z" duration="0.055579" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="2898" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="1613" result="Passed" start-time="2026-11-15 06:53:23Z" end-time="2026-11-15 06:53:23Z" duration="0.013548" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="1132" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="1946" name="OnlineRoomStartupEditorTests" fullname="OnlineRoomStartupEditorTests" classname="OnlineRoomStartupEditorTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-15 06:53:23Z" end-time="2026-11-15 06:53:23Z" duration="0.011635" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineRoomStartup" />
+        </properties>
+        <test-case id="1947" name="GuestPersistenceFailsBeforeResolvingOrCreatingPaths" fullname="OnlineRoomStartupEditorTests.GuestPersistenceFailsBeforeResolvingOrCreatingPaths" methodname="GuestPersistenceFailsBeforeResolvingOrCreatingPaths" classname="OnlineRoomStartupEditorTests" runstate="Runnable" seed="1777386794" result="Passed" start-time="2026-11-15 06:53:23Z" end-time="2026-11-15 06:53:23Z" duration="0.002918" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1948" name="OfflineAndHostDoNotAcquireGuestRole" fullname="OnlineRoomStartupEditorTests.OfflineAndHostDoNotAcquireGuestRole" methodname="OfflineAndHostDoNotAcquireGuestRole" classname="OnlineRoomStartupEditorTests" runstate="Runnable" seed="678305878" result="Passed" start-time="2026-11-15 06:53:23Z" end-time="2026-11-15 06:53:23Z" duration="0.001185" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Saving results to: TestResults\GameplayRegression\Runs\20261115T065323792Z\results.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

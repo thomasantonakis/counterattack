@@ -701,10 +701,7 @@ public partial class MovementPhaseManager : MonoBehaviour
                 bool? choosingTeam = IsInstructionExpectingHomeTeam();
                 RecordNutmegChoiceSelected("X", "allow_interceptions", choosingTeam);
                 ConsumeMovementKey(keyData, choosingTeam);
-                CommitToAction();
-                isWaitingForNutmegDecision = false;
-                Debug.Log($"Reject Nutmeg. Check for interceptions.");
-                ContinueFromRejectedNutmeg();
+                DeclineRunningNutmeg();
                 return;
             }
         }
@@ -729,20 +726,13 @@ public partial class MovementPhaseManager : MonoBehaviour
                         return;
                     }
 
-                    isWaitingForSnapshotDecision = false;
-                    MarkDribblerMovedAfterSnapshotDecision();
-                    Debug.Log($"{MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.name} decides to Snapshot!!!!");
-                    MatchManager.Instance.EnsureOffsideManager()?.EvaluateAndStore("snapshot_committed");
-                    shotManager.StartShotProcess(selectedToken, "snapshot");
+                    AcceptOfferedMovementSnapshot();
                     return;
                 }
                 if (keyData.key == KeyCode.X)
                 {
                     bool? choosingTeam = IsInstructionExpectingHomeTeam();
-                    CommitToAction();
-                    isWaitingForSnapshotDecision = false;
-                    Debug.Log("Dribbler was running. Decided to forfeit remaining pace and not shoot.");
-                    AdvanceMovementPhase();
+                    DeclineOfferedMovementSnapshot();
                     ConsumeMovementKey(keyData, choosingTeam);
                     return;
                 }
@@ -750,9 +740,7 @@ public partial class MovementPhaseManager : MonoBehaviour
             if (keyData.key == KeyCode.X)
             {
                 bool? choosingTeam = IsInstructionExpectingHomeTeam();
-                CommitToAction();
-                Debug.Log("Dribbler is running. Forfeiting remaining pace.");
-                AdvanceMovementPhase();
+                FinishRunningDribble();
                 ConsumeMovementKey(keyData, choosingTeam);
                 return;
             }
@@ -768,18 +756,13 @@ public partial class MovementPhaseManager : MonoBehaviour
                     return;
                 }
 
-                isWaitingForSnapshotDecision = false;
-                Debug.Log($"Non Dribbler {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.name} decides to Snapshot!!!!");
-                MatchManager.Instance.EnsureOffsideManager()?.EvaluateAndStore("snapshot_committed");
-                shotManager.StartShotProcess(MatchManager.Instance.LastTokenToTouchTheBallOnPurpose, "snapshot");
+                AcceptOfferedMovementSnapshot();
                 return;
             }
             if (keyData.key == KeyCode.X)
             {
                 bool? choosingTeam = IsInstructionExpectingHomeTeam();
-                isWaitingForSnapshotDecision = false;
-                Debug.Log($"Attacker decides not to shoot..");
-                if (isMovementPhaseDef) AdvanceMovementPhase();
+                DeclineOfferedMovementSnapshot();
                 ConsumeMovementKey(keyData, choosingTeam);
                 return;
             }
@@ -1123,8 +1106,7 @@ public partial class MovementPhaseManager : MonoBehaviour
         movedTokens.Add(token);
 
         MovementPhaseMovedTokenSection section = GetCurrentMovedTokenSection();
-        // A duel can reposition the ball carrier during the opponent's phase.
-        // Keep its eligibility bookkeeping, but only show moves owned by this phase.
+        // Show only moves owned by the current phase.
         bool attackingSection = section != MovementPhaseMovedTokenSection.DefMP;
         if (token.isAttacker == attackingSection)
             movedTokenEntries.Add(new MovementPhaseMovedTokenEntry(token, section));
@@ -1430,13 +1412,8 @@ public partial class MovementPhaseManager : MonoBehaviour
                     CanDribblerWalkIntoOpponentGoal(token, hex)
                 )
                 {
-                    hex.HighlightHex(isHoveredMovementDestination ? "MovementDestinationHover" : "MovementGoal");
-                    if (hex.transform.position.y < 0.07f)
-                    {
-                        Vector3 position = hex.transform.position;
-                        position.y = 0.07f;
-                        hex.transform.position = position;
-                    }
+                    hex.HighlightRaisedGoalTarget("MovementGoal", 0.07f,
+                        hoverReason: isHoveredMovementDestination ? "MovementDestinationHover" : null);
                 }
             }
         }
@@ -2000,7 +1977,7 @@ public partial class MovementPhaseManager : MonoBehaviour
         }
         
                   
-        if(isDribblerRunning)
+        if (isDribblerRunning && !isMovementPhaseDef)
         {
             if (isNutmegInProgress)
             {
@@ -2573,7 +2550,9 @@ public partial class MovementPhaseManager : MonoBehaviour
         if (isDribblerRunning)
         {
             hexGrid.ClearHighlightedHexes();
-            RegisterMovedToken(selectedToken);
+            // Repositioning during defence does not spend the carrier's attacking move.
+            if (!isMovementPhaseDef || selectedToken?.isAttacker != true)
+                RegisterMovedToken(selectedToken);
             selectedToken = null;
             isDribblerRunning = false;
             isAwaitingHexDestination = false;
@@ -2804,6 +2783,7 @@ public partial class MovementPhaseManager : MonoBehaviour
 
     private IEnumerator PerformBallInterceptionDiceRoll(RollInputOverride? rollOverride)
     {
+        int version=duelPresentationVersion;
         Debug.Log("PerformBallInterceptionDiceRoll Runs");
         if (selectedDefender != null)
         {
@@ -2854,6 +2834,7 @@ public partial class MovementPhaseManager : MonoBehaviour
             yield return SingleRollResolutionPresentation.Resolve(this, interceptionRoll,
                 foul ? (IsCurrentBallHexInOpponentPenaltyBox() ? "PENALTY!" : "FOUL")
                     : recovered ? "BALL RECOVERED" : "RECOVERY FAILED", continueWithFoulChecks: foul);
+            if(version!=duelPresentationVersion || !isActivated)yield break;
             // Check if there was a foul
             if (foul)
             {
@@ -2918,7 +2899,7 @@ public partial class MovementPhaseManager : MonoBehaviour
             ResetBallInterceptionDiceRolls();
             StartNutmegProcess();
         }
-        else if (isDribblerRunning)
+        else if (isDribblerRunning && !isMovementPhaseDef)
         {
             Debug.Log("No more defenders to roll.");
             StartCoroutine(ContinueDribblerMovement());
@@ -3401,17 +3382,18 @@ public partial class MovementPhaseManager : MonoBehaviour
                 continue;
             }
 
-            string highlightReason = hoveredRepositionHex == hex
-                ? "MovementDestinationHover"
-                : hex.isInGoal != 0 ? "MovementGoal" : "reposition";
-            hex.HighlightHex(highlightReason);
+            string hoverReason = hoveredRepositionHex == hex ? "MovementDestinationHover" : null;
+            if (hex.isInGoal != 0)
+            {
+                hex.HighlightRaisedGoalTarget("MovementGoal", 0.03f, hoverReason: hoverReason);
+            }
+            else
+            {
+                hex.HighlightHex(hoverReason ?? "reposition");
+            }
             if (!hexGrid.highlightedHexes.Contains(hex))
             {
                 hexGrid.highlightedHexes.Add(hex);
-            }
-            if (hex.isInGoal != 0 && hex.transform.position.y == 0)
-            {
-                hex.transform.position += Vector3.up * 0.03f;
             }
         }
     }
@@ -3511,6 +3493,8 @@ public partial class MovementPhaseManager : MonoBehaviour
 
     private IEnumerator HandleFoulProcess(PlayerToken attackerToken, PlayerToken defenderToken)
     {
+        int foulVersion=duelPresentationVersion;
+        onlineFoulVersion=foulVersion;
         pendingFouledAttacker = attackerToken;
         isWaitingForFoulDecision = false;
         Debug.Log("Handling foul resolution process...");
@@ -3536,19 +3520,21 @@ public partial class MovementPhaseManager : MonoBehaviour
             attackerToken.resilience, attackerToken.isInjured);
         // Introduce a brief delay to ensure previous keypresses are ignored
         yield return null;
-        while (isWaitingForYellowCardRoll)
+        while (isWaitingForYellowCardRoll && foulVersion==duelPresentationVersion)
         {
             yield return null;  // Wait for the next frame
         }
+        if(foulVersion!=duelPresentationVersion)yield break;
         // Phase 2: Injury decision
         Debug.Log("Press 'R' to roll for attacker injury.");
         isWaitingForInjuryRoll = true;
         activeDuelPanel?.BeginInjury(attackerToken.resilience, attackerToken.isInjured);
         yield return null;   // Delay to avoid immediate triggering
-        while (isWaitingForInjuryRoll)
+        while (isWaitingForInjuryRoll && foulVersion==duelPresentationVersion)
         {
             yield return null;  // Wait for the next frame
         }
+        if(foulVersion!=duelPresentationVersion)yield break;
         Debug.Log("Foul process completed.");
         // Substitution clears requiresSubstitution on the outgoing token. Commit
         // the stoppage before dismissing the result or opening that modal.
@@ -3569,10 +3555,12 @@ public partial class MovementPhaseManager : MonoBehaviour
             MatchManager.Instance.HandleDoubleInjuredToken(injuredToken);
             while (MatchManager.Instance.IsGameplayInputBlocked) yield return null;
         }
+        if(foulVersion!=duelPresentationVersion)yield break;
         pendingAutomaticTakeFoulAfterInjury = false;
         if (forceTakeFoul)
         {
             Debug.Log("Play On is not available after the foul resolution.");
+            onlineFoulVersion=null;
             TakeAwardedFoul();
             yield break;
         }
@@ -3581,10 +3569,11 @@ public partial class MovementPhaseManager : MonoBehaviour
             ? "Press 'A' to Play On or 'F' to Take a PENALTY!!"
             : "Press 'A' to Play On or 'F' to Take the Foul.");
         isWaitingForFoulDecision = true;
-        while (isWaitingForFoulDecision)
+        while (isWaitingForFoulDecision && foulVersion==duelPresentationVersion)
         {
             yield return null;  // Wait for the next frame
         }
+        if(foulVersion==duelPresentationVersion)onlineFoulVersion=null;
     }
 
     private static bool ShouldForceFreeKickAfterFoul(PlayerToken attackerToken, PlayerToken defenderToken)

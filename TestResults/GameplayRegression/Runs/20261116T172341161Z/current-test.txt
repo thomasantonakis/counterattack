@@ -1,0 +1,1 @@
+LegacyLooseSnapshotGoalPlayModeTests.NutmegScatterSnapshotGoalHasNoAssistAndCompletesReset

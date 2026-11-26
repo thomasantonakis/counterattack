@@ -1,0 +1,69 @@
+using System;
+using System.Linq;
+using UnityEngine;
+namespace CounterAttack.Online
+{
+    [DefaultExecutionOrder(-31000)]
+    public sealed class OnlineFullRoomBootstrap:MonoBehaviour
+    {
+        public const string SceneName="OnlineRoom",Catalog="full-room-v25";
+        public OnlineGroundPassBoard board;
+        public Renderer replicaBallRenderer;
+        public Shader jerseyOverlayShader;
+        public bool Ready {get;private set;}
+        public void Awake()
+        {if(OnlineRoomSession.Current?.HasInitialData==true)Initialize(OnlineRoomSession.Current.CaptureInitialData());}
+        public void Initialize(MatchManager.GameData initial)
+        {
+            if(Ready)throw new InvalidOperationException("Full Room already initialized");
+            bool guest=OnlineRoomSession.IsGuest;board.liveFullRoom=true;board.continuousManualSession=true;board.localTeam=guest?OnlineTeam.Home:OnlineTeam.Away;
+            board.match.gameData=OnlineRoomLaunchData.Copy(initial);
+            board.match.OnlineEventBanner = FindAnyObjectByType<MatchEventBannerController>();
+            board.match.OnlinePitchLines = FindAnyObjectByType<PitchLines>();
+            board.match.OnlineRollPanels = board.rollPanels;
+            if(!guest)
+            {
+                foreach(Transform root in board.authorityRoot.transform)root.gameObject.SetActive(true);
+                board.authorityRoot.SetActive(true);
+            }
+            MatchManager.Instance=board.match;board.match.OnlineInstructionMonitor=board.instructionMonitor;board.instructionMonitor?.DisplayOnlineInstruction(null,true);board.match.InitializeAuthoredOnlineMatch(initial);board.grid.BindAuthoredOnlineCells(board.cells);
+            board.match.BeginGameplayEventLoggingSuppression();
+            try
+            {
+                board.tokens=board.match.playerTokenManager.BindAuthoredOnlineRoster(board.tokens,board.match.gameData,jerseyOverlayShader);
+                board.match.ball.PlaceAtCell(board.grid.GetHexCellAt(Vector3Int.zero));
+            }
+            finally{board.match.EndGameplayEventLoggingSuppression();}
+            board.displayedTokens=board.tokens.Select(t=>t.transform).ToArray();
+            board.displayedBall.gameObject.SetActive(guest);
+            board.match.ball.ApplyConfiguredBallColor();
+            if (replicaBallRenderer != null)
+            {
+                board.match.OnGameSettingsLoaded += RefreshReplicaBallColor;
+                RefreshReplicaBallColor();
+            }
+            if (!guest)
+            {
+                board.match.goalFlowManager?.BindPitchPositions();
+                board.match.kickoffManager.StartPreKickoffPhase();
+            }
+            Ready=true;
+        }
+
+        private void OnDestroy()
+        {
+            if (board != null && board.match != null)
+                board.match.OnGameSettingsLoaded -= RefreshReplicaBallColor;
+        }
+
+        private void RefreshReplicaBallColor()
+        {
+            board.match.ball.ApplyConfiguredBallColor();
+            var color = Ball.ResolveBallColor(board.match.gameData.gameSettings.ballColor);
+            var properties = new MaterialPropertyBlock();
+            properties.SetColor("_Color", color);
+            properties.SetColor("_BaseColor", color);
+            replicaBallRenderer.SetPropertyBlock(properties);
+        }
+    }
+}

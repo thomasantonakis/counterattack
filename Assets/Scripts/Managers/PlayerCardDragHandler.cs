@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 public class PlayerCardDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler
 {
+    private PlayerSlotDropHandler highlightedSlot;
     private CanvasGroup canvasGroup;
     private LayoutElement layoutElement;
     private Transform originalParent;
@@ -110,6 +111,7 @@ public class PlayerCardDragHandler : MonoBehaviour, IBeginDragHandler, IDragHand
     public void OnDrag(PointerEventData eventData)
     {
         if (!isDragging) return;
+        PlayerSlotDropHandler.TrackDropTarget(ref highlightedSlot, eventData);
         // Update the slot's position to follow the pointer, maintaining the offset
         RectTransformUtility.ScreenPointToWorldPointInRectangle(
             GetComponent<RectTransform>(),
@@ -120,8 +122,11 @@ public class PlayerCardDragHandler : MonoBehaviour, IBeginDragHandler, IDragHand
         transform.position = globalMousePos + mouseOffset;
     }
 
+    private void OnDisable() => PlayerSlotDropHandler.ClearDropTarget(ref highlightedSlot);
+
     public void OnEndDrag(PointerEventData eventData)
     {
+        PlayerSlotDropHandler.ClearDropTarget(ref highlightedSlot);
         if (!isDragging) return;
         isDragging = false;
         // Reset transparency and raycast settings

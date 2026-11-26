@@ -1,0 +1,37 @@
+{
+  "buildId": "build_90fc69703878",
+  "status": "completed",
+  "result": "Succeeded",
+  "totalErrors": 1,
+  "totalWarnings": 2,
+  "errors": [
+    {
+      "message": "Access version should be odd when acquiring lock"
+    },
+    {
+      "message": "Access version should be odd when acquiring lock"
+    },
+    {
+      "message": "Access version should be odd when acquiring lock"
+    },
+    {
+      "message": "FileNotFoundException: While determining the PlatformToolsets that are installed, the vswhere.exe utility could not be found."
+    }
+  ],
+  "warnings": [
+    {
+      "message": "Value 0 is out of range for TEnum, setting to 0."
+    },
+    {
+      "message": "Pipeline: No RuntimePipelineConfig asset found (Project Settings > Pipeline > Runtime). Pipeline will be disabled in Player builds."
+    }
+  ],
+  "outputPath": "C:/Users/thomas/Documents/Projects/Personal/counterattack/Build/OnlineGroundPass/Windows/CounterattackOnlineGroundPass.exe",
+  "totalSizeBytes": 163755619,
+  "buildTimeMs": 17201,
+  "platform": "StandaloneWindows64",
+  "scope": "Online full-room-v20 off-target wide-miss cancellation and ball motion ownership; snapshots/full shots; paired internet deferred",
+  "configured_scenes": [
+    "Assets/Scenes/OnlineGroundPassProof.unity"
+  ]
+}

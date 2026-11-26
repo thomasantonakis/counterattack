@@ -1,0 +1,1 @@
+OnlinePreMoveChoicesPlayModeTests.ThrowInMustMoveRequiredDefenders(-1,True)

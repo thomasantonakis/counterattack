@@ -48,6 +48,7 @@ public sealed class PostMatchReportController : MonoBehaviour
     private PostMatchLeaderboard.Team team;
     private int page;
     private bool reportAvailable = true;
+    private bool historyAvailable = true;
     public bool ShowingPlayers { get; private set; }
     public bool ShowingPitch { get; private set; }
     public bool ShowingLuck { get; private set; }
@@ -83,6 +84,7 @@ public sealed class PostMatchReportController : MonoBehaviour
         Bind();
         matchData = data;
         reportAvailable = available;
+        SetHistoryAvailable(true);
         metric = PostMatchLeaderboard.Metric.Distance;
         team = PostMatchLeaderboard.Team.Both;
         page = 0;
@@ -95,6 +97,23 @@ public sealed class PostMatchReportController : MonoBehaviour
         if (pitchPage != null) pitchPage.Show(data, team, reset: true);
         if (luckPage != null) luckPage.Show(data);
         if (ratingsPage != null) ratingsPage.Show(data);
+    }
+
+    internal void SetHistoryAvailable(bool available)
+    {
+        historyAvailable = available;
+        if (pitchTab != null) pitchTab.interactable = available;
+        if (luckTab != null) luckTab.interactable = available;
+    }
+
+    internal void ApplyOnlineHistory(IReadOnlyList<GameplayEvent> events, int half)
+    {
+        if (matchData == null) return;
+        matchData.events = new List<GameplayEvent>(events);
+        matchData.runtimeSnapshot = new RoomRuntimeSnapshot { clock = new RoomClockSnapshot { currentHalf = half } };
+        SetHistoryAvailable(true);
+        if (pitchPage != null) pitchPage.Show(matchData, team);
+        if (luckPage != null) luckPage.Show(matchData);
     }
 
     private void OnEnable() => Bind();
@@ -143,8 +162,8 @@ public sealed class PostMatchReportController : MonoBehaviour
         if (reportAvailable) SelectTab(1);
     }
 
-    public void ShowPitch() { if (reportAvailable) SelectTab(2); }
-    public void ShowLuck() { if (reportAvailable) SelectTab(3); }
+    public void ShowPitch() { if (reportAvailable && historyAvailable) SelectTab(2); }
+    public void ShowLuck() { if (reportAvailable && historyAvailable) SelectTab(3); }
     public void ShowRatings() { if (reportAvailable) SelectTab(4); }
 
     private void SelectTab(int tab)

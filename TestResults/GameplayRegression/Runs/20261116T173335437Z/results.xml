@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="30" result="Passed" total="30" passed="30" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 17:33:35Z" end-time="2026-11-16 17:33:35Z" duration="0.3979552">
+  <test-suite type="TestSuite" id="3135" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1802" result="Passed" start-time="2026-11-16 17:33:35Z" end-time="2026-11-16 17:33:35Z" duration="0.397955" total="30" passed="30" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="3129" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="1802" result="Passed" start-time="2026-11-16 17:33:35Z" end-time="2026-11-16 17:33:35Z" duration="0.359269" total="30" passed="30" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12156" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="1669" name="OnlineCompactPresentationEditorTests" fullname="OnlineCompactPresentationEditorTests" classname="OnlineCompactPresentationEditorTests" runstate="Runnable" testcasecount="30" result="Passed" start-time="2026-11-16 17:33:35Z" end-time="2026-11-16 17:33:35Z" duration="0.318020" total="30" passed="30" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineCompactPresentation" />
+        </properties>
+        <test-case id="1704" name="CompactFrameDoesNotDisturbReliableFragmentAssembly" fullname="OnlineCompactPresentationEditorTests.CompactFrameDoesNotDisturbReliableFragmentAssembly" methodname="CompactFrameDoesNotDisturbReliableFragmentAssembly" classname="OnlineCompactPresentationEditorTests" runstate="Runnable" seed="438736557" result="Passed" start-time="2026-11-16 17:33:35Z" end-time="2026-11-16 17:33:35Z" duration="0.066320" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="1685" name="CongestedPoseDropsWithoutTriggeringControlRecovery" fullname="OnlineCompactPresentationEditorTests.CongestedPoseDropsWithoutTriggeringControlRecovery" classname="OnlineCompactPresentationEditorTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-11-16 17:33:35Z" end-time="2026-11-16 17:33:35Z" duration="0.019900" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1682" name="CongestedPoseDropsWithoutTriggeringControlRecovery(NoConnection)" fullname="OnlineCompactPresentationEditorTests.CongestedPoseDropsWithoutTriggeringControlRecovery(NoConnection)" methodname="CongestedPoseDropsWithoutTriggeringControlRecovery" classname="OnlineCompactPresentationEditorTests" runstate="Runnable" seed="1196045552" result="Passed" start-time="2026-11-16 17:33:35Z" end-time="2026-11-16 17:33:35Z" duration="0.001310" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1683" name="CongestedPoseDropsWithoutTriggeringControlRecovery(LimitExceeded)" fullname="OnlineCompactPresentationEditorTests.CongestedPoseDropsWithoutTriggeringControlRecovery(LimitExceeded)" methodname="CongestedPoseDropsWithoutTriggeringControlRecovery" classname="OnlineCompactPresentationEditorTests" runstate="Runnable" seed="823910306" result="Passed" start-time="2026-11-16 17:33:35Z" end-time="2026-11-16 17:33:35Z" duration="0.000338" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1684" name="CongestedPoseDropsWithoutTriggeringControlRecovery(TimedOut)" fullname="OnlineCompactPresentationEditorTests.CongestedPoseDropsWithoutTriggeringControlRecovery(TimedOut)" methodname="CongestedPoseDropsWithoutTriggeringControlRecovery" classname="OnlineCompactPresentationEditorTests" runstate="Runnable" seed="371410711" result="Passed" start-time="2026-11-16 17:33:35Z" end-time="2026-11-16 17:33:35Z" duration="0.000270" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="1697" name="InvalidPresentationCannotEnterCompactLane" fullname="OnlineCompactPresentationEditorTests.InvalidPresentationCannotEnterCompactLane" classname="OnlineCompactPresentationEditorTests" runstate="Runnable" testcasecount="11" result="Passed" start-time="2026-11-16 17:33:35Z" end-time="2026-11-16 17:33:35Z" duration="0.077089" total="11" passed="11" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1686" name="InvalidPresentationCannotEnterCompactLane(&quot;kind&quot;)" fullname="OnlineCompactPresentationEditorTests.InvalidPresentationCannotEnterCompactLane(&quot;kind&quot;)" methodname="InvalidPresentationCannotEnterCompactLane" classname="OnlineCompactPresentationEditorTests" runstate="Runnable" seed="1247416456" result="Passed" start-time="2026-11-16 17:33:35Z" end-time="2026-11-16 17:33:35Z" duration="0.002384" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1687" name="InvalidPresentationCannotEnterCompactLane(&quot;nonce&quot;)" fullname="OnlineCompactPresentationEditorTests.InvalidPresentationCannotEnterCompactLane(&quot;nonce&quot;)" methodname="InvalidPresentationCannotEnterCompactLane" classname="OnlineCompactPresentationEditorTests" runstate="Runnable" seed="223864270" result="Passed" start-time="2026-11-16 17:33:35Z" end-time="2026-11-16 17:33:35Z" duration="0.000730" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1688" name="InvalidPresentationCannotEnterCompactLane(&quot;generation&quot;)" fullname="OnlineCompactPresentationEditorTests.InvalidPresentationCannotEnterCompactLane(&quot;generation&quot;)" methodname="InvalidPresentationCannotEnterCompactLane" classname="OnlineCompactPresentationEditorTests" runstate="Runnable" seed="671571263" result="Passed" start-time="2026-11-16 17:33:35Z" end-time="2026-11-16 17:33:35Z" duration="0.000267" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1689" name="InvalidPresentationCannotEnterCompactLane(&quot;match&quot;)" fullname="OnlineCompactPresentationEditorTests.InvalidPresentationCannotEnterCompactLane(&quot;match&quot;)" methodname="InvalidPresentationCannotEnterCompactLane" classname="OnlineCompactPresentationEditorTests" runstate="Runnable" seed="2074428818" result="Passed" start-time="2026-11-16 17:33:35Z" end-time="2026-11-16 17:33:35Z" duration="0.000275" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1690" name="InvalidPresentationCannotEnterCompactLane(&quot;frame&quot;)" fullname="OnlineCompactPresentationEditorTests.InvalidPresentationCannotEnterCompactLane(&quot;frame&quot;)" methodname="InvalidPresentationCannotEnterCompactLane" classname="OnlineCompactPresentationEditorTests" runstate="Runnable" seed="1199772219" result="Passed" start-time="2026-11-16 17:33:35Z" end-time="2026-11-16 17:33:35Z" duration="0.000270" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1691" name="InvalidPresentationCannotEnterCompactLane(&quot;publication&quot;)" fullname="OnlineCompactPresentationEditorTests.InvalidPresentationCannotEnterCompactLane(&quot;publication&quot;)" methodname="InvalidPresentationCannotEnterCompactLane" classname="OnlineCompactPresentationEditorTests" runstate="Runnable" seed="1269335600" result="Passed" start-time="2026-11-16 17:33:35Z" end-time="2026-11-16 17:33:35Z" duration="0.000397" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1692" name="InvalidPresentationCannotEnterCompactLane(&quot;actor&quot;)" fullname="OnlineCompactPresentationEditorTests.InvalidPresentationCannotEnterCompactLane(&quot;actor&quot;)" methodname="InvalidPresentationCannotEnterCompactLane" classname="OnlineCompactPresentationEditorTests" runstate="Runnable" seed="802321431" result="Passed" start-time="2026-11-16 17:33:35Z" end-time="2026-11-16 17:33:35Z" duration="0.000289" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1693" name="InvalidPresentationCannotEnterCompactLane(&quot;duplicate&quot;)" fullname="OnlineCompactPresentationEditorTests.InvalidPresentationCannotEnterCompactLane(&quot;duplicate&quot;)" methodname="InvalidPresentationCannotEnterCompactLane" classname="OnlineCompactPresentationEditorTests" runstate="Runnable" seed="1093265155" result="Passed" start-time="2026-11-16 17:33:35Z" end-time="2026-11-16 17:33:35Z" duration="0.000368" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1694" name="InvalidPresentationCannotEnterCompactLane(&quot;too-many&quot;)" fullname="OnlineCompactPresentationEditorTests.InvalidPresentationCannotEnterCompactLane(&quot;too-many&quot;)" methodname="InvalidPresentationCannotEnterCompactLane" classname="OnlineCompactPresentationEditorTests" runstate="Runnable" seed="1268942257" result="Passed" start-time="2026-11-16 17:33:35Z" end-time="2026-11-16 17:33:35Z" duration="0.000358" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1695" name="InvalidPresentationCannotEnterCompactLane(&quot;nan&quot;)" fullname="OnlineCompactPresentationEditorTests.InvalidPresentationCannotEnterCompactLane(&quot;nan&quot;)" methodname="InvalidPresentationCannotEnterCompactLane" classname="OnlineCompactPresentationEditorTests" runstate="Runnable" seed="917702087" result="Passed" start-time="2026-11-16 17:33:35Z" end-time="2026-11-16 17:33:35Z" duration="0.000248" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1696" name="InvalidPresentationCannotEnterCompactLane(&quot;range&quot;)" fullname="OnlineCompactPresentationEditorTests.InvalidPresentationCannotEnterCompactLane(&quot;range&quot;)" methodname="InvalidPresentationCannotEnterCompactLane" classname="OnlineCompactPresentationEditorTests" runstate="Runnable" seed="844292547" result="Passed" start-time="2026-11-16 17:33:35Z" end-time="2026-11-16 17:33:35Z" duration="0.000333" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="1674" name="LosslessRoundTripFitsOneEosPacket" fullname="OnlineCompactPresentationEditorTests.LosslessRoundTripFitsOneEosPacket" classname="OnlineCompactPresentationEditorTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-11-16 17:33:35Z" end-time="2026-11-16 17:33:35Z" duration="0.029561" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1670" name="LosslessRoundTripFitsOneEosPacket(0,False)" fullname="OnlineCompactPresentationEditorTests.LosslessRoundTripFitsOneEosPacket(0,False)" methodname="LosslessRoundTripFitsOneEosPacket" classname="OnlineCompactPresentationEditorTests" runstate="Runnable" seed="1938793508" result="Passed" start-time="2026-11-16 17:33:35Z" end-time="2026-11-16 17:33:35Z" duration="0.002752" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1671" name="LosslessRoundTripFitsOneEosPacket(32,False)" fullname="OnlineCompactPresentationEditorTests.LosslessRoundTripFitsOneEosPacket(32,False)" methodname="LosslessRoundTripFitsOneEosPacket" classname="OnlineCompactPresentationEditorTests" runstate="Runnable" seed="1857818913" result="Passed" start-time="2026-11-16 17:33:35Z" end-time="2026-11-16 17:33:35Z" duration="0.000479" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1672" name="LosslessRoundTripFitsOneEosPacket(36,False)" fullname="OnlineCompactPresentationEditorTests.LosslessRoundTripFitsOneEosPacket(36,False)" methodname="LosslessRoundTripFitsOneEosPacket" classname="OnlineCompactPresentationEditorTests" runstate="Runnable" seed="1021160130" result="Passed" start-time="2026-11-16 17:33:35Z" end-time="2026-11-16 17:33:35Z" duration="0.000505" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1673" name="LosslessRoundTripFitsOneEosPacket(36,True)" fullname="OnlineCompactPresentationEditorTests.LosslessRoundTripFitsOneEosPacket(36,True)" methodname="LosslessRoundTripFitsOneEosPacket" classname="OnlineCompactPresentationEditorTests" runstate="Runnable" seed="315522933" result="Passed" start-time="2026-11-16 17:33:35Z" end-time="2026-11-16 17:33:35Z" duration="0.000683" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="1702" name="MalformedPacketIsRejected" fullname="OnlineCompactPresentationEditorTests.MalformedPacketIsRejected" classname="OnlineCompactPresentationEditorTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-11-16 17:33:35Z" end-time="2026-11-16 17:33:35Z" duration="0.030335" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1698" name="MalformedPacketIsRejected(&quot;truncated&quot;)" fullname="OnlineCompactPresentationEditorTests.MalformedPacketIsRejected(&quot;truncated&quot;)" methodname="MalformedPacketIsRejected" classname="OnlineCompactPresentationEditorTests" runstate="Runnable" seed="1647037867" result="Passed" start-time="2026-11-16 17:33:35Z" end-time="2026-11-16 17:33:35Z" duration="0.000718" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1699" name="MalformedPacketIsRejected(&quot;trailing&quot;)" fullname="OnlineCompactPresentationEditorTests.MalformedPacketIsRejected(&quot;trailing&quot;)" methodname="MalformedPacketIsRejected" classname="OnlineCompactPresentationEditorTests" runstate="Runnable" seed="2126368647" result="Passed" start-time="2026-11-16 17:33:35Z" end-time="2026-11-16 17:33:35Z" duration="0.000324" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1700" name="MalformedPacketIsRejected(&quot;version&quot;)" fullname="OnlineCompactPresentationEditorTests.MalformedPacketIsRejected(&quot;version&quot;)" methodname="MalformedPacketIsRejected" classname="OnlineCompactPresentationEditorTests" runstate="Runnable" seed="75949650" result="Passed" start-time="2026-11-16 17:33:35Z" end-time="2026-11-16 17:33:35Z" duration="0.000312" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1701" name="MalformedPacketIsRejected(&quot;magic&quot;)" fullname="OnlineCompactPresentationEditorTests.MalformedPacketIsRejected(&quot;magic&quot;)" methodname="MalformedPacketIsRejected" classname="OnlineCompactPresentationEditorTests" runstate="Runnable" seed="297433050" result="Passed" start-time="2026-11-16 17:33:35Z" end-time="2026-11-16 17:33:35Z" duration="0.000316" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="1681" name="OnlyFullRoomPresentationUsesDroppableDelivery" fullname="OnlineCompactPresentationEditorTests.OnlyFullRoomPresentationUsesDroppableDelivery" classname="OnlineCompactPresentationEditorTests" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-11-16 17:33:35Z" end-time="2026-11-16 17:33:35Z" duration="0.045237" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1675" name="OnlyFullRoomPresentationUsesDroppableDelivery(&quot;presentation&quot;,True)" fullname="OnlineCompactPresentationEditorTests.OnlyFullRoomPresentationUsesDroppableDelivery(&quot;presentation&quot;,True)" methodname="OnlyFullRoomPresentationUsesDroppableDelivery" classname="OnlineCompactPresentationEditorTests" runstate="Runnable" seed="1717048670" result="Passed" start-time="2026-11-16 17:33:35Z" end-time="2026-11-16 17:33:35Z" duration="0.002351" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1676" name="OnlyFullRoomPresentationUsesDroppableDelivery(&quot;state&quot;,False)" fullname="OnlineCompactPresentationEditorTests.OnlyFullRoomPresentationUsesDroppableDelivery(&quot;state&quot;,False)" methodname="OnlyFullRoomPresentationUsesDroppableDelivery" classname="OnlineCompactPresentationEditorTests" runstate="Runnable" seed="128548518" result="Passed" start-time="2026-11-16 17:33:35Z" end-time="2026-11-16 17:33:35Z" duration="0.000314" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1677" name="OnlyFullRoomPresentationUsesDroppableDelivery(&quot;command&quot;,False)" fullname="OnlineCompactPresentationEditorTests.OnlyFullRoomPresentationUsesDroppableDelivery(&quot;command&quot;,False)" methodname="OnlyFullRoomPresentationUsesDroppableDelivery" classname="OnlineCompactPresentationEditorTests" runstate="Runnable" seed="1543346453" result="Passed" start-time="2026-11-16 17:33:35Z" end-time="2026-11-16 17:33:35Z" duration="0.000317" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1678" name="OnlyFullRoomPresentationUsesDroppableDelivery(&quot;reply&quot;,False)" fullname="OnlineCompactPresentationEditorTests.OnlyFullRoomPresentationUsesDroppableDelivery(&quot;reply&quot;,False)" methodname="OnlyFullRoomPresentationUsesDroppableDelivery" classname="OnlineCompactPresentationEditorTests" runstate="Runnable" seed="64563690" result="Passed" start-time="2026-11-16 17:33:35Z" end-time="2026-11-16 17:33:35Z" duration="0.000232" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1679" name="OnlyFullRoomPresentationUsesDroppableDelivery(&quot;control&quot;,False)" fullname="OnlineCompactPresentationEditorTests.OnlyFullRoomPresentationUsesDroppableDelivery(&quot;control&quot;,False)" methodname="OnlyFullRoomPresentationUsesDroppableDelivery" classname="OnlineCompactPresentationEditorTests" runstate="Runnable" seed="979391150" result="Passed" start-time="2026-11-16 17:33:35Z" end-time="2026-11-16 17:33:35Z" duration="0.000222" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1680" name="OnlyFullRoomPresentationUsesDroppableDelivery(&quot;hello&quot;,False)" fullname="OnlineCompactPresentationEditorTests.OnlyFullRoomPresentationUsesDroppableDelivery(&quot;hello&quot;,False)" methodname="OnlyFullRoomPresentationUsesDroppableDelivery" classname="OnlineCompactPresentationEditorTests" runstate="Runnable" seed="1070324892" result="Passed" start-time="2026-11-16 17:33:35Z" end-time="2026-11-16 17:33:35Z" duration="0.000306" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-case id="1703" name="ReorderedAndConflictingFramesCannotOverwriteReplica" fullname="OnlineCompactPresentationEditorTests.ReorderedAndConflictingFramesCannotOverwriteReplica" methodname="ReorderedAndConflictingFramesCannotOverwriteReplica" classname="OnlineCompactPresentationEditorTests" runstate="Runnable" seed="1368508974" result="Passed" start-time="2026-11-16 17:33:35Z" end-time="2026-11-16 17:33:35Z" duration="0.021693" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Saving results to: TestResults\GameplayRegression\Runs\20261116T173335437Z\results.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

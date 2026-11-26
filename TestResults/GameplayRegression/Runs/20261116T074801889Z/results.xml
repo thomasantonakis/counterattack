@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="4" result="Failed(Child)" total="4" passed="0" failed="4" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 07:48:01Z" end-time="2026-11-16 07:48:07Z" duration="5.6356992">
+  <test-suite type="TestSuite" id="2787" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1470" result="Failed" site="Child" start-time="2026-11-16 07:48:01Z" end-time="2026-11-16 07:48:07Z" duration="5.635699" total="4" passed="0" failed="4" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="2784" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1470" result="Failed" site="Child" start-time="2026-11-16 07:48:01Z" end-time="2026-11-16 07:48:07Z" duration="5.594691" total="4" passed="0" failed="4" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17216" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestFixture" id="1934" name="OnlineOutsideKeeperShotPlayModeTests" fullname="OnlineOutsideKeeperShotPlayModeTests" classname="OnlineOutsideKeeperShotPlayModeTests" runstate="Runnable" testcasecount="4" result="Failed" site="Child" start-time="2026-11-16 07:48:01Z" end-time="2026-11-16 07:48:07Z" duration="5.585639" total="4" passed="0" failed="4" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineOutsideKeeperShot" />
+        </properties>
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="ParameterizedMethod" id="1939" name="ActualOutsideKeeperChoice" fullname="OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice" classname="OnlineOutsideKeeperShotPlayModeTests" runstate="Runnable" testcasecount="4" result="Failed" site="Child" start-time="2026-11-16 07:48:01Z" end-time="2026-11-16 07:48:07Z" duration="5.575597" total="4" passed="0" failed="4" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-case id="1935" name="ActualOutsideKeeperChoice(1,&quot;hands&quot;)" fullname="OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice(1,&quot;hands&quot;)" methodname="ActualOutsideKeeperChoice" classname="OnlineOutsideKeeperShotPlayModeTests" runstate="Runnable" seed="1679685827" result="Failed" start-time="2026-11-16 07:48:02Z" end-time="2026-11-16 07:48:04Z" duration="2.883328" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  action
+  Expected: collection containing "shot.start"
+  But was:  < "ground.start", "high.start", "long.start", "movement.start" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture.OnlineAccepted (CounterAttack.Online.OnlineGroundPassAuthority authority, System.String connection, System.Int64 sequence, System.String action) [0x00007] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineGroundPass\OnlineGroundPassFixture.cs:32
+at GoalkeeperBoxEntryFixture+<>c__DisplayClass113_0.<RunOnlineOutsideKeeperShot>g__Submit|0 (System.String actor, System.String action) [0x00000] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineOutsideKeeperShot\OnlineOutsideKeeperShotFixture.cs:16
+at GoalkeeperBoxEntryFixture+<RunOnlineOutsideKeeperShot>d__113.MoveNext () [0x0019b] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineOutsideKeeperShot\OnlineOutsideKeeperShotFixture.cs:17
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+]]></output>
+          </test-case>
+          <test-case id="1936" name="ActualOutsideKeeperChoice(1,&quot;block&quot;)" fullname="OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice(1,&quot;block&quot;)" methodname="ActualOutsideKeeperChoice" classname="OnlineOutsideKeeperShotPlayModeTests" runstate="Runnable" seed="1674899955" result="Failed" start-time="2026-11-16 07:48:04Z" end-time="2026-11-16 07:48:05Z" duration="0.899890" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  action
+  Expected: collection containing "shot.start"
+  But was:  < "ground.start", "high.start", "long.start", "movement.start" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture.OnlineAccepted (CounterAttack.Online.OnlineGroundPassAuthority authority, System.String connection, System.Int64 sequence, System.String action) [0x00007] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineGroundPass\OnlineGroundPassFixture.cs:32
+at GoalkeeperBoxEntryFixture+<>c__DisplayClass113_0.<RunOnlineOutsideKeeperShot>g__Submit|0 (System.String actor, System.String action) [0x00000] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineOutsideKeeperShot\OnlineOutsideKeeperShotFixture.cs:16
+at GoalkeeperBoxEntryFixture+<RunOnlineOutsideKeeperShot>d__113.MoveNext () [0x0019b] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineOutsideKeeperShot\OnlineOutsideKeeperShotFixture.cs:17
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+]]></output>
+          </test-case>
+          <test-case id="1937" name="ActualOutsideKeeperChoice(-1,&quot;hands&quot;)" fullname="OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice(-1,&quot;hands&quot;)" methodname="ActualOutsideKeeperChoice" classname="OnlineOutsideKeeperShotPlayModeTests" runstate="Runnable" seed="1164007863" result="Failed" start-time="2026-11-16 07:48:05Z" end-time="2026-11-16 07:48:06Z" duration="0.890456" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  action
+  Expected: collection containing "shot.start"
+  But was:  < "ground.start", "high.start", "long.start", "movement.start" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture.OnlineAccepted (CounterAttack.Online.OnlineGroundPassAuthority authority, System.String connection, System.Int64 sequence, System.String action) [0x00007] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineGroundPass\OnlineGroundPassFixture.cs:32
+at GoalkeeperBoxEntryFixture+<>c__DisplayClass113_0.<RunOnlineOutsideKeeperShot>g__Submit|0 (System.String actor, System.String action) [0x00000] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineOutsideKeeperShot\OnlineOutsideKeeperShotFixture.cs:16
+at GoalkeeperBoxEntryFixture+<RunOnlineOutsideKeeperShot>d__113.MoveNext () [0x0019b] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineOutsideKeeperShot\OnlineOutsideKeeperShotFixture.cs:17
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+]]></output>
+          </test-case>
+          <test-case id="1938" name="ActualOutsideKeeperChoice(-1,&quot;block&quot;)" fullname="OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice(-1,&quot;block&quot;)" methodname="ActualOutsideKeeperChoice" classname="OnlineOutsideKeeperShotPlayModeTests" runstate="Runnable" seed="967327123" result="Failed" start-time="2026-11-16 07:48:06Z" end-time="2026-11-16 07:48:07Z" duration="0.862506" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  action
+  Expected: collection containing "shot.start"
+  But was:  < "ground.start", "high.start", "long.start", "movement.start" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture.OnlineAccepted (CounterAttack.Online.OnlineGroundPassAuthority authority, System.String connection, System.Int64 sequence, System.String action) [0x00007] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineGroundPass\OnlineGroundPassFixture.cs:32
+at GoalkeeperBoxEntryFixture+<>c__DisplayClass113_0.<RunOnlineOutsideKeeperShot>g__Submit|0 (System.String actor, System.String action) [0x00000] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineOutsideKeeperShot\OnlineOutsideKeeperShotFixture.cs:16
+at GoalkeeperBoxEntryFixture+<RunOnlineOutsideKeeperShot>d__113.MoveNext () [0x0019b] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineOutsideKeeperShot\OnlineOutsideKeeperShotFixture.cs:17
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Saving results to: TestResults\GameplayRegression\Runs\20261116T074801889Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

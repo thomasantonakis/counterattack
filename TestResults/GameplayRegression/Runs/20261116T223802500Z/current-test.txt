@@ -1,0 +1,1 @@
+OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(-1,"away-stationary","stand")

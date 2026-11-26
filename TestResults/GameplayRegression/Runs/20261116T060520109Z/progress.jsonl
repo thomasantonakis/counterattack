@@ -1,0 +1,44 @@
+{"name":"OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(\"purpose\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(\"stage\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(\"negative\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(\"oversize\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(\"winner\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(\"chooser\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(\"tied-winner\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(\"missing-winner\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(\"home-stage\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(\"away-stage\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(\"result-stage\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(\"closed\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomCoinTossEditorTests.ReplicaClearsOptionalCoinAndRetainsAbsentWorldPoses","status":"Passed","message":"","stackTrace":""}
+{"name":"RoomCoinTossEditorTests.ExtraTimeAndShootoutChoicesSurviveSerializationIndependentlyOfLiveDirections","status":"Passed","message":"","stackTrace":""}
+{"name":"RoomCoinTossEditorTests.ExtraTimeStartsWithChosenSidesThenSwitchesAndAlternatesItsOwnKickoff(True,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"RoomCoinTossEditorTests.ExtraTimeStartsWithChosenSidesThenSwitchesAndAlternatesItsOwnKickoff(True,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"RoomCoinTossEditorTests.ExtraTimeStartsWithChosenSidesThenSwitchesAndAlternatesItsOwnKickoff(False,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"RoomCoinTossEditorTests.ExtraTimeStartsWithChosenSidesThenSwitchesAndAlternatesItsOwnKickoff(False,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"RoomCoinTossEditorTests.HotSeatKickoffAcceptsBothHumanConfirmationsDespiteStaleCpuPersona(1,Return)","status":"Passed","message":"","stackTrace":""}
+{"name":"RoomCoinTossEditorTests.HotSeatKickoffAcceptsBothHumanConfirmationsDespiteStaleCpuPersona(1,KeypadEnter)","status":"Passed","message":"","stackTrace":""}
+{"name":"RoomCoinTossEditorTests.HotSeatKickoffAcceptsBothHumanConfirmationsDespiteStaleCpuPersona(2,Return)","status":"Passed","message":"","stackTrace":""}
+{"name":"RoomCoinTossEditorTests.HotSeatKickoffAcceptsBothHumanConfirmationsDespiteStaleCpuPersona(3,Return)","status":"Passed","message":"","stackTrace":""}
+{"name":"RoomCoinTossEditorTests.HotSeatKickoffAcceptsBothHumanConfirmationsDespiteStaleCpuPersona(4,Return)","status":"Passed","message":"","stackTrace":""}
+{"name":"RoomCoinTossEditorTests.RegulationHalfTimeStillSwitchesSidesAndAlternatesKickoff","status":"Passed","message":"","stackTrace":""}
+{"name":"RoomCoinTossEditorTests.RoomPanelRoutesManagerRollsHoldsClockAndBlocksOtherGameplayUntilBothChoicesFinish(ExtraTime)","status":"Passed","message":"","stackTrace":""}
+{"name":"RoomCoinTossEditorTests.RoomPanelRoutesManagerRollsHoldsClockAndBlocksOtherGameplayUntilBothChoicesFinish(PenaltyShootout)","status":"Passed","message":"","stackTrace":""}
+{"name":"RoomCoinTossEditorTests.ShootoutCoordinatesFirstTakerAndBothTeamsAttackTheChosenGoal(False,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"RoomCoinTossEditorTests.ShootoutCoordinatesFirstTakerAndBothTeamsAttackTheChosenGoal(False,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"RoomCoinTossEditorTests.ShootoutCoordinatesFirstTakerAndBothTeamsAttackTheChosenGoal(True,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"RoomCoinTossEditorTests.ShootoutCoordinatesFirstTakerAndBothTeamsAttackTheChosenGoal(True,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"RoomCoinTossEditorTests.SinglePlayerCpuPersonaRemainsAutomated","status":"Passed","message":"","stackTrace":""}
+{"name":"RoomCoinTossEditorTests.TieBreakerRulesStillGateExtraTimeAndPenalties(\"None\",0,False,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"RoomCoinTossEditorTests.TieBreakerRulesStillGateExtraTimeAndPenalties(\"Penalties\",0,False,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"RoomCoinTossEditorTests.TieBreakerRulesStillGateExtraTimeAndPenalties(\"Extra Time\",0,True,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"RoomCoinTossEditorTests.TieBreakerRulesStillGateExtraTimeAndPenalties(\"Extra Time & Penalties\",0,True,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"RoomCoinTossEditorTests.TieBreakerRulesStillGateExtraTimeAndPenalties(\"Extra Time & Penalties\",1,False,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"RoomCoinTossEditorTests.WinnerChoosingFirstPenaltyLeavesOnlyEndChoiceForOpponent(True,LeftSide,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"RoomCoinTossEditorTests.WinnerChoosingFirstPenaltyLeavesOnlyEndChoiceForOpponent(True,RightSide,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"RoomCoinTossEditorTests.WinnerChoosingFirstPenaltyLeavesOnlyEndChoiceForOpponent(False,LeftSide,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"RoomCoinTossEditorTests.WinnerChoosingFirstPenaltyLeavesOnlyEndChoiceForOpponent(False,RightSide,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"RoomCoinTossEditorTests.WinnerChoosingShootoutEndGivesOpponentFirstPenalty(True,LeftSide,False,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"RoomCoinTossEditorTests.WinnerChoosingShootoutEndGivesOpponentFirstPenalty(True,RightSide,False,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"RoomCoinTossEditorTests.WinnerChoosingShootoutEndGivesOpponentFirstPenalty(False,LeftSide,True,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"RoomCoinTossEditorTests.WinnerChoosingShootoutEndGivesOpponentFirstPenalty(False,RightSide,True,True)","status":"Passed","message":"","stackTrace":""}

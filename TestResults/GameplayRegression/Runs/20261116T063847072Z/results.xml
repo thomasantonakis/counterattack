@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="18" result="Passed" total="18" passed="18" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 06:38:47Z" end-time="2026-11-16 06:42:22Z" duration="215.0128569">
+  <test-suite type="TestSuite" id="2771" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1458" result="Passed" start-time="2026-11-16 06:38:47Z" end-time="2026-11-16 06:42:22Z" duration="215.012857" total="18" passed="18" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2768" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1458" result="Passed" start-time="2026-11-16 06:38:47Z" end-time="2026-11-16 06:42:22Z" duration="214.978525" total="18" passed="18" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17216" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1887" name="OnlineMatchConclusionPlayModeTests" fullname="OnlineMatchConclusionPlayModeTests" classname="OnlineMatchConclusionPlayModeTests" runstate="Runnable" testcasecount="18" result="Passed" start-time="2026-11-16 06:38:47Z" end-time="2026-11-16 06:42:22Z" duration="214.966979" total="18" passed="18" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineMatchConclusion" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="1906" name="RegularFullTime" fullname="OnlineMatchConclusionPlayModeTests.RegularFullTime" classname="OnlineMatchConclusionPlayModeTests" runstate="Runnable" testcasecount="18" result="Passed" start-time="2026-11-16 06:38:47Z" end-time="2026-11-16 06:42:22Z" duration="214.950794" total="18" passed="18" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="1888" name="RegularFullTime(-1,1,False)" fullname="OnlineMatchConclusionPlayModeTests.RegularFullTime(-1,1,False)" methodname="RegularFullTime" classname="OnlineMatchConclusionPlayModeTests" runstate="Runnable" seed="1239637280" result="Passed" start-time="2026-11-16 06:38:47Z" end-time="2026-11-16 06:38:59Z" duration="12.698717" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[TokenKitCatalog] Loading kits JSON from Resources path 'Kits/kit-picker-v1-11-supported' (asset: Assets/Resources/Kits/kit-picker-v1-11-supported.json).
+[TokenKitCatalog] Found kits JSON TextAsset 'kit-picker-v1-11-supported' at Resources path 'Kits/kit-picker-v1-11-supported' (32277 characters).
+[TokenKitCatalog] Parsed 101 kit preset(s) from Resources path 'Kits/kit-picker-v1-11-supported'.
+[TokenKitCatalog] Active kit catalog contains 101 kit preset(s).
+MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584959841192
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Full-time whistle. Match ended.
+The online session is no longer active.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1889" name="RegularFullTime(-1,1,True)" fullname="OnlineMatchConclusionPlayModeTests.RegularFullTime(-1,1,True)" methodname="RegularFullTime" classname="OnlineMatchConclusionPlayModeTests" runstate="Runnable" seed="1230704915" result="Passed" start-time="2026-11-16 06:38:59Z" end-time="2026-11-16 06:39:12Z" duration="12.281181" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584959968448
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Full-time whistle. Match ended.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1890" name="RegularFullTime(-1,2,False)" fullname="OnlineMatchConclusionPlayModeTests.RegularFullTime(-1,2,False)" methodname="RegularFullTime" classname="OnlineMatchConclusionPlayModeTests" runstate="Runnable" seed="364116703" result="Passed" start-time="2026-11-16 06:39:12Z" end-time="2026-11-16 06:39:23Z" duration="11.057507" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584960095912
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Full-time whistle. Match ended.
+The online session is no longer active.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1891" name="RegularFullTime(-1,2,True)" fullname="OnlineMatchConclusionPlayModeTests.RegularFullTime(-1,2,True)" methodname="RegularFullTime" classname="OnlineMatchConclusionPlayModeTests" runstate="Runnable" seed="1936267551" result="Passed" start-time="2026-11-16 06:39:23Z" end-time="2026-11-16 06:39:35Z" duration="12.205708" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584960223168
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Full-time whistle. Match ended.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1892" name="RegularFullTime(-1,4,False)" fullname="OnlineMatchConclusionPlayModeTests.RegularFullTime(-1,4,False)" methodname="RegularFullTime" classname="OnlineMatchConclusionPlayModeTests" runstate="Runnable" seed="355364822" result="Passed" start-time="2026-11-16 06:39:35Z" end-time="2026-11-16 06:39:46Z" duration="11.279692" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584960350632
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Extra-time full-time whistle. Match ended.
+The online session is no longer active.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1893" name="RegularFullTime(-1,4,True)" fullname="OnlineMatchConclusionPlayModeTests.RegularFullTime(-1,4,True)" methodname="RegularFullTime" classname="OnlineMatchConclusionPlayModeTests" runstate="Runnable" seed="710536243" result="Passed" start-time="2026-11-16 06:39:46Z" end-time="2026-11-16 06:39:59Z" duration="12.430491" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584960477888
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Extra-time full-time whistle. Match ended.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1894" name="RegularFullTime(0,1,False)" fullname="OnlineMatchConclusionPlayModeTests.RegularFullTime(0,1,False)" methodname="RegularFullTime" classname="OnlineMatchConclusionPlayModeTests" runstate="Runnable" seed="1489437564" result="Passed" start-time="2026-11-16 06:39:59Z" end-time="2026-11-16 06:40:10Z" duration="11.392126" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584960605352
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Full-time whistle. Match ended.
+The online session is no longer active.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1895" name="RegularFullTime(0,1,True)" fullname="OnlineMatchConclusionPlayModeTests.RegularFullTime(0,1,True)" methodname="RegularFullTime" classname="OnlineMatchConclusionPlayModeTests" runstate="Runnable" seed="1380232699" result="Passed" start-time="2026-11-16 06:40:10Z" end-time="2026-11-16 06:40:22Z" duration="12.383192" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584960732608
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Full-time whistle. Match ended.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1896" name="RegularFullTime(0,2,False)" fullname="OnlineMatchConclusionPlayModeTests.RegularFullTime(0,2,False)" methodname="RegularFullTime" classname="OnlineMatchConclusionPlayModeTests" runstate="Runnable" seed="1225483373" result="Passed" start-time="2026-11-16 06:40:22Z" end-time="2026-11-16 06:40:34Z" duration="11.568620" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584960860072
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Full-time whistle. Match ended.
+The online session is no longer active.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1897" name="RegularFullTime(0,2,True)" fullname="OnlineMatchConclusionPlayModeTests.RegularFullTime(0,2,True)" methodname="RegularFullTime" classname="OnlineMatchConclusionPlayModeTests" runstate="Runnable" seed="1065195733" result="Passed" start-time="2026-11-16 06:40:34Z" end-time="2026-11-16 06:40:46Z" duration="12.236766" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584960987328
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Full-time whistle. Match ended.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1898" name="RegularFullTime(0,4,False)" fullname="OnlineMatchConclusionPlayModeTests.RegularFullTime(0,4,False)" methodname="RegularFullTime" classname="OnlineMatchConclusionPlayModeTests" runstate="Runnable" seed="412014420" result="Passed" start-time="2026-11-16 06:40:46Z" end-time="2026-11-16 06:40:58Z" duration="11.353559" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584961114792
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Extra-time full-time whistle. Match ended.
+The online session is no longer active.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1899" name="RegularFullTime(0,4,True)" fullname="OnlineMatchConclusionPlayModeTests.RegularFullTime(0,4,True)" methodname="RegularFullTime" classname="OnlineMatchConclusionPlayModeTests" runstate="Runnable" seed="714735989" result="Passed" start-time="2026-11-16 06:40:58Z" end-time="2026-11-16 06:41:10Z" duration="12.523306" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584961242048
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Extra-time full-time whistle. Match ended.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1900" name="RegularFullTime(1,1,False)" fullname="OnlineMatchConclusionPlayModeTests.RegularFullTime(1,1,False)" methodname="RegularFullTime" classname="OnlineMatchConclusionPlayModeTests" runstate="Runnable" seed="830525029" result="Passed" start-time="2026-11-16 06:41:10Z" end-time="2026-11-16 06:41:21Z" duration="11.363111" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584961369512
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Full-time whistle. Match ended.
+The online session is no longer active.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1901" name="RegularFullTime(1,1,True)" fullname="OnlineMatchConclusionPlayModeTests.RegularFullTime(1,1,True)" methodname="RegularFullTime" classname="OnlineMatchConclusionPlayModeTests" runstate="Runnable" seed="857026726" result="Passed" start-time="2026-11-16 06:41:22Z" end-time="2026-11-16 06:41:34Z" duration="12.373356" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584961496768
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Full-time whistle. Match ended.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1902" name="RegularFullTime(1,2,False)" fullname="OnlineMatchConclusionPlayModeTests.RegularFullTime(1,2,False)" methodname="RegularFullTime" classname="OnlineMatchConclusionPlayModeTests" runstate="Runnable" seed="787382044" result="Passed" start-time="2026-11-16 06:41:34Z" end-time="2026-11-16 06:41:45Z" duration="11.373885" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584961624232
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Full-time whistle. Match ended.
+The online session is no longer active.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1903" name="RegularFullTime(1,2,True)" fullname="OnlineMatchConclusionPlayModeTests.RegularFullTime(1,2,True)" methodname="RegularFullTime" classname="OnlineMatchConclusionPlayModeTests" runstate="Runnable" seed="1235164449" result="Passed" start-time="2026-11-16 06:41:45Z" end-time="2026-11-16 06:41:58Z" duration="12.457463" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584961751488
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Full-time whistle. Match ended.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1904" name="RegularFullTime(1,4,False)" fullname="OnlineMatchConclusionPlayModeTests.RegularFullTime(1,4,False)" methodname="RegularFullTime" classname="OnlineMatchConclusionPlayModeTests" runstate="Runnable" seed="871082282" result="Passed" start-time="2026-11-16 06:41:58Z" end-time="2026-11-16 06:42:09Z" duration="11.608300" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584961878952
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Extra-time full-time whistle. Match ended.
+The online session is no longer active.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1905" name="RegularFullTime(1,4,True)" fullname="OnlineMatchConclusionPlayModeTests.RegularFullTime(1,4,True)" methodname="RegularFullTime" classname="OnlineMatchConclusionPlayModeTests" runstate="Runnable" seed="943131386" result="Passed" start-time="2026-11-16 06:42:09Z" end-time="2026-11-16 06:42:22Z" duration="12.307183" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584962006208
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Extra-time full-time whistle. Match ended.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+Saving results to: TestResults\GameplayRegression\Runs\20261116T063847072Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

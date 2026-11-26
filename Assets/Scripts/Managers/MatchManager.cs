@@ -1298,7 +1298,9 @@ public partial class MatchManager : MonoBehaviour
     public bool IsWaitingForExtraActionsRoll => isWaitingForExtraActionsRoll;
     public int CurrentHalf => currentHalf;
     public bool IsPauseMenuOpen => isPauseMenuOpen;
-    public bool IsGameplayInputBlocked => isPauseMenuOpen || RoomInputOwnership.IntroActive;
+    public bool IsGameplayInputBlocked => CounterAttack.Online.OnlineRoomSession.IsGuest
+        || CounterAttack.Online.OnlineRoomSession.Current?.ResumePending==true
+        || CounterAttack.Online.OnlineRoomSession.Current?.IntroPending==true || isPauseMenuOpen || RoomInputOwnership.IntroActive;
     public bool AreSubstitutionsAvailable => areSubstitutionsAvailable;
     public string SubstitutionsAvailabilityReason => substitutionsAvailabilityReason;
     public bool IsStopPlayRestartPending => pendingStopPlayRestart != PendingStopPlayRestartKind.None;
@@ -1503,6 +1505,9 @@ public partial class MatchManager : MonoBehaviour
 
     private bool HasActiveGoalkeeperContinuityGap(bool isHomeTeam)
     {
+        // During a shootout transition a goalkeeper can be between two staging hexes.
+        if (IsOnlineAuthorityControlled && OnlineShootoutManager?.OnlinePresentationMoving == true)
+            return false;
         return GetPlayingTokensForTeam(isHomeTeam).Any(token => token != null && !token.isSentOff)
             && !HasActiveGoalkeeper(isHomeTeam)
             && !IsGoalkeeperReplacementRequired(isHomeTeam)
@@ -2809,6 +2814,8 @@ public partial class MatchManager : MonoBehaviour
         Dictionary<string, string> details = null,
         GameplayLuckModel luckModel = null)
     {
+        if (CounterAttack.Online.OnlineRoomSession.IsGuest)
+            throw new InvalidOperationException("Guest replicas cannot resolve gameplay dice");
         GameplayAudioEvents.PublishIncident(this, GameplayAudioEvents.IncidentKind.DiceRequested);
         luckModel ??= GameplayLuckModel.Capture(context, actor == null ? null : actor.isHomeTeam ? "Home" : "Away", actor, details);
         TimingRollSequence++;
@@ -2841,6 +2848,7 @@ public partial class MatchManager : MonoBehaviour
             randomRoll = randomRoll,
             randomJackpot = randomJackpot
         };
+        PublishOnlineRoll(rollResult, actor);
 
         Dictionary<string, string> resultDetails = details != null
             ? new Dictionary<string, string>(details)
@@ -3729,6 +3737,16 @@ public partial class MatchManager : MonoBehaviour
 
     private void Awake()
     {
+        if (CounterAttack.Online.OnlineRoomSession.IsGuest)
+        {
+            if (gameObject.scene.name == CounterAttack.Online.OnlineRoomStartup.SceneName
+                && CounterAttack.Online.OnlineRoomSession.Current.HasInitialData)
+            {
+                Instance = this;
+                InitializeAuthoredOnlineMatch(CounterAttack.Online.OnlineRoomSession.Current.CaptureInitialData());
+            }
+            return;
+        }
         Debug.Log("MatchManager Awake() - Starting Initialization");
         Debug.Log($"⚠️ MatchManager Awake() - Entity ID: {GetEntityId()}");
 
@@ -3830,6 +3848,7 @@ public partial class MatchManager : MonoBehaviour
 
     IEnumerator Start()
     {
+        if (CounterAttack.Online.OnlineRoomSession.IsGuest) yield break;
         Debug.Log($"⚠️ MatchManager Start() - Entity ID: {GetEntityId()}");
         RoomAIDecisionTraceService.ResetSession();
         RoomLiveLogService.ResetSession();
@@ -3946,6 +3965,7 @@ public partial class MatchManager : MonoBehaviour
 
     private void Update()
     {
+        if (CounterAttack.Online.OnlineRoomSession.IsGuest) return;
         // // Handle state transitions or global inputs, like starting the match
         // if (currentState == GameState.KickOffSetup && Input.GetKeyDown(KeyCode.Space))
         // {
@@ -3957,8 +3977,11 @@ public partial class MatchManager : MonoBehaviour
         //     // Here you could manage inputs like the player selecting a pass target (by clicking a hex)
         //     // You can also trigger transitions between game states based on player actions
         // }
-        AdvanceDecisionTiming(Time.unscaledDeltaTime);
-        UpdateMatchClock();
+        if (CounterAttack.Online.OnlineRoomSession.Current?.HasInitialData != true)
+        {
+            AdvanceDecisionTiming(Time.unscaledDeltaTime);
+            UpdateMatchClock();
+        }
         FlushLiveLogIfDue();
     }
 
@@ -3980,6 +4003,7 @@ public partial class MatchManager : MonoBehaviour
         if (Instance == this)
         {
             FlushLiveLogBeforeExit();
+            Instance = null;
         }
     }
 
@@ -4045,6 +4069,7 @@ public partial class MatchManager : MonoBehaviour
     {
         DecisionTiming.Clear();
         TimingRollSequence = 0;
+        ClearOnlineRollHistory();
         possessionActionTeam = null;
         stoppagePresentationVersion++;
         stoppageActionsPanel?.Cancel(this);
@@ -4419,6 +4444,7 @@ public partial class MatchManager : MonoBehaviour
 
     private void OnEnable()
     {
+        if (CounterAttack.Online.OnlineRoomSession.IsGuest) return;
         GameInputManager.OnClick += OnClickReceived;
         GameInputManager.OnKeyPress += OnKeyReceived;
     }
@@ -4441,7 +4467,7 @@ public partial class MatchManager : MonoBehaviour
         if (keyData.isConsumed) return;
         bool hasRollOverride = RollInputOverride.TryParse(keyData, out RollInputOverride rollOverride);
         if (isWaitingForExtraActionsRoll && (keyData.key == KeyCode.R || hasRollOverride)
-            && (stoppageActionsPanel == null || !stoppageActionsPanel.HasSceneBindings || stoppageActionsPanel.IsAwaitingRoll))
+            && (IsOnlineAuthorityControlled || stoppageActionsPanel == null || !stoppageActionsPanel.HasSceneBindings || stoppageActionsPanel.IsAwaitingRoll))
         {
             DetermineExtraActions(hasRollOverride ? (RollInputOverride?)rollOverride : null);
             keyData.Consume(nameof(MatchManager));
@@ -5203,6 +5229,7 @@ public partial class MatchManager : MonoBehaviour
     // Method to trigger the standard pass attempt mode (on key press, like "P")
     public void TriggerStandardPass(PlayerToken pendingSetPieceTaker = null)
     {
+        if (CounterAttack.Online.OnlineRoomSession.IsGuest) return;
         if (finalThirdManager != null && finalThirdManager.isActivated) return;
         bool isInitialKickoffPass = currentState == GameState.KickoffBlown && pendingSetPieceTaker == null;
         PlayerToken kickoffTaker = isInitialKickoffPass
@@ -5463,6 +5490,9 @@ public partial class MatchManager : MonoBehaviour
         RefreshAerialTargetPrecomputations();
         RegisterCommittedAction(actionKind);
         RecordActionCommitted(actionKind, commitSource, commitReason);
+        // Online proof managers intentionally suppress Update; retire the restart
+        // when its live child commits rather than waiting for a disabled callback.
+        if(IsOnlineAuthorityControlled)freeKickManager?.CompleteOnlineSetPieceExecutionIfCommitted();
         if (!isHalfExpired && !isMatchComplete)
         {
             isClockRunning = true;
@@ -5977,6 +6007,14 @@ public partial class MatchManager : MonoBehaviour
             return false;
         }
 
+        if (isWaitingForExtraActionsRoll || StoppageActionsPanelController.IsHoldingContinuation
+            || isHalfExpired && (!extraActionsDetermined || extraActionsRemaining <= 0)
+                && currentState is not (GameState.HalfTime or GameState.MatchEnded))
+        {
+            reason = "Cannot save while the half is ending or stoppage actions are being determined.";
+            return false;
+        }
+
         bool savingMovementOpening = CanSaveMovementOpening;
         if (HasActiveRuntimeAction(savingMovementOpening))
         {
@@ -6113,9 +6151,9 @@ public partial class MatchManager : MonoBehaviour
     {
         return movementPhaseManager?.goalKeeperManager?.IsWaitingForPickupChoice == true
             || (!savingMovementOpening && movementPhaseManager?.isActivated == true)
-            || (savingMovementOpening && (looseBallManager?.isActivated == true
-                || movementPhaseManager.headerManager?.isActivated == true
-                || isWaitingForExtraActionsRoll || IsStopPlayRestartPending))
+            || looseBallManager?.isActivated == true
+            || movementPhaseManager?.headerManager?.isActivated == true
+            || IsStopPlayRestartPending
             || (groundBallManager != null && groundBallManager.isActivated)
             || (firstTimePassManager != null && firstTimePassManager.isActivated)
             || (highPassManager != null && highPassManager.isActivated)
@@ -6181,6 +6219,9 @@ public partial class MatchManager : MonoBehaviour
         return $"{(isHomeTeam ? "Home" : "Away")}:{jerseyNumber}";
     }
 
+    internal bool RuntimeSnapshotRestored { get; private set; }
+    internal string RuntimeSnapshotRestoreError { get; private set; }
+
     private IEnumerator RestoreRuntimeSnapshotWhenReady(RoomRuntimeSnapshot snapshot)
     {
         if (snapshot == null)
@@ -6190,11 +6231,34 @@ public partial class MatchManager : MonoBehaviour
 
         yield return new WaitUntil(() => hexGrid != null && hexGrid.IsGridInitialized());
         yield return new WaitUntil(() => playerTokenManager != null
-            && FindObjectsByType<PlayerToken>(FindObjectsInactive.Include).Length > 0);
+            && (CounterAttack.Online.OnlineRoomSession.Current?.IsResuming == true
+                ? playerTokenManager.allTokens.Count == 22
+                : FindObjectsByType<PlayerToken>(FindObjectsInactive.Include).Length > 0));
         yield return new WaitUntil(() => ball != null && ball.GetCurrentHex() != null);
         yield return null;
 
-        ApplyRuntimeSnapshot(snapshot);
+        if (CounterAttack.Online.OnlineRoomSession.Current?.IsResuming != true)
+        {
+            ApplyRuntimeSnapshot(snapshot);
+            yield break;
+        }
+        try
+        {
+            if (ResolveHex(snapshot.ball) == null || snapshot.tokens.Any(token =>
+                    token.currentHex != null && ResolveHex(token.currentHex) == null))
+                throw new InvalidDataException("The saved board contains invalid ball or player positions.");
+            var expected = playerTokenManager.CaptureOnlineRoomRoster()
+                .Select(token => BuildTokenKey(token.isHomeTeam, token.jerseyNumber)).ToHashSet();
+            if (!expected.SetEquals(snapshot.tokens.Select(token => token.tokenKey)))
+                throw new InvalidDataException("The saved player roster could not be restored.");
+            ApplyRuntimeSnapshot(snapshot);
+            RuntimeSnapshotRestored = true;
+        }
+        catch (Exception error)
+        {
+            RuntimeSnapshotRestoreError = "The saved board could not be restored.";
+            Debug.LogWarning($"Online checkpoint restore failed: {error.GetType().Name}");
+        }
     }
 
     private void ApplyRuntimeSnapshot(RoomRuntimeSnapshot snapshot)
@@ -6216,6 +6280,7 @@ public partial class MatchManager : MonoBehaviour
             RestoreSubstitutionSnapshot(snapshot.substitutions);
             RebuildManagersAfterRuntimeRestore(snapshot.movementOpening);
             TimingRollSequence = snapshot.timingRollSequence;
+            ClearOnlineRollHistory();
             timingCompletedActions = totalCompletedActions;
             DecisionTiming.Restore(snapshot.decisionTiming);
         }
@@ -6745,6 +6810,12 @@ public partial class MatchManager : MonoBehaviour
     
     public void LoadGameSettingsFromJson()
     {
+        var online=CounterAttack.Online.OnlineRoomSession.Current;
+        if(online?.HasInitialData==true)
+        {
+            gameData=online.CaptureInitialData();EnsureGameplayEventLogInitialized();OnGameSettingsLoaded?.Invoke();return;
+        }
+        if (CounterAttack.Online.OnlineRoomSession.IsGuest) return;
         ApplicationManager.EnsureInstanceExists();
         string filePath = string.Empty;
         bool hasExplicitRuntimeSaveContext = ApplicationManager.Instance.HasExplicitSaveContext &&

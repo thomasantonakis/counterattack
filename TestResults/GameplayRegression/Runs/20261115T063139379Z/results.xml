@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="20" result="Passed" total="20" passed="20" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-15 06:31:39Z" end-time="2026-11-15 06:31:40Z" duration="1.3502444">
+  <test-suite type="TestSuite" id="2866" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1577" result="Passed" start-time="2026-11-15 06:31:39Z" end-time="2026-11-15 06:31:40Z" duration="1.350244" total="20" passed="20" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="2860" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="1577" result="Passed" start-time="2026-11-15 06:31:39Z" end-time="2026-11-15 06:31:40Z" duration="1.322249" total="20" passed="20" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="1132" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="1853" name="OnlineOpeningEditorTests" fullname="OnlineOpeningEditorTests" classname="OnlineOpeningEditorTests" runstate="Runnable" testcasecount="20" result="Passed" start-time="2026-11-15 06:31:39Z" end-time="2026-11-15 06:31:40Z" duration="1.314245" total="20" passed="20" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineOpeningSetup" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="1875" name="OpeningIsOwnedAndRecoverable" fullname="OnlineOpeningEditorTests.OpeningIsOwnedAndRecoverable" classname="OnlineOpeningEditorTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-11-15 06:31:39Z" end-time="2026-11-15 06:31:40Z" duration="0.657171" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1867" name="OpeningIsOwnedAndRecoverable(False,&quot;invalid&quot;)" fullname="OnlineOpeningEditorTests.OpeningIsOwnedAndRecoverable(False,&quot;invalid&quot;)" methodname="OpeningIsOwnedAndRecoverable" classname="OnlineOpeningEditorTests" runstate="Runnable" seed="1072304037" result="Passed" start-time="2026-11-15 06:31:39Z" end-time="2026-11-15 06:31:39Z" duration="0.250630" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[TokenKitCatalog] Loading kits JSON from Resources path 'Kits/kit-picker-v1-11-supported' (asset: Assets/Resources/Kits/kit-picker-v1-11-supported.json).
+[TokenKitCatalog] Found kits JSON TextAsset 'kit-picker-v1-11-supported' at Resources path 'Kits/kit-picker-v1-11-supported' (32277 characters).
+[TokenKitCatalog] Parsed 101 kit preset(s) from Resources path 'Kits/kit-picker-v1-11-supported'.
+[TokenKitCatalog] Active kit catalog contains 101 kit preset(s).
+]]></output>
+          </test-case>
+          <test-case id="1868" name="OpeningIsOwnedAndRecoverable(False,&quot;rejoin&quot;)" fullname="OnlineOpeningEditorTests.OpeningIsOwnedAndRecoverable(False,&quot;rejoin&quot;)" methodname="OpeningIsOwnedAndRecoverable" classname="OnlineOpeningEditorTests" runstate="Runnable" seed="1951520754" result="Passed" start-time="2026-11-15 06:31:39Z" end-time="2026-11-15 06:31:39Z" duration="0.069154" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1869" name="OpeningIsOwnedAndRecoverable(False,&quot;duplicate&quot;)" fullname="OnlineOpeningEditorTests.OpeningIsOwnedAndRecoverable(False,&quot;duplicate&quot;)" methodname="OpeningIsOwnedAndRecoverable" classname="OnlineOpeningEditorTests" runstate="Runnable" seed="897182104" result="Passed" start-time="2026-11-15 06:31:39Z" end-time="2026-11-15 06:31:39Z" duration="0.061437" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1870" name="OpeningIsOwnedAndRecoverable(False,&quot;ties&quot;)" fullname="OnlineOpeningEditorTests.OpeningIsOwnedAndRecoverable(False,&quot;ties&quot;)" methodname="OpeningIsOwnedAndRecoverable" classname="OnlineOpeningEditorTests" runstate="Runnable" seed="1948231407" result="Passed" start-time="2026-11-15 06:31:39Z" end-time="2026-11-15 06:31:39Z" duration="0.038085" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1871" name="OpeningIsOwnedAndRecoverable(True,&quot;invalid&quot;)" fullname="OnlineOpeningEditorTests.OpeningIsOwnedAndRecoverable(True,&quot;invalid&quot;)" methodname="OpeningIsOwnedAndRecoverable" classname="OnlineOpeningEditorTests" runstate="Runnable" seed="1331265597" result="Passed" start-time="2026-11-15 06:31:39Z" end-time="2026-11-15 06:31:39Z" duration="0.063547" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1872" name="OpeningIsOwnedAndRecoverable(True,&quot;rejoin&quot;)" fullname="OnlineOpeningEditorTests.OpeningIsOwnedAndRecoverable(True,&quot;rejoin&quot;)" methodname="OpeningIsOwnedAndRecoverable" classname="OnlineOpeningEditorTests" runstate="Runnable" seed="1894990618" result="Passed" start-time="2026-11-15 06:31:39Z" end-time="2026-11-15 06:31:40Z" duration="0.058626" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1873" name="OpeningIsOwnedAndRecoverable(True,&quot;duplicate&quot;)" fullname="OnlineOpeningEditorTests.OpeningIsOwnedAndRecoverable(True,&quot;duplicate&quot;)" methodname="OpeningIsOwnedAndRecoverable" classname="OnlineOpeningEditorTests" runstate="Runnable" seed="1576078390" result="Passed" start-time="2026-11-15 06:31:40Z" end-time="2026-11-15 06:31:40Z" duration="0.032368" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1874" name="OpeningIsOwnedAndRecoverable(True,&quot;ties&quot;)" fullname="OnlineOpeningEditorTests.OpeningIsOwnedAndRecoverable(True,&quot;ties&quot;)" methodname="OpeningIsOwnedAndRecoverable" classname="OnlineOpeningEditorTests" runstate="Runnable" seed="914925346" result="Passed" start-time="2026-11-15 06:31:40Z" end-time="2026-11-15 06:31:40Z" duration="0.055184" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="1866" name="OpeningUsesExistingKickoffAndDirectionRules" fullname="OnlineOpeningEditorTests.OpeningUsesExistingKickoffAndDirectionRules" classname="OnlineOpeningEditorTests" runstate="Runnable" testcasecount="12" result="Passed" start-time="2026-11-15 06:31:40Z" end-time="2026-11-15 06:31:40Z" duration="0.651092" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1854" name="OpeningUsesExistingKickoffAndDirectionRules(False,False,Kickoff)" fullname="OnlineOpeningEditorTests.OpeningUsesExistingKickoffAndDirectionRules(False,False,Kickoff)" methodname="OpeningUsesExistingKickoffAndDirectionRules" classname="OnlineOpeningEditorTests" runstate="Runnable" seed="10069130" result="Passed" start-time="2026-11-15 06:31:40Z" end-time="2026-11-15 06:31:40Z" duration="0.088610" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1855" name="OpeningUsesExistingKickoffAndDirectionRules(False,False,LeftToRight)" fullname="OnlineOpeningEditorTests.OpeningUsesExistingKickoffAndDirectionRules(False,False,LeftToRight)" methodname="OpeningUsesExistingKickoffAndDirectionRules" classname="OnlineOpeningEditorTests" runstate="Runnable" seed="380194142" result="Passed" start-time="2026-11-15 06:31:40Z" end-time="2026-11-15 06:31:40Z" duration="0.056481" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1856" name="OpeningUsesExistingKickoffAndDirectionRules(False,False,RightToLeft)" fullname="OnlineOpeningEditorTests.OpeningUsesExistingKickoffAndDirectionRules(False,False,RightToLeft)" methodname="OpeningUsesExistingKickoffAndDirectionRules" classname="OnlineOpeningEditorTests" runstate="Runnable" seed="293747256" result="Passed" start-time="2026-11-15 06:31:40Z" end-time="2026-11-15 06:31:40Z" duration="0.033278" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1857" name="OpeningUsesExistingKickoffAndDirectionRules(False,True,Kickoff)" fullname="OnlineOpeningEditorTests.OpeningUsesExistingKickoffAndDirectionRules(False,True,Kickoff)" methodname="OpeningUsesExistingKickoffAndDirectionRules" classname="OnlineOpeningEditorTests" runstate="Runnable" seed="1132028884" result="Passed" start-time="2026-11-15 06:31:40Z" end-time="2026-11-15 06:31:40Z" duration="0.060314" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1858" name="OpeningUsesExistingKickoffAndDirectionRules(False,True,LeftToRight)" fullname="OnlineOpeningEditorTests.OpeningUsesExistingKickoffAndDirectionRules(False,True,LeftToRight)" methodname="OpeningUsesExistingKickoffAndDirectionRules" classname="OnlineOpeningEditorTests" runstate="Runnable" seed="1382450441" result="Passed" start-time="2026-11-15 06:31:40Z" end-time="2026-11-15 06:31:40Z" duration="0.056096" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1859" name="OpeningUsesExistingKickoffAndDirectionRules(False,True,RightToLeft)" fullname="OnlineOpeningEditorTests.OpeningUsesExistingKickoffAndDirectionRules(False,True,RightToLeft)" methodname="OpeningUsesExistingKickoffAndDirectionRules" classname="OnlineOpeningEditorTests" runstate="Runnable" seed="1266361791" result="Passed" start-time="2026-11-15 06:31:40Z" end-time="2026-11-15 06:31:40Z" duration="0.032153" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1860" name="OpeningUsesExistingKickoffAndDirectionRules(True,False,Kickoff)" fullname="OnlineOpeningEditorTests.OpeningUsesExistingKickoffAndDirectionRules(True,False,Kickoff)" methodname="OpeningUsesExistingKickoffAndDirectionRules" classname="OnlineOpeningEditorTests" runstate="Runnable" seed="902997475" result="Passed" start-time="2026-11-15 06:31:40Z" end-time="2026-11-15 06:31:40Z" duration="0.059490" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1861" name="OpeningUsesExistingKickoffAndDirectionRules(True,False,LeftToRight)" fullname="OnlineOpeningEditorTests.OpeningUsesExistingKickoffAndDirectionRules(True,False,LeftToRight)" methodname="OpeningUsesExistingKickoffAndDirectionRules" classname="OnlineOpeningEditorTests" runstate="Runnable" seed="1260248536" result="Passed" start-time="2026-11-15 06:31:40Z" end-time="2026-11-15 06:31:40Z" duration="0.061513" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1862" name="OpeningUsesExistingKickoffAndDirectionRules(True,False,RightToLeft)" fullname="OnlineOpeningEditorTests.OpeningUsesExistingKickoffAndDirectionRules(True,False,RightToLeft)" methodname="OpeningUsesExistingKickoffAndDirectionRules" classname="OnlineOpeningEditorTests" runstate="Runnable" seed="214321890" result="Passed" start-time="2026-11-15 06:31:40Z" end-time="2026-11-15 06:31:40Z" duration="0.033236" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1863" name="OpeningUsesExistingKickoffAndDirectionRules(True,True,Kickoff)" fullname="OnlineOpeningEditorTests.OpeningUsesExistingKickoffAndDirectionRules(True,True,Kickoff)" methodname="OpeningUsesExistingKickoffAndDirectionRules" classname="OnlineOpeningEditorTests" runstate="Runnable" seed="1848399837" result="Passed" start-time="2026-11-15 06:31:40Z" end-time="2026-11-15 06:31:40Z" duration="0.060785" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1864" name="OpeningUsesExistingKickoffAndDirectionRules(True,True,LeftToRight)" fullname="OnlineOpeningEditorTests.OpeningUsesExistingKickoffAndDirectionRules(True,True,LeftToRight)" methodname="OpeningUsesExistingKickoffAndDirectionRules" classname="OnlineOpeningEditorTests" runstate="Runnable" seed="183236453" result="Passed" start-time="2026-11-15 06:31:40Z" end-time="2026-11-15 06:31:40Z" duration="0.050228" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1865" name="OpeningUsesExistingKickoffAndDirectionRules(True,True,RightToLeft)" fullname="OnlineOpeningEditorTests.OpeningUsesExistingKickoffAndDirectionRules(True,True,RightToLeft)" methodname="OpeningUsesExistingKickoffAndDirectionRules" classname="OnlineOpeningEditorTests" runstate="Runnable" seed="1339546007" result="Passed" start-time="2026-11-15 06:31:40Z" end-time="2026-11-15 06:31:40Z" duration="0.033498" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Saving results to: TestResults\GameplayRegression\Runs\20261115T063139379Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

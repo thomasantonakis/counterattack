@@ -1,0 +1,633 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="16" result="Passed" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-15 22:04:40Z" end-time="2026-11-15 22:08:35Z" duration="235.2828323">
+  <test-suite type="TestSuite" id="2717" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1412" result="Passed" start-time="2026-11-15 22:04:40Z" end-time="2026-11-15 22:08:35Z" duration="235.282832" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2714" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1412" result="Passed" start-time="2026-11-15 22:04:40Z" end-time="2026-11-15 22:08:35Z" duration="235.251921" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17216" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="2054" name="OnlineShootoutPlayModeTests" fullname="OnlineShootoutPlayModeTests" classname="OnlineShootoutPlayModeTests" runstate="Runnable" testcasecount="32" result="Passed" start-time="2026-11-15 22:04:40Z" end-time="2026-11-15 22:08:35Z" duration="235.239497" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineShootout" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="2080" name="FirstKickOutcomeContinues" fullname="OnlineShootoutPlayModeTests.FirstKickOutcomeContinues" classname="OnlineShootoutPlayModeTests" runstate="Runnable" testcasecount="16" result="Passed" start-time="2026-11-15 22:04:40Z" end-time="2026-11-15 22:08:35Z" duration="235.229209" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="2064" name="FirstKickOutcomeContinues(False,&quot;goal&quot;,False)" fullname="OnlineShootoutPlayModeTests.FirstKickOutcomeContinues(False,&quot;goal&quot;,False)" methodname="FirstKickOutcomeContinues" classname="OnlineShootoutPlayModeTests" runstate="Runnable" seed="1651629915" result="Passed" start-time="2026-11-15 22:04:40Z" end-time="2026-11-15 22:04:56Z" duration="15.977044" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[TokenKitCatalog] Loading kits JSON from Resources path 'Kits/kit-picker-v1-11-supported' (asset: Assets/Resources/Kits/kit-picker-v1-11-supported.json).
+[TokenKitCatalog] Found kits JSON TextAsset 'kit-picker-v1-11-supported' at Resources path 'Kits/kit-picker-v1-11-supported' (32277 characters).
+[TokenKitCatalog] Parsed 101 kit preset(s) from Resources path 'Kits/kit-picker-v1-11-supported'.
+[TokenKitCatalog] Active kit catalog contains 101 kit preset(s).
+MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584946642400
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+[Shootout] Order selection opened with 11 nominees per team.
+Substitutions are no longer available: Penalty shootout
+⚽ Ball just entered the penalty box! Checking if GK should move.
+[Shootout] Away kick 1: 3. Vladoiu shoots at the left goal.
+Substitutions are no longer available: Committed to Shot
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, 0). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+3. Vladoiu Penalty Kick roll: 6 + Shooting: 5 = 50
+GK has no save interaction after the ball-in-box free move.
+Penalty shootout forcing GK save interaction for 1. Kuzmic at (-18, 0, 0).
+Penalty Kick has reached GK 1. Kuzmic. Press [R] to roll for the save.
+GK 1. Kuzmic rolls 1 + Saving: 5 + Penalty: -2 = 4
+3. Vladoiu Shot roll: 6 + Shooting: 5 = 50
+Get IN!! 3. Vladoiu, buries it to the top corner! Goal!!!
+MoveTokenAlongPath: shouldCarryBall: False
+Token arrived at hex: HexCell [-18, -1]
+[Shootout] Away score. Shootout score 0-1.
+[Shootout] Goal celebration flash.
+[Shootout] Home kick 2: 4. Gortz shoots at the left goal.
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, 3). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2065" name="FirstKickOutcomeContinues(False,&quot;goal&quot;,True)" fullname="OnlineShootoutPlayModeTests.FirstKickOutcomeContinues(False,&quot;goal&quot;,True)" methodname="FirstKickOutcomeContinues" classname="OnlineShootoutPlayModeTests" runstate="Runnable" seed="1899342812" result="Passed" start-time="2026-11-15 22:04:56Z" end-time="2026-11-15 22:05:11Z" duration="14.830012" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584946769092
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+[Shootout] Order selection opened with 11 nominees per team.
+Substitutions are no longer available: Penalty shootout
+⚽ Ball just entered the penalty box! Checking if GK should move.
+[Shootout] Away kick 1: 3. Vladoiu shoots at the right goal.
+Substitutions are no longer available: Committed to Shot
+Penalty Shootout Kick initiated. Random target selected at (19, 0, 0). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+3. Vladoiu Penalty Kick roll: 6 + Shooting: 5 = 50
+GK has no save interaction after the ball-in-box free move.
+Penalty shootout forcing GK save interaction for 1. Kuzmic at (18, 0, 0).
+Penalty Kick has reached GK 1. Kuzmic. Press [R] to roll for the save.
+GK 1. Kuzmic rolls 1 + Saving: 5 + Penalty: -2 = 4
+3. Vladoiu Shot roll: 6 + Shooting: 5 = 50
+Get IN!! 3. Vladoiu, buries it to the top corner! Goal!!!
+MoveTokenAlongPath: shouldCarryBall: False
+Token arrived at hex: HexCell [18, -1]
+[Shootout] Away score. Shootout score 0-1.
+[Shootout] Goal celebration flash.
+[Shootout] Home kick 2: 4. Gortz shoots at the right goal.
+Penalty Shootout Kick initiated. Random target selected at (19, 0, 3). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2066" name="FirstKickOutcomeContinues(False,&quot;offtarget&quot;,False)" fullname="OnlineShootoutPlayModeTests.FirstKickOutcomeContinues(False,&quot;offtarget&quot;,False)" methodname="FirstKickOutcomeContinues" classname="OnlineShootoutPlayModeTests" runstate="Runnable" seed="667505185" result="Passed" start-time="2026-11-15 22:05:11Z" end-time="2026-11-15 22:05:25Z" duration="13.824357" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584946895784
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+[Shootout] Order selection opened with 11 nominees per team.
+Substitutions are no longer available: Penalty shootout
+⚽ Ball just entered the penalty box! Checking if GK should move.
+[Shootout] Away kick 1: 3. Vladoiu shoots at the left goal.
+Substitutions are no longer available: Committed to Shot
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, 0). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+3. Vladoiu Penalty Kick roll: 1 + Shooting: 5 = 0
+3. Vladoiu rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Away miss. Shootout score 0-0.
+[Shootout] Home kick 2: 4. Gortz shoots at the left goal.
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2067" name="FirstKickOutcomeContinues(False,&quot;offtarget&quot;,True)" fullname="OnlineShootoutPlayModeTests.FirstKickOutcomeContinues(False,&quot;offtarget&quot;,True)" methodname="FirstKickOutcomeContinues" classname="OnlineShootoutPlayModeTests" runstate="Runnable" seed="1568354507" result="Passed" start-time="2026-11-15 22:05:25Z" end-time="2026-11-15 22:05:39Z" duration="14.172771" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584947022476
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+[Shootout] Order selection opened with 11 nominees per team.
+Substitutions are no longer available: Penalty shootout
+⚽ Ball just entered the penalty box! Checking if GK should move.
+[Shootout] Away kick 1: 3. Vladoiu shoots at the right goal.
+Substitutions are no longer available: Committed to Shot
+Penalty Shootout Kick initiated. Random target selected at (19, 0, 0). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+3. Vladoiu Penalty Kick roll: 1 + Shooting: 5 = 0
+3. Vladoiu rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Away miss. Shootout score 0-0.
+[Shootout] Home kick 2: 4. Gortz shoots at the right goal.
+Penalty Shootout Kick initiated. Random target selected at (19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2068" name="FirstKickOutcomeContinues(False,&quot;save&quot;,False)" fullname="OnlineShootoutPlayModeTests.FirstKickOutcomeContinues(False,&quot;save&quot;,False)" methodname="FirstKickOutcomeContinues" classname="OnlineShootoutPlayModeTests" runstate="Runnable" seed="1560282504" result="Passed" start-time="2026-11-15 22:05:39Z" end-time="2026-11-15 22:05:53Z" duration="14.460793" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584947149168
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+[Shootout] Order selection opened with 11 nominees per team.
+Substitutions are no longer available: Penalty shootout
+⚽ Ball just entered the penalty box! Checking if GK should move.
+[Shootout] Away kick 1: 3. Vladoiu shoots at the left goal.
+Substitutions are no longer available: Committed to Shot
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, 0). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+3. Vladoiu Penalty Kick roll: 3 + Shooting: 5 = 8
+GK has no save interaction after the ball-in-box free move.
+Penalty shootout forcing GK save interaction for 1. Kuzmic at (-18, 0, 0).
+Penalty Kick has reached GK 1. Kuzmic. Press [R] to roll for the save.
+GK 1. Kuzmic rolls A JACKPOT!!!
+GKPush: 1. Kuzmic is already on save hex (-18, 0, 0).
+Penalty shootout save. Random direction NE from (-18, 0, 0); spilling two hexes.
+[Shootout] Away miss. Shootout score 0-0.
+[Shootout] Home kick 2: 4. Gortz shoots at the left goal.
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, 2). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2069" name="FirstKickOutcomeContinues(False,&quot;save&quot;,True)" fullname="OnlineShootoutPlayModeTests.FirstKickOutcomeContinues(False,&quot;save&quot;,True)" methodname="FirstKickOutcomeContinues" classname="OnlineShootoutPlayModeTests" runstate="Runnable" seed="1338616212" result="Passed" start-time="2026-11-15 22:05:53Z" end-time="2026-11-15 22:06:08Z" duration="14.348361" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584947275860
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+[Shootout] Order selection opened with 11 nominees per team.
+Substitutions are no longer available: Penalty shootout
+⚽ Ball just entered the penalty box! Checking if GK should move.
+[Shootout] Away kick 1: 3. Vladoiu shoots at the right goal.
+Substitutions are no longer available: Committed to Shot
+Penalty Shootout Kick initiated. Random target selected at (19, 0, 0). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+3. Vladoiu Penalty Kick roll: 3 + Shooting: 5 = 8
+GK has no save interaction after the ball-in-box free move.
+Penalty shootout forcing GK save interaction for 1. Kuzmic at (18, 0, 0).
+Penalty Kick has reached GK 1. Kuzmic. Press [R] to roll for the save.
+GK 1. Kuzmic rolls A JACKPOT!!!
+GKPush: 1. Kuzmic is already on save hex (18, 0, 0).
+Penalty shootout save. Random direction NE from (18, 0, 0); breaking behind for a dead ball.
+Ball has reached its destination: (22, 0, 6).
+[Shootout] Away miss. Shootout score 0-0.
+[Shootout] Home kick 2: 4. Gortz shoots at the right goal.
+Penalty Shootout Kick initiated. Random target selected at (19, 0, 2). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2070" name="FirstKickOutcomeContinues(False,&quot;tie&quot;,False)" fullname="OnlineShootoutPlayModeTests.FirstKickOutcomeContinues(False,&quot;tie&quot;,False)" methodname="FirstKickOutcomeContinues" classname="OnlineShootoutPlayModeTests" runstate="Runnable" seed="1672508933" result="Passed" start-time="2026-11-15 22:06:08Z" end-time="2026-11-15 22:06:22Z" duration="14.762795" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584947402552
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+[Shootout] Order selection opened with 11 nominees per team.
+Substitutions are no longer available: Penalty shootout
+⚽ Ball just entered the penalty box! Checking if GK should move.
+[Shootout] Away kick 1: 3. Vladoiu shoots at the left goal.
+Substitutions are no longer available: Committed to Shot
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, 0). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+3. Vladoiu Penalty Kick roll: 3 + Shooting: 5 = 8
+GK has no save interaction after the ball-in-box free move.
+Penalty shootout forcing GK save interaction for 1. Kuzmic at (-18, 0, 0).
+Penalty Kick has reached GK 1. Kuzmic. Press [R] to roll for the save.
+GK 1. Kuzmic rolls 3 + Saving: 7 + Penalty: -2 = 8
+GKPush: 1. Kuzmic is already on save hex (-18, 0, 0).
+Penalty shootout save tie. Loose ball starts from (-18, 0, 0). Press [R] for direction.
+Penalty shootout save tie direction S from (-18, 0, 0); forced distance 2.
+[Shootout] Away miss. Shootout score 0-0.
+[Shootout] Home kick 2: 4. Gortz shoots at the left goal.
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, 3). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2071" name="FirstKickOutcomeContinues(False,&quot;tie&quot;,True)" fullname="OnlineShootoutPlayModeTests.FirstKickOutcomeContinues(False,&quot;tie&quot;,True)" methodname="FirstKickOutcomeContinues" classname="OnlineShootoutPlayModeTests" runstate="Runnable" seed="1279383635" result="Passed" start-time="2026-11-15 22:06:22Z" end-time="2026-11-15 22:06:37Z" duration="14.794815" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584947529244
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+[Shootout] Order selection opened with 11 nominees per team.
+Substitutions are no longer available: Penalty shootout
+⚽ Ball just entered the penalty box! Checking if GK should move.
+[Shootout] Away kick 1: 3. Vladoiu shoots at the right goal.
+Substitutions are no longer available: Committed to Shot
+Penalty Shootout Kick initiated. Random target selected at (19, 0, 0). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+3. Vladoiu Penalty Kick roll: 3 + Shooting: 5 = 8
+GK has no save interaction after the ball-in-box free move.
+Penalty shootout forcing GK save interaction for 1. Kuzmic at (18, 0, 0).
+Penalty Kick has reached GK 1. Kuzmic. Press [R] to roll for the save.
+GK 1. Kuzmic rolls 3 + Saving: 7 + Penalty: -2 = 8
+GKPush: 1. Kuzmic is already on save hex (18, 0, 0).
+Penalty shootout save tie. Loose ball starts from (18, 0, 0). Press [R] for direction.
+Penalty shootout save tie direction S from (18, 0, 0); forced distance 2.
+[Shootout] Away miss. Shootout score 0-0.
+[Shootout] Home kick 2: 4. Gortz shoots at the right goal.
+Penalty Shootout Kick initiated. Random target selected at (19, 0, 3). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2072" name="FirstKickOutcomeContinues(True,&quot;goal&quot;,False)" fullname="OnlineShootoutPlayModeTests.FirstKickOutcomeContinues(True,&quot;goal&quot;,False)" methodname="FirstKickOutcomeContinues" classname="OnlineShootoutPlayModeTests" runstate="Runnable" seed="2013975621" result="Passed" start-time="2026-11-15 22:06:37Z" end-time="2026-11-15 22:06:52Z" duration="14.743982" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584947655936
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+[Shootout] Order selection opened with 11 nominees per team.
+Substitutions are no longer available: Penalty shootout
+⚽ Ball just entered the penalty box! Checking if GK should move.
+[Shootout] Home kick 1: 4. Gortz shoots at the left goal.
+Substitutions are no longer available: Committed to Shot
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, 0). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+4. Gortz Penalty Kick roll: 6 + Shooting: 5 = 50
+GK has no save interaction after the ball-in-box free move.
+Penalty shootout forcing GK save interaction for 1. Aziz at (-18, 0, 0).
+Penalty Kick has reached GK 1. Aziz. Press [R] to roll for the save.
+GK 1. Aziz rolls 1 + Saving: 5 + Penalty: -2 = 4
+4. Gortz Shot roll: 6 + Shooting: 5 = 50
+Get IN!! 4. Gortz, buries it to the top corner! Goal!!!
+MoveTokenAlongPath: shouldCarryBall: False
+Token arrived at hex: HexCell [-18, -1]
+[Shootout] Home score. Shootout score 1-0.
+[Shootout] Goal celebration flash.
+Hex (-14, 0, 0) does not have 4. Gortz as its occupying token!
+[Shootout] Away kick 2: 3. Vladoiu shoots at the left goal.
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, 3). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2073" name="FirstKickOutcomeContinues(True,&quot;goal&quot;,True)" fullname="OnlineShootoutPlayModeTests.FirstKickOutcomeContinues(True,&quot;goal&quot;,True)" methodname="FirstKickOutcomeContinues" classname="OnlineShootoutPlayModeTests" runstate="Runnable" seed="598529433" result="Passed" start-time="2026-11-15 22:06:52Z" end-time="2026-11-15 22:07:07Z" duration="14.809171" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584947782628
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+[Shootout] Order selection opened with 11 nominees per team.
+Substitutions are no longer available: Penalty shootout
+⚽ Ball just entered the penalty box! Checking if GK should move.
+[Shootout] Home kick 1: 4. Gortz shoots at the right goal.
+Substitutions are no longer available: Committed to Shot
+Penalty Shootout Kick initiated. Random target selected at (19, 0, 0). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+4. Gortz Penalty Kick roll: 6 + Shooting: 5 = 50
+GK has no save interaction after the ball-in-box free move.
+Penalty shootout forcing GK save interaction for 1. Aziz at (18, 0, 0).
+Penalty Kick has reached GK 1. Aziz. Press [R] to roll for the save.
+GK 1. Aziz rolls 1 + Saving: 5 + Penalty: -2 = 4
+4. Gortz Shot roll: 6 + Shooting: 5 = 50
+Get IN!! 4. Gortz, buries it to the top corner! Goal!!!
+MoveTokenAlongPath: shouldCarryBall: False
+Token arrived at hex: HexCell [18, -1]
+[Shootout] Home score. Shootout score 1-0.
+[Shootout] Goal celebration flash.
+Hex (14, 0, 0) does not have 4. Gortz as its occupying token!
+[Shootout] Away kick 2: 3. Vladoiu shoots at the right goal.
+Penalty Shootout Kick initiated. Random target selected at (19, 0, 3). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2074" name="FirstKickOutcomeContinues(True,&quot;offtarget&quot;,False)" fullname="OnlineShootoutPlayModeTests.FirstKickOutcomeContinues(True,&quot;offtarget&quot;,False)" methodname="FirstKickOutcomeContinues" classname="OnlineShootoutPlayModeTests" runstate="Runnable" seed="1077872270" result="Passed" start-time="2026-11-15 22:07:07Z" end-time="2026-11-15 22:07:21Z" duration="14.429390" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584947909320
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+[Shootout] Order selection opened with 11 nominees per team.
+Substitutions are no longer available: Penalty shootout
+⚽ Ball just entered the penalty box! Checking if GK should move.
+[Shootout] Home kick 1: 4. Gortz shoots at the left goal.
+Substitutions are no longer available: Committed to Shot
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, 0). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+4. Gortz Penalty Kick roll: 1 + Shooting: 5 = 0
+4. Gortz rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Home miss. Shootout score 0-0.
+Hex (-14, 0, 0) does not have 4. Gortz as its occupying token!
+[Shootout] Away kick 2: 3. Vladoiu shoots at the left goal.
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2075" name="FirstKickOutcomeContinues(True,&quot;offtarget&quot;,True)" fullname="OnlineShootoutPlayModeTests.FirstKickOutcomeContinues(True,&quot;offtarget&quot;,True)" methodname="FirstKickOutcomeContinues" classname="OnlineShootoutPlayModeTests" runstate="Runnable" seed="704815234" result="Passed" start-time="2026-11-15 22:07:21Z" end-time="2026-11-15 22:07:35Z" duration="14.377593" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584948036012
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+[Shootout] Order selection opened with 11 nominees per team.
+Substitutions are no longer available: Penalty shootout
+⚽ Ball just entered the penalty box! Checking if GK should move.
+[Shootout] Home kick 1: 4. Gortz shoots at the right goal.
+Substitutions are no longer available: Committed to Shot
+Penalty Shootout Kick initiated. Random target selected at (19, 0, 0). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+4. Gortz Penalty Kick roll: 1 + Shooting: 5 = 0
+4. Gortz rolled a 1, this means the penalty shootout kick is OFF target.
+[Shootout] Home miss. Shootout score 0-0.
+Hex (18, 0, 0) does not have 1. Aziz as its occupying token!
+Hex (14, 0, 0) does not have 4. Gortz as its occupying token!
+[Shootout] Away kick 2: 3. Vladoiu shoots at the right goal.
+Penalty Shootout Kick initiated. Random target selected at (19, 0, -4). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2076" name="FirstKickOutcomeContinues(True,&quot;save&quot;,False)" fullname="OnlineShootoutPlayModeTests.FirstKickOutcomeContinues(True,&quot;save&quot;,False)" methodname="FirstKickOutcomeContinues" classname="OnlineShootoutPlayModeTests" runstate="Runnable" seed="2009253283" result="Passed" start-time="2026-11-15 22:07:35Z" end-time="2026-11-15 22:07:50Z" duration="14.742827" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584948162704
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+[Shootout] Order selection opened with 11 nominees per team.
+Substitutions are no longer available: Penalty shootout
+⚽ Ball just entered the penalty box! Checking if GK should move.
+[Shootout] Home kick 1: 4. Gortz shoots at the left goal.
+Substitutions are no longer available: Committed to Shot
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, 0). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+4. Gortz Penalty Kick roll: 3 + Shooting: 5 = 8
+GK has no save interaction after the ball-in-box free move.
+Penalty shootout forcing GK save interaction for 1. Aziz at (-18, 0, 0).
+Penalty Kick has reached GK 1. Aziz. Press [R] to roll for the save.
+GK 1. Aziz rolls A JACKPOT!!!
+GKPush: 1. Aziz is already on save hex (-18, 0, 0).
+Penalty shootout save. Random direction NE from (-18, 0, 0); spilling two hexes.
+[Shootout] Home miss. Shootout score 0-0.
+Hex (-14, 0, 0) does not have 4. Gortz as its occupying token!
+[Shootout] Away kick 2: 3. Vladoiu shoots at the left goal.
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, 2). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2077" name="FirstKickOutcomeContinues(True,&quot;save&quot;,True)" fullname="OnlineShootoutPlayModeTests.FirstKickOutcomeContinues(True,&quot;save&quot;,True)" methodname="FirstKickOutcomeContinues" classname="OnlineShootoutPlayModeTests" runstate="Runnable" seed="597327299" result="Passed" start-time="2026-11-15 22:07:50Z" end-time="2026-11-15 22:08:05Z" duration="14.905162" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584948289396
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+[Shootout] Order selection opened with 11 nominees per team.
+Substitutions are no longer available: Penalty shootout
+⚽ Ball just entered the penalty box! Checking if GK should move.
+[Shootout] Home kick 1: 4. Gortz shoots at the right goal.
+Substitutions are no longer available: Committed to Shot
+Penalty Shootout Kick initiated. Random target selected at (19, 0, 0). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+4. Gortz Penalty Kick roll: 3 + Shooting: 5 = 8
+GK has no save interaction after the ball-in-box free move.
+Penalty shootout forcing GK save interaction for 1. Aziz at (18, 0, 0).
+Penalty Kick has reached GK 1. Aziz. Press [R] to roll for the save.
+GK 1. Aziz rolls A JACKPOT!!!
+GKPush: 1. Aziz is already on save hex (18, 0, 0).
+Penalty shootout save. Random direction NE from (18, 0, 0); breaking behind for a dead ball.
+Ball has reached its destination: (22, 0, 6).
+[Shootout] Home miss. Shootout score 0-0.
+Hex (18, 0, 0) does not have 1. Aziz as its occupying token!
+Hex (14, 0, 0) does not have 4. Gortz as its occupying token!
+[Shootout] Away kick 2: 3. Vladoiu shoots at the right goal.
+Penalty Shootout Kick initiated. Random target selected at (19, 0, 2). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2078" name="FirstKickOutcomeContinues(True,&quot;tie&quot;,False)" fullname="OnlineShootoutPlayModeTests.FirstKickOutcomeContinues(True,&quot;tie&quot;,False)" methodname="FirstKickOutcomeContinues" classname="OnlineShootoutPlayModeTests" runstate="Runnable" seed="657911835" result="Passed" start-time="2026-11-15 22:08:05Z" end-time="2026-11-15 22:08:20Z" duration="14.641491" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584948416088
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+[Shootout] Order selection opened with 11 nominees per team.
+Substitutions are no longer available: Penalty shootout
+⚽ Ball just entered the penalty box! Checking if GK should move.
+[Shootout] Home kick 1: 4. Gortz shoots at the left goal.
+Substitutions are no longer available: Committed to Shot
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, 0). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+4. Gortz Penalty Kick roll: 3 + Shooting: 5 = 8
+GK has no save interaction after the ball-in-box free move.
+Penalty shootout forcing GK save interaction for 1. Aziz at (-18, 0, 0).
+Penalty Kick has reached GK 1. Aziz. Press [R] to roll for the save.
+GK 1. Aziz rolls 3 + Saving: 7 + Penalty: -2 = 8
+GKPush: 1. Aziz is already on save hex (-18, 0, 0).
+Penalty shootout save tie. Loose ball starts from (-18, 0, 0). Press [R] for direction.
+Penalty shootout save tie direction S from (-18, 0, 0); forced distance 2.
+[Shootout] Home miss. Shootout score 0-0.
+Hex (-18, 0, 0) does not have 1. Aziz as its occupying token!
+Hex (-14, 0, 0) does not have 4. Gortz as its occupying token!
+[Shootout] Away kick 2: 3. Vladoiu shoots at the left goal.
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, 3). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2079" name="FirstKickOutcomeContinues(True,&quot;tie&quot;,True)" fullname="OnlineShootoutPlayModeTests.FirstKickOutcomeContinues(True,&quot;tie&quot;,True)" methodname="FirstKickOutcomeContinues" classname="OnlineShootoutPlayModeTests" runstate="Runnable" seed="1307395485" result="Passed" start-time="2026-11-15 22:08:20Z" end-time="2026-11-15 22:08:35Z" duration="15.354498" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584948542780
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+[Shootout] Order selection opened with 11 nominees per team.
+Substitutions are no longer available: Penalty shootout
+⚽ Ball just entered the penalty box! Checking if GK should move.
+[Shootout] Home kick 1: 4. Gortz shoots at the right goal.
+Substitutions are no longer available: Committed to Shot
+Penalty Shootout Kick initiated. Random target selected at (19, 0, 0). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Hello from the StartShotRoll
+4. Gortz Penalty Kick roll: 3 + Shooting: 5 = 8
+GK has no save interaction after the ball-in-box free move.
+Penalty shootout forcing GK save interaction for 1. Aziz at (18, 0, 0).
+Penalty Kick has reached GK 1. Aziz. Press [R] to roll for the save.
+GK 1. Aziz rolls 3 + Saving: 7 + Penalty: -2 = 8
+GKPush: 1. Aziz is already on save hex (18, 0, 0).
+Penalty shootout save tie. Loose ball starts from (18, 0, 0). Press [R] for direction.
+Penalty shootout save tie direction S from (18, 0, 0); forced distance 2.
+[Shootout] Home miss. Shootout score 0-0.
+Hex (18, 0, 0) does not have 1. Aziz as its occupying token!
+Hex (14, 0, 0) does not have 4. Gortz as its occupying token!
+[Shootout] Away kick 2: 3. Vladoiu shoots at the right goal.
+Penalty Shootout Kick initiated. Random target selected at (19, 0, 3). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+Saving results to: TestResults\GameplayRegression\Runs\20261115T220440309Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

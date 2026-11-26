@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="6" result="Passed" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-14 09:56:49Z" end-time="2026-11-14 09:58:05Z" duration="75.0450815">
+  <test-suite type="TestSuite" id="2342" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1103" result="Passed" start-time="2026-11-14 09:56:49Z" end-time="2026-11-14 09:58:05Z" duration="75.045082" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2339" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1103" result="Passed" start-time="2026-11-14 09:56:50Z" end-time="2026-11-14 09:58:05Z" duration="74.993474" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12208" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1529" name="OnlineGoalPlayModeTests" fullname="OnlineGoalPlayModeTests" classname="OnlineGoalPlayModeTests" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-11-14 09:56:50Z" end-time="2026-11-14 09:58:05Z" duration="74.986961" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineGoals" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="1532" name="GoalPublishesResetAndConcedingRestart" fullname="OnlineGoalPlayModeTests.GoalPublishesResetAndConcedingRestart" classname="OnlineGoalPlayModeTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-14 09:56:50Z" end-time="2026-11-14 09:57:53Z" duration="63.832177" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="1530" name="GoalPublishesResetAndConcedingRestart(1)" fullname="OnlineGoalPlayModeTests.GoalPublishesResetAndConcedingRestart(1)" methodname="GoalPublishesResetAndConcedingRestart" classname="OnlineGoalPlayModeTests" runstate="Runnable" seed="1394360338" result="Passed" start-time="2026-11-14 09:56:50Z" end-time="2026-11-14 09:57:22Z" duration="32.346024" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Attacking team has possession: True.
+Movement phase has been reset.
+Substitutions are no longer available: Committed to Shot
+Full Power Shot initiated. Proceeding to target selection.
+[Game Log] Home carrier (Fixture Home) Unknown ShotType
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Shot interactions found: 0
+No more defenders to Deflect! The Home carrier may [R]oll! Good Luck!.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Hello from the StartShotRoll
+Home carrier Shot roll: 2 + Shooting: 3= 5
+Get IN!! Home carrier, buries it to the top corner! Goal!!!
+[Expected Stats] Home carrier records xG 0.833 on fullPower goal
+[Game Log] Home carrier (Fixture Home) completes an attempt on target
+[Game Log] Home carrier (Fixture Home) scores a goal! ⚽
+GOAL! Home carrier scores! Starting celebration on goal side 1.
+Substitutions are now available: Goal scored
+Waited for 1 second, going back!
+[GoalFlow] Token/hex ownership reconciled cleanly after goal reset.
+Post-goal kick-off setup: both teams may reposition tokens in their own half, including the halfway line, except the center spot. The kicker will be selected later. Defenders cannot stand in the center circle. Press Enter twice when both teams are ready.
+[GoalFlow] Post-goal reset complete. Away team is attacking for kickoff.
+Home post-goal kick-off setup confirmed (1/2)
+Away post-goal kick-off setup confirmed (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Away recovering player took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+[Game Log] Away recovering player (Fixture Away) attempts a kick-off pass
+Path: (0, 0, 1) -> (1, 0, 0) -> (1, 0, 1) -> (2, 0, 1) -> (2, 0, 2) -> (3, 0, 1) -> (3, 0, 2) -> (4, 0, 3) -> (4, 0, 4) -> (5, 0, 3) -> (5, 0, 4) -> (6, 0, 4) -> (6, 0, 5) -> (7, 0, 5) -> (7, 0, 6) -> (8, 0, 6) -> (8, 0, 7) -> (9, 0, 6) -> (9, 0, 7) -> (10, 0, 7) -> (10, 0, 8)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+No movable tokens for attack. Skipping...
+Offside assessed (end_standard_pass): line x=-10, tokens=none.
+Pass completed to (10, 0, 8)
+[Game Log] Away recovering player (Fixture Away) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online backline
+Offside assessment cleared: ground_pass_completed.
+]]></output>
+          </test-case>
+          <test-case id="1531" name="GoalPublishesResetAndConcedingRestart(-1)" fullname="OnlineGoalPlayModeTests.GoalPublishesResetAndConcedingRestart(-1)" methodname="GoalPublishesResetAndConcedingRestart" classname="OnlineGoalPlayModeTests" runstate="Runnable" seed="1371313348" result="Passed" start-time="2026-11-14 09:57:22Z" end-time="2026-11-14 09:57:53Z" duration="31.448087" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Attacking team has possession: True.
+Movement phase has been reset.
+Substitutions are no longer available: Committed to Shot
+Full Power Shot initiated. Proceeding to target selection.
+[Game Log] Home carrier (Fixture Home) Unknown ShotType
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (-19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Shot interactions found: 0
+No more defenders to Deflect! The Home carrier may [R]oll! Good Luck!.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Hello from the StartShotRoll
+Home carrier Shot roll: 2 + Shooting: 3= 5
+Get IN!! Home carrier, buries it to the top corner! Goal!!!
+[Expected Stats] Home carrier records xG 0.833 on fullPower goal
+[Game Log] Home carrier (Fixture Home) completes an attempt on target
+[Game Log] Home carrier (Fixture Home) scores a goal! ⚽
+GOAL! Home carrier scores! Starting celebration on goal side -1.
+Substitutions are now available: Goal scored
+Waited for 1 second, going back!
+[GoalFlow] Token/hex ownership reconciled cleanly after goal reset.
+Post-goal kick-off setup: both teams may reposition tokens in their own half, including the halfway line, except the center spot. The kicker will be selected later. Defenders cannot stand in the center circle. Press Enter twice when both teams are ready.
+[GoalFlow] Post-goal reset complete. Away team is attacking for kickoff.
+Home post-goal kick-off setup confirmed (1/2)
+Away post-goal kick-off setup confirmed (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Away recovering player took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+[Game Log] Away recovering player (Fixture Away) attempts a kick-off pass
+Path: (0, 0, -1) -> (-1, 0, -1) -> (-1, 0, -2) -> (-2, 0, -1) -> (-2, 0, -2) -> (-3, 0, -2) -> (-3, 0, -3) -> (-4, 0, -3) -> (-4, 0, -4) -> (-5, 0, -4) -> (-5, 0, -5) -> (-6, 0, -4) -> (-6, 0, -5) -> (-7, 0, -6) -> (-7, 0, -7) -> (-8, 0, -6) -> (-8, 0, -7) -> (-9, 0, -7) -> (-9, 0, -8) -> (-10, 0, -7) -> (-10, 0, -8)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+No movable tokens for attack. Skipping...
+Offside assessed (end_standard_pass): line x=10, tokens=none.
+Pass completed to (-10, 0, -8)
+[Game Log] Away recovering player (Fixture Away) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online backline
+Offside assessment cleared: ground_pass_completed.
+]]></output>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="1537" name="SetupMovementOwnsTeamAndLegalHalf" fullname="OnlineGoalPlayModeTests.SetupMovementOwnsTeamAndLegalHalf" classname="OnlineGoalPlayModeTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-11-14 09:57:53Z" end-time="2026-11-14 09:58:05Z" duration="11.143999" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="1533" name="SetupMovementOwnsTeamAndLegalHalf(1,False)" fullname="OnlineGoalPlayModeTests.SetupMovementOwnsTeamAndLegalHalf(1,False)" methodname="SetupMovementOwnsTeamAndLegalHalf" classname="OnlineGoalPlayModeTests" runstate="Runnable" seed="82112319" result="Passed" start-time="2026-11-14 09:57:53Z" end-time="2026-11-14 09:57:56Z" duration="2.742298" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+Selecting token Home carrier
+Home carrier moved to (-4, 0, 6)
+Home confirmed setup (1/2)
+Selecting token Away recovering player
+Away recovering player moved to (4, 0, 6)
+]]></output>
+          </test-case>
+          <test-case id="1534" name="SetupMovementOwnsTeamAndLegalHalf(1,True)" fullname="OnlineGoalPlayModeTests.SetupMovementOwnsTeamAndLegalHalf(1,True)" methodname="SetupMovementOwnsTeamAndLegalHalf" classname="OnlineGoalPlayModeTests" runstate="Runnable" seed="1885762476" result="Passed" start-time="2026-11-14 09:57:56Z" end-time="2026-11-14 09:57:59Z" duration="2.798599" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Post-goal kick-off setup: both teams may reposition tokens in their own half, including the halfway line, except the center spot. The kicker will be selected later. Defenders cannot stand in the center circle. Press Enter twice when both teams are ready.
+Selecting token Home carrier
+Home carrier moved to (-4, 0, 6)
+Home post-goal kick-off setup confirmed (1/2)
+Selecting token Away recovering player
+Away recovering player moved to (4, 0, 6)
+]]></output>
+          </test-case>
+          <test-case id="1535" name="SetupMovementOwnsTeamAndLegalHalf(-1,False)" fullname="OnlineGoalPlayModeTests.SetupMovementOwnsTeamAndLegalHalf(-1,False)" methodname="SetupMovementOwnsTeamAndLegalHalf" classname="OnlineGoalPlayModeTests" runstate="Runnable" seed="619264185" result="Passed" start-time="2026-11-14 09:57:59Z" end-time="2026-11-14 09:58:02Z" duration="2.740166" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+Selecting token Home carrier
+Home carrier moved to (4, 0, 6)
+Home confirmed setup (1/2)
+Selecting token Away recovering player
+Away recovering player moved to (-4, 0, 6)
+]]></output>
+          </test-case>
+          <test-case id="1536" name="SetupMovementOwnsTeamAndLegalHalf(-1,True)" fullname="OnlineGoalPlayModeTests.SetupMovementOwnsTeamAndLegalHalf(-1,True)" methodname="SetupMovementOwnsTeamAndLegalHalf" classname="OnlineGoalPlayModeTests" runstate="Runnable" seed="1679284623" result="Passed" start-time="2026-11-14 09:58:02Z" end-time="2026-11-14 09:58:05Z" duration="2.848779" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Post-goal kick-off setup: both teams may reposition tokens in their own half, including the halfway line, except the center spot. The kicker will be selected later. Defenders cannot stand in the center circle. Press Enter twice when both teams are ready.
+Selecting token Home carrier
+Home carrier moved to (4, 0, 6)
+Home post-goal kick-off setup confirmed (1/2)
+Selecting token Away recovering player
+Away recovering player moved to (-4, 0, 6)
+Saving results to: TestResults\GameplayRegression\Runs\20261114T095649920Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

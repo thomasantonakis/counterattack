@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="2" result="Passed" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-15 05:29:30Z" end-time="2026-11-15 05:29:33Z" duration="3.0463208">
+  <test-suite type="TestSuite" id="2533" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1259" result="Passed" start-time="2026-11-15 05:29:30Z" end-time="2026-11-15 05:29:33Z" duration="3.046321" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2530" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1259" result="Passed" start-time="2026-11-15 05:29:30Z" end-time="2026-11-15 05:29:33Z" duration="3.018988" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="1132" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1588" name="OnlineFrontendEntryPlayModeTests" fullname="OnlineFrontendEntryPlayModeTests" classname="OnlineFrontendEntryPlayModeTests" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-11-15 05:29:30Z" end-time="2026-11-15 05:29:32Z" duration="1.889901" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineFrontendEntry" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="1595" name="NormalMenuEntry" fullname="OnlineFrontendEntryPlayModeTests.NormalMenuEntry" classname="OnlineFrontendEntryPlayModeTests" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-11-15 05:29:30Z" end-time="2026-11-15 05:29:32Z" duration="1.882292" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="1590" name="NormalMenuEntry(&quot;offline&quot;)" fullname="OnlineFrontendEntryPlayModeTests.NormalMenuEntry(&quot;offline&quot;)" methodname="NormalMenuEntry" classname="OnlineFrontendEntryPlayModeTests" runstate="Runnable" seed="1637604357" result="Passed" start-time="2026-11-15 05:29:30Z" end-time="2026-11-15 05:29:32Z" duration="1.854546" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[TokenKitCatalog] Loading kits JSON from Resources path 'Kits/kit-picker-v1-11-supported' (asset: Assets/Resources/Kits/kit-picker-v1-11-supported.json).
+[TokenKitCatalog] Found kits JSON TextAsset 'kit-picker-v1-11-supported' at Resources path 'Kits/kit-picker-v1-11-supported' (32277 characters).
+[TokenKitCatalog] Parsed 101 kit preset(s) from Resources path 'Kits/kit-picker-v1-11-supported'.
+[TokenKitCatalog] Active kit catalog contains 101 kit preset(s).
+Match type is Regular or other. Reset checkboxes.
+Match type is Regular or other. Reset checkboxes.
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+      <test-suite type="TestFixture" id="1865" name="OnlineResultHoldPlayModeTests" fullname="OnlineResultHoldPlayModeTests" classname="OnlineResultHoldPlayModeTests" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-11-15 05:29:32Z" end-time="2026-11-15 05:29:33Z" duration="1.122169" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineResultHold" />
+        </properties>
+        <test-case id="1871" name="OfflineCountdownStillUsesUnscaledTime" fullname="OnlineResultHoldPlayModeTests.OfflineCountdownStillUsesUnscaledTime" methodname="OfflineCountdownStillUsesUnscaledTime" classname="OnlineResultHoldPlayModeTests" runstate="Runnable" seed="981295737" result="Passed" start-time="2026-11-15 05:29:32Z" end-time="2026-11-15 05:29:33Z" duration="1.112128" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Saving results to: TestResults\GameplayRegression\Runs\20261115T052930597Z\results.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

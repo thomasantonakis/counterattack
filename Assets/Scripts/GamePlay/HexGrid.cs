@@ -59,8 +59,7 @@ public class HexGrid : MonoBehaviour
             CreateGrid();  // Generate the grid
         }
 
-        LoadPrecomputedShootingPaths();
-        CalculateGoalDistanceAndDangerousTackleCaches();
+        InitializePrecomputedGameplayCaches();
         // HighlightShootingHexes();
         // Debug.Log($"Thomas Log: {GetHexCellAt(new Vector3Int(12, 0, 0)).GetHexCenter()}");
         // Debug.Log($"Thomas Log: {GetHexCellAt(new Vector3Int(19, 0, -4)).GetHexCenter()}");
@@ -143,20 +142,18 @@ public class HexGrid : MonoBehaviour
                 // Swap the clear palette so the board feels darker and damp without changing the border shell.
                 lightColor = clearDarkColor;
                 darkColor = clearLightColor;
-                borderColor = clearLightColor;
                 break;
             case "snow":
             case "snowy":
                 lightColor = snowLightColor;
                 darkColor = snowDarkColor;
-                borderColor = clearDarkColor;
                 break;
             default:
                 lightColor = clearLightColor;
                 darkColor = clearDarkColor;
-                borderColor = clearDarkColor;
                 break;
         }
+        borderColor=darkColor;
     }
 
     private void RefreshExistingCellColors()
@@ -200,6 +197,20 @@ public class HexGrid : MonoBehaviour
     public bool IsGridInitialized()
     {
         return gridInitialized;
+    }
+
+    public void BindAuthoredOnlineCells(IEnumerable<HexCell> authored)
+    {
+        var bound=new HexCell[width,height];int count=0;
+        foreach(var cell in authored)
+        {
+            if(cell==null)throw new ArgumentException("An authored online cell is missing");
+            int x=cell.coordinates.x+width/2,z=cell.coordinates.z+height/2;
+            if(x<0 || x>=width || z<0 || z>=height || bound[x,z]!=null)throw new ArgumentException("Authored online cells must cover unique in-range coordinates");
+            bound[x,z]=cell;cell.occupyingToken=null;cell.isAttackOccupied=cell.isDefenseOccupied=false;count++;
+        }
+        if(count!=width*height)throw new ArgumentException("Authored online pitch is incomplete");
+        cells=bound;gridInitialized=true;BindMatchManager();ApplyWeatherPaletteFromLoadedSettings();InitializePrecomputedGameplayCaches();
     }
 
     void CreateCell(int x, int z, List<GameObject> createdObjects = null)
@@ -689,14 +700,9 @@ public class HexGrid : MonoBehaviour
     {
         foreach (HexCell hex in highlightedHexes)
         {
-            if (hex != null) 
-            {
-                hex.ResetHighlight();  // Assuming this method resets the color of the hex
-            }
-            if (hex.isInGoal != 0 && Mathf.Abs(hex.transform.position.y - 0.07f) < 0.0001f)
-            {
-                hex.transform.position -= Vector3.up * 0.07f;
-            }
+            if (hex == null) continue;
+            hex.ClearRaisedGoalTarget();
+            hex.ResetHighlight();
         }
         highlightedHexes.Clear();  // Clear the list after resetting
     }
@@ -1138,6 +1144,14 @@ public class HexGrid : MonoBehaviour
     }
 #endif
 
+    public void InitializePrecomputedGameplayCaches()
+    {
+        if(CounterAttack.Online.OnlineRoomSession.IsGuest)return;
+        if(!HasLiveGrid())throw new InvalidOperationException("Gameplay caches require an initialized hex board");
+        LoadPrecomputedShootingPaths();
+        CalculateGoalDistanceAndDangerousTackleCaches();
+    }
+
     private void LoadPrecomputedShootingPaths()
     {
         // Runtime only consumes the authored JSON assets. Regeneration is editor-only.
@@ -1269,6 +1283,7 @@ public class HexGrid : MonoBehaviour
       {
           i.isAttackOccupied = false;
           i.isDefenseOccupied = false;
+          i.ClearRaisedGoalTarget();
           i.ResetHighlight();
       }
     }

@@ -1,0 +1,63 @@
+{
+  "buildId": "build_06972049607d",
+  "status": "completed",
+  "result": "Succeeded",
+  "totalErrors": 1,
+  "totalWarnings": 9,
+  "errors": [
+    {
+      "message": "FileNotFoundException: While determining the PlatformToolsets that are installed, the vswhere.exe utility could not be found."
+    }
+  ],
+  "warnings": [
+    {
+      "message": "Value 0 is out of range for TEnum, setting to 0."
+    },
+    {
+      "message": "Pipeline: No RuntimePipelineConfig asset found (Project Settings > Pipeline > Runtime). Pipeline will be disabled in Player builds."
+    },
+    {
+      "message": "warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'",
+      "file": "Assets\\Scripts\\UI\\CreateNewGameManager.cs"
+    },
+    {
+      "message": "warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsInactive, FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'",
+      "file": "Assets\\Scripts\\UI\\CreateNewGameManager.cs"
+    },
+    {
+      "message": "warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'",
+      "file": "Assets\\Scripts\\UI\\RulesViewer.cs"
+    },
+    {
+      "message": "warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsInactive, FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'",
+      "file": "Assets\\Scripts\\UI\\RulesViewer.cs"
+    },
+    {
+      "message": "warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'",
+      "file": "Assets\\Scripts\\Online\\OnlineGroundPassAuthority.ThrowIns.cs"
+    },
+    {
+      "message": "warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'",
+      "file": "Assets\\Scripts\\Online\\OnlineGroundPassAuthority.ThrowIns.cs"
+    },
+    {
+      "message": "Value 0 is out of range for TEnum, setting to 0."
+    }
+  ],
+  "outputPath": "C:/Users/thomas/Documents/Projects/Personal/counterattack/Build/OnlineGame/Windows/Counterattack.exe",
+  "configured_scenes": [
+    "SplashScreen",
+    "MainMenu",
+    "CreateLoadRoom",
+    "CreateNewGameScene",
+    "Draft",
+    "FreeDraft",
+    "Room"
+  ],
+  "scope": "Normal scenes compile/package only; no paired frontend or full-match acceptance",
+  "totalSizeBytes": 468282252,
+  "buildTimeMs": 64836,
+  "platform": "StandaloneWindows64",
+  "buildStartedAt": "2026-11-15T03:36:30.8771457Z",
+  "buildEndedAt": "2026-11-15T03:37:35.7139577Z"
+}

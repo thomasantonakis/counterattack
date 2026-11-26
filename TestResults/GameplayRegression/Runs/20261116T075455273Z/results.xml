@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="2" result="Passed" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 07:54:55Z" end-time="2026-11-16 07:54:55Z" duration="0.0956578">
+  <test-suite type="TestSuite" id="3082" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1761" result="Passed" start-time="2026-11-16 07:54:55Z" end-time="2026-11-16 07:54:55Z" duration="0.095658" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="3076" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="1761" result="Passed" start-time="2026-11-16 07:54:55Z" end-time="2026-11-16 07:54:55Z" duration="0.051940" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17216" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="1966" name="OnlineOutsideKeeperShotEditorTests" fullname="OnlineOutsideKeeperShotEditorTests" classname="OnlineOutsideKeeperShotEditorTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-16 07:54:55Z" end-time="2026-11-16 07:54:55Z" duration="0.048875" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineOutsideKeeperShot" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="1969" name="PhysicalChoiceUsesOnlyPublishedAction" fullname="OnlineOutsideKeeperShotEditorTests.PhysicalChoiceUsesOnlyPublishedAction" classname="OnlineOutsideKeeperShotEditorTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-16 07:54:55Z" end-time="2026-11-16 07:54:55Z" duration="0.043030" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1967" name="PhysicalChoiceUsesOnlyPublishedAction(D,&quot;shot.keeper.hands&quot;)" fullname="OnlineOutsideKeeperShotEditorTests.PhysicalChoiceUsesOnlyPublishedAction(D,&quot;shot.keeper.hands&quot;)" methodname="PhysicalChoiceUsesOnlyPublishedAction" classname="OnlineOutsideKeeperShotEditorTests" runstate="Runnable" seed="1692074974" result="Passed" start-time="2026-11-16 07:54:55Z" end-time="2026-11-16 07:54:55Z" duration="0.023400" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1968" name="PhysicalChoiceUsesOnlyPublishedAction(B,&quot;shot.keeper.block&quot;)" fullname="OnlineOutsideKeeperShotEditorTests.PhysicalChoiceUsesOnlyPublishedAction(B,&quot;shot.keeper.block&quot;)" methodname="PhysicalChoiceUsesOnlyPublishedAction" classname="OnlineOutsideKeeperShotEditorTests" runstate="Runnable" seed="1818063187" result="Passed" start-time="2026-11-16 07:54:55Z" end-time="2026-11-16 07:54:55Z" duration="0.000232" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Saving results to: TestResults\GameplayRegression\Runs\20261116T075455273Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

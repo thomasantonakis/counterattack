@@ -772,6 +772,7 @@ public partial class LooseBallManager : MonoBehaviour
 
     private IEnumerator PresentDirectionRoll(RollInputOverride? rollOverride)
     {
+        int version=onlineLoosePhaseVersion;
         // directionRoll = 0; // S  : PerformDirectionRoll(1)
         // directionRoll = 1; // SW : PerformDirectionRoll(2)
         // directionRoll = 2; // NW : PerformDirectionRoll(3)
@@ -790,6 +791,7 @@ public partial class LooseBallManager : MonoBehaviour
             yield return headerPresentationOwner.ResolveScatter(this, diceResult, TranslateRollToDirection(directionRoll), true);
         else if (!HasHeaderPresentation)
             yield return SingleRollResolutionPresentation.ResolveLooseBall(this, diceResult, TranslateRollToDirection(directionRoll), true);
+        if(!IsLoosePhaseCurrent(version))yield break;
         isWaitingForDirectionRoll = false;
     }
 
@@ -813,6 +815,7 @@ public partial class LooseBallManager : MonoBehaviour
 
     private IEnumerator PresentDistanceRoll(RollInputOverride? rollOverride)
     {
+        int version=onlineLoosePhaseVersion;
         GameplayDiceRollResult diceResult = MatchManager.Instance.ResolveGameplayDiceRoll(
             "loose_ball_distance",
             rollOverride,
@@ -832,6 +835,7 @@ public partial class LooseBallManager : MonoBehaviour
                     or LooseBallPresentationContext.GroundDuelResolution);
         // Shot scatters continue immediately and retain the panel for recovery.
         // External GK movement temporarily suspends the shared modal when needed.
+        if(!IsLoosePhaseCurrent(version))yield break;
         isWaitingForDistanceRoll = false;
     }
     
@@ -872,6 +876,7 @@ public partial class LooseBallManager : MonoBehaviour
 
     private IEnumerator PresentInterceptionRoll(RollInputOverride? rollOverride)
     {
+        int version=onlineLoosePhaseVersion;
         GameplayDiceRollResult diceResult = MatchManager.Instance.ResolveGameplayDiceRoll(
             "loose_ball_interception",
             rollOverride,
@@ -893,6 +898,7 @@ public partial class LooseBallManager : MonoBehaviour
             var panel = DuelResolutionPanelController.Instance;
             if (panel != null) yield return panel.ResolveLooseBallRecovery(this, diceResult, CurrentRecoverySucceeds());
         }
+        if(!IsLoosePhaseCurrent(version))yield break;
         isWaitingForInterceptionRoll = false;
     }
 
@@ -910,6 +916,7 @@ public partial class LooseBallManager : MonoBehaviour
         LooseBallPresentationContext presentationContext = LooseBallPresentationContext.Standalone,
         HeaderChallengePanelController presentationOwner = null, bool isHeaderShotContinuation = false)
     {
+        int version=++onlineLoosePhaseVersion;
         // Keep the aerial participants unavailable throughout this save/spill continuation,
         // even if another phase clears the HeaderManager's nomination lists.
         HashSet<PlayerToken> headerShotJumpers = isHeaderShotContinuation
@@ -947,6 +954,7 @@ public partial class LooseBallManager : MonoBehaviour
             SuspendHeaderPresentationForGoalkeeper();
             Debug.Log($"Loose ball source {startingToken.name} is on the opponent box line. Offering the defending GK free move before loose-ball direction and distance rolls.");
             yield return StartCoroutine(MoveLooseBallUntilGKBoxMove(defenderHex));
+            if(!IsLoosePhaseCurrent(version))yield break;
             gkBoxMoveOfferedForThisLooseBall = true;
             yield return StartCoroutine(MoveLooseBallToHex(defenderHex, sourceType, allowGKBoxMove: false));
         }
@@ -954,6 +962,7 @@ public partial class LooseBallManager : MonoBehaviour
         {
             yield return StartCoroutine(MoveLooseBallToHex(defenderHex, sourceType, allowGKBoxMoveForLooseBallMovement));
         }
+        if(!IsLoosePhaseCurrent(version))yield break;
         // ball.SetCurrentHex(defenderHex);
         List<int> spillDirections = new List<int>();
         if (IsGoalkeeperHandlingSpill(sourceType) && startingToken.IsGoalKeeper)
@@ -979,11 +988,12 @@ public partial class LooseBallManager : MonoBehaviour
         else if (!HasHeaderPresentation)
             SingleRollResolutionPresentation.LooseBall(this, () => isWaitingForDirectionRoll,
                 causingDeflection, true);
-        while (isWaitingForDirectionRoll)
+        while (isWaitingForDirectionRoll && IsLoosePhaseCurrent(version))
         {
             yield return null;
         }
 
+        if(!IsLoosePhaseCurrent(version))yield break;
         if (IsGoalkeeperHandlingSpill(sourceType) && startingToken.IsGoalKeeper)
         {
             if (!spillDirections.Contains(directionRoll))
@@ -1057,11 +1067,12 @@ public partial class LooseBallManager : MonoBehaviour
         else if (!HasHeaderPresentation)
             SingleRollResolutionPresentation.LooseBall(this, () => isWaitingForDistanceRoll,
                 causingDeflection, false);
-        while (isWaitingForDistanceRoll)
+        while (isWaitingForDistanceRoll && IsLoosePhaseCurrent(version))
         {
             yield return null;
         }
 
+        if(!IsLoosePhaseCurrent(version))yield break;
         Debug.Log($"Loose Ball Direction: {direction}, Distance: {distanceRoll}");
 
         // Step 3: Calculate the final target hex
@@ -1180,11 +1191,12 @@ public partial class LooseBallManager : MonoBehaviour
 
                     isWaitingForInterceptionRoll = true;
                     BeginRecoveryPresentation();
-                    while (isWaitingForInterceptionRoll)
+                    while (isWaitingForInterceptionRoll && IsLoosePhaseCurrent(version))
                     {
                         yield return null;
                     }
 
+                    if(!IsLoosePhaseCurrent(version))yield break;
                     // int interceptionRoll = 1; // Simulate dice roll
                     if (CurrentRecoverySucceeds())
                     {
@@ -1209,6 +1221,7 @@ public partial class LooseBallManager : MonoBehaviour
                             interceptionMovementPath,
                             gkBoxMoveOfferedForThisLooseBall,
                             gkCheckpointResult));
+                        if(!IsLoosePhaseCurrent(version))yield break;
 
                         gkBoxMoveOfferedForThisLooseBall = gkCheckpointResult.GkMoveOffered;
                         if (gkCheckpointResult.RecoveredByGoalkeeper)
@@ -1220,6 +1233,7 @@ public partial class LooseBallManager : MonoBehaviour
                         // Reassess at the successful recovery: this is now a
                         // purposeful touch by the new attack, not uncontrolled scatter.
                         yield return StartCoroutine(MoveToSuccessfulLooseBallInterceptor(potentialInterceptor, neighbor));
+                        if(!IsLoosePhaseCurrent(version))yield break;
                         movementPhaseManager.EndMovementPhase(false);
                         MatchManager.Instance.BroadcastDefensiveRecoveryOutcome(potentialInterceptor, neighbor);
                         EndLooseBallPhase();
@@ -1243,6 +1257,7 @@ public partial class LooseBallManager : MonoBehaviour
             path,
             gkBoxMoveOfferedForThisLooseBall,
             finalGkCheckpointResult));
+        if(!IsLoosePhaseCurrent(version))yield break;
 
         gkBoxMoveOfferedForThisLooseBall = finalGkCheckpointResult.GkMoveOffered;
         if (finalGkCheckpointResult.RecoveredByGoalkeeper)
@@ -1258,6 +1273,7 @@ public partial class LooseBallManager : MonoBehaviour
         {
             Debug.Log($"Loose ball crossed the goal at {looseBallGoalHex.coordinates} after all interception attempts failed.");
             yield return StartCoroutine(MoveLooseBallToHex(looseBallGoalHex, sourceType, allowRemainingGKBoxMove));
+            if(!IsLoosePhaseCurrent(version))yield break;
             if (TryHandleLooseBallGoal(looseBallGoalHex, startingToken))
             {
                 EndLooseBallPhase(completeDeferredShotResolution: false);
@@ -1267,6 +1283,7 @@ public partial class LooseBallManager : MonoBehaviour
 
         // Step 5.3: If no interception succeeded move the ball to the last Hex of the Path
         yield return StartCoroutine(MoveLooseBallToHex(path.Last(), sourceType, allowRemainingGKBoxMove));
+        if(!IsLoosePhaseCurrent(version))yield break;
         HexCell looseBallRestingHex = path.Last();
         // Check what is going on with where the ball went.
         // Ball ended up on a Token
@@ -1448,6 +1465,7 @@ public partial class LooseBallManager : MonoBehaviour
 
     public void EndLooseBallPhase(bool completeDeferredShotResolution = true)
     {
+        onlineLoosePhaseVersion++;
         ReleaseHeaderPresentation();
         DuelResolutionPanelController.Instance?.ForgetLooseBallPresentation(this);
         if (completeDeferredShotResolution)

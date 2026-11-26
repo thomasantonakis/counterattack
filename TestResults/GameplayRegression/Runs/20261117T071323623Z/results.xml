@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="15" result="Passed" total="15" passed="15" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-17 07:13:23Z" end-time="2026-11-17 07:13:23Z" duration="0.2062242">
+  <test-suite type="TestSuite" id="5485" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1924" result="Passed" start-time="2026-11-17 07:13:23Z" end-time="2026-11-17 07:13:23Z" duration="0.206224" total="15" passed="15" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="5479" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="1924" result="Passed" start-time="2026-11-17 07:13:23Z" end-time="2026-11-17 07:13:23Z" duration="0.184321" total="15" passed="15" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12156" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="4163" name="OnlineFullRoomPayloadEditorTests" fullname="OnlineFullRoomPayloadEditorTests" classname="OnlineFullRoomPayloadEditorTests" runstate="Runnable" testcasecount="15" result="Passed" start-time="2026-11-17 07:13:23Z" end-time="2026-11-17 07:13:23Z" duration="0.177867" total="15" passed="15" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineFullRoomPayload" />
+        </properties>
+        <test-case id="4179" name="ExpandedStateHasIndependentHardLimit" fullname="OnlineFullRoomPayloadEditorTests.ExpandedStateHasIndependentHardLimit" methodname="ExpandedStateHasIndependentHardLimit" classname="OnlineFullRoomPayloadEditorTests" runstate="Runnable" seed="931135102" result="Passed" start-time="2026-11-17 07:13:23Z" end-time="2026-11-17 07:13:23Z" duration="0.016728" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="4168" name="LargeRosterRoundTripsWithinWireBudget" fullname="OnlineFullRoomPayloadEditorTests.LargeRosterRoundTripsWithinWireBudget" classname="OnlineFullRoomPayloadEditorTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-11-17 07:13:23Z" end-time="2026-11-17 07:13:23Z" duration="0.057222" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="4164" name="LargeRosterRoundTripsWithinWireBudget(16,False)" fullname="OnlineFullRoomPayloadEditorTests.LargeRosterRoundTripsWithinWireBudget(16,False)" methodname="LargeRosterRoundTripsWithinWireBudget" classname="OnlineFullRoomPayloadEditorTests" runstate="Runnable" seed="1032509574" result="Passed" start-time="2026-11-17 07:13:23Z" end-time="2026-11-17 07:13:23Z" duration="0.014194" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Expanded bytes=89862, wire bytes=8678, fragments=10
+]]></output>
+          </test-case>
+          <test-case id="4165" name="LargeRosterRoundTripsWithinWireBudget(16,True)" fullname="OnlineFullRoomPayloadEditorTests.LargeRosterRoundTripsWithinWireBudget(16,True)" methodname="LargeRosterRoundTripsWithinWireBudget" classname="OnlineFullRoomPayloadEditorTests" runstate="Runnable" seed="1293737425" result="Passed" start-time="2026-11-17 07:13:23Z" end-time="2026-11-17 07:13:23Z" duration="0.009825" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Expanded bytes=90118, wire bytes=8694, fragments=10
+]]></output>
+          </test-case>
+          <test-case id="4166" name="LargeRosterRoundTripsWithinWireBudget(18,False)" fullname="OnlineFullRoomPayloadEditorTests.LargeRosterRoundTripsWithinWireBudget(18,False)" methodname="LargeRosterRoundTripsWithinWireBudget" classname="OnlineFullRoomPayloadEditorTests" runstate="Runnable" seed="1422958078" result="Passed" start-time="2026-11-17 07:13:23Z" end-time="2026-11-17 07:13:23Z" duration="0.010467" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Expanded bytes=95478, wire bytes=8794, fragments=10
+]]></output>
+          </test-case>
+          <test-case id="4167" name="LargeRosterRoundTripsWithinWireBudget(18,True)" fullname="OnlineFullRoomPayloadEditorTests.LargeRosterRoundTripsWithinWireBudget(18,True)" methodname="LargeRosterRoundTripsWithinWireBudget" classname="OnlineFullRoomPayloadEditorTests" runstate="Runnable" seed="1088515345" result="Passed" start-time="2026-11-17 07:13:23Z" end-time="2026-11-17 07:13:23Z" duration="0.010940" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Expanded bytes=95766, wire bytes=8806, fragments=10
+]]></output>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="4178" name="MalformedCompressionCannotPoisonNextMessage" fullname="OnlineFullRoomPayloadEditorTests.MalformedCompressionCannotPoisonNextMessage" classname="OnlineFullRoomPayloadEditorTests" runstate="Runnable" testcasecount="9" result="Passed" start-time="2026-11-17 07:13:23Z" end-time="2026-11-17 07:13:23Z" duration="0.090995" total="9" passed="9" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="4169" name="MalformedCompressionCannotPoisonNextMessage(&quot;base64&quot;)" fullname="OnlineFullRoomPayloadEditorTests.MalformedCompressionCannotPoisonNextMessage(&quot;base64&quot;)" methodname="MalformedCompressionCannotPoisonNextMessage" classname="OnlineFullRoomPayloadEditorTests" runstate="Runnable" seed="768676576" result="Passed" start-time="2026-11-17 07:13:23Z" end-time="2026-11-17 07:13:23Z" duration="0.005882" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="4170" name="MalformedCompressionCannotPoisonNextMessage(&quot;truncated&quot;)" fullname="OnlineFullRoomPayloadEditorTests.MalformedCompressionCannotPoisonNextMessage(&quot;truncated&quot;)" methodname="MalformedCompressionCannotPoisonNextMessage" classname="OnlineFullRoomPayloadEditorTests" runstate="Runnable" seed="112300255" result="Passed" start-time="2026-11-17 07:13:23Z" end-time="2026-11-17 07:13:23Z" duration="0.021065" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="4171" name="MalformedCompressionCannotPoisonNextMessage(&quot;length&quot;)" fullname="OnlineFullRoomPayloadEditorTests.MalformedCompressionCannotPoisonNextMessage(&quot;length&quot;)" methodname="MalformedCompressionCannotPoisonNextMessage" classname="OnlineFullRoomPayloadEditorTests" runstate="Runnable" seed="535549194" result="Passed" start-time="2026-11-17 07:13:23Z" end-time="2026-11-17 07:13:23Z" duration="0.026628" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="4172" name="MalformedCompressionCannotPoisonNextMessage(&quot;bomb&quot;)" fullname="OnlineFullRoomPayloadEditorTests.MalformedCompressionCannotPoisonNextMessage(&quot;bomb&quot;)" methodname="MalformedCompressionCannotPoisonNextMessage" classname="OnlineFullRoomPayloadEditorTests" runstate="Runnable" seed="1396650065" result="Passed" start-time="2026-11-17 07:13:23Z" end-time="2026-11-17 07:13:23Z" duration="0.005207" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="4173" name="MalformedCompressionCannotPoisonNextMessage(&quot;kind&quot;)" fullname="OnlineFullRoomPayloadEditorTests.MalformedCompressionCannotPoisonNextMessage(&quot;kind&quot;)" methodname="MalformedCompressionCannotPoisonNextMessage" classname="OnlineFullRoomPayloadEditorTests" runstate="Runnable" seed="572611785" result="Passed" start-time="2026-11-17 07:13:23Z" end-time="2026-11-17 07:13:23Z" duration="0.002821" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="4174" name="MalformedCompressionCannotPoisonNextMessage(&quot;conflict&quot;)" fullname="OnlineFullRoomPayloadEditorTests.MalformedCompressionCannotPoisonNextMessage(&quot;conflict&quot;)" methodname="MalformedCompressionCannotPoisonNextMessage" classname="OnlineFullRoomPayloadEditorTests" runstate="Runnable" seed="1465864477" result="Passed" start-time="2026-11-17 07:13:23Z" end-time="2026-11-17 07:13:23Z" duration="0.002278" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="4175" name="MalformedCompressionCannotPoisonNextMessage(&quot;catalog&quot;)" fullname="OnlineFullRoomPayloadEditorTests.MalformedCompressionCannotPoisonNextMessage(&quot;catalog&quot;)" methodname="MalformedCompressionCannotPoisonNextMessage" classname="OnlineFullRoomPayloadEditorTests" runstate="Runnable" seed="1270427574" result="Passed" start-time="2026-11-17 07:13:23Z" end-time="2026-11-17 07:13:23Z" duration="0.006186" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="4176" name="MalformedCompressionCannotPoisonNextMessage(&quot;missing-data&quot;)" fullname="OnlineFullRoomPayloadEditorTests.MalformedCompressionCannotPoisonNextMessage(&quot;missing-data&quot;)" methodname="MalformedCompressionCannotPoisonNextMessage" classname="OnlineFullRoomPayloadEditorTests" runstate="Runnable" seed="1211796494" result="Passed" start-time="2026-11-17 07:13:23Z" end-time="2026-11-17 07:13:23Z" duration="0.002858" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="4177" name="MalformedCompressionCannotPoisonNextMessage(&quot;size-header&quot;)" fullname="OnlineFullRoomPayloadEditorTests.MalformedCompressionCannotPoisonNextMessage(&quot;size-header&quot;)" methodname="MalformedCompressionCannotPoisonNextMessage" classname="OnlineFullRoomPayloadEditorTests" runstate="Runnable" seed="566351038" result="Passed" start-time="2026-11-17 07:13:23Z" end-time="2026-11-17 07:13:23Z" duration="0.003563" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-case id="4180" name="PreparedProfileKeepsUncompressedState" fullname="OnlineFullRoomPayloadEditorTests.PreparedProfileKeepsUncompressedState" methodname="PreparedProfileKeepsUncompressedState" classname="OnlineFullRoomPayloadEditorTests" runstate="Runnable" seed="159673932" result="Passed" start-time="2026-11-17 07:13:23Z" end-time="2026-11-17 07:13:23Z" duration="0.004590" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Saving results to: TestResults\GameplayRegression\Runs\20261117T071323623Z\results.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

@@ -1,0 +1,8 @@
+{"name":"OnlineShootoutPlayModeTests.OwnOrdersRequireBothManagers(False,False,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineShootoutPlayModeTests.OwnOrdersRequireBothManagers(False,False,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineShootoutPlayModeTests.OwnOrdersRequireBothManagers(False,True,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineShootoutPlayModeTests.OwnOrdersRequireBothManagers(False,True,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineShootoutPlayModeTests.OwnOrdersRequireBothManagers(True,False,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineShootoutPlayModeTests.OwnOrdersRequireBothManagers(True,False,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineShootoutPlayModeTests.OwnOrdersRequireBothManagers(True,True,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineShootoutPlayModeTests.OwnOrdersRequireBothManagers(True,True,True)","status":"Passed","message":"","stackTrace":""}

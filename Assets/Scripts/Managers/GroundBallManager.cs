@@ -385,6 +385,7 @@ public partial class GroundBallManager : MonoBehaviour
     
     public void HandleGroundBallPath(HexCell clickedHex, bool isGk = false)
     {
+        if (CounterAttack.Online.OnlineRoomSession.IsGuest) return;
         if (clickedHex != null)
         {
             HexCell ballHex = ball.GetCurrentHex();
@@ -996,6 +997,7 @@ public partial class GroundBallManager : MonoBehaviour
 
     public void PerformGroundInterceptionDiceRoll(RollInputOverride? rollOverride)
     {
+        if (CounterAttack.Online.OnlineRoomSession.IsGuest) return;
         StartCoroutine(PresentGroundInterception(rollOverride));
     }
 
@@ -1160,7 +1162,7 @@ public partial class GroundBallManager : MonoBehaviour
         previewHasConditionalGoalkeeperInteraction = false;
     }
 
-    public IEnumerator HandleGroundBallMovement(HexCell targetHex, int? speed = null, bool allowGKBoxMove = true)
+    public IEnumerator HandleGroundBallMovement(HexCell targetHex, int? speed = null, bool allowGKBoxMove = true, System.Func<bool> continuationIsCurrent = null)
     {
         // Ensure the ball and targetHex are valid
         if (ball == null)
@@ -1177,7 +1179,8 @@ public partial class GroundBallManager : MonoBehaviour
         // Set thegame status to StandardPassMoving
         // MatchManager.Instance.currentState = MatchManager.GameState.StandardPassMoving;
         // Wait for the ball movement to complete
-        yield return StartCoroutine(ball.MoveToCell(targetHex, speed, allowGKBoxMove));
+        yield return StartCoroutine(ball.MoveToCell(targetHex, speed, allowGKBoxMove, continuationIsCurrent: continuationIsCurrent));
+        if (continuationIsCurrent != null && !continuationIsCurrent()) yield break;
         // Adjust the ball's height based on occupancy (after movement is completed)
         ball.AdjustBallHeightBasedOnOccupancy();  // Ensure this method is public in Ball.cs
         // Now clear the highlights after the movement

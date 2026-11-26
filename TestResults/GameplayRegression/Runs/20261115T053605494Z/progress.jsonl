@@ -1,0 +1,6 @@
+{"name":"OnlineFrontendEntryPlayModeTests.NormalMenuEntry(\"entry\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFrontendEntryPlayModeTests.NormalMenuEntry(\"offline\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFrontendEntryPlayModeTests.NormalMenuEntry(\"invalid-join\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFrontendEntryPlayModeTests.NormalMenuEntry(\"save-guard\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFrontendEntryPlayModeTests.NormalMenuEntry(\"persistent-lifetime\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFrontendEntryPlayModeTests.NormalMenuEntry(\"back\")","status":"Passed","message":"","stackTrace":""}

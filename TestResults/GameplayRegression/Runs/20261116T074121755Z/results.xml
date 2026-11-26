@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="1" result="Passed" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 07:41:21Z" end-time="2026-11-16 07:41:21Z" duration="0.1159768">
+  <test-suite type="TestSuite" id="3079" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1759" result="Passed" start-time="2026-11-16 07:41:21Z" end-time="2026-11-16 07:41:21Z" duration="0.115977" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="3072" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="1759" result="Passed" start-time="2026-11-16 07:41:21Z" end-time="2026-11-16 07:41:21Z" duration="0.097336" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17216" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="1679" name="OnlineControlDecisionEditorTests" fullname="OnlineControlDecisionEditorTests" classname="OnlineControlDecisionEditorTests" runstate="Runnable" testcasecount="10" result="Passed" start-time="2026-11-16 07:41:21Z" end-time="2026-11-16 07:41:21Z" duration="0.095677" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineControlDecision" />
+        </properties>
+        <test-case id="1691" name="CaptureAllocationDoesNotScaleWithRosterPayload" fullname="OnlineControlDecisionEditorTests.CaptureAllocationDoesNotScaleWithRosterPayload" methodname="CaptureAllocationDoesNotScaleWithRosterPayload" classname="OnlineControlDecisionEditorTests" runstate="Runnable" seed="1670725856" result="Passed" start-time="2026-11-16 07:41:21Z" end-time="2026-11-16 07:41:21Z" duration="0.092803" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[4,096 simultaneously retained captures: empty publication 237568 bytes; 10,000-actor publication 524288 bytes
+Saving results to: TestResults\GameplayRegression\Runs\20261116T074121755Z\results.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

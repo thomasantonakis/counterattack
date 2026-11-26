@@ -1,5 +1,323 @@
 # Running gameplay regressions
 
+For the normal Online match scene, use PlayMode fixture
+OnlineNativeRoomPlayModeTests under
+Assets/Tests/PlayMode/Features/OnlineNativeRoom/. It checks both Online roles,
+Hot Seat and Single Player in Room, then applies host movement, duel, header
+and stoppage publications to a fresh guest. It requires no EOS login. Packaged
+presentation acceptance still uses the Windows and macOS paired walkthrough.
+
+For the paired walkthrough follow-up, use the scoped filters and native result
+links in [Online Room walkthrough follow-up](OnlineRoomWalkthroughFollowUp.md).
+The checks cover authored Draft and setup views, native roll and pause projection,
+shootout staging, team pointers, moved-player numbers and substitutions.
+
+For offline Draft presentation and first-pick rolls, use PlayMode fixture
+`OfflineDraftPresentationPlayModeTests` under
+`Assets/Tests/PlayMode/Features/OfflineDraftPresentation/`. It uses fresh
+temporary saves and checks the dealt card layers, eligible slot hover and drop,
+single-line first-pick footer with kickoff placement, and automatic rolls for
+both teams at first pick and kickoff.
+
+For regular online full-time results, use EditMode
+`OnlineMatchConclusionEditorTests` (8 cases) and PlayMode
+`OnlineMatchConclusionPlayModeTests` (18 cases), category `OnlineMatchConclusion`,
+in the same-named Editor/PlayMode feature folders. They cover win/draw,
+regulation/extra-time endings, terminal input and safe host/guest Leave.
+
+For the authored online Full Time report, run `OnlineFullTimeReportEditorTests`
+and `OnlineFullTimeReportPlayModeTests` in the same-named feature folders,
+category `OnlineFullTimeReport`. EditMode checks multi-part Pitch and Luck
+history, parity and validation. PlayMode checks the native Room panel for a
+resumed win, draw, extra time, penalties and unavailable history. See the
+[online Full Time report plan](../Plans/OnlineFullTimeReport.md) for paired
+packaged verification.
+
+For host/Home and guest/Away assignment, use `OnlineSeatOwnershipEditorTests`
+and `OnlineSeatOwnershipPlayModeTests`, category `OnlineSeatOwnership`, in the
+same-named feature folders. They cover authenticated setup edits, older-build
+rejection, Draft handoff into the authored Room, kickoff command ownership and
+replica startup.
+
+For the paired Draft, aiming, status and penalty-toss regressions, use
+`OnlinePairedFeedbackPlayModeTests` under `Assets/Tests/PlayMode/Features/OnlinePairedFeedback/`,
+category `OnlinePairedFeedback`. The authored scene cases cover Draft averages,
+Novice and Experienced kickoff aiming, guest CanShootTo elevation and movement
+status rows, and penalty-toss input and resume after a tied final whistle.
+`GuestRendersRaisedHeaderTargetsAndAllTokenStatuses` also checks that host hover
+keeps the guest's goal-line target raised and highlighted until aiming ends.
+Use PlayMode category `TokenResetMovement` for the focused goal, halftime and
+shootout occupancy cases in online and offline Room.
+`GuestAcceptsEachPenaltyTossCountdownPublication` checks the encoded
+countdown updates advance their publication sequence without changing the roll decision.
+
+For raised CanShootTo highlights, use PlayMode category `OnlineRaisedGoalTargets`
+in `Assets/Tests/PlayMode/Features/OnlineRaisedGoalTargets/`. It checks the
+guest's highlight and elevation before, during and after host hover across shot
+aiming, headers, goal-mouth movement and the committed shootout marker.
+Filter `PeerReceivesAndClearsOrangeHoverBeforeTargetCommit` to check the transient
+orange hover shared by the two managers.
+
+For simultaneous player names and local preview cards in the authored Room,
+run `BothNamesAppearWhileOnlyLocalHoverUpdatesThePreview` in
+`Assets/Tests/PlayMode/Features/OnlineTeamPointers/`. Both roles receive the
+peer hover and keep their own preview selection.
+
+For Room coin toss/half transitions, use EditMode `OnlineRoomCoinTossEditorTests`
+(13 cases) and PlayMode `OnlineRoomCoinTossPlayModeTests` (24 cases), category
+`OnlineRoomCoinToss`, under the same-named Editor/PlayMode feature folders.
+The PlayMode fixture separates 16 real toss transitions, 2 held ties, 4 ordinary
+half swaps and 2 legacy/input-hold guards. Iterate by explicit method filter.
+The filter `RoomCoinTossEditorTests` also matches the online fixture; inspect
+per-case class names when counting legacy-only results.
+
+For online shootouts, run EditMode fixture `OnlineShootoutEditorTests` (19 cases)
+and PlayMode fixture `OnlineShootoutPlayModeTests` (36 cases), category
+`OnlineShootout`. Folders: `Assets/Editor/FeatureTests/OnlineShootout/` and
+`Assets/Tests/PlayMode/Features/OnlineShootout/`. The PlayMode methods separately
+select ordering (8), paused substitution reconciliation (4), first-kick outcomes
+(16) and complete early/sudden-death shootouts (8). They use real authored Room,
+deterministic dice and fresh inert guests, with no external EOS peer required.
+Use focused method filters serially for iteration; retain native XML/progress.
+
+For guest shootout presentation, use PlayMode category
+`OnlineGuestShootoutPresentation` in
+`Assets/Tests/PlayMode/Features/OnlineGuestShootoutPresentation/`. It covers
+the current shooter and goalkeeper cards, the authored dice panel drag handle,
+and local position restoration across a pause and the next kick.
+
+For in-flight full Room snapshot continuity, run EditMode fixture
+`OnlineSnapshotPoseEditorTests` (9 cases) and PlayMode fixture
+`OnlineSnapshotPosePlayModeTests` (5 cases), category `OnlineSnapshotPose`.
+Folders: `Assets/Editor/FeatureTests/OnlineSnapshotPose/` and
+`Assets/Tests/PlayMode/Features/OnlineSnapshotPose/`. The latter uses real
+movement and a fresh guest; it does not require EOS login or another machine.
+
+For online checkpoint save and resume, run the focused EditMode fixture
+`OnlineSaveResumeEditorTests` and PlayMode fixture `OnlineSaveResumePlayModeTests`,
+category `OnlineSaveResume`. The native Room cases use temporary save slots and
+exercise both attacking teams, a guest-owned pause and the two Ready confirmations.
+The loose-ball opening and stoppage cases round-trip those checkpoints and
+continue play. Offline coverage uses `LooseBallOpeningAtSettledStoppageSavesAndRestores`
+in `Assets/Tests/PlayMode/Features/MovementOpeningSave/`.
+See the [online save and resume plan](../Plans/OnlineSaveAndResume.md) for the
+paired packaged walkthrough.
+
+For defensive fouls followed by advantage, filter
+`DefensiveFoulRepositionKeepsUnusedAttackerAvailableInTwoForTwo` in
+`Assets/Tests/PlayMode/Features/OnlineGroundDuels/`. The cases use both directions
+and cover a first injury and no injury.
+
+The paired feedback regressions compiled in Unity 6000.5.3f1 with zero errors.
+Native XML and progress for the focused runs are under
+`TestResults/GameplayRegression/Runs/`.
+
+| Focused coverage | Passed | Run directory |
+| --- | ---: | --- |
+| Online checkpoint EditMode | 23 | `20261125T195133511Z` |
+| Defensive foul and 2-for-2 | 4 | `20261125T195150060Z` |
+| Online loose-ball and stoppage saves | 4 | `20261125T214324800Z` |
+| Offline movement-opening saves | 9 | `20261125T214704490Z` |
+| Resumed Full Time history | 1 | `20261125T214725171Z` |
+| Raised goal-line targets and orange hover | 15 | `20261125T214820810Z` |
+| Team pointers and names | 8 | `20261125T215036306Z` |
+| Full Time hover suppression | 2 | `20261125T215133155Z` |
+
+For required online goalkeeper decisions, use PlayMode fixture
+`OnlineRequiredKeeperPlayModeTests` (category `OnlineRequiredKeeper`, 33 cases)
+in `Assets/Tests/PlayMode/Features/OnlineRequiredKeeper/`. Its three methods are
+independently selectable. The existing pause/substitution features are
+`OnlineRoomMenuPlayModeTests` and `OnlineSubstitutionsPlayModeTests` in their
+same-named feature folders. Save dirty loaded scenes and wait for compilation
+before starting each focused run. Native results remain under
+`TestResults/GameplayRegression/Runs/`. Paired Mac acceptance is deferred.
+
+Shots use PlayMode category `OnlineShots`: 30 passed, zero failed/skipped,
+compilation separately clean. Fixtures are `OnlineHeaderShotPlayModeTests` (16)
+and `OnlineGroundShotPlayModeTests` (14).
+Exact native XML and initial failures are recorded in
+`Assets/Editor/FeatureTests/OnlineShots/Verification.md`; native tests live under
+`Assets/Tests/PlayMode/Features/OnlineShots/`. Includes targeting, snapshot defender
+movement, held saves, rebound and preview interruption. The later
+`OnlineShotBlockPlayModeTests` extension has 10 focused passes, bringing the
+feature to 40 distinct passing outcomes across scoped runs. No complete suites
+ran. General keeper moves/goals/restarts remain pending.
+
+The currently installed Pipeline's `testName` filter compares literal substrings;
+it does not interpret regex. A method name selects all its parameter cases. For
+one failed case, use its native XML FullName and preserve embedded quotes when
+passing it through Windows PowerShell (for example `\"tie\"`). A zero-test result
+is not validation. Keep runs serial and inspect the native counts.
+
+Loose balls use PlayMode category `OnlineLooseBall`: 18 distinct cases passed,
+zero failed/skipped, compilation separately clean. Test/checklist/XML locations:
+`Assets/Tests/PlayMode/Features/OnlineLooseBall/` and
+`Assets/Editor/FeatureTests/OnlineLooseBall/`. Covers actual tied headers and keeper
+spills through direction/distance/recovery, automatic deadlines, holds and
+cancelled/replaced result continuations. Broader shot/keeper/restart paths remain.
+
+Goalkeeper distribution uses PlayMode category `OnlineKeeperDistribution`:
+14 distinct cases passed, zero failed/skipped, compilation separately clean.
+Tests/checklist/XML are under `Assets/Tests/PlayMode/Features/OnlineKeeperDistribution/`
+and `Assets/Editor/FeatureTests/OnlineKeeperDistribution/`. Covers real catches
+through owned quick throws and Final Third drop/kick targeting, both teams and
+directions, holds and invalidated choices.
+
+Online headers use category `OnlineHeaders`: 10 EditMode and 40 PlayMode passed,
+zero failed/skipped, compilation separately clean. Select only this category in
+the corresponding tabs. Tests/checklist and retained XML paths are under
+`Assets/Editor/FeatureTests/OnlineHeaders/` and
+`Assets/Tests/PlayMode/Features/OnlineHeaders/`. Includes actual high-pass-to-header
+contests, typed nominations/rolls/collection, keeper back-passes, landing
+interceptions, result holds/cancellation and v7 guest observations. Headed goals
+and loose-ball ties remain subsequent.
+
+Online high passes use PlayMode category `OnlineHighPass`: 21 passed, zero
+failed/skipped, compilation separately clean. Tests live under
+`Assets/Tests/PlayMode/Features/OnlineHighPass/`; implementation/verification
+checklist and exact XML are in `Assets/Editor/FeatureTests/OnlineHighPass/`.
+The affected manual exchange (7) and offline box sequence (1) also passed.
+
+Online automatic deadline admission uses PlayMode category `OnlineAutomaticRoll`
+under `Assets/Tests/PlayMode/Features/OnlineAutomaticRoll/`: 4 passed, zero
+failed/skipped, compilation separately clean. The Editor feature folder records
+the reproduced race, actual native XML and affected long/pause/offline cases.
+
+Online Final Third uses PlayMode category `OnlineFinalThird` under
+`Assets/Tests/PlayMode/Features/OnlineFinalThird/`: 6 passed, zero failed/skipped,
+compilation separately clean. See `Assets/Editor/FeatureTests/OnlineFinalThird/`
+for the race reproduction, native XML and unexecuted special restart branches.
+
+Basic online movement uses category `OnlineMovement`: 6 EditMode and 7 PlayMode
+passed, zero failed/skipped, compilation separately clean. Tests are under
+`Assets/Editor/FeatureTests/OnlineMovement/` and
+`Assets/Tests/PlayMode/Features/OnlineMovement/`. See the Editor folder checklist
+for native XML, affected checks and remaining Final Third/interaction coverage.
+
+Typed online long passes use PlayMode category `OnlineLongPass` under
+`Assets/Tests/PlayMode/Features/OnlineLongPass/`: 16 passed, zero failed/skipped,
+compilation separately clean. Fixtures cover isolated real rules, authored
+semantic controls and actual Room managers. See
+`Assets/Editor/FeatureTests/OnlineLongPass/Verification.md` for native XML and
+remaining movement/aerial/shot/restart integration.
+
+Online result continuation uses PlayMode category `OnlineResultHold` /
+`OnlineResultHoldPlayModeTests` under
+`Assets/Tests/PlayMode/Features/OnlineResultHold/`: 6 passed, zero failed/skipped.
+Affected shared-pause 13 and offline DuelManualReview 4 also passed; compilation
+separately clean. See `Assets/Editor/FeatureTests/OnlineResultHold/Verification.md`.
+
+Authoritative dice observations use focused EditMode category `OnlineRollResults`
+/ fixture `OnlineRollResultsEditorTests` in
+`Assets/Editor/FeatureTests/OnlineRollResults/`. This covers real authority rolls,
+no guest RNG, detached bounded history, run isolation and atomic replica rejection.
+See that folder for actual results; this is separate from paired acceptance.
+
+Room online startup uses category `OnlineRoomStartup`: EditMode fixture
+`OnlineRoomStartupEditorTests` in `Assets/Editor/FeatureTests/OnlineRoomStartup/`
+(2 passed) and PlayMode fixture `OnlineRoomStartupPlayModeTests` in
+`Assets/Tests/PlayMode/Features/OnlineRoomStartup/` (1 passed).
+The owned real Room action uses category `OnlineRoomAction`: EditMode
+`OnlineRoomPublicationEditorTests` in `Assets/Editor/FeatureTests/OnlineRoomAction/`
+(6 passed), PlayMode `OnlineRoomActionPlayModeTests` in
+`Assets/Tests/PlayMode/Features/OnlineRoomAction/` (6 passed).
+All have zero failed/skipped tests; compilation separately clean. Native XML,
+fixture boundaries and external acceptance are in those Verification.md files.
+Do not count these as a full regression suite or paired online Room acceptance.
+Broader user-run checks: `Assets/Tests/PlayMode/LegacyGroundPassPlayModeTests.cs`
+(`LegacyGroundPassPlayModeTests`) for offline passes;
+`Assets/Editor/RoomSaveBrowserEditorTests.cs` (`RoomSaveBrowserEditorTests`) for
+offline save browsing; and `Assets/Tests/PlayMode/Features/DecisionTiming/`
+(`DecisionTimingPlayModeTests.FileTimingRestore`) for offline timing persistence.
+Run only affected cases if failures
+are reported; no broad suites were started by these online batches.
+
+Manual prepared-board controls and recovery exchange use explicit PlayMode
+category/fixture `OnlineManualControls` / `OnlineManualControlsPlayModeTests`
+under `Assets/Tests/PlayMode/Features/OnlineManualControls/`. Final scope: 7
+passed, zero failed/skipped, compilation separately clean. Three cases cover
+authored button/input behavior; four run real host/guest exchange iterators
+through encoded interrupted fake transport. See
+`Assets/Editor/FeatureTests/OnlineManualControls/Verification.md` for native XML,
+paired local evidence and unexecuted EOS/Room acceptance.
+
+Online recovery infrastructure uses explicit category `OnlineRecovery`:
+`Assets/Editor/FeatureTests/OnlineRecovery/OnlineRecoveryEditorTests.cs` and
+`Assets/Tests/PlayMode/Features/OnlineRecovery/OnlineRecoveryPlayModeTests.cs`.
+Focused results: 8 EditMode + 8 PlayMode passed, zero failures/skips;
+compilation separately clean. See the Editor folder's Verification.md for XML
+and remaining transport integration. These are injected-clock authority tests,
+not a standalone reconnect or Room acceptance claim.
+
+Prepared online shared pause uses category `OnlineSharedPause`: EditMode
+`OnlineSharedPauseEditorTests` under `Assets/Editor/FeatureTests/OnlineSharedPause/`
+and PlayMode `OnlineSharedPausePlayModeTests` /
+`OnlineSharedPausePresentationPlayModeTests` under
+`Assets/Tests/PlayMode/Features/OnlineSharedPause/`. Focused results: 11 EditMode
++ 13 PlayMode passed, zero failed/skipped; compilation separately clean.
+See the Editor feature folder's Verification.md for native XML and the v2
+packaged/paired pause proof checklist. No broad suites ran.
+The paired Windows-host/Mac-guest pause proof also passed, with matching state
+digests, sharedPauseRevision=2 and one authority roll; see that verification
+file for both retained application report paths. This is separate from the
+11 EditMode + 13 PlayMode framework counts.
+
+EOS gameplay command/state and authored replica proof uses explicit category
+`OnlineGroundPassNetwork`: EditMode fixture `OnlineGroundPassWireEditorTests`
+under `Assets/Editor/FeatureTests/OnlineGroundPassNetwork/` and PlayMode fixture
+`OnlineGroundPassNetworkPlayModeTests` under
+`Assets/Tests/PlayMode/Features/OnlineGroundPassNetwork/`. Focused results:
+13 EditMode + 2 PlayMode passed, zero failed/skipped; compilation separately
+clean. Windows/Mac packaged checks and the separate-network paired gameplay
+run passed with matching final-state digests and one host-only roll; commands and limits are in
+`Documentation/Setup/OnlineGroundPassNetwork.md`. These probes are automated
+prepared-board checks, not full M1 or an interactive Room match.
+
+The first isolated online gameplay authority slice uses category
+`OnlineGroundPass`: EditMode fixture `OnlineGroundPassBoundaryEditorTests` under
+`Assets/Editor/FeatureTests/OnlineGroundPass/` and PlayMode fixture
+`OnlineGroundPassPlayModeTests` under `Assets/Tests/PlayMode/Features/OnlineGroundPass/`.
+Final focused scope: 1 EditMode + 14 PlayMode passed, zero failed/skipped;
+compilation separately clean. See the Editor feature folder's `Verification.md`
+for native XML, coverage and unexecuted affected checks. This gateway is not
+wired into Room or EOS; guest replication and complete M1 remain pending.
+
+Standalone EOS packaging uses the dedicated authored scene
+`Assets/Scenes/EOSStandaloneProof.unity` and instructions in
+`Documentation/Setup/EOSStandaloneProof.md`. Argument validation uses only
+EditMode category `EOSStandaloneProof`, fixture `EOSStandaloneProofEditorTests`
+under `Assets/Editor/FeatureTests/EOSStandaloneProof/` (9/9 passed).
+Standalone application reports are JSON with local Player.log, separate from
+native Unity Test Framework XML. Windows/Mac builds, logins and paired standalone
+relay packets passed on user-reported separate networks. No gameplay suites are needed for
+this isolated probe. See that feature folder's `Verification.md` for evidence.
+
+Online multiplayer's initial protocol foundation uses `OnlineMatchProtocolEditorTests`
+(EditMode category `OnlineMatchProtocol`) under
+`Assets/Editor/FeatureTests/OnlineMatch/`. Run only that explicit fixture for its
+isolated account/team, compatibility, revision and retry checks. Current evidence:
+27 passed, zero failed/skipped; compilation separately clean. See its
+`Verification.md` for native XML and unexecuted networking/gameplay coverage.
+This code is not wired into Room, and does not yet prove internet connectivity.
+
+Live EOS probes live under `Assets/Editor/FeatureTests/OnlineEOSConnectivity/`.
+They require the ignored local EOS configuration. The shared EOSProbeSession
+helper supports sequential probes in one Editor process, keeping the native
+SDK initialized and releasing each platform handle after use.
+Create the one-use `Temp/OnlineEOSConnectivity.run` marker before running only
+`EOSConnectLoginEditorTests.DeviceIdentityCanLogInThroughConnect` by exact EditMode
+test-name filter; without the marker, routine runs skip the case. It passed 1/1
+on this Mac. The separate `EOSPrivateLobbyEditorTests` case uses
+`Temp/OnlineEOSLobby.run` and also passed 1/1. An Editor that ran older probes
+which called SDK Shutdown needs a manual restart first. Room must be clean before
+running a fixture. See `OnlineEOSConnectivity/Verification.md` for results and
+native XML. These probes never start ordinary gameplay.
+The two-Mac host/guest lobby join and relay packet cases passed; Windows
+session reuse also passed 1/1. Windows/macOS packets remain pending. Exact
+filters, one-use markers and local lobby-ID handoff are in the same
+`Verification.md`. Do not run the host's five-minute wait until both Editors
+are ready. Lobby joining alone does not prove P2P packet delivery.
+
 Shooting geometry inspection is an isolated diagnostic scene at
 `Assets/Scenes/ShootingPathInspection.unity`. Its focused filters are
 `DiscPathGeometryEditorTests` (disc versus hex-polygon boundaries) and
@@ -306,6 +624,142 @@ inventory records which originals have actually passed before retirement.
 Review [MorningReview.md](MorningReview.md) for expectation drift decisions and any
 unresolved rules questions. These tests currently target Unity Editor EditMode/PlayMode,
 not standalone player test builds.
+
+## Online Draft focused filters
+
+Use category `OnlineDraftDeparture` for Arcade pool returns and the confirmation
+boundary, terminal peer departure, and the Room's Pause, checkpoint and lobby-code
+controls. See the [departure and Arcade checklist](../../Assets/Editor/FeatureTests/OnlineDraftDeparture/Verification.md).
+
+Use category `OnlineDraftPolish` for Hot Seat dice cue and timing parity,
+required online team names, goalkeeper dribbling, and the pre-match departure
+notice. The authored pool height is checked by
+`PoolRowsAndPageControlsFitBetweenTheRosters`. See the [polish checklist](../../Assets/Editor/FeatureTests/OnlineDraftPolish/Verification.md).
+
+Use `OnlineDraftReturnEditorTests` and `OnlineDraftReturnPlayModeTests`, category
+`OnlineDraftReturn`, for the Draft footer's **Back to Match Setup** action, both
+manager roles, a fresh draft after reconfirmation and stale packet rejection.
+See the [return-to-setup checklist](../../Assets/Editor/FeatureTests/OnlineDraftReturn/Verification.md).
+
+Free and Arcade interactions use EditMode `OnlineDraftInteractionRulesTests`
+and PlayMode `OnlineDraftInteractionsPlayModeTests`, category
+`OnlineDraftInteractions`. They cover keeper/outfield roll parity, exact slot
+eligibility, local controls for both managers, crossing Arcade picks and the
+spectator Draft view. See the [feature checklist](../../Assets/Editor/FeatureTests/OnlineDraftInteractions/Verification.md).
+
+Regular Draft: EditMode `OnlineDraftAuthorityEditorTests` (40) and
+`OnlineDraftChannelEditorTests` (16); PlayMode `OnlineDraftScenePlayModeTests` (20).
+Variants: EditMode `OnlineDraftVariantEditorTests` (38),
+`OnlineDraftCatalogEditorTests` (2); PlayMode
+`OnlineDraftVariantScenePlayModeTests` (10). Use explicit fixture/testName filters,
+not whole suites. Each folder's Verification.md records native run evidence and
+remaining boundaries. Mac/paired execution remains explicitly deferred.
+
+Opening toss filters: `OnlineOpeningEditorTests` (20 EditMode),
+`OnlineOpeningScenePlayModeTests` (4 PlayMode). Regular/variant Start assertions
+now lead into opening-roll; the opening fixture verifies room-ready continuation.
+
+Room launch: `OnlineRoomLaunchEditorTests` / category `OnlineRoomLaunch`
+(36 EditMode cases) exercises real data loading, stat graph linkage and persistence
+isolation without live save fixtures. Full Room runtime acceptance is separate.
+
+Full authored online Room: `Assets/Tests/PlayMode/Features/OnlineFullRoom/`, fixture `OnlineFullRoomPlayModeTests`, category `OnlineFullRoom` (16 cases). Covers actual pitch/roster startup, real kickoff and inert guest score/time/hex projection. Broader affected offline Room/startup and gameplay checks remain selectable independently; no complete suite was run.
+
+Online Room handoff lifecycle: `Assets/Editor/FeatureTests/OnlineRoomHandoff/`, fixture `OnlineRoomHandoffEditorTests`, category `OnlineRoomHandoff` (13 cases). Encoded full Room kickoff: fixture `OnlineFullRoomPlayModeTests`, category `OnlineRoomHandoffTransport` (four cases); full fixture contains 20. Native test results and red/green teardown evidence are retained in the feature verification checklist.
+
+Online roster status: `Assets/Editor/FeatureTests/OnlineRosterReplication/`, fixture `OnlineRosterReplicationEditorTests` (13 EditMode cases), and `Assets/Tests/PlayMode/Features/OnlineRosterReplication/`, fixture `OnlineRosterReplicationPlayModeTests` (four PlayMode cases); category `OnlineRosterReplication`. Tests use real booking/injury/substitution/goalkeeper entries, then load the inert guest and assert roles, attributes, complete stats and direction. No complete regression suite was run.
+
+Authored online Room menu: `Assets/Editor/FeatureTests/OnlineRoomMenu/`, fixture `OnlineRoomMenuEditorTests` (two EditMode close cases), and `Assets/Tests/PlayMode/Features/OnlineRoomMenu/`, fixture `OnlineRoomMenuPlayModeTests` (six PlayMode ownership/hold/leave cases). Category `OnlineRoomMenu`. Only four affected encoded full Room kickoff cases and 13 lifecycle cases were rerun for this UI/close batch; no complete suite was run.
+
+Online substitutions: `Assets/Tests/PlayMode/Features/OnlineSubstitutions/`, fixture `OnlineSubstitutionsPlayModeTests`, category `OnlineSubstitutions` (18 cases). Full Room snapshot capacity: `Assets/Editor/FeatureTests/OnlineFullRoomPayload/`, fixture `OnlineFullRoomPayloadEditorTests`, category `OnlineFullRoomPayload` (15 cases). These retain failed reproducers and actual final counts in their Verification.md files. Forced keeper/emergency/shootout coverage remains separate; no complete suite was run.
+
+Recent frontend and transport filters (focused PlayMode fixtures only):
+
+- `Assets/Tests/PlayMode/Features/OnlineDraftDrag/`: `OnlineDraftDragPlayModeTests`, category `OnlineDraftDrag`, 68 cases for authenticated authored drag/drop, variants and stale/pending input.
+- `Assets/Tests/PlayMode/Features/OnlinePublicationCadence/`: `OnlinePublicationCadencePlayModeTests`, category `OnlinePublicationCadence`, 16 cases for immediate changed decisions/holds, idle heartbeat and bounded clock refresh without stale commands.
+- `Assets/Tests/PlayMode/Features/OnlineMotionSmoothing/`: `OnlineMotionSmoothingPlayModeTests`, category `OnlineMotionSmoothing`, six cases for guest pose interpolation, reliable corrections, holds and the enabled Update loop.
+
+Each feature's `Assets/Editor/FeatureTests/<feature>/Verification.md` records
+actual run artifacts, fixture corrections and affected filters. These are local
+native checks, not paired internet latency or complete-suite validation. Every
+new case has an individual deferred entry in OnlineMacTestManifest.json.
+
+Published guest pitch hints: EditMode `OnlinePublishedHighlightsEditorTests` (14) and PlayMode `OnlinePublishedHighlightsPlayModeTests` (four), category `OnlinePublishedHighlights`. Tests are in `Assets/Editor/FeatureTests/OnlinePublishedHighlights/` and `Assets/Tests/PlayMode/Features/OnlinePublishedHighlights/`. This is display-only coverage, not a gameplay suite or paired test.
+
+Authored online instructions: `Assets/Editor/FeatureTests/OnlineInstructions/` / `OnlineInstructionsEditorTests` (13 EditMode) and `Assets/Tests/PlayMode/Features/OnlineInstructions/` / `OnlineInstructionsPlayModeTests` (ten PlayMode), category `OnlineInstructions`. The authored monitor stays disabled; tests cover exact host/guest text, bounded optional observations, kickoff ownership, live pass continuation and hold recovery. Room catalog v19, wire v7.
+
+Authority action previews: `Assets/Editor/FeatureTests/OnlineActionPreviews/` / `OnlineActionPreviewsEditorTests` (22 EditMode) and `Assets/Tests/PlayMode/Features/OnlineActionPreviews/` / `OnlineActionPreviewsPlayModeTests` (16 PlayMode), category `OnlineActionPreviews`. Source pass/shot colors, assistance visibility, goal markers, streamed motion/hold lifecycle and maximum full-roster/pitch payload are covered. Room v20/wire v7. Exact runs and broader user-only checks are in the feature Verification.md.
+
+
+Online off-target camera misses now publish their real ball motion through the
+existing Room v20 / wire v7 pose lanes and retire stale flight/restart work on
+shot reset. Twenty new native cases passed (14 full-shot, six snapshot), plus ten
+focused shot/possession regressions and 13 report-tool unit tests. Every new case
+has a separate deferred Mac manifest entry. All three Windows exports succeeded
+at 08:32-08:33 UTC November 17; packaged Room/local, Gameplay/local and Room/EOS
+login checks passed at 08:36 UTC. Builds retain the known nonfatal vswhere
+post-build diagnostic; compilation has zero errors. See
+Assets/Editor/FeatureTests/OnlineOffTargetCamera/Verification.md.
+Next audit: lob/wide off-target continuation cancellation. Paired testing and
+measured internet latency remain deferred until requested.
+
+
+Off-target lob continuation is now cancellation-safe: eight new full-shot and
+snapshot cases passed in both directions after reproducing four stale-flight
+failures. Four focused long-pass cases and 13 report-tool checks passed. All
+eight additions are individually registered for the deferred Mac run. All three
+Windows exports succeeded at 10:38-10:39 UTC November 17, retaining the known
+nonfatal vswhere diagnostic and zero C# compilation errors. See
+Assets/Editor/FeatureTests/OnlineOffTargetLob/Verification.md. Room stays v20 /
+wire v7. Next: wide-miss ball-motion cancellation. Paired testing remains deferred.
+
+
+Wide off-target misses now cancel safely through GroundBallManager and Ball,
+including replacement movement ownership and rejection before ownership. Twelve
+new full-shot/snapshot cases passed in both directions; four strengthened
+replacement reruns and ten affected ground-pass/goalkeeper box-entry cases also
+passed. Compilation clean; 13 report-tool checks passed. All twelve cases have
+individual deferred Mac entries. All three Windows exports succeeded at
+10:57-10:58 UTC November 17 with the known nonfatal vswhere post-build diagnostic.
+See Assets/Editor/FeatureTests/OnlineOffTargetWide/Verification.md. Room stays
+v20 / wire v7. Full-match paired acceptance and actual internet latency remain
+unmeasured and deferred until requested. Continue remaining interruption/result
+presentation audit; preserve unresolved shared-settings and outfield-X rule
+questions in GameplayReview.md.
+
+
+Mac verification follow-up (2026-11-17): original report
+verification/sons-mac-20261117T111338Z-81219 contains 1,736 native passes,
+four ground-cleanup assertion failures and one skipped one-use EOS session test.
+All three Mac builds and both local probes passed; packaged EOS device creation
+failed without an enum in its old message. No pairing occurred: Windows slept
+through the host-request window (confirmed lid/button power events).
+The four fixture expectations are corrected and pass on Windows, without
+changing gameplay. Tooling now supports exact --fixture / explicit --skip-native,
+gates host waits on successful EOS login and expires host requests at the guest
+deadline. EOS failure messages now include result enums. Seventeen tooling checks
+passed. See Documentation/Testing/OnlinePairingRecovery.md for evidence and the
+short retry command. Do not repeat all 127 fixtures by default; do not claim
+paired success or a fixed Mac identity until the short Mac run proves it.
+
+
+Paired follow-up, 2026-11-17: verification/sons-mac-20261117T141510Z-88348
+passed all 14 selected native cases, all three Mac builds, EOS login and both
+local checks. Both actual Windows-host/Mac-guest probes also passed over
+ForceRelays with matching digests, one host roll, pause revision 2 and inactive
+guest rules. The original verifier marked pairing failed because the Windows
+final report (~53 KB before base64) exceeded the Windows command-line limit.
+Both Windows result files were preserved locally as passed; their complete
+reports have now been republished successfully and checked remotely.
+The original failed Mac report remains unchanged. Explicit reconciliation is
+retained in TestResults/GameplayRegression/Runs/20261117T141054275Z-WindowsVerificationHost/20261117T141510Z-88348-paired-comparison.json.
+Host uploads now use a temporary UTF-8 --input file; 19 tooling tests pass,
+including a >32 KB Unicode payload, create/update SHA behavior and failed-upload
+cleanup. This is a tooling-only repair; Unity source/builds are unchanged.
+No new Mac run is required to establish these two recovered probe passes.
+Normal-game human Host/Join -> team/kit agreement -> Draft -> full Room play,
+actual network interruption/recovery and measured latency remain unverified.
+These paired attempts recorded recoveryGenerations=0; do not claim reconnect.
 
 Post-match report tabs and leaderboards: use only `PostMatchReportEditorTests`
 (category `PostMatchReport`) in `Assets/Editor/FeatureTests/PostMatchReport/`.

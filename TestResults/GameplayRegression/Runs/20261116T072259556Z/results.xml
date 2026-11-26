@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="44" result="Passed" total="44" passed="44" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.3038068">
+  <test-suite type="TestSuite" id="3065" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1749" result="Passed" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.303807" total="44" passed="44" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="3059" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="1749" result="Passed" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.234017" total="44" passed="44" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17216" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="1620" name="OnlineBoardInputEditorTests" fullname="OnlineBoardInputEditorTests" classname="OnlineBoardInputEditorTests" runstate="Runnable" testcasecount="44" result="Passed" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.218021" total="44" passed="44" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineBoardInput" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="1631" name="ActorUsesOnlyPublishedChoice" fullname="OnlineBoardInputEditorTests.ActorUsesOnlyPublishedChoice" classname="OnlineBoardInputEditorTests" runstate="Runnable" testcasecount="10" result="Passed" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.087049" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1621" name="ActorUsesOnlyPublishedChoice(&quot;kickoff.player&quot;)" fullname="OnlineBoardInputEditorTests.ActorUsesOnlyPublishedChoice(&quot;kickoff.player&quot;)" methodname="ActorUsesOnlyPublishedChoice" classname="OnlineBoardInputEditorTests" runstate="Runnable" seed="1248622024" result="Passed" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.022544" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1622" name="ActorUsesOnlyPublishedChoice(&quot;kickoff.taker&quot;)" fullname="OnlineBoardInputEditorTests.ActorUsesOnlyPublishedChoice(&quot;kickoff.taker&quot;)" methodname="ActorUsesOnlyPublishedChoice" classname="OnlineBoardInputEditorTests" runstate="Runnable" seed="1208934834" result="Passed" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.000154" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1623" name="ActorUsesOnlyPublishedChoice(&quot;movement.player&quot;)" fullname="OnlineBoardInputEditorTests.ActorUsesOnlyPublishedChoice(&quot;movement.player&quot;)" methodname="ActorUsesOnlyPublishedChoice" classname="OnlineBoardInputEditorTests" runstate="Runnable" seed="1261931879" result="Passed" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.000224" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1624" name="ActorUsesOnlyPublishedChoice(&quot;high.player&quot;)" fullname="OnlineBoardInputEditorTests.ActorUsesOnlyPublishedChoice(&quot;high.player&quot;)" methodname="ActorUsesOnlyPublishedChoice" classname="OnlineBoardInputEditorTests" runstate="Runnable" seed="1928146614" result="Passed" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.000172" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1625" name="ActorUsesOnlyPublishedChoice(&quot;ftp.player&quot;)" fullname="OnlineBoardInputEditorTests.ActorUsesOnlyPublishedChoice(&quot;ftp.player&quot;)" methodname="ActorUsesOnlyPublishedChoice" classname="OnlineBoardInputEditorTests" runstate="Runnable" seed="1476215806" result="Passed" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.000125" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1626" name="ActorUsesOnlyPublishedChoice(&quot;header.nominate&quot;)" fullname="OnlineBoardInputEditorTests.ActorUsesOnlyPublishedChoice(&quot;header.nominate&quot;)" methodname="ActorUsesOnlyPublishedChoice" classname="OnlineBoardInputEditorTests" runstate="Runnable" seed="1590318536" result="Passed" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.000235" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1627" name="ActorUsesOnlyPublishedChoice(&quot;header.remove&quot;)" fullname="OnlineBoardInputEditorTests.ActorUsesOnlyPublishedChoice(&quot;header.remove&quot;)" methodname="ActorUsesOnlyPublishedChoice" classname="OnlineBoardInputEditorTests" runstate="Runnable" seed="1154825324" result="Passed" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.000223" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1628" name="ActorUsesOnlyPublishedChoice(&quot;penalty.player&quot;)" fullname="OnlineBoardInputEditorTests.ActorUsesOnlyPublishedChoice(&quot;penalty.player&quot;)" methodname="ActorUsesOnlyPublishedChoice" classname="OnlineBoardInputEditorTests" runstate="Runnable" seed="1897407499" result="Passed" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.000215" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1629" name="ActorUsesOnlyPublishedChoice(&quot;set-piece.player&quot;)" fullname="OnlineBoardInputEditorTests.ActorUsesOnlyPublishedChoice(&quot;set-piece.player&quot;)" methodname="ActorUsesOnlyPublishedChoice" classname="OnlineBoardInputEditorTests" runstate="Runnable" seed="1770927010" result="Passed" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.000140" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1630" name="ActorUsesOnlyPublishedChoice(&quot;throw.player&quot;)" fullname="OnlineBoardInputEditorTests.ActorUsesOnlyPublishedChoice(&quot;throw.player&quot;)" methodname="ActorUsesOnlyPublishedChoice" classname="OnlineBoardInputEditorTests" runstate="Runnable" seed="1023562463" result="Passed" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.000145" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-case id="1654" name="AmbiguousChoicesAreNotGuessed" fullname="OnlineBoardInputEditorTests.AmbiguousChoicesAreNotGuessed" methodname="AmbiguousChoicesAreNotGuessed" classname="OnlineBoardInputEditorTests" runstate="Runnable" seed="1158969156" result="Passed" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.002077" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1668" name="AmbiguousConfirmCannotFallBackToTarget" fullname="OnlineBoardInputEditorTests.AmbiguousConfirmCannotFallBackToTarget" methodname="AmbiguousConfirmCannotFallBackToTarget" classname="OnlineBoardInputEditorTests" runstate="Runnable" seed="961749592" result="Passed" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.000545" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1667" name="ConfirmUsesPublishedPreviewAndShotCommit" fullname="OnlineBoardInputEditorTests.ConfirmUsesPublishedPreviewAndShotCommit" methodname="ConfirmUsesPublishedPreviewAndShotCommit" classname="OnlineBoardInputEditorTests" runstate="Runnable" seed="392732977" result="Passed" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.000746" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="1645" name="HexUsesExactSignedCoordinates" fullname="OnlineBoardInputEditorTests.HexUsesExactSignedCoordinates" classname="OnlineBoardInputEditorTests" runstate="Runnable" testcasecount="13" result="Passed" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.048529" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1632" name="HexUsesExactSignedCoordinates(&quot;ground.target&quot;)" fullname="OnlineBoardInputEditorTests.HexUsesExactSignedCoordinates(&quot;ground.target&quot;)" methodname="HexUsesExactSignedCoordinates" classname="OnlineBoardInputEditorTests" runstate="Runnable" seed="140057710" result="Passed" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.000636" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1633" name="HexUsesExactSignedCoordinates(&quot;long.target&quot;)" fullname="OnlineBoardInputEditorTests.HexUsesExactSignedCoordinates(&quot;long.target&quot;)" methodname="HexUsesExactSignedCoordinates" classname="OnlineBoardInputEditorTests" runstate="Runnable" seed="538743505" result="Passed" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.000155" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1634" name="HexUsesExactSignedCoordinates(&quot;high.target&quot;)" fullname="OnlineBoardInputEditorTests.HexUsesExactSignedCoordinates(&quot;high.target&quot;)" methodname="HexUsesExactSignedCoordinates" classname="OnlineBoardInputEditorTests" runstate="Runnable" seed="1354974244" result="Passed" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.000151" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1635" name="HexUsesExactSignedCoordinates(&quot;ftp.target&quot;)" fullname="OnlineBoardInputEditorTests.HexUsesExactSignedCoordinates(&quot;ftp.target&quot;)" methodname="HexUsesExactSignedCoordinates" classname="OnlineBoardInputEditorTests" runstate="Runnable" seed="1991090635" result="Passed" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.000145" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1636" name="HexUsesExactSignedCoordinates(&quot;movement.target&quot;)" fullname="OnlineBoardInputEditorTests.HexUsesExactSignedCoordinates(&quot;movement.target&quot;)" methodname="HexUsesExactSignedCoordinates" classname="OnlineBoardInputEditorTests" runstate="Runnable" seed="1488021669" result="Passed" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.000140" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1637" name="HexUsesExactSignedCoordinates(&quot;kickoff.move&quot;)" fullname="OnlineBoardInputEditorTests.HexUsesExactSignedCoordinates(&quot;kickoff.move&quot;)" methodname="HexUsesExactSignedCoordinates" classname="OnlineBoardInputEditorTests" runstate="Runnable" seed="465184168" result="Passed" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.000123" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1638" name="HexUsesExactSignedCoordinates(&quot;header.target&quot;)" fullname="OnlineBoardInputEditorTests.HexUsesExactSignedCoordinates(&quot;header.target&quot;)" methodname="HexUsesExactSignedCoordinates" classname="OnlineBoardInputEditorTests" runstate="Runnable" seed="769817337" result="Passed" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.000147" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1639" name="HexUsesExactSignedCoordinates(&quot;header.goal&quot;)" fullname="OnlineBoardInputEditorTests.HexUsesExactSignedCoordinates(&quot;header.goal&quot;)" methodname="HexUsesExactSignedCoordinates" classname="OnlineBoardInputEditorTests" runstate="Runnable" seed="1817724060" result="Passed" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.000306" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1640" name="HexUsesExactSignedCoordinates(&quot;shot.target&quot;)" fullname="OnlineBoardInputEditorTests.HexUsesExactSignedCoordinates(&quot;shot.target&quot;)" methodname="HexUsesExactSignedCoordinates" classname="OnlineBoardInputEditorTests" runstate="Runnable" seed="1223625268" result="Passed" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.000150" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1641" name="HexUsesExactSignedCoordinates(&quot;penalty.target&quot;)" fullname="OnlineBoardInputEditorTests.HexUsesExactSignedCoordinates(&quot;penalty.target&quot;)" methodname="HexUsesExactSignedCoordinates" classname="OnlineBoardInputEditorTests" runstate="Runnable" seed="1587818111" result="Passed" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.000299" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1642" name="HexUsesExactSignedCoordinates(&quot;set-piece.target&quot;)" fullname="OnlineBoardInputEditorTests.HexUsesExactSignedCoordinates(&quot;set-piece.target&quot;)" methodname="HexUsesExactSignedCoordinates" classname="OnlineBoardInputEditorTests" runstate="Runnable" seed="1263487643" result="Passed" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.000359" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1643" name="HexUsesExactSignedCoordinates(&quot;throw.target&quot;)" fullname="OnlineBoardInputEditorTests.HexUsesExactSignedCoordinates(&quot;throw.target&quot;)" methodname="HexUsesExactSignedCoordinates" classname="OnlineBoardInputEditorTests" runstate="Runnable" seed="1830909664" result="Passed" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.000143" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1644" name="HexUsesExactSignedCoordinates(&quot;final-third.target&quot;)" fullname="OnlineBoardInputEditorTests.HexUsesExactSignedCoordinates(&quot;final-third.target&quot;)" methodname="HexUsesExactSignedCoordinates" classname="OnlineBoardInputEditorTests" runstate="Runnable" seed="1152327991" result="Passed" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.000161" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="1666" name="KeysRequirePublishedAction" fullname="OnlineBoardInputEditorTests.KeysRequirePublishedAction" classname="OnlineBoardInputEditorTests" runstate="Runnable" testcasecount="11" result="Passed" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.033597" total="11" passed="11" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1655" name="KeysRequirePublishedAction(P,&quot;ground.start&quot;)" fullname="OnlineBoardInputEditorTests.KeysRequirePublishedAction(P,&quot;ground.start&quot;)" methodname="KeysRequirePublishedAction" classname="OnlineBoardInputEditorTests" runstate="Runnable" seed="1906615375" result="Passed" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.000604" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1656" name="KeysRequirePublishedAction(L,&quot;long.start&quot;)" fullname="OnlineBoardInputEditorTests.KeysRequirePublishedAction(L,&quot;long.start&quot;)" methodname="KeysRequirePublishedAction" classname="OnlineBoardInputEditorTests" runstate="Runnable" seed="1588798775" result="Passed" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.000156" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1657" name="KeysRequirePublishedAction(C,&quot;high.start&quot;)" fullname="OnlineBoardInputEditorTests.KeysRequirePublishedAction(C,&quot;high.start&quot;)" methodname="KeysRequirePublishedAction" classname="OnlineBoardInputEditorTests" runstate="Runnable" seed="786630263" result="Passed" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.000174" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1658" name="KeysRequirePublishedAction(F,&quot;ftp.start&quot;)" fullname="OnlineBoardInputEditorTests.KeysRequirePublishedAction(F,&quot;ftp.start&quot;)" methodname="KeysRequirePublishedAction" classname="OnlineBoardInputEditorTests" runstate="Runnable" seed="1271824745" result="Passed" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.000156" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1659" name="KeysRequirePublishedAction(M,&quot;movement.start&quot;)" fullname="OnlineBoardInputEditorTests.KeysRequirePublishedAction(M,&quot;movement.start&quot;)" methodname="KeysRequirePublishedAction" classname="OnlineBoardInputEditorTests" runstate="Runnable" seed="534662989" result="Passed" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.000156" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1660" name="KeysRequirePublishedAction(S,&quot;shot.start&quot;)" fullname="OnlineBoardInputEditorTests.KeysRequirePublishedAction(S,&quot;shot.start&quot;)" methodname="KeysRequirePublishedAction" classname="OnlineBoardInputEditorTests" runstate="Runnable" seed="832983853" result="Passed" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.000161" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1661" name="KeysRequirePublishedAction(R,&quot;shot.save&quot;)" fullname="OnlineBoardInputEditorTests.KeysRequirePublishedAction(R,&quot;shot.save&quot;)" methodname="KeysRequirePublishedAction" classname="OnlineBoardInputEditorTests" runstate="Runnable" seed="869301231" result="Passed" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.000193" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1662" name="KeysRequirePublishedAction(R,&quot;coin.roll&quot;)" fullname="OnlineBoardInputEditorTests.KeysRequirePublishedAction(R,&quot;coin.roll&quot;)" methodname="KeysRequirePublishedAction" classname="OnlineBoardInputEditorTests" runstate="Runnable" seed="2140117372" result="Passed" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.000204" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1663" name="KeysRequirePublishedAction(R,&quot;header.interception&quot;)" fullname="OnlineBoardInputEditorTests.KeysRequirePublishedAction(R,&quot;header.interception&quot;)" methodname="KeysRequirePublishedAction" classname="OnlineBoardInputEditorTests" runstate="Runnable" seed="275086830" result="Passed" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.000215" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1664" name="KeysRequirePublishedAction(Return,&quot;kickoff.confirm&quot;)" fullname="OnlineBoardInputEditorTests.KeysRequirePublishedAction(Return,&quot;kickoff.confirm&quot;)" methodname="KeysRequirePublishedAction" classname="OnlineBoardInputEditorTests" runstate="Runnable" seed="732029162" result="Passed" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.000192" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1665" name="KeysRequirePublishedAction(KeypadEnter,&quot;penalty.confirm&quot;)" fullname="OnlineBoardInputEditorTests.KeysRequirePublishedAction(KeypadEnter,&quot;penalty.confirm&quot;)" methodname="KeysRequirePublishedAction" classname="OnlineBoardInputEditorTests" runstate="Runnable" seed="1095557402" result="Passed" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.000242" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="1653" name="RejectsMalformedActor" fullname="OnlineBoardInputEditorTests.RejectsMalformedActor" classname="OnlineBoardInputEditorTests" runstate="Runnable" testcasecount="7" result="Passed" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.022230" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1646" name="RejectsMalformedActor(null)" fullname="OnlineBoardInputEditorTests.RejectsMalformedActor(null)" methodname="RejectsMalformedActor" classname="OnlineBoardInputEditorTests" runstate="Runnable" seed="572837419" result="Passed" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.000374" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1647" name="RejectsMalformedActor(&quot;&quot;)" fullname="OnlineBoardInputEditorTests.RejectsMalformedActor(&quot;&quot;)" methodname="RejectsMalformedActor" classname="OnlineBoardInputEditorTests" runstate="Runnable" seed="2123838580" result="Passed" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.000129" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1648" name="RejectsMalformedActor(&quot;home:0&quot;)" fullname="OnlineBoardInputEditorTests.RejectsMalformedActor(&quot;home:0&quot;)" methodname="RejectsMalformedActor" classname="OnlineBoardInputEditorTests" runstate="Runnable" seed="1795044599" result="Passed" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.000126" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1649" name="RejectsMalformedActor(&quot;away:19&quot;)" fullname="OnlineBoardInputEditorTests.RejectsMalformedActor(&quot;away:19&quot;)" methodname="RejectsMalformedActor" classname="OnlineBoardInputEditorTests" runstate="Runnable" seed="2144663016" result="Passed" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.000100" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1650" name="RejectsMalformedActor(&quot;home:01&quot;)" fullname="OnlineBoardInputEditorTests.RejectsMalformedActor(&quot;home:01&quot;)" methodname="RejectsMalformedActor" classname="OnlineBoardInputEditorTests" runstate="Runnable" seed="1525305829" result="Passed" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.000139" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1651" name="RejectsMalformedActor(&quot;other:2&quot;)" fullname="OnlineBoardInputEditorTests.RejectsMalformedActor(&quot;other:2&quot;)" methodname="RejectsMalformedActor" classname="OnlineBoardInputEditorTests" runstate="Runnable" seed="1151489842" result="Passed" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.000116" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1652" name="RejectsMalformedActor(&quot;home:2:3&quot;)" fullname="OnlineBoardInputEditorTests.RejectsMalformedActor(&quot;home:2:3&quot;)" methodname="RejectsMalformedActor" classname="OnlineBoardInputEditorTests" runstate="Runnable" seed="611860090" result="Passed" start-time="2026-11-16 07:22:59Z" end-time="2026-11-16 07:22:59Z" duration="0.000100" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Saving results to: TestResults\GameplayRegression\Runs\20261116T072259556Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

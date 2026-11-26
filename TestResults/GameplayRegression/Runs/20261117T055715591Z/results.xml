@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="13" result="Passed" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-17 05:57:15Z" end-time="2026-11-17 05:57:15Z" duration="0.2039167">
+  <test-suite type="TestSuite" id="3253" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1902" result="Passed" start-time="2026-11-17 05:57:15Z" end-time="2026-11-17 05:57:15Z" duration="0.203917" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="3247" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="1902" result="Passed" start-time="2026-11-17 05:57:15Z" end-time="2026-11-17 05:57:15Z" duration="0.162248" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12156" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="1982" name="OnlineInstructionsEditorTests" fullname="OnlineInstructionsEditorTests" classname="OnlineInstructionsEditorTests" runstate="Runnable" testcasecount="13" result="Passed" start-time="2026-11-17 05:57:15Z" end-time="2026-11-17 05:57:15Z" duration="0.118455" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineInstructions" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="1994" name="BoundedInstructionContract" fullname="OnlineInstructionsEditorTests.BoundedInstructionContract" classname="OnlineInstructionsEditorTests" runstate="Runnable" testcasecount="11" result="Passed" start-time="2026-11-17 05:57:15Z" end-time="2026-11-17 05:57:15Z" duration="0.077384" total="11" passed="11" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1983" name="BoundedInstructionContract(&quot;missing&quot;,True)" fullname="OnlineInstructionsEditorTests.BoundedInstructionContract(&quot;missing&quot;,True)" methodname="BoundedInstructionContract" classname="OnlineInstructionsEditorTests" runstate="Runnable" seed="1870295356" result="Passed" start-time="2026-11-17 05:57:15Z" end-time="2026-11-17 05:57:15Z" duration="0.047390" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1984" name="BoundedInstructionContract(&quot;home&quot;,True)" fullname="OnlineInstructionsEditorTests.BoundedInstructionContract(&quot;home&quot;,True)" methodname="BoundedInstructionContract" classname="OnlineInstructionsEditorTests" runstate="Runnable" seed="2075798755" result="Passed" start-time="2026-11-17 05:57:15Z" end-time="2026-11-17 05:57:15Z" duration="0.000947" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1985" name="BoundedInstructionContract(&quot;away&quot;,True)" fullname="OnlineInstructionsEditorTests.BoundedInstructionContract(&quot;away&quot;,True)" methodname="BoundedInstructionContract" classname="OnlineInstructionsEditorTests" runstate="Runnable" seed="288062359" result="Passed" start-time="2026-11-17 05:57:15Z" end-time="2026-11-17 05:57:15Z" duration="0.000256" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1986" name="BoundedInstructionContract(&quot;neutral&quot;,True)" fullname="OnlineInstructionsEditorTests.BoundedInstructionContract(&quot;neutral&quot;,True)" methodname="BoundedInstructionContract" classname="OnlineInstructionsEditorTests" runstate="Runnable" seed="679711737" result="Passed" start-time="2026-11-17 05:57:15Z" end-time="2026-11-17 05:57:15Z" duration="0.000273" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1987" name="BoundedInstructionContract(&quot;blank&quot;,False)" fullname="OnlineInstructionsEditorTests.BoundedInstructionContract(&quot;blank&quot;,False)" methodname="BoundedInstructionContract" classname="OnlineInstructionsEditorTests" runstate="Runnable" seed="238338792" result="Passed" start-time="2026-11-17 05:57:15Z" end-time="2026-11-17 05:57:15Z" duration="0.000217" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1988" name="BoundedInstructionContract(&quot;null-text&quot;,False)" fullname="OnlineInstructionsEditorTests.BoundedInstructionContract(&quot;null-text&quot;,False)" methodname="BoundedInstructionContract" classname="OnlineInstructionsEditorTests" runstate="Runnable" seed="1279829627" result="Passed" start-time="2026-11-17 05:57:15Z" end-time="2026-11-17 05:57:15Z" duration="0.000162" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1989" name="BoundedInstructionContract(&quot;huge&quot;,False)" fullname="OnlineInstructionsEditorTests.BoundedInstructionContract(&quot;huge&quot;,False)" methodname="BoundedInstructionContract" classname="OnlineInstructionsEditorTests" runstate="Runnable" seed="288756350" result="Passed" start-time="2026-11-17 05:57:15Z" end-time="2026-11-17 05:57:15Z" duration="0.000189" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1990" name="BoundedInstructionContract(&quot;owner&quot;,False)" fullname="OnlineInstructionsEditorTests.BoundedInstructionContract(&quot;owner&quot;,False)" methodname="BoundedInstructionContract" classname="OnlineInstructionsEditorTests" runstate="Runnable" seed="949838054" result="Passed" start-time="2026-11-17 05:57:15Z" end-time="2026-11-17 05:57:15Z" duration="0.000179" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1991" name="BoundedInstructionContract(&quot;missing-owner&quot;,False)" fullname="OnlineInstructionsEditorTests.BoundedInstructionContract(&quot;missing-owner&quot;,False)" methodname="BoundedInstructionContract" classname="OnlineInstructionsEditorTests" runstate="Runnable" seed="780703462" result="Passed" start-time="2026-11-17 05:57:15Z" end-time="2026-11-17 05:57:15Z" duration="0.000157" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1992" name="BoundedInstructionContract(&quot;boundary&quot;,True)" fullname="OnlineInstructionsEditorTests.BoundedInstructionContract(&quot;boundary&quot;,True)" methodname="BoundedInstructionContract" classname="OnlineInstructionsEditorTests" runstate="Runnable" seed="738521847" result="Passed" start-time="2026-11-17 05:57:15Z" end-time="2026-11-17 05:57:15Z" duration="0.000297" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1993" name="BoundedInstructionContract(&quot;unicode&quot;,True)" fullname="OnlineInstructionsEditorTests.BoundedInstructionContract(&quot;unicode&quot;,True)" methodname="BoundedInstructionContract" classname="OnlineInstructionsEditorTests" runstate="Runnable" seed="872719248" result="Passed" start-time="2026-11-17 05:57:15Z" end-time="2026-11-17 05:57:15Z" duration="0.000768" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-case id="1995" name="InstructionRefreshCannotMutateOrRevokeAnUnchangedDecision" fullname="OnlineInstructionsEditorTests.InstructionRefreshCannotMutateOrRevokeAnUnchangedDecision" methodname="InstructionRefreshCannotMutateOrRevokeAnUnchangedDecision" classname="OnlineInstructionsEditorTests" runstate="Runnable" seed="699902790" result="Passed" start-time="2026-11-17 05:57:15Z" end-time="2026-11-17 05:57:15Z" duration="0.021757" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1996" name="InvalidInstructionRefreshKeepsTheLastAcceptedState" fullname="OnlineInstructionsEditorTests.InvalidInstructionRefreshKeepsTheLastAcceptedState" methodname="InvalidInstructionRefreshKeepsTheLastAcceptedState" classname="OnlineInstructionsEditorTests" runstate="Runnable" seed="1505636504" result="Passed" start-time="2026-11-17 05:57:15Z" end-time="2026-11-17 05:57:15Z" duration="0.001439" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Saving results to: TestResults\GameplayRegression\Runs\20261117T055715591Z\results.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

@@ -15,10 +15,13 @@ public sealed class MenuConfirmation : MonoBehaviour
     private Action confirm;
     private Action alternative;
     private GameObject previousSelection;
+    public bool IsOpen => gameObject.activeSelf;
 
     private void Awake()
     {
         backButton.onClick.AddListener(Close);
+        if (backButton.transition == Selectable.Transition.Animation)
+            backButton.gameObject.AddComponent<MenuConfirmationBackHover>();
         confirmButton.onClick.AddListener(Confirm);
         if (alternativeButton != null)
             alternativeButton.onClick.AddListener(ChooseAlternative);
@@ -38,18 +41,29 @@ public sealed class MenuConfirmation : MonoBehaviour
         alternative = onAlternative;
         ShowError(string.Empty);
         previousSelection = EventSystem.current?.currentSelectedGameObject;
+        transform.SetAsLastSibling();
         gameObject.SetActive(true);
         backButton.Select();
         MenuAudioPlayer.Play(GameplayAudioPool.MenuAdvance);
     }
 
-    public void ShowQuit()
+    public void ShowQuit() => ShowQuit(null);
+
+    public void ShowQuit(Action beforeQuit)
     {
         Show(() =>
         {
             Close();
+            beforeQuit?.Invoke();
             Application.Quit();
         });
+    }
+
+    public bool TryClose()
+    {
+        if (!IsOpen) return false;
+        Close();
+        return true;
     }
 
     public void Close()

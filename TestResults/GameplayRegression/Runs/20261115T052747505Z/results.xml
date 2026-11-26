@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="12" result="Passed" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-15 05:27:47Z" end-time="2026-11-15 05:27:48Z" duration="0.68479">
+  <test-suite type="TestSuite" id="2720" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1445" result="Passed" start-time="2026-11-15 05:27:47Z" end-time="2026-11-15 05:27:48Z" duration="0.684790" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="2714" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="1445" result="Passed" start-time="2026-11-15 05:27:47Z" end-time="2026-11-15 05:27:48Z" duration="0.587520" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="1132" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="1644" name="OnlineFrontendEntryEditorTests" fullname="OnlineFrontendEntryEditorTests" classname="OnlineFrontendEntryEditorTests" runstate="Runnable" testcasecount="12" result="Passed" start-time="2026-11-15 05:27:47Z" end-time="2026-11-15 05:27:48Z" duration="0.569632" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineFrontendEntry" />
+        </properties>
+        <test-case id="1658" name="AuthoredControlsHavePersistentTransportAndNoOfflineOverlay" fullname="OnlineFrontendEntryEditorTests.AuthoredControlsHavePersistentTransportAndNoOfflineOverlay" methodname="AuthoredControlsHavePersistentTransportAndNoOfflineOverlay" classname="OnlineFrontendEntryEditorTests" runstate="Runnable" seed="1908475974" result="Passed" start-time="2026-11-15 05:27:47Z" end-time="2026-11-15 05:27:48Z" duration="0.333383" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1657" name="CompatibilityIncludesBundledCatalog" fullname="OnlineFrontendEntryEditorTests.CompatibilityIncludesBundledCatalog" methodname="CompatibilityIncludesBundledCatalog" classname="OnlineFrontendEntryEditorTests" runstate="Runnable" seed="690926835" result="Passed" start-time="2026-11-15 05:27:48Z" end-time="2026-11-15 05:27:48Z" duration="0.036268" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="1653" name="LobbyCodeIsValidatedBeforeNativeLogin" fullname="OnlineFrontendEntryEditorTests.LobbyCodeIsValidatedBeforeNativeLogin" classname="OnlineFrontendEntryEditorTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-11-15 05:27:48Z" end-time="2026-11-15 05:27:48Z" duration="0.149174" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1645" name="LobbyCodeIsValidatedBeforeNativeLogin(null,False)" fullname="OnlineFrontendEntryEditorTests.LobbyCodeIsValidatedBeforeNativeLogin(null,False)" methodname="LobbyCodeIsValidatedBeforeNativeLogin" classname="OnlineFrontendEntryEditorTests" runstate="Runnable" seed="96804218" result="Passed" start-time="2026-11-15 05:27:48Z" end-time="2026-11-15 05:27:48Z" duration="0.005414" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1646" name="LobbyCodeIsValidatedBeforeNativeLogin(&quot;&quot;,False)" fullname="OnlineFrontendEntryEditorTests.LobbyCodeIsValidatedBeforeNativeLogin(&quot;&quot;,False)" methodname="LobbyCodeIsValidatedBeforeNativeLogin" classname="OnlineFrontendEntryEditorTests" runstate="Runnable" seed="969245763" result="Passed" start-time="2026-11-15 05:27:48Z" end-time="2026-11-15 05:27:48Z" duration="0.000309" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1647" name="LobbyCodeIsValidatedBeforeNativeLogin(&quot;short&quot;,False)" fullname="OnlineFrontendEntryEditorTests.LobbyCodeIsValidatedBeforeNativeLogin(&quot;short&quot;,False)" methodname="LobbyCodeIsValidatedBeforeNativeLogin" classname="OnlineFrontendEntryEditorTests" runstate="Runnable" seed="508141640" result="Passed" start-time="2026-11-15 05:27:48Z" end-time="2026-11-15 05:27:48Z" duration="0.000299" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1648" name="LobbyCodeIsValidatedBeforeNativeLogin(&quot;0123456789012345678901234567890-&quot;,False)" fullname="OnlineFrontendEntryEditorTests.LobbyCodeIsValidatedBeforeNativeLogin(&quot;0123456789012345678901234567890-&quot;,False)" methodname="LobbyCodeIsValidatedBeforeNativeLogin" classname="OnlineFrontendEntryEditorTests" runstate="Runnable" seed="1255252946" result="Passed" start-time="2026-11-15 05:27:48Z" end-time="2026-11-15 05:27:48Z" duration="0.000676" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1649" name="LobbyCodeIsValidatedBeforeNativeLogin(&quot;01234567890123456789012345678901&quot;,True)" fullname="OnlineFrontendEntryEditorTests.LobbyCodeIsValidatedBeforeNativeLogin(&quot;01234567890123456789012345678901&quot;,True)" methodname="LobbyCodeIsValidatedBeforeNativeLogin" classname="OnlineFrontendEntryEditorTests" runstate="Runnable" seed="2017753709" result="Passed" start-time="2026-11-15 05:27:48Z" end-time="2026-11-15 05:27:48Z" duration="0.000505" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1650" name="LobbyCodeIsValidatedBeforeNativeLogin(&quot;ABCDEFabcdef01234567890123456789&quot;,True)" fullname="OnlineFrontendEntryEditorTests.LobbyCodeIsValidatedBeforeNativeLogin(&quot;ABCDEFabcdef01234567890123456789&quot;,True)" methodname="LobbyCodeIsValidatedBeforeNativeLogin" classname="OnlineFrontendEntryEditorTests" runstate="Runnable" seed="525555036" result="Passed" start-time="2026-11-15 05:27:48Z" end-time="2026-11-15 05:27:48Z" duration="0.000309" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1651" name="LobbyCodeIsValidatedBeforeNativeLogin(&quot;012345678901234567890123456789012&quot;,False)" fullname="OnlineFrontendEntryEditorTests.LobbyCodeIsValidatedBeforeNativeLogin(&quot;012345678901234567890123456789012&quot;,False)" methodname="LobbyCodeIsValidatedBeforeNativeLogin" classname="OnlineFrontendEntryEditorTests" runstate="Runnable" seed="933129129" result="Passed" start-time="2026-11-15 05:27:48Z" end-time="2026-11-15 05:27:48Z" duration="0.000322" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1652" name="LobbyCodeIsValidatedBeforeNativeLogin(&quot;0123456789012345678901234567890é&quot;,False)" fullname="OnlineFrontendEntryEditorTests.LobbyCodeIsValidatedBeforeNativeLogin(&quot;0123456789012345678901234567890é&quot;,False)" methodname="LobbyCodeIsValidatedBeforeNativeLogin" classname="OnlineFrontendEntryEditorTests" runstate="Runnable" seed="927396053" result="Passed" start-time="2026-11-15 05:27:48Z" end-time="2026-11-15 05:27:48Z" duration="0.000293" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="1656" name="RoutingUsesDirectFirstWithRelayFallback" fullname="OnlineFrontendEntryEditorTests.RoutingUsesDirectFirstWithRelayFallback" classname="OnlineFrontendEntryEditorTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-15 05:27:48Z" end-time="2026-11-15 05:27:48Z" duration="0.020810" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1654" name="RoutingUsesDirectFirstWithRelayFallback(False,AllowRelays)" fullname="OnlineFrontendEntryEditorTests.RoutingUsesDirectFirstWithRelayFallback(False,AllowRelays)" methodname="RoutingUsesDirectFirstWithRelayFallback" classname="OnlineFrontendEntryEditorTests" runstate="Runnable" seed="966320750" result="Passed" start-time="2026-11-15 05:27:48Z" end-time="2026-11-15 05:27:48Z" duration="0.001379" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1655" name="RoutingUsesDirectFirstWithRelayFallback(True,ForceRelays)" fullname="OnlineFrontendEntryEditorTests.RoutingUsesDirectFirstWithRelayFallback(True,ForceRelays)" methodname="RoutingUsesDirectFirstWithRelayFallback" classname="OnlineFrontendEntryEditorTests" runstate="Runnable" seed="1364641371" result="Passed" start-time="2026-11-15 05:27:48Z" end-time="2026-11-15 05:27:48Z" duration="0.000548" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Saving results to: TestResults\GameplayRegression\Runs\20261115T052747505Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

@@ -18,6 +18,7 @@ public class PenaltyShootoutOrderRowView : MonoBehaviour, IBeginDragHandler, IDr
     private GameObject dragProxy;
     private RectTransform dragProxyRectTransform;
     private Vector3 mouseOffset;
+    private bool dragging;
 
     public void Configure(PenaltyShootoutOrderPanelController configuredOwner, PlayerToken token, int order)
     {
@@ -56,10 +57,11 @@ public class PenaltyShootoutOrderRowView : MonoBehaviour, IBeginDragHandler, IDr
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if (owner == null)
+        if (owner == null || !owner.CanDragRow(this))
         {
             return;
         }
+        dragging = true;
 
         originalParent = transform.parent;
         originalSiblingIndex = transform.GetSiblingIndex();
@@ -89,6 +91,8 @@ public class PenaltyShootoutOrderRowView : MonoBehaviour, IBeginDragHandler, IDr
 
     public void OnEndDrag(PointerEventData eventData)
     {
+        if (!dragging) return;
+        dragging = false;
         DestroyDragProxy();
         if (canvasGroup != null)
         {

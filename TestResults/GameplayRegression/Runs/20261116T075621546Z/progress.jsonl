@@ -1,0 +1,12 @@
+{"name":"OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice(1,\"hands\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice(1,\"block\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice(1,\"eligible\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice(1,\"handball\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice(1,\"hold\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice(1,\"cancel\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice(-1,\"hands\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice(-1,\"block\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice(-1,\"eligible\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice(-1,\"handball\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice(-1,\"hold\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice(-1,\"cancel\")","status":"Passed","message":"","stackTrace":""}

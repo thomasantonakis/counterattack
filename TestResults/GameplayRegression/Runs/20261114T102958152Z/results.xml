@@ -1,0 +1,529 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="14" result="Failed(Child)" total="14" passed="0" failed="14" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-14 10:29:58Z" end-time="2026-11-14 10:30:35Z" duration="37.6489492">
+  <test-suite type="TestSuite" id="2371" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1127" result="Failed" site="Child" start-time="2026-11-14 10:29:58Z" end-time="2026-11-14 10:30:35Z" duration="37.648949" total="14" passed="0" failed="14" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="2368" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1127" result="Failed" site="Child" start-time="2026-11-14 10:29:58Z" end-time="2026-11-14 10:30:35Z" duration="37.614805" total="14" passed="0" failed="14" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12208" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestFixture" id="1529" name="OnlineFirstTimePassPlayModeTests" fullname="OnlineFirstTimePassPlayModeTests" classname="OnlineFirstTimePassPlayModeTests" runstate="Runnable" testcasecount="14" result="Failed" site="Child" start-time="2026-11-14 10:29:58Z" end-time="2026-11-14 10:30:35Z" duration="37.603228" total="14" passed="0" failed="14" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineFirstTimePass" />
+        </properties>
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="ParameterizedMethod" id="1544" name="RealPassEntersOwnedFtp" fullname="OnlineFirstTimePassPlayModeTests.RealPassEntersOwnedFtp" classname="OnlineFirstTimePassPlayModeTests" runstate="Runnable" testcasecount="14" result="Failed" site="Child" start-time="2026-11-14 10:29:58Z" end-time="2026-11-14 10:30:35Z" duration="37.591292" total="14" passed="0" failed="14" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-case id="1530" name="RealPassEntersOwnedFtp(1,&quot;safe&quot;)" fullname="OnlineFirstTimePassPlayModeTests.RealPassEntersOwnedFtp(1,&quot;safe&quot;)" methodname="RealPassEntersOwnedFtp" classname="OnlineFirstTimePassPlayModeTests" runstate="Runnable" seed="1130341187" result="Failed" start-time="2026-11-14 10:29:58Z" end-time="2026-11-14 10:30:01Z" duration="3.084693" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  action
+  Expected: collection containing "ftp.start"
+  But was:  < "movement.start" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture.OnlineAccepted (CounterAttack.Online.OnlineGroundPassAuthority authority, System.String connection, System.Int64 sequence, System.String action) [0x00007] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineGroundPass\OnlineGroundPassFixture.cs:32
+at GoalkeeperBoxEntryFixture+<>c__DisplayClass73_0.<RunOnlineFirstTimePass>g__Submit|0 (System.String connection, System.String action) [0x00000] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFirstTimePass\OnlineFirstTimePassFixture.cs:14
+at GoalkeeperBoxEntryFixture+<RunOnlineFirstTimePass>d__73.MoveNext () [0x001f2] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFirstTimePass\OnlineFirstTimePassFixture.cs:21
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+]]></output>
+          </test-case>
+          <test-case id="1531" name="RealPassEntersOwnedFtp(1,&quot;move&quot;)" fullname="OnlineFirstTimePassPlayModeTests.RealPassEntersOwnedFtp(1,&quot;move&quot;)" methodname="RealPassEntersOwnedFtp" classname="OnlineFirstTimePassPlayModeTests" runstate="Runnable" seed="395661140" result="Failed" start-time="2026-11-14 10:30:01Z" end-time="2026-11-14 10:30:03Z" duration="2.606243" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  action
+  Expected: collection containing "ftp.start"
+  But was:  < "movement.start" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture.OnlineAccepted (CounterAttack.Online.OnlineGroundPassAuthority authority, System.String connection, System.Int64 sequence, System.String action) [0x00007] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineGroundPass\OnlineGroundPassFixture.cs:32
+at GoalkeeperBoxEntryFixture+<>c__DisplayClass73_0.<RunOnlineFirstTimePass>g__Submit|0 (System.String connection, System.String action) [0x00000] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFirstTimePass\OnlineFirstTimePassFixture.cs:14
+at GoalkeeperBoxEntryFixture+<RunOnlineFirstTimePass>d__73.MoveNext () [0x001f2] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFirstTimePass\OnlineFirstTimePassFixture.cs:21
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+]]></output>
+          </test-case>
+          <test-case id="1532" name="RealPassEntersOwnedFtp(1,&quot;miss&quot;)" fullname="OnlineFirstTimePassPlayModeTests.RealPassEntersOwnedFtp(1,&quot;miss&quot;)" methodname="RealPassEntersOwnedFtp" classname="OnlineFirstTimePassPlayModeTests" runstate="Runnable" seed="783240929" result="Failed" start-time="2026-11-14 10:30:04Z" end-time="2026-11-14 10:30:06Z" duration="2.961608" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  action
+  Expected: collection containing "ftp.start"
+  But was:  < "movement.start" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture.OnlineAccepted (CounterAttack.Online.OnlineGroundPassAuthority authority, System.String connection, System.Int64 sequence, System.String action) [0x00007] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineGroundPass\OnlineGroundPassFixture.cs:32
+at GoalkeeperBoxEntryFixture+<>c__DisplayClass73_0.<RunOnlineFirstTimePass>g__Submit|0 (System.String connection, System.String action) [0x00000] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFirstTimePass\OnlineFirstTimePassFixture.cs:14
+at GoalkeeperBoxEntryFixture+<RunOnlineFirstTimePass>d__73.MoveNext () [0x001f2] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFirstTimePass\OnlineFirstTimePassFixture.cs:21
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+]]></output>
+          </test-case>
+          <test-case id="1533" name="RealPassEntersOwnedFtp(1,&quot;hit&quot;)" fullname="OnlineFirstTimePassPlayModeTests.RealPassEntersOwnedFtp(1,&quot;hit&quot;)" methodname="RealPassEntersOwnedFtp" classname="OnlineFirstTimePassPlayModeTests" runstate="Runnable" seed="746565250" result="Failed" start-time="2026-11-14 10:30:06Z" end-time="2026-11-14 10:30:09Z" duration="2.789792" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  action
+  Expected: collection containing "ftp.start"
+  But was:  < "movement.start" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture.OnlineAccepted (CounterAttack.Online.OnlineGroundPassAuthority authority, System.String connection, System.Int64 sequence, System.String action) [0x00007] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineGroundPass\OnlineGroundPassFixture.cs:32
+at GoalkeeperBoxEntryFixture+<>c__DisplayClass73_0.<RunOnlineFirstTimePass>g__Submit|0 (System.String connection, System.String action) [0x00000] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFirstTimePass\OnlineFirstTimePassFixture.cs:14
+at GoalkeeperBoxEntryFixture+<RunOnlineFirstTimePass>d__73.MoveNext () [0x001f2] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFirstTimePass\OnlineFirstTimePassFixture.cs:21
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+]]></output>
+          </test-case>
+          <test-case id="1534" name="RealPassEntersOwnedFtp(1,&quot;automatic&quot;)" fullname="OnlineFirstTimePassPlayModeTests.RealPassEntersOwnedFtp(1,&quot;automatic&quot;)" methodname="RealPassEntersOwnedFtp" classname="OnlineFirstTimePassPlayModeTests" runstate="Runnable" seed="1016057777" result="Failed" start-time="2026-11-14 10:30:09Z" end-time="2026-11-14 10:30:12Z" duration="2.634767" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  action
+  Expected: collection containing "ftp.start"
+  But was:  < "movement.start" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture.OnlineAccepted (CounterAttack.Online.OnlineGroundPassAuthority authority, System.String connection, System.Int64 sequence, System.String action) [0x00007] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineGroundPass\OnlineGroundPassFixture.cs:32
+at GoalkeeperBoxEntryFixture+<>c__DisplayClass73_0.<RunOnlineFirstTimePass>g__Submit|0 (System.String connection, System.String action) [0x00000] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFirstTimePass\OnlineFirstTimePassFixture.cs:14
+at GoalkeeperBoxEntryFixture+<RunOnlineFirstTimePass>d__73.MoveNext () [0x001f2] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFirstTimePass\OnlineFirstTimePassFixture.cs:21
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+]]></output>
+          </test-case>
+          <test-case id="1535" name="RealPassEntersOwnedFtp(1,&quot;cancel&quot;)" fullname="OnlineFirstTimePassPlayModeTests.RealPassEntersOwnedFtp(1,&quot;cancel&quot;)" methodname="RealPassEntersOwnedFtp" classname="OnlineFirstTimePassPlayModeTests" runstate="Runnable" seed="993828666" result="Failed" start-time="2026-11-14 10:30:12Z" end-time="2026-11-14 10:30:15Z" duration="2.680935" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  action
+  Expected: collection containing "ftp.start"
+  But was:  < "movement.start" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture.OnlineAccepted (CounterAttack.Online.OnlineGroundPassAuthority authority, System.String connection, System.Int64 sequence, System.String action) [0x00007] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineGroundPass\OnlineGroundPassFixture.cs:32
+at GoalkeeperBoxEntryFixture+<>c__DisplayClass73_0.<RunOnlineFirstTimePass>g__Submit|0 (System.String connection, System.String action) [0x00000] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFirstTimePass\OnlineFirstTimePassFixture.cs:14
+at GoalkeeperBoxEntryFixture+<RunOnlineFirstTimePass>d__73.MoveNext () [0x001f2] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFirstTimePass\OnlineFirstTimePassFixture.cs:21
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+]]></output>
+          </test-case>
+          <test-case id="1536" name="RealPassEntersOwnedFtp(1,&quot;hold&quot;)" fullname="OnlineFirstTimePassPlayModeTests.RealPassEntersOwnedFtp(1,&quot;hold&quot;)" methodname="RealPassEntersOwnedFtp" classname="OnlineFirstTimePassPlayModeTests" runstate="Runnable" seed="995814670" result="Failed" start-time="2026-11-14 10:30:15Z" end-time="2026-11-14 10:30:17Z" duration="2.611675" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  action
+  Expected: collection containing "ftp.start"
+  But was:  < "movement.start" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture.OnlineAccepted (CounterAttack.Online.OnlineGroundPassAuthority authority, System.String connection, System.Int64 sequence, System.String action) [0x00007] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineGroundPass\OnlineGroundPassFixture.cs:32
+at GoalkeeperBoxEntryFixture+<>c__DisplayClass73_0.<RunOnlineFirstTimePass>g__Submit|0 (System.String connection, System.String action) [0x00000] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFirstTimePass\OnlineFirstTimePassFixture.cs:14
+at GoalkeeperBoxEntryFixture+<RunOnlineFirstTimePass>d__73.MoveNext () [0x001f2] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFirstTimePass\OnlineFirstTimePassFixture.cs:21
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+]]></output>
+          </test-case>
+          <test-case id="1537" name="RealPassEntersOwnedFtp(-1,&quot;safe&quot;)" fullname="OnlineFirstTimePassPlayModeTests.RealPassEntersOwnedFtp(-1,&quot;safe&quot;)" methodname="RealPassEntersOwnedFtp" classname="OnlineFirstTimePassPlayModeTests" runstate="Runnable" seed="1268298341" result="Failed" start-time="2026-11-14 10:30:17Z" end-time="2026-11-14 10:30:20Z" duration="2.555038" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  action
+  Expected: collection containing "ftp.start"
+  But was:  < "movement.start" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture.OnlineAccepted (CounterAttack.Online.OnlineGroundPassAuthority authority, System.String connection, System.Int64 sequence, System.String action) [0x00007] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineGroundPass\OnlineGroundPassFixture.cs:32
+at GoalkeeperBoxEntryFixture+<>c__DisplayClass73_0.<RunOnlineFirstTimePass>g__Submit|0 (System.String connection, System.String action) [0x00000] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFirstTimePass\OnlineFirstTimePassFixture.cs:14
+at GoalkeeperBoxEntryFixture+<RunOnlineFirstTimePass>d__73.MoveNext () [0x001f2] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFirstTimePass\OnlineFirstTimePassFixture.cs:21
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+]]></output>
+          </test-case>
+          <test-case id="1538" name="RealPassEntersOwnedFtp(-1,&quot;move&quot;)" fullname="OnlineFirstTimePassPlayModeTests.RealPassEntersOwnedFtp(-1,&quot;move&quot;)" methodname="RealPassEntersOwnedFtp" classname="OnlineFirstTimePassPlayModeTests" runstate="Runnable" seed="583895194" result="Failed" start-time="2026-11-14 10:30:20Z" end-time="2026-11-14 10:30:22Z" duration="2.619492" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  action
+  Expected: collection containing "ftp.start"
+  But was:  < "movement.start" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture.OnlineAccepted (CounterAttack.Online.OnlineGroundPassAuthority authority, System.String connection, System.Int64 sequence, System.String action) [0x00007] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineGroundPass\OnlineGroundPassFixture.cs:32
+at GoalkeeperBoxEntryFixture+<>c__DisplayClass73_0.<RunOnlineFirstTimePass>g__Submit|0 (System.String connection, System.String action) [0x00000] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFirstTimePass\OnlineFirstTimePassFixture.cs:14
+at GoalkeeperBoxEntryFixture+<RunOnlineFirstTimePass>d__73.MoveNext () [0x001f2] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFirstTimePass\OnlineFirstTimePassFixture.cs:21
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+]]></output>
+          </test-case>
+          <test-case id="1539" name="RealPassEntersOwnedFtp(-1,&quot;miss&quot;)" fullname="OnlineFirstTimePassPlayModeTests.RealPassEntersOwnedFtp(-1,&quot;miss&quot;)" methodname="RealPassEntersOwnedFtp" classname="OnlineFirstTimePassPlayModeTests" runstate="Runnable" seed="1421691898" result="Failed" start-time="2026-11-14 10:30:22Z" end-time="2026-11-14 10:30:25Z" duration="2.653963" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  action
+  Expected: collection containing "ftp.start"
+  But was:  < "movement.start" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture.OnlineAccepted (CounterAttack.Online.OnlineGroundPassAuthority authority, System.String connection, System.Int64 sequence, System.String action) [0x00007] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineGroundPass\OnlineGroundPassFixture.cs:32
+at GoalkeeperBoxEntryFixture+<>c__DisplayClass73_0.<RunOnlineFirstTimePass>g__Submit|0 (System.String connection, System.String action) [0x00000] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFirstTimePass\OnlineFirstTimePassFixture.cs:14
+at GoalkeeperBoxEntryFixture+<RunOnlineFirstTimePass>d__73.MoveNext () [0x001f2] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFirstTimePass\OnlineFirstTimePassFixture.cs:21
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+]]></output>
+          </test-case>
+          <test-case id="1540" name="RealPassEntersOwnedFtp(-1,&quot;hit&quot;)" fullname="OnlineFirstTimePassPlayModeTests.RealPassEntersOwnedFtp(-1,&quot;hit&quot;)" methodname="RealPassEntersOwnedFtp" classname="OnlineFirstTimePassPlayModeTests" runstate="Runnable" seed="1917083643" result="Failed" start-time="2026-11-14 10:30:25Z" end-time="2026-11-14 10:30:28Z" duration="2.556957" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  action
+  Expected: collection containing "ftp.start"
+  But was:  < "movement.start" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture.OnlineAccepted (CounterAttack.Online.OnlineGroundPassAuthority authority, System.String connection, System.Int64 sequence, System.String action) [0x00007] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineGroundPass\OnlineGroundPassFixture.cs:32
+at GoalkeeperBoxEntryFixture+<>c__DisplayClass73_0.<RunOnlineFirstTimePass>g__Submit|0 (System.String connection, System.String action) [0x00000] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFirstTimePass\OnlineFirstTimePassFixture.cs:14
+at GoalkeeperBoxEntryFixture+<RunOnlineFirstTimePass>d__73.MoveNext () [0x001f2] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFirstTimePass\OnlineFirstTimePassFixture.cs:21
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+]]></output>
+          </test-case>
+          <test-case id="1541" name="RealPassEntersOwnedFtp(-1,&quot;automatic&quot;)" fullname="OnlineFirstTimePassPlayModeTests.RealPassEntersOwnedFtp(-1,&quot;automatic&quot;)" methodname="RealPassEntersOwnedFtp" classname="OnlineFirstTimePassPlayModeTests" runstate="Runnable" seed="324391888" result="Failed" start-time="2026-11-14 10:30:28Z" end-time="2026-11-14 10:30:30Z" duration="2.546584" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  action
+  Expected: collection containing "ftp.start"
+  But was:  < "movement.start" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture.OnlineAccepted (CounterAttack.Online.OnlineGroundPassAuthority authority, System.String connection, System.Int64 sequence, System.String action) [0x00007] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineGroundPass\OnlineGroundPassFixture.cs:32
+at GoalkeeperBoxEntryFixture+<>c__DisplayClass73_0.<RunOnlineFirstTimePass>g__Submit|0 (System.String connection, System.String action) [0x00000] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFirstTimePass\OnlineFirstTimePassFixture.cs:14
+at GoalkeeperBoxEntryFixture+<RunOnlineFirstTimePass>d__73.MoveNext () [0x001f2] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFirstTimePass\OnlineFirstTimePassFixture.cs:21
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+]]></output>
+          </test-case>
+          <test-case id="1542" name="RealPassEntersOwnedFtp(-1,&quot;cancel&quot;)" fullname="OnlineFirstTimePassPlayModeTests.RealPassEntersOwnedFtp(-1,&quot;cancel&quot;)" methodname="RealPassEntersOwnedFtp" classname="OnlineFirstTimePassPlayModeTests" runstate="Runnable" seed="268964043" result="Failed" start-time="2026-11-14 10:30:30Z" end-time="2026-11-14 10:30:33Z" duration="2.612922" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  action
+  Expected: collection containing "ftp.start"
+  But was:  < "movement.start" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture.OnlineAccepted (CounterAttack.Online.OnlineGroundPassAuthority authority, System.String connection, System.Int64 sequence, System.String action) [0x00007] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineGroundPass\OnlineGroundPassFixture.cs:32
+at GoalkeeperBoxEntryFixture+<>c__DisplayClass73_0.<RunOnlineFirstTimePass>g__Submit|0 (System.String connection, System.String action) [0x00000] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFirstTimePass\OnlineFirstTimePassFixture.cs:14
+at GoalkeeperBoxEntryFixture+<RunOnlineFirstTimePass>d__73.MoveNext () [0x001f2] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFirstTimePass\OnlineFirstTimePassFixture.cs:21
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+]]></output>
+          </test-case>
+          <test-case id="1543" name="RealPassEntersOwnedFtp(-1,&quot;hold&quot;)" fullname="OnlineFirstTimePassPlayModeTests.RealPassEntersOwnedFtp(-1,&quot;hold&quot;)" methodname="RealPassEntersOwnedFtp" classname="OnlineFirstTimePassPlayModeTests" runstate="Runnable" seed="393055131" result="Failed" start-time="2026-11-14 10:30:33Z" end-time="2026-11-14 10:30:35Z" duration="2.603772" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  action
+  Expected: collection containing "ftp.start"
+  But was:  < "movement.start" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture.OnlineAccepted (CounterAttack.Online.OnlineGroundPassAuthority authority, System.String connection, System.Int64 sequence, System.String action) [0x00007] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineGroundPass\OnlineGroundPassFixture.cs:32
+at GoalkeeperBoxEntryFixture+<>c__DisplayClass73_0.<RunOnlineFirstTimePass>g__Submit|0 (System.String connection, System.String action) [0x00000] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFirstTimePass\OnlineFirstTimePassFixture.cs:14
+at GoalkeeperBoxEntryFixture+<RunOnlineFirstTimePass>d__73.MoveNext () [0x001f2] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFirstTimePass\OnlineFirstTimePassFixture.cs:21
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+Saving results to: TestResults\GameplayRegression\Runs\20261114T102958152Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

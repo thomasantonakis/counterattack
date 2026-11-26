@@ -5,9 +5,38 @@ using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
+using CounterAttack.Online;
 
 public static class RoomSaveService
 {
+    internal static bool CanCaptureOnline(MatchManager match, OnlineMatchProtocol protocol, OnlineSharedPause pause,
+        OnlineGroundPassState publication, out string reason, bool peerDeparted = false)
+    {
+        if (OnlineRoomSession.Current?.HasInitialData != true || OnlineRoomSession.IsGuest
+            || protocol.HostTeam != OnlineTeam.Home || !match.IsOnlineAuthorityControlled)
+            reason = "Only the host can save this online match.";
+        else if (publication == null || !peerDeparted && (!protocol.BothConnected || pause.ConnectionHeld))
+            reason = "Wait for both managers to connect before saving.";
+        else if (peerDeparted ? !match.IsPauseMenuOpen : !pause.IsPaused || publication.sharedPauseRevision != pause.Revision)
+            reason = "Pause the match before saving.";
+        else if (!OnlineCheckpointStore.SupportedState(match.currentState.ToString()) || publication.introPending
+            || publication.coin != null || publication.shootout != null || publication.matchComplete
+            || publication.stoppageAwaitingRoll || publication.keeperActionBlocked
+            || publication.substitutionReview != null || pause.CaptureSubstitutionReview() != null
+            || publication.rollPanel != null || publication.playerMoving || publication.goalMotion
+            || publication.passActive || publication.awaitingRoll || match.looseBallManager?.isActivated == true
+            || match.kickoffManager?.OnlineActive == true
+            || match.IsStopPlayRestartPending || match.shotManager?.isWaitingForSaveandHoldScenario == true
+            || match.shotManager?.isWaitingForSnapshotDecisionFromLoose == true
+            || match.shotManager?.isWaitingForShotCommitConfirmation == true
+            || match.DecisionTiming.HasRollWait || MatchManager.TimingResultBlocked)
+            reason = peerDeparted ? "No checkpoint is available while an action, restart, or roll is in progress."
+                : "Finish the current action, restart, or roll. Save at the next action choice.";
+        else
+            return match.CanCreateRuntimeSnapshot(out reason);
+        return false;
+    }
+
     public const int SaveSchemaVersion = 1;
     private const string JsonExtension = ".json";
     private const string PlaySessionsFolderName = "PlaySessions";
@@ -32,6 +61,8 @@ public static class RoomSaveService
     public static bool CreateLoadedRunCopy(string sourcePath, out string runPath, out string message)
     {
         runPath = string.Empty;
+        if (CounterAttack.Online.OnlineRoomSession.IsGuest) { message = "Online replicas cannot write match saves."; return false; }
+        if (CounterAttack.Online.OnlineRoomSession.Current?.HasInitialData==true) { message = "Online match persistence belongs to the session, not a local save slot."; return false; }
         try
         {
             if (string.IsNullOrWhiteSpace(sourcePath) || !File.Exists(sourcePath))
@@ -103,6 +134,8 @@ public static class RoomSaveService
     public static bool SaveInPlace(MatchManager matchManager, out string savedPath, out string message)
     {
         savedPath = string.Empty;
+        if (CounterAttack.Online.OnlineRoomSession.IsGuest) { message = "Online replicas cannot write match saves."; return false; }
+        if (CounterAttack.Online.OnlineRoomSession.Current?.HasInitialData==true) { message = "Online match persistence belongs to the session, not a local save slot."; return false; }
         ApplicationManager.EnsureInstanceExists();
         string activePath = ApplicationManager.Instance.GetLastSavedFilePath();
         if (string.IsNullOrWhiteSpace(activePath))
@@ -125,6 +158,8 @@ public static class RoomSaveService
     public static bool SaveAs(MatchManager matchManager, string requestedName, bool overwrite, out string savedPath, out string message)
     {
         savedPath = string.Empty;
+        if (CounterAttack.Online.OnlineRoomSession.IsGuest) { message = "Online replicas cannot write match saves."; return false; }
+        if (CounterAttack.Online.OnlineRoomSession.Current?.HasInitialData==true) { message = "Online match persistence belongs to the session, not a local save slot."; return false; }
         string filePath = BuildSaveAsPath(requestedName);
         if (string.IsNullOrWhiteSpace(filePath))
         {
@@ -138,6 +173,8 @@ public static class RoomSaveService
     public static bool SaveToPath(MatchManager matchManager, string filePath, bool overwrite, out string savedPath, out string message)
     {
         savedPath = string.Empty;
+        if (CounterAttack.Online.OnlineRoomSession.IsGuest) { message = "Online replicas cannot write match saves."; return false; }
+        if (CounterAttack.Online.OnlineRoomSession.Current?.HasInitialData==true) { message = "Online match persistence belongs to the session, not a local save slot."; return false; }
         if (matchManager == null)
         {
             message = "MatchManager is not available.";

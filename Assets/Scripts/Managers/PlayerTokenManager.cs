@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using TMPro;  // Import TextMeshPro namespace
 
-public class PlayerTokenManager : MonoBehaviour
+public partial class PlayerTokenManager : MonoBehaviour
 {
     [Header("Dependencies")]
     public GameObject redKitPrefab;
@@ -114,7 +114,8 @@ public class PlayerTokenManager : MonoBehaviour
 
         ApplicationManager.EnsureInstanceExists();
         bool regularFormationRequested = ApplicationManager.Instance.ConsumeRegularFormationRoomLaunch();
-        if (Application.isEditor && !regularFormationRequested)
+        if (Application.isEditor && !regularFormationRequested
+            && CounterAttack.Online.OnlineRoomSession.Current?.HasInitialData != true)
         {
             Debug.Log("Using Room-scene editor test positions for direct Play Mode.");
             return;

@@ -1,0 +1,13 @@
+{"name":"OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(\"missing-order\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(\"duplicate\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(\"cross-team\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(\"ineligible\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(\"unequal\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(\"sent-off\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(\"score\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(\"results\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(\"attempts\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(\"phase\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(\"unknown-shooter\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(\"unknown-keeper\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineShootoutEditorTests.InvalidShootoutCannotAdvanceGuest(\"missing-eligible\")","status":"Passed","message":"","stackTrace":""}

@@ -1,0 +1,1 @@
+CoinTossPresentationEditorTests.WinnerChoosingKickoffLeavesOnlyDirectionsForLoser(False,RightToLeft,False)

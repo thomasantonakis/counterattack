@@ -1,0 +1,1903 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="8" result="Passed" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-15 06:19:53Z" end-time="2026-11-15 06:20:08Z" duration="15.0966836">
+  <test-suite type="TestSuite" id="2567" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1288" result="Passed" start-time="2026-11-15 06:19:53Z" end-time="2026-11-15 06:20:08Z" duration="15.096684" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2564" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1288" result="Passed" start-time="2026-11-15 06:19:53Z" end-time="2026-11-15 06:20:08Z" duration="15.066109" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="1132" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1545" name="OnlineDraftVariantScenePlayModeTests" fullname="OnlineDraftVariantScenePlayModeTests" classname="OnlineDraftVariantScenePlayModeTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-11-15 06:19:53Z" end-time="2026-11-15 06:20:08Z" duration="15.059258" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineDraftVariantScene" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="1554" name="AuthoredPoolSelection" fullname="OnlineDraftVariantScenePlayModeTests.AuthoredPoolSelection" classname="OnlineDraftVariantScenePlayModeTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-11-15 06:19:53Z" end-time="2026-11-15 06:20:08Z" duration="15.051271" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="1546" name="AuthoredPoolSelection(&quot;Free Regular&quot;,False)" fullname="OnlineDraftVariantScenePlayModeTests.AuthoredPoolSelection(&quot;Free Regular&quot;,False)" methodname="AuthoredPoolSelection" classname="OnlineDraftVariantScenePlayModeTests" runstate="Runnable" seed="2002820946" result="Passed" start-time="2026-11-15 06:19:53Z" end-time="2026-11-15 06:19:56Z" duration="2.677695" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[TokenKitCatalog] Loading kits JSON from Resources path 'Kits/kit-picker-v1-11-supported' (asset: Assets/Resources/Kits/kit-picker-v1-11-supported.json).
+[TokenKitCatalog] Found kits JSON TextAsset 'kit-picker-v1-11-supported' at Resources path 'Kits/kit-picker-v1-11-supported' (32277 characters).
+[TokenKitCatalog] Parsed 101 kit preset(s) from Resources path 'Kits/kit-picker-v1-11-supported'.
+[TokenKitCatalog] Active kit catalog contains 101 kit preset(s).
+Slot renamed to: Home-1-Kuzmic
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot cleared and renamed to: Home-4
+Slot cleared and renamed to: Home-5
+Slot cleared and renamed to: Home-6
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot cleared and renamed to: Home-9
+Slot cleared and renamed to: Home-10
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Zimmer
+Slot cleared and renamed to: Home-13
+Slot cleared and renamed to: Home-14
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot renamed to: Away-1-Aziz
+Slot cleared and renamed to: Away-2
+Slot cleared and renamed to: Away-3
+Slot cleared and renamed to: Away-4
+Slot cleared and renamed to: Away-5
+Slot cleared and renamed to: Away-6
+Slot cleared and renamed to: Away-7
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot renamed to: Away-12-Mooney
+Slot cleared and renamed to: Away-13
+Slot cleared and renamed to: Away-14
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot renamed to: Home-1-Kuzmic
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot cleared and renamed to: Home-4
+Slot cleared and renamed to: Home-5
+Slot cleared and renamed to: Home-6
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot cleared and renamed to: Home-9
+Slot cleared and renamed to: Home-10
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Zimmer
+Slot cleared and renamed to: Home-13
+Slot cleared and renamed to: Home-14
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot renamed to: Away-1-Aziz
+Slot cleared and renamed to: Away-2
+Slot cleared and renamed to: Away-3
+Slot cleared and renamed to: Away-4
+Slot cleared and renamed to: Away-5
+Slot cleared and renamed to: Away-6
+Slot cleared and renamed to: Away-7
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot renamed to: Away-12-Mooney
+Slot cleared and renamed to: Away-13
+Slot cleared and renamed to: Away-14
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot renamed to: Home-1-Kuzmic
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot cleared and renamed to: Home-4
+Slot cleared and renamed to: Home-5
+Slot cleared and renamed to: Home-6
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot cleared and renamed to: Home-9
+Slot cleared and renamed to: Home-10
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Zimmer
+Slot cleared and renamed to: Home-13
+Slot cleared and renamed to: Home-14
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot renamed to: Away-1-Aziz
+Slot cleared and renamed to: Away-2
+Slot cleared and renamed to: Away-3
+Slot cleared and renamed to: Away-4
+Slot cleared and renamed to: Away-5
+Slot cleared and renamed to: Away-6
+Slot cleared and renamed to: Away-7
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot renamed to: Away-12-Mooney
+Slot cleared and renamed to: Away-13
+Slot cleared and renamed to: Away-14
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot renamed to: Home-1-Kuzmic
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot cleared and renamed to: Home-4
+Slot cleared and renamed to: Home-5
+Slot cleared and renamed to: Home-6
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot cleared and renamed to: Home-9
+Slot cleared and renamed to: Home-10
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Zimmer
+Slot cleared and renamed to: Home-13
+Slot cleared and renamed to: Home-14
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot renamed to: Away-1-Aziz
+Slot cleared and renamed to: Away-2
+Slot cleared and renamed to: Away-3
+Slot cleared and renamed to: Away-4
+Slot cleared and renamed to: Away-5
+Slot cleared and renamed to: Away-6
+Slot cleared and renamed to: Away-7
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot renamed to: Away-12-Mooney
+Slot cleared and renamed to: Away-13
+Slot cleared and renamed to: Away-14
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot renamed to: Home-1-Kuzmic
+Slot renamed to: Home-2-Baez
+Slot cleared and renamed to: Home-3
+Slot cleared and renamed to: Home-4
+Slot cleared and renamed to: Home-5
+Slot cleared and renamed to: Home-6
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot cleared and renamed to: Home-9
+Slot cleared and renamed to: Home-10
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Zimmer
+Slot cleared and renamed to: Home-13
+Slot cleared and renamed to: Home-14
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot renamed to: Away-1-Aziz
+Slot cleared and renamed to: Away-2
+Slot cleared and renamed to: Away-3
+Slot cleared and renamed to: Away-4
+Slot cleared and renamed to: Away-5
+Slot cleared and renamed to: Away-6
+Slot cleared and renamed to: Away-7
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot renamed to: Away-12-Mooney
+Slot cleared and renamed to: Away-13
+Slot cleared and renamed to: Away-14
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot renamed to: Home-1-Kuzmic
+Slot renamed to: Home-2-Baez
+Slot cleared and renamed to: Home-3
+Slot cleared and renamed to: Home-4
+Slot cleared and renamed to: Home-5
+Slot cleared and renamed to: Home-6
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot cleared and renamed to: Home-9
+Slot cleared and renamed to: Home-10
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Zimmer
+Slot cleared and renamed to: Home-13
+Slot cleared and renamed to: Home-14
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot renamed to: Away-1-Aziz
+Slot cleared and renamed to: Away-2
+Slot cleared and renamed to: Away-3
+Slot cleared and renamed to: Away-4
+Slot cleared and renamed to: Away-5
+Slot cleared and renamed to: Away-6
+Slot cleared and renamed to: Away-7
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot renamed to: Away-12-Mooney
+Slot cleared and renamed to: Away-13
+Slot cleared and renamed to: Away-14
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot renamed to: Home-1-Kuzmic
+Slot renamed to: Home-2-Baez
+Slot cleared and renamed to: Home-3
+Slot cleared and renamed to: Home-4
+Slot cleared and renamed to: Home-5
+Slot cleared and renamed to: Home-6
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot cleared and renamed to: Home-9
+Slot cleared and renamed to: Home-10
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Zimmer
+Slot cleared and renamed to: Home-13
+Slot cleared and renamed to: Home-14
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot renamed to: Away-1-Aziz
+Slot cleared and renamed to: Away-2
+Slot cleared and renamed to: Away-3
+Slot cleared and renamed to: Away-4
+Slot cleared and renamed to: Away-5
+Slot cleared and renamed to: Away-6
+Slot cleared and renamed to: Away-7
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot renamed to: Away-12-Mooney
+Slot cleared and renamed to: Away-13
+Slot cleared and renamed to: Away-14
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot renamed to: Home-1-Kuzmic
+Slot renamed to: Home-2-Baez
+Slot cleared and renamed to: Home-3
+Slot cleared and renamed to: Home-4
+Slot cleared and renamed to: Home-5
+Slot cleared and renamed to: Home-6
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot cleared and renamed to: Home-9
+Slot cleared and renamed to: Home-10
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Zimmer
+Slot cleared and renamed to: Home-13
+Slot cleared and renamed to: Home-14
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot renamed to: Away-1-Aziz
+Slot cleared and renamed to: Away-2
+Slot cleared and renamed to: Away-3
+Slot cleared and renamed to: Away-4
+Slot cleared and renamed to: Away-5
+Slot cleared and renamed to: Away-6
+Slot cleared and renamed to: Away-7
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot renamed to: Away-12-Mooney
+Slot cleared and renamed to: Away-13
+Slot cleared and renamed to: Away-14
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot renamed to: Home-1-Kuzmic
+Slot renamed to: Home-2-Baez
+Slot cleared and renamed to: Home-3
+Slot cleared and renamed to: Home-4
+Slot cleared and renamed to: Home-5
+Slot cleared and renamed to: Home-6
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot cleared and renamed to: Home-9
+Slot cleared and renamed to: Home-10
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Zimmer
+Slot cleared and renamed to: Home-13
+Slot cleared and renamed to: Home-14
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot renamed to: Away-1-Aziz
+Slot renamed to: Away-2-Gortz
+Slot cleared and renamed to: Away-3
+Slot cleared and renamed to: Away-4
+Slot cleared and renamed to: Away-5
+Slot cleared and renamed to: Away-6
+Slot cleared and renamed to: Away-7
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot renamed to: Away-12-Mooney
+Slot cleared and renamed to: Away-13
+Slot cleared and renamed to: Away-14
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot renamed to: Home-1-Kuzmic
+Slot renamed to: Home-2-Baez
+Slot cleared and renamed to: Home-3
+Slot cleared and renamed to: Home-4
+Slot cleared and renamed to: Home-5
+Slot cleared and renamed to: Home-6
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot cleared and renamed to: Home-9
+Slot cleared and renamed to: Home-10
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Zimmer
+Slot cleared and renamed to: Home-13
+Slot cleared and renamed to: Home-14
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot renamed to: Away-1-Aziz
+Slot renamed to: Away-2-Gortz
+Slot cleared and renamed to: Away-3
+Slot cleared and renamed to: Away-4
+Slot cleared and renamed to: Away-5
+Slot cleared and renamed to: Away-6
+Slot cleared and renamed to: Away-7
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot renamed to: Away-12-Mooney
+Slot cleared and renamed to: Away-13
+Slot cleared and renamed to: Away-14
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+]]></output>
+          </test-case>
+          <test-case id="1547" name="AuthoredPoolSelection(&quot;Free Regular&quot;,True)" fullname="OnlineDraftVariantScenePlayModeTests.AuthoredPoolSelection(&quot;Free Regular&quot;,True)" methodname="AuthoredPoolSelection" classname="OnlineDraftVariantScenePlayModeTests" runstate="Runnable" seed="2082504296" result="Passed" start-time="2026-11-15 06:19:56Z" end-time="2026-11-15 06:19:58Z" duration="1.862283" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Slot renamed to: Home-1-Kuzmic
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot cleared and renamed to: Home-4
+Slot cleared and renamed to: Home-5
+Slot cleared and renamed to: Home-6
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot cleared and renamed to: Home-9
+Slot cleared and renamed to: Home-10
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Zimmer
+Slot cleared and renamed to: Home-13
+Slot cleared and renamed to: Home-14
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot renamed to: Away-1-Aziz
+Slot cleared and renamed to: Away-2
+Slot cleared and renamed to: Away-3
+Slot cleared and renamed to: Away-4
+Slot cleared and renamed to: Away-5
+Slot cleared and renamed to: Away-6
+Slot cleared and renamed to: Away-7
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot renamed to: Away-12-Mooney
+Slot cleared and renamed to: Away-13
+Slot cleared and renamed to: Away-14
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot renamed to: Home-1-Kuzmic
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot cleared and renamed to: Home-4
+Slot cleared and renamed to: Home-5
+Slot cleared and renamed to: Home-6
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot cleared and renamed to: Home-9
+Slot cleared and renamed to: Home-10
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Zimmer
+Slot cleared and renamed to: Home-13
+Slot cleared and renamed to: Home-14
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot renamed to: Away-1-Aziz
+Slot cleared and renamed to: Away-2
+Slot cleared and renamed to: Away-3
+Slot cleared and renamed to: Away-4
+Slot cleared and renamed to: Away-5
+Slot cleared and renamed to: Away-6
+Slot cleared and renamed to: Away-7
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot renamed to: Away-12-Mooney
+Slot cleared and renamed to: Away-13
+Slot cleared and renamed to: Away-14
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot renamed to: Home-1-Kuzmic
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot cleared and renamed to: Home-4
+Slot cleared and renamed to: Home-5
+Slot cleared and renamed to: Home-6
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot cleared and renamed to: Home-9
+Slot cleared and renamed to: Home-10
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Zimmer
+Slot cleared and renamed to: Home-13
+Slot cleared and renamed to: Home-14
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot renamed to: Away-1-Aziz
+Slot cleared and renamed to: Away-2
+Slot cleared and renamed to: Away-3
+Slot cleared and renamed to: Away-4
+Slot cleared and renamed to: Away-5
+Slot cleared and renamed to: Away-6
+Slot cleared and renamed to: Away-7
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot renamed to: Away-12-Mooney
+Slot cleared and renamed to: Away-13
+Slot cleared and renamed to: Away-14
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot renamed to: Home-1-Kuzmic
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot cleared and renamed to: Home-4
+Slot cleared and renamed to: Home-5
+Slot cleared and renamed to: Home-6
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot cleared and renamed to: Home-9
+Slot cleared and renamed to: Home-10
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Zimmer
+Slot cleared and renamed to: Home-13
+Slot cleared and renamed to: Home-14
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot renamed to: Away-1-Aziz
+Slot cleared and renamed to: Away-2
+Slot cleared and renamed to: Away-3
+Slot cleared and renamed to: Away-4
+Slot cleared and renamed to: Away-5
+Slot cleared and renamed to: Away-6
+Slot cleared and renamed to: Away-7
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot renamed to: Away-12-Mooney
+Slot cleared and renamed to: Away-13
+Slot cleared and renamed to: Away-14
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot renamed to: Home-1-Kuzmic
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot cleared and renamed to: Home-4
+Slot cleared and renamed to: Home-5
+Slot cleared and renamed to: Home-6
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot cleared and renamed to: Home-9
+Slot cleared and renamed to: Home-10
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Zimmer
+Slot cleared and renamed to: Home-13
+Slot cleared and renamed to: Home-14
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot renamed to: Away-1-Aziz
+Slot cleared and renamed to: Away-2
+Slot cleared and renamed to: Away-3
+Slot cleared and renamed to: Away-4
+Slot cleared and renamed to: Away-5
+Slot cleared and renamed to: Away-6
+Slot cleared and renamed to: Away-7
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot renamed to: Away-12-Mooney
+Slot cleared and renamed to: Away-13
+Slot cleared and renamed to: Away-14
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot renamed to: Home-1-Kuzmic
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot cleared and renamed to: Home-4
+Slot cleared and renamed to: Home-5
+Slot cleared and renamed to: Home-6
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot cleared and renamed to: Home-9
+Slot cleared and renamed to: Home-10
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Zimmer
+Slot cleared and renamed to: Home-13
+Slot cleared and renamed to: Home-14
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot renamed to: Away-1-Aziz
+Slot cleared and renamed to: Away-2
+Slot cleared and renamed to: Away-3
+Slot cleared and renamed to: Away-4
+Slot cleared and renamed to: Away-5
+Slot cleared and renamed to: Away-6
+Slot cleared and renamed to: Away-7
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot renamed to: Away-12-Mooney
+Slot cleared and renamed to: Away-13
+Slot cleared and renamed to: Away-14
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot renamed to: Home-1-Kuzmic
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot cleared and renamed to: Home-4
+Slot cleared and renamed to: Home-5
+Slot cleared and renamed to: Home-6
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot cleared and renamed to: Home-9
+Slot cleared and renamed to: Home-10
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Zimmer
+Slot cleared and renamed to: Home-13
+Slot cleared and renamed to: Home-14
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot renamed to: Away-1-Aziz
+Slot cleared and renamed to: Away-2
+Slot cleared and renamed to: Away-3
+Slot cleared and renamed to: Away-4
+Slot cleared and renamed to: Away-5
+Slot cleared and renamed to: Away-6
+Slot cleared and renamed to: Away-7
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot renamed to: Away-12-Mooney
+Slot cleared and renamed to: Away-13
+Slot cleared and renamed to: Away-14
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot renamed to: Home-1-Kuzmic
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot cleared and renamed to: Home-4
+Slot cleared and renamed to: Home-5
+Slot cleared and renamed to: Home-6
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot cleared and renamed to: Home-9
+Slot cleared and renamed to: Home-10
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Zimmer
+Slot cleared and renamed to: Home-13
+Slot cleared and renamed to: Home-14
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot renamed to: Away-1-Aziz
+Slot cleared and renamed to: Away-2
+Slot cleared and renamed to: Away-3
+Slot cleared and renamed to: Away-4
+Slot cleared and renamed to: Away-5
+Slot cleared and renamed to: Away-6
+Slot cleared and renamed to: Away-7
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot renamed to: Away-12-Mooney
+Slot cleared and renamed to: Away-13
+Slot cleared and renamed to: Away-14
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot renamed to: Home-1-Kuzmic
+Slot renamed to: Home-2-Terto
+Slot cleared and renamed to: Home-3
+Slot cleared and renamed to: Home-4
+Slot cleared and renamed to: Home-5
+Slot cleared and renamed to: Home-6
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot cleared and renamed to: Home-9
+Slot cleared and renamed to: Home-10
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Zimmer
+Slot cleared and renamed to: Home-13
+Slot cleared and renamed to: Home-14
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot renamed to: Away-1-Aziz
+Slot cleared and renamed to: Away-2
+Slot cleared and renamed to: Away-3
+Slot cleared and renamed to: Away-4
+Slot cleared and renamed to: Away-5
+Slot cleared and renamed to: Away-6
+Slot cleared and renamed to: Away-7
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot renamed to: Away-12-Mooney
+Slot cleared and renamed to: Away-13
+Slot cleared and renamed to: Away-14
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+]]></output>
+          </test-case>
+          <test-case id="1548" name="AuthoredPoolSelection(&quot;Arcade&quot;,False)" fullname="OnlineDraftVariantScenePlayModeTests.AuthoredPoolSelection(&quot;Arcade&quot;,False)" methodname="AuthoredPoolSelection" classname="OnlineDraftVariantScenePlayModeTests" runstate="Runnable" seed="344705718" result="Passed" start-time="2026-11-15 06:19:58Z" end-time="2026-11-15 06:19:59Z" duration="1.623339" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Slot renamed to: Home-1-Kuzmic
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot cleared and renamed to: Home-4
+Slot cleared and renamed to: Home-5
+Slot cleared and renamed to: Home-6
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot cleared and renamed to: Home-9
+Slot cleared and renamed to: Home-10
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Zimmer
+Slot cleared and renamed to: Home-13
+Slot cleared and renamed to: Home-14
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot renamed to: Away-1-Aziz
+Slot cleared and renamed to: Away-2
+Slot cleared and renamed to: Away-3
+Slot cleared and renamed to: Away-4
+Slot cleared and renamed to: Away-5
+Slot cleared and renamed to: Away-6
+Slot cleared and renamed to: Away-7
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot renamed to: Away-12-Mooney
+Slot cleared and renamed to: Away-13
+Slot cleared and renamed to: Away-14
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot renamed to: Home-1-Kuzmic
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot cleared and renamed to: Home-4
+Slot cleared and renamed to: Home-5
+Slot cleared and renamed to: Home-6
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot cleared and renamed to: Home-9
+Slot cleared and renamed to: Home-10
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Zimmer
+Slot cleared and renamed to: Home-13
+Slot cleared and renamed to: Home-14
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot renamed to: Away-1-Aziz
+Slot cleared and renamed to: Away-2
+Slot cleared and renamed to: Away-3
+Slot cleared and renamed to: Away-4
+Slot cleared and renamed to: Away-5
+Slot cleared and renamed to: Away-6
+Slot cleared and renamed to: Away-7
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot renamed to: Away-12-Mooney
+Slot cleared and renamed to: Away-13
+Slot cleared and renamed to: Away-14
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot renamed to: Home-1-Kuzmic
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot cleared and renamed to: Home-4
+Slot cleared and renamed to: Home-5
+Slot cleared and renamed to: Home-6
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot cleared and renamed to: Home-9
+Slot cleared and renamed to: Home-10
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Zimmer
+Slot cleared and renamed to: Home-13
+Slot cleared and renamed to: Home-14
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot renamed to: Away-1-Aziz
+Slot cleared and renamed to: Away-2
+Slot cleared and renamed to: Away-3
+Slot cleared and renamed to: Away-4
+Slot cleared and renamed to: Away-5
+Slot cleared and renamed to: Away-6
+Slot cleared and renamed to: Away-7
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot renamed to: Away-12-Mooney
+Slot cleared and renamed to: Away-13
+Slot cleared and renamed to: Away-14
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot renamed to: Home-1-Kuzmic
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot cleared and renamed to: Home-4
+Slot cleared and renamed to: Home-5
+Slot cleared and renamed to: Home-6
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot cleared and renamed to: Home-9
+Slot cleared and renamed to: Home-10
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Zimmer
+Slot cleared and renamed to: Home-13
+Slot cleared and renamed to: Home-14
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot renamed to: Away-1-Aziz
+Slot cleared and renamed to: Away-2
+Slot cleared and renamed to: Away-3
+Slot cleared and renamed to: Away-4
+Slot cleared and renamed to: Away-5
+Slot cleared and renamed to: Away-6
+Slot cleared and renamed to: Away-7
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot renamed to: Away-12-Mooney
+Slot cleared and renamed to: Away-13
+Slot cleared and renamed to: Away-14
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot renamed to: Home-1-Kuzmic
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot cleared and renamed to: Home-4
+Slot cleared and renamed to: Home-5
+Slot cleared and renamed to: Home-6
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot cleared and renamed to: Home-9
+Slot cleared and renamed to: Home-10
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Zimmer
+Slot cleared and renamed to: Home-13
+Slot cleared and renamed to: Home-14
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot renamed to: Away-1-Aziz
+Slot renamed to: Away-2-Terto
+Slot cleared and renamed to: Away-3
+Slot cleared and renamed to: Away-4
+Slot cleared and renamed to: Away-5
+Slot cleared and renamed to: Away-6
+Slot cleared and renamed to: Away-7
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot renamed to: Away-12-Mooney
+Slot cleared and renamed to: Away-13
+Slot cleared and renamed to: Away-14
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot renamed to: Home-1-Kuzmic
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot cleared and renamed to: Home-4
+Slot cleared and renamed to: Home-5
+Slot cleared and renamed to: Home-6
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot cleared and renamed to: Home-9
+Slot cleared and renamed to: Home-10
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Zimmer
+Slot cleared and renamed to: Home-13
+Slot cleared and renamed to: Home-14
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot renamed to: Away-1-Aziz
+Slot renamed to: Away-2-Terto
+Slot cleared and renamed to: Away-3
+Slot cleared and renamed to: Away-4
+Slot cleared and renamed to: Away-5
+Slot cleared and renamed to: Away-6
+Slot cleared and renamed to: Away-7
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot renamed to: Away-12-Mooney
+Slot cleared and renamed to: Away-13
+Slot cleared and renamed to: Away-14
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+]]></output>
+          </test-case>
+          <test-case id="1549" name="AuthoredPoolSelection(&quot;Arcade&quot;,True)" fullname="OnlineDraftVariantScenePlayModeTests.AuthoredPoolSelection(&quot;Arcade&quot;,True)" methodname="AuthoredPoolSelection" classname="OnlineDraftVariantScenePlayModeTests" runstate="Runnable" seed="1707294828" result="Passed" start-time="2026-11-15 06:19:59Z" end-time="2026-11-15 06:20:01Z" duration="1.807387" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Slot renamed to: Home-1-Kuzmic
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot cleared and renamed to: Home-4
+Slot cleared and renamed to: Home-5
+Slot cleared and renamed to: Home-6
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot cleared and renamed to: Home-9
+Slot cleared and renamed to: Home-10
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Zimmer
+Slot cleared and renamed to: Home-13
+Slot cleared and renamed to: Home-14
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot renamed to: Away-1-Aziz
+Slot cleared and renamed to: Away-2
+Slot cleared and renamed to: Away-3
+Slot cleared and renamed to: Away-4
+Slot cleared and renamed to: Away-5
+Slot cleared and renamed to: Away-6
+Slot cleared and renamed to: Away-7
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot renamed to: Away-12-Mooney
+Slot cleared and renamed to: Away-13
+Slot cleared and renamed to: Away-14
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot renamed to: Home-1-Kuzmic
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot cleared and renamed to: Home-4
+Slot cleared and renamed to: Home-5
+Slot cleared and renamed to: Home-6
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot cleared and renamed to: Home-9
+Slot cleared and renamed to: Home-10
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Zimmer
+Slot cleared and renamed to: Home-13
+Slot cleared and renamed to: Home-14
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot renamed to: Away-1-Aziz
+Slot cleared and renamed to: Away-2
+Slot cleared and renamed to: Away-3
+Slot cleared and renamed to: Away-4
+Slot cleared and renamed to: Away-5
+Slot cleared and renamed to: Away-6
+Slot cleared and renamed to: Away-7
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot renamed to: Away-12-Mooney
+Slot cleared and renamed to: Away-13
+Slot cleared and renamed to: Away-14
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot renamed to: Home-1-Kuzmic
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot cleared and renamed to: Home-4
+Slot cleared and renamed to: Home-5
+Slot cleared and renamed to: Home-6
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot cleared and renamed to: Home-9
+Slot cleared and renamed to: Home-10
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Zimmer
+Slot cleared and renamed to: Home-13
+Slot cleared and renamed to: Home-14
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot renamed to: Away-1-Aziz
+Slot cleared and renamed to: Away-2
+Slot cleared and renamed to: Away-3
+Slot cleared and renamed to: Away-4
+Slot cleared and renamed to: Away-5
+Slot cleared and renamed to: Away-6
+Slot cleared and renamed to: Away-7
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot renamed to: Away-12-Mooney
+Slot cleared and renamed to: Away-13
+Slot cleared and renamed to: Away-14
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot renamed to: Home-1-Kuzmic
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot cleared and renamed to: Home-4
+Slot cleared and renamed to: Home-5
+Slot cleared and renamed to: Home-6
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot cleared and renamed to: Home-9
+Slot cleared and renamed to: Home-10
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Zimmer
+Slot cleared and renamed to: Home-13
+Slot cleared and renamed to: Home-14
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot renamed to: Away-1-Aziz
+Slot cleared and renamed to: Away-2
+Slot cleared and renamed to: Away-3
+Slot cleared and renamed to: Away-4
+Slot cleared and renamed to: Away-5
+Slot cleared and renamed to: Away-6
+Slot cleared and renamed to: Away-7
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot renamed to: Away-12-Mooney
+Slot cleared and renamed to: Away-13
+Slot cleared and renamed to: Away-14
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot renamed to: Home-1-Kuzmic
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot cleared and renamed to: Home-4
+Slot cleared and renamed to: Home-5
+Slot cleared and renamed to: Home-6
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot cleared and renamed to: Home-9
+Slot cleared and renamed to: Home-10
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Zimmer
+Slot cleared and renamed to: Home-13
+Slot cleared and renamed to: Home-14
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot renamed to: Away-1-Aziz
+Slot cleared and renamed to: Away-2
+Slot cleared and renamed to: Away-3
+Slot cleared and renamed to: Away-4
+Slot cleared and renamed to: Away-5
+Slot cleared and renamed to: Away-6
+Slot cleared and renamed to: Away-7
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot renamed to: Away-12-Mooney
+Slot cleared and renamed to: Away-13
+Slot cleared and renamed to: Away-14
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot renamed to: Home-1-Kuzmic
+Slot renamed to: Home-2-Terto
+Slot cleared and renamed to: Home-3
+Slot cleared and renamed to: Home-4
+Slot cleared and renamed to: Home-5
+Slot cleared and renamed to: Home-6
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot cleared and renamed to: Home-9
+Slot cleared and renamed to: Home-10
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Zimmer
+Slot cleared and renamed to: Home-13
+Slot cleared and renamed to: Home-14
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot renamed to: Away-1-Aziz
+Slot cleared and renamed to: Away-2
+Slot cleared and renamed to: Away-3
+Slot cleared and renamed to: Away-4
+Slot cleared and renamed to: Away-5
+Slot cleared and renamed to: Away-6
+Slot cleared and renamed to: Away-7
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot renamed to: Away-12-Mooney
+Slot cleared and renamed to: Away-13
+Slot cleared and renamed to: Away-14
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+]]></output>
+          </test-case>
+          <test-case id="1550" name="AuthoredPoolSelection(&quot;FreeGK&quot;,False)" fullname="OnlineDraftVariantScenePlayModeTests.AuthoredPoolSelection(&quot;FreeGK&quot;,False)" methodname="AuthoredPoolSelection" classname="OnlineDraftVariantScenePlayModeTests" runstate="Runnable" seed="990761138" result="Passed" start-time="2026-11-15 06:20:01Z" end-time="2026-11-15 06:20:03Z" duration="1.831384" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Slot cleared and renamed to: Home-1
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot cleared and renamed to: Home-4
+Slot cleared and renamed to: Home-5
+Slot cleared and renamed to: Home-6
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot cleared and renamed to: Home-9
+Slot cleared and renamed to: Home-10
+Slot cleared and renamed to: Home-11
+Slot cleared and renamed to: Home-12
+Slot cleared and renamed to: Home-13
+Slot cleared and renamed to: Home-14
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot cleared and renamed to: Away-1
+Slot cleared and renamed to: Away-2
+Slot cleared and renamed to: Away-3
+Slot cleared and renamed to: Away-4
+Slot cleared and renamed to: Away-5
+Slot cleared and renamed to: Away-6
+Slot cleared and renamed to: Away-7
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot cleared and renamed to: Away-12
+Slot cleared and renamed to: Away-13
+Slot cleared and renamed to: Away-14
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot cleared and renamed to: Home-1
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot cleared and renamed to: Home-4
+Slot cleared and renamed to: Home-5
+Slot cleared and renamed to: Home-6
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot cleared and renamed to: Home-9
+Slot cleared and renamed to: Home-10
+Slot cleared and renamed to: Home-11
+Slot cleared and renamed to: Home-12
+Slot cleared and renamed to: Home-13
+Slot cleared and renamed to: Home-14
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot cleared and renamed to: Away-1
+Slot cleared and renamed to: Away-2
+Slot cleared and renamed to: Away-3
+Slot cleared and renamed to: Away-4
+Slot cleared and renamed to: Away-5
+Slot cleared and renamed to: Away-6
+Slot cleared and renamed to: Away-7
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot cleared and renamed to: Away-12
+Slot cleared and renamed to: Away-13
+Slot cleared and renamed to: Away-14
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot cleared and renamed to: Home-1
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot cleared and renamed to: Home-4
+Slot cleared and renamed to: Home-5
+Slot cleared and renamed to: Home-6
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot cleared and renamed to: Home-9
+Slot cleared and renamed to: Home-10
+Slot cleared and renamed to: Home-11
+Slot cleared and renamed to: Home-12
+Slot cleared and renamed to: Home-13
+Slot cleared and renamed to: Home-14
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot cleared and renamed to: Away-1
+Slot cleared and renamed to: Away-2
+Slot cleared and renamed to: Away-3
+Slot cleared and renamed to: Away-4
+Slot cleared and renamed to: Away-5
+Slot cleared and renamed to: Away-6
+Slot cleared and renamed to: Away-7
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot cleared and renamed to: Away-12
+Slot cleared and renamed to: Away-13
+Slot cleared and renamed to: Away-14
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot cleared and renamed to: Home-1
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot cleared and renamed to: Home-4
+Slot cleared and renamed to: Home-5
+Slot cleared and renamed to: Home-6
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot cleared and renamed to: Home-9
+Slot cleared and renamed to: Home-10
+Slot cleared and renamed to: Home-11
+Slot cleared and renamed to: Home-12
+Slot cleared and renamed to: Home-13
+Slot cleared and renamed to: Home-14
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot cleared and renamed to: Away-1
+Slot cleared and renamed to: Away-2
+Slot cleared and renamed to: Away-3
+Slot cleared and renamed to: Away-4
+Slot cleared and renamed to: Away-5
+Slot cleared and renamed to: Away-6
+Slot cleared and renamed to: Away-7
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot cleared and renamed to: Away-12
+Slot cleared and renamed to: Away-13
+Slot cleared and renamed to: Away-14
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot renamed to: Home-1-Mikhailov
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot cleared and renamed to: Home-4
+Slot cleared and renamed to: Home-5
+Slot cleared and renamed to: Home-6
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot cleared and renamed to: Home-9
+Slot cleared and renamed to: Home-10
+Slot cleared and renamed to: Home-11
+Slot cleared and renamed to: Home-12
+Slot cleared and renamed to: Home-13
+Slot cleared and renamed to: Home-14
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot cleared and renamed to: Away-1
+Slot cleared and renamed to: Away-2
+Slot cleared and renamed to: Away-3
+Slot cleared and renamed to: Away-4
+Slot cleared and renamed to: Away-5
+Slot cleared and renamed to: Away-6
+Slot cleared and renamed to: Away-7
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot cleared and renamed to: Away-12
+Slot cleared and renamed to: Away-13
+Slot cleared and renamed to: Away-14
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot renamed to: Home-1-Mikhailov
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot cleared and renamed to: Home-4
+Slot cleared and renamed to: Home-5
+Slot cleared and renamed to: Home-6
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot cleared and renamed to: Home-9
+Slot cleared and renamed to: Home-10
+Slot cleared and renamed to: Home-11
+Slot cleared and renamed to: Home-12
+Slot cleared and renamed to: Home-13
+Slot cleared and renamed to: Home-14
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot cleared and renamed to: Away-1
+Slot cleared and renamed to: Away-2
+Slot cleared and renamed to: Away-3
+Slot cleared and renamed to: Away-4
+Slot cleared and renamed to: Away-5
+Slot cleared and renamed to: Away-6
+Slot cleared and renamed to: Away-7
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot cleared and renamed to: Away-12
+Slot cleared and renamed to: Away-13
+Slot cleared and renamed to: Away-14
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot renamed to: Home-1-Mikhailov
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot cleared and renamed to: Home-4
+Slot cleared and renamed to: Home-5
+Slot cleared and renamed to: Home-6
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot cleared and renamed to: Home-9
+Slot cleared and renamed to: Home-10
+Slot cleared and renamed to: Home-11
+Slot cleared and renamed to: Home-12
+Slot cleared and renamed to: Home-13
+Slot cleared and renamed to: Home-14
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot cleared and renamed to: Away-1
+Slot cleared and renamed to: Away-2
+Slot cleared and renamed to: Away-3
+Slot cleared and renamed to: Away-4
+Slot cleared and renamed to: Away-5
+Slot cleared and renamed to: Away-6
+Slot cleared and renamed to: Away-7
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot cleared and renamed to: Away-12
+Slot cleared and renamed to: Away-13
+Slot cleared and renamed to: Away-14
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot renamed to: Home-1-Mikhailov
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot cleared and renamed to: Home-4
+Slot cleared and renamed to: Home-5
+Slot cleared and renamed to: Home-6
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot cleared and renamed to: Home-9
+Slot cleared and renamed to: Home-10
+Slot cleared and renamed to: Home-11
+Slot cleared and renamed to: Home-12
+Slot cleared and renamed to: Home-13
+Slot cleared and renamed to: Home-14
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot cleared and renamed to: Away-1
+Slot cleared and renamed to: Away-2
+Slot cleared and renamed to: Away-3
+Slot cleared and renamed to: Away-4
+Slot cleared and renamed to: Away-5
+Slot cleared and renamed to: Away-6
+Slot cleared and renamed to: Away-7
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot cleared and renamed to: Away-12
+Slot cleared and renamed to: Away-13
+Slot cleared and renamed to: Away-14
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot renamed to: Home-1-Mikhailov
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot cleared and renamed to: Home-4
+Slot cleared and renamed to: Home-5
+Slot cleared and renamed to: Home-6
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot cleared and renamed to: Home-9
+Slot cleared and renamed to: Home-10
+Slot cleared and renamed to: Home-11
+Slot cleared and renamed to: Home-12
+Slot cleared and renamed to: Home-13
+Slot cleared and renamed to: Home-14
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot renamed to: Away-1-Doxakis
+Slot cleared and renamed to: Away-2
+Slot cleared and renamed to: Away-3
+Slot cleared and renamed to: Away-4
+Slot cleared and renamed to: Away-5
+Slot cleared and renamed to: Away-6
+Slot cleared and renamed to: Away-7
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot cleared and renamed to: Away-12
+Slot cleared and renamed to: Away-13
+Slot cleared and renamed to: Away-14
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot renamed to: Home-1-Mikhailov
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot cleared and renamed to: Home-4
+Slot cleared and renamed to: Home-5
+Slot cleared and renamed to: Home-6
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot cleared and renamed to: Home-9
+Slot cleared and renamed to: Home-10
+Slot cleared and renamed to: Home-11
+Slot cleared and renamed to: Home-12
+Slot cleared and renamed to: Home-13
+Slot cleared and renamed to: Home-14
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot renamed to: Away-1-Doxakis
+Slot cleared and renamed to: Away-2
+Slot cleared and renamed to: Away-3
+Slot cleared and renamed to: Away-4
+Slot cleared and renamed to: Away-5
+Slot cleared and renamed to: Away-6
+Slot cleared and renamed to: Away-7
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot cleared and renamed to: Away-12
+Slot cleared and renamed to: Away-13
+Slot cleared and renamed to: Away-14
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+]]></output>
+          </test-case>
+          <test-case id="1551" name="AuthoredPoolSelection(&quot;FreeGK&quot;,True)" fullname="OnlineDraftVariantScenePlayModeTests.AuthoredPoolSelection(&quot;FreeGK&quot;,True)" methodname="AuthoredPoolSelection" classname="OnlineDraftVariantScenePlayModeTests" runstate="Runnable" seed="1124342546" result="Passed" start-time="2026-11-15 06:20:03Z" end-time="2026-11-15 06:20:05Z" duration="1.827004" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Slot cleared and renamed to: Home-1
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot cleared and renamed to: Home-4
+Slot cleared and renamed to: Home-5
+Slot cleared and renamed to: Home-6
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot cleared and renamed to: Home-9
+Slot cleared and renamed to: Home-10
+Slot cleared and renamed to: Home-11
+Slot cleared and renamed to: Home-12
+Slot cleared and renamed to: Home-13
+Slot cleared and renamed to: Home-14
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot cleared and renamed to: Away-1
+Slot cleared and renamed to: Away-2
+Slot cleared and renamed to: Away-3
+Slot cleared and renamed to: Away-4
+Slot cleared and renamed to: Away-5
+Slot cleared and renamed to: Away-6
+Slot cleared and renamed to: Away-7
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot cleared and renamed to: Away-12
+Slot cleared and renamed to: Away-13
+Slot cleared and renamed to: Away-14
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot cleared and renamed to: Home-1
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot cleared and renamed to: Home-4
+Slot cleared and renamed to: Home-5
+Slot cleared and renamed to: Home-6
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot cleared and renamed to: Home-9
+Slot cleared and renamed to: Home-10
+Slot cleared and renamed to: Home-11
+Slot cleared and renamed to: Home-12
+Slot cleared and renamed to: Home-13
+Slot cleared and renamed to: Home-14
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot cleared and renamed to: Away-1
+Slot cleared and renamed to: Away-2
+Slot cleared and renamed to: Away-3
+Slot cleared and renamed to: Away-4
+Slot cleared and renamed to: Away-5
+Slot cleared and renamed to: Away-6
+Slot cleared and renamed to: Away-7
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot cleared and renamed to: Away-12
+Slot cleared and renamed to: Away-13
+Slot cleared and renamed to: Away-14
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot cleared and renamed to: Home-1
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot cleared and renamed to: Home-4
+Slot cleared and renamed to: Home-5
+Slot cleared and renamed to: Home-6
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot cleared and renamed to: Home-9
+Slot cleared and renamed to: Home-10
+Slot cleared and renamed to: Home-11
+Slot cleared and renamed to: Home-12
+Slot cleared and renamed to: Home-13
+Slot cleared and renamed to: Home-14
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot cleared and renamed to: Away-1
+Slot cleared and renamed to: Away-2
+Slot cleared and renamed to: Away-3
+Slot cleared and renamed to: Away-4
+Slot cleared and renamed to: Away-5
+Slot cleared and renamed to: Away-6
+Slot cleared and renamed to: Away-7
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot cleared and renamed to: Away-12
+Slot cleared and renamed to: Away-13
+Slot cleared and renamed to: Away-14
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot cleared and renamed to: Home-1
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot cleared and renamed to: Home-4
+Slot cleared and renamed to: Home-5
+Slot cleared and renamed to: Home-6
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot cleared and renamed to: Home-9
+Slot cleared and renamed to: Home-10
+Slot cleared and renamed to: Home-11
+Slot cleared and renamed to: Home-12
+Slot cleared and renamed to: Home-13
+Slot cleared and renamed to: Home-14
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot cleared and renamed to: Away-1
+Slot cleared and renamed to: Away-2
+Slot cleared and renamed to: Away-3
+Slot cleared and renamed to: Away-4
+Slot cleared and renamed to: Away-5
+Slot cleared and renamed to: Away-6
+Slot cleared and renamed to: Away-7
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot cleared and renamed to: Away-12
+Slot cleared and renamed to: Away-13
+Slot cleared and renamed to: Away-14
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot cleared and renamed to: Home-1
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot cleared and renamed to: Home-4
+Slot cleared and renamed to: Home-5
+Slot cleared and renamed to: Home-6
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot cleared and renamed to: Home-9
+Slot cleared and renamed to: Home-10
+Slot cleared and renamed to: Home-11
+Slot cleared and renamed to: Home-12
+Slot cleared and renamed to: Home-13
+Slot cleared and renamed to: Home-14
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot cleared and renamed to: Away-1
+Slot cleared and renamed to: Away-2
+Slot cleared and renamed to: Away-3
+Slot cleared and renamed to: Away-4
+Slot cleared and renamed to: Away-5
+Slot cleared and renamed to: Away-6
+Slot cleared and renamed to: Away-7
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot cleared and renamed to: Away-12
+Slot cleared and renamed to: Away-13
+Slot cleared and renamed to: Away-14
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot cleared and renamed to: Home-1
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot cleared and renamed to: Home-4
+Slot cleared and renamed to: Home-5
+Slot cleared and renamed to: Home-6
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot cleared and renamed to: Home-9
+Slot cleared and renamed to: Home-10
+Slot cleared and renamed to: Home-11
+Slot cleared and renamed to: Home-12
+Slot cleared and renamed to: Home-13
+Slot cleared and renamed to: Home-14
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot cleared and renamed to: Away-1
+Slot cleared and renamed to: Away-2
+Slot cleared and renamed to: Away-3
+Slot cleared and renamed to: Away-4
+Slot cleared and renamed to: Away-5
+Slot cleared and renamed to: Away-6
+Slot cleared and renamed to: Away-7
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot cleared and renamed to: Away-12
+Slot cleared and renamed to: Away-13
+Slot cleared and renamed to: Away-14
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot cleared and renamed to: Home-1
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot cleared and renamed to: Home-4
+Slot cleared and renamed to: Home-5
+Slot cleared and renamed to: Home-6
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot cleared and renamed to: Home-9
+Slot cleared and renamed to: Home-10
+Slot cleared and renamed to: Home-11
+Slot cleared and renamed to: Home-12
+Slot cleared and renamed to: Home-13
+Slot cleared and renamed to: Home-14
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot cleared and renamed to: Away-1
+Slot cleared and renamed to: Away-2
+Slot cleared and renamed to: Away-3
+Slot cleared and renamed to: Away-4
+Slot cleared and renamed to: Away-5
+Slot cleared and renamed to: Away-6
+Slot cleared and renamed to: Away-7
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot cleared and renamed to: Away-12
+Slot cleared and renamed to: Away-13
+Slot cleared and renamed to: Away-14
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot cleared and renamed to: Home-1
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot cleared and renamed to: Home-4
+Slot cleared and renamed to: Home-5
+Slot cleared and renamed to: Home-6
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot cleared and renamed to: Home-9
+Slot cleared and renamed to: Home-10
+Slot cleared and renamed to: Home-11
+Slot cleared and renamed to: Home-12
+Slot cleared and renamed to: Home-13
+Slot cleared and renamed to: Home-14
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot cleared and renamed to: Away-1
+Slot cleared and renamed to: Away-2
+Slot cleared and renamed to: Away-3
+Slot cleared and renamed to: Away-4
+Slot cleared and renamed to: Away-5
+Slot cleared and renamed to: Away-6
+Slot cleared and renamed to: Away-7
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot cleared and renamed to: Away-12
+Slot cleared and renamed to: Away-13
+Slot cleared and renamed to: Away-14
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot renamed to: Home-1-Aziz
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot cleared and renamed to: Home-4
+Slot cleared and renamed to: Home-5
+Slot cleared and renamed to: Home-6
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot cleared and renamed to: Home-9
+Slot cleared and renamed to: Home-10
+Slot cleared and renamed to: Home-11
+Slot cleared and renamed to: Home-12
+Slot cleared and renamed to: Home-13
+Slot cleared and renamed to: Home-14
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot cleared and renamed to: Away-1
+Slot cleared and renamed to: Away-2
+Slot cleared and renamed to: Away-3
+Slot cleared and renamed to: Away-4
+Slot cleared and renamed to: Away-5
+Slot cleared and renamed to: Away-6
+Slot cleared and renamed to: Away-7
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot cleared and renamed to: Away-12
+Slot cleared and renamed to: Away-13
+Slot cleared and renamed to: Away-14
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+]]></output>
+          </test-case>
+          <test-case id="1552" name="AuthoredPoolSelection(&quot;International&quot;,False)" fullname="OnlineDraftVariantScenePlayModeTests.AuthoredPoolSelection(&quot;International&quot;,False)" methodname="AuthoredPoolSelection" classname="OnlineDraftVariantScenePlayModeTests" runstate="Runnable" seed="795089390" result="Passed" start-time="2026-11-15 06:20:05Z" end-time="2026-11-15 06:20:06Z" duration="1.722803" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Slot renamed to: Home-1-Al-Dabagh
+Slot renamed to: Home-2-Ellwood
+Slot renamed to: Home-3-Khan
+Slot renamed to: Home-4-Carey
+Slot renamed to: Home-5-S. Young
+Slot renamed to: Home-6-Eaglestone
+Slot renamed to: Home-7-Lambert
+Slot renamed to: Home-8-O.Young
+Slot renamed to: Home-9-Laws
+Slot renamed to: Home-10-Elliott
+Slot renamed to: Home-11-Parnaby
+Slot renamed to: Home-12-Brown
+Slot renamed to: Home-13-Nnachetta
+Slot renamed to: Home-14-Nichols
+Slot renamed to: Home-15-Munks
+Slot renamed to: Home-16-Bell
+Slot renamed to: Home-17-Beale
+Slot renamed to: Home-18-Marriner
+Slot renamed to: Away-1-Waltz
+Slot renamed to: Away-2-Förderer
+Slot renamed to: Away-3-Jäger
+Slot renamed to: Away-4-Feldinger
+Slot renamed to: Away-5-Hochleitner
+Slot renamed to: Away-6-Gollnhuber
+Slot renamed to: Away-7-Schmitt
+Slot renamed to: Away-8-Poengsen
+Slot renamed to: Away-9-Tokaç
+Slot renamed to: Away-10-Kostoski
+Slot renamed to: Away-11-Schröder
+Slot renamed to: Away-12-Kinski
+Slot renamed to: Away-13-Urban
+Slot renamed to: Away-14-Konrad
+Slot renamed to: Away-15-Studnicka
+Slot renamed to: Away-16-Awerbuch
+Slot renamed to: Away-17-Zeitler
+Slot renamed to: Away-18-von Liebe
+Slot renamed to: Home-1-Al-Dabagh
+Slot renamed to: Home-2-Ellwood
+Slot renamed to: Home-3-Khan
+Slot renamed to: Home-4-Carey
+Slot renamed to: Home-5-S. Young
+Slot renamed to: Home-6-Eaglestone
+Slot renamed to: Home-7-Lambert
+Slot renamed to: Home-8-O.Young
+Slot renamed to: Home-9-Laws
+Slot renamed to: Home-10-Elliott
+Slot renamed to: Home-11-Parnaby
+Slot renamed to: Home-12-Brown
+Slot renamed to: Home-13-Nnachetta
+Slot renamed to: Home-14-Nichols
+Slot renamed to: Home-15-Munks
+Slot renamed to: Home-16-Bell
+Slot renamed to: Home-17-Beale
+Slot renamed to: Home-18-Marriner
+Slot renamed to: Away-1-Waltz
+Slot renamed to: Away-2-Förderer
+Slot renamed to: Away-3-Jäger
+Slot renamed to: Away-4-Feldinger
+Slot renamed to: Away-5-Hochleitner
+Slot renamed to: Away-6-Gollnhuber
+Slot renamed to: Away-7-Schmitt
+Slot renamed to: Away-8-Poengsen
+Slot renamed to: Away-9-Tokaç
+Slot renamed to: Away-10-Kostoski
+Slot renamed to: Away-11-Schröder
+Slot renamed to: Away-12-Kinski
+Slot renamed to: Away-13-Urban
+Slot renamed to: Away-14-Konrad
+Slot renamed to: Away-15-Studnicka
+Slot renamed to: Away-16-Awerbuch
+Slot renamed to: Away-17-Zeitler
+Slot renamed to: Away-18-von Liebe
+Slot renamed to: Home-1-Al-Dabagh
+Slot renamed to: Home-2-Ellwood
+Slot renamed to: Home-3-Khan
+Slot renamed to: Home-4-Carey
+Slot renamed to: Home-5-S. Young
+Slot renamed to: Home-6-Eaglestone
+Slot renamed to: Home-7-Lambert
+Slot renamed to: Home-8-O.Young
+Slot renamed to: Home-9-Laws
+Slot renamed to: Home-10-Elliott
+Slot renamed to: Home-11-Parnaby
+Slot renamed to: Home-12-Brown
+Slot renamed to: Home-13-Nnachetta
+Slot renamed to: Home-14-Nichols
+Slot renamed to: Home-15-Munks
+Slot renamed to: Home-16-Bell
+Slot renamed to: Home-17-Beale
+Slot renamed to: Home-18-Marriner
+Slot renamed to: Away-1-Waltz
+Slot renamed to: Away-2-Förderer
+Slot renamed to: Away-3-Jäger
+Slot renamed to: Away-4-Feldinger
+Slot renamed to: Away-5-Hochleitner
+Slot renamed to: Away-6-Gollnhuber
+Slot renamed to: Away-7-Schmitt
+Slot renamed to: Away-8-Poengsen
+Slot renamed to: Away-9-Tokaç
+Slot renamed to: Away-10-Kostoski
+Slot renamed to: Away-11-Schröder
+Slot renamed to: Away-12-Kinski
+Slot renamed to: Away-13-Urban
+Slot renamed to: Away-14-Konrad
+Slot renamed to: Away-15-Studnicka
+Slot renamed to: Away-16-Awerbuch
+Slot renamed to: Away-17-Zeitler
+Slot renamed to: Away-18-von Liebe
+]]></output>
+          </test-case>
+          <test-case id="1553" name="AuthoredPoolSelection(&quot;International&quot;,True)" fullname="OnlineDraftVariantScenePlayModeTests.AuthoredPoolSelection(&quot;International&quot;,True)" methodname="AuthoredPoolSelection" classname="OnlineDraftVariantScenePlayModeTests" runstate="Runnable" seed="968477006" result="Passed" start-time="2026-11-15 06:20:06Z" end-time="2026-11-15 06:20:08Z" duration="1.662549" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Slot renamed to: Home-1-Al-Dabagh
+Slot renamed to: Home-2-Ellwood
+Slot renamed to: Home-3-Khan
+Slot renamed to: Home-4-Carey
+Slot renamed to: Home-5-S. Young
+Slot renamed to: Home-6-Eaglestone
+Slot renamed to: Home-7-Lambert
+Slot renamed to: Home-8-O.Young
+Slot renamed to: Home-9-Laws
+Slot renamed to: Home-10-Elliott
+Slot renamed to: Home-11-Parnaby
+Slot renamed to: Home-12-Brown
+Slot renamed to: Home-13-Nnachetta
+Slot renamed to: Home-14-Nichols
+Slot renamed to: Home-15-Munks
+Slot renamed to: Home-16-Bell
+Slot renamed to: Home-17-Beale
+Slot renamed to: Home-18-Marriner
+Slot renamed to: Away-1-Waltz
+Slot renamed to: Away-2-Förderer
+Slot renamed to: Away-3-Jäger
+Slot renamed to: Away-4-Feldinger
+Slot renamed to: Away-5-Hochleitner
+Slot renamed to: Away-6-Gollnhuber
+Slot renamed to: Away-7-Schmitt
+Slot renamed to: Away-8-Poengsen
+Slot renamed to: Away-9-Tokaç
+Slot renamed to: Away-10-Kostoski
+Slot renamed to: Away-11-Schröder
+Slot renamed to: Away-12-Kinski
+Slot renamed to: Away-13-Urban
+Slot renamed to: Away-14-Konrad
+Slot renamed to: Away-15-Studnicka
+Slot renamed to: Away-16-Awerbuch
+Slot renamed to: Away-17-Zeitler
+Slot renamed to: Away-18-von Liebe
+Slot renamed to: Home-1-Al-Dabagh
+Slot renamed to: Home-2-Ellwood
+Slot renamed to: Home-3-Khan
+Slot renamed to: Home-4-Carey
+Slot renamed to: Home-5-S. Young
+Slot renamed to: Home-6-Eaglestone
+Slot renamed to: Home-7-Lambert
+Slot renamed to: Home-8-O.Young
+Slot renamed to: Home-9-Laws
+Slot renamed to: Home-10-Elliott
+Slot renamed to: Home-11-Parnaby
+Slot renamed to: Home-12-Brown
+Slot renamed to: Home-13-Nnachetta
+Slot renamed to: Home-14-Nichols
+Slot renamed to: Home-15-Munks
+Slot renamed to: Home-16-Bell
+Slot renamed to: Home-17-Beale
+Slot renamed to: Home-18-Marriner
+Slot renamed to: Away-1-Waltz
+Slot renamed to: Away-2-Förderer
+Slot renamed to: Away-3-Jäger
+Slot renamed to: Away-4-Feldinger
+Slot renamed to: Away-5-Hochleitner
+Slot renamed to: Away-6-Gollnhuber
+Slot renamed to: Away-7-Schmitt
+Slot renamed to: Away-8-Poengsen
+Slot renamed to: Away-9-Tokaç
+Slot renamed to: Away-10-Kostoski
+Slot renamed to: Away-11-Schröder
+Slot renamed to: Away-12-Kinski
+Slot renamed to: Away-13-Urban
+Slot renamed to: Away-14-Konrad
+Slot renamed to: Away-15-Studnicka
+Slot renamed to: Away-16-Awerbuch
+Slot renamed to: Away-17-Zeitler
+Slot renamed to: Away-18-von Liebe
+Slot renamed to: Home-1-Al-Dabagh
+Slot renamed to: Home-2-Ellwood
+Slot renamed to: Home-3-Khan
+Slot renamed to: Home-4-Carey
+Slot renamed to: Home-5-S. Young
+Slot renamed to: Home-6-Eaglestone
+Slot renamed to: Home-7-Lambert
+Slot renamed to: Home-8-O.Young
+Slot renamed to: Home-9-Laws
+Slot renamed to: Home-10-Elliott
+Slot renamed to: Home-11-Parnaby
+Slot renamed to: Home-12-Brown
+Slot renamed to: Home-13-Nnachetta
+Slot renamed to: Home-14-Nichols
+Slot renamed to: Home-15-Munks
+Slot renamed to: Home-16-Bell
+Slot renamed to: Home-17-Beale
+Slot renamed to: Home-18-Marriner
+Slot renamed to: Away-1-Waltz
+Slot renamed to: Away-2-Förderer
+Slot renamed to: Away-3-Jäger
+Slot renamed to: Away-4-Feldinger
+Slot renamed to: Away-5-Hochleitner
+Slot renamed to: Away-6-Gollnhuber
+Slot renamed to: Away-7-Schmitt
+Slot renamed to: Away-8-Poengsen
+Slot renamed to: Away-9-Tokaç
+Slot renamed to: Away-10-Kostoski
+Slot renamed to: Away-11-Schröder
+Slot renamed to: Away-12-Kinski
+Slot renamed to: Away-13-Urban
+Slot renamed to: Away-14-Konrad
+Slot renamed to: Away-15-Studnicka
+Slot renamed to: Away-16-Awerbuch
+Slot renamed to: Away-17-Zeitler
+Slot renamed to: Away-18-von Liebe
+Saving results to: TestResults\GameplayRegression\Runs\20261115T061953536Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

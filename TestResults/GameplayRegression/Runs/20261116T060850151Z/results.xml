@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="4" result="Passed" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 06:08:50Z" end-time="2026-11-16 06:09:37Z" duration="47.3214309">
+  <test-suite type="TestSuite" id="2751" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1440" result="Passed" start-time="2026-11-16 06:08:50Z" end-time="2026-11-16 06:09:37Z" duration="47.321431" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2748" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1440" result="Passed" start-time="2026-11-16 06:08:50Z" end-time="2026-11-16 06:09:37Z" duration="47.288825" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17216" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1632" name="OnlineFullRoomPlayModeTests" fullname="OnlineFullRoomPlayModeTests" classname="OnlineFullRoomPlayModeTests" runstate="Runnable" testcasecount="20" result="Passed" start-time="2026-11-16 06:08:50Z" end-time="2026-11-16 06:09:37Z" duration="47.282900" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineFullRoom" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="1651" name="FullGuestProjection" fullname="OnlineFullRoomPlayModeTests.FullGuestProjection" classname="OnlineFullRoomPlayModeTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-11-16 06:08:50Z" end-time="2026-11-16 06:09:37Z" duration="47.274847" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="1647" name="FullGuestProjection(16,False)" fullname="OnlineFullRoomPlayModeTests.FullGuestProjection(16,False)" methodname="FullGuestProjection" classname="OnlineFullRoomPlayModeTests" runstate="Runnable" seed="2117938407" result="Passed" start-time="2026-11-16 06:08:50Z" end-time="2026-11-16 06:09:02Z" duration="12.723278" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[TokenKitCatalog] Loading kits JSON from Resources path 'Kits/kit-picker-v1-11-supported' (asset: Assets/Resources/Kits/kit-picker-v1-11-supported.json).
+[TokenKitCatalog] Found kits JSON TextAsset 'kit-picker-v1-11-supported' at Resources path 'Kits/kit-picker-v1-11-supported' (32277 characters).
+[TokenKitCatalog] Parsed 101 kit preset(s) from Resources path 'Kits/kit-picker-v1-11-supported'.
+[TokenKitCatalog] Active kit catalog contains 101 kit preset(s).
+MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584957840346
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1648" name="FullGuestProjection(16,True)" fullname="OnlineFullRoomPlayModeTests.FullGuestProjection(16,True)" methodname="FullGuestProjection" classname="OnlineFullRoomPlayModeTests" runstate="Runnable" seed="207702972" result="Passed" start-time="2026-11-16 06:09:03Z" end-time="2026-11-16 06:09:14Z" duration="11.513986" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584957967450
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1649" name="FullGuestProjection(18,False)" fullname="OnlineFullRoomPlayModeTests.FullGuestProjection(18,False)" methodname="FullGuestProjection" classname="OnlineFullRoomPlayModeTests" runstate="Runnable" seed="2016277604" result="Passed" start-time="2026-11-16 06:09:14Z" end-time="2026-11-16 06:09:25Z" duration="11.451833" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584958094554
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1650" name="FullGuestProjection(18,True)" fullname="OnlineFullRoomPlayModeTests.FullGuestProjection(18,True)" methodname="FullGuestProjection" classname="OnlineFullRoomPlayModeTests" runstate="Runnable" seed="681344865" result="Passed" start-time="2026-11-16 06:09:25Z" end-time="2026-11-16 06:09:37Z" duration="11.548471" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584958221658
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+Saving results to: TestResults\GameplayRegression\Runs\20261116T060850151Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

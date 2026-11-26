@@ -1,0 +1,1339 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="20" result="Passed" total="20" passed="20" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-14 15:30:40Z" end-time="2026-11-14 15:31:03Z" duration="22.5483928">
+  <test-suite type="TestSuite" id="2473" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1215" result="Passed" start-time="2026-11-14 15:30:40Z" end-time="2026-11-14 15:31:03Z" duration="22.548393" total="20" passed="20" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2470" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1215" result="Passed" start-time="2026-11-14 15:30:40Z" end-time="2026-11-14 15:31:03Z" duration="22.517506" total="20" passed="20" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12208" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1854" name="OnlineSetPiecePlayModeTests" fullname="OnlineSetPiecePlayModeTests" classname="OnlineSetPiecePlayModeTests" runstate="Runnable" testcasecount="20" result="Passed" start-time="2026-11-14 15:30:40Z" end-time="2026-11-14 15:31:03Z" duration="22.503546" total="20" passed="20" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineSetPieces" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="1875" name="SetPieceContinues" fullname="OnlineSetPiecePlayModeTests.SetPieceContinues" classname="OnlineSetPiecePlayModeTests" runstate="Runnable" testcasecount="20" result="Passed" start-time="2026-11-14 15:30:40Z" end-time="2026-11-14 15:31:03Z" duration="22.495414" total="20" passed="20" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="1855" name="SetPieceContinues(1,&quot;ground&quot;)" fullname="OnlineSetPiecePlayModeTests.SetPieceContinues(1,&quot;ground&quot;)" methodname="SetPieceContinues" classname="OnlineSetPiecePlayModeTests" runstate="Runnable" seed="224583779" result="Passed" start-time="2026-11-14 15:30:40Z" end-time="2026-11-14 15:30:41Z" duration="0.912863" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Starting Free Kick Preparation...
+Handling kicker selection for ...
+isWaitingForKickerSelection is now set to false
+HandleKicker Selection: Calculating potential kickers...
+Starting FreeKickAttGK phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickAttGK completed with 1 moves.
+Advancing from FreeKickAttGK phase.
+Starting FreeKickDefGK1 phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickDefGK1 completed with 1 moves.
+Advancing from FreeKickDefGK1 phase.
+Starting FreeKickAtt1 phase with 2 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt1 completed with 2 moves.
+Advancing from FreeKickAtt1 phase.
+Starting FreeKickDef1 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef1 completed with 2 moves.
+Advancing from FreeKickDef1 phase.
+Starting FreeKickAtt2 phase with 2 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt2 completed with 2 moves.
+Advancing from FreeKickAtt2 phase.
+Starting FreeKickDef2 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef2 completed with 2 moves.
+Advancing from FreeKickDef2 phase.
+Starting FreeKickAtt3 phase with 3 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt3 completed with 3 moves.
+Advancing from FreeKickAtt3 phase.
+Starting FreeKickDef3 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef3 completed with 2 moves.
+Advancing from FreeKickDef3 phase.
+Starting FreeKickDefGK2 phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickDefGK2 completed with 1 moves.
+Advancing from FreeKickDefGK2 phase.
+Substitutions are no longer available: Free Kick final kicker selection
+HandleKicker Selection: Calculating potential kickers...
+Home carrier took the set piece and cannot be the next player to touch the ball.
+Home carrier selected as the kicker!
+Advancing from FreeKickDefineKicker phase.
+Offside assessed (free_kick_options): line x=8, tokens=none.
+Free Kick Preparation completed. Ready for execution.
+Available Options are: Standard [P]ass, [L]ong Ball, [C]ross (High Pass), [S]hot!
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+]]></output>
+          </test-case>
+          <test-case id="1856" name="SetPieceContinues(1,&quot;high&quot;)" fullname="OnlineSetPiecePlayModeTests.SetPieceContinues(1,&quot;high&quot;)" methodname="SetPieceContinues" classname="OnlineSetPiecePlayModeTests" runstate="Runnable" seed="1916323646" result="Passed" start-time="2026-11-14 15:30:41Z" end-time="2026-11-14 15:30:42Z" duration="0.812828" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Starting Free Kick Preparation...
+Handling kicker selection for ...
+isWaitingForKickerSelection is now set to false
+HandleKicker Selection: Calculating potential kickers...
+Starting FreeKickAttGK phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickAttGK completed with 1 moves.
+Advancing from FreeKickAttGK phase.
+Starting FreeKickDefGK1 phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickDefGK1 completed with 1 moves.
+Advancing from FreeKickDefGK1 phase.
+Starting FreeKickAtt1 phase with 2 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt1 completed with 2 moves.
+Advancing from FreeKickAtt1 phase.
+Starting FreeKickDef1 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef1 completed with 2 moves.
+Advancing from FreeKickDef1 phase.
+Starting FreeKickAtt2 phase with 2 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt2 completed with 2 moves.
+Advancing from FreeKickAtt2 phase.
+Starting FreeKickDef2 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef2 completed with 2 moves.
+Advancing from FreeKickDef2 phase.
+Starting FreeKickAtt3 phase with 3 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt3 completed with 3 moves.
+Advancing from FreeKickAtt3 phase.
+Starting FreeKickDef3 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef3 completed with 2 moves.
+Advancing from FreeKickDef3 phase.
+Starting FreeKickDefGK2 phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickDefGK2 completed with 1 moves.
+Advancing from FreeKickDefGK2 phase.
+Substitutions are no longer available: Free Kick final kicker selection
+HandleKicker Selection: Calculating potential kickers...
+Home carrier took the set piece and cannot be the next player to touch the ball.
+Home carrier selected as the kicker!
+Advancing from FreeKickDefineKicker phase.
+Offside assessed (free_kick_options): line x=8, tokens=none.
+Free Kick Preparation completed. Ready for execution.
+Available Options are: Standard [P]ass, [L]ong Ball, [C]ross (High Pass), [S]hot!
+Movement phase has been reset.
+High Pass target map is still calculating. Target highlights will draw when ready.
+HighPassManager activated. Waiting for target selection...
+]]></output>
+          </test-case>
+          <test-case id="1857" name="SetPieceContinues(1,&quot;long&quot;)" fullname="OnlineSetPiecePlayModeTests.SetPieceContinues(1,&quot;long&quot;)" methodname="SetPieceContinues" classname="OnlineSetPiecePlayModeTests" runstate="Runnable" seed="801589107" result="Passed" start-time="2026-11-14 15:30:42Z" end-time="2026-11-14 15:30:42Z" duration="0.516007" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Starting Free Kick Preparation...
+Handling kicker selection for ...
+isWaitingForKickerSelection is now set to false
+HandleKicker Selection: Calculating potential kickers...
+Starting FreeKickAttGK phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickAttGK completed with 1 moves.
+Advancing from FreeKickAttGK phase.
+Starting FreeKickDefGK1 phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickDefGK1 completed with 1 moves.
+Advancing from FreeKickDefGK1 phase.
+Starting FreeKickAtt1 phase with 2 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt1 completed with 2 moves.
+Advancing from FreeKickAtt1 phase.
+Starting FreeKickDef1 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef1 completed with 2 moves.
+Advancing from FreeKickDef1 phase.
+Starting FreeKickAtt2 phase with 2 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt2 completed with 2 moves.
+Advancing from FreeKickAtt2 phase.
+Starting FreeKickDef2 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef2 completed with 2 moves.
+Advancing from FreeKickDef2 phase.
+Starting FreeKickAtt3 phase with 3 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt3 completed with 3 moves.
+Advancing from FreeKickAtt3 phase.
+Starting FreeKickDef3 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef3 completed with 2 moves.
+Advancing from FreeKickDef3 phase.
+Starting FreeKickDefGK2 phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickDefGK2 completed with 1 moves.
+Advancing from FreeKickDefGK2 phase.
+Substitutions are no longer available: Free Kick final kicker selection
+HandleKicker Selection: Calculating potential kickers...
+Home carrier took the set piece and cannot be the next player to touch the ball.
+Home carrier selected as the kicker!
+Advancing from FreeKickDefineKicker phase.
+Offside assessed (free_kick_options): line x=8, tokens=none.
+Free Kick Preparation completed. Ready for execution.
+Available Options are: Standard [P]ass, [L]ong Ball, [C]ross (High Pass), [S]hot!
+Movement phase has been reset.
+Long Pass target map is still calculating. Target highlights will draw when ready.
+Long Ball activated. Please select a target hex.
+]]></output>
+          </test-case>
+          <test-case id="1858" name="SetPieceContinues(1,&quot;indirect&quot;)" fullname="OnlineSetPiecePlayModeTests.SetPieceContinues(1,&quot;indirect&quot;)" methodname="SetPieceContinues" classname="OnlineSetPiecePlayModeTests" runstate="Runnable" seed="279982286" result="Passed" start-time="2026-11-14 15:30:42Z" end-time="2026-11-14 15:30:43Z" duration="0.643974" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Starting indirect Free Kick Preparation...
+Handling kicker selection for ...
+isWaitingForKickerSelection is now set to false
+HandleKicker Selection: Calculating potential kickers...
+Starting FreeKickAttGK phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickAttGK completed with 1 moves.
+Advancing from FreeKickAttGK phase.
+Starting FreeKickDefGK1 phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickDefGK1 completed with 1 moves.
+Advancing from FreeKickDefGK1 phase.
+Starting FreeKickAtt1 phase with 2 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt1 completed with 2 moves.
+Advancing from FreeKickAtt1 phase.
+Starting FreeKickDef1 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef1 completed with 2 moves.
+Advancing from FreeKickDef1 phase.
+Starting FreeKickAtt2 phase with 2 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt2 completed with 2 moves.
+Advancing from FreeKickAtt2 phase.
+Starting FreeKickDef2 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef2 completed with 2 moves.
+Advancing from FreeKickDef2 phase.
+Starting FreeKickAtt3 phase with 3 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt3 completed with 3 moves.
+Advancing from FreeKickAtt3 phase.
+Starting FreeKickDef3 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef3 completed with 2 moves.
+Advancing from FreeKickDef3 phase.
+Starting FreeKickDefGK2 phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickDefGK2 completed with 1 moves.
+Advancing from FreeKickDefGK2 phase.
+Substitutions are no longer available: Free Kick final kicker selection
+HandleKicker Selection: Calculating potential kickers...
+Home carrier took the set piece and cannot be the next player to touch the ball.
+Home carrier selected as the kicker!
+Advancing from FreeKickDefineKicker phase.
+Offside assessed (free_kick_options): line x=8, tokens=none.
+Free Kick Preparation completed. Ready for execution.
+Available Options are: Standard [P]ass, [L]ong Ball, [C]ross (High Pass). Shot is not available from an indirect offside free kick.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+]]></output>
+          </test-case>
+          <test-case id="1859" name="SetPieceContinues(1,&quot;corner-ground&quot;)" fullname="OnlineSetPiecePlayModeTests.SetPieceContinues(1,&quot;corner-ground&quot;)" methodname="SetPieceContinues" classname="OnlineSetPiecePlayModeTests" runstate="Runnable" seed="797221784" result="Passed" start-time="2026-11-14 15:30:43Z" end-time="2026-11-14 15:30:45Z" duration="1.538742" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Starting Corner Kick Preparation...
+Handling kicker selection for Home carrier...
+Selected Home carrier as the kicker.
+isWaitingForKickerSelection is now set to false
+HandleKicker Selection: Calculating potential kickers...
+Starting FreeKickAttGK phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickAttGK completed with 1 moves.
+Advancing from FreeKickAttGK phase.
+Starting FreeKickDefGK1 phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickDefGK1 completed with 1 moves.
+Advancing from FreeKickDefGK1 phase.
+Starting FreeKickAtt1 phase with 2 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt1 completed with 2 moves.
+Advancing from FreeKickAtt1 phase.
+Starting FreeKickDef1 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef1 completed with 2 moves.
+Advancing from FreeKickDef1 phase.
+Starting FreeKickAtt2 phase with 2 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt2 completed with 2 moves.
+Advancing from FreeKickAtt2 phase.
+Starting FreeKickDef2 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef2 completed with 2 moves.
+Advancing from FreeKickDef2 phase.
+Starting FreeKickAtt3 phase with 2 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt3 completed with 2 moves.
+Advancing from FreeKickAtt3 phase.
+Starting FreeKickDef3 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef3 completed with 2 moves.
+Advancing from FreeKickDef3 phase.
+Starting FreeKickDefGK2 phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickDefGK2 completed with 1 moves.
+Advancing from FreeKickDefGK2 phase.
+Starting FreeKickAttMovement3 phase with 1 moves allowed.
+Forfeiting current Movement of 3 Hexes.
+Setup phase FreeKickAttMovement3 completed with 1 moves.
+Advancing from FreeKickAttMovement3 phase.
+Starting FreeKickDefMovement3 phase with 1 moves allowed.
+Forfeiting current Movement of 3 Hexes.
+Setup phase FreeKickDefMovement3 completed with 1 moves.
+Advancing from FreeKickDefMovement3 phase.
+Substitutions are no longer available: Corner Kick final kicker selection
+HandleKicker Selection: Calculating potential kickers...
+Home carrier took the set piece and cannot be the next player to touch the ball.
+Home carrier selected as the kicker!
+Advancing from FreeKickDefineKicker phase.
+Corner Kick Preparation completed. Ready for execution.
+Available Options are: Short Standard [P]ass (6 Hexes), [C]ross (High Pass) up to 15 Hexes away or in the box on an attacker, no More movements.)
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+]]></output>
+          </test-case>
+          <test-case id="1860" name="SetPieceContinues(1,&quot;corner-high&quot;)" fullname="OnlineSetPiecePlayModeTests.SetPieceContinues(1,&quot;corner-high&quot;)" methodname="SetPieceContinues" classname="OnlineSetPiecePlayModeTests" runstate="Runnable" seed="947086053" result="Passed" start-time="2026-11-14 15:30:45Z" end-time="2026-11-14 15:30:46Z" duration="1.542675" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Starting Corner Kick Preparation...
+Handling kicker selection for Home carrier...
+Selected Home carrier as the kicker.
+isWaitingForKickerSelection is now set to false
+HandleKicker Selection: Calculating potential kickers...
+Starting FreeKickAttGK phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickAttGK completed with 1 moves.
+Advancing from FreeKickAttGK phase.
+Starting FreeKickDefGK1 phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickDefGK1 completed with 1 moves.
+Advancing from FreeKickDefGK1 phase.
+Starting FreeKickAtt1 phase with 2 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt1 completed with 2 moves.
+Advancing from FreeKickAtt1 phase.
+Starting FreeKickDef1 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef1 completed with 2 moves.
+Advancing from FreeKickDef1 phase.
+Starting FreeKickAtt2 phase with 2 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt2 completed with 2 moves.
+Advancing from FreeKickAtt2 phase.
+Starting FreeKickDef2 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef2 completed with 2 moves.
+Advancing from FreeKickDef2 phase.
+Starting FreeKickAtt3 phase with 2 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt3 completed with 2 moves.
+Advancing from FreeKickAtt3 phase.
+Starting FreeKickDef3 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef3 completed with 2 moves.
+Advancing from FreeKickDef3 phase.
+Starting FreeKickDefGK2 phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickDefGK2 completed with 1 moves.
+Advancing from FreeKickDefGK2 phase.
+Starting FreeKickAttMovement3 phase with 1 moves allowed.
+Forfeiting current Movement of 3 Hexes.
+Setup phase FreeKickAttMovement3 completed with 1 moves.
+Advancing from FreeKickAttMovement3 phase.
+Starting FreeKickDefMovement3 phase with 1 moves allowed.
+Forfeiting current Movement of 3 Hexes.
+Setup phase FreeKickDefMovement3 completed with 1 moves.
+Advancing from FreeKickDefMovement3 phase.
+Substitutions are no longer available: Corner Kick final kicker selection
+HandleKicker Selection: Calculating potential kickers...
+Home carrier took the set piece and cannot be the next player to touch the ball.
+Home carrier selected as the kicker!
+Advancing from FreeKickDefineKicker phase.
+Corner Kick Preparation completed. Ready for execution.
+Available Options are: Short Standard [P]ass (6 Hexes), [C]ross (High Pass) up to 15 Hexes away or in the box on an attacker, no More movements.)
+Movement phase has been reset.
+High Pass target map is still calculating. Target highlights will draw when ready.
+HighPassManager activated. Waiting for target selection...
+]]></output>
+          </test-case>
+          <test-case id="1861" name="SetPieceContinues(1,&quot;move&quot;)" fullname="OnlineSetPiecePlayModeTests.SetPieceContinues(1,&quot;move&quot;)" methodname="SetPieceContinues" classname="OnlineSetPiecePlayModeTests" runstate="Runnable" seed="639382003" result="Passed" start-time="2026-11-14 15:30:46Z" end-time="2026-11-14 15:30:48Z" duration="1.666730" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Starting Free Kick Preparation...
+Handling kicker selection for ...
+isWaitingForKickerSelection is now set to false
+HandleKicker Selection: Calculating potential kickers...
+Starting FreeKickAttGK phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickAttGK completed with 1 moves.
+Advancing from FreeKickAttGK phase.
+Starting FreeKickDefGK1 phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickDefGK1 completed with 1 moves.
+Advancing from FreeKickDefGK1 phase.
+Starting FreeKickAtt1 phase with 2 moves allowed.
+Clicked token during free kick setup: Online receiver
+Token Online receiver selected for current phase FreeKickAtt1. Awaiting destination hex.
+Token Online receiver moving to Hex (-10, 0, -1)
+Token Online receiver moving to hex (-10, 0, -1).
+HandleSetupHexSelection: Calculating potential kickers...
+HandleKicker Selection: Calculating potential kickers...
+Move 1 just performed
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt1 completed with 2 moves.
+Advancing from FreeKickAtt1 phase.
+Starting FreeKickDef1 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef1 completed with 2 moves.
+Advancing from FreeKickDef1 phase.
+Starting FreeKickAtt2 phase with 2 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt2 completed with 2 moves.
+Advancing from FreeKickAtt2 phase.
+Starting FreeKickDef2 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef2 completed with 2 moves.
+Advancing from FreeKickDef2 phase.
+Starting FreeKickAtt3 phase with 3 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt3 completed with 3 moves.
+Advancing from FreeKickAtt3 phase.
+Starting FreeKickDef3 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef3 completed with 2 moves.
+Advancing from FreeKickDef3 phase.
+Starting FreeKickDefGK2 phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickDefGK2 completed with 1 moves.
+Advancing from FreeKickDefGK2 phase.
+Substitutions are no longer available: Free Kick final kicker selection
+HandleKicker Selection: Calculating potential kickers...
+Home carrier took the set piece and cannot be the next player to touch the ball.
+Home carrier selected as the kicker!
+Advancing from FreeKickDefineKicker phase.
+Offside assessed (free_kick_options): line x=8, tokens=none.
+Free Kick Preparation completed. Ready for execution.
+Available Options are: Standard [P]ass, [L]ong Ball, [C]ross (High Pass), [S]hot!
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+]]></output>
+          </test-case>
+          <test-case id="1862" name="SetPieceContinues(1,&quot;clearance&quot;)" fullname="OnlineSetPiecePlayModeTests.SetPieceContinues(1,&quot;clearance&quot;)" methodname="SetPieceContinues" classname="OnlineSetPiecePlayModeTests" runstate="Runnable" seed="1696899434" result="Passed" start-time="2026-11-14 15:30:48Z" end-time="2026-11-14 15:30:50Z" duration="1.770565" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Starting Free Kick Preparation...
+Handling kicker selection for ...
+isWaitingForKickerSelection is now set to false
+HandleKicker Selection: Calculating potential kickers...
+Starting FreeKickAttGK phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickAttGK completed with 1 moves.
+Advancing from FreeKickAttGK phase.
+Starting FreeKickDefGK1 phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickDefGK1 completed with 1 moves.
+Advancing from FreeKickDefGK1 phase.
+Starting FreeKickAtt1 phase with 2 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt1 completed with 2 moves.
+Advancing from FreeKickAtt1 phase.
+Starting FreeKickDef1 phase with 2 moves allowed.
+Clicked token during free kick setup: Away recovering player
+Token Away recovering player selected for current phase FreeKickDef1. Awaiting destination hex.
+Token Away recovering player moving to Hex (-10, 0, -1)
+Token Away recovering player moving to hex (-10, 0, -1).
+We are in Defensive move, checking if we need to remove the token from the list of defenders that need to move.
+Token Away recovering player moved to hex (-10, 0, -1). Removing from list of defenders that need to move.
+Move 1 just performed
+Forfeiting current Defensive move.
+Setup phase FreeKickDef1 completed with 2 moves.
+Advancing from FreeKickDef1 phase.
+Starting FreeKickAtt2 phase with 2 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt2 completed with 2 moves.
+Advancing from FreeKickAtt2 phase.
+Starting FreeKickDef2 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef2 completed with 2 moves.
+Advancing from FreeKickDef2 phase.
+Starting FreeKickAtt3 phase with 3 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt3 completed with 3 moves.
+Advancing from FreeKickAtt3 phase.
+Starting FreeKickDef3 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef3 completed with 2 moves.
+Advancing from FreeKickDef3 phase.
+Starting FreeKickDefGK2 phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickDefGK2 completed with 1 moves.
+Advancing from FreeKickDefGK2 phase.
+Substitutions are no longer available: Free Kick final kicker selection
+HandleKicker Selection: Calculating potential kickers...
+Home carrier took the set piece and cannot be the next player to touch the ball.
+Home carrier selected as the kicker!
+Advancing from FreeKickDefineKicker phase.
+Offside assessed (free_kick_options): line x=8, tokens=none.
+Free Kick Preparation completed. Ready for execution.
+Available Options are: Standard [P]ass, [L]ong Ball, [C]ross (High Pass), [S]hot!
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+]]></output>
+          </test-case>
+          <test-case id="1863" name="SetPieceContinues(1,&quot;shot&quot;)" fullname="OnlineSetPiecePlayModeTests.SetPieceContinues(1,&quot;shot&quot;)" methodname="SetPieceContinues" classname="OnlineSetPiecePlayModeTests" runstate="Runnable" seed="520502709" result="Passed" start-time="2026-11-14 15:30:50Z" end-time="2026-11-14 15:30:51Z" duration="1.474611" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Movement phase has been reset.
+Starting Free Kick Preparation...
+Handling kicker selection for ...
+isWaitingForKickerSelection is now set to false
+HandleKicker Selection: Calculating potential kickers...
+Starting FreeKickAttGK phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickAttGK completed with 1 moves.
+Advancing from FreeKickAttGK phase.
+Starting FreeKickDefGK1 phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickDefGK1 completed with 1 moves.
+Advancing from FreeKickDefGK1 phase.
+Starting FreeKickAtt1 phase with 2 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt1 completed with 2 moves.
+Advancing from FreeKickAtt1 phase.
+Starting FreeKickDef1 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef1 completed with 2 moves.
+Advancing from FreeKickDef1 phase.
+Starting FreeKickAtt2 phase with 2 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt2 completed with 2 moves.
+Advancing from FreeKickAtt2 phase.
+Starting FreeKickDef2 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef2 completed with 2 moves.
+Advancing from FreeKickDef2 phase.
+Starting FreeKickAtt3 phase with 3 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt3 completed with 3 moves.
+Advancing from FreeKickAtt3 phase.
+Starting FreeKickDef3 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef3 completed with 2 moves.
+Advancing from FreeKickDef3 phase.
+Starting FreeKickDefGK2 phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickDefGK2 completed with 1 moves.
+Advancing from FreeKickDefGK2 phase.
+Substitutions are no longer available: Free Kick final kicker selection
+HandleKicker Selection: Calculating potential kickers...
+Home carrier took the set piece and cannot be the next player to touch the ball.
+Home carrier selected as the kicker!
+Advancing from FreeKickDefineKicker phase.
+Offside assessed (free_kick_options): line x=13, tokens=none.
+Free Kick Preparation completed. Ready for execution.
+Available Options are: Standard [P]ass, [L]ong Ball, [C]ross (High Pass), [S]hot!
+Free Kick Shot selected. Press [S] again to commit, or press [P], [C], [L] to choose another option.
+Substitutions are no longer available: Committed to Shot
+[Game Log] Home carrier (Fixture Home) takes a Free Kick shot!
+Free Kick Shot initiated. Proceeding to target selection.
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+]]></output>
+          </test-case>
+          <test-case id="1864" name="SetPieceContinues(1,&quot;hold&quot;)" fullname="OnlineSetPiecePlayModeTests.SetPieceContinues(1,&quot;hold&quot;)" methodname="SetPieceContinues" classname="OnlineSetPiecePlayModeTests" runstate="Runnable" seed="1978439943" result="Passed" start-time="2026-11-14 15:30:51Z" end-time="2026-11-14 15:30:52Z" duration="0.876901" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Starting Free Kick Preparation...
+Handling kicker selection for ...
+isWaitingForKickerSelection is now set to false
+HandleKicker Selection: Calculating potential kickers...
+Starting FreeKickAttGK phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickAttGK completed with 1 moves.
+Advancing from FreeKickAttGK phase.
+Starting FreeKickDefGK1 phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickDefGK1 completed with 1 moves.
+Advancing from FreeKickDefGK1 phase.
+Starting FreeKickAtt1 phase with 2 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt1 completed with 2 moves.
+Advancing from FreeKickAtt1 phase.
+Starting FreeKickDef1 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef1 completed with 2 moves.
+Advancing from FreeKickDef1 phase.
+Starting FreeKickAtt2 phase with 2 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt2 completed with 2 moves.
+Advancing from FreeKickAtt2 phase.
+Starting FreeKickDef2 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef2 completed with 2 moves.
+Advancing from FreeKickDef2 phase.
+Starting FreeKickAtt3 phase with 3 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt3 completed with 3 moves.
+Advancing from FreeKickAtt3 phase.
+Starting FreeKickDef3 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef3 completed with 2 moves.
+Advancing from FreeKickDef3 phase.
+Starting FreeKickDefGK2 phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickDefGK2 completed with 1 moves.
+Advancing from FreeKickDefGK2 phase.
+Substitutions are no longer available: Free Kick final kicker selection
+HandleKicker Selection: Calculating potential kickers...
+Home carrier took the set piece and cannot be the next player to touch the ball.
+Home carrier selected as the kicker!
+Advancing from FreeKickDefineKicker phase.
+Offside assessed (free_kick_options): line x=8, tokens=none.
+Free Kick Preparation completed. Ready for execution.
+Available Options are: Standard [P]ass, [L]ong Ball, [C]ross (High Pass), [S]hot!
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+]]></output>
+          </test-case>
+          <test-case id="1865" name="SetPieceContinues(-1,&quot;ground&quot;)" fullname="OnlineSetPiecePlayModeTests.SetPieceContinues(-1,&quot;ground&quot;)" methodname="SetPieceContinues" classname="OnlineSetPiecePlayModeTests" runstate="Runnable" seed="262527231" result="Passed" start-time="2026-11-14 15:30:52Z" end-time="2026-11-14 15:30:53Z" duration="0.606544" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Starting Free Kick Preparation...
+Handling kicker selection for ...
+isWaitingForKickerSelection is now set to false
+HandleKicker Selection: Calculating potential kickers...
+Starting FreeKickAttGK phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickAttGK completed with 1 moves.
+Advancing from FreeKickAttGK phase.
+Starting FreeKickDefGK1 phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickDefGK1 completed with 1 moves.
+Advancing from FreeKickDefGK1 phase.
+Starting FreeKickAtt1 phase with 2 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt1 completed with 2 moves.
+Advancing from FreeKickAtt1 phase.
+Starting FreeKickDef1 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef1 completed with 2 moves.
+Advancing from FreeKickDef1 phase.
+Starting FreeKickAtt2 phase with 2 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt2 completed with 2 moves.
+Advancing from FreeKickAtt2 phase.
+Starting FreeKickDef2 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef2 completed with 2 moves.
+Advancing from FreeKickDef2 phase.
+Starting FreeKickAtt3 phase with 3 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt3 completed with 3 moves.
+Advancing from FreeKickAtt3 phase.
+Starting FreeKickDef3 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef3 completed with 2 moves.
+Advancing from FreeKickDef3 phase.
+Starting FreeKickDefGK2 phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickDefGK2 completed with 1 moves.
+Advancing from FreeKickDefGK2 phase.
+Substitutions are no longer available: Free Kick final kicker selection
+HandleKicker Selection: Calculating potential kickers...
+Home carrier took the set piece and cannot be the next player to touch the ball.
+Home carrier selected as the kicker!
+Advancing from FreeKickDefineKicker phase.
+Offside assessed (free_kick_options): line x=-8, tokens=none.
+Free Kick Preparation completed. Ready for execution.
+Available Options are: Standard [P]ass, [L]ong Ball, [C]ross (High Pass), [S]hot!
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+]]></output>
+          </test-case>
+          <test-case id="1866" name="SetPieceContinues(-1,&quot;high&quot;)" fullname="OnlineSetPiecePlayModeTests.SetPieceContinues(-1,&quot;high&quot;)" methodname="SetPieceContinues" classname="OnlineSetPiecePlayModeTests" runstate="Runnable" seed="209145420" result="Passed" start-time="2026-11-14 15:30:53Z" end-time="2026-11-14 15:30:53Z" duration="0.645685" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Starting Free Kick Preparation...
+Handling kicker selection for ...
+isWaitingForKickerSelection is now set to false
+HandleKicker Selection: Calculating potential kickers...
+Starting FreeKickAttGK phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickAttGK completed with 1 moves.
+Advancing from FreeKickAttGK phase.
+Starting FreeKickDefGK1 phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickDefGK1 completed with 1 moves.
+Advancing from FreeKickDefGK1 phase.
+Starting FreeKickAtt1 phase with 2 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt1 completed with 2 moves.
+Advancing from FreeKickAtt1 phase.
+Starting FreeKickDef1 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef1 completed with 2 moves.
+Advancing from FreeKickDef1 phase.
+Starting FreeKickAtt2 phase with 2 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt2 completed with 2 moves.
+Advancing from FreeKickAtt2 phase.
+Starting FreeKickDef2 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef2 completed with 2 moves.
+Advancing from FreeKickDef2 phase.
+Starting FreeKickAtt3 phase with 3 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt3 completed with 3 moves.
+Advancing from FreeKickAtt3 phase.
+Starting FreeKickDef3 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef3 completed with 2 moves.
+Advancing from FreeKickDef3 phase.
+Starting FreeKickDefGK2 phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickDefGK2 completed with 1 moves.
+Advancing from FreeKickDefGK2 phase.
+Substitutions are no longer available: Free Kick final kicker selection
+HandleKicker Selection: Calculating potential kickers...
+Home carrier took the set piece and cannot be the next player to touch the ball.
+Home carrier selected as the kicker!
+Advancing from FreeKickDefineKicker phase.
+Offside assessed (free_kick_options): line x=-8, tokens=none.
+Free Kick Preparation completed. Ready for execution.
+Available Options are: Standard [P]ass, [L]ong Ball, [C]ross (High Pass), [S]hot!
+Movement phase has been reset.
+High Pass target map is still calculating. Target highlights will draw when ready.
+HighPassManager activated. Waiting for target selection...
+]]></output>
+          </test-case>
+          <test-case id="1867" name="SetPieceContinues(-1,&quot;long&quot;)" fullname="OnlineSetPiecePlayModeTests.SetPieceContinues(-1,&quot;long&quot;)" methodname="SetPieceContinues" classname="OnlineSetPiecePlayModeTests" runstate="Runnable" seed="2049740386" result="Passed" start-time="2026-11-14 15:30:53Z" end-time="2026-11-14 15:30:54Z" duration="0.527473" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Starting Free Kick Preparation...
+Handling kicker selection for ...
+isWaitingForKickerSelection is now set to false
+HandleKicker Selection: Calculating potential kickers...
+Starting FreeKickAttGK phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickAttGK completed with 1 moves.
+Advancing from FreeKickAttGK phase.
+Starting FreeKickDefGK1 phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickDefGK1 completed with 1 moves.
+Advancing from FreeKickDefGK1 phase.
+Starting FreeKickAtt1 phase with 2 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt1 completed with 2 moves.
+Advancing from FreeKickAtt1 phase.
+Starting FreeKickDef1 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef1 completed with 2 moves.
+Advancing from FreeKickDef1 phase.
+Starting FreeKickAtt2 phase with 2 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt2 completed with 2 moves.
+Advancing from FreeKickAtt2 phase.
+Starting FreeKickDef2 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef2 completed with 2 moves.
+Advancing from FreeKickDef2 phase.
+Starting FreeKickAtt3 phase with 3 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt3 completed with 3 moves.
+Advancing from FreeKickAtt3 phase.
+Starting FreeKickDef3 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef3 completed with 2 moves.
+Advancing from FreeKickDef3 phase.
+Starting FreeKickDefGK2 phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickDefGK2 completed with 1 moves.
+Advancing from FreeKickDefGK2 phase.
+Substitutions are no longer available: Free Kick final kicker selection
+HandleKicker Selection: Calculating potential kickers...
+Home carrier took the set piece and cannot be the next player to touch the ball.
+Home carrier selected as the kicker!
+Advancing from FreeKickDefineKicker phase.
+Offside assessed (free_kick_options): line x=-8, tokens=none.
+Free Kick Preparation completed. Ready for execution.
+Available Options are: Standard [P]ass, [L]ong Ball, [C]ross (High Pass), [S]hot!
+Movement phase has been reset.
+Long Pass target map is still calculating. Target highlights will draw when ready.
+Long Ball activated. Please select a target hex.
+]]></output>
+          </test-case>
+          <test-case id="1868" name="SetPieceContinues(-1,&quot;indirect&quot;)" fullname="OnlineSetPiecePlayModeTests.SetPieceContinues(-1,&quot;indirect&quot;)" methodname="SetPieceContinues" classname="OnlineSetPiecePlayModeTests" runstate="Runnable" seed="473481287" result="Passed" start-time="2026-11-14 15:30:54Z" end-time="2026-11-14 15:30:55Z" duration="0.719345" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Starting indirect Free Kick Preparation...
+Handling kicker selection for ...
+isWaitingForKickerSelection is now set to false
+HandleKicker Selection: Calculating potential kickers...
+Starting FreeKickAttGK phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickAttGK completed with 1 moves.
+Advancing from FreeKickAttGK phase.
+Starting FreeKickDefGK1 phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickDefGK1 completed with 1 moves.
+Advancing from FreeKickDefGK1 phase.
+Starting FreeKickAtt1 phase with 2 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt1 completed with 2 moves.
+Advancing from FreeKickAtt1 phase.
+Starting FreeKickDef1 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef1 completed with 2 moves.
+Advancing from FreeKickDef1 phase.
+Starting FreeKickAtt2 phase with 2 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt2 completed with 2 moves.
+Advancing from FreeKickAtt2 phase.
+Starting FreeKickDef2 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef2 completed with 2 moves.
+Advancing from FreeKickDef2 phase.
+Starting FreeKickAtt3 phase with 3 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt3 completed with 3 moves.
+Advancing from FreeKickAtt3 phase.
+Starting FreeKickDef3 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef3 completed with 2 moves.
+Advancing from FreeKickDef3 phase.
+Starting FreeKickDefGK2 phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickDefGK2 completed with 1 moves.
+Advancing from FreeKickDefGK2 phase.
+Substitutions are no longer available: Free Kick final kicker selection
+HandleKicker Selection: Calculating potential kickers...
+Home carrier took the set piece and cannot be the next player to touch the ball.
+Home carrier selected as the kicker!
+Advancing from FreeKickDefineKicker phase.
+Offside assessed (free_kick_options): line x=-8, tokens=none.
+Free Kick Preparation completed. Ready for execution.
+Available Options are: Standard [P]ass, [L]ong Ball, [C]ross (High Pass). Shot is not available from an indirect offside free kick.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+]]></output>
+          </test-case>
+          <test-case id="1869" name="SetPieceContinues(-1,&quot;corner-ground&quot;)" fullname="OnlineSetPiecePlayModeTests.SetPieceContinues(-1,&quot;corner-ground&quot;)" methodname="SetPieceContinues" classname="OnlineSetPiecePlayModeTests" runstate="Runnable" seed="1230260258" result="Passed" start-time="2026-11-14 15:30:55Z" end-time="2026-11-14 15:30:56Z" duration="1.512610" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Starting Corner Kick Preparation...
+Handling kicker selection for Home carrier...
+Selected Home carrier as the kicker.
+isWaitingForKickerSelection is now set to false
+HandleKicker Selection: Calculating potential kickers...
+Starting FreeKickAttGK phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickAttGK completed with 1 moves.
+Advancing from FreeKickAttGK phase.
+Starting FreeKickDefGK1 phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickDefGK1 completed with 1 moves.
+Advancing from FreeKickDefGK1 phase.
+Starting FreeKickAtt1 phase with 2 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt1 completed with 2 moves.
+Advancing from FreeKickAtt1 phase.
+Starting FreeKickDef1 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef1 completed with 2 moves.
+Advancing from FreeKickDef1 phase.
+Starting FreeKickAtt2 phase with 2 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt2 completed with 2 moves.
+Advancing from FreeKickAtt2 phase.
+Starting FreeKickDef2 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef2 completed with 2 moves.
+Advancing from FreeKickDef2 phase.
+Starting FreeKickAtt3 phase with 2 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt3 completed with 2 moves.
+Advancing from FreeKickAtt3 phase.
+Starting FreeKickDef3 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef3 completed with 2 moves.
+Advancing from FreeKickDef3 phase.
+Starting FreeKickDefGK2 phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickDefGK2 completed with 1 moves.
+Advancing from FreeKickDefGK2 phase.
+Starting FreeKickAttMovement3 phase with 1 moves allowed.
+Forfeiting current Movement of 3 Hexes.
+Setup phase FreeKickAttMovement3 completed with 1 moves.
+Advancing from FreeKickAttMovement3 phase.
+Starting FreeKickDefMovement3 phase with 1 moves allowed.
+Forfeiting current Movement of 3 Hexes.
+Setup phase FreeKickDefMovement3 completed with 1 moves.
+Advancing from FreeKickDefMovement3 phase.
+Substitutions are no longer available: Corner Kick final kicker selection
+HandleKicker Selection: Calculating potential kickers...
+Home carrier took the set piece and cannot be the next player to touch the ball.
+Home carrier selected as the kicker!
+Advancing from FreeKickDefineKicker phase.
+Corner Kick Preparation completed. Ready for execution.
+Available Options are: Short Standard [P]ass (6 Hexes), [C]ross (High Pass) up to 15 Hexes away or in the box on an attacker, no More movements.)
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+]]></output>
+          </test-case>
+          <test-case id="1870" name="SetPieceContinues(-1,&quot;corner-high&quot;)" fullname="OnlineSetPiecePlayModeTests.SetPieceContinues(-1,&quot;corner-high&quot;)" methodname="SetPieceContinues" classname="OnlineSetPiecePlayModeTests" runstate="Runnable" seed="1618726601" result="Passed" start-time="2026-11-14 15:30:56Z" end-time="2026-11-14 15:30:58Z" duration="1.546227" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Starting Corner Kick Preparation...
+Handling kicker selection for Home carrier...
+Selected Home carrier as the kicker.
+isWaitingForKickerSelection is now set to false
+HandleKicker Selection: Calculating potential kickers...
+Starting FreeKickAttGK phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickAttGK completed with 1 moves.
+Advancing from FreeKickAttGK phase.
+Starting FreeKickDefGK1 phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickDefGK1 completed with 1 moves.
+Advancing from FreeKickDefGK1 phase.
+Starting FreeKickAtt1 phase with 2 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt1 completed with 2 moves.
+Advancing from FreeKickAtt1 phase.
+Starting FreeKickDef1 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef1 completed with 2 moves.
+Advancing from FreeKickDef1 phase.
+Starting FreeKickAtt2 phase with 2 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt2 completed with 2 moves.
+Advancing from FreeKickAtt2 phase.
+Starting FreeKickDef2 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef2 completed with 2 moves.
+Advancing from FreeKickDef2 phase.
+Starting FreeKickAtt3 phase with 2 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt3 completed with 2 moves.
+Advancing from FreeKickAtt3 phase.
+Starting FreeKickDef3 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef3 completed with 2 moves.
+Advancing from FreeKickDef3 phase.
+Starting FreeKickDefGK2 phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickDefGK2 completed with 1 moves.
+Advancing from FreeKickDefGK2 phase.
+Starting FreeKickAttMovement3 phase with 1 moves allowed.
+Forfeiting current Movement of 3 Hexes.
+Setup phase FreeKickAttMovement3 completed with 1 moves.
+Advancing from FreeKickAttMovement3 phase.
+Starting FreeKickDefMovement3 phase with 1 moves allowed.
+Forfeiting current Movement of 3 Hexes.
+Setup phase FreeKickDefMovement3 completed with 1 moves.
+Advancing from FreeKickDefMovement3 phase.
+Substitutions are no longer available: Corner Kick final kicker selection
+HandleKicker Selection: Calculating potential kickers...
+Home carrier took the set piece and cannot be the next player to touch the ball.
+Home carrier selected as the kicker!
+Advancing from FreeKickDefineKicker phase.
+Corner Kick Preparation completed. Ready for execution.
+Available Options are: Short Standard [P]ass (6 Hexes), [C]ross (High Pass) up to 15 Hexes away or in the box on an attacker, no More movements.)
+Movement phase has been reset.
+High Pass target map is still calculating. Target highlights will draw when ready.
+HighPassManager activated. Waiting for target selection...
+]]></output>
+          </test-case>
+          <test-case id="1871" name="SetPieceContinues(-1,&quot;move&quot;)" fullname="OnlineSetPiecePlayModeTests.SetPieceContinues(-1,&quot;move&quot;)" methodname="SetPieceContinues" classname="OnlineSetPiecePlayModeTests" runstate="Runnable" seed="1569617252" result="Passed" start-time="2026-11-14 15:30:58Z" end-time="2026-11-14 15:30:59Z" duration="1.669540" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Starting Free Kick Preparation...
+Handling kicker selection for ...
+isWaitingForKickerSelection is now set to false
+HandleKicker Selection: Calculating potential kickers...
+Starting FreeKickAttGK phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickAttGK completed with 1 moves.
+Advancing from FreeKickAttGK phase.
+Starting FreeKickDefGK1 phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickDefGK1 completed with 1 moves.
+Advancing from FreeKickDefGK1 phase.
+Starting FreeKickAtt1 phase with 2 moves allowed.
+Clicked token during free kick setup: Online receiver
+Token Online receiver selected for current phase FreeKickAtt1. Awaiting destination hex.
+Token Online receiver moving to Hex (-10, 0, -1)
+Token Online receiver moving to hex (-10, 0, -1).
+HandleSetupHexSelection: Calculating potential kickers...
+HandleKicker Selection: Calculating potential kickers...
+Move 1 just performed
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt1 completed with 2 moves.
+Advancing from FreeKickAtt1 phase.
+Starting FreeKickDef1 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef1 completed with 2 moves.
+Advancing from FreeKickDef1 phase.
+Starting FreeKickAtt2 phase with 2 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt2 completed with 2 moves.
+Advancing from FreeKickAtt2 phase.
+Starting FreeKickDef2 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef2 completed with 2 moves.
+Advancing from FreeKickDef2 phase.
+Starting FreeKickAtt3 phase with 3 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt3 completed with 3 moves.
+Advancing from FreeKickAtt3 phase.
+Starting FreeKickDef3 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef3 completed with 2 moves.
+Advancing from FreeKickDef3 phase.
+Starting FreeKickDefGK2 phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickDefGK2 completed with 1 moves.
+Advancing from FreeKickDefGK2 phase.
+Substitutions are no longer available: Free Kick final kicker selection
+HandleKicker Selection: Calculating potential kickers...
+Home carrier took the set piece and cannot be the next player to touch the ball.
+Home carrier selected as the kicker!
+Advancing from FreeKickDefineKicker phase.
+Offside assessed (free_kick_options): line x=-8, tokens=Online receiver.
+Free Kick Preparation completed. Ready for execution.
+Available Options are: Standard [P]ass, [L]ong Ball, [C]ross (High Pass), [S]hot!
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+]]></output>
+          </test-case>
+          <test-case id="1872" name="SetPieceContinues(-1,&quot;clearance&quot;)" fullname="OnlineSetPiecePlayModeTests.SetPieceContinues(-1,&quot;clearance&quot;)" methodname="SetPieceContinues" classname="OnlineSetPiecePlayModeTests" runstate="Runnable" seed="1881078109" result="Passed" start-time="2026-11-14 15:30:59Z" end-time="2026-11-14 15:31:01Z" duration="1.687264" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Starting Free Kick Preparation...
+Handling kicker selection for ...
+isWaitingForKickerSelection is now set to false
+HandleKicker Selection: Calculating potential kickers...
+Starting FreeKickAttGK phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickAttGK completed with 1 moves.
+Advancing from FreeKickAttGK phase.
+Starting FreeKickDefGK1 phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickDefGK1 completed with 1 moves.
+Advancing from FreeKickDefGK1 phase.
+Starting FreeKickAtt1 phase with 2 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt1 completed with 2 moves.
+Advancing from FreeKickAtt1 phase.
+Starting FreeKickDef1 phase with 2 moves allowed.
+Clicked token during free kick setup: Away recovering player
+Token Away recovering player selected for current phase FreeKickDef1. Awaiting destination hex.
+Token Away recovering player moving to Hex (-10, 0, -1)
+Token Away recovering player moving to hex (-10, 0, -1).
+We are in Defensive move, checking if we need to remove the token from the list of defenders that need to move.
+Token Away recovering player moved to hex (-10, 0, -1). Removing from list of defenders that need to move.
+Move 1 just performed
+Forfeiting current Defensive move.
+Setup phase FreeKickDef1 completed with 2 moves.
+Advancing from FreeKickDef1 phase.
+Starting FreeKickAtt2 phase with 2 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt2 completed with 2 moves.
+Advancing from FreeKickAtt2 phase.
+Starting FreeKickDef2 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef2 completed with 2 moves.
+Advancing from FreeKickDef2 phase.
+Starting FreeKickAtt3 phase with 3 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt3 completed with 3 moves.
+Advancing from FreeKickAtt3 phase.
+Starting FreeKickDef3 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef3 completed with 2 moves.
+Advancing from FreeKickDef3 phase.
+Starting FreeKickDefGK2 phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickDefGK2 completed with 1 moves.
+Advancing from FreeKickDefGK2 phase.
+Substitutions are no longer available: Free Kick final kicker selection
+HandleKicker Selection: Calculating potential kickers...
+Home carrier took the set piece and cannot be the next player to touch the ball.
+Home carrier selected as the kicker!
+Advancing from FreeKickDefineKicker phase.
+Offside assessed (free_kick_options): line x=-10, tokens=none.
+Free Kick Preparation completed. Ready for execution.
+Available Options are: Standard [P]ass, [L]ong Ball, [C]ross (High Pass), [S]hot!
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+]]></output>
+          </test-case>
+          <test-case id="1873" name="SetPieceContinues(-1,&quot;shot&quot;)" fullname="OnlineSetPiecePlayModeTests.SetPieceContinues(-1,&quot;shot&quot;)" methodname="SetPieceContinues" classname="OnlineSetPiecePlayModeTests" runstate="Runnable" seed="1885599732" result="Passed" start-time="2026-11-14 15:31:01Z" end-time="2026-11-14 15:31:02Z" duration="0.992596" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Movement phase has been reset.
+Starting Free Kick Preparation...
+Handling kicker selection for ...
+isWaitingForKickerSelection is now set to false
+HandleKicker Selection: Calculating potential kickers...
+Starting FreeKickAttGK phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickAttGK completed with 1 moves.
+Advancing from FreeKickAttGK phase.
+Starting FreeKickDefGK1 phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickDefGK1 completed with 1 moves.
+Advancing from FreeKickDefGK1 phase.
+Starting FreeKickAtt1 phase with 2 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt1 completed with 2 moves.
+Advancing from FreeKickAtt1 phase.
+Starting FreeKickDef1 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef1 completed with 2 moves.
+Advancing from FreeKickDef1 phase.
+Starting FreeKickAtt2 phase with 2 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt2 completed with 2 moves.
+Advancing from FreeKickAtt2 phase.
+Starting FreeKickDef2 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef2 completed with 2 moves.
+Advancing from FreeKickDef2 phase.
+Starting FreeKickAtt3 phase with 3 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt3 completed with 3 moves.
+Advancing from FreeKickAtt3 phase.
+Starting FreeKickDef3 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef3 completed with 2 moves.
+Advancing from FreeKickDef3 phase.
+Starting FreeKickDefGK2 phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickDefGK2 completed with 1 moves.
+Advancing from FreeKickDefGK2 phase.
+Substitutions are no longer available: Free Kick final kicker selection
+HandleKicker Selection: Calculating potential kickers...
+Home carrier took the set piece and cannot be the next player to touch the ball.
+Home carrier selected as the kicker!
+Advancing from FreeKickDefineKicker phase.
+Offside assessed (free_kick_options): line x=-13, tokens=none.
+Free Kick Preparation completed. Ready for execution.
+Available Options are: Standard [P]ass, [L]ong Ball, [C]ross (High Pass), [S]hot!
+Free Kick Shot selected. Press [S] again to commit, or press [P], [C], [L] to choose another option.
+Substitutions are no longer available: Committed to Shot
+[Game Log] Home carrier (Fixture Home) takes a Free Kick shot!
+Free Kick Shot initiated. Proceeding to target selection.
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+]]></output>
+          </test-case>
+          <test-case id="1874" name="SetPieceContinues(-1,&quot;hold&quot;)" fullname="OnlineSetPiecePlayModeTests.SetPieceContinues(-1,&quot;hold&quot;)" methodname="SetPieceContinues" classname="OnlineSetPiecePlayModeTests" runstate="Runnable" seed="586339064" result="Passed" start-time="2026-11-14 15:31:02Z" end-time="2026-11-14 15:31:03Z" duration="0.758732" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Starting Free Kick Preparation...
+Handling kicker selection for ...
+isWaitingForKickerSelection is now set to false
+HandleKicker Selection: Calculating potential kickers...
+Starting FreeKickAttGK phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickAttGK completed with 1 moves.
+Advancing from FreeKickAttGK phase.
+Starting FreeKickDefGK1 phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickDefGK1 completed with 1 moves.
+Advancing from FreeKickDefGK1 phase.
+Starting FreeKickAtt1 phase with 2 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt1 completed with 2 moves.
+Advancing from FreeKickAtt1 phase.
+Starting FreeKickDef1 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef1 completed with 2 moves.
+Advancing from FreeKickDef1 phase.
+Starting FreeKickAtt2 phase with 2 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt2 completed with 2 moves.
+Advancing from FreeKickAtt2 phase.
+Starting FreeKickDef2 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef2 completed with 2 moves.
+Advancing from FreeKickDef2 phase.
+Starting FreeKickAtt3 phase with 3 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt3 completed with 3 moves.
+Advancing from FreeKickAtt3 phase.
+Starting FreeKickDef3 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef3 completed with 2 moves.
+Advancing from FreeKickDef3 phase.
+Starting FreeKickDefGK2 phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickDefGK2 completed with 1 moves.
+Advancing from FreeKickDefGK2 phase.
+Substitutions are no longer available: Free Kick final kicker selection
+HandleKicker Selection: Calculating potential kickers...
+Home carrier took the set piece and cannot be the next player to touch the ball.
+Home carrier selected as the kicker!
+Advancing from FreeKickDefineKicker phase.
+Offside assessed (free_kick_options): line x=-8, tokens=none.
+Free Kick Preparation completed. Ready for execution.
+Available Options are: Standard [P]ass, [L]ong Ball, [C]ross (High Pass), [S]hot!
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Saving results to: TestResults\GameplayRegression\Runs\20261114T153040613Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

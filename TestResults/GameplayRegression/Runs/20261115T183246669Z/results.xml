@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="4" result="Passed" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-15 18:32:46Z" end-time="2026-11-15 18:33:35Z" duration="49.10662">
+  <test-suite type="TestSuite" id="2606" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1318" result="Passed" start-time="2026-11-15 18:32:46Z" end-time="2026-11-15 18:33:35Z" duration="49.106620" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2603" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1318" result="Passed" start-time="2026-11-15 18:32:46Z" end-time="2026-11-15 18:33:35Z" duration="49.078415" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17216" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1956" name="OnlineRosterReplicationPlayModeTests" fullname="OnlineRosterReplicationPlayModeTests" classname="OnlineRosterReplicationPlayModeTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-11-15 18:32:46Z" end-time="2026-11-15 18:33:35Z" duration="49.072024" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineRosterReplication" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="1961" name="FullRosterChangesReachInertGuest" fullname="OnlineRosterReplicationPlayModeTests.FullRosterChangesReachInertGuest" classname="OnlineRosterReplicationPlayModeTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-11-15 18:32:46Z" end-time="2026-11-15 18:33:35Z" duration="49.063261" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="1957" name="FullRosterChangesReachInertGuest(16,False)" fullname="OnlineRosterReplicationPlayModeTests.FullRosterChangesReachInertGuest(16,False)" methodname="FullRosterChangesReachInertGuest" classname="OnlineRosterReplicationPlayModeTests" runstate="Runnable" seed="1548606494" result="Passed" start-time="2026-11-15 18:32:46Z" end-time="2026-11-15 18:32:59Z" duration="13.211124" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[TokenKitCatalog] Loading kits JSON from Resources path 'Kits/kit-picker-v1-11-supported' (asset: Assets/Resources/Kits/kit-picker-v1-11-supported.json).
+[TokenKitCatalog] Found kits JSON TextAsset 'kit-picker-v1-11-supported' at Resources path 'Kits/kit-picker-v1-11-supported' (32277 characters).
+[TokenKitCatalog] Parsed 101 kit preset(s) from Resources path 'Kits/kit-picker-v1-11-supported'.
+[TokenKitCatalog] Active kit catalog contains 101 kit preset(s).
+MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584924250760
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+2. Baez has been booked with a yellow card.
+2. Baez has been injured.
+2. Baez's attributes after injury: Heading=4, Dribbling=4, Tackling=2, Pace=4, HighPass=5, Shooting=4, Resilience=2
+Gortz (Jersey 4) has been sent off. Token deactivated.
+Manolis (Jersey 5) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=4, Dribbling=2, HighPass=6, Resilience=6
+Substitutions are now available: Owned goal-boundary fixture
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1958" name="FullRosterChangesReachInertGuest(16,True)" fullname="OnlineRosterReplicationPlayModeTests.FullRosterChangesReachInertGuest(16,True)" methodname="FullRosterChangesReachInertGuest" classname="OnlineRosterReplicationPlayModeTests" runstate="Runnable" seed="1219595579" result="Passed" start-time="2026-11-15 18:32:59Z" end-time="2026-11-15 18:33:11Z" duration="11.824233" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584924375776
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+2. Baez has been booked with a yellow card.
+2. Baez has been injured.
+2. Baez's attributes after injury: Heading=4, Dribbling=4, Tackling=2, Pace=4, HighPass=5, Shooting=4, Resilience=2
+Gortz (Jersey 4) has been sent off. Token deactivated.
+Manolis (Jersey 5) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=4, Dribbling=2, HighPass=6, Resilience=6
+Substitutions are now available: Owned goal-boundary fixture
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1959" name="FullRosterChangesReachInertGuest(18,False)" fullname="OnlineRosterReplicationPlayModeTests.FullRosterChangesReachInertGuest(18,False)" methodname="FullRosterChangesReachInertGuest" classname="OnlineRosterReplicationPlayModeTests" runstate="Runnable" seed="1827907856" result="Passed" start-time="2026-11-15 18:33:11Z" end-time="2026-11-15 18:33:24Z" duration="12.198754" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584924500792
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+2. Baez has been booked with a yellow card.
+2. Baez has been injured.
+2. Baez's attributes after injury: Heading=4, Dribbling=4, Tackling=2, Pace=4, HighPass=5, Shooting=4, Resilience=2
+Gortz (Jersey 4) has been sent off. Token deactivated.
+Manolis (Jersey 5) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=4, Dribbling=2, HighPass=6, Resilience=6
+Substitutions are now available: Owned goal-boundary fixture
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1960" name="FullRosterChangesReachInertGuest(18,True)" fullname="OnlineRosterReplicationPlayModeTests.FullRosterChangesReachInertGuest(18,True)" methodname="FullRosterChangesReachInertGuest" classname="OnlineRosterReplicationPlayModeTests" runstate="Runnable" seed="1285534483" result="Passed" start-time="2026-11-15 18:33:24Z" end-time="2026-11-15 18:33:35Z" duration="11.800899" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584924625808
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+2. Baez has been booked with a yellow card.
+2. Baez has been injured.
+2. Baez's attributes after injury: Heading=4, Dribbling=4, Tackling=2, Pace=4, HighPass=5, Shooting=4, Resilience=2
+Gortz (Jersey 4) has been sent off. Token deactivated.
+Manolis (Jersey 5) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=4, Dribbling=2, HighPass=6, Resilience=6
+Substitutions are now available: Owned goal-boundary fixture
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+Saving results to: TestResults\GameplayRegression\Runs\20261115T183246669Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

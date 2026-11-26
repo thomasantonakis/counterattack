@@ -18,6 +18,7 @@ public sealed class DuelDieView : MonoBehaviour
     private float nextFaceTime;
     private int faceIndex;
     public bool IsAnimating => animating;
+    public bool AllowsJackpot => jackpotAllowed;
     public bool ShowsJackpot { get; private set; }
     public int DisplayedRoll { get; private set; }
 

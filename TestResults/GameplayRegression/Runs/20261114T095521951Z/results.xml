@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="6" result="Failed(Child)" total="6" passed="4" failed="2" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-14 09:55:22Z" end-time="2026-11-14 09:55:39Z" duration="17.1162687">
+  <test-suite type="TestSuite" id="2342" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1103" result="Failed" site="Child" start-time="2026-11-14 09:55:22Z" end-time="2026-11-14 09:55:39Z" duration="17.116269" total="6" passed="4" failed="2" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="2339" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1103" result="Failed" site="Child" start-time="2026-11-14 09:55:22Z" end-time="2026-11-14 09:55:39Z" duration="17.074087" total="6" passed="4" failed="2" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12208" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestFixture" id="1529" name="OnlineGoalPlayModeTests" fullname="OnlineGoalPlayModeTests" classname="OnlineGoalPlayModeTests" runstate="Runnable" testcasecount="6" result="Failed" site="Child" start-time="2026-11-14 09:55:22Z" end-time="2026-11-14 09:55:39Z" duration="17.063900" total="6" passed="4" failed="2" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineGoals" />
+        </properties>
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="ParameterizedMethod" id="1532" name="GoalPublishesResetAndConcedingRestart" fullname="OnlineGoalPlayModeTests.GoalPublishesResetAndConcedingRestart" classname="OnlineGoalPlayModeTests" runstate="Runnable" testcasecount="2" result="Failed" site="Child" start-time="2026-11-14 09:55:22Z" end-time="2026-11-14 09:55:27Z" duration="5.474876" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-case id="1530" name="GoalPublishesResetAndConcedingRestart(1)" fullname="OnlineGoalPlayModeTests.GoalPublishesResetAndConcedingRestart(1)" methodname="GoalPublishesResetAndConcedingRestart" classname="OnlineGoalPlayModeTests" runstate="Runnable" seed="1469156733" result="Failed" start-time="2026-11-14 09:55:22Z" end-time="2026-11-14 09:55:25Z" duration="3.097790" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  overlapping authority holds preserve this continuation
+  Expected: True
+  But was:  False
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<HoldOnlineHeaderContinuation>d__83.MoveNext () [0x00094] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineHeaders\OnlineHeaderContinuationFixture.cs:12
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Attacking team has possession: True.
+Movement phase has been reset.
+Substitutions are no longer available: Committed to Shot
+Full Power Shot initiated. Proceeding to target selection.
+[Game Log] Home carrier (Fixture Home) Unknown ShotType
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Shot interactions found: 0
+No more defenders to Deflect! The Home carrier may [R]oll! Good Luck!.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Hello from the StartShotRoll
+Home carrier Shot roll: 2 + Shooting: 3= 5
+Get IN!! Home carrier, buries it to the top corner! Goal!!!
+[Expected Stats] Home carrier records xG 0.833 on fullPower goal
+[Game Log] Home carrier (Fixture Home) completes an attempt on target
+[Game Log] Home carrier (Fixture Home) scores a goal! ⚽
+GOAL! Home carrier scores! Starting celebration on goal side 1.
+Substitutions are now available: Goal scored
+]]></output>
+          </test-case>
+          <test-case id="1531" name="GoalPublishesResetAndConcedingRestart(-1)" fullname="OnlineGoalPlayModeTests.GoalPublishesResetAndConcedingRestart(-1)" methodname="GoalPublishesResetAndConcedingRestart" classname="OnlineGoalPlayModeTests" runstate="Runnable" seed="636655205" result="Failed" start-time="2026-11-14 09:55:25Z" end-time="2026-11-14 09:55:27Z" duration="2.334061" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  overlapping authority holds preserve this continuation
+  Expected: True
+  But was:  False
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<HoldOnlineHeaderContinuation>d__83.MoveNext () [0x00094] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineHeaders\OnlineHeaderContinuationFixture.cs:12
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Attacking team has possession: True.
+Movement phase has been reset.
+Substitutions are no longer available: Committed to Shot
+Full Power Shot initiated. Proceeding to target selection.
+[Game Log] Home carrier (Fixture Home) Unknown ShotType
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (-19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Shot interactions found: 0
+No more defenders to Deflect! The Home carrier may [R]oll! Good Luck!.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Hello from the StartShotRoll
+Home carrier Shot roll: 2 + Shooting: 3= 5
+Get IN!! Home carrier, buries it to the top corner! Goal!!!
+[Expected Stats] Home carrier records xG 0.833 on fullPower goal
+[Game Log] Home carrier (Fixture Home) completes an attempt on target
+[Game Log] Home carrier (Fixture Home) scores a goal! ⚽
+GOAL! Home carrier scores! Starting celebration on goal side -1.
+Substitutions are now available: Goal scored
+]]></output>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="1537" name="SetupMovementOwnsTeamAndLegalHalf" fullname="OnlineGoalPlayModeTests.SetupMovementOwnsTeamAndLegalHalf" classname="OnlineGoalPlayModeTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-11-14 09:55:27Z" end-time="2026-11-14 09:55:39Z" duration="11.565901" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="1533" name="SetupMovementOwnsTeamAndLegalHalf(1,False)" fullname="OnlineGoalPlayModeTests.SetupMovementOwnsTeamAndLegalHalf(1,False)" methodname="SetupMovementOwnsTeamAndLegalHalf" classname="OnlineGoalPlayModeTests" runstate="Runnable" seed="2107226985" result="Passed" start-time="2026-11-14 09:55:27Z" end-time="2026-11-14 09:55:30Z" duration="2.808587" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+Selecting token Home carrier
+Home carrier moved to (-4, 0, 6)
+Home confirmed setup (1/2)
+Selecting token Away recovering player
+Away recovering player moved to (4, 0, 6)
+]]></output>
+          </test-case>
+          <test-case id="1534" name="SetupMovementOwnsTeamAndLegalHalf(1,True)" fullname="OnlineGoalPlayModeTests.SetupMovementOwnsTeamAndLegalHalf(1,True)" methodname="SetupMovementOwnsTeamAndLegalHalf" classname="OnlineGoalPlayModeTests" runstate="Runnable" seed="1943117024" result="Passed" start-time="2026-11-14 09:55:30Z" end-time="2026-11-14 09:55:33Z" duration="2.824487" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Post-goal kick-off setup: both teams may reposition tokens in their own half, including the halfway line, except the center spot. The kicker will be selected later. Defenders cannot stand in the center circle. Press Enter twice when both teams are ready.
+Selecting token Home carrier
+Home carrier moved to (-4, 0, 6)
+Home post-goal kick-off setup confirmed (1/2)
+Selecting token Away recovering player
+Away recovering player moved to (4, 0, 6)
+]]></output>
+          </test-case>
+          <test-case id="1535" name="SetupMovementOwnsTeamAndLegalHalf(-1,False)" fullname="OnlineGoalPlayModeTests.SetupMovementOwnsTeamAndLegalHalf(-1,False)" methodname="SetupMovementOwnsTeamAndLegalHalf" classname="OnlineGoalPlayModeTests" runstate="Runnable" seed="462390196" result="Passed" start-time="2026-11-14 09:55:33Z" end-time="2026-11-14 09:55:36Z" duration="2.979276" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+Selecting token Home carrier
+Home carrier moved to (4, 0, 6)
+Home confirmed setup (1/2)
+Selecting token Away recovering player
+Away recovering player moved to (-4, 0, 6)
+]]></output>
+          </test-case>
+          <test-case id="1536" name="SetupMovementOwnsTeamAndLegalHalf(-1,True)" fullname="OnlineGoalPlayModeTests.SetupMovementOwnsTeamAndLegalHalf(-1,True)" methodname="SetupMovementOwnsTeamAndLegalHalf" classname="OnlineGoalPlayModeTests" runstate="Runnable" seed="277913447" result="Passed" start-time="2026-11-14 09:55:36Z" end-time="2026-11-14 09:55:39Z" duration="2.939334" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Post-goal kick-off setup: both teams may reposition tokens in their own half, including the halfway line, except the center spot. The kicker will be selected later. Defenders cannot stand in the center circle. Press Enter twice when both teams are ready.
+Selecting token Home carrier
+Home carrier moved to (4, 0, 6)
+Home post-goal kick-off setup confirmed (1/2)
+Selecting token Away recovering player
+Away recovering player moved to (-4, 0, 6)
+Saving results to: TestResults\GameplayRegression\Runs\20261114T095521951Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

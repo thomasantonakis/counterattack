@@ -48,7 +48,13 @@ public class HexCell : MonoBehaviour
     [System.NonSerialized] public Dictionary<HexCell, List<HexCell>> ShootingPaths; // Dictionary of shooting paths
     [System.NonSerialized] public Dictionary<HexCell, List<HexCell>> HeadingPaths; // Dictionary of heading paths
     private Renderer borderRenderer;
+    private bool renderersInitialized;
+    private Color? requestedBorderColor;
     private string currentHighlightReason;
+    private float currentHighlightDarkness;
+    public string HighlightReason=>currentHighlightReason;
+    public float HighlightDarkness=>currentHighlightDarkness;
+    public bool IsCommittedGoalTarget=>isCommittedGoalTarget;
     private bool isCommittedGoalTarget;
     private float goalTargetOriginalHeight;
     private bool hasInitializedOccupancyHighlightInstance;
@@ -82,6 +88,8 @@ public class HexCell : MonoBehaviour
         }
 
         ApplyFillScale();
+        renderersInitialized=true;
+        if(requestedBorderColor.HasValue)SetBorderColor(requestedBorderColor.Value);
         RefreshOccupancyHighlightDisplay();
     }
 
@@ -187,6 +195,8 @@ public class HexCell : MonoBehaviour
 
     public void SetBorderColor(Color borderColor)
     {
+        requestedBorderColor=borderColor;
+        if(Application.isPlaying && !renderersInitialized)return;
         if (borderRenderer == null)
         {
             borderRenderer = GetComponent<MeshRenderer>();
@@ -250,6 +260,30 @@ public class HexCell : MonoBehaviour
         ResetHighlight();
     }
 
+    private (float OriginalHeight, string Reason, float Darkness)? raisedGoalTargetPreview;
+
+    internal (string Reason, float Darkness) BasePreviewHighlight => raisedGoalTargetPreview is { } preview
+        ? (preview.Reason, preview.Darkness)
+        : (HighlightReason, HighlightDarkness);
+
+    internal void HighlightRaisedGoalTarget(string reason, float minimumHeight, float darkness = 0, string hoverReason = null)
+    {
+        var position = transform.position;
+        raisedGoalTargetPreview = (raisedGoalTargetPreview?.OriginalHeight ?? position.y, reason, darkness);
+        position.y = Mathf.Max(position.y, minimumHeight);
+        transform.position = position;
+        HighlightHex(hoverReason ?? reason, darkness);
+    }
+
+    internal void ClearRaisedGoalTarget()
+    {
+        if (raisedGoalTargetPreview is not { } preview) return;
+        var position = transform.position;
+        position.y = preview.OriginalHeight;
+        transform.position = position;
+        raisedGoalTargetPreview = null;
+    }
+
     public void HighlightHex(string reason, float darkness = 0)
     {
         if (hexRenderer == null)
@@ -270,6 +304,7 @@ public class HexCell : MonoBehaviour
         // Apply the color to the hex based on the reason
         // Debug.Log($"Highlighting hex {name} for reason: {reason}");
         currentHighlightReason = reason;
+        currentHighlightDarkness = darkness;
         switch (reason)
         {
             case "hover":
@@ -387,6 +422,7 @@ public class HexCell : MonoBehaviour
             return;
         }
         currentHighlightReason = null;
+        currentHighlightDarkness = 0;
         // if (isInGoal != 0 && transform.position.y > 0)
         // {
         //    transform.position -= Vector3.up * 0.03f; // Put it back.
@@ -423,6 +459,42 @@ public class HexCell : MonoBehaviour
         ResetHighlight();
     }
 
+    private bool localGoalHover;
+    private Color currentFillColor;
+    private Color? onlineHostHint;
+
+    internal void SetOnlineHostHint(Color? color)
+    {
+        if (onlineHostHint == color) return;
+        onlineHostHint = color;
+        ApplyHexFillColor(currentFillColor);
+    }
+
+    internal void SetLocalGoalHover(bool visible)
+    {
+        if (localGoalHover == visible) return;
+        localGoalHover = visible;
+        ApplyHexFillColor(currentFillColor);
+    }
+
+    private bool remoteGoalHover;
+
+    internal void SetRemoteGoalHover(bool visible)
+    {
+        if (remoteGoalHover == visible) return;
+        remoteGoalHover = visible;
+        ApplyHexFillColor(currentFillColor);
+    }
+
+    private bool onlinePassHover;
+
+    internal void SetOnlinePassHover(bool visible)
+    {
+        if (onlinePassHover == visible) return;
+        onlinePassHover = visible;
+        ApplyHexFillColor(currentFillColor);
+    }
+
     private void ApplyHexFillColor(Color fillColor)
     {
         if (hexRenderer == null)
@@ -430,10 +502,19 @@ public class HexCell : MonoBehaviour
             return;
         }
 
+        currentFillColor = fillColor;
         // Target selection survives path, challenge, and goalkeeper highlight cleanup.
-        if (isCommittedGoalTarget)
+        if (isCommittedGoalTarget || localGoalHover || remoteGoalHover)
         {
             fillColor = new Color(1f, 0.48f, 0.05f, 1f);
+        }
+        else if (onlinePassHover && currentHighlightReason != "passTargetCommitted")
+        {
+            fillColor = new Color(.18f, .83f, 1f);
+        }
+        else if (onlineHostHint.HasValue && string.IsNullOrEmpty(currentHighlightReason))
+        {
+            fillColor = onlineHostHint.Value;
         }
 
         Material runtimeMaterial = Application.isPlaying ? hexRenderer.material : hexRenderer.sharedMaterial;

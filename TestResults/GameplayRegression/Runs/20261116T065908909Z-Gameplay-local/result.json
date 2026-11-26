@@ -1,0 +1,11 @@
+{
+    "role": "local",
+    "platform": "WindowsPlayer",
+    "unityVersion": "6000.5.3f1",
+    "startedUtc": "2026-11-16T06:59:13.1280418Z",
+    "completedUtc": "2026-11-16T06:59:15.7351382Z",
+    "status": "passed",
+    "message": "Probe completed",
+    "relayControl": "not exercised",
+    "livenessNotificationRegistration": false
+}

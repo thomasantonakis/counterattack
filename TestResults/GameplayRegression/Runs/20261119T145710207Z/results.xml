@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="24" result="Passed" total="24" passed="24" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-19 14:57:10Z" end-time="2026-11-19 14:57:10Z" duration="0.3764563">
+  <test-suite type="TestSuite" id="3304" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1948" result="Passed" start-time="2026-11-19 14:57:10Z" end-time="2026-11-19 14:57:10Z" duration="0.376456" total="24" passed="24" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="3298" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="1948" result="Passed" start-time="2026-11-19 14:57:10Z" end-time="2026-11-19 14:57:10Z" duration="0.291453" total="24" passed="24" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="2816" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="2275" name="OnlineAuthRenewalEditorTests" fullname="OnlineAuthRenewalEditorTests" classname="OnlineAuthRenewalEditorTests" runstate="Runnable" testcasecount="16" result="Passed" start-time="2026-11-19 14:57:10Z" end-time="2026-11-19 14:57:10Z" duration="0.186929" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineAuthRenewal" />
+        </properties>
+        <test-case id="2282" name="DisposedOwnerIgnoresPendingNativeCallback" fullname="OnlineAuthRenewalEditorTests.DisposedOwnerIgnoresPendingNativeCallback" methodname="DisposedOwnerIgnoresPendingNativeCallback" classname="OnlineAuthRenewalEditorTests" runstate="Runnable" seed="1428522438" result="Passed" start-time="2026-11-19 14:57:10Z" end-time="2026-11-19 14:57:10Z" duration="0.021841" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="2277" name="DuplicateNoticesCannotIssueConcurrentLogins" fullname="OnlineAuthRenewalEditorTests.DuplicateNoticesCannotIssueConcurrentLogins" methodname="DuplicateNoticesCannotIssueConcurrentLogins" classname="OnlineAuthRenewalEditorTests" runstate="Runnable" seed="2086189082" result="Passed" start-time="2026-11-19 14:57:10Z" end-time="2026-11-19 14:57:10Z" duration="0.001032" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="2283" name="DuplicateReplyCannotOverwriteAcceptedSuccess" fullname="OnlineAuthRenewalEditorTests.DuplicateReplyCannotOverwriteAcceptedSuccess" methodname="DuplicateReplyCannotOverwriteAcceptedSuccess" classname="OnlineAuthRenewalEditorTests" runstate="Runnable" seed="1313008890" result="Passed" start-time="2026-11-19 14:57:10Z" end-time="2026-11-19 14:57:10Z" duration="0.001640" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="2276" name="ExpiryStartsRefreshOnlyForBoundIdentity" fullname="OnlineAuthRenewalEditorTests.ExpiryStartsRefreshOnlyForBoundIdentity" methodname="ExpiryStartsRefreshOnlyForBoundIdentity" classname="OnlineAuthRenewalEditorTests" runstate="Runnable" seed="1797938012" result="Passed" start-time="2026-11-19 14:57:10Z" end-time="2026-11-19 14:57:10Z" duration="0.002429" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="2287" name="FailedCompletionDoesNotThrowThroughNativeCallback" fullname="OnlineAuthRenewalEditorTests.FailedCompletionDoesNotThrowThroughNativeCallback" methodname="FailedCompletionDoesNotThrowThroughNativeCallback" classname="OnlineAuthRenewalEditorTests" runstate="Runnable" seed="2141489449" result="Passed" start-time="2026-11-19 14:57:10Z" end-time="2026-11-19 14:57:10Z" duration="0.004934" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="2278" name="FailedLoginRetriesAndPreservesIdentity" fullname="OnlineAuthRenewalEditorTests.FailedLoginRetriesAndPreservesIdentity" methodname="FailedLoginRetriesAndPreservesIdentity" classname="OnlineAuthRenewalEditorTests" runstate="Runnable" seed="1527582164" result="Passed" start-time="2026-11-19 14:57:10Z" end-time="2026-11-19 14:57:10Z" duration="0.001103" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="2292" name="InvalidConstructionIsRejected" fullname="OnlineAuthRenewalEditorTests.InvalidConstructionIsRejected" classname="OnlineAuthRenewalEditorTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-11-19 14:57:10Z" end-time="2026-11-19 14:57:10Z" duration="0.027374" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="2289" name="InvalidConstructionIsRejected(&quot;identity&quot;)" fullname="OnlineAuthRenewalEditorTests.InvalidConstructionIsRejected(&quot;identity&quot;)" methodname="InvalidConstructionIsRejected" classname="OnlineAuthRenewalEditorTests" runstate="Runnable" seed="1781930716" result="Passed" start-time="2026-11-19 14:57:10Z" end-time="2026-11-19 14:57:10Z" duration="0.007627" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2290" name="InvalidConstructionIsRejected(&quot;clock&quot;)" fullname="OnlineAuthRenewalEditorTests.InvalidConstructionIsRejected(&quot;clock&quot;)" methodname="InvalidConstructionIsRejected" classname="OnlineAuthRenewalEditorTests" runstate="Runnable" seed="518458784" result="Passed" start-time="2026-11-19 14:57:10Z" end-time="2026-11-19 14:57:10Z" duration="0.000758" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2291" name="InvalidConstructionIsRejected(&quot;login&quot;)" fullname="OnlineAuthRenewalEditorTests.InvalidConstructionIsRejected(&quot;login&quot;)" methodname="InvalidConstructionIsRejected" classname="OnlineAuthRenewalEditorTests" runstate="Runnable" seed="387829991" result="Passed" start-time="2026-11-19 14:57:10Z" end-time="2026-11-19 14:57:10Z" duration="0.000359" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-case id="2284" name="LaterExpirationCanRenewSameSessionAgain" fullname="OnlineAuthRenewalEditorTests.LaterExpirationCanRenewSameSessionAgain" methodname="LaterExpirationCanRenewSameSessionAgain" classname="OnlineAuthRenewalEditorTests" runstate="Runnable" seed="1458600183" result="Passed" start-time="2026-11-19 14:57:10Z" end-time="2026-11-19 14:57:10Z" duration="0.000802" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="2279" name="MissingCallbackRetriesAndLateOldReplyCannotCompleteNewAttempt" fullname="OnlineAuthRenewalEditorTests.MissingCallbackRetriesAndLateOldReplyCannotCompleteNewAttempt" methodname="MissingCallbackRetriesAndLateOldReplyCannotCompleteNewAttempt" classname="OnlineAuthRenewalEditorTests" runstate="Runnable" seed="1227985525" result="Passed" start-time="2026-11-19 14:57:10Z" end-time="2026-11-19 14:57:10Z" duration="0.001114" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="2280" name="RepeatedFailuresStopBeforeAuthenticationExpiryWindow" fullname="OnlineAuthRenewalEditorTests.RepeatedFailuresStopBeforeAuthenticationExpiryWindow" methodname="RepeatedFailuresStopBeforeAuthenticationExpiryWindow" classname="OnlineAuthRenewalEditorTests" runstate="Runnable" seed="1101480069" result="Passed" start-time="2026-11-19 14:57:10Z" end-time="2026-11-19 14:57:10Z" duration="0.001118" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="2288" name="SuccessBeforeDeadlineSuppressesTimeout" fullname="OnlineAuthRenewalEditorTests.SuccessBeforeDeadlineSuppressesTimeout" methodname="SuccessBeforeDeadlineSuppressesTimeout" classname="OnlineAuthRenewalEditorTests" runstate="Runnable" seed="1489501649" result="Passed" start-time="2026-11-19 14:57:10Z" end-time="2026-11-19 14:57:10Z" duration="0.000950" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="2281" name="SuccessfulLoginWithDifferentIdentityIsRejected" fullname="OnlineAuthRenewalEditorTests.SuccessfulLoginWithDifferentIdentityIsRejected" methodname="SuccessfulLoginWithDifferentIdentityIsRejected" classname="OnlineAuthRenewalEditorTests" runstate="Runnable" seed="1632365502" result="Passed" start-time="2026-11-19 14:57:10Z" end-time="2026-11-19 14:57:10Z" duration="0.000901" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="2285" name="SynchronousCompletionCannotLeaveRenewalPending" fullname="OnlineAuthRenewalEditorTests.SynchronousCompletionCannotLeaveRenewalPending" methodname="SynchronousCompletionCannotLeaveRenewalPending" classname="OnlineAuthRenewalEditorTests" runstate="Runnable" seed="147548228" result="Passed" start-time="2026-11-19 14:57:10Z" end-time="2026-11-19 14:57:10Z" duration="0.001172" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="2286" name="ThrowingLoginRetriesWithoutPublishingExceptionSecrets" fullname="OnlineAuthRenewalEditorTests.ThrowingLoginRetriesWithoutPublishingExceptionSecrets" methodname="ThrowingLoginRetriesWithoutPublishingExceptionSecrets" classname="OnlineAuthRenewalEditorTests" runstate="Runnable" seed="2039655789" result="Passed" start-time="2026-11-19 14:57:10Z" end-time="2026-11-19 14:57:10Z" duration="0.004665" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="2293" name="OnlineNativeLifetimeEditorTests" fullname="OnlineNativeLifetimeEditorTests" classname="OnlineNativeLifetimeEditorTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-11-19 14:57:10Z" end-time="2026-11-19 14:57:10Z" duration="0.075420" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineAuthRenewal" />
+        </properties>
+        <test-case id="2299" name="DisposedLifetimeRejectsNewHandleWithoutCallingIt" fullname="OnlineNativeLifetimeEditorTests.DisposedLifetimeRejectsNewHandleWithoutCallingIt" methodname="DisposedLifetimeRejectsNewHandleWithoutCallingIt" classname="OnlineNativeLifetimeEditorTests" runstate="Runnable" seed="1640462512" result="Passed" start-time="2026-11-19 14:57:10Z" end-time="2026-11-19 14:57:10Z" duration="0.001954" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="2295" name="EarlyCallerDisposalRemovesLeaseWithoutDoubleNativeCall" fullname="OnlineNativeLifetimeEditorTests.EarlyCallerDisposalRemovesLeaseWithoutDoubleNativeCall" methodname="EarlyCallerDisposalRemovesLeaseWithoutDoubleNativeCall" classname="OnlineNativeLifetimeEditorTests" runstate="Runnable" seed="232434457" result="Passed" start-time="2026-11-19 14:57:10Z" end-time="2026-11-19 14:57:10Z" duration="0.001548" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="2300" name="NullSubscriptionsCannotBecomeOwned" fullname="OnlineNativeLifetimeEditorTests.NullSubscriptionsCannotBecomeOwned" methodname="NullSubscriptionsCannotBecomeOwned" classname="OnlineNativeLifetimeEditorTests" runstate="Runnable" seed="501872249" result="Passed" start-time="2026-11-19 14:57:10Z" end-time="2026-11-19 14:57:10Z" duration="0.001287" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="2301" name="PlatformReleaseFailureCannotRepeatNativeCleanup" fullname="OnlineNativeLifetimeEditorTests.PlatformReleaseFailureCannotRepeatNativeCleanup" methodname="PlatformReleaseFailureCannotRepeatNativeCleanup" classname="OnlineNativeLifetimeEditorTests" runstate="Runnable" seed="1064319915" result="Passed" start-time="2026-11-19 14:57:10Z" end-time="2026-11-19 14:57:10Z" duration="0.001107" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="2298" name="ReentrantDisposalCannotReleasePlatformBeforeCallbackCleanup" fullname="OnlineNativeLifetimeEditorTests.ReentrantDisposalCannotReleasePlatformBeforeCallbackCleanup" methodname="ReentrantDisposalCannotReleasePlatformBeforeCallbackCleanup" classname="OnlineNativeLifetimeEditorTests" runstate="Runnable" seed="1401112316" result="Passed" start-time="2026-11-19 14:57:10Z" end-time="2026-11-19 14:57:10Z" duration="0.003587" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="2294" name="SubscriptionsRetireBeforeNativeReleaseAndLateCleanupIsSafe" fullname="OnlineNativeLifetimeEditorTests.SubscriptionsRetireBeforeNativeReleaseAndLateCleanupIsSafe" methodname="SubscriptionsRetireBeforeNativeReleaseAndLateCleanupIsSafe" classname="OnlineNativeLifetimeEditorTests" runstate="Runnable" seed="1754300401" result="Passed" start-time="2026-11-19 14:57:10Z" end-time="2026-11-19 14:57:10Z" duration="0.001096" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="2296" name="SubscriptionsRetireInReverseRegistrationOrder" fullname="OnlineNativeLifetimeEditorTests.SubscriptionsRetireInReverseRegistrationOrder" methodname="SubscriptionsRetireInReverseRegistrationOrder" classname="OnlineNativeLifetimeEditorTests" runstate="Runnable" seed="464364213" result="Passed" start-time="2026-11-19 14:57:10Z" end-time="2026-11-19 14:57:10Z" duration="0.001145" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="2297" name="ThrowingCleanupStillReleasesOtherHandlesBeforePlatform" fullname="OnlineNativeLifetimeEditorTests.ThrowingCleanupStillReleasesOtherHandlesBeforePlatform" methodname="ThrowingCleanupStillReleasesOtherHandlesBeforePlatform" classname="OnlineNativeLifetimeEditorTests" runstate="Runnable" seed="1590034176" result="Passed" start-time="2026-11-19 14:57:10Z" end-time="2026-11-19 14:57:10Z" duration="0.001545" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Saving results to: TestResults\GameplayRegression\Runs\20261119T145710207Z\results.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

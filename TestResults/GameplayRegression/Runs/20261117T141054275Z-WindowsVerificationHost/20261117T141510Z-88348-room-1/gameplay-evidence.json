@@ -1,0 +1,9 @@
+{
+    "role": "host",
+    "digest": "459BF9175E6CD1EC9B72D50E4CAEC8F0F83C54A2A321E3BF09F0164499F8EE14",
+    "publicationSequence": 9,
+    "rollSequence": 1,
+    "sharedPauseRevision": 2,
+    "recoveryGenerations": 0,
+    "guestRulesInactive": false
+}

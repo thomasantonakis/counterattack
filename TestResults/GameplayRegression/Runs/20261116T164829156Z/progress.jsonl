@@ -1,0 +1,4 @@
+{"name":"OnlineKeeperGroundChoicesEditorTests.AmbiguousDiveFamiliesAreNotGuessed","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineKeeperGroundChoicesEditorTests.KeysUsePublishedKeeperChoices(D,\"duel.dive\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineKeeperGroundChoicesEditorTests.KeysUsePublishedKeeperChoices(T,\"duel.tackle\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineKeeperGroundChoicesEditorTests.KeysUsePublishedKeeperChoices(N,\"duel.stand\")","status":"Passed","message":"","stackTrace":""}

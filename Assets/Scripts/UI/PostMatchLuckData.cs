@@ -104,7 +104,7 @@ public static class PostMatchLuckData
         return report;
     }
 
-    private static GameplayLuckModel Model(GameplayEvent e)
+    internal static GameplayLuckModel Model(GameplayEvent e)
     {
         string side = e.actorTokenKey?.StartsWith("Home:", StringComparison.Ordinal) == true ? "Home"
             : e.actorTokenKey?.StartsWith("Away:", StringComparison.Ordinal) == true ? "Away" : null;

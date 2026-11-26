@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="13" result="Passed" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 21:52:25Z" end-time="2026-11-16 21:52:26Z" duration="0.1492005">
+  <test-suite type="TestSuite" id="3216" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1873" result="Passed" start-time="2026-11-16 21:52:25Z" end-time="2026-11-16 21:52:26Z" duration="0.149201" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="3210" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="1873" result="Passed" start-time="2026-11-16 21:52:26Z" end-time="2026-11-16 21:52:26Z" duration="0.106570" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12156" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="2074" name="OnlinePickupKeyEditorTests" fullname="OnlinePickupKeyEditorTests" classname="OnlinePickupKeyEditorTests" runstate="Runnable" testcasecount="13" result="Passed" start-time="2026-11-16 21:52:26Z" end-time="2026-11-16 21:52:26Z" duration="0.100334" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlinePickupKey" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="2088" name="VCannotGuessAnUnpublishedPickup" fullname="OnlinePickupKeyEditorTests.VCannotGuessAnUnpublishedPickup" classname="OnlinePickupKeyEditorTests" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-11-16 21:52:26Z" end-time="2026-11-16 21:52:26Z" duration="0.068866" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="2082" name="VCannotGuessAnUnpublishedPickup(&quot;off-board&quot;)" fullname="OnlinePickupKeyEditorTests.VCannotGuessAnUnpublishedPickup(&quot;off-board&quot;)" methodname="VCannotGuessAnUnpublishedPickup" classname="OnlinePickupKeyEditorTests" runstate="Runnable" seed="586300023" result="Passed" start-time="2026-11-16 21:52:26Z" end-time="2026-11-16 21:52:26Z" duration="0.026592" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2083" name="VCannotGuessAnUnpublishedPickup(&quot;unpublished&quot;)" fullname="OnlinePickupKeyEditorTests.VCannotGuessAnUnpublishedPickup(&quot;unpublished&quot;)" methodname="VCannotGuessAnUnpublishedPickup" classname="OnlinePickupKeyEditorTests" runstate="Runnable" seed="741187874" result="Passed" start-time="2026-11-16 21:52:26Z" end-time="2026-11-16 21:52:26Z" duration="0.000439" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2084" name="VCannotGuessAnUnpublishedPickup(&quot;pass&quot;)" fullname="OnlinePickupKeyEditorTests.VCannotGuessAnUnpublishedPickup(&quot;pass&quot;)" methodname="VCannotGuessAnUnpublishedPickup" classname="OnlinePickupKeyEditorTests" runstate="Runnable" seed="990913078" result="Passed" start-time="2026-11-16 21:52:26Z" end-time="2026-11-16 21:52:26Z" duration="0.000186" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2085" name="VCannotGuessAnUnpublishedPickup(&quot;dribble&quot;)" fullname="OnlinePickupKeyEditorTests.VCannotGuessAnUnpublishedPickup(&quot;dribble&quot;)" methodname="VCannotGuessAnUnpublishedPickup" classname="OnlinePickupKeyEditorTests" runstate="Runnable" seed="804129250" result="Passed" start-time="2026-11-16 21:52:26Z" end-time="2026-11-16 21:52:26Z" duration="0.000196" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2086" name="VCannotGuessAnUnpublishedPickup(&quot;selection&quot;)" fullname="OnlinePickupKeyEditorTests.VCannotGuessAnUnpublishedPickup(&quot;selection&quot;)" methodname="VCannotGuessAnUnpublishedPickup" classname="OnlinePickupKeyEditorTests" runstate="Runnable" seed="1058362550" result="Passed" start-time="2026-11-16 21:52:26Z" end-time="2026-11-16 21:52:26Z" duration="0.000155" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2087" name="VCannotGuessAnUnpublishedPickup(&quot;ambiguous&quot;)" fullname="OnlinePickupKeyEditorTests.VCannotGuessAnUnpublishedPickup(&quot;ambiguous&quot;)" methodname="VCannotGuessAnUnpublishedPickup" classname="OnlinePickupKeyEditorTests" runstate="Runnable" seed="1716656126" result="Passed" start-time="2026-11-16 21:52:26Z" end-time="2026-11-16 21:52:26Z" duration="0.000280" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-case id="2089" name="VRetainsPublishedKeeperClaim" fullname="OnlinePickupKeyEditorTests.VRetainsPublishedKeeperClaim" methodname="VRetainsPublishedKeeperClaim" classname="OnlinePickupKeyEditorTests" runstate="Runnable" seed="1844436674" result="Passed" start-time="2026-11-16 21:52:26Z" end-time="2026-11-16 21:52:26Z" duration="0.004106" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="2081" name="VUsesPublishedBallDestination" fullname="OnlinePickupKeyEditorTests.VUsesPublishedBallDestination" classname="OnlinePickupKeyEditorTests" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-11-16 21:52:26Z" end-time="2026-11-16 21:52:26Z" duration="0.011490" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="2075" name="VUsesPublishedBallDestination(&quot;attack&quot;,1)" fullname="OnlinePickupKeyEditorTests.VUsesPublishedBallDestination(&quot;attack&quot;,1)" methodname="VUsesPublishedBallDestination" classname="OnlinePickupKeyEditorTests" runstate="Runnable" seed="1809889112" result="Passed" start-time="2026-11-16 21:52:26Z" end-time="2026-11-16 21:52:26Z" duration="0.000962" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2076" name="VUsesPublishedBallDestination(&quot;attack&quot;,-1)" fullname="OnlinePickupKeyEditorTests.VUsesPublishedBallDestination(&quot;attack&quot;,-1)" methodname="VUsesPublishedBallDestination" classname="OnlinePickupKeyEditorTests" runstate="Runnable" seed="816890620" result="Passed" start-time="2026-11-16 21:52:26Z" end-time="2026-11-16 21:52:26Z" duration="0.000150" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2077" name="VUsesPublishedBallDestination(&quot;defence&quot;,1)" fullname="OnlinePickupKeyEditorTests.VUsesPublishedBallDestination(&quot;defence&quot;,1)" methodname="VUsesPublishedBallDestination" classname="OnlinePickupKeyEditorTests" runstate="Runnable" seed="1456934908" result="Passed" start-time="2026-11-16 21:52:26Z" end-time="2026-11-16 21:52:26Z" duration="0.000162" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2078" name="VUsesPublishedBallDestination(&quot;defence&quot;,-1)" fullname="OnlinePickupKeyEditorTests.VUsesPublishedBallDestination(&quot;defence&quot;,-1)" methodname="VUsesPublishedBallDestination" classname="OnlinePickupKeyEditorTests" runstate="Runnable" seed="1081720106" result="Passed" start-time="2026-11-16 21:52:26Z" end-time="2026-11-16 21:52:26Z" duration="0.000165" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2079" name="VUsesPublishedBallDestination(&quot;two-for-two&quot;,1)" fullname="OnlinePickupKeyEditorTests.VUsesPublishedBallDestination(&quot;two-for-two&quot;,1)" methodname="VUsesPublishedBallDestination" classname="OnlinePickupKeyEditorTests" runstate="Runnable" seed="1553149785" result="Passed" start-time="2026-11-16 21:52:26Z" end-time="2026-11-16 21:52:26Z" duration="0.000125" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2080" name="VUsesPublishedBallDestination(&quot;two-for-two&quot;,-1)" fullname="OnlinePickupKeyEditorTests.VUsesPublishedBallDestination(&quot;two-for-two&quot;,-1)" methodname="VUsesPublishedBallDestination" classname="OnlinePickupKeyEditorTests" runstate="Runnable" seed="1042976226" result="Passed" start-time="2026-11-16 21:52:26Z" end-time="2026-11-16 21:52:26Z" duration="0.000119" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Saving results to: TestResults\GameplayRegression\Runs\20261116T215225946Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

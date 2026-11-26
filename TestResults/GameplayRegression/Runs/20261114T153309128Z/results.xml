@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="2" result="Passed" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-14 15:33:09Z" end-time="2026-11-14 15:33:27Z" duration="18.0248876">
+  <test-suite type="TestSuite" id="2477" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1217" result="Passed" start-time="2026-11-14 15:33:09Z" end-time="2026-11-14 15:33:27Z" duration="18.024888" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2474" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1217" result="Passed" start-time="2026-11-14 15:33:09Z" end-time="2026-11-14 15:33:27Z" duration="17.992729" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12208" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1854" name="OnlineRoomSetPiecePlayModeTests" fullname="OnlineRoomSetPiecePlayModeTests" classname="OnlineRoomSetPiecePlayModeTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-14 15:33:09Z" end-time="2026-11-14 15:33:27Z" duration="17.986840" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineSetPieces" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="1857" name="RoomFreeKickCompletesPass" fullname="OnlineRoomSetPiecePlayModeTests.RoomFreeKickCompletesPass" classname="OnlineRoomSetPiecePlayModeTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-14 15:33:09Z" end-time="2026-11-14 15:33:27Z" duration="17.980076" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="1855" name="RoomFreeKickCompletesPass(1)" fullname="OnlineRoomSetPiecePlayModeTests.RoomFreeKickCompletesPass(1)" methodname="RoomFreeKickCompletesPass" classname="OnlineRoomSetPiecePlayModeTests" runstate="Runnable" seed="1279762471" result="Passed" start-time="2026-11-14 15:33:09Z" end-time="2026-11-14 15:33:21Z" duration="12.613375" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Fixture Home 1 (Jersey 1) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=4, HighPass=0, Resilience=0
+Fixture Away 1 (Jersey 1) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=4, HighPass=0, Resilience=0
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Starting Free Kick Preparation...
+Handling kicker selection for ...
+isWaitingForKickerSelection is now set to false
+HandleKicker Selection: Calculating potential kickers...
+Starting FreeKickAttGK phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickAttGK completed with 1 moves.
+Advancing from FreeKickAttGK phase.
+Starting FreeKickDefGK1 phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickDefGK1 completed with 1 moves.
+Advancing from FreeKickDefGK1 phase.
+Starting FreeKickAtt1 phase with 2 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt1 completed with 2 moves.
+Advancing from FreeKickAtt1 phase.
+Starting FreeKickDef1 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef1 completed with 2 moves.
+Advancing from FreeKickDef1 phase.
+Starting FreeKickAtt2 phase with 2 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt2 completed with 2 moves.
+Advancing from FreeKickAtt2 phase.
+Starting FreeKickDef2 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef2 completed with 2 moves.
+Advancing from FreeKickDef2 phase.
+Starting FreeKickAtt3 phase with 3 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt3 completed with 3 moves.
+Advancing from FreeKickAtt3 phase.
+Starting FreeKickDef3 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef3 completed with 2 moves.
+Advancing from FreeKickDef3 phase.
+Starting FreeKickDefGK2 phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickDefGK2 completed with 1 moves.
+Advancing from FreeKickDefGK2 phase.
+Substitutions are no longer available: Free Kick final kicker selection
+HandleKicker Selection: Calculating potential kickers...
+Fixture Home 9 took the set piece and cannot be the next player to touch the ball.
+Fixture Home 9 selected as the kicker!
+Advancing from FreeKickDefineKicker phase.
+Offside assessed (free_kick_options): line x=8, tokens=none.
+Free Kick Preparation completed. Ready for execution.
+Available Options are: Standard [P]ass, [L]ong Ball, [C]ross (High Pass), [S]hot!
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Fixture Home 9 (Online proof Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Fixture Home 9 (Online proof Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Fixture Home 10
+Offside assessment cleared: ground_pass_completed.
+Ball reference set in PlayerToken. Ball Hex: 
+Ball reference set in PlayerToken. Ball Hex: 
+]]></output>
+          </test-case>
+          <test-case id="1856" name="RoomFreeKickCompletesPass(-1)" fullname="OnlineRoomSetPiecePlayModeTests.RoomFreeKickCompletesPass(-1)" methodname="RoomFreeKickCompletesPass" classname="OnlineRoomSetPiecePlayModeTests" runstate="Runnable" seed="916997318" result="Passed" start-time="2026-11-14 15:33:21Z" end-time="2026-11-14 15:33:27Z" duration="5.335723" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Fixture Home 1 (Jersey 1) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=4, HighPass=0, Resilience=0
+Fixture Away 1 (Jersey 1) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=4, HighPass=0, Resilience=0
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=0, tokens=Fixture Home 1.
+Movement phase has been reset.
+Starting Free Kick Preparation...
+Handling kicker selection for ...
+isWaitingForKickerSelection is now set to false
+HandleKicker Selection: Calculating potential kickers...
+Starting FreeKickAttGK phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickAttGK completed with 1 moves.
+Advancing from FreeKickAttGK phase.
+Starting FreeKickDefGK1 phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickDefGK1 completed with 1 moves.
+Advancing from FreeKickDefGK1 phase.
+Starting FreeKickAtt1 phase with 2 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt1 completed with 2 moves.
+Advancing from FreeKickAtt1 phase.
+Starting FreeKickDef1 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef1 completed with 2 moves.
+Advancing from FreeKickDef1 phase.
+Starting FreeKickAtt2 phase with 2 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt2 completed with 2 moves.
+Advancing from FreeKickAtt2 phase.
+Starting FreeKickDef2 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef2 completed with 2 moves.
+Advancing from FreeKickDef2 phase.
+Starting FreeKickAtt3 phase with 3 moves allowed.
+Forfeiting current Attacking move.
+Setup phase FreeKickAtt3 completed with 3 moves.
+Advancing from FreeKickAtt3 phase.
+Starting FreeKickDef3 phase with 2 moves allowed.
+Forfeiting current Defensive move.
+Setup phase FreeKickDef3 completed with 2 moves.
+Advancing from FreeKickDef3 phase.
+Starting FreeKickDefGK2 phase with 1 moves allowed.
+Forfeiting current GK move.
+Setup phase FreeKickDefGK2 completed with 1 moves.
+Advancing from FreeKickDefGK2 phase.
+Substitutions are no longer available: Free Kick final kicker selection
+HandleKicker Selection: Calculating potential kickers...
+Fixture Home 9 took the set piece and cannot be the next player to touch the ball.
+Fixture Home 9 selected as the kicker!
+Advancing from FreeKickDefineKicker phase.
+Offside assessed (free_kick_options): line x=-8, tokens=none.
+Free Kick Preparation completed. Ready for execution.
+Available Options are: Standard [P]ass, [L]ong Ball, [C]ross (High Pass), [S]hot!
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Fixture Home 9 (Online proof Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Fixture Home 9 (Online proof Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Fixture Home 10
+Offside assessment cleared: ground_pass_completed.
+Ball reference set in PlayerToken. Ball Hex: 
+Ball reference set in PlayerToken. Ball Hex: 
+Saving results to: TestResults\GameplayRegression\Runs\20261114T153309128Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

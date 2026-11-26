@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="8" result="Passed" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 07:20:43Z" end-time="2026-11-16 07:21:54Z" duration="71.0584204">
+  <test-suite type="TestSuite" id="2781" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1466" result="Passed" start-time="2026-11-16 07:20:43Z" end-time="2026-11-16 07:21:54Z" duration="71.058420" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2778" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1466" result="Passed" start-time="2026-11-16 07:20:43Z" end-time="2026-11-16 07:21:54Z" duration="71.025065" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17216" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1519" name="OnlineBoardInputPlayModeTests" fullname="OnlineBoardInputPlayModeTests" classname="OnlineBoardInputPlayModeTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-11-16 07:20:43Z" end-time="2026-11-16 07:21:54Z" duration="71.017819" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineBoardInput" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="1528" name="ActualPitchInput" fullname="OnlineBoardInputPlayModeTests.ActualPitchInput" classname="OnlineBoardInputPlayModeTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-11-16 07:20:43Z" end-time="2026-11-16 07:21:54Z" duration="71.007547" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="1520" name="ActualPitchInput(&quot;click&quot;,False)" fullname="OnlineBoardInputPlayModeTests.ActualPitchInput(&quot;click&quot;,False)" methodname="ActualPitchInput" classname="OnlineBoardInputPlayModeTests" runstate="Runnable" seed="2068745728" result="Passed" start-time="2026-11-16 07:20:43Z" end-time="2026-11-16 07:20:53Z" duration="10.146089" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[TokenKitCatalog] Loading kits JSON from Resources path 'Kits/kit-picker-v1-11-supported' (asset: Assets/Resources/Kits/kit-picker-v1-11-supported.json).
+[TokenKitCatalog] Found kits JSON TextAsset 'kit-picker-v1-11-supported' at Resources path 'Kits/kit-picker-v1-11-supported' (32277 characters).
+[TokenKitCatalog] Parsed 101 kit preset(s) from Resources path 'Kits/kit-picker-v1-11-supported'.
+[TokenKitCatalog] Active kit catalog contains 101 kit preset(s).
+MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584963649906
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Selecting token 1. Kuzmic
+1. Kuzmic moved to (-10, 0, -1)
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+1. Aziz took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+]]></output>
+          </test-case>
+          <test-case id="1521" name="ActualPitchInput(&quot;click&quot;,True)" fullname="OnlineBoardInputPlayModeTests.ActualPitchInput(&quot;click&quot;,True)" methodname="ActualPitchInput" classname="OnlineBoardInputPlayModeTests" runstate="Runnable" seed="1509637223" result="Passed" start-time="2026-11-16 07:20:53Z" end-time="2026-11-16 07:21:02Z" duration="8.829773" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584963713544
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Selecting token 1. Kuzmic
+1. Kuzmic moved to (0, 0, -10)
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+1. Aziz took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+]]></output>
+          </test-case>
+          <test-case id="1522" name="ActualPitchInput(&quot;ray&quot;,False)" fullname="OnlineBoardInputPlayModeTests.ActualPitchInput(&quot;ray&quot;,False)" methodname="ActualPitchInput" classname="OnlineBoardInputPlayModeTests" runstate="Runnable" seed="291540059" result="Passed" start-time="2026-11-16 07:21:02Z" end-time="2026-11-16 07:21:10Z" duration="8.348860" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584963777182
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Selecting token 1. Kuzmic
+1. Kuzmic moved to (-10, 0, -1)
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+1. Aziz took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+]]></output>
+          </test-case>
+          <test-case id="1523" name="ActualPitchInput(&quot;ray&quot;,True)" fullname="OnlineBoardInputPlayModeTests.ActualPitchInput(&quot;ray&quot;,True)" methodname="ActualPitchInput" classname="OnlineBoardInputPlayModeTests" runstate="Runnable" seed="702777070" result="Passed" start-time="2026-11-16 07:21:10Z" end-time="2026-11-16 07:21:19Z" duration="8.663940" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584963840820
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Selecting token 1. Kuzmic
+1. Kuzmic moved to (0, 0, -10)
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+1. Aziz took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+]]></output>
+          </test-case>
+          <test-case id="1524" name="ActualPitchInput(&quot;guards&quot;,False)" fullname="OnlineBoardInputPlayModeTests.ActualPitchInput(&quot;guards&quot;,False)" methodname="ActualPitchInput" classname="OnlineBoardInputPlayModeTests" runstate="Runnable" seed="261580829" result="Passed" start-time="2026-11-16 07:21:19Z" end-time="2026-11-16 07:21:25Z" duration="6.218988" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584963904458
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1525" name="ActualPitchInput(&quot;guards&quot;,True)" fullname="OnlineBoardInputPlayModeTests.ActualPitchInput(&quot;guards&quot;,True)" methodname="ActualPitchInput" classname="OnlineBoardInputPlayModeTests" runstate="Runnable" seed="536398759" result="Passed" start-time="2026-11-16 07:21:25Z" end-time="2026-11-16 07:21:31Z" duration="6.080426" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584963968096
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1526" name="ActualPitchInput(&quot;guest&quot;,False)" fullname="OnlineBoardInputPlayModeTests.ActualPitchInput(&quot;guest&quot;,False)" methodname="ActualPitchInput" classname="OnlineBoardInputPlayModeTests" runstate="Runnable" seed="827842537" result="Passed" start-time="2026-11-16 07:21:31Z" end-time="2026-11-16 07:21:42Z" duration="11.261200" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584964031734
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1527" name="ActualPitchInput(&quot;guest&quot;,True)" fullname="OnlineBoardInputPlayModeTests.ActualPitchInput(&quot;guest&quot;,True)" methodname="ActualPitchInput" classname="OnlineBoardInputPlayModeTests" runstate="Runnable" seed="2136339323" result="Passed" start-time="2026-11-16 07:21:42Z" end-time="2026-11-16 07:21:54Z" duration="11.416389" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584964159010
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+Saving results to: TestResults\GameplayRegression\Runs\20261116T072043005Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

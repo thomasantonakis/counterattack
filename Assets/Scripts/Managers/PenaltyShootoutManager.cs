@@ -80,6 +80,7 @@ public partial class PenaltyShootoutManager : MonoBehaviour
 
     public void ShowOrderSelection()
     {
+        if(FullOnline && CounterAttack.Online.OnlineRoomSession.IsGuest)return;
         Configure(matchManager);
         if (matchManager == null || playerTokenManager == null)
         {
@@ -121,12 +122,14 @@ public partial class PenaltyShootoutManager : MonoBehaviour
         orderSelectionCompleted = false;
         matchManager.currentState = MatchManager.GameState.PenaltyShootoutOrderSelection;
         matchManager.MarkPenaltyShootoutInProgress();
-        orderPanel.Configure(this, homeOrder, awayOrder);
+        onlineHomeReady=onlineAwayReady=false;
+        if(FullOnline)HideOrderPanel();else orderPanel.Configure(this, homeOrder, awayOrder);
         Debug.Log($"[Shootout] Order selection opened with {listLength} nominees per team.");
     }
 
     public void UpdateOrdersFromPanel(List<PlayerToken> nextHomeOrder, List<PlayerToken> nextAwayOrder)
     {
+        if(FullOnline && !applyingOnlineOrder)return;
         if (nextHomeOrder != null && nextHomeOrder.Count > 0)
         {
             homeOrder = nextHomeOrder.Where(token => token != null).ToList();
@@ -140,6 +143,7 @@ public partial class PenaltyShootoutManager : MonoBehaviour
 
     public void BeginShootoutFromOrderPanel(List<PlayerToken> selectedHomeOrder, List<PlayerToken> selectedAwayOrder)
     {
+        if(FullOnline && !applyingOnlineOrder)return;
         UpdateOrdersFromPanel(selectedHomeOrder, selectedAwayOrder);
         if (homeOrder.Count == 0 || awayOrder.Count == 0)
         {
@@ -237,17 +241,18 @@ public partial class PenaltyShootoutManager : MonoBehaviour
             stagingHexes[awayGk] = Hex(AwayGoalkeeperRestCoordinates);
         }
 
-        List<Coroutine> setupMoves = new();
-        AddTeamStagingMoves(setupMoves, homeTokens.Where(token => !token.IsGoalKeeper).ToList(), true);
-        AddTeamStagingMoves(setupMoves, awayTokens.Where(token => !token.IsGoalKeeper).ToList(), false);
-        if (homeGk != null && Hex(HomeGoalkeeperRestCoordinates) != null)
+        var stagingMoves = stagingHexes.Where(move => move.Value != null && move.Key.GetCurrentHex() != move.Value).ToArray();
+        // Every staging destination is assigned before anyone starts moving. Release
+        // the moving players' old hexes together so swaps never launch a second move.
+        foreach (var move in stagingMoves)
         {
-            setupMoves.Add(StartCoroutine(MoveTokenStraightToHex(homeGk, Hex(HomeGoalkeeperRestCoordinates), false, true)));
+            VacateShootoutHex(move.Key);
         }
 
-        if (awayGk != null && Hex(AwayGoalkeeperRestCoordinates) != null)
+        List<Coroutine> setupMoves = new();
+        foreach (var move in stagingMoves)
         {
-            setupMoves.Add(StartCoroutine(MoveTokenStraightToHex(awayGk, Hex(AwayGoalkeeperRestCoordinates), false, true)));
+            setupMoves.Add(StartCoroutine(MoveTokenStraightToHex(move.Key, move.Value, false, move.Key.IsGoalKeeper)));
         }
 
         HexCell penaltySpot = Hex(PenaltySpotCoordinates);
@@ -275,20 +280,6 @@ public partial class PenaltyShootoutManager : MonoBehaviour
         {
             Vector3Int coords = new(0, 0, home ? -(i + 1) : i + 1);
             stagingHexes[tokens[i]] = Hex(coords);
-        }
-    }
-
-    private void AddTeamStagingMoves(List<Coroutine> moves, List<PlayerToken> tokens, bool home)
-    {
-        int max = Mathf.Min(tokens.Count, 10);
-        for (int i = 0; i < max; i++)
-        {
-            Vector3Int coords = new(0, 0, home ? -(i + 1) : i + 1);
-            HexCell target = Hex(coords);
-            if (target != null)
-            {
-                moves.Add(StartCoroutine(MoveTokenStraightToHex(tokens[i], target, false, false)));
-            }
         }
     }
 
@@ -827,18 +818,7 @@ public partial class PenaltyShootoutManager : MonoBehaviour
         }
 
         using var movement = token.TrackMovement();
-        HexCell previousHex = token.GetCurrentHex();
-        if (previousHex != null)
-        {
-            if (previousHex.occupyingToken == token)
-            {
-                previousHex.occupyingToken = null;
-            }
-
-            previousHex.isAttackOccupied = false;
-            previousHex.isDefenseOccupied = false;
-            previousHex.ResetHighlight();
-        }
+        VacateShootoutHex(token);
 
         Vector3 startPos = token.transform.position;
         Vector3 endPos = target.transform.position;
@@ -871,6 +851,19 @@ public partial class PenaltyShootoutManager : MonoBehaviour
         {
             ball.PlaceAtCell(target);
         }
+    }
+
+    private static void VacateShootoutHex(PlayerToken token)
+    {
+        HexCell previousHex = token.GetCurrentHex();
+        if (previousHex == null) return;
+
+        token.SetCurrentHex(null);
+        if (previousHex.GetOccupyingToken() != null) return;
+
+        previousHex.isAttackOccupied = false;
+        previousHex.isDefenseOccupied = false;
+        previousHex.ResetHighlight();
     }
 
     private IEnumerator MoveBallStraightToHex(HexCell target)

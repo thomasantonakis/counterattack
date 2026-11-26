@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="4" result="Passed" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-17 05:40:19Z" end-time="2026-11-17 05:41:12Z" duration="53.2194126">
+  <test-suite type="TestSuite" id="3172" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1807" result="Passed" start-time="2026-11-17 05:40:19Z" end-time="2026-11-17 05:41:12Z" duration="53.219413" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="3169" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1807" result="Passed" start-time="2026-11-17 05:40:19Z" end-time="2026-11-17 05:41:12Z" duration="53.150795" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12156" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="2302" name="OnlinePublishedHighlightsPlayModeTests" fullname="OnlinePublishedHighlightsPlayModeTests" classname="OnlinePublishedHighlightsPlayModeTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-11-17 05:40:19Z" end-time="2026-11-17 05:41:12Z" duration="53.141541" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlinePublishedHighlights" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="2307" name="PublishedGuestChoicesUseAuthoredHexes" fullname="OnlinePublishedHighlightsPlayModeTests.PublishedGuestChoicesUseAuthoredHexes" classname="OnlinePublishedHighlightsPlayModeTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-11-17 05:40:19Z" end-time="2026-11-17 05:41:12Z" duration="53.123810" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="2303" name="PublishedGuestChoicesUseAuthoredHexes(16,False)" fullname="OnlinePublishedHighlightsPlayModeTests.PublishedGuestChoicesUseAuthoredHexes(16,False)" methodname="PublishedGuestChoicesUseAuthoredHexes" classname="OnlinePublishedHighlightsPlayModeTests" runstate="Runnable" seed="1008182806" result="Passed" start-time="2026-11-17 05:40:19Z" end-time="2026-11-17 05:40:34Z" duration="14.606331" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[TokenKitCatalog] Loading kits JSON from Resources path 'Kits/kit-picker-v1-11-supported' (asset: Assets/Resources/Kits/kit-picker-v1-11-supported.json).
+[TokenKitCatalog] Found kits JSON TextAsset 'kit-picker-v1-11-supported' at Resources path 'Kits/kit-picker-v1-11-supported' (32277 characters).
+[TokenKitCatalog] Parsed 101 kit preset(s) from Resources path 'Kits/kit-picker-v1-11-supported'.
+[TokenKitCatalog] Active kit catalog contains 101 kit preset(s).
+MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584932984088
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Selecting token 1. Kuzmic
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2304" name="PublishedGuestChoicesUseAuthoredHexes(16,True)" fullname="OnlinePublishedHighlightsPlayModeTests.PublishedGuestChoicesUseAuthoredHexes(16,True)" methodname="PublishedGuestChoicesUseAuthoredHexes" classname="OnlinePublishedHighlightsPlayModeTests" runstate="Runnable" seed="1313959499" result="Passed" start-time="2026-11-17 05:40:34Z" end-time="2026-11-17 05:40:47Z" duration="13.024918" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584933111364
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Selecting token 1. Kuzmic
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2305" name="PublishedGuestChoicesUseAuthoredHexes(18,False)" fullname="OnlinePublishedHighlightsPlayModeTests.PublishedGuestChoicesUseAuthoredHexes(18,False)" methodname="PublishedGuestChoicesUseAuthoredHexes" classname="OnlinePublishedHighlightsPlayModeTests" runstate="Runnable" seed="155137856" result="Passed" start-time="2026-11-17 05:40:47Z" end-time="2026-11-17 05:40:59Z" duration="12.733616" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584933238640
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Selecting token 1. Kuzmic
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2306" name="PublishedGuestChoicesUseAuthoredHexes(18,True)" fullname="OnlinePublishedHighlightsPlayModeTests.PublishedGuestChoicesUseAuthoredHexes(18,True)" methodname="PublishedGuestChoicesUseAuthoredHexes" classname="OnlinePublishedHighlightsPlayModeTests" runstate="Runnable" seed="860141860" result="Passed" start-time="2026-11-17 05:40:59Z" end-time="2026-11-17 05:41:12Z" duration="12.717839" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584933365916
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Selecting token 1. Kuzmic
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+Saving results to: TestResults\GameplayRegression\Runs\20261117T054019263Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

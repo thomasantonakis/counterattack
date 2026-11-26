@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="6" result="Passed" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-15 22:21:00Z" end-time="2026-11-15 22:21:04Z" duration="4.71387">
+  <test-suite type="TestSuite" id="2722" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1416" result="Passed" start-time="2026-11-15 22:21:00Z" end-time="2026-11-15 22:21:04Z" duration="4.713870" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2719" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1416" result="Passed" start-time="2026-11-15 22:21:00Z" end-time="2026-11-15 22:21:04Z" duration="4.684951" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17216" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="2249" name="ShootoutUiFeedbackPlayModeTests" fullname="ShootoutUiFeedbackPlayModeTests" classname="ShootoutUiFeedbackPlayModeTests" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-11-15 22:21:00Z" end-time="2026-11-15 22:21:04Z" duration="4.678097" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="ParameterizedMethod" id="2255" name="OffTargetHasNoTotal" fullname="ShootoutUiFeedbackPlayModeTests.OffTargetHasNoTotal" classname="ShootoutUiFeedbackPlayModeTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-15 22:21:00Z" end-time="2026-11-15 22:21:02Z" duration="2.546898" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="2253" name="OffTargetHasNoTotal(1)" fullname="ShootoutUiFeedbackPlayModeTests.OffTargetHasNoTotal(1)" methodname="OffTargetHasNoTotal" classname="ShootoutUiFeedbackPlayModeTests" runstate="Runnable" seed="1991985962" result="Passed" start-time="2026-11-15 22:21:00Z" end-time="2026-11-15 22:21:01Z" duration="1.572670" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Substitutions are no longer available: Committed to Shot
+Goalkeeper Away keeper can attempt a save at (18, 0, -2) with penalty -2
+Goalkeeper Away keeper can attempt a save at (18, 0, -2) with penalty -2
+Goalkeeper Away keeper can attempt a save at (18, 0, -1) with penalty -2
+Goalkeeper Away keeper can attempt a save at (18, 0, 0) with penalty -2
+Goalkeeper Away keeper can attempt a save at (18, 0, 0) with penalty -2
+Goalkeeper Away keeper can attempt a save at (18, 0, 1) with penalty -2
+Goalkeeper Away keeper can attempt a save at (18, 0, 2) with penalty -2
+Goalkeeper Away keeper can attempt a save at (18, 0, 2) with penalty -2
+Penalty Shootout Kick initiated. Random target selected at (19, 0, 0). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Hello from the StartShotRoll
+Home carrier Penalty Kick roll: 1 + Shooting: 5 = 0
+Home carrier rolled a 1, this means the penalty shootout kick is OFF target.
+]]></output>
+          </test-case>
+          <test-case id="2254" name="OffTargetHasNoTotal(-1)" fullname="ShootoutUiFeedbackPlayModeTests.OffTargetHasNoTotal(-1)" methodname="OffTargetHasNoTotal" classname="ShootoutUiFeedbackPlayModeTests" runstate="Runnable" seed="1080733046" result="Passed" start-time="2026-11-15 22:21:01Z" end-time="2026-11-15 22:21:02Z" duration="0.950125" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Substitutions are no longer available: Committed to Shot
+Goalkeeper Away keeper can attempt a save at (-18, 0, -2) with penalty -2
+Goalkeeper Away keeper can attempt a save at (-18, 0, -2) with penalty -2
+Goalkeeper Away keeper can attempt a save at (-18, 0, -1) with penalty -2
+Goalkeeper Away keeper can attempt a save at (-18, 0, 0) with penalty -2
+Goalkeeper Away keeper can attempt a save at (-18, 0, 0) with penalty -2
+Goalkeeper Away keeper can attempt a save at (-18, 0, 1) with penalty -2
+Goalkeeper Away keeper can attempt a save at (-18, 0, 2) with penalty -2
+Goalkeeper Away keeper can attempt a save at (-18, 0, 2) with penalty -2
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, 0). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Hello from the StartShotRoll
+Home carrier Penalty Kick roll: 1 + Shooting: 5 = 0
+Home carrier rolled a 1, this means the penalty shootout kick is OFF target.
+]]></output>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="2258" name="PreviewsFollowNewContestants" fullname="ShootoutUiFeedbackPlayModeTests.PreviewsFollowNewContestants" classname="ShootoutUiFeedbackPlayModeTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-15 22:21:02Z" end-time="2026-11-15 22:21:03Z" duration="1.146806" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="2256" name="PreviewsFollowNewContestants(True)" fullname="ShootoutUiFeedbackPlayModeTests.PreviewsFollowNewContestants(True)" methodname="PreviewsFollowNewContestants" classname="ShootoutUiFeedbackPlayModeTests" runstate="Runnable" seed="1342167843" result="Passed" start-time="2026-11-15 22:21:02Z" end-time="2026-11-15 22:21:03Z" duration="0.608727" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+]]></output>
+          </test-case>
+          <test-case id="2257" name="PreviewsFollowNewContestants(False)" fullname="ShootoutUiFeedbackPlayModeTests.PreviewsFollowNewContestants(False)" methodname="PreviewsFollowNewContestants" classname="ShootoutUiFeedbackPlayModeTests" runstate="Runnable" seed="804724286" result="Passed" start-time="2026-11-15 22:21:03Z" end-time="2026-11-15 22:21:03Z" duration="0.531446" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+]]></output>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="2252" name="StakesAndRollPrompt" fullname="ShootoutUiFeedbackPlayModeTests.StakesAndRollPrompt" classname="ShootoutUiFeedbackPlayModeTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-15 22:21:03Z" end-time="2026-11-15 22:21:04Z" duration="0.976958" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="2250" name="StakesAndRollPrompt(True)" fullname="ShootoutUiFeedbackPlayModeTests.StakesAndRollPrompt(True)" methodname="StakesAndRollPrompt" classname="ShootoutUiFeedbackPlayModeTests" runstate="Runnable" seed="1715887440" result="Passed" start-time="2026-11-15 22:21:03Z" end-time="2026-11-15 22:21:04Z" duration="0.443481" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+]]></output>
+          </test-case>
+          <test-case id="2251" name="StakesAndRollPrompt(False)" fullname="ShootoutUiFeedbackPlayModeTests.StakesAndRollPrompt(False)" methodname="StakesAndRollPrompt" classname="ShootoutUiFeedbackPlayModeTests" runstate="Runnable" seed="1490891730" result="Passed" start-time="2026-11-15 22:21:04Z" end-time="2026-11-15 22:21:04Z" duration="0.526619" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Saving results to: TestResults\GameplayRegression\Runs\20261115T222100028Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

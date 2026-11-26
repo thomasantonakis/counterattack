@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using System.Text;
 using System.Collections.Generic;
 
-public class GameDebugMonitor : MonoBehaviour
+public partial class GameDebugMonitor : MonoBehaviour
 {
     public bool IsAIThinking => roomDecisionManager != null && roomDecisionManager.IsThinking;
     private static readonly bool LogFullRoomDecisionCandidates = false;
@@ -98,6 +98,7 @@ public class GameDebugMonitor : MonoBehaviour
 
     void Update()
     {
+        if (CounterAttack.Online.OnlineRoomSession.Current?.HasInitialData == true) return;
         UpdateInstructionText();
         if (isVisible)
         {
@@ -111,6 +112,7 @@ public class GameDebugMonitor : MonoBehaviour
 
     void Start()
     {
+        if (CounterAttack.Online.OnlineRoomSession.IsGuest) return;
         LinkRoomSceneComponents();
         CacheInstructionPanelImage();
         RefreshInstructionPalettes();
@@ -207,6 +209,11 @@ public class GameDebugMonitor : MonoBehaviour
 
     private void UpdateInstructionText()
     {
+        if (CounterAttack.Online.OnlineRoomSession.Current?.HasInitialData == true)
+        {
+            RefreshOnlineInstructionPalette();
+            return;
+        }
         if (MatchManager.Instance?.IsGameplayInputBlocked == true)
         {
             roomDecisionManager?.SuspendThinking();

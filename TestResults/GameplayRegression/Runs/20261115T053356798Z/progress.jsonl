@@ -1,0 +1,16 @@
+{"name":"OnlineFrontendRecoveryEditorTests.SerializedRecovery(False,\"initial-retry\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFrontendRecoveryEditorTests.SerializedRecovery(False,\"silence\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFrontendRecoveryEditorTests.SerializedRecovery(False,\"pending\")","status":"Failed","message":"  Expected: True\r\n  But was:  False\r\n","stackTrace":"at OnlineFrontendRecoveryEditorTests.SerializedRecovery (System.Boolean hostAway, System.String branch) [0x00119] in C:\\Users\\thomas\\Documents\\Projects\\Personal\\counterattack\\Assets\\Editor\\FeatureTests\\OnlineFrontendRecovery\\OnlineFrontendRecoveryEditorTests.cs:57\r\n"}
+{"name":"OnlineFrontendRecoveryEditorTests.SerializedRecovery(False,\"agreed\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFrontendRecoveryEditorTests.SerializedRecovery(False,\"bounded-retry\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFrontendRecoveryEditorTests.SerializedRecovery(False,\"expiry\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFrontendRecoveryEditorTests.SerializedRecovery(False,\"untrusted\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFrontendRecoveryEditorTests.SerializedRecovery(False,\"closed\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFrontendRecoveryEditorTests.SerializedRecovery(True,\"initial-retry\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFrontendRecoveryEditorTests.SerializedRecovery(True,\"silence\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFrontendRecoveryEditorTests.SerializedRecovery(True,\"pending\")","status":"Failed","message":"  Expected: True\r\n  But was:  False\r\n","stackTrace":"at OnlineFrontendRecoveryEditorTests.SerializedRecovery (System.Boolean hostAway, System.String branch) [0x00119] in C:\\Users\\thomas\\Documents\\Projects\\Personal\\counterattack\\Assets\\Editor\\FeatureTests\\OnlineFrontendRecovery\\OnlineFrontendRecoveryEditorTests.cs:57\r\n"}
+{"name":"OnlineFrontendRecoveryEditorTests.SerializedRecovery(True,\"agreed\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFrontendRecoveryEditorTests.SerializedRecovery(True,\"bounded-retry\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFrontendRecoveryEditorTests.SerializedRecovery(True,\"expiry\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFrontendRecoveryEditorTests.SerializedRecovery(True,\"untrusted\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFrontendRecoveryEditorTests.SerializedRecovery(True,\"closed\")","status":"Passed","message":"","stackTrace":""}

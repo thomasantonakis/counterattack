@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="1" result="Passed" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-15 19:10:30Z" end-time="2026-11-15 19:10:43Z" duration="12.800602">
+  <test-suite type="TestSuite" id="2625" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1332" result="Passed" start-time="2026-11-15 19:10:30Z" end-time="2026-11-15 19:10:43Z" duration="12.800602" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2622" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1332" result="Passed" start-time="2026-11-15 19:10:30Z" end-time="2026-11-15 19:10:43Z" duration="12.768365" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17216" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="2066" name="OnlineSubstitutionsPlayModeTests" fullname="OnlineSubstitutionsPlayModeTests" classname="OnlineSubstitutionsPlayModeTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-11-15 19:10:30Z" end-time="2026-11-15 19:10:43Z" duration="12.763049" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineSubstitutions" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="2075" name="OwnPausedTeamSubstitutesOnceAndReplicates" fullname="OnlineSubstitutionsPlayModeTests.OwnPausedTeamSubstitutesOnceAndReplicates" classname="OnlineSubstitutionsPlayModeTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-11-15 19:10:30Z" end-time="2026-11-15 19:10:43Z" duration="12.753935" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="2067" name="OwnPausedTeamSubstitutesOnceAndReplicates(False,16,False)" fullname="OnlineSubstitutionsPlayModeTests.OwnPausedTeamSubstitutesOnceAndReplicates(False,16,False)" methodname="OwnPausedTeamSubstitutesOnceAndReplicates" classname="OnlineSubstitutionsPlayModeTests" runstate="Runnable" seed="1252867123" result="Passed" start-time="2026-11-15 19:10:30Z" end-time="2026-11-15 19:10:43Z" duration="12.732167" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[TokenKitCatalog] Loading kits JSON from Resources path 'Kits/kit-picker-v1-11-supported' (asset: Assets/Resources/Kits/kit-picker-v1-11-supported.json).
+[TokenKitCatalog] Found kits JSON TextAsset 'kit-picker-v1-11-supported' at Resources path 'Kits/kit-picker-v1-11-supported' (32277 characters).
+[TokenKitCatalog] Parsed 101 kit preset(s) from Resources path 'Kits/kit-picker-v1-11-supported'.
+[TokenKitCatalog] Active kit catalog contains 101 kit preset(s).
+MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584927853828
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Substitutions are now available: Owned stoppage fixture
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+Saving results to: TestResults\GameplayRegression\Runs\20261115T191030762Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

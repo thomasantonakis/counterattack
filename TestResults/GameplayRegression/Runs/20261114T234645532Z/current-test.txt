@@ -1,0 +1,1 @@
+OnlineSetupChannelEditorTests.AuthenticatedChannel(True,"reconnect-after-start")

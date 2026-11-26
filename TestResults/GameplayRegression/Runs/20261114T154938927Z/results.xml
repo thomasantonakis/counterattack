@@ -1,0 +1,659 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="12" result="Passed" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-14 15:49:38Z" end-time="2026-11-14 15:50:21Z" duration="42.5382893">
+  <test-suite type="TestSuite" id="2500" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1235" result="Passed" start-time="2026-11-14 15:49:38Z" end-time="2026-11-14 15:50:21Z" duration="42.538289" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2497" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1235" result="Passed" start-time="2026-11-14 15:49:39Z" end-time="2026-11-14 15:50:21Z" duration="42.498783" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12208" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1826" name="OnlinePenaltyPlayModeTests" fullname="OnlinePenaltyPlayModeTests" classname="OnlinePenaltyPlayModeTests" runstate="Runnable" testcasecount="12" result="Passed" start-time="2026-11-14 15:49:39Z" end-time="2026-11-14 15:50:21Z" duration="42.489328" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlinePenalties" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="1839" name="PenaltyContinues" fullname="OnlinePenaltyPlayModeTests.PenaltyContinues" classname="OnlinePenaltyPlayModeTests" runstate="Runnable" testcasecount="12" result="Passed" start-time="2026-11-14 15:49:39Z" end-time="2026-11-14 15:50:21Z" duration="42.473380" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="1827" name="PenaltyContinues(1,&quot;goal&quot;)" fullname="OnlinePenaltyPlayModeTests.PenaltyContinues(1,&quot;goal&quot;)" methodname="PenaltyContinues" classname="OnlinePenaltyPlayModeTests" runstate="Runnable" seed="671534586" result="Passed" start-time="2026-11-14 15:49:39Z" end-time="2026-11-14 15:49:42Z" duration="3.775125" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Penalty awarded. Select the penalty taker. Spot: (14, 0, 0), defending GK spot: (18, 0, 0).
+Moving Away keeper to required penalty spot (18, 0, 0).
+Home carrier selected as penalty taker.
+Moving Home carrier to required penalty spot (14, 0, 0).
+Penalty setup phase started: PenaltyDef1.
+Penalty setup phase started: PenaltyAtt.
+Penalty setup phase started: PenaltyDef2.
+Penalty setup complete. Select a shot target.
+Substitutions are no longer available: Penalty shot target selection
+Substitutions are no longer available: Committed to Shot
+[Game Log] Home carrier (Fixture Home) takes a Penalty Kick!
+Penalty Kick initiated. Proceeding to target selection.
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (19, 0, 0) selected. Preparing trajectory.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Hello from the StartShotRoll
+Home carrier Penalty Kick roll: 5 + Shooting: 6 = 11
+Goalkeeper Away keeper can attempt a save at (18, 0, 0) with penalty -2
+Penalty Kick has reached GK Away keeper. Press [R] to roll for the save.
+Unknown kit preset ''. Falling back to blue token style.
+GK Away keeper rolls 1 + Saving: 1 + Penalty: -2 = 1
+[Game Log] Away keeper (Fixture Away) faces a shot
+Home carrier Shot roll: 5 + Shooting: 6 = 11
+Get IN!! Home carrier, buries it to the top corner! Goal!!!
+[Expected Stats] Home carrier records xG 0.764 on penalty goal
+[Game Log] Home carrier (Fixture Home) completes an attempt on target
+[Game Log] Home carrier (Fixture Home) scores a goal! ⚽
+MoveTokenAlongPath: shouldCarryBall: False
+Token arrived at hex: Hex 43,18
+GOAL! Home carrier scores! Starting celebration on goal side 1.
+Substitutions are now available: Goal scored
+]]></output>
+          </test-case>
+          <test-case id="1828" name="PenaltyContinues(1,&quot;save&quot;)" fullname="OnlinePenaltyPlayModeTests.PenaltyContinues(1,&quot;save&quot;)" methodname="PenaltyContinues" classname="OnlinePenaltyPlayModeTests" runstate="Runnable" seed="1803688788" result="Passed" start-time="2026-11-14 15:49:42Z" end-time="2026-11-14 15:49:45Z" duration="3.107079" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Penalty awarded. Select the penalty taker. Spot: (14, 0, 0), defending GK spot: (18, 0, 0).
+Moving Away keeper to required penalty spot (18, 0, 0).
+Home carrier selected as penalty taker.
+Moving Home carrier to required penalty spot (14, 0, 0).
+Penalty setup phase started: PenaltyDef1.
+Penalty setup phase started: PenaltyAtt.
+Penalty setup phase started: PenaltyDef2.
+Penalty setup complete. Select a shot target.
+Substitutions are no longer available: Penalty shot target selection
+Substitutions are no longer available: Committed to Shot
+[Game Log] Home carrier (Fixture Home) takes a Penalty Kick!
+Penalty Kick initiated. Proceeding to target selection.
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (19, 0, 0) selected. Preparing trajectory.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Hello from the StartShotRoll
+Home carrier Penalty Kick roll: 2 + Shooting: 3 = 5
+Goalkeeper Away keeper can attempt a save at (18, 0, 0) with penalty -2
+Penalty Kick has reached GK Away keeper. Press [R] to roll for the save.
+Unknown kit preset ''. Falling back to blue token style.
+GK Away keeper rolls 3 + Saving: 8 + Penalty: -2 = 9
+[Game Log] Away keeper (Fixture Away) faces a shot
+[Expected Stats] Home carrier records xG 0.132 on penalty on target
+[Game Log] Home carrier (Fixture Home) completes an attempt on target
+GKPush: Away keeper is already on save hex (18, 0, 0).
+Away keeper saves the shot! Will they hold the ball? Away keeper (PlayerToken) needs to roll lower than 4 to hold the ball. Press [R] to roll for Handling Test!
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+[Game Log] Away keeper (Fixture Away) makes a save! 🧤Saved and held!
+🔍 Connected Token Found: Home carrier
+[Game Log] Away keeper (Fixture Away) wins possession after a shot from Home carrier
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Away keeper rolled 1 and holds the ball.
+Away keeper held the shot. Press [Q]uickThrow, or [K] to activate Final Thirds
+]]></output>
+          </test-case>
+          <test-case id="1829" name="PenaltyContinues(1,&quot;automatic&quot;)" fullname="OnlinePenaltyPlayModeTests.PenaltyContinues(1,&quot;automatic&quot;)" methodname="PenaltyContinues" classname="OnlinePenaltyPlayModeTests" runstate="Runnable" seed="608859691" result="Passed" start-time="2026-11-14 15:49:45Z" end-time="2026-11-14 15:49:49Z" duration="3.129757" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Penalty awarded. Select the penalty taker. Spot: (14, 0, 0), defending GK spot: (18, 0, 0).
+Moving Away keeper to required penalty spot (18, 0, 0).
+Home carrier selected as penalty taker.
+Moving Home carrier to required penalty spot (14, 0, 0).
+Penalty setup phase started: PenaltyDef1.
+Penalty setup phase started: PenaltyAtt.
+Penalty setup phase started: PenaltyDef2.
+Penalty setup complete. Select a shot target.
+Substitutions are no longer available: Penalty shot target selection
+Substitutions are no longer available: Committed to Shot
+[Game Log] Home carrier (Fixture Home) takes a Penalty Kick!
+Penalty Kick initiated. Proceeding to target selection.
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (19, 0, 0) selected. Preparing trajectory.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Hello from the StartShotRoll
+Home carrier Penalty Kick roll: 2 + Shooting: 3 = 5
+Goalkeeper Away keeper can attempt a save at (18, 0, 0) with penalty -2
+Penalty Kick has reached GK Away keeper. Press [R] to roll for the save.
+Unknown kit preset ''. Falling back to blue token style.
+GK Away keeper rolls 3 + Saving: 8 + Penalty: -2 = 9
+[Game Log] Away keeper (Fixture Away) faces a shot
+[Expected Stats] Home carrier records xG 0.132 on penalty on target
+[Game Log] Home carrier (Fixture Home) completes an attempt on target
+GKPush: Away keeper is already on save hex (18, 0, 0).
+Away keeper saves the shot! Will they hold the ball? Away keeper (PlayerToken) needs to roll lower than 4 to hold the ball. Press [R] to roll for Handling Test!
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+[Game Log] Away keeper (Fixture Away) makes a save! 🧤Saved and held!
+🔍 Connected Token Found: Home carrier
+[Game Log] Away keeper (Fixture Away) wins possession after a shot from Home carrier
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Away keeper rolled 1 and holds the ball.
+Away keeper held the shot. Press [Q]uickThrow, or [K] to activate Final Thirds
+]]></output>
+          </test-case>
+          <test-case id="1830" name="PenaltyContinues(1,&quot;hold&quot;)" fullname="OnlinePenaltyPlayModeTests.PenaltyContinues(1,&quot;hold&quot;)" methodname="PenaltyContinues" classname="OnlinePenaltyPlayModeTests" runstate="Runnable" seed="1684254231" result="Passed" start-time="2026-11-14 15:49:49Z" end-time="2026-11-14 15:49:52Z" duration="3.531261" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Penalty awarded. Select the penalty taker. Spot: (14, 0, 0), defending GK spot: (18, 0, 0).
+Moving Away keeper to required penalty spot (18, 0, 0).
+Home carrier selected as penalty taker.
+Moving Home carrier to required penalty spot (14, 0, 0).
+Penalty setup phase started: PenaltyDef1.
+Penalty setup phase started: PenaltyAtt.
+Penalty setup phase started: PenaltyDef2.
+Penalty setup complete. Select a shot target.
+Substitutions are no longer available: Penalty shot target selection
+Substitutions are no longer available: Committed to Shot
+[Game Log] Home carrier (Fixture Home) takes a Penalty Kick!
+Penalty Kick initiated. Proceeding to target selection.
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (19, 0, 0) selected. Preparing trajectory.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Hello from the StartShotRoll
+Home carrier Penalty Kick roll: 2 + Shooting: 3 = 5
+Goalkeeper Away keeper can attempt a save at (18, 0, 0) with penalty -2
+Penalty Kick has reached GK Away keeper. Press [R] to roll for the save.
+Unknown kit preset ''. Falling back to blue token style.
+GK Away keeper rolls 3 + Saving: 8 + Penalty: -2 = 9
+[Game Log] Away keeper (Fixture Away) faces a shot
+[Expected Stats] Home carrier records xG 0.132 on penalty on target
+[Game Log] Home carrier (Fixture Home) completes an attempt on target
+GKPush: Away keeper is already on save hex (18, 0, 0).
+Away keeper saves the shot! Will they hold the ball? Away keeper (PlayerToken) needs to roll lower than 4 to hold the ball. Press [R] to roll for Handling Test!
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+[Game Log] Away keeper (Fixture Away) makes a save! 🧤Saved and held!
+🔍 Connected Token Found: Home carrier
+[Game Log] Away keeper (Fixture Away) wins possession after a shot from Home carrier
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Away keeper rolled 1 and holds the ball.
+Away keeper held the shot. Press [Q]uickThrow, or [K] to activate Final Thirds
+]]></output>
+          </test-case>
+          <test-case id="1831" name="PenaltyContinues(1,&quot;defence-clearance&quot;)" fullname="OnlinePenaltyPlayModeTests.PenaltyContinues(1,&quot;defence-clearance&quot;)" methodname="PenaltyContinues" classname="OnlinePenaltyPlayModeTests" runstate="Runnable" seed="73259474" result="Passed" start-time="2026-11-14 15:49:52Z" end-time="2026-11-14 15:49:56Z" duration="4.128613" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Penalty awarded. Select the penalty taker. Spot: (14, 0, 0), defending GK spot: (18, 0, 0).
+Moving Away keeper to required penalty spot (18, 0, 0).
+Home carrier selected as penalty taker.
+Moving Home carrier to required penalty spot (14, 0, 0).
+Penalty setup phase started: PenaltyDef1.
+Penalty setup selected Away recovering player. Click any legal unoccupied setup hex.
+Penalty setup phase started: PenaltyAtt.
+Penalty setup phase started: PenaltyDef2.
+Penalty setup complete. Select a shot target.
+Substitutions are no longer available: Penalty shot target selection
+Substitutions are no longer available: Committed to Shot
+[Game Log] Home carrier (Fixture Home) takes a Penalty Kick!
+Penalty Kick initiated. Proceeding to target selection.
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (19, 0, 0) selected. Preparing trajectory.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Hello from the StartShotRoll
+Home carrier Penalty Kick roll: 2 + Shooting: 3 = 5
+Goalkeeper Away keeper can attempt a save at (18, 0, 0) with penalty -2
+Penalty Kick has reached GK Away keeper. Press [R] to roll for the save.
+Unknown kit preset ''. Falling back to blue token style.
+GK Away keeper rolls 3 + Saving: 8 + Penalty: -2 = 9
+[Game Log] Away keeper (Fixture Away) faces a shot
+[Expected Stats] Home carrier records xG 0.132 on penalty on target
+[Game Log] Home carrier (Fixture Home) completes an attempt on target
+GKPush: Away keeper is already on save hex (18, 0, 0).
+Away keeper saves the shot! Will they hold the ball? Away keeper (PlayerToken) needs to roll lower than 4 to hold the ball. Press [R] to roll for Handling Test!
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+[Game Log] Away keeper (Fixture Away) makes a save! 🧤Saved and held!
+🔍 Connected Token Found: Home carrier
+[Game Log] Away keeper (Fixture Away) wins possession after a shot from Home carrier
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Away keeper rolled 1 and holds the ball.
+Away keeper held the shot. Press [Q]uickThrow, or [K] to activate Final Thirds
+]]></output>
+          </test-case>
+          <test-case id="1832" name="PenaltyContinues(1,&quot;attack-clearance&quot;)" fullname="OnlinePenaltyPlayModeTests.PenaltyContinues(1,&quot;attack-clearance&quot;)" methodname="PenaltyContinues" classname="OnlinePenaltyPlayModeTests" runstate="Runnable" seed="622491068" result="Passed" start-time="2026-11-14 15:49:56Z" end-time="2026-11-14 15:50:00Z" duration="4.054736" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Penalty awarded. Select the penalty taker. Spot: (14, 0, 0), defending GK spot: (18, 0, 0).
+Moving Away keeper to required penalty spot (18, 0, 0).
+Home carrier selected as penalty taker.
+Moving Home carrier to required penalty spot (14, 0, 0).
+Penalty setup phase started: PenaltyDef1.
+Penalty setup phase started: PenaltyAtt.
+Penalty setup selected Online receiver. Click any legal unoccupied setup hex.
+Penalty setup phase started: PenaltyDef2.
+Penalty setup complete. Select a shot target.
+Substitutions are no longer available: Penalty shot target selection
+Substitutions are no longer available: Committed to Shot
+[Game Log] Home carrier (Fixture Home) takes a Penalty Kick!
+Penalty Kick initiated. Proceeding to target selection.
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (19, 0, 0) selected. Preparing trajectory.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Hello from the StartShotRoll
+Home carrier Penalty Kick roll: 2 + Shooting: 3 = 5
+Goalkeeper Away keeper can attempt a save at (18, 0, 0) with penalty -2
+Penalty Kick has reached GK Away keeper. Press [R] to roll for the save.
+Unknown kit preset ''. Falling back to blue token style.
+GK Away keeper rolls 3 + Saving: 8 + Penalty: -2 = 9
+[Game Log] Away keeper (Fixture Away) faces a shot
+[Expected Stats] Home carrier records xG 0.132 on penalty on target
+[Game Log] Home carrier (Fixture Home) completes an attempt on target
+GKPush: Away keeper is already on save hex (18, 0, 0).
+Away keeper saves the shot! Will they hold the ball? Away keeper (PlayerToken) needs to roll lower than 4 to hold the ball. Press [R] to roll for Handling Test!
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+[Game Log] Away keeper (Fixture Away) makes a save! 🧤Saved and held!
+🔍 Connected Token Found: Home carrier
+[Game Log] Away keeper (Fixture Away) wins possession after a shot from Home carrier
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Away keeper rolled 1 and holds the ball.
+Away keeper held the shot. Press [Q]uickThrow, or [K] to activate Final Thirds
+]]></output>
+          </test-case>
+          <test-case id="1833" name="PenaltyContinues(-1,&quot;goal&quot;)" fullname="OnlinePenaltyPlayModeTests.PenaltyContinues(-1,&quot;goal&quot;)" methodname="PenaltyContinues" classname="OnlinePenaltyPlayModeTests" runstate="Runnable" seed="1730157582" result="Passed" start-time="2026-11-14 15:50:00Z" end-time="2026-11-14 15:50:03Z" duration="2.926330" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Penalty awarded. Select the penalty taker. Spot: (-14, 0, 0), defending GK spot: (-18, 0, 0).
+Moving Away keeper to required penalty spot (-18, 0, 0).
+Home carrier selected as penalty taker.
+Moving Home carrier to required penalty spot (-14, 0, 0).
+Penalty setup phase started: PenaltyDef1.
+Penalty setup phase started: PenaltyAtt.
+Penalty setup phase started: PenaltyDef2.
+Penalty setup complete. Select a shot target.
+Substitutions are no longer available: Penalty shot target selection
+Substitutions are no longer available: Committed to Shot
+[Game Log] Home carrier (Fixture Home) takes a Penalty Kick!
+Penalty Kick initiated. Proceeding to target selection.
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (-19, 0, 0) selected. Preparing trajectory.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Hello from the StartShotRoll
+Home carrier Penalty Kick roll: 5 + Shooting: 6 = 11
+Goalkeeper Away keeper can attempt a save at (-18, 0, 0) with penalty -2
+Penalty Kick has reached GK Away keeper. Press [R] to roll for the save.
+Unknown kit preset ''. Falling back to blue token style.
+GK Away keeper rolls 1 + Saving: 1 + Penalty: -2 = 1
+[Game Log] Away keeper (Fixture Away) faces a shot
+Home carrier Shot roll: 5 + Shooting: 6 = 11
+Get IN!! Home carrier, buries it to the top corner! Goal!!!
+[Expected Stats] Home carrier records xG 0.764 on penalty goal
+[Game Log] Home carrier (Fixture Home) completes an attempt on target
+[Game Log] Home carrier (Fixture Home) scores a goal! ⚽
+MoveTokenAlongPath: shouldCarryBall: False
+Token arrived at hex: Hex 7,18
+GOAL! Home carrier scores! Starting celebration on goal side -1.
+Substitutions are now available: Goal scored
+]]></output>
+          </test-case>
+          <test-case id="1834" name="PenaltyContinues(-1,&quot;save&quot;)" fullname="OnlinePenaltyPlayModeTests.PenaltyContinues(-1,&quot;save&quot;)" methodname="PenaltyContinues" classname="OnlinePenaltyPlayModeTests" runstate="Runnable" seed="1497224693" result="Passed" start-time="2026-11-14 15:50:03Z" end-time="2026-11-14 15:50:06Z" duration="3.060029" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Penalty awarded. Select the penalty taker. Spot: (-14, 0, 0), defending GK spot: (-18, 0, 0).
+Moving Away keeper to required penalty spot (-18, 0, 0).
+Home carrier selected as penalty taker.
+Moving Home carrier to required penalty spot (-14, 0, 0).
+Penalty setup phase started: PenaltyDef1.
+Penalty setup phase started: PenaltyAtt.
+Penalty setup phase started: PenaltyDef2.
+Penalty setup complete. Select a shot target.
+Substitutions are no longer available: Penalty shot target selection
+Substitutions are no longer available: Committed to Shot
+[Game Log] Home carrier (Fixture Home) takes a Penalty Kick!
+Penalty Kick initiated. Proceeding to target selection.
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (-19, 0, 0) selected. Preparing trajectory.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Hello from the StartShotRoll
+Home carrier Penalty Kick roll: 2 + Shooting: 3 = 5
+Goalkeeper Away keeper can attempt a save at (-18, 0, 0) with penalty -2
+Penalty Kick has reached GK Away keeper. Press [R] to roll for the save.
+Unknown kit preset ''. Falling back to blue token style.
+GK Away keeper rolls 3 + Saving: 8 + Penalty: -2 = 9
+[Game Log] Away keeper (Fixture Away) faces a shot
+[Expected Stats] Home carrier records xG 0.132 on penalty on target
+[Game Log] Home carrier (Fixture Home) completes an attempt on target
+GKPush: Away keeper is already on save hex (-18, 0, 0).
+Away keeper saves the shot! Will they hold the ball? Away keeper (PlayerToken) needs to roll lower than 4 to hold the ball. Press [R] to roll for Handling Test!
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+[Game Log] Away keeper (Fixture Away) makes a save! 🧤Saved and held!
+🔍 Connected Token Found: Home carrier
+[Game Log] Away keeper (Fixture Away) wins possession after a shot from Home carrier
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Away keeper rolled 1 and holds the ball.
+Away keeper held the shot. Press [Q]uickThrow, or [K] to activate Final Thirds
+]]></output>
+          </test-case>
+          <test-case id="1835" name="PenaltyContinues(-1,&quot;automatic&quot;)" fullname="OnlinePenaltyPlayModeTests.PenaltyContinues(-1,&quot;automatic&quot;)" methodname="PenaltyContinues" classname="OnlinePenaltyPlayModeTests" runstate="Runnable" seed="942297829" result="Passed" start-time="2026-11-14 15:50:06Z" end-time="2026-11-14 15:50:09Z" duration="3.067972" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Penalty awarded. Select the penalty taker. Spot: (-14, 0, 0), defending GK spot: (-18, 0, 0).
+Moving Away keeper to required penalty spot (-18, 0, 0).
+Home carrier selected as penalty taker.
+Moving Home carrier to required penalty spot (-14, 0, 0).
+Penalty setup phase started: PenaltyDef1.
+Penalty setup phase started: PenaltyAtt.
+Penalty setup phase started: PenaltyDef2.
+Penalty setup complete. Select a shot target.
+Substitutions are no longer available: Penalty shot target selection
+Substitutions are no longer available: Committed to Shot
+[Game Log] Home carrier (Fixture Home) takes a Penalty Kick!
+Penalty Kick initiated. Proceeding to target selection.
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (-19, 0, 0) selected. Preparing trajectory.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Hello from the StartShotRoll
+Home carrier Penalty Kick roll: 2 + Shooting: 3 = 5
+Goalkeeper Away keeper can attempt a save at (-18, 0, 0) with penalty -2
+Penalty Kick has reached GK Away keeper. Press [R] to roll for the save.
+Unknown kit preset ''. Falling back to blue token style.
+GK Away keeper rolls 3 + Saving: 8 + Penalty: -2 = 9
+[Game Log] Away keeper (Fixture Away) faces a shot
+[Expected Stats] Home carrier records xG 0.132 on penalty on target
+[Game Log] Home carrier (Fixture Home) completes an attempt on target
+GKPush: Away keeper is already on save hex (-18, 0, 0).
+Away keeper saves the shot! Will they hold the ball? Away keeper (PlayerToken) needs to roll lower than 4 to hold the ball. Press [R] to roll for Handling Test!
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+[Game Log] Away keeper (Fixture Away) makes a save! 🧤Saved and held!
+🔍 Connected Token Found: Home carrier
+[Game Log] Away keeper (Fixture Away) wins possession after a shot from Home carrier
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Away keeper rolled 1 and holds the ball.
+Away keeper held the shot. Press [Q]uickThrow, or [K] to activate Final Thirds
+]]></output>
+          </test-case>
+          <test-case id="1836" name="PenaltyContinues(-1,&quot;hold&quot;)" fullname="OnlinePenaltyPlayModeTests.PenaltyContinues(-1,&quot;hold&quot;)" methodname="PenaltyContinues" classname="OnlinePenaltyPlayModeTests" runstate="Runnable" seed="983899694" result="Passed" start-time="2026-11-14 15:50:09Z" end-time="2026-11-14 15:50:13Z" duration="3.514213" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Penalty awarded. Select the penalty taker. Spot: (-14, 0, 0), defending GK spot: (-18, 0, 0).
+Moving Away keeper to required penalty spot (-18, 0, 0).
+Home carrier selected as penalty taker.
+Moving Home carrier to required penalty spot (-14, 0, 0).
+Penalty setup phase started: PenaltyDef1.
+Penalty setup phase started: PenaltyAtt.
+Penalty setup phase started: PenaltyDef2.
+Penalty setup complete. Select a shot target.
+Substitutions are no longer available: Penalty shot target selection
+Substitutions are no longer available: Committed to Shot
+[Game Log] Home carrier (Fixture Home) takes a Penalty Kick!
+Penalty Kick initiated. Proceeding to target selection.
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (-19, 0, 0) selected. Preparing trajectory.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Hello from the StartShotRoll
+Home carrier Penalty Kick roll: 2 + Shooting: 3 = 5
+Goalkeeper Away keeper can attempt a save at (-18, 0, 0) with penalty -2
+Penalty Kick has reached GK Away keeper. Press [R] to roll for the save.
+Unknown kit preset ''. Falling back to blue token style.
+GK Away keeper rolls 3 + Saving: 8 + Penalty: -2 = 9
+[Game Log] Away keeper (Fixture Away) faces a shot
+[Expected Stats] Home carrier records xG 0.132 on penalty on target
+[Game Log] Home carrier (Fixture Home) completes an attempt on target
+GKPush: Away keeper is already on save hex (-18, 0, 0).
+Away keeper saves the shot! Will they hold the ball? Away keeper (PlayerToken) needs to roll lower than 4 to hold the ball. Press [R] to roll for Handling Test!
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+[Game Log] Away keeper (Fixture Away) makes a save! 🧤Saved and held!
+🔍 Connected Token Found: Home carrier
+[Game Log] Away keeper (Fixture Away) wins possession after a shot from Home carrier
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Away keeper rolled 1 and holds the ball.
+Away keeper held the shot. Press [Q]uickThrow, or [K] to activate Final Thirds
+]]></output>
+          </test-case>
+          <test-case id="1837" name="PenaltyContinues(-1,&quot;defence-clearance&quot;)" fullname="OnlinePenaltyPlayModeTests.PenaltyContinues(-1,&quot;defence-clearance&quot;)" methodname="PenaltyContinues" classname="OnlinePenaltyPlayModeTests" runstate="Runnable" seed="660668721" result="Passed" start-time="2026-11-14 15:50:13Z" end-time="2026-11-14 15:50:17Z" duration="4.065551" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Penalty awarded. Select the penalty taker. Spot: (-14, 0, 0), defending GK spot: (-18, 0, 0).
+Moving Away keeper to required penalty spot (-18, 0, 0).
+Home carrier selected as penalty taker.
+Moving Home carrier to required penalty spot (-14, 0, 0).
+Penalty setup phase started: PenaltyDef1.
+Penalty setup selected Away recovering player. Click any legal unoccupied setup hex.
+Penalty setup phase started: PenaltyAtt.
+Penalty setup phase started: PenaltyDef2.
+Penalty setup complete. Select a shot target.
+Substitutions are no longer available: Penalty shot target selection
+Substitutions are no longer available: Committed to Shot
+[Game Log] Home carrier (Fixture Home) takes a Penalty Kick!
+Penalty Kick initiated. Proceeding to target selection.
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (-19, 0, 0) selected. Preparing trajectory.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Hello from the StartShotRoll
+Home carrier Penalty Kick roll: 2 + Shooting: 3 = 5
+Goalkeeper Away keeper can attempt a save at (-18, 0, 0) with penalty -2
+Penalty Kick has reached GK Away keeper. Press [R] to roll for the save.
+Unknown kit preset ''. Falling back to blue token style.
+GK Away keeper rolls 3 + Saving: 8 + Penalty: -2 = 9
+[Game Log] Away keeper (Fixture Away) faces a shot
+[Expected Stats] Home carrier records xG 0.132 on penalty on target
+[Game Log] Home carrier (Fixture Home) completes an attempt on target
+GKPush: Away keeper is already on save hex (-18, 0, 0).
+Away keeper saves the shot! Will they hold the ball? Away keeper (PlayerToken) needs to roll lower than 4 to hold the ball. Press [R] to roll for Handling Test!
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+[Game Log] Away keeper (Fixture Away) makes a save! 🧤Saved and held!
+🔍 Connected Token Found: Home carrier
+[Game Log] Away keeper (Fixture Away) wins possession after a shot from Home carrier
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Away keeper rolled 1 and holds the ball.
+Away keeper held the shot. Press [Q]uickThrow, or [K] to activate Final Thirds
+]]></output>
+          </test-case>
+          <test-case id="1838" name="PenaltyContinues(-1,&quot;attack-clearance&quot;)" fullname="OnlinePenaltyPlayModeTests.PenaltyContinues(-1,&quot;attack-clearance&quot;)" methodname="PenaltyContinues" classname="OnlinePenaltyPlayModeTests" runstate="Runnable" seed="2133195199" result="Passed" start-time="2026-11-14 15:50:17Z" end-time="2026-11-14 15:50:21Z" duration="4.061151" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Penalty awarded. Select the penalty taker. Spot: (-14, 0, 0), defending GK spot: (-18, 0, 0).
+Moving Away keeper to required penalty spot (-18, 0, 0).
+Home carrier selected as penalty taker.
+Moving Home carrier to required penalty spot (-14, 0, 0).
+Penalty setup phase started: PenaltyDef1.
+Penalty setup phase started: PenaltyAtt.
+Penalty setup selected Online receiver. Click any legal unoccupied setup hex.
+Penalty setup phase started: PenaltyDef2.
+Penalty setup complete. Select a shot target.
+Substitutions are no longer available: Penalty shot target selection
+Substitutions are no longer available: Committed to Shot
+[Game Log] Home carrier (Fixture Home) takes a Penalty Kick!
+Penalty Kick initiated. Proceeding to target selection.
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (-19, 0, 0) selected. Preparing trajectory.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Hello from the StartShotRoll
+Home carrier Penalty Kick roll: 2 + Shooting: 3 = 5
+Goalkeeper Away keeper can attempt a save at (-18, 0, 0) with penalty -2
+Penalty Kick has reached GK Away keeper. Press [R] to roll for the save.
+Unknown kit preset ''. Falling back to blue token style.
+GK Away keeper rolls 3 + Saving: 8 + Penalty: -2 = 9
+[Game Log] Away keeper (Fixture Away) faces a shot
+[Expected Stats] Home carrier records xG 0.132 on penalty on target
+[Game Log] Home carrier (Fixture Home) completes an attempt on target
+GKPush: Away keeper is already on save hex (-18, 0, 0).
+Away keeper saves the shot! Will they hold the ball? Away keeper (PlayerToken) needs to roll lower than 4 to hold the ball. Press [R] to roll for Handling Test!
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+[Game Log] Away keeper (Fixture Away) makes a save! 🧤Saved and held!
+🔍 Connected Token Found: Home carrier
+[Game Log] Away keeper (Fixture Away) wins possession after a shot from Home carrier
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Away keeper rolled 1 and holds the ball.
+Away keeper held the shot. Press [Q]uickThrow, or [K] to activate Final Thirds
+Saving results to: TestResults\GameplayRegression\Runs\20261114T154938927Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

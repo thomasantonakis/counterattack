@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="5" result="Passed" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 21:46:27Z" end-time="2026-11-16 21:46:37Z" duration="10.0087686">
+  <test-suite type="TestSuite" id="2990" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1649" result="Passed" start-time="2026-11-16 21:46:27Z" end-time="2026-11-16 21:46:37Z" duration="10.008769" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2987" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1649" result="Passed" start-time="2026-11-16 21:46:27Z" end-time="2026-11-16 21:46:37Z" duration="9.958311" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12156" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="2029" name="OnlineMovementPlayModeTests" fullname="OnlineMovementPlayModeTests" classname="OnlineMovementPlayModeTests" runstate="Runnable" testcasecount="5" result="Passed" start-time="2026-11-16 21:46:27Z" end-time="2026-11-16 21:46:37Z" duration="9.950812" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineMovement" />
+        </properties>
+        <test-case id="2035" name="InvalidTargetsAndGuestCannotMoveAuthority" fullname="OnlineMovementPlayModeTests.InvalidTargetsAndGuestCannotMoveAuthority" methodname="InvalidTargetsAndGuestCannotMoveAuthority" classname="OnlineMovementPlayModeTests" runstate="Runnable" seed="893201984" result="Passed" start-time="2026-11-16 21:46:27Z" end-time="2026-11-16 21:46:28Z" duration="0.741089" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Passing Online receiver to HandleTokenSelection
+]]></output>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="2034" name="OwnedMovementAndLongPassContinuation" fullname="OnlineMovementPlayModeTests.OwnedMovementAndLongPassContinuation" classname="OnlineMovementPlayModeTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-11-16 21:46:28Z" end-time="2026-11-16 21:46:37Z" duration="9.166251" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="2030" name="OwnedMovementAndLongPassContinuation(1,False)" fullname="OnlineMovementPlayModeTests.OwnedMovementAndLongPassContinuation(1,False)" methodname="OwnedMovementAndLongPassContinuation" classname="OnlineMovementPlayModeTests" runstate="Runnable" seed="903516713" result="Passed" start-time="2026-11-16 21:46:28Z" end-time="2026-11-16 21:46:30Z" duration="1.597417" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Passing Online receiver to HandleTokenSelection
+Committing to Movement Phase action. section=AttMP, selectedToken=Online receiver, awaitingHexDestination=True, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Hex 25,24 to AsyncMoveTokenToHexRegularly
+Passing Hex 25,24 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 25,24
+[Game Log] Online receiver (Fixture Home) moves 1 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Online receiver, IsDribbler: False, remainingDribblerPace: 0
+The selected Token is not the dribbler
+Non Dribbler Moved.
+Advancing Movement Phase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Trying to Forfeit Movement.
+No more defenders wish to move. Attack gets 2f2 move.
+Advancing Movement Phase
+All defenders have moved. Ready for Movement Phase 2f2.
+Trying to Forfeit Movement.
+No more tokens moving in 2f2 phase. Ending Movement Phase.
+Movement phase has been reset.
+Movement phase is over.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+]]></output>
+          </test-case>
+          <test-case id="2031" name="OwnedMovementAndLongPassContinuation(1,True)" fullname="OnlineMovementPlayModeTests.OwnedMovementAndLongPassContinuation(1,True)" methodname="OwnedMovementAndLongPassContinuation" classname="OnlineMovementPlayModeTests" runstate="Runnable" seed="1935095041" result="Passed" start-time="2026-11-16 21:46:30Z" end-time="2026-11-16 21:46:33Z" duration="3.372001" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Long Pass target map is still calculating. Target highlights will draw when ready.
+Long Ball activated. Please select a target hex.
+Clicked hex: (6, 0, -6)
+Long Pass target map is still calculating. Target highlights will draw when ready.
+First click registered. Click the orange target again to confirm the Long Ball.
+Clicked hex: (6, 0, -6)
+Offside assessed (long_ball_target_confirmed): line x=8, tokens=none.
+Long Ball target precompute cancelled. version=4, elapsedMs=10197.1, elapsedFrames=71, processed=0, validTargets=16
+Substitutions are no longer available: Committed to LongBall
+[Game Log] Home carrier (Fixture Home) attempts an aerial pass
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Long Ball confirmed. Waiting for accuracy roll. Please Press R key.
+Performing accuracy roll for Long Pass. Please Press R key.
+Accuracy dice roll: 5
+Passer: Home carrier, HighPass: 4
+Long Ball is accurate, passer roll: 5
+[Game Log] Home carrier (Fixture Home) accurate places an aerial pass
+Ball has reached its destination: (6, 0, -6).
+🧤 GK Free Long Ball Move: Click on a highlighted hex to move, or press [X] to skip.
+Landing hex is not in any eligible defender ZOI. No interception needed.
+Ball landed within bounds.
+Attacking team has possession: False.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Online receiver to HandleTokenSelection
+Passing Hex 25,24 to AsyncMoveTokenToHexRegularly
+Passing Hex 25,24 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 25,24
+[Game Log] Online receiver (Fixture Home) moves 1 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Online receiver, IsDribbler: False, remainingDribblerPace: 0
+The selected Token is not the dribbler
+Non Dribbler Moved.
+Advancing Movement Phase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Trying to Forfeit Movement.
+No more defenders wish to move. Attack gets 2f2 move.
+Advancing Movement Phase
+All defenders have moved. Ready for Movement Phase 2f2.
+Trying to Forfeit Movement.
+No more tokens moving in 2f2 phase. Ending Movement Phase.
+Movement phase has been reset.
+Movement phase is over.
+Attacking team has possession: False.
+Offside assessment preserved (long_ball_target_confirmed) while ball remains uncollected. Requested context: end_movement_phase.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+]]></output>
+          </test-case>
+          <test-case id="2032" name="OwnedMovementAndLongPassContinuation(-1,False)" fullname="OnlineMovementPlayModeTests.OwnedMovementAndLongPassContinuation(-1,False)" methodname="OwnedMovementAndLongPassContinuation" classname="OnlineMovementPlayModeTests" runstate="Runnable" seed="252288066" result="Passed" start-time="2026-11-16 21:46:33Z" end-time="2026-11-16 21:46:34Z" duration="1.066421" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Passing Online receiver to HandleTokenSelection
+Committing to Movement Phase action. section=AttMP, selectedToken=Online receiver, awaitingHexDestination=True, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Hex 25,24 to AsyncMoveTokenToHexRegularly
+Passing Hex 25,24 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 25,24
+[Game Log] Online receiver (Fixture Home) moves 1 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Online receiver, IsDribbler: False, remainingDribblerPace: 0
+The selected Token is not the dribbler
+Non Dribbler Moved.
+Advancing Movement Phase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Trying to Forfeit Movement.
+No more defenders wish to move. Attack gets 2f2 move.
+Advancing Movement Phase
+All defenders have moved. Ready for Movement Phase 2f2.
+Trying to Forfeit Movement.
+No more tokens moving in 2f2 phase. Ending Movement Phase.
+Movement phase has been reset.
+Movement phase is over.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+]]></output>
+          </test-case>
+          <test-case id="2033" name="OwnedMovementAndLongPassContinuation(-1,True)" fullname="OnlineMovementPlayModeTests.OwnedMovementAndLongPassContinuation(-1,True)" methodname="OwnedMovementAndLongPassContinuation" classname="OnlineMovementPlayModeTests" runstate="Runnable" seed="974074751" result="Passed" start-time="2026-11-16 21:46:34Z" end-time="2026-11-16 21:46:37Z" duration="3.098843" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Long Pass target map is still calculating. Target highlights will draw when ready.
+Long Ball activated. Please select a target hex.
+Clicked hex: (-6, 0, -6)
+Long Pass target map is still calculating. Target highlights will draw when ready.
+First click registered. Click the orange target again to confirm the Long Ball.
+Clicked hex: (-6, 0, -6)
+Offside assessed (long_ball_target_confirmed): line x=-8, tokens=none.
+Long Ball target precompute cancelled. version=4, elapsedMs=14636.5, elapsedFrames=556, processed=0, validTargets=16
+Substitutions are no longer available: Committed to LongBall
+[Game Log] Home carrier (Fixture Home) attempts an aerial pass
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Long Ball confirmed. Waiting for accuracy roll. Please Press R key.
+Performing accuracy roll for Long Pass. Please Press R key.
+Accuracy dice roll: 5
+Passer: Home carrier, HighPass: 4
+Long Ball is accurate, passer roll: 5
+[Game Log] Home carrier (Fixture Home) accurate places an aerial pass
+Ball has reached its destination: (-6, 0, -6).
+🧤 GK Free Long Ball Move: Click on a highlighted hex to move, or press [X] to skip.
+Landing hex is not in any eligible defender ZOI. No interception needed.
+Ball landed within bounds.
+Attacking team has possession: False.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Online receiver to HandleTokenSelection
+Passing Hex 25,24 to AsyncMoveTokenToHexRegularly
+Passing Hex 25,24 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 25,24
+[Game Log] Online receiver (Fixture Home) moves 1 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Online receiver, IsDribbler: False, remainingDribblerPace: 0
+The selected Token is not the dribbler
+Non Dribbler Moved.
+Advancing Movement Phase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Trying to Forfeit Movement.
+No more defenders wish to move. Attack gets 2f2 move.
+Advancing Movement Phase
+All defenders have moved. Ready for Movement Phase 2f2.
+Trying to Forfeit Movement.
+No more tokens moving in 2f2 phase. Ending Movement Phase.
+Movement phase has been reset.
+Movement phase is over.
+Attacking team has possession: False.
+Offside assessment preserved (long_ball_target_confirmed) while ball remains uncollected. Requested context: end_movement_phase.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Saving results to: TestResults\GameplayRegression\Runs\20261116T214627789Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

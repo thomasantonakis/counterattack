@@ -1,0 +1,443 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="12" result="Passed" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-17 06:37:28Z" end-time="2026-11-17 06:40:16Z" duration="168.1685244">
+  <test-suite type="TestSuite" id="3201" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1829" result="Passed" start-time="2026-11-17 06:37:28Z" end-time="2026-11-17 06:40:16Z" duration="168.168524" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="3198" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1829" result="Passed" start-time="2026-11-17 06:37:28Z" end-time="2026-11-17 06:40:16Z" duration="168.131347" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12156" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1513" name="OnlineActionPreviewsPlayModeTests" fullname="OnlineActionPreviewsPlayModeTests" classname="OnlineActionPreviewsPlayModeTests" runstate="Runnable" testcasecount="12" result="Passed" start-time="2026-11-17 06:37:28Z" end-time="2026-11-17 06:40:16Z" duration="168.097818" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineActionPreviews" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="1522" name="GroundPassPreview" fullname="OnlineActionPreviewsPlayModeTests.GroundPassPreview" classname="OnlineActionPreviewsPlayModeTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-11-17 06:37:28Z" end-time="2026-11-17 06:39:18Z" duration="109.779992" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="1514" name="GroundPassPreview(16,False,False)" fullname="OnlineActionPreviewsPlayModeTests.GroundPassPreview(16,False,False)" methodname="GroundPassPreview" classname="OnlineActionPreviewsPlayModeTests" runstate="Runnable" seed="1754988924" result="Passed" start-time="2026-11-17 06:37:28Z" end-time="2026-11-17 06:37:43Z" duration="15.001288" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[TokenKitCatalog] Loading kits JSON from Resources path 'Kits/kit-picker-v1-11-supported' (asset: Assets/Resources/Kits/kit-picker-v1-11-supported.json).
+[TokenKitCatalog] Found kits JSON TextAsset 'kit-picker-v1-11-supported' at Resources path 'Kits/kit-picker-v1-11-supported' (32277 characters).
+[TokenKitCatalog] Parsed 101 kit preset(s) from Resources path 'Kits/kit-picker-v1-11-supported'.
+[TokenKitCatalog] Active kit catalog contains 101 kit preset(s).
+MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584938271162
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+9. Meloni took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+Path: (-1, 0, -1) -> (-1, 0, 0) -> (-2, 0, 0) -> (-3, 0, -1) -> (-3, 0, 0) -> (-4, 0, 0) -> (-5, 0, -1) -> (-5, 0, 0) -> (-6, 0, 0)
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1515" name="GroundPassPreview(16,False,True)" fullname="OnlineActionPreviewsPlayModeTests.GroundPassPreview(16,False,True)" methodname="GroundPassPreview" classname="OnlineActionPreviewsPlayModeTests" runstate="Runnable" seed="983221959" result="Passed" start-time="2026-11-17 06:37:43Z" end-time="2026-11-17 06:37:57Z" duration="13.350267" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584938398438
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+9. Meloni took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+Path: (-1, 0, -1) -> (-1, 0, 0) -> (-2, 0, 0) -> (-3, 0, -1) -> (-3, 0, 0) -> (-4, 0, 0) -> (-5, 0, -1) -> (-5, 0, 0) -> (-6, 0, 0)
+2. Baez at (-3, 0, 1) with a tackling of 3 can intercept with a roll of 6 at (-3, 0, 0). Closest interception hex is (-3, 0, 0) (3 steps from the ball).
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1516" name="GroundPassPreview(16,True,False)" fullname="OnlineActionPreviewsPlayModeTests.GroundPassPreview(16,True,False)" methodname="GroundPassPreview" classname="OnlineActionPreviewsPlayModeTests" runstate="Runnable" seed="2077484131" result="Passed" start-time="2026-11-17 06:37:57Z" end-time="2026-11-17 06:38:10Z" duration="13.427095" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584938525714
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+9. Meloni took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+Path: (1, 0, -1) -> (1, 0, 0) -> (2, 0, 0) -> (3, 0, -1) -> (3, 0, 0) -> (4, 0, 0) -> (5, 0, -1) -> (5, 0, 0) -> (6, 0, 0)
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1517" name="GroundPassPreview(16,True,True)" fullname="OnlineActionPreviewsPlayModeTests.GroundPassPreview(16,True,True)" methodname="GroundPassPreview" classname="OnlineActionPreviewsPlayModeTests" runstate="Runnable" seed="1979630006" result="Passed" start-time="2026-11-17 06:38:10Z" end-time="2026-11-17 06:38:24Z" duration="13.553774" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584938652990
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+9. Meloni took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+Path: (1, 0, -1) -> (1, 0, 0) -> (2, 0, 0) -> (3, 0, -1) -> (3, 0, 0) -> (4, 0, 0) -> (5, 0, -1) -> (5, 0, 0) -> (6, 0, 0)
+2. Baez at (3, 0, 1) with a tackling of 3 can intercept with a roll of 6 at (3, 0, 0). Closest interception hex is (3, 0, 0) (3 steps from the ball).
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1518" name="GroundPassPreview(18,False,False)" fullname="OnlineActionPreviewsPlayModeTests.GroundPassPreview(18,False,False)" methodname="GroundPassPreview" classname="OnlineActionPreviewsPlayModeTests" runstate="Runnable" seed="329468495" result="Passed" start-time="2026-11-17 06:38:24Z" end-time="2026-11-17 06:38:37Z" duration="13.624095" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584938780266
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+9. Meloni took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+Path: (-1, 0, -1) -> (-1, 0, 0) -> (-2, 0, 0) -> (-3, 0, -1) -> (-3, 0, 0) -> (-4, 0, 0) -> (-5, 0, -1) -> (-5, 0, 0) -> (-6, 0, 0)
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1519" name="GroundPassPreview(18,False,True)" fullname="OnlineActionPreviewsPlayModeTests.GroundPassPreview(18,False,True)" methodname="GroundPassPreview" classname="OnlineActionPreviewsPlayModeTests" runstate="Runnable" seed="1901520578" result="Passed" start-time="2026-11-17 06:38:37Z" end-time="2026-11-17 06:38:51Z" duration="13.613146" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584938907542
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+9. Meloni took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+Path: (-1, 0, -1) -> (-1, 0, 0) -> (-2, 0, 0) -> (-3, 0, -1) -> (-3, 0, 0) -> (-4, 0, 0) -> (-5, 0, -1) -> (-5, 0, 0) -> (-6, 0, 0)
+2. Baez at (-3, 0, 1) with a tackling of 3 can intercept with a roll of 6 at (-3, 0, 0). Closest interception hex is (-3, 0, 0) (3 steps from the ball).
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1520" name="GroundPassPreview(18,True,False)" fullname="OnlineActionPreviewsPlayModeTests.GroundPassPreview(18,True,False)" methodname="GroundPassPreview" classname="OnlineActionPreviewsPlayModeTests" runstate="Runnable" seed="1160119088" result="Passed" start-time="2026-11-17 06:38:51Z" end-time="2026-11-17 06:39:05Z" duration="13.601489" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584939034818
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+9. Meloni took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+Path: (1, 0, -1) -> (1, 0, 0) -> (2, 0, 0) -> (3, 0, -1) -> (3, 0, 0) -> (4, 0, 0) -> (5, 0, -1) -> (5, 0, 0) -> (6, 0, 0)
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1521" name="GroundPassPreview(18,True,True)" fullname="OnlineActionPreviewsPlayModeTests.GroundPassPreview(18,True,True)" methodname="GroundPassPreview" classname="OnlineActionPreviewsPlayModeTests" runstate="Runnable" seed="381223296" result="Passed" start-time="2026-11-17 06:39:05Z" end-time="2026-11-17 06:39:18Z" duration="13.568631" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584939162094
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+9. Meloni took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+Path: (1, 0, -1) -> (1, 0, 0) -> (2, 0, 0) -> (3, 0, -1) -> (3, 0, 0) -> (4, 0, 0) -> (5, 0, -1) -> (5, 0, 0) -> (6, 0, 0)
+2. Baez at (3, 0, 1) with a tackling of 3 can intercept with a roll of 6 at (3, 0, 0). Closest interception hex is (3, 0, 0) (3 steps from the ball).
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="1528" name="MediumTargetDoesNotInventRisk" fullname="OnlineActionPreviewsPlayModeTests.MediumTargetDoesNotInventRisk" classname="OnlineActionPreviewsPlayModeTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-17 06:39:18Z" end-time="2026-11-17 06:39:46Z" duration="27.466440" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="1526" name="MediumTargetDoesNotInventRisk(False)" fullname="OnlineActionPreviewsPlayModeTests.MediumTargetDoesNotInventRisk(False)" methodname="MediumTargetDoesNotInventRisk" classname="OnlineActionPreviewsPlayModeTests" runstate="Runnable" seed="166422469" result="Passed" start-time="2026-11-17 06:39:18Z" end-time="2026-11-17 06:39:32Z" duration="13.591893" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584939289370
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+9. Meloni took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1527" name="MediumTargetDoesNotInventRisk(True)" fullname="OnlineActionPreviewsPlayModeTests.MediumTargetDoesNotInventRisk(True)" methodname="MediumTargetDoesNotInventRisk" classname="OnlineActionPreviewsPlayModeTests" runstate="Runnable" seed="1527652495" result="Passed" start-time="2026-11-17 06:39:32Z" end-time="2026-11-17 06:39:46Z" duration="13.842534" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584939416646
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+9. Meloni took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="1525" name="ShotPreview" fullname="OnlineActionPreviewsPlayModeTests.ShotPreview" classname="OnlineActionPreviewsPlayModeTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-17 06:39:46Z" end-time="2026-11-17 06:40:16Z" duration="30.836919" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="1523" name="ShotPreview(False)" fullname="OnlineActionPreviewsPlayModeTests.ShotPreview(False)" methodname="ShotPreview" classname="OnlineActionPreviewsPlayModeTests" runstate="Runnable" seed="1200715038" result="Passed" start-time="2026-11-17 06:39:46Z" end-time="2026-11-17 06:40:01Z" duration="15.403631" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584939543922
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+9. Meloni took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+Path: (-1, 0, -1) -> (-1, 0, 0) -> (-2, 0, 0) -> (-3, 0, -1) -> (-3, 0, 0) -> (-4, 0, 0) -> (-5, 0, -1) -> (-5, 0, 0) -> (-6, 0, 0)
+[Game Log] 9. Meloni (Away club) attempts a kick-off pass
+Path: (-1, 0, -1) -> (-1, 0, 0) -> (-2, 0, 0) -> (-3, 0, -1) -> (-3, 0, 0) -> (-4, 0, 0) -> (-5, 0, -1) -> (-5, 0, 0) -> (-6, 0, 0)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-14, tokens=none.
+Pass completed to (-6, 0, 0)
+[Game Log] 9. Meloni (Away club) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Buzek
+Offside assessment cleared: ground_pass_completed.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-14, tokens=none.
+HP target precompute started. version=4, frame=1000, ballHex=-13,0, candidateCount=1900
+Long Ball target precompute started. version=4, frame=1000, ballHex=-13,0, candidateCount=1900
+Movement phase has been reset.
+HP target precompute cancelled. version=4, elapsedMs=53.6, elapsedFrames=0, processed=0, validTargets=16
+Long Ball target precompute cancelled. version=4, elapsedMs=46.4, elapsedFrames=0, processed=0, validTargets=16
+HP target precompute started. version=6, frame=1000, ballHex=-13,0, candidateCount=1900
+Long Ball target precompute started. version=6, frame=1000, ballHex=-13,0, candidateCount=1900
+Substitutions are no longer available: Committed to Shot
+HP target precompute cancelled. version=6, elapsedMs=39.0, elapsedFrames=0, processed=0, validTargets=16
+Long Ball target precompute cancelled. version=6, elapsedMs=38.4, elapsedFrames=0, processed=0, validTargets=16
+Full Power Shot initiated. Proceeding to target selection.
+[Game Log] 10. Buzek (Away club) Unknown ShotType
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (-19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Goalkeeper 1. Kuzmic can attempt a save at (-16, 0, 0) with penalty 0
+Shot interactions found: 1
+The GK is next up. Shooter must Roll to shoot. Setting isWaitingForShotRoll to true.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1524" name="ShotPreview(True)" fullname="OnlineActionPreviewsPlayModeTests.ShotPreview(True)" methodname="ShotPreview" classname="OnlineActionPreviewsPlayModeTests" runstate="Runnable" seed="1617169202" result="Passed" start-time="2026-11-17 06:40:01Z" end-time="2026-11-17 06:40:16Z" duration="15.417399" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584939671198
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+9. Meloni took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+Path: (1, 0, -1) -> (1, 0, 0) -> (2, 0, 0) -> (3, 0, -1) -> (3, 0, 0) -> (4, 0, 0) -> (5, 0, -1) -> (5, 0, 0) -> (6, 0, 0)
+[Game Log] 9. Meloni (Away club) attempts a kick-off pass
+Path: (1, 0, -1) -> (1, 0, 0) -> (2, 0, 0) -> (3, 0, -1) -> (3, 0, 0) -> (4, 0, 0) -> (5, 0, -1) -> (5, 0, 0) -> (6, 0, 0)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=14, tokens=none.
+Pass completed to (6, 0, 0)
+[Game Log] 9. Meloni (Away club) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Buzek
+Offside assessment cleared: ground_pass_completed.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=14, tokens=none.
+HP target precompute started. version=4, frame=1111, ballHex=13,0, candidateCount=1900
+Long Ball target precompute started. version=4, frame=1111, ballHex=13,0, candidateCount=1900
+Movement phase has been reset.
+HP target precompute cancelled. version=4, elapsedMs=28.3, elapsedFrames=0, processed=0, validTargets=0
+Long Ball target precompute cancelled. version=4, elapsedMs=28.5, elapsedFrames=0, processed=0, validTargets=16
+HP target precompute started. version=6, frame=1111, ballHex=13,0, candidateCount=1900
+Long Ball target precompute started. version=6, frame=1111, ballHex=13,0, candidateCount=1900
+Substitutions are no longer available: Committed to Shot
+HP target precompute cancelled. version=6, elapsedMs=30.8, elapsedFrames=0, processed=0, validTargets=0
+Long Ball target precompute cancelled. version=6, elapsedMs=30.8, elapsedFrames=0, processed=0, validTargets=16
+Full Power Shot initiated. Proceeding to target selection.
+[Game Log] 10. Buzek (Away club) Unknown ShotType
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Goalkeeper 1. Kuzmic can attempt a save at (16, 0, 0) with penalty 0
+Shot interactions found: 1
+The GK is next up. Shooter must Roll to shoot. Setting isWaitingForShotRoll to true.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+Saving results to: TestResults\GameplayRegression\Runs\20261117T063728766Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

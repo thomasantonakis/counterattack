@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class ScoreboardManager : MonoBehaviour
 {
+    public void RefreshPublishedOnlineState()=>UpdateScoreboardData();
     private const float TimerPanelHorizontalPadding = 16f;
     private const float TimerPanelVerticalPadding = 12f;
 

@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="24" result="Passed" total="24" passed="24" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-14 23:11:12Z" end-time="2026-11-14 23:11:12Z" duration="0.3466553">
+  <test-suite type="TestSuite" id="2617" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1354" result="Passed" start-time="2026-11-14 23:11:12Z" end-time="2026-11-14 23:11:12Z" duration="0.346655" total="24" passed="24" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="2610" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="1354" result="Passed" start-time="2026-11-14 23:11:12Z" end-time="2026-11-14 23:11:12Z" duration="0.263043" total="24" passed="24" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="1132" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="1750" name="OnlineSetupAgreementEditorTests" fullname="OnlineSetupAgreementEditorTests" classname="OnlineSetupAgreementEditorTests" runstate="Runnable" testcasecount="44" result="Passed" start-time="2026-11-14 23:11:12Z" end-time="2026-11-14 23:11:12Z" duration="0.245662" total="24" passed="24" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineSetupAgreement" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="1775" name="Agreement" fullname="OnlineSetupAgreementEditorTests.Agreement" classname="OnlineSetupAgreementEditorTests" runstate="Runnable" testcasecount="24" result="Passed" start-time="2026-11-14 23:11:12Z" end-time="2026-11-14 23:11:12Z" duration="0.243317" total="24" passed="24" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1751" name="Agreement(False,&quot;start&quot;)" fullname="OnlineSetupAgreementEditorTests.Agreement(False,&quot;start&quot;)" methodname="Agreement" classname="OnlineSetupAgreementEditorTests" runstate="Runnable" seed="1717309928" result="Passed" start-time="2026-11-14 23:11:12Z" end-time="2026-11-14 23:11:12Z" duration="0.014724" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1752" name="Agreement(False,&quot;one-ready&quot;)" fullname="OnlineSetupAgreementEditorTests.Agreement(False,&quot;one-ready&quot;)" methodname="Agreement" classname="OnlineSetupAgreementEditorTests" runstate="Runnable" seed="1992002946" result="Passed" start-time="2026-11-14 23:11:12Z" end-time="2026-11-14 23:11:12Z" duration="0.002838" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1753" name="Agreement(False,&quot;team-edit&quot;)" fullname="OnlineSetupAgreementEditorTests.Agreement(False,&quot;team-edit&quot;)" methodname="Agreement" classname="OnlineSetupAgreementEditorTests" runstate="Runnable" seed="1817628142" result="Passed" start-time="2026-11-14 23:11:12Z" end-time="2026-11-14 23:11:12Z" duration="0.011755" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1754" name="Agreement(False,&quot;settings-edit&quot;)" fullname="OnlineSetupAgreementEditorTests.Agreement(False,&quot;settings-edit&quot;)" methodname="Agreement" classname="OnlineSetupAgreementEditorTests" runstate="Runnable" seed="1156781743" result="Passed" start-time="2026-11-14 23:11:12Z" end-time="2026-11-14 23:11:12Z" duration="0.005302" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1755" name="Agreement(False,&quot;unready&quot;)" fullname="OnlineSetupAgreementEditorTests.Agreement(False,&quot;unready&quot;)" methodname="Agreement" classname="OnlineSetupAgreementEditorTests" runstate="Runnable" seed="379175563" result="Passed" start-time="2026-11-14 23:11:12Z" end-time="2026-11-14 23:11:12Z" duration="0.002396" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1756" name="Agreement(False,&quot;duplicate&quot;)" fullname="OnlineSetupAgreementEditorTests.Agreement(False,&quot;duplicate&quot;)" methodname="Agreement" classname="OnlineSetupAgreementEditorTests" runstate="Runnable" seed="206624904" result="Passed" start-time="2026-11-14 23:11:12Z" end-time="2026-11-14 23:11:12Z" duration="0.003069" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1757" name="Agreement(False,&quot;conflict&quot;)" fullname="OnlineSetupAgreementEditorTests.Agreement(False,&quot;conflict&quot;)" methodname="Agreement" classname="OnlineSetupAgreementEditorTests" runstate="Runnable" seed="572199699" result="Passed" start-time="2026-11-14 23:11:12Z" end-time="2026-11-14 23:11:12Z" duration="0.003438" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1758" name="Agreement(False,&quot;snapshot&quot;)" fullname="OnlineSetupAgreementEditorTests.Agreement(False,&quot;snapshot&quot;)" methodname="Agreement" classname="OnlineSetupAgreementEditorTests" runstate="Runnable" seed="184621252" result="Passed" start-time="2026-11-14 23:11:12Z" end-time="2026-11-14 23:11:12Z" duration="0.002012" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1759" name="Agreement(False,&quot;rebind&quot;)" fullname="OnlineSetupAgreementEditorTests.Agreement(False,&quot;rebind&quot;)" methodname="Agreement" classname="OnlineSetupAgreementEditorTests" runstate="Runnable" seed="1281726036" result="Passed" start-time="2026-11-14 23:11:12Z" end-time="2026-11-14 23:11:12Z" duration="0.001724" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1760" name="Agreement(False,&quot;disconnect&quot;)" fullname="OnlineSetupAgreementEditorTests.Agreement(False,&quot;disconnect&quot;)" methodname="Agreement" classname="OnlineSetupAgreementEditorTests" runstate="Runnable" seed="1930272991" result="Passed" start-time="2026-11-14 23:11:12Z" end-time="2026-11-14 23:11:12Z" duration="0.008459" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1761" name="Agreement(False,&quot;guest-settings&quot;)" fullname="OnlineSetupAgreementEditorTests.Agreement(False,&quot;guest-settings&quot;)" methodname="Agreement" classname="OnlineSetupAgreementEditorTests" runstate="Runnable" seed="1193756428" result="Passed" start-time="2026-11-14 23:11:12Z" end-time="2026-11-14 23:11:12Z" duration="0.003490" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1762" name="Agreement(False,&quot;bad-payload&quot;)" fullname="OnlineSetupAgreementEditorTests.Agreement(False,&quot;bad-payload&quot;)" methodname="Agreement" classname="OnlineSetupAgreementEditorTests" runstate="Runnable" seed="268301212" result="Passed" start-time="2026-11-14 23:11:12Z" end-time="2026-11-14 23:11:12Z" duration="0.008616" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1763" name="Agreement(True,&quot;start&quot;)" fullname="OnlineSetupAgreementEditorTests.Agreement(True,&quot;start&quot;)" methodname="Agreement" classname="OnlineSetupAgreementEditorTests" runstate="Runnable" seed="969876664" result="Passed" start-time="2026-11-14 23:11:12Z" end-time="2026-11-14 23:11:12Z" duration="0.013801" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1764" name="Agreement(True,&quot;one-ready&quot;)" fullname="OnlineSetupAgreementEditorTests.Agreement(True,&quot;one-ready&quot;)" methodname="Agreement" classname="OnlineSetupAgreementEditorTests" runstate="Runnable" seed="1917669819" result="Passed" start-time="2026-11-14 23:11:12Z" end-time="2026-11-14 23:11:12Z" duration="0.001607" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1765" name="Agreement(True,&quot;team-edit&quot;)" fullname="OnlineSetupAgreementEditorTests.Agreement(True,&quot;team-edit&quot;)" methodname="Agreement" classname="OnlineSetupAgreementEditorTests" runstate="Runnable" seed="968351086" result="Passed" start-time="2026-11-14 23:11:12Z" end-time="2026-11-14 23:11:12Z" duration="0.002816" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1766" name="Agreement(True,&quot;settings-edit&quot;)" fullname="OnlineSetupAgreementEditorTests.Agreement(True,&quot;settings-edit&quot;)" methodname="Agreement" classname="OnlineSetupAgreementEditorTests" runstate="Runnable" seed="889724217" result="Passed" start-time="2026-11-14 23:11:12Z" end-time="2026-11-14 23:11:12Z" duration="0.002996" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1767" name="Agreement(True,&quot;unready&quot;)" fullname="OnlineSetupAgreementEditorTests.Agreement(True,&quot;unready&quot;)" methodname="Agreement" classname="OnlineSetupAgreementEditorTests" runstate="Runnable" seed="249519500" result="Passed" start-time="2026-11-14 23:11:12Z" end-time="2026-11-14 23:11:12Z" duration="0.001709" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1768" name="Agreement(True,&quot;duplicate&quot;)" fullname="OnlineSetupAgreementEditorTests.Agreement(True,&quot;duplicate&quot;)" methodname="Agreement" classname="OnlineSetupAgreementEditorTests" runstate="Runnable" seed="540428391" result="Passed" start-time="2026-11-14 23:11:12Z" end-time="2026-11-14 23:11:12Z" duration="0.002765" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1769" name="Agreement(True,&quot;conflict&quot;)" fullname="OnlineSetupAgreementEditorTests.Agreement(True,&quot;conflict&quot;)" methodname="Agreement" classname="OnlineSetupAgreementEditorTests" runstate="Runnable" seed="1546528432" result="Passed" start-time="2026-11-14 23:11:12Z" end-time="2026-11-14 23:11:12Z" duration="0.005238" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1770" name="Agreement(True,&quot;snapshot&quot;)" fullname="OnlineSetupAgreementEditorTests.Agreement(True,&quot;snapshot&quot;)" methodname="Agreement" classname="OnlineSetupAgreementEditorTests" runstate="Runnable" seed="1695674300" result="Passed" start-time="2026-11-14 23:11:12Z" end-time="2026-11-14 23:11:12Z" duration="0.001804" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1771" name="Agreement(True,&quot;rebind&quot;)" fullname="OnlineSetupAgreementEditorTests.Agreement(True,&quot;rebind&quot;)" methodname="Agreement" classname="OnlineSetupAgreementEditorTests" runstate="Runnable" seed="583469605" result="Passed" start-time="2026-11-14 23:11:12Z" end-time="2026-11-14 23:11:12Z" duration="0.001601" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1772" name="Agreement(True,&quot;disconnect&quot;)" fullname="OnlineSetupAgreementEditorTests.Agreement(True,&quot;disconnect&quot;)" methodname="Agreement" classname="OnlineSetupAgreementEditorTests" runstate="Runnable" seed="487770762" result="Passed" start-time="2026-11-14 23:11:12Z" end-time="2026-11-14 23:11:12Z" duration="0.002114" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1773" name="Agreement(True,&quot;guest-settings&quot;)" fullname="OnlineSetupAgreementEditorTests.Agreement(True,&quot;guest-settings&quot;)" methodname="Agreement" classname="OnlineSetupAgreementEditorTests" runstate="Runnable" seed="267916414" result="Passed" start-time="2026-11-14 23:11:12Z" end-time="2026-11-14 23:11:12Z" duration="0.001513" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1774" name="Agreement(True,&quot;bad-payload&quot;)" fullname="OnlineSetupAgreementEditorTests.Agreement(True,&quot;bad-payload&quot;)" methodname="Agreement" classname="OnlineSetupAgreementEditorTests" runstate="Runnable" seed="75739834" result="Passed" start-time="2026-11-14 23:11:12Z" end-time="2026-11-14 23:11:12Z" duration="0.001679" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Saving results to: TestResults\GameplayRegression\Runs\20261114T231112299Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

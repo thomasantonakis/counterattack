@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="8" result="Failed(Child)" total="8" passed="0" failed="8" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 21:51:22Z" end-time="2026-11-16 21:51:29Z" duration="7.2013977">
+  <test-suite type="TestSuite" id="3000" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1657" result="Failed" site="Child" start-time="2026-11-16 21:51:22Z" end-time="2026-11-16 21:51:29Z" duration="7.201398" total="8" passed="0" failed="8" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="2997" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1657" result="Failed" site="Child" start-time="2026-11-16 21:51:22Z" end-time="2026-11-16 21:51:29Z" duration="7.161344" total="8" passed="0" failed="8" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12156" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestFixture" id="2126" name="OnlinePickupKeyPlayModeTests" fullname="OnlinePickupKeyPlayModeTests" classname="OnlinePickupKeyPlayModeTests" runstate="Runnable" testcasecount="8" result="Failed" site="Child" start-time="2026-11-16 21:51:22Z" end-time="2026-11-16 21:51:29Z" duration="7.150311" total="8" passed="0" failed="8" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlinePickupKey" />
+        </properties>
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="ParameterizedMethod" id="2135" name="RealPickupThroughV" fullname="OnlinePickupKeyPlayModeTests.RealPickupThroughV" classname="OnlinePickupKeyPlayModeTests" runstate="Runnable" testcasecount="8" result="Failed" site="Child" start-time="2026-11-16 21:51:22Z" end-time="2026-11-16 21:51:29Z" duration="7.128957" total="8" passed="0" failed="8" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-case id="2127" name="RealPickupThroughV(1,False,False)" fullname="OnlinePickupKeyPlayModeTests.RealPickupThroughV(1,False,False)" methodname="RealPickupThroughV" classname="OnlinePickupKeyPlayModeTests" runstate="Runnable" seed="1257880969" result="Failed" start-time="2026-11-16 21:51:22Z" end-time="2026-11-16 21:51:23Z" duration="1.328855" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: "movement.target:-5:0"
+  But was:  null
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlinePickupKey>d__118.MoveNext () [0x0029f] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlinePickupKey\OnlinePickupKeyFixture.cs:18
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: False.
+Attacking team has possession: False.
+Offside assessment preserved (end_movement_phase) while ball remains uncollected. Requested context: end_movement_phase.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Online pickup collector to HandleTokenSelection
+]]></output>
+          </test-case>
+          <test-case id="2128" name="RealPickupThroughV(1,False,True)" fullname="OnlinePickupKeyPlayModeTests.RealPickupThroughV(1,False,True)" methodname="RealPickupThroughV" classname="OnlinePickupKeyPlayModeTests" runstate="Runnable" seed="1035816007" result="Failed" start-time="2026-11-16 21:51:23Z" end-time="2026-11-16 21:51:24Z" duration="0.849523" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: "movement.target:-5:0"
+  But was:  null
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlinePickupKey>d__118.MoveNext () [0x0029f] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlinePickupKey\OnlinePickupKeyFixture.cs:18
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: False.
+Attacking team has possession: False.
+Offside assessment preserved (end_movement_phase) while ball remains uncollected. Requested context: end_movement_phase.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Passing Online pickup collector to HandleTokenSelection
+A Valid Defender was selected: Online pickup collector
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+]]></output>
+          </test-case>
+          <test-case id="2129" name="RealPickupThroughV(1,True,False)" fullname="OnlinePickupKeyPlayModeTests.RealPickupThroughV(1,True,False)" methodname="RealPickupThroughV" classname="OnlinePickupKeyPlayModeTests" runstate="Runnable" seed="49193752" result="Failed" start-time="2026-11-16 21:51:24Z" end-time="2026-11-16 21:51:25Z" duration="0.827364" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: "movement.target:-5:0"
+  But was:  null
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlinePickupKey>d__118.MoveNext () [0x0029f] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlinePickupKey\OnlinePickupKeyFixture.cs:18
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: False.
+Attacking team has possession: False.
+Offside assessment preserved (end_movement_phase) while ball remains uncollected. Requested context: end_movement_phase.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Online pickup collector to HandleTokenSelection
+]]></output>
+          </test-case>
+          <test-case id="2130" name="RealPickupThroughV(1,True,True)" fullname="OnlinePickupKeyPlayModeTests.RealPickupThroughV(1,True,True)" methodname="RealPickupThroughV" classname="OnlinePickupKeyPlayModeTests" runstate="Runnable" seed="1983935175" result="Failed" start-time="2026-11-16 21:51:25Z" end-time="2026-11-16 21:51:25Z" duration="0.759903" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: "movement.target:-5:0"
+  But was:  null
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlinePickupKey>d__118.MoveNext () [0x0029f] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlinePickupKey\OnlinePickupKeyFixture.cs:18
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: False.
+Attacking team has possession: False.
+Offside assessment preserved (end_movement_phase) while ball remains uncollected. Requested context: end_movement_phase.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Passing Online pickup collector to HandleTokenSelection
+A Valid Defender was selected: Online pickup collector
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+]]></output>
+          </test-case>
+          <test-case id="2131" name="RealPickupThroughV(-1,False,False)" fullname="OnlinePickupKeyPlayModeTests.RealPickupThroughV(-1,False,False)" methodname="RealPickupThroughV" classname="OnlinePickupKeyPlayModeTests" runstate="Runnable" seed="1154608381" result="Failed" start-time="2026-11-16 21:51:25Z" end-time="2026-11-16 21:51:26Z" duration="0.872168" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: "movement.target:5:0"
+  But was:  null
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlinePickupKey>d__118.MoveNext () [0x0029f] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlinePickupKey\OnlinePickupKeyFixture.cs:18
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: False.
+Attacking team has possession: False.
+Offside assessment preserved (end_movement_phase) while ball remains uncollected. Requested context: end_movement_phase.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Online pickup collector to HandleTokenSelection
+]]></output>
+          </test-case>
+          <test-case id="2132" name="RealPickupThroughV(-1,False,True)" fullname="OnlinePickupKeyPlayModeTests.RealPickupThroughV(-1,False,True)" methodname="RealPickupThroughV" classname="OnlinePickupKeyPlayModeTests" runstate="Runnable" seed="242261214" result="Failed" start-time="2026-11-16 21:51:26Z" end-time="2026-11-16 21:51:27Z" duration="0.860830" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: "movement.target:5:0"
+  But was:  null
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlinePickupKey>d__118.MoveNext () [0x0029f] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlinePickupKey\OnlinePickupKeyFixture.cs:18
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: False.
+Attacking team has possession: False.
+Offside assessment preserved (end_movement_phase) while ball remains uncollected. Requested context: end_movement_phase.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Passing Online pickup collector to HandleTokenSelection
+A Valid Defender was selected: Online pickup collector
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+]]></output>
+          </test-case>
+          <test-case id="2133" name="RealPickupThroughV(-1,True,False)" fullname="OnlinePickupKeyPlayModeTests.RealPickupThroughV(-1,True,False)" methodname="RealPickupThroughV" classname="OnlinePickupKeyPlayModeTests" runstate="Runnable" seed="1996214546" result="Failed" start-time="2026-11-16 21:51:27Z" end-time="2026-11-16 21:51:28Z" duration="0.751133" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: "movement.target:5:0"
+  But was:  null
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlinePickupKey>d__118.MoveNext () [0x0029f] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlinePickupKey\OnlinePickupKeyFixture.cs:18
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: False.
+Attacking team has possession: False.
+Offside assessment preserved (end_movement_phase) while ball remains uncollected. Requested context: end_movement_phase.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Online pickup collector to HandleTokenSelection
+]]></output>
+          </test-case>
+          <test-case id="2134" name="RealPickupThroughV(-1,True,True)" fullname="OnlinePickupKeyPlayModeTests.RealPickupThroughV(-1,True,True)" methodname="RealPickupThroughV" classname="OnlinePickupKeyPlayModeTests" runstate="Runnable" seed="512839176" result="Failed" start-time="2026-11-16 21:51:28Z" end-time="2026-11-16 21:51:29Z" duration="0.836425" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: "movement.target:5:0"
+  But was:  null
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlinePickupKey>d__118.MoveNext () [0x0029f] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlinePickupKey\OnlinePickupKeyFixture.cs:18
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: False.
+Attacking team has possession: False.
+Offside assessment preserved (end_movement_phase) while ball remains uncollected. Requested context: end_movement_phase.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Passing Online pickup collector to HandleTokenSelection
+A Valid Defender was selected: Online pickup collector
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Ball is reachable, recalculating Reachable without using ballHex
+Saving results to: TestResults\GameplayRegression\Runs\20261116T215122072Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

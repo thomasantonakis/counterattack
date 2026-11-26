@@ -1,0 +1,8 @@
+{"name":"OnlineBoardInputPlayModeTests.ActualPitchInput(\"click\",False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineBoardInputPlayModeTests.ActualPitchInput(\"click\",True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineBoardInputPlayModeTests.ActualPitchInput(\"ray\",False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineBoardInputPlayModeTests.ActualPitchInput(\"ray\",True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineBoardInputPlayModeTests.ActualPitchInput(\"guards\",False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineBoardInputPlayModeTests.ActualPitchInput(\"guards\",True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineBoardInputPlayModeTests.ActualPitchInput(\"guest\",False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineBoardInputPlayModeTests.ActualPitchInput(\"guest\",True)","status":"Passed","message":"","stackTrace":""}

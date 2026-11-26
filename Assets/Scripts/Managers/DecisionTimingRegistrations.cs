@@ -17,6 +17,11 @@ public partial class FirstTimePassManager
         r.Decision(DecisionKind.FirstTimePassTarget, isActivated && isAwaitingTargetSelection);
         r.Decision(DecisionKind.FirstTimePassAttackerMovement, isActivated && (isWaitingForAttackerSelection || isWaitingForAttackerMove), movementPhaseManager?.isPlayerMoving != true);
         r.Decision(DecisionKind.FirstTimePassDefenderMovement, isActivated && (isWaitingForDefenderSelection || isWaitingForDefenderMove), movementPhaseManager?.isPlayerMoving != true);
+        if(MatchManager.Instance?.IsOnlineAuthorityControlled==true)
+        {
+            r.Roll(this,"interception",isActivated && isWaitingForDiceRoll,()=>isActivated && isWaitingForDiceRoll,
+                ()=>{TryExecuteOnlineFtp(OnlineFtpIntent.Roll);});return;
+        }
         r.Roll(this, "interception", isActivated && isWaitingForDiceRoll, () => isActivated && isWaitingForDiceRoll, OnKeyReceived);
     }
 }
@@ -30,6 +35,15 @@ public partial class HighPassManager
         r.Decision(DecisionKind.HighPassAttackerMovement, isActivated && (isWaitingForAttackerSelection || isWaitingForAttackerMove), movementPhaseManager?.isPlayerMoving != true);
         r.Decision(DecisionKind.HighPassDefenderMovement, isActivated && (isWaitingForDefenderSelection || isWaitingForDefenderMove), movementPhaseManager?.isPlayerMoving != true);
         r.Decision(DecisionKind.HighPassGoalkeeperRush, isActivated && isWaitingForDefGKChallengeDecision);
+        if (MatchManager.Instance?.IsOnlineAuthorityControlled == true)
+        {
+            void OnlineRoll(string phase,bool waiting,OnlineHighPassIntent intent)=>r.Roll(this,phase,waiting,
+                ()=>isActivated && OnlineDecisionStage==phase,()=>{TryExecuteOnlineHighPass(intent);});
+            OnlineRoll("accuracy",isWaitingForAccuracyRoll,OnlineHighPassIntent.Accuracy);
+            OnlineRoll("direction",isWaitingForDirectionRoll,OnlineHighPassIntent.Direction);
+            OnlineRoll("distance",isWaitingForDistanceRoll,OnlineHighPassIntent.Distance);
+            return;
+        }
         r.Roll(this, "accuracy", isWaitingForAccuracyRoll, () => isActivated && isWaitingForAccuracyRoll, OnKeyReceived);
         r.Roll(this, "direction", isWaitingForDirectionRoll, () => isActivated && isWaitingForDirectionRoll, OnKeyReceived);
         r.Roll(this, "distance", isWaitingForDistanceRoll, () => isActivated && isWaitingForDistanceRoll, OnKeyReceived);
@@ -42,6 +56,16 @@ public partial class LongBallManager
         r.Scope(nameof(LongBallManager), IsInstructionExpectingHomeTeam());
         r.Decision(DecisionKind.LongBallTarget, isActivated && isAwaitingTargetSelection);
         r.Decision(DecisionKind.LongBallGoalkeeperRush, isActivated && isWaitingForDefLBMove);
+        if (MatchManager.Instance?.IsOnlineAuthorityControlled == true)
+        {
+            void OnlineRoll(string phase, bool waiting, OnlineLongBallIntent intent) => r.Roll(this, phase, waiting,
+                () => isActivated && OnlineDecisionStage == phase, () => { TryExecuteOnlineLongBall(intent); });
+            OnlineRoll("accuracy", isWaitingForAccuracyRoll, OnlineLongBallIntent.Accuracy);
+            OnlineRoll("direction", isWaitingForDirectionRoll, OnlineLongBallIntent.Direction);
+            OnlineRoll("distance", isWaitingForDistanceRoll, OnlineLongBallIntent.Distance);
+            OnlineRoll("interception", isWaitingForInterceptionRoll, OnlineLongBallIntent.Interception);
+            return;
+        }
         r.Roll(this, "accuracy", isWaitingForAccuracyRoll, () => isActivated && isWaitingForAccuracyRoll, OnKeyReceived);
         r.Roll(this, "direction", isWaitingForDirectionRoll, () => isActivated && isWaitingForDirectionRoll, OnKeyReceived);
         r.Roll(this, "distance", isWaitingForDistanceRoll, () => isActivated && isWaitingForDistanceRoll, OnKeyReceived);
@@ -59,10 +83,22 @@ public partial class HeaderManager
         r.Decision(DecisionKind.HeadedPassOrHeaderAtGoal, isActivated && isWaitingForHeaderAtGoal);
         r.Decision(DecisionKind.HeadedPassTarget, isActivated && isWaitingForHeaderTargetSelection);
         r.Decision(DecisionKind.GoalkeeperPickupOrLeave, isActivated && isWaitingForHeadedBackPassChoice);
-        r.Roll(this, "header", isWaitingForHeaderRoll, () => isActivated && isWaitingForHeaderRoll, OnKeyReceived);
-        r.Roll(this, "control", isWaitingForControlRoll, () => isActivated && isWaitingForControlRoll, OnKeyReceived);
-        r.Roll(this, "interception", isWaitingForInterceptionRoll, () => isActivated && isWaitingForInterceptionRoll, OnKeyReceived);
-        r.Roll(this, "backpass", isWaitingForHeadedBackPassRoll, () => isActivated && isWaitingForHeadedBackPassRoll, OnKeyReceived);
+        if(MatchManager.Instance?.IsOnlineAuthorityControlled==true)
+            r.Roll(this,"header",isWaitingForHeaderRoll,()=>isActivated && isWaitingForHeaderRoll && tokenRolling!=null,
+                ()=>{TryExecuteOnlineHeader(OnlineHeaderIntent.Roll);});
+        else r.Roll(this, "header", isWaitingForHeaderRoll, () => isActivated && isWaitingForHeaderRoll, OnKeyReceived);
+        if(MatchManager.Instance?.IsOnlineAuthorityControlled==true)
+            r.Roll(this,"control",isWaitingForControlRoll,()=>isActivated && isWaitingForControlRoll,
+                ()=>{TryExecuteOnlineHeaderControl(OnlineHeaderControlIntent.Roll);});
+        else r.Roll(this, "control", isWaitingForControlRoll, () => isActivated && isWaitingForControlRoll, OnKeyReceived);
+        if(MatchManager.Instance?.IsOnlineAuthorityControlled==true)
+            r.Roll(this,"interception",OnlineHeaderStage=="interception",()=>isActivated && OnlineHeaderStage=="interception",
+                ()=>{TryExecuteOnlineHeader(OnlineHeaderIntent.Interception);});
+        else r.Roll(this, "interception", isWaitingForInterceptionRoll, () => isActivated && isWaitingForInterceptionRoll, OnKeyReceived);
+        if(MatchManager.Instance?.IsOnlineAuthorityControlled==true)
+            r.Roll(this,"backpass",OnlineHeaderStage=="backpass.roll",()=>isActivated && OnlineHeaderStage=="backpass.roll",
+                ()=>{TryExecuteOnlineHeader(OnlineHeaderIntent.KeeperCatch);});
+        else r.Roll(this, "backpass", isWaitingForHeadedBackPassRoll, () => isActivated && isWaitingForHeadedBackPassRoll, OnKeyReceived);
     }
 }
 public partial class ShotManager
@@ -76,6 +112,15 @@ public partial class ShotManager
         r.Decision(shotType == "snapshot" ? DecisionKind.SnapshotGoalLineTarget : DecisionKind.ShotGoalLineTarget, isWaitingForTargetSelection);
         r.Decision(DecisionKind.QuickThrowOrDistribution, isWaitingForSaveandHoldScenario);
         r.Decision(DecisionKind.GoalkeeperPickupOrLeave, isWaitingForOutsideBoxGKShotDecision);
+        if(MatchManager.Instance?.IsOnlineAuthorityControlled==true)
+        {
+            r.Roll(this,"block",OnlineShotStage=="block",()=>OnlineShotStage=="block",()=>{TryExecuteOnlineShot(OnlineShotIntent.Block);});
+            r.Roll(this,"shot",OnlineShotStage=="roll",()=>OnlineShotStage=="roll",()=>{TryExecuteOnlineShot(OnlineShotIntent.Shoot);});
+            r.Roll(this,"save",OnlineShotStage is "header.save" or "save",()=>OnlineShotStage is "header.save" or "save",
+                ()=>{TryExecuteOnlineShot(isHeaderAtGoal?OnlineShotIntent.HeaderSave:OnlineShotIntent.Save);});
+            r.Roll(this,"handling",OnlineShotStage=="handling",()=>OnlineShotStage=="handling",()=>{TryExecuteOnlineShot(OnlineShotIntent.Handling);});
+            return;
+        }
         r.Roll(this, "block", isWaitingForBlockDiceRoll, () => isWaitingForBlockDiceRoll, OnKeyReceived);
         r.Roll(this, "shot", isWaitingForShotRoll, () => isWaitingForShotRoll, OnKeyReceived);
         r.Roll(this, "save", isWaitingForGKDiceRoll, () => isWaitingForGKDiceRoll, OnKeyReceived);
@@ -87,6 +132,13 @@ public partial class LooseBallManager
     public void RegisterTiming(DecisionTimingRegistration r)
     {
         r.Scope(nameof(LooseBallManager), IsInstructionExpectingHomeTeam());
+        if(MatchManager.Instance?.IsOnlineAuthorityControlled==true)
+        {
+            void OnlineRoll(string phase,OnlineLooseBallIntent intent)=>r.Roll(this,phase,OnlineDecisionStage==phase,
+                ()=>isActivated && OnlineDecisionStage==phase,()=>{TryExecuteOnlineLooseBall(intent);});
+            OnlineRoll("direction",OnlineLooseBallIntent.Direction);OnlineRoll("distance",OnlineLooseBallIntent.Distance);OnlineRoll("recovery",OnlineLooseBallIntent.Recovery);
+            return;
+        }
         r.Roll(this, "direction", isActivated && isWaitingForDirectionRoll, () => isActivated && isWaitingForDirectionRoll, OnKeyReceived);
         r.Roll(this, "distance", isActivated && isWaitingForDistanceRoll, () => isActivated && isWaitingForDistanceRoll, OnKeyReceived);
         r.Roll(this, "interception", isActivated && isWaitingForInterceptionRoll, () => isActivated && isWaitingForInterceptionRoll, OnKeyReceived);
@@ -206,9 +258,23 @@ public partial class MovementPhaseManager
         r.Decision(DecisionKind.SnapshotOrForfeitPace, paceChoice);
         r.Decision(DecisionKind.AdvantageOrFreeKick, isWaitingForFoulDecision);
         r.Decision(DecisionKind.GoalkeeperPickupOrLeave, isWaitingForGKWallDiveDecision);
-        r.Roll(this, "interception", isWaitingForInterceptionDiceRoll, () => isActivated && isWaitingForInterceptionDiceRoll, OnKeyReceived);
-        r.Roll(this, "tackle", isWaitingForTackleRoll, () => isActivated && isWaitingForTackleRoll, OnKeyReceived);
+        if(MatchManager.Instance?.IsOnlineAuthorityControlled==true)
+            r.Roll(this,"interception",isWaitingForInterceptionDiceRoll,()=>isActivated && isWaitingForInterceptionDiceRoll,
+                ()=>{TryExecuteOnlineDribble(OnlineDribbleIntent.Steal);});
+        else r.Roll(this, "interception", isWaitingForInterceptionDiceRoll, () => isActivated && isWaitingForInterceptionDiceRoll, OnKeyReceived);
+        if(MatchManager.Instance?.IsOnlineAuthorityControlled==true)
+            r.Roll(this,"tackle",isWaitingForTackleRoll,()=>isActivated && OnlineGroundDuelStage=="roll",
+                ()=>{TryExecuteOnlineGroundDuel(OnlineGroundDuelIntent.Roll);});
+        else r.Roll(this, "tackle", isWaitingForTackleRoll, () => isActivated && isWaitingForTackleRoll, OnKeyReceived);
+        if(MatchManager.Instance?.IsOnlineAuthorityControlled==true)
+        {
+            r.Roll(this,"card",isWaitingForYellowCardRoll,()=>OnlineFoulStage=="leniency",()=>{TryExecuteOnlineFoul(OnlineFoulIntent.Leniency);});
+            r.Roll(this,"injury",isWaitingForInjuryRoll,()=>OnlineFoulStage=="injury",()=>{TryExecuteOnlineFoul(OnlineFoulIntent.Injury);});
+        }
+        else
+        {
         r.Roll(this, "card", isWaitingForYellowCardRoll, () => isActivated && isWaitingForYellowCardRoll, OnKeyReceived);
         r.Roll(this, "injury", isWaitingForInjuryRoll, () => isActivated && isWaitingForInjuryRoll, OnKeyReceived);
+        }
     }
 }

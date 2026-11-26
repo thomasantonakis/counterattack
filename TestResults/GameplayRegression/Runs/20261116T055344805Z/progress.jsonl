@@ -1,0 +1,13 @@
+{"name":"OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(\"purpose\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(\"stage\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(\"negative\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(\"oversize\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(\"winner\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(\"chooser\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(\"tied-winner\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(\"missing-winner\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(\"home-stage\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(\"away-stage\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(\"result-stage\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomCoinTossEditorTests.RejectsMalformedCoinWithoutAdvancingGuest(\"closed\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomCoinTossEditorTests.ReplicaClearsOptionalCoinAndRetainsAbsentWorldPoses","status":"Passed","message":"","stackTrace":""}

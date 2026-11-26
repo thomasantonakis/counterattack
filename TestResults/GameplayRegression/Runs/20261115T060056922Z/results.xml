@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="16" result="Passed" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-15 06:00:57Z" end-time="2026-11-15 06:01:14Z" duration="17.5866745">
+  <test-suite type="TestSuite" id="2798" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1517" result="Passed" start-time="2026-11-15 06:00:57Z" end-time="2026-11-15 06:01:14Z" duration="17.586675" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="2792" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="1517" result="Passed" start-time="2026-11-15 06:00:57Z" end-time="2026-11-15 06:01:14Z" duration="17.474644" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="1132" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="1672" name="OnlineDraftChannelEditorTests" fullname="OnlineDraftChannelEditorTests" classname="OnlineDraftChannelEditorTests" runstate="Runnable" testcasecount="16" result="Passed" start-time="2026-11-15 06:00:57Z" end-time="2026-11-15 06:01:14Z" duration="17.466834" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineDraftTransport" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="1689" name="SerializedDraft" fullname="OnlineDraftChannelEditorTests.SerializedDraft" classname="OnlineDraftChannelEditorTests" runstate="Runnable" testcasecount="16" result="Passed" start-time="2026-11-15 06:00:57Z" end-time="2026-11-15 06:01:14Z" duration="17.461600" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1673" name="SerializedDraft(False,&quot;arrival&quot;)" fullname="OnlineDraftChannelEditorTests.SerializedDraft(False,&quot;arrival&quot;)" methodname="SerializedDraft" classname="OnlineDraftChannelEditorTests" runstate="Runnable" seed="1518107999" result="Passed" start-time="2026-11-15 06:00:57Z" end-time="2026-11-15 06:00:58Z" duration="0.745088" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[TokenKitCatalog] Loading kits JSON from Resources path 'Kits/kit-picker-v1-11-supported' (asset: Assets/Resources/Kits/kit-picker-v1-11-supported.json).
+[TokenKitCatalog] Found kits JSON TextAsset 'kit-picker-v1-11-supported' at Resources path 'Kits/kit-picker-v1-11-supported' (32277 characters).
+[TokenKitCatalog] Parsed 101 kit preset(s) from Resources path 'Kits/kit-picker-v1-11-supported'.
+[TokenKitCatalog] Active kit catalog contains 101 kit preset(s).
+]]></output>
+          </test-case>
+          <test-case id="1674" name="SerializedDraft(False,&quot;roll&quot;)" fullname="OnlineDraftChannelEditorTests.SerializedDraft(False,&quot;roll&quot;)" methodname="SerializedDraft" classname="OnlineDraftChannelEditorTests" runstate="Runnable" seed="284921774" result="Passed" start-time="2026-11-15 06:00:58Z" end-time="2026-11-15 06:00:58Z" duration="0.630373" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1675" name="SerializedDraft(False,&quot;pick&quot;)" fullname="OnlineDraftChannelEditorTests.SerializedDraft(False,&quot;pick&quot;)" methodname="SerializedDraft" classname="OnlineDraftChannelEditorTests" runstate="Runnable" seed="1503139174" result="Passed" start-time="2026-11-15 06:00:58Z" end-time="2026-11-15 06:00:59Z" duration="0.679841" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1676" name="SerializedDraft(False,&quot;complete&quot;)" fullname="OnlineDraftChannelEditorTests.SerializedDraft(False,&quot;complete&quot;)" methodname="SerializedDraft" classname="OnlineDraftChannelEditorTests" runstate="Runnable" seed="71781426" result="Passed" start-time="2026-11-15 06:00:59Z" end-time="2026-11-15 06:01:02Z" duration="3.079783" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1677" name="SerializedDraft(False,&quot;rejoin&quot;)" fullname="OnlineDraftChannelEditorTests.SerializedDraft(False,&quot;rejoin&quot;)" methodname="SerializedDraft" classname="OnlineDraftChannelEditorTests" runstate="Runnable" seed="1432640724" result="Passed" start-time="2026-11-15 06:01:02Z" end-time="2026-11-15 06:01:03Z" duration="1.022416" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1678" name="SerializedDraft(False,&quot;lost-reply&quot;)" fullname="OnlineDraftChannelEditorTests.SerializedDraft(False,&quot;lost-reply&quot;)" methodname="SerializedDraft" classname="OnlineDraftChannelEditorTests" runstate="Runnable" seed="2065933599" result="Passed" start-time="2026-11-15 06:01:03Z" end-time="2026-11-15 06:01:04Z" duration="0.998477" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1679" name="SerializedDraft(False,&quot;malformed&quot;)" fullname="OnlineDraftChannelEditorTests.SerializedDraft(False,&quot;malformed&quot;)" methodname="SerializedDraft" classname="OnlineDraftChannelEditorTests" runstate="Runnable" seed="79632020" result="Passed" start-time="2026-11-15 06:01:04Z" end-time="2026-11-15 06:01:05Z" duration="0.632975" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1680" name="SerializedDraft(False,&quot;local-loss&quot;)" fullname="OnlineDraftChannelEditorTests.SerializedDraft(False,&quot;local-loss&quot;)" methodname="SerializedDraft" classname="OnlineDraftChannelEditorTests" runstate="Runnable" seed="515020824" result="Passed" start-time="2026-11-15 06:01:05Z" end-time="2026-11-15 06:01:05Z" duration="0.751854" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1681" name="SerializedDraft(True,&quot;arrival&quot;)" fullname="OnlineDraftChannelEditorTests.SerializedDraft(True,&quot;arrival&quot;)" methodname="SerializedDraft" classname="OnlineDraftChannelEditorTests" runstate="Runnable" seed="543668534" result="Passed" start-time="2026-11-15 06:01:05Z" end-time="2026-11-15 06:01:06Z" duration="0.621841" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1682" name="SerializedDraft(True,&quot;roll&quot;)" fullname="OnlineDraftChannelEditorTests.SerializedDraft(True,&quot;roll&quot;)" methodname="SerializedDraft" classname="OnlineDraftChannelEditorTests" runstate="Runnable" seed="1254355593" result="Passed" start-time="2026-11-15 06:01:06Z" end-time="2026-11-15 06:01:07Z" duration="0.770585" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1683" name="SerializedDraft(True,&quot;pick&quot;)" fullname="OnlineDraftChannelEditorTests.SerializedDraft(True,&quot;pick&quot;)" methodname="SerializedDraft" classname="OnlineDraftChannelEditorTests" runstate="Runnable" seed="1866192143" result="Passed" start-time="2026-11-15 06:01:07Z" end-time="2026-11-15 06:01:08Z" duration="0.868156" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1684" name="SerializedDraft(True,&quot;complete&quot;)" fullname="OnlineDraftChannelEditorTests.SerializedDraft(True,&quot;complete&quot;)" methodname="SerializedDraft" classname="OnlineDraftChannelEditorTests" runstate="Runnable" seed="500731981" result="Passed" start-time="2026-11-15 06:01:08Z" end-time="2026-11-15 06:01:11Z" duration="3.171204" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1685" name="SerializedDraft(True,&quot;rejoin&quot;)" fullname="OnlineDraftChannelEditorTests.SerializedDraft(True,&quot;rejoin&quot;)" methodname="SerializedDraft" classname="OnlineDraftChannelEditorTests" runstate="Runnable" seed="1132911367" result="Passed" start-time="2026-11-15 06:01:11Z" end-time="2026-11-15 06:01:12Z" duration="1.021444" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1686" name="SerializedDraft(True,&quot;lost-reply&quot;)" fullname="OnlineDraftChannelEditorTests.SerializedDraft(True,&quot;lost-reply&quot;)" methodname="SerializedDraft" classname="OnlineDraftChannelEditorTests" runstate="Runnable" seed="1851046975" result="Passed" start-time="2026-11-15 06:01:12Z" end-time="2026-11-15 06:01:13Z" duration="1.031603" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1687" name="SerializedDraft(True,&quot;malformed&quot;)" fullname="OnlineDraftChannelEditorTests.SerializedDraft(True,&quot;malformed&quot;)" methodname="SerializedDraft" classname="OnlineDraftChannelEditorTests" runstate="Runnable" seed="1770767429" result="Passed" start-time="2026-11-15 06:01:13Z" end-time="2026-11-15 06:01:13Z" duration="0.594773" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1688" name="SerializedDraft(True,&quot;local-loss&quot;)" fullname="OnlineDraftChannelEditorTests.SerializedDraft(True,&quot;local-loss&quot;)" methodname="SerializedDraft" classname="OnlineDraftChannelEditorTests" runstate="Runnable" seed="43431604" result="Passed" start-time="2026-11-15 06:01:13Z" end-time="2026-11-15 06:01:14Z" duration="0.705398" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Saving results to: TestResults\GameplayRegression\Runs\20261115T060056922Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

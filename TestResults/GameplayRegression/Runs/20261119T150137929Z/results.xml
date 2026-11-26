@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="9" result="Passed" total="9" passed="9" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-19 15:01:38Z" end-time="2026-11-19 15:01:38Z" duration="0.3240436">
+  <test-suite type="TestSuite" id="3318" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1959" result="Passed" start-time="2026-11-19 15:01:38Z" end-time="2026-11-19 15:01:38Z" duration="0.324044" total="9" passed="9" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="3311" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="1959" result="Passed" start-time="2026-11-19 15:01:38Z" end-time="2026-11-19 15:01:38Z" duration="0.244694" total="9" passed="9" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="2816" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="1521" name="EOSStandaloneProofEditorTests" fullname="EOSStandaloneProofEditorTests" classname="EOSStandaloneProofEditorTests" runstate="Runnable" testcasecount="9" result="Passed" start-time="2026-11-19 15:01:38Z" end-time="2026-11-19 15:01:38Z" duration="0.221307" total="9" passed="9" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="EOSStandaloneProof" />
+        </properties>
+        <test-case id="1532" name="ExistingResultCannotBeReusedAsFreshEvidence" fullname="EOSStandaloneProofEditorTests.ExistingResultCannotBeReusedAsFreshEvidence" methodname="ExistingResultCannotBeReusedAsFreshEvidence" classname="EOSStandaloneProofEditorTests" runstate="Runnable" seed="966608152" result="Passed" start-time="2026-11-19 15:01:38Z" end-time="2026-11-19 15:01:38Z" duration="0.013810" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="1524" name="ExplicitRoleAndFreshAbsoluteOutputAreAccepted" fullname="EOSStandaloneProofEditorTests.ExplicitRoleAndFreshAbsoluteOutputAreAccepted" classname="EOSStandaloneProofEditorTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-19 15:01:38Z" end-time="2026-11-19 15:01:38Z" duration="0.107305" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1522" name="ExplicitRoleAndFreshAbsoluteOutputAreAccepted(&quot;host&quot;)" fullname="EOSStandaloneProofEditorTests.ExplicitRoleAndFreshAbsoluteOutputAreAccepted(&quot;host&quot;)" methodname="ExplicitRoleAndFreshAbsoluteOutputAreAccepted" classname="EOSStandaloneProofEditorTests" runstate="Runnable" seed="33236523" result="Passed" start-time="2026-11-19 15:01:38Z" end-time="2026-11-19 15:01:38Z" duration="0.001276" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1523" name="ExplicitRoleAndFreshAbsoluteOutputAreAccepted(&quot;login&quot;)" fullname="EOSStandaloneProofEditorTests.ExplicitRoleAndFreshAbsoluteOutputAreAccepted(&quot;login&quot;)" methodname="ExplicitRoleAndFreshAbsoluteOutputAreAccepted" classname="EOSStandaloneProofEditorTests" runstate="Runnable" seed="657066477" result="Passed" start-time="2026-11-19 15:01:38Z" end-time="2026-11-19 15:01:38Z" duration="0.001509" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-case id="1525" name="GuestRequiresLobbyFile" fullname="EOSStandaloneProofEditorTests.GuestRequiresLobbyFile" methodname="GuestRequiresLobbyFile" classname="EOSStandaloneProofEditorTests" runstate="Runnable" seed="1006107128" result="Passed" start-time="2026-11-19 15:01:38Z" end-time="2026-11-19 15:01:38Z" duration="0.003462" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="1531" name="InvalidArgumentsFailBeforeNetworkInitialization" fullname="EOSStandaloneProofEditorTests.InvalidArgumentsFailBeforeNetworkInitialization" classname="EOSStandaloneProofEditorTests" runstate="Runnable" testcasecount="5" result="Passed" start-time="2026-11-19 15:01:38Z" end-time="2026-11-19 15:01:38Z" duration="0.070882" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1526" name="InvalidArgumentsFailBeforeNetworkInitialization(&quot;-ca-eos-role&quot;,&quot;invalid&quot;)" fullname="EOSStandaloneProofEditorTests.InvalidArgumentsFailBeforeNetworkInitialization(&quot;-ca-eos-role&quot;,&quot;invalid&quot;)" methodname="InvalidArgumentsFailBeforeNetworkInitialization" classname="EOSStandaloneProofEditorTests" runstate="Runnable" seed="946443723" result="Passed" start-time="2026-11-19 15:01:38Z" end-time="2026-11-19 15:01:38Z" duration="0.001849" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1527" name="InvalidArgumentsFailBeforeNetworkInitialization(&quot;-ca-eos-role&quot;,&quot;host&quot;,&quot;-ca-eos-output&quot;,&quot;relative&quot;)" fullname="EOSStandaloneProofEditorTests.InvalidArgumentsFailBeforeNetworkInitialization(&quot;-ca-eos-role&quot;,&quot;host&quot;,&quot;-ca-eos-output&quot;,&quot;relative&quot;)" methodname="InvalidArgumentsFailBeforeNetworkInitialization" classname="EOSStandaloneProofEditorTests" runstate="Runnable" seed="1853938511" result="Passed" start-time="2026-11-19 15:01:38Z" end-time="2026-11-19 15:01:38Z" duration="0.000535" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1528" name="InvalidArgumentsFailBeforeNetworkInitialization(&quot;-ca-eos-role&quot;,&quot;host&quot;,&quot;-ca-eos-role&quot;,&quot;guest&quot;)" fullname="EOSStandaloneProofEditorTests.InvalidArgumentsFailBeforeNetworkInitialization(&quot;-ca-eos-role&quot;,&quot;host&quot;,&quot;-ca-eos-role&quot;,&quot;guest&quot;)" methodname="InvalidArgumentsFailBeforeNetworkInitialization" classname="EOSStandaloneProofEditorTests" runstate="Runnable" seed="79920958" result="Passed" start-time="2026-11-19 15:01:38Z" end-time="2026-11-19 15:01:38Z" duration="0.000621" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1529" name="InvalidArgumentsFailBeforeNetworkInitialization(&quot;-ca-eos-typo&quot;,&quot;value&quot;)" fullname="EOSStandaloneProofEditorTests.InvalidArgumentsFailBeforeNetworkInitialization(&quot;-ca-eos-typo&quot;,&quot;value&quot;)" methodname="InvalidArgumentsFailBeforeNetworkInitialization" classname="EOSStandaloneProofEditorTests" runstate="Runnable" seed="388720100" result="Passed" start-time="2026-11-19 15:01:38Z" end-time="2026-11-19 15:01:38Z" duration="0.001040" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1530" name="InvalidArgumentsFailBeforeNetworkInitialization(&quot;-ca-eos-role&quot;)" fullname="EOSStandaloneProofEditorTests.InvalidArgumentsFailBeforeNetworkInitialization(&quot;-ca-eos-role&quot;)" methodname="InvalidArgumentsFailBeforeNetworkInitialization" classname="EOSStandaloneProofEditorTests" runstate="Runnable" seed="1256040862" result="Passed" start-time="2026-11-19 15:01:38Z" end-time="2026-11-19 15:01:38Z" duration="0.000642" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Saving results to: TestResults\GameplayRegression\Runs\20261119T150137929Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

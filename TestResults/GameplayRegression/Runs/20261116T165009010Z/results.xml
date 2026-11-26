@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="2" result="Passed" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 16:50:09Z" end-time="2026-11-16 16:50:12Z" duration="3.1084028">
+  <test-suite type="TestSuite" id="2833" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1512" result="Passed" start-time="2026-11-16 16:50:09Z" end-time="2026-11-16 16:50:12Z" duration="3.108403" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2830" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1512" result="Passed" start-time="2026-11-16 16:50:09Z" end-time="2026-11-16 16:50:12Z" duration="3.076900" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12156" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1689" name="OnlineGroundDuelPlayModeTests" fullname="OnlineGroundDuelPlayModeTests" classname="OnlineGroundDuelPlayModeTests" runstate="Runnable" testcasecount="36" result="Passed" start-time="2026-11-16 16:50:09Z" end-time="2026-11-16 16:50:12Z" duration="3.069441" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineGroundDuels" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="1725" name="MovedDefenderMayStand" fullname="OnlineGroundDuelPlayModeTests.MovedDefenderMayStand" classname="OnlineGroundDuelPlayModeTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-16 16:50:09Z" end-time="2026-11-16 16:50:12Z" duration="3.054633" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="1723" name="MovedDefenderMayStand(1)" fullname="OnlineGroundDuelPlayModeTests.MovedDefenderMayStand(1)" methodname="MovedDefenderMayStand" classname="OnlineGroundDuelPlayModeTests" runstate="Runnable" seed="129846129" result="Passed" start-time="2026-11-16 16:50:09Z" end-time="2026-11-16 16:50:11Z" duration="1.879630" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Away recovering player to HandleTokenSelection
+A Valid Defender was selected: Away recovering player
+Passing Hex 26,19 to AsyncMoveTokenToHexRegularly
+Passing Hex 26,19 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 26,19
+[Game Log] Away recovering player (Fixture Away) moves 2 paces
+isMovingTokenAttacker: False
+Defender does not land on Ball Hex
+Defender lands next to the dribbler Prompt for Tackle or not.
+Defender near the attacker with the ball. Waiting for tackle decision...Press [T]ackle or [N]o Tackle
+Tackle phase reset.
+Advancing Movement Phase
+]]></output>
+          </test-case>
+          <test-case id="1724" name="MovedDefenderMayStand(-1)" fullname="OnlineGroundDuelPlayModeTests.MovedDefenderMayStand(-1)" methodname="MovedDefenderMayStand" classname="OnlineGroundDuelPlayModeTests" runstate="Runnable" seed="461713801" result="Passed" start-time="2026-11-16 16:50:11Z" end-time="2026-11-16 16:50:12Z" duration="1.143878" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Away recovering player to HandleTokenSelection
+A Valid Defender was selected: Away recovering player
+Passing Hex 24,19 to AsyncMoveTokenToHexRegularly
+Passing Hex 24,19 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 24,19
+[Game Log] Away recovering player (Fixture Away) moves 2 paces
+isMovingTokenAttacker: False
+Defender does not land on Ball Hex
+Defender lands next to the dribbler Prompt for Tackle or not.
+Defender near the attacker with the ball. Waiting for tackle decision...Press [T]ackle or [N]o Tackle
+Tackle phase reset.
+Advancing Movement Phase
+Saving results to: TestResults\GameplayRegression\Runs\20261116T165009010Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

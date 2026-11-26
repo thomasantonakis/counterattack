@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="32" result="Passed" total="32" passed="32" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-15 06:45:15Z" end-time="2026-11-15 06:45:19Z" duration="4.6039791">
+  <test-suite type="TestSuite" id="2900" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1609" result="Passed" start-time="2026-11-15 06:45:15Z" end-time="2026-11-15 06:45:19Z" duration="4.603979" total="32" passed="32" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="2894" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="1609" result="Passed" start-time="2026-11-15 06:45:15Z" end-time="2026-11-15 06:45:19Z" duration="4.572657" total="32" passed="32" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="1132" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="1908" name="OnlineRoomLaunchEditorTests" fullname="OnlineRoomLaunchEditorTests" classname="OnlineRoomLaunchEditorTests" runstate="Runnable" testcasecount="32" result="Passed" start-time="2026-11-15 06:45:15Z" end-time="2026-11-15 06:45:19Z" duration="4.560403" total="32" passed="32" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineRoomLaunch" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="1941" name="CompleteDraftBuildsRealMatchData" fullname="OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData" classname="OnlineRoomLaunchEditorTests" runstate="Runnable" testcasecount="32" result="Passed" start-time="2026-11-15 06:45:15Z" end-time="2026-11-15 06:45:19Z" duration="4.553410" total="32" passed="32" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1909" name="CompleteDraftBuildsRealMatchData(False,16,&quot;attributes&quot;)" fullname="OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(False,16,&quot;attributes&quot;)" methodname="CompleteDraftBuildsRealMatchData" classname="OnlineRoomLaunchEditorTests" runstate="Runnable" seed="1386070890" result="Passed" start-time="2026-11-15 06:45:15Z" end-time="2026-11-15 06:45:15Z" duration="0.307479" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[TokenKitCatalog] Loading kits JSON from Resources path 'Kits/kit-picker-v1-11-supported' (asset: Assets/Resources/Kits/kit-picker-v1-11-supported.json).
+[TokenKitCatalog] Found kits JSON TextAsset 'kit-picker-v1-11-supported' at Resources path 'Kits/kit-picker-v1-11-supported' (32277 characters).
+[TokenKitCatalog] Parsed 101 kit preset(s) from Resources path 'Kits/kit-picker-v1-11-supported'.
+[TokenKitCatalog] Active kit catalog contains 101 kit preset(s).
+]]></output>
+          </test-case>
+          <test-case id="1910" name="CompleteDraftBuildsRealMatchData(False,16,&quot;opening&quot;)" fullname="OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(False,16,&quot;opening&quot;)" methodname="CompleteDraftBuildsRealMatchData" classname="OnlineRoomLaunchEditorTests" runstate="Runnable" seed="1902742073" result="Passed" start-time="2026-11-15 06:45:15Z" end-time="2026-11-15 06:45:15Z" duration="0.107170" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1911" name="CompleteDraftBuildsRealMatchData(False,16,&quot;detached&quot;)" fullname="OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(False,16,&quot;detached&quot;)" methodname="CompleteDraftBuildsRealMatchData" classname="OnlineRoomLaunchEditorTests" runstate="Runnable" seed="918355885" result="Passed" start-time="2026-11-15 06:45:15Z" end-time="2026-11-15 06:45:15Z" duration="0.122042" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1912" name="CompleteDraftBuildsRealMatchData(False,16,&quot;rebind&quot;)" fullname="OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(False,16,&quot;rebind&quot;)" methodname="CompleteDraftBuildsRealMatchData" classname="OnlineRoomLaunchEditorTests" runstate="Runnable" seed="375942360" result="Passed" start-time="2026-11-15 06:45:15Z" end-time="2026-11-15 06:45:15Z" duration="0.129472" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1913" name="CompleteDraftBuildsRealMatchData(False,16,&quot;reject&quot;)" fullname="OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(False,16,&quot;reject&quot;)" methodname="CompleteDraftBuildsRealMatchData" classname="OnlineRoomLaunchEditorTests" runstate="Runnable" seed="1702270733" result="Passed" start-time="2026-11-15 06:45:15Z" end-time="2026-11-15 06:45:16Z" duration="0.133775" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1914" name="CompleteDraftBuildsRealMatchData(False,16,&quot;host-load&quot;)" fullname="OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(False,16,&quot;host-load&quot;)" methodname="CompleteDraftBuildsRealMatchData" classname="OnlineRoomLaunchEditorTests" runstate="Runnable" seed="418952596" result="Passed" start-time="2026-11-15 06:45:16Z" end-time="2026-11-15 06:45:16Z" duration="0.159499" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1915" name="CompleteDraftBuildsRealMatchData(False,16,&quot;guest-load&quot;)" fullname="OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(False,16,&quot;guest-load&quot;)" methodname="CompleteDraftBuildsRealMatchData" classname="OnlineRoomLaunchEditorTests" runstate="Runnable" seed="874314932" result="Passed" start-time="2026-11-15 06:45:16Z" end-time="2026-11-15 06:45:16Z" duration="0.125561" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1916" name="CompleteDraftBuildsRealMatchData(False,16,&quot;save-isolation&quot;)" fullname="OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(False,16,&quot;save-isolation&quot;)" methodname="CompleteDraftBuildsRealMatchData" classname="OnlineRoomLaunchEditorTests" runstate="Runnable" seed="2138162980" result="Passed" start-time="2026-11-15 06:45:16Z" end-time="2026-11-15 06:45:16Z" duration="0.137706" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1917" name="CompleteDraftBuildsRealMatchData(False,18,&quot;attributes&quot;)" fullname="OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(False,18,&quot;attributes&quot;)" methodname="CompleteDraftBuildsRealMatchData" classname="OnlineRoomLaunchEditorTests" runstate="Runnable" seed="445167062" result="Passed" start-time="2026-11-15 06:45:16Z" end-time="2026-11-15 06:45:16Z" duration="0.084045" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1918" name="CompleteDraftBuildsRealMatchData(False,18,&quot;opening&quot;)" fullname="OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(False,18,&quot;opening&quot;)" methodname="CompleteDraftBuildsRealMatchData" classname="OnlineRoomLaunchEditorTests" runstate="Runnable" seed="82216525" result="Passed" start-time="2026-11-15 06:45:16Z" end-time="2026-11-15 06:45:16Z" duration="0.179009" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1919" name="CompleteDraftBuildsRealMatchData(False,18,&quot;detached&quot;)" fullname="OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(False,18,&quot;detached&quot;)" methodname="CompleteDraftBuildsRealMatchData" classname="OnlineRoomLaunchEditorTests" runstate="Runnable" seed="623151899" result="Passed" start-time="2026-11-15 06:45:16Z" end-time="2026-11-15 06:45:16Z" duration="0.100261" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1920" name="CompleteDraftBuildsRealMatchData(False,18,&quot;rebind&quot;)" fullname="OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(False,18,&quot;rebind&quot;)" methodname="CompleteDraftBuildsRealMatchData" classname="OnlineRoomLaunchEditorTests" runstate="Runnable" seed="653938071" result="Passed" start-time="2026-11-15 06:45:16Z" end-time="2026-11-15 06:45:16Z" duration="0.134124" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1921" name="CompleteDraftBuildsRealMatchData(False,18,&quot;reject&quot;)" fullname="OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(False,18,&quot;reject&quot;)" methodname="CompleteDraftBuildsRealMatchData" classname="OnlineRoomLaunchEditorTests" runstate="Runnable" seed="2017328858" result="Passed" start-time="2026-11-15 06:45:16Z" end-time="2026-11-15 06:45:17Z" duration="0.168640" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1922" name="CompleteDraftBuildsRealMatchData(False,18,&quot;host-load&quot;)" fullname="OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(False,18,&quot;host-load&quot;)" methodname="CompleteDraftBuildsRealMatchData" classname="OnlineRoomLaunchEditorTests" runstate="Runnable" seed="916742799" result="Passed" start-time="2026-11-15 06:45:17Z" end-time="2026-11-15 06:45:17Z" duration="0.122545" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1923" name="CompleteDraftBuildsRealMatchData(False,18,&quot;guest-load&quot;)" fullname="OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(False,18,&quot;guest-load&quot;)" methodname="CompleteDraftBuildsRealMatchData" classname="OnlineRoomLaunchEditorTests" runstate="Runnable" seed="133494737" result="Passed" start-time="2026-11-15 06:45:17Z" end-time="2026-11-15 06:45:17Z" duration="0.133821" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1924" name="CompleteDraftBuildsRealMatchData(False,18,&quot;save-isolation&quot;)" fullname="OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(False,18,&quot;save-isolation&quot;)" methodname="CompleteDraftBuildsRealMatchData" classname="OnlineRoomLaunchEditorTests" runstate="Runnable" seed="1967450638" result="Passed" start-time="2026-11-15 06:45:17Z" end-time="2026-11-15 06:45:17Z" duration="0.097918" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1925" name="CompleteDraftBuildsRealMatchData(True,16,&quot;attributes&quot;)" fullname="OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(True,16,&quot;attributes&quot;)" methodname="CompleteDraftBuildsRealMatchData" classname="OnlineRoomLaunchEditorTests" runstate="Runnable" seed="40517091" result="Passed" start-time="2026-11-15 06:45:17Z" end-time="2026-11-15 06:45:17Z" duration="0.109709" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1926" name="CompleteDraftBuildsRealMatchData(True,16,&quot;opening&quot;)" fullname="OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(True,16,&quot;opening&quot;)" methodname="CompleteDraftBuildsRealMatchData" classname="OnlineRoomLaunchEditorTests" runstate="Runnable" seed="278451408" result="Passed" start-time="2026-11-15 06:45:17Z" end-time="2026-11-15 06:45:17Z" duration="0.076626" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1927" name="CompleteDraftBuildsRealMatchData(True,16,&quot;detached&quot;)" fullname="OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(True,16,&quot;detached&quot;)" methodname="CompleteDraftBuildsRealMatchData" classname="OnlineRoomLaunchEditorTests" runstate="Runnable" seed="421243162" result="Passed" start-time="2026-11-15 06:45:17Z" end-time="2026-11-15 06:45:17Z" duration="0.123516" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1928" name="CompleteDraftBuildsRealMatchData(True,16,&quot;rebind&quot;)" fullname="OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(True,16,&quot;rebind&quot;)" methodname="CompleteDraftBuildsRealMatchData" classname="OnlineRoomLaunchEditorTests" runstate="Runnable" seed="334695242" result="Passed" start-time="2026-11-15 06:45:17Z" end-time="2026-11-15 06:45:17Z" duration="0.139574" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1929" name="CompleteDraftBuildsRealMatchData(True,16,&quot;reject&quot;)" fullname="OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(True,16,&quot;reject&quot;)" methodname="CompleteDraftBuildsRealMatchData" classname="OnlineRoomLaunchEditorTests" runstate="Runnable" seed="2108574714" result="Passed" start-time="2026-11-15 06:45:17Z" end-time="2026-11-15 06:45:18Z" duration="0.182926" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1930" name="CompleteDraftBuildsRealMatchData(True,16,&quot;host-load&quot;)" fullname="OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(True,16,&quot;host-load&quot;)" methodname="CompleteDraftBuildsRealMatchData" classname="OnlineRoomLaunchEditorTests" runstate="Runnable" seed="481891572" result="Passed" start-time="2026-11-15 06:45:18Z" end-time="2026-11-15 06:45:18Z" duration="0.117460" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1931" name="CompleteDraftBuildsRealMatchData(True,16,&quot;guest-load&quot;)" fullname="OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(True,16,&quot;guest-load&quot;)" methodname="CompleteDraftBuildsRealMatchData" classname="OnlineRoomLaunchEditorTests" runstate="Runnable" seed="1651957957" result="Passed" start-time="2026-11-15 06:45:18Z" end-time="2026-11-15 06:45:18Z" duration="0.155151" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1932" name="CompleteDraftBuildsRealMatchData(True,16,&quot;save-isolation&quot;)" fullname="OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(True,16,&quot;save-isolation&quot;)" methodname="CompleteDraftBuildsRealMatchData" classname="OnlineRoomLaunchEditorTests" runstate="Runnable" seed="713398029" result="Passed" start-time="2026-11-15 06:45:18Z" end-time="2026-11-15 06:45:18Z" duration="0.119667" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1933" name="CompleteDraftBuildsRealMatchData(True,18,&quot;attributes&quot;)" fullname="OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(True,18,&quot;attributes&quot;)" methodname="CompleteDraftBuildsRealMatchData" classname="OnlineRoomLaunchEditorTests" runstate="Runnable" seed="993288968" result="Passed" start-time="2026-11-15 06:45:18Z" end-time="2026-11-15 06:45:18Z" duration="0.134342" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1934" name="CompleteDraftBuildsRealMatchData(True,18,&quot;opening&quot;)" fullname="OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(True,18,&quot;opening&quot;)" methodname="CompleteDraftBuildsRealMatchData" classname="OnlineRoomLaunchEditorTests" runstate="Runnable" seed="284294868" result="Passed" start-time="2026-11-15 06:45:18Z" end-time="2026-11-15 06:45:18Z" duration="0.116945" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1935" name="CompleteDraftBuildsRealMatchData(True,18,&quot;detached&quot;)" fullname="OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(True,18,&quot;detached&quot;)" methodname="CompleteDraftBuildsRealMatchData" classname="OnlineRoomLaunchEditorTests" runstate="Runnable" seed="781740904" result="Passed" start-time="2026-11-15 06:45:18Z" end-time="2026-11-15 06:45:18Z" duration="0.171280" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1936" name="CompleteDraftBuildsRealMatchData(True,18,&quot;rebind&quot;)" fullname="OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(True,18,&quot;rebind&quot;)" methodname="CompleteDraftBuildsRealMatchData" classname="OnlineRoomLaunchEditorTests" runstate="Runnable" seed="1108700003" result="Passed" start-time="2026-11-15 06:45:18Z" end-time="2026-11-15 06:45:19Z" duration="0.160360" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1937" name="CompleteDraftBuildsRealMatchData(True,18,&quot;reject&quot;)" fullname="OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(True,18,&quot;reject&quot;)" methodname="CompleteDraftBuildsRealMatchData" classname="OnlineRoomLaunchEditorTests" runstate="Runnable" seed="727812461" result="Passed" start-time="2026-11-15 06:45:19Z" end-time="2026-11-15 06:45:19Z" duration="0.192629" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1938" name="CompleteDraftBuildsRealMatchData(True,18,&quot;host-load&quot;)" fullname="OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(True,18,&quot;host-load&quot;)" methodname="CompleteDraftBuildsRealMatchData" classname="OnlineRoomLaunchEditorTests" runstate="Runnable" seed="68752714" result="Passed" start-time="2026-11-15 06:45:19Z" end-time="2026-11-15 06:45:19Z" duration="0.156135" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1939" name="CompleteDraftBuildsRealMatchData(True,18,&quot;guest-load&quot;)" fullname="OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(True,18,&quot;guest-load&quot;)" methodname="CompleteDraftBuildsRealMatchData" classname="OnlineRoomLaunchEditorTests" runstate="Runnable" seed="785518037" result="Passed" start-time="2026-11-15 06:45:19Z" end-time="2026-11-15 06:45:19Z" duration="0.138744" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1940" name="CompleteDraftBuildsRealMatchData(True,18,&quot;save-isolation&quot;)" fullname="OnlineRoomLaunchEditorTests.CompleteDraftBuildsRealMatchData(True,18,&quot;save-isolation&quot;)" methodname="CompleteDraftBuildsRealMatchData" classname="OnlineRoomLaunchEditorTests" runstate="Runnable" seed="1908937997" result="Passed" start-time="2026-11-15 06:45:19Z" end-time="2026-11-15 06:45:19Z" duration="0.150937" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Saving results to: TestResults\GameplayRegression\Runs\20261115T064515129Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

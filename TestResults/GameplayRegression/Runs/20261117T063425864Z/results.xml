@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="22" result="Failed(Child)" total="22" passed="21" failed="1" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-17 06:34:25Z" end-time="2026-11-17 06:34:26Z" duration="0.3516982">
+  <test-suite type="TestSuite" id="3277" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1924" result="Failed" site="Child" start-time="2026-11-17 06:34:25Z" end-time="2026-11-17 06:34:26Z" duration="0.351698" total="22" passed="21" failed="1" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="3271" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="1924" result="Failed" site="Child" start-time="2026-11-17 06:34:25Z" end-time="2026-11-17 06:34:26Z" duration="0.314414" total="22" passed="21" failed="1" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12156" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestFixture" id="1620" name="OnlineActionPreviewsEditorTests" fullname="OnlineActionPreviewsEditorTests" classname="OnlineActionPreviewsEditorTests" runstate="Runnable" testcasecount="22" result="Failed" site="Child" start-time="2026-11-17 06:34:25Z" end-time="2026-11-17 06:34:26Z" duration="0.304639" total="22" passed="21" failed="1" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineActionPreviews" />
+        </properties>
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="ParameterizedMethod" id="1641" name="BoundedPreviewContract" fullname="OnlineActionPreviewsEditorTests.BoundedPreviewContract" classname="OnlineActionPreviewsEditorTests" runstate="Runnable" testcasecount="20" result="Passed" start-time="2026-11-17 06:34:25Z" end-time="2026-11-17 06:34:26Z" duration="0.202415" total="20" passed="20" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1621" name="BoundedPreviewContract(&quot;missing&quot;,True)" fullname="OnlineActionPreviewsEditorTests.BoundedPreviewContract(&quot;missing&quot;,True)" methodname="BoundedPreviewContract" classname="OnlineActionPreviewsEditorTests" runstate="Runnable" seed="343539000" result="Passed" start-time="2026-11-17 06:34:25Z" end-time="2026-11-17 06:34:26Z" duration="0.050730" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1622" name="BoundedPreviewContract(&quot;empty&quot;,True)" fullname="OnlineActionPreviewsEditorTests.BoundedPreviewContract(&quot;empty&quot;,True)" methodname="BoundedPreviewContract" classname="OnlineActionPreviewsEditorTests" runstate="Runnable" seed="1044850929" result="Passed" start-time="2026-11-17 06:34:26Z" end-time="2026-11-17 06:34:26Z" duration="0.002207" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1623" name="BoundedPreviewContract(&quot;one&quot;,True)" fullname="OnlineActionPreviewsEditorTests.BoundedPreviewContract(&quot;one&quot;,True)" methodname="BoundedPreviewContract" classname="OnlineActionPreviewsEditorTests" runstate="Runnable" seed="387619256" result="Passed" start-time="2026-11-17 06:34:26Z" end-time="2026-11-17 06:34:26Z" duration="0.002536" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1624" name="BoundedPreviewContract(&quot;boundary&quot;,True)" fullname="OnlineActionPreviewsEditorTests.BoundedPreviewContract(&quot;boundary&quot;,True)" methodname="BoundedPreviewContract" classname="OnlineActionPreviewsEditorTests" runstate="Runnable" seed="319686336" result="Passed" start-time="2026-11-17 06:34:26Z" end-time="2026-11-17 06:34:26Z" duration="0.000377" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1625" name="BoundedPreviewContract(&quot;duplicate&quot;,False)" fullname="OnlineActionPreviewsEditorTests.BoundedPreviewContract(&quot;duplicate&quot;,False)" methodname="BoundedPreviewContract" classname="OnlineActionPreviewsEditorTests" runstate="Runnable" seed="1789378640" result="Passed" start-time="2026-11-17 06:34:26Z" end-time="2026-11-17 06:34:26Z" duration="0.000503" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1626" name="BoundedPreviewContract(&quot;many&quot;,False)" fullname="OnlineActionPreviewsEditorTests.BoundedPreviewContract(&quot;many&quot;,False)" methodname="BoundedPreviewContract" classname="OnlineActionPreviewsEditorTests" runstate="Runnable" seed="407010883" result="Passed" start-time="2026-11-17 06:34:26Z" end-time="2026-11-17 06:34:26Z" duration="0.000790" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1627" name="BoundedPreviewContract(&quot;null&quot;,False)" fullname="OnlineActionPreviewsEditorTests.BoundedPreviewContract(&quot;null&quot;,False)" methodname="BoundedPreviewContract" classname="OnlineActionPreviewsEditorTests" runstate="Runnable" seed="2023786815" result="Passed" start-time="2026-11-17 06:34:26Z" end-time="2026-11-17 06:34:26Z" duration="0.000268" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1628" name="BoundedPreviewContract(&quot;reason&quot;,False)" fullname="OnlineActionPreviewsEditorTests.BoundedPreviewContract(&quot;reason&quot;,False)" methodname="BoundedPreviewContract" classname="OnlineActionPreviewsEditorTests" runstate="Runnable" seed="1202110531" result="Passed" start-time="2026-11-17 06:34:26Z" end-time="2026-11-17 06:34:26Z" duration="0.000280" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1629" name="BoundedPreviewContract(&quot;hover&quot;,False)" fullname="OnlineActionPreviewsEditorTests.BoundedPreviewContract(&quot;hover&quot;,False)" methodname="BoundedPreviewContract" classname="OnlineActionPreviewsEditorTests" runstate="Runnable" seed="1077850503" result="Passed" start-time="2026-11-17 06:34:26Z" end-time="2026-11-17 06:34:26Z" duration="0.000269" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1630" name="BoundedPreviewContract(&quot;x-low&quot;,False)" fullname="OnlineActionPreviewsEditorTests.BoundedPreviewContract(&quot;x-low&quot;,False)" methodname="BoundedPreviewContract" classname="OnlineActionPreviewsEditorTests" runstate="Runnable" seed="2106379404" result="Passed" start-time="2026-11-17 06:34:26Z" end-time="2026-11-17 06:34:26Z" duration="0.000259" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1631" name="BoundedPreviewContract(&quot;x-high&quot;,False)" fullname="OnlineActionPreviewsEditorTests.BoundedPreviewContract(&quot;x-high&quot;,False)" methodname="BoundedPreviewContract" classname="OnlineActionPreviewsEditorTests" runstate="Runnable" seed="1154461268" result="Passed" start-time="2026-11-17 06:34:26Z" end-time="2026-11-17 06:34:26Z" duration="0.000257" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1632" name="BoundedPreviewContract(&quot;z-low&quot;,False)" fullname="OnlineActionPreviewsEditorTests.BoundedPreviewContract(&quot;z-low&quot;,False)" methodname="BoundedPreviewContract" classname="OnlineActionPreviewsEditorTests" runstate="Runnable" seed="1187986417" result="Passed" start-time="2026-11-17 06:34:26Z" end-time="2026-11-17 06:34:26Z" duration="0.000269" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1633" name="BoundedPreviewContract(&quot;z-high&quot;,False)" fullname="OnlineActionPreviewsEditorTests.BoundedPreviewContract(&quot;z-high&quot;,False)" methodname="BoundedPreviewContract" classname="OnlineActionPreviewsEditorTests" runstate="Runnable" seed="1513465815" result="Passed" start-time="2026-11-17 06:34:26Z" end-time="2026-11-17 06:34:26Z" duration="0.000272" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1634" name="BoundedPreviewContract(&quot;dark-nan&quot;,False)" fullname="OnlineActionPreviewsEditorTests.BoundedPreviewContract(&quot;dark-nan&quot;,False)" methodname="BoundedPreviewContract" classname="OnlineActionPreviewsEditorTests" runstate="Runnable" seed="982723951" result="Passed" start-time="2026-11-17 06:34:26Z" end-time="2026-11-17 06:34:26Z" duration="0.000361" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1635" name="BoundedPreviewContract(&quot;dark-low&quot;,False)" fullname="OnlineActionPreviewsEditorTests.BoundedPreviewContract(&quot;dark-low&quot;,False)" methodname="BoundedPreviewContract" classname="OnlineActionPreviewsEditorTests" runstate="Runnable" seed="374626247" result="Passed" start-time="2026-11-17 06:34:26Z" end-time="2026-11-17 06:34:26Z" duration="0.000265" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1636" name="BoundedPreviewContract(&quot;dark-high&quot;,False)" fullname="OnlineActionPreviewsEditorTests.BoundedPreviewContract(&quot;dark-high&quot;,False)" methodname="BoundedPreviewContract" classname="OnlineActionPreviewsEditorTests" runstate="Runnable" seed="1520705257" result="Passed" start-time="2026-11-17 06:34:26Z" end-time="2026-11-17 06:34:26Z" duration="0.000263" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1637" name="BoundedPreviewContract(&quot;height-nan&quot;,False)" fullname="OnlineActionPreviewsEditorTests.BoundedPreviewContract(&quot;height-nan&quot;,False)" methodname="BoundedPreviewContract" classname="OnlineActionPreviewsEditorTests" runstate="Runnable" seed="494229867" result="Passed" start-time="2026-11-17 06:34:26Z" end-time="2026-11-17 06:34:26Z" duration="0.000282" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1638" name="BoundedPreviewContract(&quot;height-infinite&quot;,False)" fullname="OnlineActionPreviewsEditorTests.BoundedPreviewContract(&quot;height-infinite&quot;,False)" methodname="BoundedPreviewContract" classname="OnlineActionPreviewsEditorTests" runstate="Runnable" seed="1888231744" result="Passed" start-time="2026-11-17 06:34:26Z" end-time="2026-11-17 06:34:26Z" duration="0.000554" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1639" name="BoundedPreviewContract(&quot;height-low&quot;,False)" fullname="OnlineActionPreviewsEditorTests.BoundedPreviewContract(&quot;height-low&quot;,False)" methodname="BoundedPreviewContract" classname="OnlineActionPreviewsEditorTests" runstate="Runnable" seed="1379612690" result="Passed" start-time="2026-11-17 06:34:26Z" end-time="2026-11-17 06:34:26Z" duration="0.000280" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1640" name="BoundedPreviewContract(&quot;height-high&quot;,False)" fullname="OnlineActionPreviewsEditorTests.BoundedPreviewContract(&quot;height-high&quot;,False)" methodname="BoundedPreviewContract" classname="OnlineActionPreviewsEditorTests" runstate="Runnable" seed="1783185691" result="Passed" start-time="2026-11-17 06:34:26Z" end-time="2026-11-17 06:34:26Z" duration="0.000269" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-case id="1643" name="InvalidPreviewCannotReplaceAcceptedState" fullname="OnlineActionPreviewsEditorTests.InvalidPreviewCannotReplaceAcceptedState" methodname="InvalidPreviewCannotReplaceAcceptedState" classname="OnlineActionPreviewsEditorTests" runstate="Runnable" seed="1066267270" result="Passed" start-time="2026-11-17 06:34:26Z" end-time="2026-11-17 06:34:26Z" duration="0.021846" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1642" name="LargestRosterAndFullPitchPreviewStayWithinExistingWireBudgets" fullname="OnlineActionPreviewsEditorTests.LargestRosterAndFullPitchPreviewStayWithinExistingWireBudgets" methodname="LargestRosterAndFullPitchPreviewStayWithinExistingWireBudgets" classname="OnlineActionPreviewsEditorTests" runstate="Runnable" seed="1706981371" result="Failed" start-time="2026-11-17 06:34:26Z" end-time="2026-11-17 06:34:26Z" duration="0.052935" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <failure>
+            <message><![CDATA[  Complete previews must retain the bounded full roster and instructions
+  Expected: less than or equal to 262144
+  But was:  277157
+]]></message>
+            <stack-trace><![CDATA[at OnlineActionPreviewsEditorTests.LargestRosterAndFullPitchPreviewStayWithinExistingWireBudgets () [0x0009c] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineActionPreviews\OnlineActionPreviewsEditorTests.cs:38
+]]></stack-trace>
+          </failure>
+          <output><![CDATA[Saving results to: TestResults\GameplayRegression\Runs\20261117T063425864Z\results.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

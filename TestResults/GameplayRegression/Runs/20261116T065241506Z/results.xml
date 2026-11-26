@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="6" result="Passed" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 06:52:41Z" end-time="2026-11-16 06:53:19Z" duration="37.4672323">
+  <test-suite type="TestSuite" id="2771" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1458" result="Passed" start-time="2026-11-16 06:52:41Z" end-time="2026-11-16 06:53:19Z" duration="37.467232" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2768" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1458" result="Passed" start-time="2026-11-16 06:52:41Z" end-time="2026-11-16 06:53:19Z" duration="37.433632" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17216" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="2033" name="OnlineRoomMenuPlayModeTests" fullname="OnlineRoomMenuPlayModeTests" classname="OnlineRoomMenuPlayModeTests" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-11-16 06:52:41Z" end-time="2026-11-16 06:53:19Z" duration="37.426888" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineRoomMenu" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="2038" name="AuthoredMenuRespectsPauseOwnership" fullname="OnlineRoomMenuPlayModeTests.AuthoredMenuRespectsPauseOwnership" classname="OnlineRoomMenuPlayModeTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-11-16 06:52:41Z" end-time="2026-11-16 06:53:06Z" duration="25.255737" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="2034" name="AuthoredMenuRespectsPauseOwnership(False,False)" fullname="OnlineRoomMenuPlayModeTests.AuthoredMenuRespectsPauseOwnership(False,False)" methodname="AuthoredMenuRespectsPauseOwnership" classname="OnlineRoomMenuPlayModeTests" runstate="Runnable" seed="1533514942" result="Passed" start-time="2026-11-16 06:52:41Z" end-time="2026-11-16 06:52:49Z" duration="7.711673" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[TokenKitCatalog] Loading kits JSON from Resources path 'Kits/kit-picker-v1-11-supported' (asset: Assets/Resources/Kits/kit-picker-v1-11-supported.json).
+[TokenKitCatalog] Found kits JSON TextAsset 'kit-picker-v1-11-supported' at Resources path 'Kits/kit-picker-v1-11-supported' (32277 characters).
+[TokenKitCatalog] Parsed 101 kit preset(s) from Resources path 'Kits/kit-picker-v1-11-supported'.
+[TokenKitCatalog] Active kit catalog contains 101 kit preset(s).
+MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584962250538
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2035" name="AuthoredMenuRespectsPauseOwnership(False,True)" fullname="OnlineRoomMenuPlayModeTests.AuthoredMenuRespectsPauseOwnership(False,True)" methodname="AuthoredMenuRespectsPauseOwnership" classname="OnlineRoomMenuPlayModeTests" runstate="Runnable" seed="1609619799" result="Passed" start-time="2026-11-16 06:52:49Z" end-time="2026-11-16 06:52:55Z" duration="6.000930" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584962314166
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2036" name="AuthoredMenuRespectsPauseOwnership(True,False)" fullname="OnlineRoomMenuPlayModeTests.AuthoredMenuRespectsPauseOwnership(True,False)" methodname="AuthoredMenuRespectsPauseOwnership" classname="OnlineRoomMenuPlayModeTests" runstate="Runnable" seed="1500978764" result="Passed" start-time="2026-11-16 06:52:55Z" end-time="2026-11-16 06:53:00Z" duration="5.564786" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2037" name="AuthoredMenuRespectsPauseOwnership(True,True)" fullname="OnlineRoomMenuPlayModeTests.AuthoredMenuRespectsPauseOwnership(True,True)" methodname="AuthoredMenuRespectsPauseOwnership" classname="OnlineRoomMenuPlayModeTests" runstate="Runnable" seed="1516010269" result="Passed" start-time="2026-11-16 06:53:00Z" end-time="2026-11-16 06:53:06Z" duration="5.938983" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="2041" name="LeaveReturnsToMenuWithoutWritingMatch" fullname="OnlineRoomMenuPlayModeTests.LeaveReturnsToMenuWithoutWritingMatch" classname="OnlineRoomMenuPlayModeTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-16 06:53:06Z" end-time="2026-11-16 06:53:19Z" duration="12.157207" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="2039" name="LeaveReturnsToMenuWithoutWritingMatch(False)" fullname="OnlineRoomMenuPlayModeTests.LeaveReturnsToMenuWithoutWritingMatch(False)" methodname="LeaveReturnsToMenuWithoutWritingMatch" classname="OnlineRoomMenuPlayModeTests" runstate="Runnable" seed="176802632" result="Passed" start-time="2026-11-16 06:53:06Z" end-time="2026-11-16 06:53:13Z" duration="6.256691" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584962505050
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+The online session is no longer active.
+]]></output>
+          </test-case>
+          <test-case id="2040" name="LeaveReturnsToMenuWithoutWritingMatch(True)" fullname="OnlineRoomMenuPlayModeTests.LeaveReturnsToMenuWithoutWritingMatch(True)" methodname="LeaveReturnsToMenuWithoutWritingMatch" classname="OnlineRoomMenuPlayModeTests" runstate="Runnable" seed="831948355" result="Passed" start-time="2026-11-16 06:53:13Z" end-time="2026-11-16 06:53:19Z" duration="5.879390" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+Saving results to: TestResults\GameplayRegression\Runs\20261116T065241506Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

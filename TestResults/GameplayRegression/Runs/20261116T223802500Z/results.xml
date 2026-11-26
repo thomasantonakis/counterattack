@@ -1,0 +1,887 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="24" result="Passed" total="24" passed="24" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 22:38:02Z" end-time="2026-11-16 22:38:24Z" duration="21.6237357">
+  <test-suite type="TestSuite" id="3060" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1709" result="Passed" start-time="2026-11-16 22:38:02Z" end-time="2026-11-16 22:38:24Z" duration="21.623736" total="24" passed="24" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="3057" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1709" result="Passed" start-time="2026-11-16 22:38:02Z" end-time="2026-11-16 22:38:24Z" duration="21.587320" total="24" passed="24" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12156" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1892" name="OnlineKeeperGroundChoicesPlayModeTests" fullname="OnlineKeeperGroundChoicesPlayModeTests" classname="OnlineKeeperGroundChoicesPlayModeTests" runstate="Runnable" testcasecount="68" result="Passed" start-time="2026-11-16 22:38:02Z" end-time="2026-11-16 22:38:24Z" duration="21.549765" total="24" passed="24" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineKeeperGroundChoices" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="1917" name="OutsideKeeperChoices" fullname="OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices" classname="OnlineKeeperGroundChoicesPlayModeTests" runstate="Runnable" testcasecount="24" result="Passed" start-time="2026-11-16 22:38:02Z" end-time="2026-11-16 22:38:24Z" duration="21.535856" total="24" passed="24" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="1893" name="OutsideKeeperChoices(1,&quot;moving&quot;,&quot;dive&quot;)" fullname="OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(1,&quot;moving&quot;,&quot;dive&quot;)" methodname="OutsideKeeperChoices" classname="OnlineKeeperGroundChoicesPlayModeTests" runstate="Runnable" seed="340559742" result="Passed" start-time="2026-11-16 22:38:02Z" end-time="2026-11-16 22:38:04Z" duration="1.766843" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=11, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Away keeper to HandleTokenSelection
+A Valid Defender was selected: Away keeper
+Passing Hex 37,19 to AsyncMoveTokenToHexRegularly
+Passing Hex 37,19 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 37,19
+[Game Log] Away keeper (Fixture Away) moves 1 paces
+isMovingTokenAttacker: False
+Defender does not land on Ball Hex
+Goalkeeper lands next to the dribbler outside the box. Prompt for dive, tackle, or no tackle.
+Goalkeeper near the attacker with the ball. Waiting for tackle decision...Press [D]ive, [T]ackle with feet, or [N]o Tackle
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+🔍 Connected Token Found: Away keeper
+[Game Log] Home carrier (Fixture Home) engages in a ground duel
+[Expected Stats] Home carrier vs Away keeper (outside box gk dive) xDribbles=0.472, xTackles=0.528, tie=0.125, foul=0.167
+Press R to roll the dice for tackle. Defender rolls first.
+Defender rolled: 2. Now it's the attacker's turn.
+]]></output>
+          </test-case>
+          <test-case id="1894" name="OutsideKeeperChoices(1,&quot;moving&quot;,&quot;foot&quot;)" fullname="OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(1,&quot;moving&quot;,&quot;foot&quot;)" methodname="OutsideKeeperChoices" classname="OnlineKeeperGroundChoicesPlayModeTests" runstate="Runnable" seed="700802805" result="Passed" start-time="2026-11-16 22:38:04Z" end-time="2026-11-16 22:38:05Z" duration="0.783601" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=11, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Away keeper to HandleTokenSelection
+A Valid Defender was selected: Away keeper
+Passing Hex 37,19 to AsyncMoveTokenToHexRegularly
+Passing Hex 37,19 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 37,19
+[Game Log] Away keeper (Fixture Away) moves 1 paces
+isMovingTokenAttacker: False
+Defender does not land on Ball Hex
+Goalkeeper lands next to the dribbler outside the box. Prompt for dive, tackle, or no tackle.
+Goalkeeper near the attacker with the ball. Waiting for tackle decision...Press [D]ive, [T]ackle with feet, or [N]o Tackle
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+🔍 Connected Token Found: Away keeper
+[Game Log] Home carrier (Fixture Home) engages in a ground duel
+[Expected Stats] Home carrier vs Away keeper (outside box gk foot tackle) xDribbles=0.869, xTackles=0.131, tie=0.049, foul=0.167
+Press R to roll the dice for tackle. Defender rolls first.
+Defender rolled: 2. Now it's the attacker's turn.
+]]></output>
+          </test-case>
+          <test-case id="1895" name="OutsideKeeperChoices(1,&quot;moving&quot;,&quot;stand&quot;)" fullname="OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(1,&quot;moving&quot;,&quot;stand&quot;)" methodname="OutsideKeeperChoices" classname="OnlineKeeperGroundChoicesPlayModeTests" runstate="Runnable" seed="645497529" result="Passed" start-time="2026-11-16 22:38:05Z" end-time="2026-11-16 22:38:06Z" duration="0.863664" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=11, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Away keeper to HandleTokenSelection
+A Valid Defender was selected: Away keeper
+Passing Hex 37,19 to AsyncMoveTokenToHexRegularly
+Passing Hex 37,19 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 37,19
+[Game Log] Away keeper (Fixture Away) moves 1 paces
+isMovingTokenAttacker: False
+Defender does not land on Ball Hex
+Goalkeeper lands next to the dribbler outside the box. Prompt for dive, tackle, or no tackle.
+Goalkeeper near the attacker with the ball. Waiting for tackle decision...Press [D]ive, [T]ackle with feet, or [N]o Tackle
+Tackle phase reset.
+Advancing Movement Phase
+]]></output>
+          </test-case>
+          <test-case id="1896" name="OutsideKeeperChoices(1,&quot;stationary&quot;,&quot;dive&quot;)" fullname="OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(1,&quot;stationary&quot;,&quot;dive&quot;)" methodname="OutsideKeeperChoices" classname="OnlineKeeperGroundChoicesPlayModeTests" runstate="Runnable" seed="1507120095" result="Passed" start-time="2026-11-16 22:38:06Z" end-time="2026-11-16 22:38:06Z" duration="0.896028" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=11, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Away keeper to HandleTokenSelection
+A Valid Defender was selected: Away keeper
+Away keeper is adjacent to Home carrier outside the goalkeeper's penalty box. Press [D]ive, [T]ackle with feet, or [N] to stand there.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+🔍 Connected Token Found: Away keeper
+[Game Log] Home carrier (Fixture Home) engages in a ground duel
+[Expected Stats] Home carrier vs Away keeper (outside box gk dive) xDribbles=0.472, xTackles=0.528, tie=0.125, foul=0.167
+Press R to roll the dice for tackle. Defender rolls first.
+Defender rolled: 2. Now it's the attacker's turn.
+]]></output>
+          </test-case>
+          <test-case id="1897" name="OutsideKeeperChoices(1,&quot;stationary&quot;,&quot;foot&quot;)" fullname="OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(1,&quot;stationary&quot;,&quot;foot&quot;)" methodname="OutsideKeeperChoices" classname="OnlineKeeperGroundChoicesPlayModeTests" runstate="Runnable" seed="1743138540" result="Passed" start-time="2026-11-16 22:38:06Z" end-time="2026-11-16 22:38:07Z" duration="0.880290" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=11, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Away keeper to HandleTokenSelection
+A Valid Defender was selected: Away keeper
+Away keeper is adjacent to Home carrier outside the goalkeeper's penalty box. Press [D]ive, [T]ackle with feet, or [N] to stand there.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+🔍 Connected Token Found: Away keeper
+[Game Log] Home carrier (Fixture Home) engages in a ground duel
+[Expected Stats] Home carrier vs Away keeper (outside box gk foot tackle) xDribbles=0.869, xTackles=0.131, tie=0.049, foul=0.167
+Press R to roll the dice for tackle. Defender rolls first.
+Defender rolled: 2. Now it's the attacker's turn.
+]]></output>
+          </test-case>
+          <test-case id="1898" name="OutsideKeeperChoices(1,&quot;stationary&quot;,&quot;stand&quot;)" fullname="OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(1,&quot;stationary&quot;,&quot;stand&quot;)" methodname="OutsideKeeperChoices" classname="OnlineKeeperGroundChoicesPlayModeTests" runstate="Runnable" seed="359877009" result="Passed" start-time="2026-11-16 22:38:07Z" end-time="2026-11-16 22:38:08Z" duration="0.822513" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=11, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Away keeper to HandleTokenSelection
+A Valid Defender was selected: Away keeper
+Away keeper is adjacent to Home carrier outside the goalkeeper's penalty box. Press [D]ive, [T]ackle with feet, or [N] to stand there.
+Advancing Movement Phase
+]]></output>
+          </test-case>
+          <test-case id="1899" name="OutsideKeeperChoices(1,&quot;away-moving&quot;,&quot;dive&quot;)" fullname="OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(1,&quot;away-moving&quot;,&quot;dive&quot;)" methodname="OutsideKeeperChoices" classname="OnlineKeeperGroundChoicesPlayModeTests" runstate="Runnable" seed="95905358" result="Passed" start-time="2026-11-16 22:38:08Z" end-time="2026-11-16 22:38:09Z" duration="0.865729" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=11, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Home keeper to HandleTokenSelection
+A Valid Defender was selected: Home keeper
+Passing Hex 37,19 to AsyncMoveTokenToHexRegularly
+Passing Hex 37,19 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 37,19
+[Game Log] Home keeper (Fixture Home) moves 1 paces
+isMovingTokenAttacker: False
+Defender does not land on Ball Hex
+Goalkeeper lands next to the dribbler outside the box. Prompt for dive, tackle, or no tackle.
+Goalkeeper near the attacker with the ball. Waiting for tackle decision...Press [D]ive, [T]ackle with feet, or [N]o Tackle
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+🔍 Connected Token Found: Home keeper
+[Game Log] Away recovering player (Fixture Away) engages in a ground duel
+[Expected Stats] Away recovering player vs Home keeper (outside box gk dive) xDribbles=0.472, xTackles=0.528, tie=0.125, foul=0.167
+Press R to roll the dice for tackle. Defender rolls first.
+Defender rolled: 2. Now it's the attacker's turn.
+]]></output>
+          </test-case>
+          <test-case id="1900" name="OutsideKeeperChoices(1,&quot;away-moving&quot;,&quot;foot&quot;)" fullname="OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(1,&quot;away-moving&quot;,&quot;foot&quot;)" methodname="OutsideKeeperChoices" classname="OnlineKeeperGroundChoicesPlayModeTests" runstate="Runnable" seed="283223599" result="Passed" start-time="2026-11-16 22:38:09Z" end-time="2026-11-16 22:38:10Z" duration="0.987536" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=11, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Home keeper to HandleTokenSelection
+A Valid Defender was selected: Home keeper
+Passing Hex 37,19 to AsyncMoveTokenToHexRegularly
+Passing Hex 37,19 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 37,19
+[Game Log] Home keeper (Fixture Home) moves 1 paces
+isMovingTokenAttacker: False
+Defender does not land on Ball Hex
+Goalkeeper lands next to the dribbler outside the box. Prompt for dive, tackle, or no tackle.
+Goalkeeper near the attacker with the ball. Waiting for tackle decision...Press [D]ive, [T]ackle with feet, or [N]o Tackle
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+🔍 Connected Token Found: Home keeper
+[Game Log] Away recovering player (Fixture Away) engages in a ground duel
+[Expected Stats] Away recovering player vs Home keeper (outside box gk foot tackle) xDribbles=0.869, xTackles=0.131, tie=0.049, foul=0.167
+Press R to roll the dice for tackle. Defender rolls first.
+Defender rolled: 2. Now it's the attacker's turn.
+]]></output>
+          </test-case>
+          <test-case id="1901" name="OutsideKeeperChoices(1,&quot;away-moving&quot;,&quot;stand&quot;)" fullname="OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(1,&quot;away-moving&quot;,&quot;stand&quot;)" methodname="OutsideKeeperChoices" classname="OnlineKeeperGroundChoicesPlayModeTests" runstate="Runnable" seed="1672140976" result="Passed" start-time="2026-11-16 22:38:10Z" end-time="2026-11-16 22:38:11Z" duration="0.850847" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=11, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Home keeper to HandleTokenSelection
+A Valid Defender was selected: Home keeper
+Passing Hex 37,19 to AsyncMoveTokenToHexRegularly
+Passing Hex 37,19 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 37,19
+[Game Log] Home keeper (Fixture Home) moves 1 paces
+isMovingTokenAttacker: False
+Defender does not land on Ball Hex
+Goalkeeper lands next to the dribbler outside the box. Prompt for dive, tackle, or no tackle.
+Goalkeeper near the attacker with the ball. Waiting for tackle decision...Press [D]ive, [T]ackle with feet, or [N]o Tackle
+Tackle phase reset.
+Advancing Movement Phase
+]]></output>
+          </test-case>
+          <test-case id="1902" name="OutsideKeeperChoices(1,&quot;away-stationary&quot;,&quot;dive&quot;)" fullname="OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(1,&quot;away-stationary&quot;,&quot;dive&quot;)" methodname="OutsideKeeperChoices" classname="OnlineKeeperGroundChoicesPlayModeTests" runstate="Runnable" seed="1531338834" result="Passed" start-time="2026-11-16 22:38:11Z" end-time="2026-11-16 22:38:12Z" duration="0.864685" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=11, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Home keeper to HandleTokenSelection
+A Valid Defender was selected: Home keeper
+Home keeper is adjacent to Away recovering player outside the goalkeeper's penalty box. Press [D]ive, [T]ackle with feet, or [N] to stand there.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+🔍 Connected Token Found: Home keeper
+[Game Log] Away recovering player (Fixture Away) engages in a ground duel
+[Expected Stats] Away recovering player vs Home keeper (outside box gk dive) xDribbles=0.472, xTackles=0.528, tie=0.125, foul=0.167
+Press R to roll the dice for tackle. Defender rolls first.
+Defender rolled: 2. Now it's the attacker's turn.
+]]></output>
+          </test-case>
+          <test-case id="1903" name="OutsideKeeperChoices(1,&quot;away-stationary&quot;,&quot;foot&quot;)" fullname="OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(1,&quot;away-stationary&quot;,&quot;foot&quot;)" methodname="OutsideKeeperChoices" classname="OnlineKeeperGroundChoicesPlayModeTests" runstate="Runnable" seed="1577030640" result="Passed" start-time="2026-11-16 22:38:12Z" end-time="2026-11-16 22:38:13Z" duration="0.807445" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=11, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Home keeper to HandleTokenSelection
+A Valid Defender was selected: Home keeper
+Home keeper is adjacent to Away recovering player outside the goalkeeper's penalty box. Press [D]ive, [T]ackle with feet, or [N] to stand there.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+🔍 Connected Token Found: Home keeper
+[Game Log] Away recovering player (Fixture Away) engages in a ground duel
+[Expected Stats] Away recovering player vs Home keeper (outside box gk foot tackle) xDribbles=0.869, xTackles=0.131, tie=0.049, foul=0.167
+Press R to roll the dice for tackle. Defender rolls first.
+Defender rolled: 2. Now it's the attacker's turn.
+]]></output>
+          </test-case>
+          <test-case id="1904" name="OutsideKeeperChoices(1,&quot;away-stationary&quot;,&quot;stand&quot;)" fullname="OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(1,&quot;away-stationary&quot;,&quot;stand&quot;)" methodname="OutsideKeeperChoices" classname="OnlineKeeperGroundChoicesPlayModeTests" runstate="Runnable" seed="1344537321" result="Passed" start-time="2026-11-16 22:38:13Z" end-time="2026-11-16 22:38:13Z" duration="0.889941" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=11, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Home keeper to HandleTokenSelection
+A Valid Defender was selected: Home keeper
+Home keeper is adjacent to Away recovering player outside the goalkeeper's penalty box. Press [D]ive, [T]ackle with feet, or [N] to stand there.
+Advancing Movement Phase
+]]></output>
+          </test-case>
+          <test-case id="1905" name="OutsideKeeperChoices(-1,&quot;moving&quot;,&quot;dive&quot;)" fullname="OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(-1,&quot;moving&quot;,&quot;dive&quot;)" methodname="OutsideKeeperChoices" classname="OnlineKeeperGroundChoicesPlayModeTests" runstate="Runnable" seed="1516606543" result="Passed" start-time="2026-11-16 22:38:13Z" end-time="2026-11-16 22:38:14Z" duration="0.834089" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-11, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Away keeper to HandleTokenSelection
+A Valid Defender was selected: Away keeper
+Passing Hex 13,19 to AsyncMoveTokenToHexRegularly
+Passing Hex 13,19 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 13,19
+[Game Log] Away keeper (Fixture Away) moves 1 paces
+isMovingTokenAttacker: False
+Defender does not land on Ball Hex
+Goalkeeper lands next to the dribbler outside the box. Prompt for dive, tackle, or no tackle.
+Goalkeeper near the attacker with the ball. Waiting for tackle decision...Press [D]ive, [T]ackle with feet, or [N]o Tackle
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+🔍 Connected Token Found: Away keeper
+[Game Log] Home carrier (Fixture Home) engages in a ground duel
+[Expected Stats] Home carrier vs Away keeper (outside box gk dive) xDribbles=0.472, xTackles=0.528, tie=0.125, foul=0.167
+Press R to roll the dice for tackle. Defender rolls first.
+Defender rolled: 2. Now it's the attacker's turn.
+]]></output>
+          </test-case>
+          <test-case id="1906" name="OutsideKeeperChoices(-1,&quot;moving&quot;,&quot;foot&quot;)" fullname="OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(-1,&quot;moving&quot;,&quot;foot&quot;)" methodname="OutsideKeeperChoices" classname="OnlineKeeperGroundChoicesPlayModeTests" runstate="Runnable" seed="1930275229" result="Passed" start-time="2026-11-16 22:38:14Z" end-time="2026-11-16 22:38:15Z" duration="0.866773" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-11, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Away keeper to HandleTokenSelection
+A Valid Defender was selected: Away keeper
+Passing Hex 13,19 to AsyncMoveTokenToHexRegularly
+Passing Hex 13,19 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 13,19
+[Game Log] Away keeper (Fixture Away) moves 1 paces
+isMovingTokenAttacker: False
+Defender does not land on Ball Hex
+Goalkeeper lands next to the dribbler outside the box. Prompt for dive, tackle, or no tackle.
+Goalkeeper near the attacker with the ball. Waiting for tackle decision...Press [D]ive, [T]ackle with feet, or [N]o Tackle
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+🔍 Connected Token Found: Away keeper
+[Game Log] Home carrier (Fixture Home) engages in a ground duel
+[Expected Stats] Home carrier vs Away keeper (outside box gk foot tackle) xDribbles=0.869, xTackles=0.131, tie=0.049, foul=0.167
+Press R to roll the dice for tackle. Defender rolls first.
+Defender rolled: 2. Now it's the attacker's turn.
+]]></output>
+          </test-case>
+          <test-case id="1907" name="OutsideKeeperChoices(-1,&quot;moving&quot;,&quot;stand&quot;)" fullname="OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(-1,&quot;moving&quot;,&quot;stand&quot;)" methodname="OutsideKeeperChoices" classname="OnlineKeeperGroundChoicesPlayModeTests" runstate="Runnable" seed="1966261906" result="Passed" start-time="2026-11-16 22:38:15Z" end-time="2026-11-16 22:38:16Z" duration="0.832571" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-11, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Away keeper to HandleTokenSelection
+A Valid Defender was selected: Away keeper
+Passing Hex 13,19 to AsyncMoveTokenToHexRegularly
+Passing Hex 13,19 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 13,19
+[Game Log] Away keeper (Fixture Away) moves 1 paces
+isMovingTokenAttacker: False
+Defender does not land on Ball Hex
+Goalkeeper lands next to the dribbler outside the box. Prompt for dive, tackle, or no tackle.
+Goalkeeper near the attacker with the ball. Waiting for tackle decision...Press [D]ive, [T]ackle with feet, or [N]o Tackle
+Tackle phase reset.
+Advancing Movement Phase
+]]></output>
+          </test-case>
+          <test-case id="1908" name="OutsideKeeperChoices(-1,&quot;stationary&quot;,&quot;dive&quot;)" fullname="OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(-1,&quot;stationary&quot;,&quot;dive&quot;)" methodname="OutsideKeeperChoices" classname="OnlineKeeperGroundChoicesPlayModeTests" runstate="Runnable" seed="601732906" result="Passed" start-time="2026-11-16 22:38:16Z" end-time="2026-11-16 22:38:17Z" duration="0.918342" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-11, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Away keeper to HandleTokenSelection
+A Valid Defender was selected: Away keeper
+Away keeper is adjacent to Home carrier outside the goalkeeper's penalty box. Press [D]ive, [T]ackle with feet, or [N] to stand there.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+🔍 Connected Token Found: Away keeper
+[Game Log] Home carrier (Fixture Home) engages in a ground duel
+[Expected Stats] Home carrier vs Away keeper (outside box gk dive) xDribbles=0.472, xTackles=0.528, tie=0.125, foul=0.167
+Press R to roll the dice for tackle. Defender rolls first.
+Defender rolled: 2. Now it's the attacker's turn.
+]]></output>
+          </test-case>
+          <test-case id="1909" name="OutsideKeeperChoices(-1,&quot;stationary&quot;,&quot;foot&quot;)" fullname="OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(-1,&quot;stationary&quot;,&quot;foot&quot;)" methodname="OutsideKeeperChoices" classname="OnlineKeeperGroundChoicesPlayModeTests" runstate="Runnable" seed="381370019" result="Passed" start-time="2026-11-16 22:38:17Z" end-time="2026-11-16 22:38:18Z" duration="0.819057" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-11, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Away keeper to HandleTokenSelection
+A Valid Defender was selected: Away keeper
+Away keeper is adjacent to Home carrier outside the goalkeeper's penalty box. Press [D]ive, [T]ackle with feet, or [N] to stand there.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+🔍 Connected Token Found: Away keeper
+[Game Log] Home carrier (Fixture Home) engages in a ground duel
+[Expected Stats] Home carrier vs Away keeper (outside box gk foot tackle) xDribbles=0.869, xTackles=0.131, tie=0.049, foul=0.167
+Press R to roll the dice for tackle. Defender rolls first.
+Defender rolled: 2. Now it's the attacker's turn.
+]]></output>
+          </test-case>
+          <test-case id="1910" name="OutsideKeeperChoices(-1,&quot;stationary&quot;,&quot;stand&quot;)" fullname="OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(-1,&quot;stationary&quot;,&quot;stand&quot;)" methodname="OutsideKeeperChoices" classname="OnlineKeeperGroundChoicesPlayModeTests" runstate="Runnable" seed="1515055880" result="Passed" start-time="2026-11-16 22:38:18Z" end-time="2026-11-16 22:38:19Z" duration="0.799683" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-11, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Away keeper to HandleTokenSelection
+A Valid Defender was selected: Away keeper
+Away keeper is adjacent to Home carrier outside the goalkeeper's penalty box. Press [D]ive, [T]ackle with feet, or [N] to stand there.
+Advancing Movement Phase
+]]></output>
+          </test-case>
+          <test-case id="1911" name="OutsideKeeperChoices(-1,&quot;away-moving&quot;,&quot;dive&quot;)" fullname="OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(-1,&quot;away-moving&quot;,&quot;dive&quot;)" methodname="OutsideKeeperChoices" classname="OnlineKeeperGroundChoicesPlayModeTests" runstate="Runnable" seed="764218013" result="Passed" start-time="2026-11-16 22:38:19Z" end-time="2026-11-16 22:38:19Z" duration="0.845179" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-11, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Home keeper to HandleTokenSelection
+A Valid Defender was selected: Home keeper
+Passing Hex 13,19 to AsyncMoveTokenToHexRegularly
+Passing Hex 13,19 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 13,19
+[Game Log] Home keeper (Fixture Home) moves 1 paces
+isMovingTokenAttacker: False
+Defender does not land on Ball Hex
+Goalkeeper lands next to the dribbler outside the box. Prompt for dive, tackle, or no tackle.
+Goalkeeper near the attacker with the ball. Waiting for tackle decision...Press [D]ive, [T]ackle with feet, or [N]o Tackle
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+🔍 Connected Token Found: Home keeper
+[Game Log] Away recovering player (Fixture Away) engages in a ground duel
+[Expected Stats] Away recovering player vs Home keeper (outside box gk dive) xDribbles=0.472, xTackles=0.528, tie=0.125, foul=0.167
+Press R to roll the dice for tackle. Defender rolls first.
+Defender rolled: 2. Now it's the attacker's turn.
+]]></output>
+          </test-case>
+          <test-case id="1912" name="OutsideKeeperChoices(-1,&quot;away-moving&quot;,&quot;foot&quot;)" fullname="OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(-1,&quot;away-moving&quot;,&quot;foot&quot;)" methodname="OutsideKeeperChoices" classname="OnlineKeeperGroundChoicesPlayModeTests" runstate="Runnable" seed="1172355095" result="Passed" start-time="2026-11-16 22:38:19Z" end-time="2026-11-16 22:38:20Z" duration="0.910223" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-11, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Home keeper to HandleTokenSelection
+A Valid Defender was selected: Home keeper
+Passing Hex 13,19 to AsyncMoveTokenToHexRegularly
+Passing Hex 13,19 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 13,19
+[Game Log] Home keeper (Fixture Home) moves 1 paces
+isMovingTokenAttacker: False
+Defender does not land on Ball Hex
+Goalkeeper lands next to the dribbler outside the box. Prompt for dive, tackle, or no tackle.
+Goalkeeper near the attacker with the ball. Waiting for tackle decision...Press [D]ive, [T]ackle with feet, or [N]o Tackle
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+🔍 Connected Token Found: Home keeper
+[Game Log] Away recovering player (Fixture Away) engages in a ground duel
+[Expected Stats] Away recovering player vs Home keeper (outside box gk foot tackle) xDribbles=0.869, xTackles=0.131, tie=0.049, foul=0.167
+Press R to roll the dice for tackle. Defender rolls first.
+Defender rolled: 2. Now it's the attacker's turn.
+]]></output>
+          </test-case>
+          <test-case id="1913" name="OutsideKeeperChoices(-1,&quot;away-moving&quot;,&quot;stand&quot;)" fullname="OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(-1,&quot;away-moving&quot;,&quot;stand&quot;)" methodname="OutsideKeeperChoices" classname="OnlineKeeperGroundChoicesPlayModeTests" runstate="Runnable" seed="1598990596" result="Passed" start-time="2026-11-16 22:38:20Z" end-time="2026-11-16 22:38:21Z" duration="0.822772" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-11, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Home keeper to HandleTokenSelection
+A Valid Defender was selected: Home keeper
+Passing Hex 13,19 to AsyncMoveTokenToHexRegularly
+Passing Hex 13,19 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 13,19
+[Game Log] Home keeper (Fixture Home) moves 1 paces
+isMovingTokenAttacker: False
+Defender does not land on Ball Hex
+Goalkeeper lands next to the dribbler outside the box. Prompt for dive, tackle, or no tackle.
+Goalkeeper near the attacker with the ball. Waiting for tackle decision...Press [D]ive, [T]ackle with feet, or [N]o Tackle
+Tackle phase reset.
+Advancing Movement Phase
+]]></output>
+          </test-case>
+          <test-case id="1914" name="OutsideKeeperChoices(-1,&quot;away-stationary&quot;,&quot;dive&quot;)" fullname="OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(-1,&quot;away-stationary&quot;,&quot;dive&quot;)" methodname="OutsideKeeperChoices" classname="OnlineKeeperGroundChoicesPlayModeTests" runstate="Runnable" seed="15676552" result="Passed" start-time="2026-11-16 22:38:21Z" end-time="2026-11-16 22:38:22Z" duration="0.829059" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-11, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Home keeper to HandleTokenSelection
+A Valid Defender was selected: Home keeper
+Home keeper is adjacent to Away recovering player outside the goalkeeper's penalty box. Press [D]ive, [T]ackle with feet, or [N] to stand there.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+🔍 Connected Token Found: Home keeper
+[Game Log] Away recovering player (Fixture Away) engages in a ground duel
+[Expected Stats] Away recovering player vs Home keeper (outside box gk dive) xDribbles=0.472, xTackles=0.528, tie=0.125, foul=0.167
+Press R to roll the dice for tackle. Defender rolls first.
+Defender rolled: 2. Now it's the attacker's turn.
+]]></output>
+          </test-case>
+          <test-case id="1915" name="OutsideKeeperChoices(-1,&quot;away-stationary&quot;,&quot;foot&quot;)" fullname="OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(-1,&quot;away-stationary&quot;,&quot;foot&quot;)" methodname="OutsideKeeperChoices" classname="OnlineKeeperGroundChoicesPlayModeTests" runstate="Runnable" seed="1803773605" result="Passed" start-time="2026-11-16 22:38:22Z" end-time="2026-11-16 22:38:23Z" duration="0.873448" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-11, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Home keeper to HandleTokenSelection
+A Valid Defender was selected: Home keeper
+Home keeper is adjacent to Away recovering player outside the goalkeeper's penalty box. Press [D]ive, [T]ackle with feet, or [N] to stand there.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+🔍 Connected Token Found: Home keeper
+[Game Log] Away recovering player (Fixture Away) engages in a ground duel
+[Expected Stats] Away recovering player vs Home keeper (outside box gk foot tackle) xDribbles=0.869, xTackles=0.131, tie=0.049, foul=0.167
+Press R to roll the dice for tackle. Defender rolls first.
+Defender rolled: 2. Now it's the attacker's turn.
+]]></output>
+          </test-case>
+          <test-case id="1916" name="OutsideKeeperChoices(-1,&quot;away-stationary&quot;,&quot;stand&quot;)" fullname="OnlineKeeperGroundChoicesPlayModeTests.OutsideKeeperChoices(-1,&quot;away-stationary&quot;,&quot;stand&quot;)" methodname="OutsideKeeperChoices" classname="OnlineKeeperGroundChoicesPlayModeTests" runstate="Runnable" seed="597594285" result="Passed" start-time="2026-11-16 22:38:23Z" end-time="2026-11-16 22:38:24Z" duration="0.841205" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-11, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Home keeper to HandleTokenSelection
+A Valid Defender was selected: Home keeper
+Home keeper is adjacent to Away recovering player outside the goalkeeper's penalty box. Press [D]ive, [T]ackle with feet, or [N] to stand there.
+Advancing Movement Phase
+Saving results to: TestResults\GameplayRegression\Runs\20261116T223802500Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

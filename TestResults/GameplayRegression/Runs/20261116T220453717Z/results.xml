@@ -1,0 +1,619 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="8" result="Passed" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 22:04:53Z" end-time="2026-11-16 22:05:18Z" duration="24.3753343">
+  <test-suite type="TestSuite" id="3028" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1681" result="Passed" start-time="2026-11-16 22:04:53Z" end-time="2026-11-16 22:05:18Z" duration="24.375334" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="3025" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1681" result="Passed" start-time="2026-11-16 22:04:53Z" end-time="2026-11-16 22:05:18Z" duration="24.340543" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12156" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1799" name="OnlineHeaderResultPlayModeTests" fullname="OnlineHeaderResultPlayModeTests" classname="OnlineHeaderResultPlayModeTests" runstate="Runnable" testcasecount="40" result="Passed" start-time="2026-11-16 22:04:53Z" end-time="2026-11-16 22:05:18Z" duration="24.326298" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineHeaders" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="1816" name="ContestedHeaderCompletesHeadedPass" fullname="OnlineHeaderResultPlayModeTests.ContestedHeaderCompletesHeadedPass" classname="OnlineHeaderResultPlayModeTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-11-16 22:04:53Z" end-time="2026-11-16 22:05:18Z" duration="24.302863" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="1808" name="ContestedHeaderCompletesHeadedPass(1,False,False)" fullname="OnlineHeaderResultPlayModeTests.ContestedHeaderCompletesHeadedPass(1,False,False)" methodname="ContestedHeaderCompletesHeadedPass" classname="OnlineHeaderResultPlayModeTests" runstate="Runnable" seed="1633054075" result="Passed" start-time="2026-11-16 22:04:53Z" end-time="2026-11-16 22:04:57Z" duration="3.598286" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+High Pass target map is still calculating. Target highlights will draw when ready.
+HighPassManager activated. Waiting for target selection...
+Clicked hex: (0, 0, 6)
+High Pass target map is still calculating. Target highlights will draw when ready.
+First click registered. Click again to confirm the High Pass.
+Clicked hex: (0, 0, 6)
+High Pass confirmed by second click.
+Offside assessed (high_pass_target_confirmed): line x=8, tokens=none.
+HP target precompute cancelled. version=4, elapsedMs=7942.3, elapsedFrames=11, processed=0, validTargets=4
+Substitutions are no longer available: Committed to HighPass
+Attacker Online receiver is locked on the target hex and cannot move.
+Attacker HP movement phase started. Move one attacker up to 3 hexes.
+Initial target already has an attacker. Press [X] to forfeit Attacker HP movement or move another attacker up to 3 hexes.
+Attacker HP movement forfeited. Proceeding to Defender HP movement.
+Defender HP movement phase started. Move one defender up to 3 hexes, or press [X] to forfeit.
+Defender HP movement forfeited. Waiting for accuracy roll. Please Press R key.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Performing accuracy roll for High Pass. Please Press R key.
+[Game Log] Home carrier (Fixture Home) attempts an aerial pass
+Passer: Home carrier, HighPass: 4
+High Pass is accurate, passer roll: 5
+[Game Log] Home carrier (Fixture Home) accurate places an aerial pass
+Ball has reached its destination: (0, 0, 6)
+Ball landed within bounds.
+GK cannot rush out to challenge.
+Eligible to head: Online receiver at (0, 0, 6)
+Eligible to head: Away recovering player at (1, 0, 6)
+hasEligibleAttackers: True, hasEligibleDefenders: True
+Automatically selected attacker: Online receiver
+Please select up to two outfield defenders plus the defending GK if eligible. Press 'A' to select all available when allowed, and at any time press 'Enter' to confirm selection.
+threshold: 1
+Defender Away recovering player selected to jump for the header.
+threshold: 1
+Away recovering player has already declared to Jump for header. De-nominating token
+threshold: 1
+Defender Away recovering player selected to jump for the header.
+[Enter] was pressed. Defender header selection confirmed.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Header challenge started. Rolling for attackers and defenders.
+Attacker Online receiver rolled 6 + heading: 4= 10
+Defender Away recovering player rolled 1 + heading: 4= 5
+🔍 Connected Token Found: Away recovering player
+[Game Log] Online receiver (Fixture Home) engages in an aerial challenge with Away recovering player
+Best Attacker: Online receiver with a score of 10 (roll = 6)
+Best Defender: Away recovering player with a score of 5 (roll = 1)
+[Game Log] Home carrier (Fixture Home) completes an aerial pass
+🔍 Connected Token Found: Away recovering player
+[Game Log] Online receiver (Fixture Home) wins an aerial challenge from Away recovering player
+[Expected Stats] Away recovering player records xRecovery 0.424 on header against Home carrier
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: high_pass_header_challenge_won.
+Offside assessed (high_pass_header_challenge_won): line x=8, tokens=none.
+Highlighting hexes for header from (0, 0, 6) with range 6
+Online receiver (Attack) wins the header. Highlighting target hexes.
+[Game Log] Online receiver (Fixture Home) attempts a ground pass
+Ball moved to (0, 0, 10)
+Attacking team has possession: True.
+[Game Log] Online receiver (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Header pass receiver
+Offside assessment cleared: header_pass_completed.
+]]></output>
+          </test-case>
+          <test-case id="1809" name="ContestedHeaderCompletesHeadedPass(1,False,True)" fullname="OnlineHeaderResultPlayModeTests.ContestedHeaderCompletesHeadedPass(1,False,True)" methodname="ContestedHeaderCompletesHeadedPass" classname="OnlineHeaderResultPlayModeTests" runstate="Runnable" seed="1816883486" result="Passed" start-time="2026-11-16 22:04:57Z" end-time="2026-11-16 22:05:00Z" duration="2.900559" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+High Pass target map is still calculating. Target highlights will draw when ready.
+HighPassManager activated. Waiting for target selection...
+Clicked hex: (0, 0, 6)
+High Pass target map is still calculating. Target highlights will draw when ready.
+First click registered. Click again to confirm the High Pass.
+Clicked hex: (0, 0, 6)
+High Pass confirmed by second click.
+Offside assessed (high_pass_target_confirmed): line x=8, tokens=none.
+HP target precompute cancelled. version=4, elapsedMs=11072.8, elapsedFrames=529, processed=0, validTargets=4
+Substitutions are no longer available: Committed to HighPass
+Attacker Online receiver is locked on the target hex and cannot move.
+Attacker HP movement phase started. Move one attacker up to 3 hexes.
+Initial target already has an attacker. Press [X] to forfeit Attacker HP movement or move another attacker up to 3 hexes.
+Attacker HP movement forfeited. Proceeding to Defender HP movement.
+Defender HP movement phase started. Move one defender up to 3 hexes, or press [X] to forfeit.
+Defender HP movement forfeited. Waiting for accuracy roll. Please Press R key.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Performing accuracy roll for High Pass. Please Press R key.
+[Game Log] Home carrier (Fixture Home) attempts an aerial pass
+Passer: Home carrier, HighPass: 4
+High Pass is accurate, passer roll: 5
+[Game Log] Home carrier (Fixture Home) accurate places an aerial pass
+Ball has reached its destination: (0, 0, 6)
+Ball landed within bounds.
+GK cannot rush out to challenge.
+Eligible to head: Online receiver at (0, 0, 6)
+Eligible to head: Away recovering player at (1, 0, 6)
+hasEligibleAttackers: True, hasEligibleDefenders: True
+Automatically selected attacker: Online receiver
+Please select up to two outfield defenders plus the defending GK if eligible. Press 'A' to select all available when allowed, and at any time press 'Enter' to confirm selection.
+threshold: 1
+Defender Away recovering player selected to jump for the header.
+threshold: 1
+Away recovering player has already declared to Jump for header. De-nominating token
+threshold: 1
+Defender Away recovering player selected to jump for the header.
+[Enter] was pressed. Defender header selection confirmed.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Header challenge started. Rolling for attackers and defenders.
+Attacker Online receiver rolled 6 + heading: 4= 10
+Defender Away recovering player rolled 1 + heading: 4= 5
+🔍 Connected Token Found: Away recovering player
+[Game Log] Online receiver (Fixture Home) engages in an aerial challenge with Away recovering player
+Best Attacker: Online receiver with a score of 10 (roll = 6)
+Best Defender: Away recovering player with a score of 5 (roll = 1)
+[Game Log] Home carrier (Fixture Home) completes an aerial pass
+🔍 Connected Token Found: Away recovering player
+[Game Log] Online receiver (Fixture Home) wins an aerial challenge from Away recovering player
+[Expected Stats] Away recovering player records xRecovery 0.424 on header against Home carrier
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: high_pass_header_challenge_won.
+Offside assessed (high_pass_header_challenge_won): line x=8, tokens=none.
+Highlighting hexes for header from (0, 0, 6) with range 6
+Online receiver (Attack) wins the header. Highlighting target hexes.
+[Game Log] Online receiver (Fixture Home) attempts a ground pass
+Ball moved to (0, 0, 10)
+Attacking team has possession: True.
+[Game Log] Online receiver (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Header pass receiver
+Offside assessment cleared: header_pass_completed.
+]]></output>
+          </test-case>
+          <test-case id="1810" name="ContestedHeaderCompletesHeadedPass(1,True,False)" fullname="OnlineHeaderResultPlayModeTests.ContestedHeaderCompletesHeadedPass(1,True,False)" methodname="ContestedHeaderCompletesHeadedPass" classname="OnlineHeaderResultPlayModeTests" runstate="Runnable" seed="1362886938" result="Passed" start-time="2026-11-16 22:05:00Z" end-time="2026-11-16 22:05:03Z" duration="2.881550" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+High Pass target map is still calculating. Target highlights will draw when ready.
+HighPassManager activated. Waiting for target selection...
+Clicked hex: (0, 0, 6)
+High Pass target map is still calculating. Target highlights will draw when ready.
+First click registered. Click again to confirm the High Pass.
+Clicked hex: (0, 0, 6)
+High Pass confirmed by second click.
+Offside assessed (high_pass_target_confirmed): line x=8, tokens=none.
+HP target precompute cancelled. version=4, elapsedMs=13927.6, elapsedFrames=1103, processed=0, validTargets=4
+Substitutions are no longer available: Committed to HighPass
+Attacker Online receiver is locked on the target hex and cannot move.
+Attacker HP movement phase started. Move one attacker up to 3 hexes.
+Initial target already has an attacker. Press [X] to forfeit Attacker HP movement or move another attacker up to 3 hexes.
+Attacker HP movement forfeited. Proceeding to Defender HP movement.
+Defender HP movement phase started. Move one defender up to 3 hexes, or press [X] to forfeit.
+Defender HP movement forfeited. Waiting for accuracy roll. Please Press R key.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Performing accuracy roll for High Pass. Please Press R key.
+[Game Log] Home carrier (Fixture Home) attempts an aerial pass
+Passer: Home carrier, HighPass: 4
+High Pass is accurate, passer roll: 5
+[Game Log] Home carrier (Fixture Home) accurate places an aerial pass
+Ball has reached its destination: (0, 0, 6)
+Ball landed within bounds.
+GK cannot rush out to challenge.
+Eligible to head: Online receiver at (0, 0, 6)
+Eligible to head: Away recovering player at (1, 0, 6)
+hasEligibleAttackers: True, hasEligibleDefenders: True
+Automatically selected attacker: Online receiver
+Please select up to two outfield defenders plus the defending GK if eligible. Press 'A' to select all available when allowed, and at any time press 'Enter' to confirm selection.
+threshold: 1
+Defender Away recovering player selected to jump for the header.
+threshold: 1
+Away recovering player has already declared to Jump for header. De-nominating token
+threshold: 1
+Defender Away recovering player selected to jump for the header.
+[Enter] was pressed. Defender header selection confirmed.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Header challenge started. Rolling for attackers and defenders.
+Attacker Online receiver rolled 1 + heading: 4= 5
+Defender Away recovering player rolled 6 + heading: 4= 10
+🔍 Connected Token Found: Away recovering player
+[Game Log] Online receiver (Fixture Home) engages in an aerial challenge with Away recovering player
+Best Attacker: Online receiver with a score of 5 (roll = 1)
+Best Defender: Away recovering player with a score of 10 (roll = 6)
+🔍 Connected Token Found: Online receiver
+[Game Log] Away recovering player (Fixture Away) wins an aerial challenge from Online receiver
+[Expected Stats] Away recovering player records xRecovery 0.424 on header against Home carrier
+🔍 Connected Token Found: Online receiver
+[Game Log] Away recovering player (Fixture Away) wins possession in the air from Online receiver
+Offside assessment cleared: high_pass_header_defender_won.
+Away recovering player (Defense) wins the header. Switching possession. Click on a Highlighted Hex to play a Headed Pass.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Offside assessed (high_pass_header_defender_won): line x=0, tokens=none.
+Highlighting hexes for header from (0, 0, 6) with range 6
+[Game Log] Away recovering player (Fixture Away) attempts a ground pass
+Ball moved to (0, 0, 10)
+Attacking team has possession: True.
+[Game Log] Away recovering player (Fixture Away) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Header pass receiver
+Offside assessment cleared: header_pass_completed.
+]]></output>
+          </test-case>
+          <test-case id="1811" name="ContestedHeaderCompletesHeadedPass(1,True,True)" fullname="OnlineHeaderResultPlayModeTests.ContestedHeaderCompletesHeadedPass(1,True,True)" methodname="ContestedHeaderCompletesHeadedPass" classname="OnlineHeaderResultPlayModeTests" runstate="Runnable" seed="154508308" result="Passed" start-time="2026-11-16 22:05:03Z" end-time="2026-11-16 22:05:06Z" duration="2.800050" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+High Pass target map is still calculating. Target highlights will draw when ready.
+HighPassManager activated. Waiting for target selection...
+Clicked hex: (0, 0, 6)
+High Pass target map is still calculating. Target highlights will draw when ready.
+First click registered. Click again to confirm the High Pass.
+Clicked hex: (0, 0, 6)
+High Pass confirmed by second click.
+Offside assessed (high_pass_target_confirmed): line x=8, tokens=none.
+HP target precompute cancelled. version=4, elapsedMs=16801.6, elapsedFrames=1649, processed=0, validTargets=4
+Substitutions are no longer available: Committed to HighPass
+Attacker Online receiver is locked on the target hex and cannot move.
+Attacker HP movement phase started. Move one attacker up to 3 hexes.
+Initial target already has an attacker. Press [X] to forfeit Attacker HP movement or move another attacker up to 3 hexes.
+Attacker HP movement forfeited. Proceeding to Defender HP movement.
+Defender HP movement phase started. Move one defender up to 3 hexes, or press [X] to forfeit.
+Defender HP movement forfeited. Waiting for accuracy roll. Please Press R key.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Performing accuracy roll for High Pass. Please Press R key.
+[Game Log] Home carrier (Fixture Home) attempts an aerial pass
+Passer: Home carrier, HighPass: 4
+High Pass is accurate, passer roll: 5
+[Game Log] Home carrier (Fixture Home) accurate places an aerial pass
+Ball has reached its destination: (0, 0, 6)
+Ball landed within bounds.
+GK cannot rush out to challenge.
+Eligible to head: Online receiver at (0, 0, 6)
+Eligible to head: Away recovering player at (1, 0, 6)
+hasEligibleAttackers: True, hasEligibleDefenders: True
+Automatically selected attacker: Online receiver
+Please select up to two outfield defenders plus the defending GK if eligible. Press 'A' to select all available when allowed, and at any time press 'Enter' to confirm selection.
+threshold: 1
+Defender Away recovering player selected to jump for the header.
+threshold: 1
+Away recovering player has already declared to Jump for header. De-nominating token
+threshold: 1
+Defender Away recovering player selected to jump for the header.
+[Enter] was pressed. Defender header selection confirmed.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Header challenge started. Rolling for attackers and defenders.
+Attacker Online receiver rolled 1 + heading: 4= 5
+Defender Away recovering player rolled 6 + heading: 4= 10
+🔍 Connected Token Found: Away recovering player
+[Game Log] Online receiver (Fixture Home) engages in an aerial challenge with Away recovering player
+Best Attacker: Online receiver with a score of 5 (roll = 1)
+Best Defender: Away recovering player with a score of 10 (roll = 6)
+🔍 Connected Token Found: Online receiver
+[Game Log] Away recovering player (Fixture Away) wins an aerial challenge from Online receiver
+[Expected Stats] Away recovering player records xRecovery 0.424 on header against Home carrier
+🔍 Connected Token Found: Online receiver
+[Game Log] Away recovering player (Fixture Away) wins possession in the air from Online receiver
+Offside assessment cleared: high_pass_header_defender_won.
+Away recovering player (Defense) wins the header. Switching possession. Click on a Highlighted Hex to play a Headed Pass.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Offside assessed (high_pass_header_defender_won): line x=0, tokens=none.
+Highlighting hexes for header from (0, 0, 6) with range 6
+[Game Log] Away recovering player (Fixture Away) attempts a ground pass
+Ball moved to (0, 0, 10)
+Attacking team has possession: True.
+[Game Log] Away recovering player (Fixture Away) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Header pass receiver
+Offside assessment cleared: header_pass_completed.
+]]></output>
+          </test-case>
+          <test-case id="1812" name="ContestedHeaderCompletesHeadedPass(-1,False,False)" fullname="OnlineHeaderResultPlayModeTests.ContestedHeaderCompletesHeadedPass(-1,False,False)" methodname="ContestedHeaderCompletesHeadedPass" classname="OnlineHeaderResultPlayModeTests" runstate="Runnable" seed="603436585" result="Passed" start-time="2026-11-16 22:05:06Z" end-time="2026-11-16 22:05:08Z" duration="2.839504" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+High Pass target map is still calculating. Target highlights will draw when ready.
+HighPassManager activated. Waiting for target selection...
+Clicked hex: (0, 0, 6)
+High Pass target map is still calculating. Target highlights will draw when ready.
+First click registered. Click again to confirm the High Pass.
+Clicked hex: (0, 0, 6)
+High Pass confirmed by second click.
+Offside assessed (high_pass_target_confirmed): line x=-8, tokens=none.
+HP target precompute cancelled. version=4, elapsedMs=19615.5, elapsedFrames=2175, processed=0, validTargets=16
+Substitutions are no longer available: Committed to HighPass
+Attacker Online receiver is locked on the target hex and cannot move.
+Attacker HP movement phase started. Move one attacker up to 3 hexes.
+Initial target already has an attacker. Press [X] to forfeit Attacker HP movement or move another attacker up to 3 hexes.
+Attacker HP movement forfeited. Proceeding to Defender HP movement.
+Defender HP movement phase started. Move one defender up to 3 hexes, or press [X] to forfeit.
+Defender HP movement forfeited. Waiting for accuracy roll. Please Press R key.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Performing accuracy roll for High Pass. Please Press R key.
+[Game Log] Home carrier (Fixture Home) attempts an aerial pass
+Passer: Home carrier, HighPass: 4
+High Pass is accurate, passer roll: 5
+[Game Log] Home carrier (Fixture Home) accurate places an aerial pass
+Ball has reached its destination: (0, 0, 6)
+Ball landed within bounds.
+GK cannot rush out to challenge.
+Eligible to head: Away recovering player at (-1, 0, 6)
+Eligible to head: Online receiver at (0, 0, 6)
+hasEligibleAttackers: True, hasEligibleDefenders: True
+Automatically selected attacker: Online receiver
+Please select up to two outfield defenders plus the defending GK if eligible. Press 'A' to select all available when allowed, and at any time press 'Enter' to confirm selection.
+threshold: 1
+Defender Away recovering player selected to jump for the header.
+threshold: 1
+Away recovering player has already declared to Jump for header. De-nominating token
+threshold: 1
+Defender Away recovering player selected to jump for the header.
+[Enter] was pressed. Defender header selection confirmed.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Header challenge started. Rolling for attackers and defenders.
+Attacker Online receiver rolled 6 + heading: 4= 10
+Defender Away recovering player rolled 1 + heading: 4= 5
+🔍 Connected Token Found: Away recovering player
+[Game Log] Online receiver (Fixture Home) engages in an aerial challenge with Away recovering player
+Best Attacker: Online receiver with a score of 10 (roll = 6)
+Best Defender: Away recovering player with a score of 5 (roll = 1)
+[Game Log] Home carrier (Fixture Home) completes an aerial pass
+🔍 Connected Token Found: Away recovering player
+[Game Log] Online receiver (Fixture Home) wins an aerial challenge from Away recovering player
+[Expected Stats] Away recovering player records xRecovery 0.424 on header against Home carrier
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: high_pass_header_challenge_won.
+Offside assessed (high_pass_header_challenge_won): line x=-8, tokens=none.
+Highlighting hexes for header from (0, 0, 6) with range 6
+Online receiver (Attack) wins the header. Highlighting target hexes.
+[Game Log] Online receiver (Fixture Home) attempts a ground pass
+Ball moved to (0, 0, 10)
+Attacking team has possession: True.
+[Game Log] Online receiver (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Header pass receiver
+Offside assessment cleared: header_pass_completed.
+]]></output>
+          </test-case>
+          <test-case id="1813" name="ContestedHeaderCompletesHeadedPass(-1,False,True)" fullname="OnlineHeaderResultPlayModeTests.ContestedHeaderCompletesHeadedPass(-1,False,True)" methodname="ContestedHeaderCompletesHeadedPass" classname="OnlineHeaderResultPlayModeTests" runstate="Runnable" seed="568363085" result="Passed" start-time="2026-11-16 22:05:08Z" end-time="2026-11-16 22:05:12Z" duration="3.260931" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+High Pass target map is still calculating. Target highlights will draw when ready.
+HighPassManager activated. Waiting for target selection...
+Clicked hex: (0, 0, 6)
+High Pass target map is still calculating. Target highlights will draw when ready.
+First click registered. Click again to confirm the High Pass.
+Clicked hex: (0, 0, 6)
+High Pass confirmed by second click.
+Offside assessed (high_pass_target_confirmed): line x=-8, tokens=none.
+HP target precompute cancelled. version=4, elapsedMs=22664.8, elapsedFrames=2592, processed=0, validTargets=16
+Substitutions are no longer available: Committed to HighPass
+Attacker Online receiver is locked on the target hex and cannot move.
+Attacker HP movement phase started. Move one attacker up to 3 hexes.
+Initial target already has an attacker. Press [X] to forfeit Attacker HP movement or move another attacker up to 3 hexes.
+Attacker HP movement forfeited. Proceeding to Defender HP movement.
+Defender HP movement phase started. Move one defender up to 3 hexes, or press [X] to forfeit.
+Defender HP movement forfeited. Waiting for accuracy roll. Please Press R key.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Performing accuracy roll for High Pass. Please Press R key.
+[Game Log] Home carrier (Fixture Home) attempts an aerial pass
+Passer: Home carrier, HighPass: 4
+High Pass is accurate, passer roll: 5
+[Game Log] Home carrier (Fixture Home) accurate places an aerial pass
+Ball has reached its destination: (0, 0, 6)
+Ball landed within bounds.
+GK cannot rush out to challenge.
+Eligible to head: Away recovering player at (-1, 0, 6)
+Eligible to head: Online receiver at (0, 0, 6)
+hasEligibleAttackers: True, hasEligibleDefenders: True
+Automatically selected attacker: Online receiver
+Please select up to two outfield defenders plus the defending GK if eligible. Press 'A' to select all available when allowed, and at any time press 'Enter' to confirm selection.
+threshold: 1
+Defender Away recovering player selected to jump for the header.
+threshold: 1
+Away recovering player has already declared to Jump for header. De-nominating token
+threshold: 1
+Defender Away recovering player selected to jump for the header.
+[Enter] was pressed. Defender header selection confirmed.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Header challenge started. Rolling for attackers and defenders.
+Attacker Online receiver rolled 6 + heading: 4= 10
+Defender Away recovering player rolled 1 + heading: 4= 5
+🔍 Connected Token Found: Away recovering player
+[Game Log] Online receiver (Fixture Home) engages in an aerial challenge with Away recovering player
+Best Attacker: Online receiver with a score of 10 (roll = 6)
+Best Defender: Away recovering player with a score of 5 (roll = 1)
+[Game Log] Home carrier (Fixture Home) completes an aerial pass
+🔍 Connected Token Found: Away recovering player
+[Game Log] Online receiver (Fixture Home) wins an aerial challenge from Away recovering player
+[Expected Stats] Away recovering player records xRecovery 0.424 on header against Home carrier
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: high_pass_header_challenge_won.
+Offside assessed (high_pass_header_challenge_won): line x=-8, tokens=none.
+Highlighting hexes for header from (0, 0, 6) with range 6
+Online receiver (Attack) wins the header. Highlighting target hexes.
+[Game Log] Online receiver (Fixture Home) attempts a ground pass
+Ball moved to (0, 0, 10)
+Attacking team has possession: True.
+[Game Log] Online receiver (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Header pass receiver
+Offside assessment cleared: header_pass_completed.
+]]></output>
+          </test-case>
+          <test-case id="1814" name="ContestedHeaderCompletesHeadedPass(-1,True,False)" fullname="OnlineHeaderResultPlayModeTests.ContestedHeaderCompletesHeadedPass(-1,True,False)" methodname="ContestedHeaderCompletesHeadedPass" classname="OnlineHeaderResultPlayModeTests" runstate="Runnable" seed="2137963347" result="Passed" start-time="2026-11-16 22:05:12Z" end-time="2026-11-16 22:05:15Z" duration="3.042266" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+High Pass target map is still calculating. Target highlights will draw when ready.
+HighPassManager activated. Waiting for target selection...
+Clicked hex: (0, 0, 6)
+High Pass target map is still calculating. Target highlights will draw when ready.
+First click registered. Click again to confirm the High Pass.
+Clicked hex: (0, 0, 6)
+High Pass confirmed by second click.
+Offside assessed (high_pass_target_confirmed): line x=-8, tokens=none.
+HP target precompute cancelled. version=4, elapsedMs=25867.6, elapsedFrames=3024, processed=0, validTargets=16
+Substitutions are no longer available: Committed to HighPass
+Attacker Online receiver is locked on the target hex and cannot move.
+Attacker HP movement phase started. Move one attacker up to 3 hexes.
+Initial target already has an attacker. Press [X] to forfeit Attacker HP movement or move another attacker up to 3 hexes.
+Attacker HP movement forfeited. Proceeding to Defender HP movement.
+Defender HP movement phase started. Move one defender up to 3 hexes, or press [X] to forfeit.
+Defender HP movement forfeited. Waiting for accuracy roll. Please Press R key.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Performing accuracy roll for High Pass. Please Press R key.
+[Game Log] Home carrier (Fixture Home) attempts an aerial pass
+Passer: Home carrier, HighPass: 4
+High Pass is accurate, passer roll: 5
+[Game Log] Home carrier (Fixture Home) accurate places an aerial pass
+Ball has reached its destination: (0, 0, 6)
+Ball landed within bounds.
+GK cannot rush out to challenge.
+Eligible to head: Away recovering player at (-1, 0, 6)
+Eligible to head: Online receiver at (0, 0, 6)
+hasEligibleAttackers: True, hasEligibleDefenders: True
+Automatically selected attacker: Online receiver
+Please select up to two outfield defenders plus the defending GK if eligible. Press 'A' to select all available when allowed, and at any time press 'Enter' to confirm selection.
+threshold: 1
+Defender Away recovering player selected to jump for the header.
+threshold: 1
+Away recovering player has already declared to Jump for header. De-nominating token
+threshold: 1
+Defender Away recovering player selected to jump for the header.
+[Enter] was pressed. Defender header selection confirmed.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Header challenge started. Rolling for attackers and defenders.
+Attacker Online receiver rolled 1 + heading: 4= 5
+Defender Away recovering player rolled 6 + heading: 4= 10
+🔍 Connected Token Found: Away recovering player
+[Game Log] Online receiver (Fixture Home) engages in an aerial challenge with Away recovering player
+Best Attacker: Online receiver with a score of 5 (roll = 1)
+Best Defender: Away recovering player with a score of 10 (roll = 6)
+🔍 Connected Token Found: Online receiver
+[Game Log] Away recovering player (Fixture Away) wins an aerial challenge from Online receiver
+[Expected Stats] Away recovering player records xRecovery 0.424 on header against Home carrier
+🔍 Connected Token Found: Online receiver
+[Game Log] Away recovering player (Fixture Away) wins possession in the air from Online receiver
+Offside assessment cleared: high_pass_header_defender_won.
+Away recovering player (Defense) wins the header. Switching possession. Click on a Highlighted Hex to play a Headed Pass.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Offside assessed (high_pass_header_defender_won): line x=0, tokens=none.
+Highlighting hexes for header from (0, 0, 6) with range 6
+[Game Log] Away recovering player (Fixture Away) attempts a ground pass
+Ball moved to (0, 0, 10)
+Attacking team has possession: True.
+[Game Log] Away recovering player (Fixture Away) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Header pass receiver
+Offside assessment cleared: header_pass_completed.
+]]></output>
+          </test-case>
+          <test-case id="1815" name="ContestedHeaderCompletesHeadedPass(-1,True,True)" fullname="OnlineHeaderResultPlayModeTests.ContestedHeaderCompletesHeadedPass(-1,True,True)" methodname="ContestedHeaderCompletesHeadedPass" classname="OnlineHeaderResultPlayModeTests" runstate="Runnable" seed="710396704" result="Passed" start-time="2026-11-16 22:05:15Z" end-time="2026-11-16 22:05:18Z" duration="2.941266" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+High Pass target map is still calculating. Target highlights will draw when ready.
+HighPassManager activated. Waiting for target selection...
+Clicked hex: (0, 0, 6)
+High Pass target map is still calculating. Target highlights will draw when ready.
+First click registered. Click again to confirm the High Pass.
+Clicked hex: (0, 0, 6)
+High Pass confirmed by second click.
+Offside assessed (high_pass_target_confirmed): line x=-8, tokens=none.
+HP target precompute cancelled. version=4, elapsedMs=28854.9, elapsedFrames=3492, processed=0, validTargets=16
+Substitutions are no longer available: Committed to HighPass
+Attacker Online receiver is locked on the target hex and cannot move.
+Attacker HP movement phase started. Move one attacker up to 3 hexes.
+Initial target already has an attacker. Press [X] to forfeit Attacker HP movement or move another attacker up to 3 hexes.
+Attacker HP movement forfeited. Proceeding to Defender HP movement.
+Defender HP movement phase started. Move one defender up to 3 hexes, or press [X] to forfeit.
+Defender HP movement forfeited. Waiting for accuracy roll. Please Press R key.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Performing accuracy roll for High Pass. Please Press R key.
+[Game Log] Home carrier (Fixture Home) attempts an aerial pass
+Passer: Home carrier, HighPass: 4
+High Pass is accurate, passer roll: 5
+[Game Log] Home carrier (Fixture Home) accurate places an aerial pass
+Ball has reached its destination: (0, 0, 6)
+Ball landed within bounds.
+GK cannot rush out to challenge.
+Eligible to head: Away recovering player at (-1, 0, 6)
+Eligible to head: Online receiver at (0, 0, 6)
+hasEligibleAttackers: True, hasEligibleDefenders: True
+Automatically selected attacker: Online receiver
+Please select up to two outfield defenders plus the defending GK if eligible. Press 'A' to select all available when allowed, and at any time press 'Enter' to confirm selection.
+threshold: 1
+Defender Away recovering player selected to jump for the header.
+threshold: 1
+Away recovering player has already declared to Jump for header. De-nominating token
+threshold: 1
+Defender Away recovering player selected to jump for the header.
+[Enter] was pressed. Defender header selection confirmed.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Header challenge started. Rolling for attackers and defenders.
+Attacker Online receiver rolled 1 + heading: 4= 5
+Defender Away recovering player rolled 6 + heading: 4= 10
+🔍 Connected Token Found: Away recovering player
+[Game Log] Online receiver (Fixture Home) engages in an aerial challenge with Away recovering player
+Best Attacker: Online receiver with a score of 5 (roll = 1)
+Best Defender: Away recovering player with a score of 10 (roll = 6)
+🔍 Connected Token Found: Online receiver
+[Game Log] Away recovering player (Fixture Away) wins an aerial challenge from Online receiver
+[Expected Stats] Away recovering player records xRecovery 0.424 on header against Home carrier
+🔍 Connected Token Found: Online receiver
+[Game Log] Away recovering player (Fixture Away) wins possession in the air from Online receiver
+Offside assessment cleared: high_pass_header_defender_won.
+Away recovering player (Defense) wins the header. Switching possession. Click on a Highlighted Hex to play a Headed Pass.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Offside assessed (high_pass_header_defender_won): line x=0, tokens=none.
+Highlighting hexes for header from (0, 0, 6) with range 6
+[Game Log] Away recovering player (Fixture Away) attempts a ground pass
+Ball moved to (0, 0, 10)
+Attacking team has possession: True.
+[Game Log] Away recovering player (Fixture Away) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Header pass receiver
+Offside assessment cleared: header_pass_completed.
+Saving results to: TestResults\GameplayRegression\Runs\20261116T220453717Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

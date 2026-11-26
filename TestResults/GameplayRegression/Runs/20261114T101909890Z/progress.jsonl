@@ -1,0 +1,10 @@
+{"name":"OnlineGoalkeeperPlayModeTests.BoxEntryOwnsFreeMove(1,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineGoalkeeperPlayModeTests.BoxEntryOwnsFreeMove(1,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineGoalkeeperPlayModeTests.BoxEntryOwnsFreeMove(-1,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineGoalkeeperPlayModeTests.BoxEntryOwnsFreeMove(-1,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineGoalkeeperPlayModeTests.HeadedFeetContinuationOwnsPickup(1,\"hands\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineGoalkeeperPlayModeTests.HeadedFeetContinuationOwnsPickup(1,\"feet\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineGoalkeeperPlayModeTests.HeadedFeetContinuationOwnsPickup(1,\"interrupt\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineGoalkeeperPlayModeTests.HeadedFeetContinuationOwnsPickup(-1,\"hands\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineGoalkeeperPlayModeTests.HeadedFeetContinuationOwnsPickup(-1,\"feet\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineGoalkeeperPlayModeTests.HeadedFeetContinuationOwnsPickup(-1,\"interrupt\")","status":"Passed","message":"","stackTrace":""}

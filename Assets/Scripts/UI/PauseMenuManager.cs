@@ -16,13 +16,20 @@ public class PauseMenuManager : MonoBehaviour
     private static readonly Color CardStatusColor = new Color32(30, 69, 89, 255);
 
     public GameObject pausePanel;  // Reference to the Pause Panel
+    public TMP_InputField onlineLobbyCode;
     public Button resumeButton;
     public Button saveMatchButton;
     public Button saveMatchAsButton;
     public Button substitutionsButton;
     public Button editSettings;
     public Button backToMainMenuButton;
+    // The older online proof scene has its own Quit button.
+    public Button quitButton;
     [SerializeField] private MenuConfirmation leaveMatchConfirmation;
+    [SerializeField] private MenuConfirmation quitConfirmation;
+
+    internal MenuConfirmation LeaveMatchConfirmation => leaveMatchConfirmation;
+    internal MenuConfirmation QuitConfirmation => quitConfirmation;
 
     [Header("Save UI")]
     public TextMeshProUGUI pauseSaveStatusText;
@@ -76,6 +83,7 @@ public class PauseMenuManager : MonoBehaviour
 
     void Awake()
     {
+        if (CounterAttack.Online.OnlineRoomSession.Current != null) { enabled = false; return; }
         // Set up button listeners
         resumeButton.onClick.AddListener(OnResumeButtonClicked);
         saveMatchButton.onClick.AddListener(OnSaveMatchButtonClicked);
@@ -111,10 +119,9 @@ public class PauseMenuManager : MonoBehaviour
 
     void Update()
     {
-        if (leaveMatchConfirmation != null && leaveMatchConfirmation.gameObject.activeSelf)
+        if (leaveMatchConfirmation?.IsOpen == true)
         {
-            if (Input.GetKeyUp(KeyCode.Escape))
-                leaveMatchConfirmation.Close();
+            if (Input.GetKeyUp(KeyCode.Escape)) leaveMatchConfirmation.Close();
             return;
         }
 
@@ -310,6 +317,7 @@ public class PauseMenuManager : MonoBehaviour
 
     public void PauseGame()
     {
+        if(CounterAttack.Online.OnlineRoomSession.Current!=null)return;
         // Debug to see if the panel is being set active
         // Debug.Log("Pausing game and showing pause panel");
         // Display the pause menu
@@ -920,7 +928,7 @@ public class PauseMenuManager : MonoBehaviour
         if (pausePanel != null && pausePanel.activeInHierarchy) RefreshPauseActionColors();
     }
 
-    private void RefreshPauseActionColors()
+    internal void RefreshPauseActionColors()
     {
         if (substitutionsButton != null)
         {

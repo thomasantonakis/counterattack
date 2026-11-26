@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="20" result="Passed" total="20" passed="20" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-15 18:28:26Z" end-time="2026-11-15 18:31:06Z" duration="159.7310367">
+  <test-suite type="TestSuite" id="2606" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1318" result="Passed" start-time="2026-11-15 18:28:26Z" end-time="2026-11-15 18:31:06Z" duration="159.731037" total="20" passed="20" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2603" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1318" result="Passed" start-time="2026-11-15 18:28:26Z" end-time="2026-11-15 18:31:06Z" duration="159.699516" total="20" passed="20" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17216" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1632" name="OnlineFullRoomPlayModeTests" fullname="OnlineFullRoomPlayModeTests" classname="OnlineFullRoomPlayModeTests" runstate="Runnable" testcasecount="20" result="Passed" start-time="2026-11-15 18:28:26Z" end-time="2026-11-15 18:31:06Z" duration="159.684898" total="20" passed="20" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineFullRoom" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="1641" name="ActualFullRoom" fullname="OnlineFullRoomPlayModeTests.ActualFullRoom" classname="OnlineFullRoomPlayModeTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-11-15 18:28:26Z" end-time="2026-11-15 18:29:15Z" duration="48.886618" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="1633" name="ActualFullRoom(False,16,False)" fullname="OnlineFullRoomPlayModeTests.ActualFullRoom(False,16,False)" methodname="ActualFullRoom" classname="OnlineFullRoomPlayModeTests" runstate="Runnable" seed="1203213012" result="Passed" start-time="2026-11-15 18:28:26Z" end-time="2026-11-15 18:28:33Z" duration="7.206598" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[TokenKitCatalog] Loading kits JSON from Resources path 'Kits/kit-picker-v1-11-supported' (asset: Assets/Resources/Kits/kit-picker-v1-11-supported.json).
+[TokenKitCatalog] Found kits JSON TextAsset 'kit-picker-v1-11-supported' at Resources path 'Kits/kit-picker-v1-11-supported' (32277 characters).
+[TokenKitCatalog] Parsed 101 kit preset(s) from Resources path 'Kits/kit-picker-v1-11-supported'.
+[TokenKitCatalog] Active kit catalog contains 101 kit preset(s).
+MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584922592892
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1634" name="ActualFullRoom(False,16,True)" fullname="OnlineFullRoomPlayModeTests.ActualFullRoom(False,16,True)" methodname="ActualFullRoom" classname="OnlineFullRoomPlayModeTests" runstate="Runnable" seed="670851561" result="Passed" start-time="2026-11-15 18:28:33Z" end-time="2026-11-15 18:28:40Z" duration="6.039140" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584922655400
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1635" name="ActualFullRoom(False,18,False)" fullname="OnlineFullRoomPlayModeTests.ActualFullRoom(False,18,False)" methodname="ActualFullRoom" classname="OnlineFullRoomPlayModeTests" runstate="Runnable" seed="334132172" result="Passed" start-time="2026-11-15 18:28:40Z" end-time="2026-11-15 18:28:46Z" duration="6.128137" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584922717908
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1636" name="ActualFullRoom(False,18,True)" fullname="OnlineFullRoomPlayModeTests.ActualFullRoom(False,18,True)" methodname="ActualFullRoom" classname="OnlineFullRoomPlayModeTests" runstate="Runnable" seed="333218394" result="Passed" start-time="2026-11-15 18:28:46Z" end-time="2026-11-15 18:28:52Z" duration="6.234460" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584922780416
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1637" name="ActualFullRoom(True,16,False)" fullname="OnlineFullRoomPlayModeTests.ActualFullRoom(True,16,False)" methodname="ActualFullRoom" classname="OnlineFullRoomPlayModeTests" runstate="Runnable" seed="933666348" result="Passed" start-time="2026-11-15 18:28:52Z" end-time="2026-11-15 18:28:58Z" duration="5.897311" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1638" name="ActualFullRoom(True,16,True)" fullname="OnlineFullRoomPlayModeTests.ActualFullRoom(True,16,True)" methodname="ActualFullRoom" classname="OnlineFullRoomPlayModeTests" runstate="Runnable" seed="1221907945" result="Passed" start-time="2026-11-15 18:28:58Z" end-time="2026-11-15 18:29:04Z" duration="5.774157" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1639" name="ActualFullRoom(True,18,False)" fullname="OnlineFullRoomPlayModeTests.ActualFullRoom(True,18,False)" methodname="ActualFullRoom" classname="OnlineFullRoomPlayModeTests" runstate="Runnable" seed="1596439176" result="Passed" start-time="2026-11-15 18:29:04Z" end-time="2026-11-15 18:29:09Z" duration="5.796956" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1640" name="ActualFullRoom(True,18,True)" fullname="OnlineFullRoomPlayModeTests.ActualFullRoom(True,18,True)" methodname="ActualFullRoom" classname="OnlineFullRoomPlayModeTests" runstate="Runnable" seed="50377345" result="Passed" start-time="2026-11-15 18:29:09Z" end-time="2026-11-15 18:29:15Z" duration="5.773686" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="1646" name="AuthoredKickoff" fullname="OnlineFullRoomPlayModeTests.AuthoredKickoff" classname="OnlineFullRoomPlayModeTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-11-15 18:29:15Z" end-time="2026-11-15 18:29:46Z" duration="31.269511" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="1642" name="AuthoredKickoff(16,False)" fullname="OnlineFullRoomPlayModeTests.AuthoredKickoff(16,False)" methodname="AuthoredKickoff" classname="OnlineFullRoomPlayModeTests" runstate="Runnable" seed="1202246163" result="Passed" start-time="2026-11-15 18:29:15Z" end-time="2026-11-15 18:29:23Z" duration="7.771405" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584923092956
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+1. Aziz took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+]]></output>
+          </test-case>
+          <test-case id="1643" name="AuthoredKickoff(16,True)" fullname="OnlineFullRoomPlayModeTests.AuthoredKickoff(16,True)" methodname="AuthoredKickoff" classname="OnlineFullRoomPlayModeTests" runstate="Runnable" seed="330469329" result="Passed" start-time="2026-11-15 18:29:23Z" end-time="2026-11-15 18:29:31Z" duration="7.815178" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584923155464
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+1. Aziz took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+]]></output>
+          </test-case>
+          <test-case id="1644" name="AuthoredKickoff(18,False)" fullname="OnlineFullRoomPlayModeTests.AuthoredKickoff(18,False)" methodname="AuthoredKickoff" classname="OnlineFullRoomPlayModeTests" runstate="Runnable" seed="1967001966" result="Passed" start-time="2026-11-15 18:29:31Z" end-time="2026-11-15 18:29:38Z" duration="7.660150" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584923217972
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+1. Aziz took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+]]></output>
+          </test-case>
+          <test-case id="1645" name="AuthoredKickoff(18,True)" fullname="OnlineFullRoomPlayModeTests.AuthoredKickoff(18,True)" methodname="AuthoredKickoff" classname="OnlineFullRoomPlayModeTests" runstate="Runnable" seed="718622578" result="Passed" start-time="2026-11-15 18:29:38Z" end-time="2026-11-15 18:29:46Z" duration="7.986320" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584923280480
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+1. Aziz took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+]]></output>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="1656" name="EncodedFullRoomKickoff" fullname="OnlineFullRoomPlayModeTests.EncodedFullRoomKickoff" classname="OnlineFullRoomPlayModeTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-11-15 18:29:46Z" end-time="2026-11-15 18:30:18Z" duration="31.664285" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="Category" value="OnlineRoomHandoffTransport" />
+          </properties>
+          <test-case id="1652" name="EncodedFullRoomKickoff(16,False)" fullname="OnlineFullRoomPlayModeTests.EncodedFullRoomKickoff(16,False)" methodname="EncodedFullRoomKickoff" classname="OnlineFullRoomPlayModeTests" runstate="Runnable" seed="1855448800" result="Passed" start-time="2026-11-15 18:29:46Z" end-time="2026-11-15 18:29:54Z" duration="7.754636" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584923342988
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+1. Aziz took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+]]></output>
+          </test-case>
+          <test-case id="1653" name="EncodedFullRoomKickoff(16,True)" fullname="OnlineFullRoomPlayModeTests.EncodedFullRoomKickoff(16,True)" methodname="EncodedFullRoomKickoff" classname="OnlineFullRoomPlayModeTests" runstate="Runnable" seed="295949824" result="Passed" start-time="2026-11-15 18:29:54Z" end-time="2026-11-15 18:30:02Z" duration="8.098378" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584923405496
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+1. Aziz took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+]]></output>
+          </test-case>
+          <test-case id="1654" name="EncodedFullRoomKickoff(18,False)" fullname="OnlineFullRoomPlayModeTests.EncodedFullRoomKickoff(18,False)" methodname="EncodedFullRoomKickoff" classname="OnlineFullRoomPlayModeTests" runstate="Runnable" seed="476538623" result="Passed" start-time="2026-11-15 18:30:02Z" end-time="2026-11-15 18:30:10Z" duration="7.993451" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584923468004
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+1. Aziz took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+]]></output>
+          </test-case>
+          <test-case id="1655" name="EncodedFullRoomKickoff(18,True)" fullname="OnlineFullRoomPlayModeTests.EncodedFullRoomKickoff(18,True)" methodname="EncodedFullRoomKickoff" classname="OnlineFullRoomPlayModeTests" runstate="Runnable" seed="921044429" result="Passed" start-time="2026-11-15 18:30:10Z" end-time="2026-11-15 18:30:18Z" duration="7.799847" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584923530512
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+1. Aziz took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+]]></output>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="1651" name="FullGuestProjection" fullname="OnlineFullRoomPlayModeTests.FullGuestProjection" classname="OnlineFullRoomPlayModeTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-11-15 18:30:18Z" end-time="2026-11-15 18:31:06Z" duration="47.850142" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="1647" name="FullGuestProjection(16,False)" fullname="OnlineFullRoomPlayModeTests.FullGuestProjection(16,False)" methodname="FullGuestProjection" classname="OnlineFullRoomPlayModeTests" runstate="Runnable" seed="282578461" result="Passed" start-time="2026-11-15 18:30:18Z" end-time="2026-11-15 18:30:30Z" duration="11.924506" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584923593020
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1648" name="FullGuestProjection(16,True)" fullname="OnlineFullRoomPlayModeTests.FullGuestProjection(16,True)" methodname="FullGuestProjection" classname="OnlineFullRoomPlayModeTests" runstate="Runnable" seed="1521473946" result="Passed" start-time="2026-11-15 18:30:30Z" end-time="2026-11-15 18:30:42Z" duration="11.973877" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584923718036
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1649" name="FullGuestProjection(18,False)" fullname="OnlineFullRoomPlayModeTests.FullGuestProjection(18,False)" methodname="FullGuestProjection" classname="OnlineFullRoomPlayModeTests" runstate="Runnable" seed="1836713672" result="Passed" start-time="2026-11-15 18:30:42Z" end-time="2026-11-15 18:30:54Z" duration="11.827935" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584923843052
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1650" name="FullGuestProjection(18,True)" fullname="OnlineFullRoomPlayModeTests.FullGuestProjection(18,True)" methodname="FullGuestProjection" classname="OnlineFullRoomPlayModeTests" runstate="Runnable" seed="1144477259" result="Passed" start-time="2026-11-15 18:30:54Z" end-time="2026-11-15 18:31:06Z" duration="12.097140" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584923968068
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+Saving results to: TestResults\GameplayRegression\Runs\20261115T182826654Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

@@ -1,0 +1,531 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="12" result="Failed(Child)" total="12" passed="10" failed="2" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 07:55:10Z" end-time="2026-11-16 07:55:26Z" duration="16.3291782">
+  <test-suite type="TestSuite" id="2795" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1478" result="Failed" site="Child" start-time="2026-11-16 07:55:10Z" end-time="2026-11-16 07:55:26Z" duration="16.329178" total="12" passed="10" failed="2" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="2792" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1478" result="Failed" site="Child" start-time="2026-11-16 07:55:10Z" end-time="2026-11-16 07:55:26Z" duration="16.290952" total="12" passed="10" failed="2" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17216" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestFixture" id="1934" name="OnlineOutsideKeeperShotPlayModeTests" fullname="OnlineOutsideKeeperShotPlayModeTests" classname="OnlineOutsideKeeperShotPlayModeTests" runstate="Runnable" testcasecount="12" result="Failed" site="Child" start-time="2026-11-16 07:55:10Z" end-time="2026-11-16 07:55:26Z" duration="16.281911" total="12" passed="10" failed="2" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineOutsideKeeperShot" />
+        </properties>
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="ParameterizedMethod" id="1947" name="ActualOutsideKeeperChoice" fullname="OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice" classname="OnlineOutsideKeeperShotPlayModeTests" runstate="Runnable" testcasecount="12" result="Failed" site="Child" start-time="2026-11-16 07:55:10Z" end-time="2026-11-16 07:55:26Z" duration="16.267527" total="12" passed="10" failed="2" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-case id="1935" name="ActualOutsideKeeperChoice(1,&quot;hands&quot;)" fullname="OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice(1,&quot;hands&quot;)" methodname="ActualOutsideKeeperChoice" classname="OnlineOutsideKeeperShotPlayModeTests" runstate="Runnable" seed="279032197" result="Passed" start-time="2026-11-16 07:55:10Z" end-time="2026-11-16 07:55:12Z" duration="1.809947" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Substitutions are no longer available: Committed to Shot
+Full Power Shot initiated. Proceeding to target selection.
+Shooter is OUTSIDE the penalty box. -1 to shot power.
+[Game Log] Home carrier (Fixture Home) takes a SHOT!
+Goalkeeper can move 1 hex
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Goalkeeper Away keeper has only outside-box save hexes on this shot. Waiting for [D]ive or [B]lock decision.
+Shot interactions found: 0
+Away keeper can only handle this shot outside their own penalty box at (10, 0, 0). Press [D]ive to attempt the save with hands, or [B]lock to act as an outfielder.
+Away keeper chooses to dive with hands outside the box at (10, 0, 0).
+The GK is next up. Shooter must Roll to shoot. Setting isWaitingForShotRoll to true.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Hello from the StartShotRoll
+Goalkeeper Away keeper now attempts a save. Press [R] to roll
+Unknown kit preset ''. Falling back to blue token style.
+]]></output>
+          </test-case>
+          <test-case id="1936" name="ActualOutsideKeeperChoice(1,&quot;block&quot;)" fullname="OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice(1,&quot;block&quot;)" methodname="ActualOutsideKeeperChoice" classname="OnlineOutsideKeeperShotPlayModeTests" runstate="Runnable" seed="1852933566" result="Passed" start-time="2026-11-16 07:55:12Z" end-time="2026-11-16 07:55:14Z" duration="1.812235" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Substitutions are no longer available: Committed to Shot
+Full Power Shot initiated. Proceeding to target selection.
+Shooter is OUTSIDE the penalty box. -1 to shot power.
+[Game Log] Home carrier (Fixture Home) takes a SHOT!
+Goalkeeper can move 1 hex
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Goalkeeper Away keeper has only outside-box save hexes on this shot. Waiting for [D]ive or [B]lock decision.
+Shot interactions found: 0
+Away keeper can only handle this shot outside their own penalty box at (10, 0, 0). Press [D]ive to attempt the save with hands, or [B]lock to act as an outfielder.
+Away keeper chooses to act as an outfielder, but is not on the shot path or in ZOI and cannot block.
+No more defenders to Deflect! The Home carrier may [R]oll! Good Luck!.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Hello from the StartShotRoll
+Home carrier Shot roll: 2 + Shooting: 6, shooting penalties: -1 (outside box)= 7
+Get IN!! Home carrier, buries it to the top corner! Goal!!!
+[Expected Stats] Home carrier records xG 0.833 on fullPower goal
+[Game Log] Home carrier (Fixture Home) completes an attempt on target
+[Game Log] Home carrier (Fixture Home) scores a goal! ⚽
+⚽ Ball just entered the penalty box! Checking if GK should move.
+GOAL! Home carrier scores! Starting celebration on goal side 1.
+Substitutions are now available: Goal scored
+]]></output>
+          </test-case>
+          <test-case id="1937" name="ActualOutsideKeeperChoice(1,&quot;eligible&quot;)" fullname="OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice(1,&quot;eligible&quot;)" methodname="ActualOutsideKeeperChoice" classname="OnlineOutsideKeeperShotPlayModeTests" runstate="Runnable" seed="407422000" result="Passed" start-time="2026-11-16 07:55:14Z" end-time="2026-11-16 07:55:16Z" duration="2.034514" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Substitutions are no longer available: Committed to Shot
+Full Power Shot initiated. Proceeding to target selection.
+Shooter is OUTSIDE the penalty box. -1 to shot power.
+[Game Log] Home carrier (Fixture Home) takes a SHOT!
+Goalkeeper can move 1 hex
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Goalkeeper Away keeper has only outside-box save hexes on this shot. Waiting for [D]ive or [B]lock decision.
+Shot interactions found: 0
+Away keeper can only handle this shot outside their own penalty box at (10, 0, 0). Press [D]ive to attempt the save with hands, or [B]lock to act as an outfielder.
+Defender Away keeper can block through ZOI at shot hex (9, 0, 0).
+Away keeper can only block this shot as an outfielder with effective Tackling 0 at (9, 0, 0).
+Away keeper chooses to act as an outfielder for this shot.
+Away keeper attempts an ZOI shot block at (9, 0, 0). A Jackpot is needed to deflect. [R]oll!
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Dice roll by Away keeper at (9, 0, 0): 1
+[Game Log] Away keeper (Fixture Away) attempts to block a shot
+Away keeper at (9, 0, 0) failed to block.
+No more defenders to Deflect! The Home carrier may [R]oll! Good Luck!.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Hello from the StartShotRoll
+Home carrier Shot roll: 2 + Shooting: 6, shooting penalties: -1 (outside box)= 7
+Get IN!! Home carrier, buries it to the top corner! Goal!!!
+[Expected Stats] Home carrier records xG 0.764 on fullPower goal
+[Game Log] Home carrier (Fixture Home) completes an attempt on target
+[Game Log] Home carrier (Fixture Home) scores a goal! ⚽
+⚽ Ball just entered the penalty box! Checking if GK should move.
+GOAL! Home carrier scores! Starting celebration on goal side 1.
+Substitutions are now available: Goal scored
+]]></output>
+          </test-case>
+          <test-case id="1938" name="ActualOutsideKeeperChoice(1,&quot;handball&quot;)" fullname="OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice(1,&quot;handball&quot;)" methodname="ActualOutsideKeeperChoice" classname="OnlineOutsideKeeperShotPlayModeTests" runstate="Runnable" seed="411427352" result="Passed" start-time="2026-11-16 07:55:16Z" end-time="2026-11-16 07:55:17Z" duration="1.045391" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Substitutions are no longer available: Committed to Shot
+Full Power Shot initiated. Proceeding to target selection.
+Shooter is OUTSIDE the penalty box. -1 to shot power.
+[Game Log] Home carrier (Fixture Home) takes a SHOT!
+Goalkeeper can move 1 hex
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Goalkeeper Away keeper has only outside-box save hexes on this shot. Waiting for [D]ive or [B]lock decision.
+Shot interactions found: 0
+Away keeper can only handle this shot outside their own penalty box at (10, 0, 0). Press [D]ive to attempt the save with hands, or [B]lock to act as an outfielder.
+Away keeper chooses to dive with hands outside the box at (10, 0, 0).
+The GK is next up. Shooter must Roll to shoot. Setting isWaitingForShotRoll to true.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Hello from the StartShotRoll
+Goalkeeper Away keeper now attempts a save. Press [R] to roll
+Unknown kit preset ''. Falling back to blue token style.
+GK Away keeper rolls 6 + Saving: 6 + Penalty: -1 = 11
+[Game Log] Away keeper (Fixture Away) faces a shot
+Away keeper deliberately handles the shot outside their own penalty box at (10, 0, 0). Forced free kick and straight red card.
+[Expected Stats] Home carrier records xG 0.424 on fullPower illegal handball
+🔍 Connected Token Found: Home carrier
+[Game Log] Away keeper (Fixture Away) is Sent Off for something on Home carrier
+Away keeper (Jersey 1) has been sent off. Token deactivated.
+Away keeper (Jersey 1) has been sent off.
+Substitutions are no longer available: Away keeper was sent off and no bench goalkeeper is available. Click a playing outfield player to dress and act as emergency goalkeeper.
+Away keeper was sent off and no bench goalkeeper is available. Click a playing outfield player to dress and act as emergency goalkeeper.
+Movement phase has been reset.
+Starting Free Kick Preparation...
+]]></output>
+          </test-case>
+          <test-case id="1939" name="ActualOutsideKeeperChoice(1,&quot;hold&quot;)" fullname="OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice(1,&quot;hold&quot;)" methodname="ActualOutsideKeeperChoice" classname="OnlineOutsideKeeperShotPlayModeTests" runstate="Runnable" seed="1807711184" result="Failed" start-time="2026-11-16 07:55:17Z" end-time="2026-11-16 07:55:18Z" duration="0.917272" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: NotReady
+  But was:  StaleRevision
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineOutsideKeeperShot>d__113.MoveNext () [0x0057e] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineOutsideKeeperShot\OnlineOutsideKeeperShotFixture.cs:39
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Substitutions are no longer available: Committed to Shot
+Full Power Shot initiated. Proceeding to target selection.
+Shooter is OUTSIDE the penalty box. -1 to shot power.
+[Game Log] Home carrier (Fixture Home) takes a SHOT!
+Goalkeeper can move 1 hex
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Goalkeeper Away keeper has only outside-box save hexes on this shot. Waiting for [D]ive or [B]lock decision.
+Shot interactions found: 0
+Away keeper can only handle this shot outside their own penalty box at (10, 0, 0). Press [D]ive to attempt the save with hands, or [B]lock to act as an outfielder.
+]]></output>
+          </test-case>
+          <test-case id="1940" name="ActualOutsideKeeperChoice(1,&quot;cancel&quot;)" fullname="OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice(1,&quot;cancel&quot;)" methodname="ActualOutsideKeeperChoice" classname="OnlineOutsideKeeperShotPlayModeTests" runstate="Runnable" seed="902393663" result="Passed" start-time="2026-11-16 07:55:18Z" end-time="2026-11-16 07:55:19Z" duration="0.947042" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Substitutions are no longer available: Committed to Shot
+Full Power Shot initiated. Proceeding to target selection.
+Shooter is OUTSIDE the penalty box. -1 to shot power.
+[Game Log] Home carrier (Fixture Home) takes a SHOT!
+Goalkeeper can move 1 hex
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Goalkeeper Away keeper has only outside-box save hexes on this shot. Waiting for [D]ive or [B]lock decision.
+Shot interactions found: 0
+Away keeper can only handle this shot outside their own penalty box at (10, 0, 0). Press [D]ive to attempt the save with hands, or [B]lock to act as an outfielder.
+]]></output>
+          </test-case>
+          <test-case id="1941" name="ActualOutsideKeeperChoice(-1,&quot;hands&quot;)" fullname="OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice(-1,&quot;hands&quot;)" methodname="ActualOutsideKeeperChoice" classname="OnlineOutsideKeeperShotPlayModeTests" runstate="Runnable" seed="1778124905" result="Passed" start-time="2026-11-16 07:55:19Z" end-time="2026-11-16 07:55:20Z" duration="0.909058" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Substitutions are no longer available: Committed to Shot
+Full Power Shot initiated. Proceeding to target selection.
+Shooter is OUTSIDE the penalty box. -1 to shot power.
+[Game Log] Home carrier (Fixture Home) takes a SHOT!
+Goalkeeper can move 1 hex
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (-19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Goalkeeper Away keeper has only outside-box save hexes on this shot. Waiting for [D]ive or [B]lock decision.
+Shot interactions found: 0
+Away keeper can only handle this shot outside their own penalty box at (-10, 0, 0). Press [D]ive to attempt the save with hands, or [B]lock to act as an outfielder.
+Away keeper chooses to dive with hands outside the box at (-10, 0, 0).
+The GK is next up. Shooter must Roll to shoot. Setting isWaitingForShotRoll to true.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Hello from the StartShotRoll
+Goalkeeper Away keeper now attempts a save. Press [R] to roll
+Unknown kit preset ''. Falling back to blue token style.
+]]></output>
+          </test-case>
+          <test-case id="1942" name="ActualOutsideKeeperChoice(-1,&quot;block&quot;)" fullname="OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice(-1,&quot;block&quot;)" methodname="ActualOutsideKeeperChoice" classname="OnlineOutsideKeeperShotPlayModeTests" runstate="Runnable" seed="143594667" result="Passed" start-time="2026-11-16 07:55:20Z" end-time="2026-11-16 07:55:22Z" duration="1.889029" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Substitutions are no longer available: Committed to Shot
+Full Power Shot initiated. Proceeding to target selection.
+Shooter is OUTSIDE the penalty box. -1 to shot power.
+[Game Log] Home carrier (Fixture Home) takes a SHOT!
+Goalkeeper can move 1 hex
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (-19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Goalkeeper Away keeper has only outside-box save hexes on this shot. Waiting for [D]ive or [B]lock decision.
+Shot interactions found: 0
+Away keeper can only handle this shot outside their own penalty box at (-10, 0, 0). Press [D]ive to attempt the save with hands, or [B]lock to act as an outfielder.
+Away keeper chooses to act as an outfielder, but is not on the shot path or in ZOI and cannot block.
+No more defenders to Deflect! The Home carrier may [R]oll! Good Luck!.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Hello from the StartShotRoll
+Home carrier Shot roll: 2 + Shooting: 6, shooting penalties: -1 (outside box)= 7
+Get IN!! Home carrier, buries it to the top corner! Goal!!!
+[Expected Stats] Home carrier records xG 0.833 on fullPower goal
+[Game Log] Home carrier (Fixture Home) completes an attempt on target
+[Game Log] Home carrier (Fixture Home) scores a goal! ⚽
+⚽ Ball just entered the penalty box! Checking if GK should move.
+GOAL! Home carrier scores! Starting celebration on goal side -1.
+Substitutions are now available: Goal scored
+]]></output>
+          </test-case>
+          <test-case id="1943" name="ActualOutsideKeeperChoice(-1,&quot;eligible&quot;)" fullname="OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice(-1,&quot;eligible&quot;)" methodname="ActualOutsideKeeperChoice" classname="OnlineOutsideKeeperShotPlayModeTests" runstate="Runnable" seed="1582763751" result="Passed" start-time="2026-11-16 07:55:22Z" end-time="2026-11-16 07:55:23Z" duration="1.951179" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Substitutions are no longer available: Committed to Shot
+Full Power Shot initiated. Proceeding to target selection.
+Shooter is OUTSIDE the penalty box. -1 to shot power.
+[Game Log] Home carrier (Fixture Home) takes a SHOT!
+Goalkeeper can move 1 hex
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (-19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Goalkeeper Away keeper has only outside-box save hexes on this shot. Waiting for [D]ive or [B]lock decision.
+Shot interactions found: 0
+Away keeper can only handle this shot outside their own penalty box at (-10, 0, 0). Press [D]ive to attempt the save with hands, or [B]lock to act as an outfielder.
+Defender Away keeper can block through ZOI at shot hex (-11, 0, 0).
+Away keeper can only block this shot as an outfielder with effective Tackling 0 at (-11, 0, 0).
+Away keeper chooses to act as an outfielder for this shot.
+Away keeper attempts an ZOI shot block at (-11, 0, 0). A Jackpot is needed to deflect. [R]oll!
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Dice roll by Away keeper at (-11, 0, 0): 1
+[Game Log] Away keeper (Fixture Away) attempts to block a shot
+Away keeper at (-11, 0, 0) failed to block.
+No more defenders to Deflect! The Home carrier may [R]oll! Good Luck!.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Hello from the StartShotRoll
+Home carrier Shot roll: 2 + Shooting: 6, shooting penalties: -1 (outside box)= 7
+Get IN!! Home carrier, buries it to the top corner! Goal!!!
+[Expected Stats] Home carrier records xG 0.764 on fullPower goal
+[Game Log] Home carrier (Fixture Home) completes an attempt on target
+[Game Log] Home carrier (Fixture Home) scores a goal! ⚽
+⚽ Ball just entered the penalty box! Checking if GK should move.
+GOAL! Home carrier scores! Starting celebration on goal side -1.
+Substitutions are now available: Goal scored
+]]></output>
+          </test-case>
+          <test-case id="1944" name="ActualOutsideKeeperChoice(-1,&quot;handball&quot;)" fullname="OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice(-1,&quot;handball&quot;)" methodname="ActualOutsideKeeperChoice" classname="OnlineOutsideKeeperShotPlayModeTests" runstate="Runnable" seed="2045292546" result="Passed" start-time="2026-11-16 07:55:23Z" end-time="2026-11-16 07:55:25Z" duration="1.122234" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Substitutions are no longer available: Committed to Shot
+Full Power Shot initiated. Proceeding to target selection.
+Shooter is OUTSIDE the penalty box. -1 to shot power.
+[Game Log] Home carrier (Fixture Home) takes a SHOT!
+Goalkeeper can move 1 hex
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (-19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Goalkeeper Away keeper has only outside-box save hexes on this shot. Waiting for [D]ive or [B]lock decision.
+Shot interactions found: 0
+Away keeper can only handle this shot outside their own penalty box at (-10, 0, 0). Press [D]ive to attempt the save with hands, or [B]lock to act as an outfielder.
+Away keeper chooses to dive with hands outside the box at (-10, 0, 0).
+The GK is next up. Shooter must Roll to shoot. Setting isWaitingForShotRoll to true.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Hello from the StartShotRoll
+Goalkeeper Away keeper now attempts a save. Press [R] to roll
+Unknown kit preset ''. Falling back to blue token style.
+GK Away keeper rolls 6 + Saving: 6 + Penalty: -1 = 11
+[Game Log] Away keeper (Fixture Away) faces a shot
+Away keeper deliberately handles the shot outside their own penalty box at (-10, 0, 0). Forced free kick and straight red card.
+[Expected Stats] Home carrier records xG 0.424 on fullPower illegal handball
+🔍 Connected Token Found: Home carrier
+[Game Log] Away keeper (Fixture Away) is Sent Off for something on Home carrier
+Away keeper (Jersey 1) has been sent off. Token deactivated.
+Away keeper (Jersey 1) has been sent off.
+Substitutions are no longer available: Away keeper was sent off and no bench goalkeeper is available. Click a playing outfield player to dress and act as emergency goalkeeper.
+Away keeper was sent off and no bench goalkeeper is available. Click a playing outfield player to dress and act as emergency goalkeeper.
+Movement phase has been reset.
+Starting Free Kick Preparation...
+]]></output>
+          </test-case>
+          <test-case id="1945" name="ActualOutsideKeeperChoice(-1,&quot;hold&quot;)" fullname="OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice(-1,&quot;hold&quot;)" methodname="ActualOutsideKeeperChoice" classname="OnlineOutsideKeeperShotPlayModeTests" runstate="Runnable" seed="1993633311" result="Failed" start-time="2026-11-16 07:55:25Z" end-time="2026-11-16 07:55:26Z" duration="0.884775" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: NotReady
+  But was:  StaleRevision
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineOutsideKeeperShot>d__113.MoveNext () [0x0057e] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineOutsideKeeperShot\OnlineOutsideKeeperShotFixture.cs:39
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Substitutions are no longer available: Committed to Shot
+Full Power Shot initiated. Proceeding to target selection.
+Shooter is OUTSIDE the penalty box. -1 to shot power.
+[Game Log] Home carrier (Fixture Home) takes a SHOT!
+Goalkeeper can move 1 hex
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (-19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Goalkeeper Away keeper has only outside-box save hexes on this shot. Waiting for [D]ive or [B]lock decision.
+Shot interactions found: 0
+Away keeper can only handle this shot outside their own penalty box at (-10, 0, 0). Press [D]ive to attempt the save with hands, or [B]lock to act as an outfielder.
+]]></output>
+          </test-case>
+          <test-case id="1946" name="ActualOutsideKeeperChoice(-1,&quot;cancel&quot;)" fullname="OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice(-1,&quot;cancel&quot;)" methodname="ActualOutsideKeeperChoice" classname="OnlineOutsideKeeperShotPlayModeTests" runstate="Runnable" seed="1232711233" result="Passed" start-time="2026-11-16 07:55:26Z" end-time="2026-11-16 07:55:26Z" duration="0.901927" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Substitutions are no longer available: Committed to Shot
+Full Power Shot initiated. Proceeding to target selection.
+Shooter is OUTSIDE the penalty box. -1 to shot power.
+[Game Log] Home carrier (Fixture Home) takes a SHOT!
+Goalkeeper can move 1 hex
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (-19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Goalkeeper Away keeper has only outside-box save hexes on this shot. Waiting for [D]ive or [B]lock decision.
+Shot interactions found: 0
+Away keeper can only handle this shot outside their own penalty box at (-10, 0, 0). Press [D]ive to attempt the save with hands, or [B]lock to act as an outfielder.
+Saving results to: TestResults\GameplayRegression\Runs\20261116T075510542Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

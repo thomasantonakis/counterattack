@@ -1,0 +1,1 @@
+ShootoutUiFeedbackPlayModeTests.StakesAndRollPrompt(False)

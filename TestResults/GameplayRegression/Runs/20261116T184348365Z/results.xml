@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="11" result="Passed" total="11" passed="11" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 18:43:48Z" end-time="2026-11-16 18:43:48Z" duration="0.321391">
+  <test-suite type="TestSuite" id="3200" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1860" result="Passed" start-time="2026-11-16 18:43:48Z" end-time="2026-11-16 18:43:48Z" duration="0.321391" total="11" passed="11" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="3194" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="1860" result="Passed" start-time="2026-11-16 18:43:48Z" end-time="2026-11-16 18:43:48Z" duration="0.283820" total="11" passed="11" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12156" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="2408" name="OnlineStoppageActionsEditorTests" fullname="OnlineStoppageActionsEditorTests" classname="OnlineStoppageActionsEditorTests" runstate="Runnable" testcasecount="11" result="Passed" start-time="2026-11-16 18:43:48Z" end-time="2026-11-16 18:43:48Z" duration="0.277505" total="11" passed="11" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineStoppageActions" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="2420" name="CappedCompletedAllowanceIsRetained" fullname="OnlineStoppageActionsEditorTests.CappedCompletedAllowanceIsRetained" classname="OnlineStoppageActionsEditorTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-16 18:43:48Z" end-time="2026-11-16 18:43:48Z" duration="0.136328" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="2418" name="CappedCompletedAllowanceIsRetained(1,7)" fullname="OnlineStoppageActionsEditorTests.CappedCompletedAllowanceIsRetained(1,7)" methodname="CappedCompletedAllowanceIsRetained" classname="OnlineStoppageActionsEditorTests" runstate="Runnable" seed="162406888" result="Passed" start-time="2026-11-16 18:43:48Z" end-time="2026-11-16 18:43:48Z" duration="0.116130" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2419" name="CappedCompletedAllowanceIsRetained(3,3)" fullname="OnlineStoppageActionsEditorTests.CappedCompletedAllowanceIsRetained(3,3)" methodname="CappedCompletedAllowanceIsRetained" classname="OnlineStoppageActionsEditorTests" runstate="Runnable" seed="202849016" result="Passed" start-time="2026-11-16 18:43:48Z" end-time="2026-11-16 18:43:48Z" duration="0.002976" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="2417" name="MalformedAllowanceDoesNotAdvanceReplica" fullname="OnlineStoppageActionsEditorTests.MalformedAllowanceDoesNotAdvanceReplica" classname="OnlineStoppageActionsEditorTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-11-16 18:43:48Z" end-time="2026-11-16 18:43:48Z" duration="0.123819" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="2409" name="MalformedAllowanceDoesNotAdvanceReplica(&quot;negative-total&quot;)" fullname="OnlineStoppageActionsEditorTests.MalformedAllowanceDoesNotAdvanceReplica(&quot;negative-total&quot;)" methodname="MalformedAllowanceDoesNotAdvanceReplica" classname="OnlineStoppageActionsEditorTests" runstate="Runnable" seed="1609039747" result="Passed" start-time="2026-11-16 18:43:48Z" end-time="2026-11-16 18:43:48Z" duration="0.029807" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2410" name="MalformedAllowanceDoesNotAdvanceReplica(&quot;regulation-cap&quot;)" fullname="OnlineStoppageActionsEditorTests.MalformedAllowanceDoesNotAdvanceReplica(&quot;regulation-cap&quot;)" methodname="MalformedAllowanceDoesNotAdvanceReplica" classname="OnlineStoppageActionsEditorTests" runstate="Runnable" seed="1599044131" result="Passed" start-time="2026-11-16 18:43:48Z" end-time="2026-11-16 18:43:48Z" duration="0.027326" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2411" name="MalformedAllowanceDoesNotAdvanceReplica(&quot;extra-cap&quot;)" fullname="OnlineStoppageActionsEditorTests.MalformedAllowanceDoesNotAdvanceReplica(&quot;extra-cap&quot;)" methodname="MalformedAllowanceDoesNotAdvanceReplica" classname="OnlineStoppageActionsEditorTests" runstate="Runnable" seed="2122731625" result="Passed" start-time="2026-11-16 18:43:48Z" end-time="2026-11-16 18:43:48Z" duration="0.008690" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2412" name="MalformedAllowanceDoesNotAdvanceReplica(&quot;negative-remaining&quot;)" fullname="OnlineStoppageActionsEditorTests.MalformedAllowanceDoesNotAdvanceReplica(&quot;negative-remaining&quot;)" methodname="MalformedAllowanceDoesNotAdvanceReplica" classname="OnlineStoppageActionsEditorTests" runstate="Runnable" seed="2119487612" result="Passed" start-time="2026-11-16 18:43:48Z" end-time="2026-11-16 18:43:48Z" duration="0.008965" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2413" name="MalformedAllowanceDoesNotAdvanceReplica(&quot;excess-remaining&quot;)" fullname="OnlineStoppageActionsEditorTests.MalformedAllowanceDoesNotAdvanceReplica(&quot;excess-remaining&quot;)" methodname="MalformedAllowanceDoesNotAdvanceReplica" classname="OnlineStoppageActionsEditorTests" runstate="Runnable" seed="725258810" result="Passed" start-time="2026-11-16 18:43:48Z" end-time="2026-11-16 18:43:48Z" duration="0.008745" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2414" name="MalformedAllowanceDoesNotAdvanceReplica(&quot;undetermined-counts&quot;)" fullname="OnlineStoppageActionsEditorTests.MalformedAllowanceDoesNotAdvanceReplica(&quot;undetermined-counts&quot;)" methodname="MalformedAllowanceDoesNotAdvanceReplica" classname="OnlineStoppageActionsEditorTests" runstate="Runnable" seed="245683142" result="Passed" start-time="2026-11-16 18:43:48Z" end-time="2026-11-16 18:43:48Z" duration="0.010203" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2415" name="MalformedAllowanceDoesNotAdvanceReplica(&quot;awaiting-before-expiry&quot;)" fullname="OnlineStoppageActionsEditorTests.MalformedAllowanceDoesNotAdvanceReplica(&quot;awaiting-before-expiry&quot;)" methodname="MalformedAllowanceDoesNotAdvanceReplica" classname="OnlineStoppageActionsEditorTests" runstate="Runnable" seed="655561343" result="Passed" start-time="2026-11-16 18:43:48Z" end-time="2026-11-16 18:43:48Z" duration="0.007983" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2416" name="MalformedAllowanceDoesNotAdvanceReplica(&quot;awaiting-after-result&quot;)" fullname="OnlineStoppageActionsEditorTests.MalformedAllowanceDoesNotAdvanceReplica(&quot;awaiting-after-result&quot;)" methodname="MalformedAllowanceDoesNotAdvanceReplica" classname="OnlineStoppageActionsEditorTests" runstate="Runnable" seed="1304295093" result="Passed" start-time="2026-11-16 18:43:48Z" end-time="2026-11-16 18:43:48Z" duration="0.008248" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-case id="2421" name="RUsesPublishedStoppageCommand" fullname="OnlineStoppageActionsEditorTests.RUsesPublishedStoppageCommand" methodname="RUsesPublishedStoppageCommand" classname="OnlineStoppageActionsEditorTests" runstate="Runnable" seed="231016238" result="Passed" start-time="2026-11-16 18:43:48Z" end-time="2026-11-16 18:43:48Z" duration="0.004687" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Saving results to: TestResults\GameplayRegression\Runs\20261116T184348365Z\results.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

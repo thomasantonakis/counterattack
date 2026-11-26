@@ -1,0 +1,427 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="16" result="Passed" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 05:54:00Z" end-time="2026-11-16 05:58:03Z" duration="243.1145884">
+  <test-suite type="TestSuite" id="2748" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1438" result="Passed" start-time="2026-11-16 05:54:00Z" end-time="2026-11-16 05:58:03Z" duration="243.114588" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2745" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1438" result="Passed" start-time="2026-11-16 05:54:00Z" end-time="2026-11-16 05:58:03Z" duration="243.077297" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17216" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1984" name="OnlineRoomCoinTossPlayModeTests" fullname="OnlineRoomCoinTossPlayModeTests" classname="OnlineRoomCoinTossPlayModeTests" runstate="Runnable" testcasecount="22" result="Passed" start-time="2026-11-16 05:54:00Z" end-time="2026-11-16 05:58:03Z" duration="243.062241" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineRoomCoinToss" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="2006" name="RealRoomTossTransitions" fullname="OnlineRoomCoinTossPlayModeTests.RealRoomTossTransitions" classname="OnlineRoomCoinTossPlayModeTests" runstate="Runnable" testcasecount="16" result="Passed" start-time="2026-11-16 05:54:00Z" end-time="2026-11-16 05:58:03Z" duration="243.046307" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="1990" name="RealRoomTossTransitions(False,False,False,False)" fullname="OnlineRoomCoinTossPlayModeTests.RealRoomTossTransitions(False,False,False,False)" methodname="RealRoomTossTransitions" classname="OnlineRoomCoinTossPlayModeTests" runstate="Runnable" seed="564438411" result="Passed" start-time="2026-11-16 05:54:00Z" end-time="2026-11-16 05:54:18Z" duration="17.822765" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[TokenKitCatalog] Loading kits JSON from Resources path 'Kits/kit-picker-v1-11-supported' (asset: Assets/Resources/Kits/kit-picker-v1-11-supported.json).
+[TokenKitCatalog] Found kits JSON TextAsset 'kit-picker-v1-11-supported' at Resources path 'Kits/kit-picker-v1-11-supported' (32277 characters).
+[TokenKitCatalog] Parsed 101 kit preset(s) from Resources path 'Kits/kit-picker-v1-11-supported'.
+[TokenKitCatalog] Active kit catalog contains 101 kit preset(s).
+MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584953928202
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Extra time reached. Each team receives one additional substitution.
+Extra time reached. Waiting for the coin toss before resetting teams.
+Coin toss: Home club kicks off. Home club attacks RightToLeft; Away club attacks LeftToRight.
+For token: 9. Denier; Hex (2, 0, 3) is already occupied by 9. Meloni!
+For token: 10. Taylor; Hex (2, 0, -3) is already occupied by 10. Buzek!
+For token: 6. Terto; Hex (4, 0, 4) is already occupied by 6. Delpech!
+For token: 8. Gaham; Hex (4, 0, -4) is already occupied by 8. Walton!
+For token: 7. Savvakis; Hex (4, 0, 8) is already occupied by 7. Werdekker!
+For token: 11. Goaley; Hex (4, 0, -8) is already occupied by 11. Gilbert!
+For token: 4. Gortz; Hex (10, 0, -4) is already occupied by 4. Littlewood!
+For token: 5. Willems; Hex (10, 0, 4) is already occupied by 5. Manolis!
+For token: 2. Baez; Hex (10, 0, 8) is already occupied by 2. Aguayo!
+For token: 3. Kanaras; Hex (10, 0, -8) is already occupied by 3. Vladoiu!
+For token: 1. Kuzmic; Hex (16, 0, 0) is already occupied by 1. Aziz!
+[GoalFlow] Token/hex ownership reconciled cleanly after goal reset.
+Post-goal kick-off setup: both teams may reposition tokens in their own half, including the halfway line, except the center spot. The kicker will be selected later. Defenders cannot stand in the center circle. Press Enter twice when both teams are ready.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1991" name="RealRoomTossTransitions(False,False,False,True)" fullname="OnlineRoomCoinTossPlayModeTests.RealRoomTossTransitions(False,False,False,True)" methodname="RealRoomTossTransitions" classname="OnlineRoomCoinTossPlayModeTests" runstate="Runnable" seed="1807154509" result="Passed" start-time="2026-11-16 05:54:18Z" end-time="2026-11-16 05:54:33Z" duration="14.841586" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584954055306
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Extra time reached. Each team receives one additional substitution.
+Extra time reached. Waiting for the coin toss before resetting teams.
+Coin toss: Home club kicks off. Home club attacks LeftToRight; Away club attacks RightToLeft.
+[GoalFlow] Token/hex ownership reconciled cleanly after goal reset.
+Post-goal kick-off setup: both teams may reposition tokens in their own half, including the halfway line, except the center spot. The kicker will be selected later. Defenders cannot stand in the center circle. Press Enter twice when both teams are ready.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1992" name="RealRoomTossTransitions(False,False,True,False)" fullname="OnlineRoomCoinTossPlayModeTests.RealRoomTossTransitions(False,False,True,False)" methodname="RealRoomTossTransitions" classname="OnlineRoomCoinTossPlayModeTests" runstate="Runnable" seed="426332504" result="Passed" start-time="2026-11-16 05:54:33Z" end-time="2026-11-16 05:54:48Z" duration="15.304271" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584954182410
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Extra time reached. Each team receives one additional substitution.
+Extra time reached. Waiting for the coin toss before resetting teams.
+Coin toss: Away club kicks off. Home club attacks LeftToRight; Away club attacks RightToLeft.
+[GoalFlow] Token/hex ownership reconciled cleanly after goal reset.
+Post-goal kick-off setup: both teams may reposition tokens in their own half, including the halfway line, except the center spot. The kicker will be selected later. Defenders cannot stand in the center circle. Press Enter twice when both teams are ready.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1993" name="RealRoomTossTransitions(False,False,True,True)" fullname="OnlineRoomCoinTossPlayModeTests.RealRoomTossTransitions(False,False,True,True)" methodname="RealRoomTossTransitions" classname="OnlineRoomCoinTossPlayModeTests" runstate="Runnable" seed="1947149569" result="Passed" start-time="2026-11-16 05:54:48Z" end-time="2026-11-16 05:55:04Z" duration="16.350411" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584954309514
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Extra time reached. Each team receives one additional substitution.
+Extra time reached. Waiting for the coin toss before resetting teams.
+Coin toss: Away club kicks off. Home club attacks RightToLeft; Away club attacks LeftToRight.
+For token: 9. Denier; Hex (2, 0, 3) is already occupied by 9. Meloni!
+For token: 10. Taylor; Hex (2, 0, -3) is already occupied by 10. Buzek!
+For token: 6. Terto; Hex (4, 0, 4) is already occupied by 6. Delpech!
+For token: 8. Gaham; Hex (4, 0, -4) is already occupied by 8. Walton!
+For token: 7. Savvakis; Hex (4, 0, 8) is already occupied by 7. Werdekker!
+For token: 11. Goaley; Hex (4, 0, -8) is already occupied by 11. Gilbert!
+For token: 4. Gortz; Hex (10, 0, -4) is already occupied by 4. Littlewood!
+For token: 5. Willems; Hex (10, 0, 4) is already occupied by 5. Manolis!
+For token: 2. Baez; Hex (10, 0, 8) is already occupied by 2. Aguayo!
+For token: 3. Kanaras; Hex (10, 0, -8) is already occupied by 3. Vladoiu!
+For token: 1. Kuzmic; Hex (16, 0, 0) is already occupied by 1. Aziz!
+[GoalFlow] Token/hex ownership reconciled cleanly after goal reset.
+Post-goal kick-off setup: both teams may reposition tokens in their own half, including the halfway line, except the center spot. The kicker will be selected later. Defenders cannot stand in the center circle. Press Enter twice when both teams are ready.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1994" name="RealRoomTossTransitions(False,True,False,False)" fullname="OnlineRoomCoinTossPlayModeTests.RealRoomTossTransitions(False,True,False,False)" methodname="RealRoomTossTransitions" classname="OnlineRoomCoinTossPlayModeTests" runstate="Runnable" seed="791885379" result="Passed" start-time="2026-11-16 05:55:04Z" end-time="2026-11-16 05:55:20Z" duration="15.348959" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584954436618
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Extra time reached. Each team receives one additional substitution.
+Extra time reached. Waiting for the coin toss before resetting teams.
+Coin toss: Away club kicks off. Home club attacks LeftToRight; Away club attacks RightToLeft.
+[GoalFlow] Token/hex ownership reconciled cleanly after goal reset.
+Post-goal kick-off setup: both teams may reposition tokens in their own half, including the halfway line, except the center spot. The kicker will be selected later. Defenders cannot stand in the center circle. Press Enter twice when both teams are ready.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1995" name="RealRoomTossTransitions(False,True,False,True)" fullname="OnlineRoomCoinTossPlayModeTests.RealRoomTossTransitions(False,True,False,True)" methodname="RealRoomTossTransitions" classname="OnlineRoomCoinTossPlayModeTests" runstate="Runnable" seed="898644814" result="Passed" start-time="2026-11-16 05:55:20Z" end-time="2026-11-16 05:55:36Z" duration="16.758908" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584954563722
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Extra time reached. Each team receives one additional substitution.
+Extra time reached. Waiting for the coin toss before resetting teams.
+Coin toss: Away club kicks off. Home club attacks RightToLeft; Away club attacks LeftToRight.
+For token: 9. Denier; Hex (2, 0, 3) is already occupied by 9. Meloni!
+For token: 10. Taylor; Hex (2, 0, -3) is already occupied by 10. Buzek!
+For token: 6. Terto; Hex (4, 0, 4) is already occupied by 6. Delpech!
+For token: 8. Gaham; Hex (4, 0, -4) is already occupied by 8. Walton!
+For token: 7. Savvakis; Hex (4, 0, 8) is already occupied by 7. Werdekker!
+For token: 11. Goaley; Hex (4, 0, -8) is already occupied by 11. Gilbert!
+For token: 4. Gortz; Hex (10, 0, -4) is already occupied by 4. Littlewood!
+For token: 5. Willems; Hex (10, 0, 4) is already occupied by 5. Manolis!
+For token: 2. Baez; Hex (10, 0, 8) is already occupied by 2. Aguayo!
+For token: 3. Kanaras; Hex (10, 0, -8) is already occupied by 3. Vladoiu!
+For token: 1. Kuzmic; Hex (16, 0, 0) is already occupied by 1. Aziz!
+[GoalFlow] Token/hex ownership reconciled cleanly after goal reset.
+Post-goal kick-off setup: both teams may reposition tokens in their own half, including the halfway line, except the center spot. The kicker will be selected later. Defenders cannot stand in the center circle. Press Enter twice when both teams are ready.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1996" name="RealRoomTossTransitions(False,True,True,False)" fullname="OnlineRoomCoinTossPlayModeTests.RealRoomTossTransitions(False,True,True,False)" methodname="RealRoomTossTransitions" classname="OnlineRoomCoinTossPlayModeTests" runstate="Runnable" seed="945999561" result="Passed" start-time="2026-11-16 05:55:36Z" end-time="2026-11-16 05:55:53Z" duration="16.477766" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584954690826
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Extra time reached. Each team receives one additional substitution.
+Extra time reached. Waiting for the coin toss before resetting teams.
+Coin toss: Home club kicks off. Home club attacks RightToLeft; Away club attacks LeftToRight.
+For token: 9. Denier; Hex (2, 0, 3) is already occupied by 9. Meloni!
+For token: 10. Taylor; Hex (2, 0, -3) is already occupied by 10. Buzek!
+For token: 6. Terto; Hex (4, 0, 4) is already occupied by 6. Delpech!
+For token: 8. Gaham; Hex (4, 0, -4) is already occupied by 8. Walton!
+For token: 7. Savvakis; Hex (4, 0, 8) is already occupied by 7. Werdekker!
+For token: 11. Goaley; Hex (4, 0, -8) is already occupied by 11. Gilbert!
+For token: 4. Gortz; Hex (10, 0, -4) is already occupied by 4. Littlewood!
+For token: 5. Willems; Hex (10, 0, 4) is already occupied by 5. Manolis!
+For token: 2. Baez; Hex (10, 0, 8) is already occupied by 2. Aguayo!
+For token: 3. Kanaras; Hex (10, 0, -8) is already occupied by 3. Vladoiu!
+For token: 1. Kuzmic; Hex (16, 0, 0) is already occupied by 1. Aziz!
+[GoalFlow] Token/hex ownership reconciled cleanly after goal reset.
+Post-goal kick-off setup: both teams may reposition tokens in their own half, including the halfway line, except the center spot. The kicker will be selected later. Defenders cannot stand in the center circle. Press Enter twice when both teams are ready.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1997" name="RealRoomTossTransitions(False,True,True,True)" fullname="OnlineRoomCoinTossPlayModeTests.RealRoomTossTransitions(False,True,True,True)" methodname="RealRoomTossTransitions" classname="OnlineRoomCoinTossPlayModeTests" runstate="Runnable" seed="491360855" result="Passed" start-time="2026-11-16 05:55:53Z" end-time="2026-11-16 05:56:08Z" duration="14.975253" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584954817930
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Extra time reached. Each team receives one additional substitution.
+Extra time reached. Waiting for the coin toss before resetting teams.
+Coin toss: Home club kicks off. Home club attacks LeftToRight; Away club attacks RightToLeft.
+[GoalFlow] Token/hex ownership reconciled cleanly after goal reset.
+Post-goal kick-off setup: both teams may reposition tokens in their own half, including the halfway line, except the center spot. The kicker will be selected later. Defenders cannot stand in the center circle. Press Enter twice when both teams are ready.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1998" name="RealRoomTossTransitions(True,False,False,False)" fullname="OnlineRoomCoinTossPlayModeTests.RealRoomTossTransitions(True,False,False,False)" methodname="RealRoomTossTransitions" classname="OnlineRoomCoinTossPlayModeTests" runstate="Runnable" seed="909045033" result="Passed" start-time="2026-11-16 05:56:08Z" end-time="2026-11-16 05:56:22Z" duration="14.438566" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584954945034
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Final whistle with tied score. Opening penalty shootout coin toss.
+Coin toss: Home club takes the first penalty at the left goal.
+[Shootout] Order selection opened with 11 nominees per team.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1999" name="RealRoomTossTransitions(True,False,False,True)" fullname="OnlineRoomCoinTossPlayModeTests.RealRoomTossTransitions(True,False,False,True)" methodname="RealRoomTossTransitions" classname="OnlineRoomCoinTossPlayModeTests" runstate="Runnable" seed="1209492192" result="Passed" start-time="2026-11-16 05:56:22Z" end-time="2026-11-16 05:56:37Z" duration="14.291827" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584955072138
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Final whistle with tied score. Opening penalty shootout coin toss.
+Coin toss: Home club takes the first penalty at the right goal.
+[Shootout] Order selection opened with 11 nominees per team.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2000" name="RealRoomTossTransitions(True,False,True,False)" fullname="OnlineRoomCoinTossPlayModeTests.RealRoomTossTransitions(True,False,True,False)" methodname="RealRoomTossTransitions" classname="OnlineRoomCoinTossPlayModeTests" runstate="Runnable" seed="728152634" result="Passed" start-time="2026-11-16 05:56:37Z" end-time="2026-11-16 05:56:51Z" duration="14.324374" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584955199242
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Final whistle with tied score. Opening penalty shootout coin toss.
+Coin toss: Away club takes the first penalty at the left goal.
+[Shootout] Order selection opened with 11 nominees per team.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2001" name="RealRoomTossTransitions(True,False,True,True)" fullname="OnlineRoomCoinTossPlayModeTests.RealRoomTossTransitions(True,False,True,True)" methodname="RealRoomTossTransitions" classname="OnlineRoomCoinTossPlayModeTests" runstate="Runnable" seed="1579867217" result="Passed" start-time="2026-11-16 05:56:51Z" end-time="2026-11-16 05:57:06Z" duration="14.749169" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584955326346
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Final whistle with tied score. Opening penalty shootout coin toss.
+Coin toss: Away club takes the first penalty at the right goal.
+[Shootout] Order selection opened with 11 nominees per team.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2002" name="RealRoomTossTransitions(True,True,False,False)" fullname="OnlineRoomCoinTossPlayModeTests.RealRoomTossTransitions(True,True,False,False)" methodname="RealRoomTossTransitions" classname="OnlineRoomCoinTossPlayModeTests" runstate="Runnable" seed="962361758" result="Passed" start-time="2026-11-16 05:57:06Z" end-time="2026-11-16 05:57:20Z" duration="14.056784" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584955453450
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Final whistle with tied score. Opening penalty shootout coin toss.
+Coin toss: Away club takes the first penalty at the left goal.
+[Shootout] Order selection opened with 11 nominees per team.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2003" name="RealRoomTossTransitions(True,True,False,True)" fullname="OnlineRoomCoinTossPlayModeTests.RealRoomTossTransitions(True,True,False,True)" methodname="RealRoomTossTransitions" classname="OnlineRoomCoinTossPlayModeTests" runstate="Runnable" seed="1544260179" result="Passed" start-time="2026-11-16 05:57:20Z" end-time="2026-11-16 05:57:34Z" duration="14.250267" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584955580554
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Final whistle with tied score. Opening penalty shootout coin toss.
+Coin toss: Away club takes the first penalty at the right goal.
+[Shootout] Order selection opened with 11 nominees per team.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2004" name="RealRoomTossTransitions(True,True,True,False)" fullname="OnlineRoomCoinTossPlayModeTests.RealRoomTossTransitions(True,True,True,False)" methodname="RealRoomTossTransitions" classname="OnlineRoomCoinTossPlayModeTests" runstate="Runnable" seed="670055279" result="Passed" start-time="2026-11-16 05:57:34Z" end-time="2026-11-16 05:57:49Z" duration="14.624351" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584955707658
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Final whistle with tied score. Opening penalty shootout coin toss.
+Coin toss: Home club takes the first penalty at the left goal.
+[Shootout] Order selection opened with 11 nominees per team.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2005" name="RealRoomTossTransitions(True,True,True,True)" fullname="OnlineRoomCoinTossPlayModeTests.RealRoomTossTransitions(True,True,True,True)" methodname="RealRoomTossTransitions" classname="OnlineRoomCoinTossPlayModeTests" runstate="Runnable" seed="1817412820" result="Passed" start-time="2026-11-16 05:57:49Z" end-time="2026-11-16 05:58:03Z" duration="14.380788" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584955834762
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Final whistle with tied score. Opening penalty shootout coin toss.
+Coin toss: Home club takes the first penalty at the right goal.
+[Shootout] Order selection opened with 11 nominees per team.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+Saving results to: TestResults\GameplayRegression\Runs\20261116T055400361Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

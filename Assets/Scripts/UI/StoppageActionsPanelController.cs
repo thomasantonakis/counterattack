@@ -31,6 +31,7 @@ public sealed class StoppageActionsPanelController : MonoBehaviour
     private static int reservedEscapeFrame = -1;
     public bool IsOpen => stage != Stage.Closed;
     public bool IsAwaitingRoll => stage == Stage.AwaitingRoll;
+    public bool IsOnlineResultReady => stage == Stage.Complete;
     public bool IsResultHeld { get; private set; }
     public bool HasSceneBindings => visuals != null && panel != null && title != null && situation != null
         && rollingTeam != null && rule != null && result != null && footer != null && die != null;
@@ -59,7 +60,7 @@ public sealed class StoppageActionsPanelController : MonoBehaviour
     public bool Begin(MatchManager manager)
     {
         // Wait for any originating duel/scatter presentation to finish; never replace its contents.
-        if (!HasSceneBindings || IsOpen || manager == null || !manager.isActiveAndEnabled
+        if (!HasSceneBindings || IsOpen || manager == null || (!manager.isActiveAndEnabled && !manager.IsOnlineAuthorityControlled)
             || manager.gameData?.gameSettings == null || !manager.IsWaitingForExtraActionsRoll
             || HeaderChallengePanelController.IsVisible || DuelResolutionPanelController.IsVisible) return false;
         match = manager;
@@ -99,7 +100,7 @@ public sealed class StoppageActionsPanelController : MonoBehaviour
             + (sum > total ? " (maximum 7)" : "");
         stage = Stage.Complete;
         IsResultHeld = false;
-        closeAt = Time.unscaledTime + resultSeconds;
+        closeAt = Time.unscaledTime + (manager.IsOnlineAuthorityControlled ? Mathf.Min(5f, resultSeconds) : resultSeconds);
         UpdateFooter();
         return WaitUntilClosed();
     }
@@ -173,13 +174,13 @@ public sealed class StoppageActionsPanelController : MonoBehaviour
             if (match != null && match.IsWaitingForExtraActionsRoll) Begin(match);
             return;
         }
-        if (match == null || !match.isActiveAndEnabled || (IsAwaitingRoll && !match.IsWaitingForExtraActionsRoll))
+        if (match == null || (!match.isActiveAndEnabled && !match.IsOnlineAuthorityControlled) || (IsAwaitingRoll && !match.IsWaitingForExtraActionsRoll))
         {
             Close();
             return;
         }
         FitAndClamp();
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (!match.IsOnlineAuthorityControlled && Input.GetKeyDown(KeyCode.Escape))
         {
             waitForEscapeRelease = true;
             if (Dismiss()) return;

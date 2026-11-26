@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="2" result="Passed" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-14 10:37:24Z" end-time="2026-11-14 10:37:41Z" duration="16.6602532">
+  <test-suite type="TestSuite" id="2375" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1129" result="Passed" start-time="2026-11-14 10:37:24Z" end-time="2026-11-14 10:37:41Z" duration="16.660253" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2372" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1129" result="Passed" start-time="2026-11-14 10:37:24Z" end-time="2026-11-14 10:37:41Z" duration="16.627524" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12208" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1545" name="OnlineRoomFirstTimePassPlayModeTests" fullname="OnlineRoomFirstTimePassPlayModeTests" classname="OnlineRoomFirstTimePassPlayModeTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-14 10:37:24Z" end-time="2026-11-14 10:37:41Z" duration="16.622238" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineFirstTimePass" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="1548" name="RoomPassContinuesThroughFtp" fullname="OnlineRoomFirstTimePassPlayModeTests.RoomPassContinuesThroughFtp" classname="OnlineRoomFirstTimePassPlayModeTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-14 10:37:24Z" end-time="2026-11-14 10:37:41Z" duration="16.612858" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="1546" name="RoomPassContinuesThroughFtp(1)" fullname="OnlineRoomFirstTimePassPlayModeTests.RoomPassContinuesThroughFtp(1)" methodname="RoomPassContinuesThroughFtp" classname="OnlineRoomFirstTimePassPlayModeTests" runstate="Runnable" seed="2078427143" result="Passed" start-time="2026-11-14 10:37:24Z" end-time="2026-11-14 10:37:33Z" duration="9.090253" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Fixture Home 1 (Jersey 1) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=4, HighPass=0, Resilience=0
+Fixture Away 1 (Jersey 1) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=4, HighPass=0, Resilience=0
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Fixture Home 9 (Online proof Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Fixture Home 9 (Online proof Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Fixture Home 10
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+First-Time Pass target confirmed. Waiting for FTP movement phases.
+Offside assessed (first_time_pass_target_confirmed): line x=8, tokens=none.
+Substitutions are no longer available: Committed to FirstTimePass
+[Game Log] Fixture Home 10 (Online proof Home) attempts a ground pass
+Attacker movement phase started. Move one attacker 1 hex or press [X] to skip.
+Attacker FTP movement skipped.
+Defender movement phase started. Move one defender 1 hex or press [X] to skip.
+Defender FTP movement skipped.
+No interception chance after FTP movement phases. Moving ball to target hex.
+Highlights cleared after ball movement.
+[Game Log] Fixture Home 10 (Online proof Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Fixture Home 9
+Offside assessment cleared: first_time_pass_completed.
+Attacking team has possession: True.
+Offside assessed (end_first_time_pass): line x=8, tokens=none.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Ball reference set in PlayerToken. Ball Hex: 
+Ball reference set in PlayerToken. Ball Hex: 
+]]></output>
+          </test-case>
+          <test-case id="1547" name="RoomPassContinuesThroughFtp(-1)" fullname="OnlineRoomFirstTimePassPlayModeTests.RoomPassContinuesThroughFtp(-1)" methodname="RoomPassContinuesThroughFtp" classname="OnlineRoomFirstTimePassPlayModeTests" runstate="Runnable" seed="389638797" result="Passed" start-time="2026-11-14 10:37:33Z" end-time="2026-11-14 10:37:41Z" duration="7.492665" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Unknown kit preset ''. Falling back to blue token style.
+Ball reference set in PlayerToken. Ball Hex: 
+Fixture Home 1 (Jersey 1) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=4, HighPass=0, Resilience=0
+Fixture Away 1 (Jersey 1) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=4, HighPass=0, Resilience=0
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=0, tokens=Fixture Home 1.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Fixture Home 9 (Online proof Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Fixture Home 9 (Online proof Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Fixture Home 10
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+First-Time Pass target confirmed. Waiting for FTP movement phases.
+Offside assessed (first_time_pass_target_confirmed): line x=-8, tokens=none.
+Substitutions are no longer available: Committed to FirstTimePass
+[Game Log] Fixture Home 10 (Online proof Home) attempts a ground pass
+Attacker movement phase started. Move one attacker 1 hex or press [X] to skip.
+Attacker FTP movement skipped.
+Defender movement phase started. Move one defender 1 hex or press [X] to skip.
+Defender FTP movement skipped.
+No interception chance after FTP movement phases. Moving ball to target hex.
+Highlights cleared after ball movement.
+[Game Log] Fixture Home 10 (Online proof Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Fixture Home 9
+Offside assessment cleared: first_time_pass_completed.
+Attacking team has possession: True.
+Offside assessed (end_first_time_pass): line x=-8, tokens=none.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Ball reference set in PlayerToken. Ball Hex: 
+Ball reference set in PlayerToken. Ball Hex: 
+Saving results to: TestResults\GameplayRegression\Runs\20261114T103724760Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

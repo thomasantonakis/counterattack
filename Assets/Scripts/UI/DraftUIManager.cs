@@ -60,7 +60,7 @@ public class DraftUIManager : MonoBehaviour
         {
             draftTurnText.text = "ROLL FOR FIRST PICK";
             draftBatchText.text = "Both managers roll";
-            draftMetaText.text = "Highest roll drafts first. Press R once for each manager.";
+            draftMetaText.text = "Highest roll drafts first. Press R or wait for the automatic roll.";
             return;
         }
 

@@ -1,0 +1,15 @@
+{"name":"OnlineFullRoomPayloadEditorTests.ExpandedStateHasIndependentHardLimit","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFullRoomPayloadEditorTests.LargeRosterRoundTripsWithinWireBudget(16,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFullRoomPayloadEditorTests.LargeRosterRoundTripsWithinWireBudget(16,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFullRoomPayloadEditorTests.LargeRosterRoundTripsWithinWireBudget(18,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFullRoomPayloadEditorTests.LargeRosterRoundTripsWithinWireBudget(18,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFullRoomPayloadEditorTests.MalformedCompressionCannotPoisonNextMessage(\"base64\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFullRoomPayloadEditorTests.MalformedCompressionCannotPoisonNextMessage(\"truncated\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFullRoomPayloadEditorTests.MalformedCompressionCannotPoisonNextMessage(\"length\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFullRoomPayloadEditorTests.MalformedCompressionCannotPoisonNextMessage(\"bomb\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFullRoomPayloadEditorTests.MalformedCompressionCannotPoisonNextMessage(\"kind\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFullRoomPayloadEditorTests.MalformedCompressionCannotPoisonNextMessage(\"conflict\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFullRoomPayloadEditorTests.MalformedCompressionCannotPoisonNextMessage(\"catalog\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFullRoomPayloadEditorTests.MalformedCompressionCannotPoisonNextMessage(\"missing-data\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFullRoomPayloadEditorTests.MalformedCompressionCannotPoisonNextMessage(\"size-header\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFullRoomPayloadEditorTests.PreparedProfileKeepsUncompressedState","status":"Passed","message":"","stackTrace":""}

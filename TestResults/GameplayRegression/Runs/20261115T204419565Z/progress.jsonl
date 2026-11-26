@@ -1,0 +1,16 @@
+{"name":"OnlineRequiredKeeperPlayModeTests.ForcedBenchKeeperReplacement(False,\"bench\",False,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRequiredKeeperPlayModeTests.ForcedBenchKeeperReplacement(False,\"bench\",False,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRequiredKeeperPlayModeTests.ForcedBenchKeeperReplacement(False,\"bench\",True,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRequiredKeeperPlayModeTests.ForcedBenchKeeperReplacement(False,\"bench\",True,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRequiredKeeperPlayModeTests.ForcedBenchKeeperReplacement(False,\"double\",False,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRequiredKeeperPlayModeTests.ForcedBenchKeeperReplacement(False,\"double\",False,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRequiredKeeperPlayModeTests.ForcedBenchKeeperReplacement(False,\"double\",True,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRequiredKeeperPlayModeTests.ForcedBenchKeeperReplacement(False,\"double\",True,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRequiredKeeperPlayModeTests.ForcedBenchKeeperReplacement(True,\"bench\",False,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRequiredKeeperPlayModeTests.ForcedBenchKeeperReplacement(True,\"bench\",False,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRequiredKeeperPlayModeTests.ForcedBenchKeeperReplacement(True,\"bench\",True,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRequiredKeeperPlayModeTests.ForcedBenchKeeperReplacement(True,\"bench\",True,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRequiredKeeperPlayModeTests.ForcedBenchKeeperReplacement(True,\"double\",False,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRequiredKeeperPlayModeTests.ForcedBenchKeeperReplacement(True,\"double\",False,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRequiredKeeperPlayModeTests.ForcedBenchKeeperReplacement(True,\"double\",True,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRequiredKeeperPlayModeTests.ForcedBenchKeeperReplacement(True,\"double\",True,True)","status":"Passed","message":"","stackTrace":""}

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="2" result="Failed(Child)" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-14 13:46:46Z" end-time="2026-11-14 13:46:56Z" duration="10.0654274">
+  <test-suite type="TestSuite" id="2379" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1131" result="Failed" site="Child" start-time="2026-11-14 13:46:46Z" end-time="2026-11-14 13:46:56Z" duration="10.065427" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="2376" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1131" result="Failed" site="Child" start-time="2026-11-14 13:46:46Z" end-time="2026-11-14 13:46:56Z" duration="10.016199" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12208" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestFixture" id="1519" name="OnlineContinuousSessionPlayModeTests" fullname="OnlineContinuousSessionPlayModeTests" classname="OnlineContinuousSessionPlayModeTests" runstate="Runnable" testcasecount="2" result="Failed" site="Child" start-time="2026-11-14 13:46:46Z" end-time="2026-11-14 13:46:56Z" duration="10.009677" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineContinuousSession" />
+        </properties>
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="ParameterizedMethod" id="1522" name="CompletedGroundAndFtpStayConnected" fullname="OnlineContinuousSessionPlayModeTests.CompletedGroundAndFtpStayConnected" classname="OnlineContinuousSessionPlayModeTests" runstate="Runnable" testcasecount="2" result="Failed" site="Child" start-time="2026-11-14 13:46:46Z" end-time="2026-11-14 13:46:56Z" duration="10.000124" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-case id="1520" name="CompletedGroundAndFtpStayConnected(1)" fullname="OnlineContinuousSessionPlayModeTests.CompletedGroundAndFtpStayConnected(1)" methodname="CompletedGroundAndFtpStayConnected" classname="OnlineContinuousSessionPlayModeTests" runstate="Runnable" seed="834663814" result="Failed" start-time="2026-11-14 13:46:47Z" end-time="2026-11-14 13:46:52Z" duration="5.694229" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  default short proof still reaches its completion boundary: {"matchId":"continuous","decisionId":"ground-1","stage":"movement.attack.select","owner":"Home","gameState":"MovementPhase","possessionTeam":"Home","lastTouch":"home:9","pauseRequester":"","catalogId":"fixture-v1","revision":1,"publicationSequence":1,"rollSequence":0,"sharedPauseRevision":0,"homeAcceptedSequence":0,"awayAcceptedSequence":0,"homePauseSequence":0,"awayPauseSequence":0,"isSharedPaused":false,"connectionHeld":false,"ballOnBoard":true,"ballMoving":false,"attackHasPossession":true,"passActive":false,"awaitingTarget":false,"awaitingRoll":false,"movementAvailable":false,"firstTimePassAvailable":false,"groundPassAvailable":false,"movementActive":true,"playerMoving":false,"selectedPlayer":"","ballX":0,"ballZ":0,"selectedX":0,"selectedZ":0,"interceptorX":0,"interceptorZ":0,"hasSelectedTarget":false,"hasInterceptor":false,"legalActions":["movement.forfeit","movement.player:home:1","movement.player:home:10","movement.player:home:9"],"tokens":[{"id":"away:1","x":16,"z":0,"onBoard":true,"passesAttempted":0,"passesCompleted":0,"interceptionsAttempted":0,"interceptionsMade":0,"possessionWon":0,"possessionLost":0,"aerialPassesAttempted":0,"aerialPassesTargeted":0,"aerialPassesCompleted":0},{"id":"away:6","x":8,"z":8,"onBoard":true,"passesAttempted":0,"passesCompleted":0,"interceptionsAttempted":0,"interceptionsMade":0,"possessionWon":0,"possessionLost":0,"aerialPassesAttempted":0,"aerialPassesTargeted":0,"aerialPassesCompleted":0},{"id":"away:8","x":8,"z":10,"onBoard":true,"passesAttempted":0,"passesCompleted":0,"interceptionsAttempted":0,"interceptionsMade":0,"possessionWon":0,"possessionLost":0,"aerialPassesAttempted":0,"aerialPassesTargeted":0,"aerialPassesCompleted":0},{"id":"home:1","x":-16,"z":0,"onBoard":true,"passesAttempted":0,"passesCompleted":0,"interceptionsAttempted":0,"interceptionsMade":0,"possessionWon":0,"possessionLost":0,"aerialPassesAttempted":0,"aerialPassesTargeted":0,"aerialPassesCompleted":0},{"id":"home:10","x":0,"z":6,"onBoard":true,"passesAttempted":1,"passesCompleted":1,"interceptionsAttempted":0,"interceptionsMade":0,"possessionWon":0,"possessionLost":0,"aerialPassesAttempted":0,"aerialPassesTargeted":0,"aerialPassesCompleted":0},{"id":"home:9","x":0,"z":0,"onBoard":true,"passesAttempted":1,"passesCompleted":1,"interceptionsAttempted":0,"interceptionsMade":0,"possessionWon":0,"possessionLost":0,"aerialPassesAttempted":0,"aerialPassesTargeted":0,"aerialPassesCompleted":0}],"timing":{"decisions":[],"rollKey":"","rollId":"","rollRemaining":0.0},"regulationSeconds":0.0,"half":1,"clockRunning":true,"homeStats":{"totalGoals":0,"totalShots":0,"totalShotsOnTarget":0,"totalShotsBlocked":0,"totalShotsOffTarget":0,"totalShotBlocksAttempted":0,"totalShotBlocksMade":0,"totalPassesAttempted":2,"totalPassesCompleted":2,"totalAerialPassesAttempted":0,"totalAerialPassesTargeted":0,"totalAerialPassesCompleted":0,"totalPacesRan":0,"totalGroundDuelsInvolved":0,"totalGroundDuelsWon":0,"totalDribblesMade":0,"totalTacklesMade":0,"totalInterceptionsAttempted":0,"totalInterceptionsMade":0,"totalAerialChallengesInvolved":0,"totalAerialChallengesWon":0,"totalYellowCards":0,"totalRedCards":0,"totalAssists":0,"totalInjuries":0,"totalAttemptsSaved":0,"totalSubstiutions":0,"totalPossessionWon":0,"totalPossessionLost":0,"totalPossessionSeconds":0.0,"totalCorners":0,"totalXRecoveries":0.0,"totalXDribbles":0.0,"totalXTackles":0.0,"totalXGoals":0.0},"awayStats":{"totalGoals":0,"totalShots":0,"totalShotsOnTarget":0,"totalShotsBlocked":0,"totalShotsOffTarget":0,"totalShotBlocksAttempted":0,"totalShotBlocksMade":0,"totalPassesAttempted":0,"totalPassesCompleted":0,"totalAerialPassesAttempted":0,"totalAerialPassesTargeted":0,"totalAerialPassesCompleted":0,"totalPacesRan":0,"totalGroundDuelsInvolved":0,"totalGroundDuelsWon":0,"totalDribblesMade":0,"totalTacklesMade":0,"totalInterceptionsAttempted":0,"totalInterceptionsMade":0,"totalAerialChallengesInvolved":0,"totalAerialChallengesWon":0,"totalYellowCards":0,"totalRedCards":0,"totalAssists":0,"totalInjuries":0,"totalAttemptsSaved":0,"totalSubstiutions":0,"totalPossessionWon":0,"totalPossessionLost":0,"totalPossessionSeconds":0.0,"totalCorners":0,"totalXRecoveries":0.0,"totalXDribbles":0.0,"totalXTackles":0.0,"totalXGoals":0.0},"rolls":[],"header":{"attackers":[],"defenders":[],"roller":"","winner":"","scores":[]}}
+  Expected: True
+  But was:  False
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunContinuousPassSequence>d__72.MoveNext () [0x00382] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineContinuousSession\OnlineContinuousSessionFixture.cs:35
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+First-Time Pass target confirmed. Waiting for FTP movement phases.
+Offside assessed (first_time_pass_target_confirmed): line x=8, tokens=none.
+Substitutions are no longer available: Committed to FirstTimePass
+[Game Log] Online receiver (Fixture Home) attempts a ground pass
+Attacker movement phase started. Move one attacker 1 hex or press [X] to skip.
+Attacker FTP movement skipped.
+Defender movement phase started. Move one defender 1 hex or press [X] to skip.
+Defender FTP movement skipped.
+No interception chance after FTP movement phases. Moving ball to target hex.
+Highlights cleared after ball movement.
+[Game Log] Online receiver (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Home carrier
+Offside assessment cleared: first_time_pass_completed.
+Attacking team has possession: True.
+Offside assessed (end_first_time_pass): line x=8, tokens=none.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+]]></output>
+          </test-case>
+          <test-case id="1521" name="CompletedGroundAndFtpStayConnected(-1)" fullname="OnlineContinuousSessionPlayModeTests.CompletedGroundAndFtpStayConnected(-1)" methodname="CompletedGroundAndFtpStayConnected" classname="OnlineContinuousSessionPlayModeTests" runstate="Runnable" seed="733839544" result="Failed" start-time="2026-11-14 13:46:52Z" end-time="2026-11-14 13:46:56Z" duration="4.264597" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  default short proof still reaches its completion boundary: {"matchId":"continuous","decisionId":"ground-1","stage":"movement.attack.select","owner":"Home","gameState":"MovementPhase","possessionTeam":"Home","lastTouch":"home:9","pauseRequester":"","catalogId":"fixture-v1","revision":1,"publicationSequence":1,"rollSequence":0,"sharedPauseRevision":0,"homeAcceptedSequence":0,"awayAcceptedSequence":0,"homePauseSequence":0,"awayPauseSequence":0,"isSharedPaused":false,"connectionHeld":false,"ballOnBoard":true,"ballMoving":false,"attackHasPossession":true,"passActive":false,"awaitingTarget":false,"awaitingRoll":false,"movementAvailable":false,"firstTimePassAvailable":false,"groundPassAvailable":false,"movementActive":true,"playerMoving":false,"selectedPlayer":"","ballX":0,"ballZ":0,"selectedX":0,"selectedZ":0,"interceptorX":0,"interceptorZ":0,"hasSelectedTarget":false,"hasInterceptor":false,"legalActions":["movement.forfeit","movement.player:home:1","movement.player:home:10","movement.player:home:9"],"tokens":[{"id":"away:1","x":-16,"z":0,"onBoard":true,"passesAttempted":0,"passesCompleted":0,"interceptionsAttempted":0,"interceptionsMade":0,"possessionWon":0,"possessionLost":0,"aerialPassesAttempted":0,"aerialPassesTargeted":0,"aerialPassesCompleted":0},{"id":"away:6","x":-8,"z":8,"onBoard":true,"passesAttempted":0,"passesCompleted":0,"interceptionsAttempted":0,"interceptionsMade":0,"possessionWon":0,"possessionLost":0,"aerialPassesAttempted":0,"aerialPassesTargeted":0,"aerialPassesCompleted":0},{"id":"away:8","x":-8,"z":10,"onBoard":true,"passesAttempted":0,"passesCompleted":0,"interceptionsAttempted":0,"interceptionsMade":0,"possessionWon":0,"possessionLost":0,"aerialPassesAttempted":0,"aerialPassesTargeted":0,"aerialPassesCompleted":0},{"id":"home:1","x":16,"z":0,"onBoard":true,"passesAttempted":0,"passesCompleted":0,"interceptionsAttempted":0,"interceptionsMade":0,"possessionWon":0,"possessionLost":0,"aerialPassesAttempted":0,"aerialPassesTargeted":0,"aerialPassesCompleted":0},{"id":"home:10","x":0,"z":6,"onBoard":true,"passesAttempted":1,"passesCompleted":1,"interceptionsAttempted":0,"interceptionsMade":0,"possessionWon":0,"possessionLost":0,"aerialPassesAttempted":0,"aerialPassesTargeted":0,"aerialPassesCompleted":0},{"id":"home:9","x":0,"z":0,"onBoard":true,"passesAttempted":1,"passesCompleted":1,"interceptionsAttempted":0,"interceptionsMade":0,"possessionWon":0,"possessionLost":0,"aerialPassesAttempted":0,"aerialPassesTargeted":0,"aerialPassesCompleted":0}],"timing":{"decisions":[],"rollKey":"","rollId":"","rollRemaining":0.0},"regulationSeconds":0.0,"half":1,"clockRunning":true,"homeStats":{"totalGoals":0,"totalShots":0,"totalShotsOnTarget":0,"totalShotsBlocked":0,"totalShotsOffTarget":0,"totalShotBlocksAttempted":0,"totalShotBlocksMade":0,"totalPassesAttempted":2,"totalPassesCompleted":2,"totalAerialPassesAttempted":0,"totalAerialPassesTargeted":0,"totalAerialPassesCompleted":0,"totalPacesRan":0,"totalGroundDuelsInvolved":0,"totalGroundDuelsWon":0,"totalDribblesMade":0,"totalTacklesMade":0,"totalInterceptionsAttempted":0,"totalInterceptionsMade":0,"totalAerialChallengesInvolved":0,"totalAerialChallengesWon":0,"totalYellowCards":0,"totalRedCards":0,"totalAssists":0,"totalInjuries":0,"totalAttemptsSaved":0,"totalSubstiutions":0,"totalPossessionWon":0,"totalPossessionLost":0,"totalPossessionSeconds":0.0,"totalCorners":0,"totalXRecoveries":0.0,"totalXDribbles":0.0,"totalXTackles":0.0,"totalXGoals":0.0},"awayStats":{"totalGoals":0,"totalShots":0,"totalShotsOnTarget":0,"totalShotsBlocked":0,"totalShotsOffTarget":0,"totalShotBlocksAttempted":0,"totalShotBlocksMade":0,"totalPassesAttempted":0,"totalPassesCompleted":0,"totalAerialPassesAttempted":0,"totalAerialPassesTargeted":0,"totalAerialPassesCompleted":0,"totalPacesRan":0,"totalGroundDuelsInvolved":0,"totalGroundDuelsWon":0,"totalDribblesMade":0,"totalTacklesMade":0,"totalInterceptionsAttempted":0,"totalInterceptionsMade":0,"totalAerialChallengesInvolved":0,"totalAerialChallengesWon":0,"totalYellowCards":0,"totalRedCards":0,"totalAssists":0,"totalInjuries":0,"totalAttemptsSaved":0,"totalSubstiutions":0,"totalPossessionWon":0,"totalPossessionLost":0,"totalPossessionSeconds":0.0,"totalCorners":0,"totalXRecoveries":0.0,"totalXDribbles":0.0,"totalXTackles":0.0,"totalXGoals":0.0},"rolls":[],"header":{"attackers":[],"defenders":[],"roller":"","winner":"","scores":[]}}
+  Expected: True
+  But was:  False
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunContinuousPassSequence>d__72.MoveNext () [0x00382] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineContinuousSession\OnlineContinuousSessionFixture.cs:35
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+First-Time Pass target confirmed. Waiting for FTP movement phases.
+Offside assessed (first_time_pass_target_confirmed): line x=-8, tokens=none.
+Substitutions are no longer available: Committed to FirstTimePass
+[Game Log] Online receiver (Fixture Home) attempts a ground pass
+Attacker movement phase started. Move one attacker 1 hex or press [X] to skip.
+Attacker FTP movement skipped.
+Defender movement phase started. Move one defender 1 hex or press [X] to skip.
+Defender FTP movement skipped.
+No interception chance after FTP movement phases. Moving ball to target hex.
+Highlights cleared after ball movement.
+[Game Log] Online receiver (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Home carrier
+Offside assessment cleared: first_time_pass_completed.
+Attacking team has possession: True.
+Offside assessed (end_first_time_pass): line x=-8, tokens=none.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Saving results to: TestResults\GameplayRegression\Runs\20261114T134646867Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

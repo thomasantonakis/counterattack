@@ -1,0 +1,41 @@
+using System;
+using System.Collections.Generic;
+
+namespace CounterAttack.Online
+{
+    public sealed partial class OnlineGroundPassAuthority
+    {
+        private void ReadGroundDuelDecision(OnlineGroundPassState state,List<string> actions)
+        {
+            var manager=match.movementPhaseManager;var phase=manager.OnlineGroundDuelStage;var actor=manager.OnlineGroundDuelActor;
+            state.stage="duel."+phase;state.selectedPlayer=TokenId(actor);state.owner=actor==null?"None":actor.isHomeTeam?"Home":"Away";
+            state.awaitingRoll=phase=="roll";state.awaitingTarget=phase=="reposition";
+            switch(phase)
+            {
+                case "nutmeg":
+                    AddGroundDuel(actions,"duel.nutmeg",OnlineGroundDuelIntent.Nutmeg);
+                    if(manager.isWaitingForNutmegDecisionWithoutMoving)
+                    {
+                        state.awaitingTarget=AddMovementTargets(actions,manager)>0;
+                        foreach(var player in manager.OnlineNutmegVictims)AddGroundDuel(actions,"duel.victim:"+TokenId(player),OnlineGroundDuelIntent.Victim,player);
+                    }
+                    break;
+                case "victim":foreach(var player in manager.OnlineNutmegVictims)AddGroundDuel(actions,"duel.victim:"+TokenId(player),OnlineGroundDuelIntent.Victim,player);break;
+                case "wall-choice":AddGroundDuel(actions,"duel.dive",OnlineGroundDuelIntent.Dive);AddGroundDuel(actions,"duel.stand",OnlineGroundDuelIntent.Stand);break;
+                case "choice":
+                    if(manager.OnlineCanDive)AddGroundDuel(actions,"duel.dive",OnlineGroundDuelIntent.Dive);
+                    if(manager.OnlineCanFootTackle)AddGroundDuel(actions,"duel.tackle",OnlineGroundDuelIntent.Tackle);
+                    AddGroundDuel(actions,"duel.stand",OnlineGroundDuelIntent.Stand);
+                    if(manager.isWaitingForTackleDecisionWithoutMoving){state.awaitingTarget=AddMovementTargets(actions,manager)>0;AddMovementSelections(actions,manager,includeForfeit:false);}
+                    break;
+                case "roll":AddGroundDuel(actions,"duel.roll",OnlineGroundDuelIntent.Roll);break;
+                case "reposition":
+                    foreach(var hex in manager.OnlineDuelRepositionTargets)AddGroundDuel(actions,"duel.target:"+hex.coordinates.x+":"+hex.coordinates.z,OnlineGroundDuelIntent.Reposition,target:hex);
+                    if(manager.OnlineCanStayAfterDuel)AddGroundDuel(actions,"duel.stay",OnlineGroundDuelIntent.Stay);break;
+            }
+        }
+        private void AddGroundDuel(List<string> actions,string id,OnlineGroundDuelIntent intent,PlayerToken player=null,HexCell target=null)
+            =>AddAdditional(actions,id,()=>{if(!match.movementPhaseManager.TryExecuteOnlineGroundDuel(intent,player,target))
+                throw new InvalidOperationException("Accepted ground duel became unavailable");});
+    }
+}

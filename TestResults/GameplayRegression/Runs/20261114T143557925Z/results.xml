@@ -1,0 +1,639 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="12" result="Failed(Child)" total="12" passed="0" failed="12" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-14 14:35:57Z" end-time="2026-11-14 14:36:09Z" duration="11.4354832">
+  <test-suite type="TestSuite" id="2393" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1143" result="Failed" site="Child" start-time="2026-11-14 14:35:57Z" end-time="2026-11-14 14:36:09Z" duration="11.435483" total="12" passed="0" failed="12" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="2390" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1143" result="Failed" site="Child" start-time="2026-11-14 14:35:58Z" end-time="2026-11-14 14:36:09Z" duration="11.401783" total="12" passed="0" failed="12" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12208" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestFixture" id="1523" name="OnlineDribblePlayModeTests" fullname="OnlineDribblePlayModeTests" classname="OnlineDribblePlayModeTests" runstate="Runnable" testcasecount="12" result="Failed" site="Child" start-time="2026-11-14 14:35:58Z" end-time="2026-11-14 14:36:09Z" duration="11.390840" total="12" passed="0" failed="12" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineDribble" />
+        </properties>
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="ParameterizedMethod" id="1536" name="DribbleContinuesThroughRecovery" fullname="OnlineDribblePlayModeTests.DribbleContinuesThroughRecovery" classname="OnlineDribblePlayModeTests" runstate="Runnable" testcasecount="12" result="Failed" site="Child" start-time="2026-11-14 14:35:58Z" end-time="2026-11-14 14:36:09Z" duration="11.375182" total="12" passed="0" failed="12" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-case id="1524" name="DribbleContinuesThroughRecovery(1,&quot;safe&quot;)" fullname="OnlineDribblePlayModeTests.DribbleContinuesThroughRecovery(1,&quot;safe&quot;)" methodname="DribbleContinuesThroughRecovery" classname="OnlineDribblePlayModeTests" runstate="Runnable" seed="227841034" result="Failed" start-time="2026-11-14 14:35:58Z" end-time="2026-11-14 14:36:00Z" duration="1.950476" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected string length 14 but was 25. Strings differ at index 0.
+  Expected: "dribble.target"
+  But was:  "movement.attack.resolving"
+  -----------^
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineDribble>d__73.MoveNext () [0x001cf] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineDribble\OnlineDribbleFixture.cs:21
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Passing Home carrier to HandleTokenSelection
+Home carrier selected as dribbler. Starting dribble movement.
+Setting remaining Pace to Home carrier's Pace: 5
+Checking for nutmeggable Defenders
+Committing to Movement Phase action. section=AttMP, selectedToken=Home carrier, awaitingHexDestination=True, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Hex 26,19 to AsyncMoveTokenToHexRegularly
+Passing Hex 26,19 to MoveTokenToHex
+isDribblerRunning set to true
+MoveTokenAlongPath: shouldCarryBall: True
+MovingBall with Token
+MovingBall with Token
+Token arrived at hex: Hex 26,19
+Attacking team has possession: True.
+[Game Log] Home carrier (Fixture Home) moves 1 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Home carrier, IsDribbler: True, remainingDribblerPace: 5
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+remainingDribblerPace: 4, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Home carrier Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Calculating Eligible Defenders for Interception
+eligibleDefenders.Count: 0
+No interceptions Available, let the dribbler move if available
+Dribbler has 4 remaining Pace, Highlighting 1 Hex, isAwaitingHexDestination
+]]></output>
+          </test-case>
+          <test-case id="1525" name="DribbleContinuesThroughRecovery(1,&quot;miss&quot;)" fullname="OnlineDribblePlayModeTests.DribbleContinuesThroughRecovery(1,&quot;miss&quot;)" methodname="DribbleContinuesThroughRecovery" classname="OnlineDribblePlayModeTests" runstate="Runnable" seed="775743183" result="Failed" start-time="2026-11-14 14:36:00Z" end-time="2026-11-14 14:36:00Z" duration="0.807405" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected string length 14 but was 25. Strings differ at index 0.
+  Expected: "dribble.target"
+  But was:  "movement.attack.resolving"
+  -----------^
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineDribble>d__73.MoveNext () [0x001cf] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineDribble\OnlineDribbleFixture.cs:21
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Passing Home carrier to HandleTokenSelection
+Home carrier selected as dribbler. Starting dribble movement.
+Setting remaining Pace to Home carrier's Pace: 5
+Checking for nutmeggable Defenders
+Committing to Movement Phase action. section=AttMP, selectedToken=Home carrier, awaitingHexDestination=True, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Hex 26,19 to AsyncMoveTokenToHexRegularly
+Passing Hex 26,19 to MoveTokenToHex
+isDribblerRunning set to true
+MoveTokenAlongPath: shouldCarryBall: True
+MovingBall with Token
+MovingBall with Token
+Token arrived at hex: Hex 26,19
+Attacking team has possession: True.
+[Game Log] Home carrier (Fixture Home) moves 1 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Home carrier, IsDribbler: True, remainingDribblerPace: 5
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+remainingDribblerPace: 4, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Home carrier Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Calculating Eligible Defenders for Interception
+eligibleDefenders.Count: 0
+No interceptions Available, let the dribbler move if available
+Dribbler has 4 remaining Pace, Highlighting 1 Hex, isAwaitingHexDestination
+]]></output>
+          </test-case>
+          <test-case id="1526" name="DribbleContinuesThroughRecovery(1,&quot;hit&quot;)" fullname="OnlineDribblePlayModeTests.DribbleContinuesThroughRecovery(1,&quot;hit&quot;)" methodname="DribbleContinuesThroughRecovery" classname="OnlineDribblePlayModeTests" runstate="Runnable" seed="1324901201" result="Failed" start-time="2026-11-14 14:36:00Z" end-time="2026-11-14 14:36:01Z" duration="0.913111" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected string length 14 but was 25. Strings differ at index 0.
+  Expected: "dribble.target"
+  But was:  "movement.attack.resolving"
+  -----------^
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineDribble>d__73.MoveNext () [0x001cf] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineDribble\OnlineDribbleFixture.cs:21
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Passing Home carrier to HandleTokenSelection
+Home carrier selected as dribbler. Starting dribble movement.
+Setting remaining Pace to Home carrier's Pace: 5
+Checking for nutmeggable Defenders
+Committing to Movement Phase action. section=AttMP, selectedToken=Home carrier, awaitingHexDestination=True, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Hex 26,19 to AsyncMoveTokenToHexRegularly
+Passing Hex 26,19 to MoveTokenToHex
+isDribblerRunning set to true
+MoveTokenAlongPath: shouldCarryBall: True
+MovingBall with Token
+MovingBall with Token
+Token arrived at hex: Hex 26,19
+Attacking team has possession: True.
+[Game Log] Home carrier (Fixture Home) moves 1 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Home carrier, IsDribbler: True, remainingDribblerPace: 5
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+remainingDribblerPace: 4, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Home carrier Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Calculating Eligible Defenders for Interception
+eligibleDefenders.Count: 0
+No interceptions Available, let the dribbler move if available
+Dribbler has 4 remaining Pace, Highlighting 1 Hex, isAwaitingHexDestination
+]]></output>
+          </test-case>
+          <test-case id="1527" name="DribbleContinuesThroughRecovery(1,&quot;automatic&quot;)" fullname="OnlineDribblePlayModeTests.DribbleContinuesThroughRecovery(1,&quot;automatic&quot;)" methodname="DribbleContinuesThroughRecovery" classname="OnlineDribblePlayModeTests" runstate="Runnable" seed="165254063" result="Failed" start-time="2026-11-14 14:36:01Z" end-time="2026-11-14 14:36:02Z" duration="0.829607" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected string length 14 but was 25. Strings differ at index 0.
+  Expected: "dribble.target"
+  But was:  "movement.attack.resolving"
+  -----------^
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineDribble>d__73.MoveNext () [0x001cf] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineDribble\OnlineDribbleFixture.cs:21
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Passing Home carrier to HandleTokenSelection
+Home carrier selected as dribbler. Starting dribble movement.
+Setting remaining Pace to Home carrier's Pace: 5
+Checking for nutmeggable Defenders
+Committing to Movement Phase action. section=AttMP, selectedToken=Home carrier, awaitingHexDestination=True, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Hex 26,19 to AsyncMoveTokenToHexRegularly
+Passing Hex 26,19 to MoveTokenToHex
+isDribblerRunning set to true
+MoveTokenAlongPath: shouldCarryBall: True
+MovingBall with Token
+MovingBall with Token
+Token arrived at hex: Hex 26,19
+Attacking team has possession: True.
+[Game Log] Home carrier (Fixture Home) moves 1 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Home carrier, IsDribbler: True, remainingDribblerPace: 5
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+remainingDribblerPace: 4, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Home carrier Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Calculating Eligible Defenders for Interception
+eligibleDefenders.Count: 0
+No interceptions Available, let the dribbler move if available
+Dribbler has 4 remaining Pace, Highlighting 1 Hex, isAwaitingHexDestination
+]]></output>
+          </test-case>
+          <test-case id="1528" name="DribbleContinuesThroughRecovery(1,&quot;hold&quot;)" fullname="OnlineDribblePlayModeTests.DribbleContinuesThroughRecovery(1,&quot;hold&quot;)" methodname="DribbleContinuesThroughRecovery" classname="OnlineDribblePlayModeTests" runstate="Runnable" seed="607829507" result="Failed" start-time="2026-11-14 14:36:02Z" end-time="2026-11-14 14:36:03Z" duration="1.274770" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected string length 14 but was 25. Strings differ at index 0.
+  Expected: "dribble.target"
+  But was:  "movement.attack.resolving"
+  -----------^
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineDribble>d__73.MoveNext () [0x001cf] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineDribble\OnlineDribbleFixture.cs:21
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Passing Home carrier to HandleTokenSelection
+Home carrier selected as dribbler. Starting dribble movement.
+Setting remaining Pace to Home carrier's Pace: 5
+Checking for nutmeggable Defenders
+Committing to Movement Phase action. section=AttMP, selectedToken=Home carrier, awaitingHexDestination=True, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Hex 26,19 to AsyncMoveTokenToHexRegularly
+Passing Hex 26,19 to MoveTokenToHex
+isDribblerRunning set to true
+MoveTokenAlongPath: shouldCarryBall: True
+MovingBall with Token
+MovingBall with Token
+Token arrived at hex: Hex 26,19
+Attacking team has possession: True.
+[Game Log] Home carrier (Fixture Home) moves 1 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Home carrier, IsDribbler: True, remainingDribblerPace: 5
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+remainingDribblerPace: 4, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Home carrier Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Calculating Eligible Defenders for Interception
+eligibleDefenders.Count: 0
+No interceptions Available, let the dribbler move if available
+Dribbler has 4 remaining Pace, Highlighting 1 Hex, isAwaitingHexDestination
+]]></output>
+          </test-case>
+          <test-case id="1529" name="DribbleContinuesThroughRecovery(1,&quot;cancel&quot;)" fullname="OnlineDribblePlayModeTests.DribbleContinuesThroughRecovery(1,&quot;cancel&quot;)" methodname="DribbleContinuesThroughRecovery" classname="OnlineDribblePlayModeTests" runstate="Runnable" seed="145021014" result="Failed" start-time="2026-11-14 14:36:03Z" end-time="2026-11-14 14:36:04Z" duration="0.748388" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected string length 14 but was 25. Strings differ at index 0.
+  Expected: "dribble.target"
+  But was:  "movement.attack.resolving"
+  -----------^
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineDribble>d__73.MoveNext () [0x001cf] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineDribble\OnlineDribbleFixture.cs:21
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Passing Home carrier to HandleTokenSelection
+Home carrier selected as dribbler. Starting dribble movement.
+Setting remaining Pace to Home carrier's Pace: 5
+Checking for nutmeggable Defenders
+Committing to Movement Phase action. section=AttMP, selectedToken=Home carrier, awaitingHexDestination=True, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Hex 26,19 to AsyncMoveTokenToHexRegularly
+Passing Hex 26,19 to MoveTokenToHex
+isDribblerRunning set to true
+MoveTokenAlongPath: shouldCarryBall: True
+MovingBall with Token
+MovingBall with Token
+Token arrived at hex: Hex 26,19
+Attacking team has possession: True.
+[Game Log] Home carrier (Fixture Home) moves 1 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Home carrier, IsDribbler: True, remainingDribblerPace: 5
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+remainingDribblerPace: 4, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Home carrier Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Calculating Eligible Defenders for Interception
+eligibleDefenders.Count: 0
+No interceptions Available, let the dribbler move if available
+Dribbler has 4 remaining Pace, Highlighting 1 Hex, isAwaitingHexDestination
+]]></output>
+          </test-case>
+          <test-case id="1530" name="DribbleContinuesThroughRecovery(-1,&quot;safe&quot;)" fullname="OnlineDribblePlayModeTests.DribbleContinuesThroughRecovery(-1,&quot;safe&quot;)" methodname="DribbleContinuesThroughRecovery" classname="OnlineDribblePlayModeTests" runstate="Runnable" seed="1170333780" result="Failed" start-time="2026-11-14 14:36:04Z" end-time="2026-11-14 14:36:05Z" duration="0.804965" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected string length 14 but was 25. Strings differ at index 0.
+  Expected: "dribble.target"
+  But was:  "movement.attack.resolving"
+  -----------^
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineDribble>d__73.MoveNext () [0x001cf] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineDribble\OnlineDribbleFixture.cs:21
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Passing Home carrier to HandleTokenSelection
+Home carrier selected as dribbler. Starting dribble movement.
+Setting remaining Pace to Home carrier's Pace: 5
+Checking for nutmeggable Defenders
+Committing to Movement Phase action. section=AttMP, selectedToken=Home carrier, awaitingHexDestination=True, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Hex 24,19 to AsyncMoveTokenToHexRegularly
+Passing Hex 24,19 to MoveTokenToHex
+isDribblerRunning set to true
+MoveTokenAlongPath: shouldCarryBall: True
+MovingBall with Token
+MovingBall with Token
+Token arrived at hex: Hex 24,19
+Attacking team has possession: True.
+[Game Log] Home carrier (Fixture Home) moves 1 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Home carrier, IsDribbler: True, remainingDribblerPace: 5
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+remainingDribblerPace: 4, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Home carrier Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Calculating Eligible Defenders for Interception
+eligibleDefenders.Count: 0
+No interceptions Available, let the dribbler move if available
+Dribbler has 4 remaining Pace, Highlighting 1 Hex, isAwaitingHexDestination
+]]></output>
+          </test-case>
+          <test-case id="1531" name="DribbleContinuesThroughRecovery(-1,&quot;miss&quot;)" fullname="OnlineDribblePlayModeTests.DribbleContinuesThroughRecovery(-1,&quot;miss&quot;)" methodname="DribbleContinuesThroughRecovery" classname="OnlineDribblePlayModeTests" runstate="Runnable" seed="2133446251" result="Failed" start-time="2026-11-14 14:36:05Z" end-time="2026-11-14 14:36:06Z" duration="0.811836" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected string length 14 but was 25. Strings differ at index 0.
+  Expected: "dribble.target"
+  But was:  "movement.attack.resolving"
+  -----------^
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineDribble>d__73.MoveNext () [0x001cf] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineDribble\OnlineDribbleFixture.cs:21
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Passing Home carrier to HandleTokenSelection
+Home carrier selected as dribbler. Starting dribble movement.
+Setting remaining Pace to Home carrier's Pace: 5
+Checking for nutmeggable Defenders
+Committing to Movement Phase action. section=AttMP, selectedToken=Home carrier, awaitingHexDestination=True, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Hex 24,19 to AsyncMoveTokenToHexRegularly
+Passing Hex 24,19 to MoveTokenToHex
+isDribblerRunning set to true
+MoveTokenAlongPath: shouldCarryBall: True
+MovingBall with Token
+MovingBall with Token
+Token arrived at hex: Hex 24,19
+Attacking team has possession: True.
+[Game Log] Home carrier (Fixture Home) moves 1 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Home carrier, IsDribbler: True, remainingDribblerPace: 5
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+remainingDribblerPace: 4, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Home carrier Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Calculating Eligible Defenders for Interception
+eligibleDefenders.Count: 0
+No interceptions Available, let the dribbler move if available
+Dribbler has 4 remaining Pace, Highlighting 1 Hex, isAwaitingHexDestination
+]]></output>
+          </test-case>
+          <test-case id="1532" name="DribbleContinuesThroughRecovery(-1,&quot;hit&quot;)" fullname="OnlineDribblePlayModeTests.DribbleContinuesThroughRecovery(-1,&quot;hit&quot;)" methodname="DribbleContinuesThroughRecovery" classname="OnlineDribblePlayModeTests" runstate="Runnable" seed="1412700681" result="Failed" start-time="2026-11-14 14:36:06Z" end-time="2026-11-14 14:36:06Z" duration="0.769486" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected string length 14 but was 25. Strings differ at index 0.
+  Expected: "dribble.target"
+  But was:  "movement.attack.resolving"
+  -----------^
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineDribble>d__73.MoveNext () [0x001cf] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineDribble\OnlineDribbleFixture.cs:21
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Passing Home carrier to HandleTokenSelection
+Home carrier selected as dribbler. Starting dribble movement.
+Setting remaining Pace to Home carrier's Pace: 5
+Checking for nutmeggable Defenders
+Committing to Movement Phase action. section=AttMP, selectedToken=Home carrier, awaitingHexDestination=True, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Hex 24,19 to AsyncMoveTokenToHexRegularly
+Passing Hex 24,19 to MoveTokenToHex
+isDribblerRunning set to true
+MoveTokenAlongPath: shouldCarryBall: True
+MovingBall with Token
+MovingBall with Token
+Token arrived at hex: Hex 24,19
+Attacking team has possession: True.
+[Game Log] Home carrier (Fixture Home) moves 1 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Home carrier, IsDribbler: True, remainingDribblerPace: 5
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+remainingDribblerPace: 4, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Home carrier Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Calculating Eligible Defenders for Interception
+eligibleDefenders.Count: 0
+No interceptions Available, let the dribbler move if available
+Dribbler has 4 remaining Pace, Highlighting 1 Hex, isAwaitingHexDestination
+]]></output>
+          </test-case>
+          <test-case id="1533" name="DribbleContinuesThroughRecovery(-1,&quot;automatic&quot;)" fullname="OnlineDribblePlayModeTests.DribbleContinuesThroughRecovery(-1,&quot;automatic&quot;)" methodname="DribbleContinuesThroughRecovery" classname="OnlineDribblePlayModeTests" runstate="Runnable" seed="1637874697" result="Failed" start-time="2026-11-14 14:36:07Z" end-time="2026-11-14 14:36:07Z" duration="0.775360" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected string length 14 but was 25. Strings differ at index 0.
+  Expected: "dribble.target"
+  But was:  "movement.attack.resolving"
+  -----------^
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineDribble>d__73.MoveNext () [0x001cf] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineDribble\OnlineDribbleFixture.cs:21
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Passing Home carrier to HandleTokenSelection
+Home carrier selected as dribbler. Starting dribble movement.
+Setting remaining Pace to Home carrier's Pace: 5
+Checking for nutmeggable Defenders
+Committing to Movement Phase action. section=AttMP, selectedToken=Home carrier, awaitingHexDestination=True, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Hex 24,19 to AsyncMoveTokenToHexRegularly
+Passing Hex 24,19 to MoveTokenToHex
+isDribblerRunning set to true
+MoveTokenAlongPath: shouldCarryBall: True
+MovingBall with Token
+MovingBall with Token
+Token arrived at hex: Hex 24,19
+Attacking team has possession: True.
+[Game Log] Home carrier (Fixture Home) moves 1 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Home carrier, IsDribbler: True, remainingDribblerPace: 5
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+remainingDribblerPace: 4, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Home carrier Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Calculating Eligible Defenders for Interception
+eligibleDefenders.Count: 0
+No interceptions Available, let the dribbler move if available
+Dribbler has 4 remaining Pace, Highlighting 1 Hex, isAwaitingHexDestination
+]]></output>
+          </test-case>
+          <test-case id="1534" name="DribbleContinuesThroughRecovery(-1,&quot;hold&quot;)" fullname="OnlineDribblePlayModeTests.DribbleContinuesThroughRecovery(-1,&quot;hold&quot;)" methodname="DribbleContinuesThroughRecovery" classname="OnlineDribblePlayModeTests" runstate="Runnable" seed="1519502962" result="Failed" start-time="2026-11-14 14:36:07Z" end-time="2026-11-14 14:36:08Z" duration="0.803910" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected string length 14 but was 25. Strings differ at index 0.
+  Expected: "dribble.target"
+  But was:  "movement.attack.resolving"
+  -----------^
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineDribble>d__73.MoveNext () [0x001cf] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineDribble\OnlineDribbleFixture.cs:21
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Passing Home carrier to HandleTokenSelection
+Home carrier selected as dribbler. Starting dribble movement.
+Setting remaining Pace to Home carrier's Pace: 5
+Checking for nutmeggable Defenders
+Committing to Movement Phase action. section=AttMP, selectedToken=Home carrier, awaitingHexDestination=True, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Hex 24,19 to AsyncMoveTokenToHexRegularly
+Passing Hex 24,19 to MoveTokenToHex
+isDribblerRunning set to true
+MoveTokenAlongPath: shouldCarryBall: True
+MovingBall with Token
+MovingBall with Token
+Token arrived at hex: Hex 24,19
+Attacking team has possession: True.
+[Game Log] Home carrier (Fixture Home) moves 1 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Home carrier, IsDribbler: True, remainingDribblerPace: 5
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+remainingDribblerPace: 4, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Home carrier Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Calculating Eligible Defenders for Interception
+eligibleDefenders.Count: 0
+No interceptions Available, let the dribbler move if available
+Dribbler has 4 remaining Pace, Highlighting 1 Hex, isAwaitingHexDestination
+]]></output>
+          </test-case>
+          <test-case id="1535" name="DribbleContinuesThroughRecovery(-1,&quot;cancel&quot;)" fullname="OnlineDribblePlayModeTests.DribbleContinuesThroughRecovery(-1,&quot;cancel&quot;)" methodname="DribbleContinuesThroughRecovery" classname="OnlineDribblePlayModeTests" runstate="Runnable" seed="761741581" result="Failed" start-time="2026-11-14 14:36:08Z" end-time="2026-11-14 14:36:09Z" duration="0.829177" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected string length 14 but was 25. Strings differ at index 0.
+  Expected: "dribble.target"
+  But was:  "movement.attack.resolving"
+  -----------^
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineDribble>d__73.MoveNext () [0x001cf] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineDribble\OnlineDribbleFixture.cs:21
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Passing Home carrier to HandleTokenSelection
+Home carrier selected as dribbler. Starting dribble movement.
+Setting remaining Pace to Home carrier's Pace: 5
+Checking for nutmeggable Defenders
+Committing to Movement Phase action. section=AttMP, selectedToken=Home carrier, awaitingHexDestination=True, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Hex 24,19 to AsyncMoveTokenToHexRegularly
+Passing Hex 24,19 to MoveTokenToHex
+isDribblerRunning set to true
+MoveTokenAlongPath: shouldCarryBall: True
+MovingBall with Token
+MovingBall with Token
+Token arrived at hex: Hex 24,19
+Attacking team has possession: True.
+[Game Log] Home carrier (Fixture Home) moves 1 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Home carrier, IsDribbler: True, remainingDribblerPace: 5
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+remainingDribblerPace: 4, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Home carrier Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Calculating Eligible Defenders for Interception
+eligibleDefenders.Count: 0
+No interceptions Available, let the dribbler move if available
+Dribbler has 4 remaining Pace, Highlighting 1 Hex, isAwaitingHexDestination
+Saving results to: TestResults\GameplayRegression\Runs\20261114T143557925Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

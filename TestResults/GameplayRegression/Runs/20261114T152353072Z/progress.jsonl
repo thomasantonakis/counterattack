@@ -1,0 +1,16 @@
+{"name":"OnlineFoulPlayModeTests.FoulContinues(1,\"booking\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFoulPlayModeTests.FoulContinues(1,\"injury\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFoulPlayModeTests.FoulContinues(1,\"automatic\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFoulPlayModeTests.FoulContinues(1,\"hold\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFoulPlayModeTests.FoulContinues(1,\"cancel\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFoulPlayModeTests.FoulContinues(1,\"advantage\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFoulPlayModeTests.FoulContinues(1,\"take\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFoulPlayModeTests.FoulContinues(1,\"sent-off\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFoulPlayModeTests.FoulContinues(-1,\"booking\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFoulPlayModeTests.FoulContinues(-1,\"injury\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFoulPlayModeTests.FoulContinues(-1,\"automatic\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFoulPlayModeTests.FoulContinues(-1,\"hold\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFoulPlayModeTests.FoulContinues(-1,\"cancel\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFoulPlayModeTests.FoulContinues(-1,\"advantage\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFoulPlayModeTests.FoulContinues(-1,\"take\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFoulPlayModeTests.FoulContinues(-1,\"sent-off\")","status":"Passed","message":"","stackTrace":""}

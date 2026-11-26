@@ -1,0 +1,10 @@
+{"name":"OnlineThrowInPlayModeTests.ThrowInContinues(1,\"feet\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineThrowInPlayModeTests.ThrowInContinues(1,\"head\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineThrowInPlayModeTests.ThrowInContinues(1,\"head-target\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineThrowInPlayModeTests.ThrowInContinues(1,\"optional\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineThrowInPlayModeTests.ThrowInContinues(1,\"hold\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineThrowInPlayModeTests.ThrowInContinues(-1,\"feet\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineThrowInPlayModeTests.ThrowInContinues(-1,\"head\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineThrowInPlayModeTests.ThrowInContinues(-1,\"head-target\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineThrowInPlayModeTests.ThrowInContinues(-1,\"optional\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineThrowInPlayModeTests.ThrowInContinues(-1,\"hold\")","status":"Passed","message":"","stackTrace":""}

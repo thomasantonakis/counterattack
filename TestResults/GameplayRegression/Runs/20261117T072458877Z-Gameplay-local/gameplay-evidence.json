@@ -1,0 +1,9 @@
+{
+    "role": "local",
+    "digest": "09732191F19BFBA8773C52B9EFA796034AAFA3A8215AA4AEFBA61BA4F4EC16C8",
+    "publicationSequence": 8,
+    "rollSequence": 1,
+    "sharedPauseRevision": 2,
+    "recoveryGenerations": 2,
+    "guestRulesInactive": false
+}

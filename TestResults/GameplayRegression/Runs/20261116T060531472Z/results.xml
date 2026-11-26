@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="16" result="Passed" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 06:05:31Z" end-time="2026-11-16 06:05:31Z" duration="0.4892713">
+  <test-suite type="TestSuite" id="4763" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1697" result="Passed" start-time="2026-11-16 06:05:31Z" end-time="2026-11-16 06:05:31Z" duration="0.489271" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="4752" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="1697" result="Passed" start-time="2026-11-16 06:05:31Z" end-time="2026-11-16 06:05:31Z" duration="0.472964" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17216" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="2877" name="CoinTossPresentationEditorTests" fullname="CoinTossPresentationEditorTests" classname="CoinTossPresentationEditorTests" runstate="Runnable" testcasecount="16" result="Passed" start-time="2026-11-16 06:05:31Z" end-time="2026-11-16 06:05:31Z" duration="0.465360" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="ParameterizedMethod" id="2890" name="CpuAlwaysChoosesBallIfAvailableAndCompletesForcedDirectionChoice" fullname="CoinTossPresentationEditorTests.CpuAlwaysChoosesBallIfAvailableAndCompletesForcedDirectionChoice" classname="CoinTossPresentationEditorTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-16 06:05:31Z" end-time="2026-11-16 06:05:31Z" duration="0.012746" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="2888" name="CpuAlwaysChoosesBallIfAvailableAndCompletesForcedDirectionChoice(True)" fullname="CoinTossPresentationEditorTests.CpuAlwaysChoosesBallIfAvailableAndCompletesForcedDirectionChoice(True)" methodname="CpuAlwaysChoosesBallIfAvailableAndCompletesForcedDirectionChoice" classname="CoinTossPresentationEditorTests" runstate="Runnable" seed="559654154" result="Passed" start-time="2026-11-16 06:05:31Z" end-time="2026-11-16 06:05:31Z" duration="0.001819" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2889" name="CpuAlwaysChoosesBallIfAvailableAndCompletesForcedDirectionChoice(False)" fullname="CoinTossPresentationEditorTests.CpuAlwaysChoosesBallIfAvailableAndCompletesForcedDirectionChoice(False)" methodname="CpuAlwaysChoosesBallIfAvailableAndCompletesForcedDirectionChoice" classname="CoinTossPresentationEditorTests" runstate="Runnable" seed="2093620300" result="Passed" start-time="2026-11-16 06:05:31Z" end-time="2026-11-16 06:05:31Z" duration="0.000360" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-case id="2891" name="CpuChoiceRespectsActualManagerControlsAndLegacyPersonas" fullname="CoinTossPresentationEditorTests.CpuChoiceRespectsActualManagerControlsAndLegacyPersonas" methodname="CpuChoiceRespectsActualManagerControlsAndLegacyPersonas" classname="CoinTossPresentationEditorTests" runstate="Runnable" seed="1639350137" result="Passed" start-time="2026-11-16 06:05:31Z" end-time="2026-11-16 06:05:31Z" duration="0.000904" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="2895" name="LoadingMatchKeepsOpeningChoicesAlongsideLaterLiveDirections" fullname="CoinTossPresentationEditorTests.LoadingMatchKeepsOpeningChoicesAlongsideLaterLiveDirections" methodname="LoadingMatchKeepsOpeningChoicesAlongsideLaterLiveDirections" classname="CoinTossPresentationEditorTests" runstate="Runnable" seed="814190335" result="Passed" start-time="2026-11-16 06:05:31Z" end-time="2026-11-16 06:05:31Z" duration="0.044344" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="2894" name="SavedOpeningChoicesRetainTeamIdentityAndUseOppositeFormationHalves" fullname="CoinTossPresentationEditorTests.SavedOpeningChoicesRetainTeamIdentityAndUseOppositeFormationHalves" classname="CoinTossPresentationEditorTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-16 06:05:31Z" end-time="2026-11-16 06:05:31Z" duration="0.016355" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="2892" name="SavedOpeningChoicesRetainTeamIdentityAndUseOppositeFormationHalves(True)" fullname="CoinTossPresentationEditorTests.SavedOpeningChoicesRetainTeamIdentityAndUseOppositeFormationHalves(True)" methodname="SavedOpeningChoicesRetainTeamIdentityAndUseOppositeFormationHalves" classname="CoinTossPresentationEditorTests" runstate="Runnable" seed="1339076901" result="Passed" start-time="2026-11-16 06:05:31Z" end-time="2026-11-16 06:05:31Z" duration="0.006151" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2893" name="SavedOpeningChoicesRetainTeamIdentityAndUseOppositeFormationHalves(False)" fullname="CoinTossPresentationEditorTests.SavedOpeningChoicesRetainTeamIdentityAndUseOppositeFormationHalves(False)" methodname="SavedOpeningChoicesRetainTeamIdentityAndUseOppositeFormationHalves" classname="CoinTossPresentationEditorTests" runstate="Runnable" seed="1036145011" result="Passed" start-time="2026-11-16 06:05:31Z" end-time="2026-11-16 06:05:31Z" duration="0.000673" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="2898" name="SavedPanelsRollRerollThenExpandWithDisabledKickoffAndClickableDirections" fullname="CoinTossPresentationEditorTests.SavedPanelsRollRerollThenExpandWithDisabledKickoffAndClickableDirections" classname="CoinTossPresentationEditorTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-16 06:05:31Z" end-time="2026-11-16 06:05:31Z" duration="0.308993" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="2896" name="SavedPanelsRollRerollThenExpandWithDisabledKickoffAndClickableDirections(&quot;Draft&quot;)" fullname="CoinTossPresentationEditorTests.SavedPanelsRollRerollThenExpandWithDisabledKickoffAndClickableDirections(&quot;Draft&quot;)" methodname="SavedPanelsRollRerollThenExpandWithDisabledKickoffAndClickableDirections" classname="CoinTossPresentationEditorTests" runstate="Runnable" seed="1329378564" result="Passed" start-time="2026-11-16 06:05:31Z" end-time="2026-11-16 06:05:31Z" duration="0.242968" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Coin toss: Aurora kicks off. Aurora attacks LeftToRight; Inverness attacks RightToLeft.
+]]></output>
+          </test-case>
+          <test-case id="2897" name="SavedPanelsRollRerollThenExpandWithDisabledKickoffAndClickableDirections(&quot;FreeDraft&quot;)" fullname="CoinTossPresentationEditorTests.SavedPanelsRollRerollThenExpandWithDisabledKickoffAndClickableDirections(&quot;FreeDraft&quot;)" methodname="SavedPanelsRollRerollThenExpandWithDisabledKickoffAndClickableDirections" classname="CoinTossPresentationEditorTests" runstate="Runnable" seed="1262671060" result="Passed" start-time="2026-11-16 06:05:31Z" end-time="2026-11-16 06:05:31Z" duration="0.055280" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Coin toss: Aurora kicks off. Aurora attacks LeftToRight; Inverness attacks RightToLeft.
+]]></output>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="2882" name="WinnerChoosingDirectionGivesOpponentKickoff" fullname="CoinTossPresentationEditorTests.WinnerChoosingDirectionGivesOpponentKickoff" classname="CoinTossPresentationEditorTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-11-16 06:05:31Z" end-time="2026-11-16 06:05:31Z" duration="0.035652" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="2878" name="WinnerChoosingDirectionGivesOpponentKickoff(True,LeftToRight,False,True)" fullname="CoinTossPresentationEditorTests.WinnerChoosingDirectionGivesOpponentKickoff(True,LeftToRight,False,True)" methodname="WinnerChoosingDirectionGivesOpponentKickoff" classname="CoinTossPresentationEditorTests" runstate="Runnable" seed="1284265549" result="Passed" start-time="2026-11-16 06:05:31Z" end-time="2026-11-16 06:05:31Z" duration="0.001134" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2879" name="WinnerChoosingDirectionGivesOpponentKickoff(True,RightToLeft,False,False)" fullname="CoinTossPresentationEditorTests.WinnerChoosingDirectionGivesOpponentKickoff(True,RightToLeft,False,False)" methodname="WinnerChoosingDirectionGivesOpponentKickoff" classname="CoinTossPresentationEditorTests" runstate="Runnable" seed="59329448" result="Passed" start-time="2026-11-16 06:05:31Z" end-time="2026-11-16 06:05:31Z" duration="0.000351" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2880" name="WinnerChoosingDirectionGivesOpponentKickoff(False,LeftToRight,True,False)" fullname="CoinTossPresentationEditorTests.WinnerChoosingDirectionGivesOpponentKickoff(False,LeftToRight,True,False)" methodname="WinnerChoosingDirectionGivesOpponentKickoff" classname="CoinTossPresentationEditorTests" runstate="Runnable" seed="1582036429" result="Passed" start-time="2026-11-16 06:05:31Z" end-time="2026-11-16 06:05:31Z" duration="0.000331" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2881" name="WinnerChoosingDirectionGivesOpponentKickoff(False,RightToLeft,True,True)" fullname="CoinTossPresentationEditorTests.WinnerChoosingDirectionGivesOpponentKickoff(False,RightToLeft,True,True)" methodname="WinnerChoosingDirectionGivesOpponentKickoff" classname="CoinTossPresentationEditorTests" runstate="Runnable" seed="2136061326" result="Passed" start-time="2026-11-16 06:05:31Z" end-time="2026-11-16 06:05:31Z" duration="0.000474" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="2887" name="WinnerChoosingKickoffLeavesOnlyDirectionsForLoser" fullname="CoinTossPresentationEditorTests.WinnerChoosingKickoffLeavesOnlyDirectionsForLoser" classname="CoinTossPresentationEditorTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-11-16 06:05:31Z" end-time="2026-11-16 06:05:31Z" duration="0.029572" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="2883" name="WinnerChoosingKickoffLeavesOnlyDirectionsForLoser(True,LeftToRight,False)" fullname="CoinTossPresentationEditorTests.WinnerChoosingKickoffLeavesOnlyDirectionsForLoser(True,LeftToRight,False)" methodname="WinnerChoosingKickoffLeavesOnlyDirectionsForLoser" classname="CoinTossPresentationEditorTests" runstate="Runnable" seed="1833452457" result="Passed" start-time="2026-11-16 06:05:31Z" end-time="2026-11-16 06:05:31Z" duration="0.000993" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2884" name="WinnerChoosingKickoffLeavesOnlyDirectionsForLoser(True,RightToLeft,True)" fullname="CoinTossPresentationEditorTests.WinnerChoosingKickoffLeavesOnlyDirectionsForLoser(True,RightToLeft,True)" methodname="WinnerChoosingKickoffLeavesOnlyDirectionsForLoser" classname="CoinTossPresentationEditorTests" runstate="Runnable" seed="422548788" result="Passed" start-time="2026-11-16 06:05:31Z" end-time="2026-11-16 06:05:31Z" duration="0.000354" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2885" name="WinnerChoosingKickoffLeavesOnlyDirectionsForLoser(False,LeftToRight,True)" fullname="CoinTossPresentationEditorTests.WinnerChoosingKickoffLeavesOnlyDirectionsForLoser(False,LeftToRight,True)" methodname="WinnerChoosingKickoffLeavesOnlyDirectionsForLoser" classname="CoinTossPresentationEditorTests" runstate="Runnable" seed="294665519" result="Passed" start-time="2026-11-16 06:05:31Z" end-time="2026-11-16 06:05:31Z" duration="0.000343" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="2886" name="WinnerChoosingKickoffLeavesOnlyDirectionsForLoser(False,RightToLeft,False)" fullname="CoinTossPresentationEditorTests.WinnerChoosingKickoffLeavesOnlyDirectionsForLoser(False,RightToLeft,False)" methodname="WinnerChoosingKickoffLeavesOnlyDirectionsForLoser" classname="CoinTossPresentationEditorTests" runstate="Runnable" seed="355893803" result="Passed" start-time="2026-11-16 06:05:31Z" end-time="2026-11-16 06:05:31Z" duration="0.000376" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Saving results to: TestResults\GameplayRegression\Runs\20261116T060531472Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

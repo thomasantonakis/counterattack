@@ -1,0 +1,19 @@
+{
+    "output":  "Build/OnlineGame/Windows/Counterattack.exe",
+    "scenes":  [
+                   "Assets/Scenes/SplashScreen.unity",
+                   "Assets/Scenes/MainMenu.unity",
+                   "Assets/Scenes/CreateLoadRoom.unity",
+                   "Assets/Scenes/OnlineModeMenu.unity",
+                   "Assets/Scenes/CreateNewGameScene.unity",
+                   "Assets/Scenes/Draft.unity",
+                   "Assets/Scenes/FreeDraft.unity",
+                   "Assets/Scenes/Room.unity",
+                   "Assets/Scenes/OnlineRoom.unity"
+               ],
+    "baseline":  "b6b981099717fd4eeb75bae1d380ea96ea67236c",
+    "buildId":  "build_16ae34a5ae22",
+    "unity":  "6000.5.3f1",
+    "target":  "StandaloneWindows64",
+    "managedAssemblySha256":  "cca9d5961dc06a9a0d3325444932fc4bd52c29bef886a5adbde0303b8090e683"
+}

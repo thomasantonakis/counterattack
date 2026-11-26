@@ -1,0 +1,1 @@
+OnlineRoomPenaltyPlayModeTests.RoomPenaltySetupReachesShot(-1)

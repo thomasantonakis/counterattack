@@ -1,0 +1,1888 @@
+ic
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Ekström
+Slot renamed to: Home-6-Iwu
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Cafferata
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Willems
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Kucklick
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot cleared and renamed to: Away-14
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot renamed to: Home-1-Kuzmic
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Ekström
+Slot renamed to: Home-6-Iwu
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot cleared and renamed to: Home-15
+Slot cleared and renamed to: Home-16
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Cafferata
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Willems
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Kucklick
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot renamed to: Home-1-Kuzmic
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Ekström
+Slot renamed to: Home-6-Iwu
+Slot cleared and renamed to: Home-7
+Slot cleared and renamed to: Home-8
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot cleared and renamed to: Home-16
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Cafferata
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Willems
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Kucklick
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot renamed to: Home-1-Kuzmic
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Ekström
+Slot renamed to: Home-6-Iwu
+Slot renamed to: Home-7-Soares
+Slot cleared and renamed to: Home-8
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot cleared and renamed to: Home-16
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Cafferata
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Willems
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Kucklick
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot renamed to: Home-1-Kuzmic
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Ekström
+Slot renamed to: Home-6-Iwu
+Slot renamed to: Home-7-Soares
+Slot cleared and renamed to: Home-8
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot cleared and renamed to: Home-16
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Cafferata
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Willems
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Kucklick
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot renamed to: Home-1-Kuzmic
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Ekström
+Slot renamed to: Home-6-Iwu
+Slot renamed to: Home-7-Soares
+Slot cleared and renamed to: Home-8
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot cleared and renamed to: Home-16
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Cafferata
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Willems
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Kucklick
+Slot cleared and renamed to: Away-8
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot renamed to: Home-1-Kuzmic
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Ekström
+Slot renamed to: Home-6-Iwu
+Slot renamed to: Home-7-Soares
+Slot cleared and renamed to: Home-8
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot cleared and renamed to: Home-16
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Cafferata
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Willems
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Kucklick
+Slot renamed to: Away-8-Ezzine
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot renamed to: Home-1-Kuzmic
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Ekström
+Slot renamed to: Home-6-Iwu
+Slot renamed to: Home-7-Soares
+Slot cleared and renamed to: Home-8
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot renamed to: Home-16-Bank
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Cafferata
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Willems
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Kucklick
+Slot renamed to: Away-8-Ezzine
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot renamed to: Home-1-Kuzmic
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Ekström
+Slot renamed to: Home-6-Iwu
+Slot renamed to: Home-7-Soares
+Slot cleared and renamed to: Home-8
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot renamed to: Home-16-Bank
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Cafferata
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Willems
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Kucklick
+Slot renamed to: Away-8-Ezzine
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot renamed to: Home-1-Kuzmic
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Ekström
+Slot renamed to: Home-6-Iwu
+Slot renamed to: Home-7-Soares
+Slot cleared and renamed to: Home-8
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot renamed to: Home-16-Bank
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Cafferata
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Willems
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Kucklick
+Slot renamed to: Away-8-Ezzine
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot cleared and renamed to: Away-15
+Slot cleared and renamed to: Away-16
+Slot renamed to: Home-1-Kuzmic
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Ekström
+Slot renamed to: Home-6-Iwu
+Slot renamed to: Home-7-Soares
+Slot cleared and renamed to: Home-8
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot renamed to: Home-16-Bank
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Cafferata
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Willems
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Kucklick
+Slot renamed to: Away-8-Ezzine
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot renamed to: Away-15-Hardy
+Slot cleared and renamed to: Away-16
+Slot renamed to: Home-1-Kuzmic
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Ekström
+Slot renamed to: Home-6-Iwu
+Slot renamed to: Home-7-Soares
+Slot cleared and renamed to: Home-8
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot renamed to: Home-16-Bank
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Cafferata
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Willems
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Kucklick
+Slot renamed to: Away-8-Ezzine
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot renamed to: Away-15-Hardy
+Slot cleared and renamed to: Away-16
+Slot renamed to: Home-1-Kuzmic
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Ekström
+Slot renamed to: Home-6-Iwu
+Slot renamed to: Home-7-Soares
+Slot cleared and renamed to: Home-8
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot renamed to: Home-16-Bank
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Cafferata
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Willems
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Kucklick
+Slot renamed to: Away-8-Ezzine
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot cleared and renamed to: Away-11
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot renamed to: Away-15-Hardy
+Slot cleared and renamed to: Away-16
+Slot renamed to: Home-1-Kuzmic
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Ekström
+Slot renamed to: Home-6-Iwu
+Slot renamed to: Home-7-Soares
+Slot cleared and renamed to: Home-8
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot renamed to: Home-16-Bank
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Cafferata
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Willems
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Kucklick
+Slot renamed to: Away-8-Ezzine
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot renamed to: Away-11-van de Kerkhof
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot renamed to: Away-15-Hardy
+Slot cleared and renamed to: Away-16
+Slot renamed to: Home-1-Kuzmic
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Ekström
+Slot renamed to: Home-6-Iwu
+Slot renamed to: Home-7-Soares
+Slot renamed to: Home-8-Jung
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot renamed to: Home-16-Bank
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Cafferata
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Willems
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Kucklick
+Slot renamed to: Away-8-Ezzine
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot renamed to: Away-11-van de Kerkhof
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot renamed to: Away-15-Hardy
+Slot cleared and renamed to: Away-16
+Slot renamed to: Home-1-Kuzmic
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Ekström
+Slot renamed to: Home-6-Iwu
+Slot renamed to: Home-7-Soares
+Slot renamed to: Home-8-Jung
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot renamed to: Home-16-Bank
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Cafferata
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Willems
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Kucklick
+Slot renamed to: Away-8-Ezzine
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot renamed to: Away-11-van de Kerkhof
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot renamed to: Away-15-Hardy
+Slot cleared and renamed to: Away-16
+Slot renamed to: Home-1-Kuzmic
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Ekström
+Slot renamed to: Home-6-Iwu
+Slot renamed to: Home-7-Soares
+Slot renamed to: Home-8-Jung
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot renamed to: Home-16-Bank
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Cafferata
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Willems
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Kucklick
+Slot renamed to: Away-8-Ezzine
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot renamed to: Away-11-van de Kerkhof
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot renamed to: Away-15-Hardy
+Slot cleared and renamed to: Away-16
+Slot renamed to: Home-1-Kuzmic
+Slot cleared and renamed to: Home-2
+Slot cleared and renamed to: Home-3
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Ekström
+Slot renamed to: Home-6-Iwu
+Slot renamed to: Home-7-Soares
+Slot renamed to: Home-8-Jung
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot renamed to: Home-16-Bank
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Cafferata
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Willems
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Kucklick
+Slot renamed to: Away-8-Ezzine
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot renamed to: Away-11-van de Kerkhof
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot renamed to: Away-15-Hardy
+Slot renamed to: Away-16-Siami
+Slot renamed to: Home-1-Kuzmic
+Slot cleared and renamed to: Home-2
+Slot renamed to: Home-3-Baas
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Ekström
+Slot renamed to: Home-6-Iwu
+Slot renamed to: Home-7-Soares
+Slot renamed to: Home-8-Jung
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot renamed to: Home-16-Bank
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Cafferata
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Willems
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Kucklick
+Slot renamed to: Away-8-Ezzine
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot renamed to: Away-11-van de Kerkhof
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot renamed to: Away-15-Hardy
+Slot renamed to: Away-16-Siami
+Slot renamed to: Home-1-Kuzmic
+Slot renamed to: Home-2-Denier
+Slot renamed to: Home-3-Baas
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Ekström
+Slot renamed to: Home-6-Iwu
+Slot renamed to: Home-7-Soares
+Slot renamed to: Home-8-Jung
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot renamed to: Home-16-Bank
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Cafferata
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Willems
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Kucklick
+Slot renamed to: Away-8-Ezzine
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot renamed to: Away-11-van de Kerkhof
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot renamed to: Away-15-Hardy
+Slot renamed to: Away-16-Siami
+Slot renamed to: Home-1-Kuzmic
+Slot renamed to: Home-2-Denier
+Slot renamed to: Home-3-Baas
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Ekström
+Slot renamed to: Home-6-Iwu
+Slot renamed to: Home-7-Soares
+Slot renamed to: Home-8-Jung
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot renamed to: Home-16-Bank
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Cafferata
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Willems
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Kucklick
+Slot renamed to: Away-8-Ezzine
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot renamed to: Away-11-van de Kerkhof
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot renamed to: Away-15-Hardy
+Slot renamed to: Away-16-Siami
+Slot renamed to: Home-1-Kuzmic
+Slot renamed to: Home-2-Denier
+Slot renamed to: Home-3-Baas
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Ekström
+Slot renamed to: Home-6-Iwu
+Slot renamed to: Home-7-Soares
+Slot renamed to: Home-8-Jung
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot renamed to: Home-16-Bank
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Cafferata
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Willems
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Kucklick
+Slot renamed to: Away-8-Ezzine
+Slot cleared and renamed to: Away-9
+Slot cleared and renamed to: Away-10
+Slot renamed to: Away-11-van de Kerkhof
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot renamed to: Away-15-Hardy
+Slot renamed to: Away-16-Siami
+Slot renamed to: Home-1-Kuzmic
+Slot renamed to: Home-2-Denier
+Slot renamed to: Home-3-Baas
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Ekström
+Slot renamed to: Home-6-Iwu
+Slot renamed to: Home-7-Soares
+Slot renamed to: Home-8-Jung
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot cleared and renamed to: Home-11
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot renamed to: Home-16-Bank
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Cafferata
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Willems
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Kucklick
+Slot renamed to: Away-8-Ezzine
+Slot renamed to: Away-9-Mbenga
+Slot cleared and renamed to: Away-10
+Slot renamed to: Away-11-van de Kerkhof
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot renamed to: Away-15-Hardy
+Slot renamed to: Away-16-Siami
+Slot renamed to: Home-1-Kuzmic
+Slot renamed to: Home-2-Denier
+Slot renamed to: Home-3-Baas
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Ekström
+Slot renamed to: Home-6-Iwu
+Slot renamed to: Home-7-Soares
+Slot renamed to: Home-8-Jung
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot renamed to: Home-11-McNulty
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot renamed to: Home-16-Bank
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Cafferata
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Willems
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Kucklick
+Slot renamed to: Away-8-Ezzine
+Slot renamed to: Away-9-Mbenga
+Slot cleared and renamed to: Away-10
+Slot renamed to: Away-11-van de Kerkhof
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot renamed to: Away-15-Hardy
+Slot renamed to: Away-16-Siami
+Slot renamed to: Home-1-Kuzmic
+Slot renamed to: Home-2-Denier
+Slot renamed to: Home-3-Baas
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Ekström
+Slot renamed to: Home-6-Iwu
+Slot renamed to: Home-7-Soares
+Slot renamed to: Home-8-Jung
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot renamed to: Home-11-McNulty
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot renamed to: Home-16-Bank
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Cafferata
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Willems
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Kucklick
+Slot renamed to: Away-8-Ezzine
+Slot renamed to: Away-9-Mbenga
+Slot cleared and renamed to: Away-10
+Slot renamed to: Away-11-van de Kerkhof
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot renamed to: Away-15-Hardy
+Slot renamed to: Away-16-Siami
+Slot renamed to: Home-1-Kuzmic
+Slot renamed to: Home-2-Denier
+Slot renamed to: Home-3-Baas
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Ekström
+Slot renamed to: Home-6-Iwu
+Slot renamed to: Home-7-Soares
+Slot renamed to: Home-8-Jung
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot renamed to: Home-11-McNulty
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot renamed to: Home-16-Bank
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Cafferata
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Willems
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Kucklick
+Slot renamed to: Away-8-Ezzine
+Slot renamed to: Away-9-Mbenga
+Slot cleared and renamed to: Away-10
+Slot renamed to: Away-11-van de Kerkhof
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot renamed to: Away-15-Hardy
+Slot renamed to: Away-16-Siami
+Slot renamed to: Home-1-Kuzmic
+Slot renamed to: Home-2-Denier
+Slot renamed to: Home-3-Baas
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Ekström
+Slot renamed to: Home-6-Iwu
+Slot renamed to: Home-7-Soares
+Slot renamed to: Home-8-Jung
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot renamed to: Home-11-McNulty
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot renamed to: Home-16-Bank
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Cafferata
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Willems
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Kucklick
+Slot renamed to: Away-8-Ezzine
+Slot renamed to: Away-9-Mbenga
+Slot renamed to: Away-10-Humphrey
+Slot renamed to: Away-11-van de Kerkhof
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot renamed to: Away-15-Hardy
+Slot renamed to: Away-16-Siami
+Slot renamed to: Home-1-Kuzmic
+Slot renamed to: Home-2-Denier
+Slot renamed to: Home-3-Baas
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Ekström
+Slot renamed to: Home-6-Iwu
+Slot renamed to: Home-7-Soares
+Slot renamed to: Home-8-Jung
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot renamed to: Home-11-McNulty
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot renamed to: Home-16-Bank
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Cafferata
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Willems
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Kucklick
+Slot renamed to: Away-8-Ezzine
+Slot renamed to: Away-9-Mbenga
+Slot renamed to: Away-10-Humphrey
+Slot renamed to: Away-11-van de Kerkhof
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot renamed to: Away-15-Hardy
+Slot renamed to: Away-16-Siami
+Slot renamed to: Home-1-Kuzmic
+Slot renamed to: Home-2-Denier
+Slot renamed to: Home-3-Baas
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Ekström
+Slot renamed to: Home-6-Iwu
+Slot renamed to: Home-7-Soares
+Slot renamed to: Home-8-Jung
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot renamed to: Home-11-McNulty
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot renamed to: Home-16-Bank
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Cafferata
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Willems
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Kucklick
+Slot renamed to: Away-8-Ezzine
+Slot renamed to: Away-9-Mbenga
+Slot renamed to: Away-10-Humphrey
+Slot renamed to: Away-11-van de Kerkhof
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot renamed to: Away-15-Hardy
+Slot renamed to: Away-16-Siami
+Slot renamed to: Home-1-Kuzmic
+Slot renamed to: Home-2-Denier
+Slot renamed to: Home-3-Baas
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Ekström
+Slot renamed to: Home-6-Iwu
+Slot renamed to: Home-7-Soares
+Slot renamed to: Home-8-Jung
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot renamed to: Home-11-McNulty
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot renamed to: Home-16-Bank
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Cafferata
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Willems
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Humphrey
+Slot renamed to: Away-8-Ezzine
+Slot renamed to: Away-9-Mbenga
+Slot renamed to: Away-10-Kucklick
+Slot renamed to: Away-11-van de Kerkhof
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot renamed to: Away-15-Hardy
+Slot renamed to: Away-16-Siami
+Slot renamed to: Home-1-Kuzmic
+Slot renamed to: Home-2-Denier
+Slot renamed to: Home-3-Baas
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Ekström
+Slot renamed to: Home-6-Iwu
+Slot renamed to: Home-7-Soares
+Slot renamed to: Home-8-Jung
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot renamed to: Home-11-McNulty
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot renamed to: Home-16-Bank
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Cafferata
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Willems
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Humphrey
+Slot renamed to: Away-8-Ezzine
+Slot renamed to: Away-9-Mbenga
+Slot renamed to: Away-10-Kucklick
+Slot renamed to: Away-11-van de Kerkhof
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot renamed to: Away-15-Hardy
+Slot renamed to: Away-16-Siami
+Slot renamed to: Home-1-Kuzmic
+Slot renamed to: Home-2-Denier
+Slot renamed to: Home-3-Baas
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Ekström
+Slot renamed to: Home-6-Iwu
+Slot renamed to: Home-7-Soares
+Slot renamed to: Home-8-Jung
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot renamed to: Home-11-McNulty
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot renamed to: Home-16-Bank
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Cafferata
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Willems
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Humphrey
+Slot renamed to: Away-8-Ezzine
+Slot renamed to: Away-9-Mbenga
+Slot renamed to: Away-10-Kucklick
+Slot renamed to: Away-11-van de Kerkhof
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot renamed to: Away-15-Hardy
+Slot renamed to: Away-16-Siami
+Slot renamed to: Home-1-Kuzmic
+Slot renamed to: Home-2-Denier
+Slot renamed to: Home-3-Baas
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Ekström
+Slot renamed to: Home-6-Iwu
+Slot renamed to: Home-7-Soares
+Slot renamed to: Home-8-Jung
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot renamed to: Home-11-McNulty
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot renamed to: Home-16-Bank
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Cafferata
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Willems
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Siami
+Slot renamed to: Away-8-Ezzine
+Slot renamed to: Away-9-Mbenga
+Slot renamed to: Away-10-Kucklick
+Slot renamed to: Away-11-van de Kerkhof
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot renamed to: Away-15-Hardy
+Slot renamed to: Away-16-Humphrey
+Slot renamed to: Home-1-Kuzmic
+Slot renamed to: Home-2-Denier
+Slot renamed to: Home-3-Baas
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Ekström
+Slot renamed to: Home-6-Iwu
+Slot renamed to: Home-7-Soares
+Slot renamed to: Home-8-Jung
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot renamed to: Home-11-McNulty
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot renamed to: Home-16-Bank
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Cafferata
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Willems
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Siami
+Slot renamed to: Away-8-Ezzine
+Slot renamed to: Away-9-Mbenga
+Slot renamed to: Away-10-Kucklick
+Slot renamed to: Away-11-van de Kerkhof
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot renamed to: Away-15-Hardy
+Slot renamed to: Away-16-Humphrey
+Slot renamed to: Home-1-Kuzmic
+Slot renamed to: Home-2-Denier
+Slot renamed to: Home-3-Baas
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Ekström
+Slot renamed to: Home-6-Iwu
+Slot renamed to: Home-7-Soares
+Slot renamed to: Home-8-Jung
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot renamed to: Home-11-McNulty
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot renamed to: Home-16-Bank
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Cafferata
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Willems
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Siami
+Slot renamed to: Away-8-Ezzine
+Slot renamed to: Away-9-Mbenga
+Slot renamed to: Away-10-Kucklick
+Slot renamed to: Away-11-van de Kerkhof
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot renamed to: Away-15-Hardy
+Slot renamed to: Away-16-Humphrey
+Slot renamed to: Home-1-Kuzmic
+Slot renamed to: Home-2-Denier
+Slot renamed to: Home-3-Baas
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Ekström
+Slot renamed to: Home-6-Iwu
+Slot renamed to: Home-7-Soares
+Slot renamed to: Home-8-Jung
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot renamed to: Home-11-McNulty
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot renamed to: Home-16-Bank
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Cafferata
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Willems
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Siami
+Slot renamed to: Away-8-Ezzine
+Slot renamed to: Away-9-Mbenga
+Slot renamed to: Away-10-Kucklick
+Slot renamed to: Away-11-van de Kerkhof
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot renamed to: Away-15-Hardy
+Slot renamed to: Away-16-Humphrey
+Slot renamed to: Home-1-Kuzmic
+Slot renamed to: Home-2-Denier
+Slot renamed to: Home-3-Baas
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Ekström
+Slot renamed to: Home-6-Iwu
+Slot renamed to: Home-7-Soares
+Slot renamed to: Home-8-Jung
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot renamed to: Home-11-McNulty
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot renamed to: Home-16-Bank
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Cafferata
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Willems
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Siami
+Slot renamed to: Away-8-Ezzine
+Slot renamed to: Away-9-Mbenga
+Slot renamed to: Away-10-Kucklick
+Slot renamed to: Away-11-van de Kerkhof
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot renamed to: Away-15-Hardy
+Slot renamed to: Away-16-Humphrey
+Slot renamed to: Home-1-Kuzmic
+Slot renamed to: Home-2-Denier
+Slot renamed to: Home-3-Baas
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Ekström
+Slot renamed to: Home-6-Iwu
+Slot renamed to: Home-7-Soares
+Slot renamed to: Home-8-Jung
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot renamed to: Home-11-McNulty
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot renamed to: Home-16-Bank
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Cafferata
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Siami
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Willems
+Slot renamed to: Away-8-Ezzine
+Slot renamed to: Away-9-Mbenga
+Slot renamed to: Away-10-Kucklick
+Slot renamed to: Away-11-van de Kerkhof
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot renamed to: Away-15-Hardy
+Slot renamed to: Away-16-Humphrey
+Slot renamed to: Home-1-Kuzmic
+Slot renamed to: Home-2-Denier
+Slot renamed to: Home-3-Baas
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Ekström
+Slot renamed to: Home-6-Iwu
+Slot renamed to: Home-7-Soares
+Slot renamed to: Home-8-Jung
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot renamed to: Home-11-McNulty
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot renamed to: Home-16-Bank
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Cafferata
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Siami
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Willems
+Slot renamed to: Away-8-Ezzine
+Slot renamed to: Away-9-Mbenga
+Slot renamed to: Away-10-Kucklick
+Slot renamed to: Away-11-van de Kerkhof
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot renamed to: Away-15-Hardy
+Slot renamed to: Away-16-Humphrey
+Slot renamed to: Home-1-Kuzmic
+Slot renamed to: Home-2-Denier
+Slot renamed to: Home-3-Baas
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Ekström
+Slot renamed to: Home-6-Iwu
+Slot renamed to: Home-7-Soares
+Slot renamed to: Home-8-Jung
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot renamed to: Home-11-McNulty
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot renamed to: Home-16-Bank
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Cafferata
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Siami
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Willems
+Slot renamed to: Away-8-Ezzine
+Slot renamed to: Away-9-Mbenga
+Slot renamed to: Away-10-Kucklick
+Slot renamed to: Away-11-van de Kerkhof
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot renamed to: Away-15-Hardy
+Slot renamed to: Away-16-Humphrey
+Slot renamed to: Home-1-Kuzmic
+Slot renamed to: Home-2-Denier
+Slot renamed to: Home-3-Baas
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Ekström
+Slot renamed to: Home-6-Iwu
+Slot renamed to: Home-7-Soares
+Slot renamed to: Home-8-Jung
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot renamed to: Home-11-McNulty
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot renamed to: Home-16-Bank
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Siami
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Cafferata
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Willems
+Slot renamed to: Away-8-Ezzine
+Slot renamed to: Away-9-Mbenga
+Slot renamed to: Away-10-Kucklick
+Slot renamed to: Away-11-van de Kerkhof
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot renamed to: Away-15-Hardy
+Slot renamed to: Away-16-Humphrey
+Slot renamed to: Home-1-Kuzmic
+Slot renamed to: Home-2-Denier
+Slot renamed to: Home-3-Ekström
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Baas
+Slot renamed to: Home-6-Iwu
+Slot renamed to: Home-7-Soares
+Slot renamed to: Home-8-Jung
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot renamed to: Home-11-McNulty
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot renamed to: Home-16-Bank
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Siami
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Cafferata
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Willems
+Slot renamed to: Away-8-Ezzine
+Slot renamed to: Away-9-Mbenga
+Slot renamed to: Away-10-Kucklick
+Slot renamed to: Away-11-van de Kerkhof
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot renamed to: Away-15-Hardy
+Slot renamed to: Away-16-Humphrey
+Slot renamed to: Home-1-Kuzmic
+Slot renamed to: Home-2-Baas
+Slot renamed to: Home-3-Ekström
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Denier
+Slot renamed to: Home-6-Iwu
+Slot renamed to: Home-7-Soares
+Slot renamed to: Home-8-Jung
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot renamed to: Home-11-McNulty
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot renamed to: Home-16-Bank
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Siami
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Cafferata
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Willems
+Slot renamed to: Away-8-Ezzine
+Slot renamed to: Away-9-Mbenga
+Slot renamed to: Away-10-Kucklick
+Slot renamed to: Away-11-van de Kerkhof
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot renamed to: Away-15-Hardy
+Slot renamed to: Away-16-Humphrey
+Slot renamed to: Home-1-Kuzmic
+Slot renamed to: Home-2-Baas
+Slot renamed to: Home-3-Ekström
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Denier
+Slot renamed to: Home-6-Iwu
+Slot renamed to: Home-7-Soares
+Slot renamed to: Home-8-Jung
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot renamed to: Home-11-McNulty
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot renamed to: Home-16-Bank
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Siami
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Cafferata
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Willems
+Slot renamed to: Away-8-Ezzine
+Slot renamed to: Away-9-Mbenga
+Slot renamed to: Away-10-Kucklick
+Slot renamed to: Away-11-van de Kerkhof
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot renamed to: Away-15-Hardy
+Slot renamed to: Away-16-Humphrey
+Slot renamed to: Home-1-Kuzmic
+Slot renamed to: Home-2-Baas
+Slot renamed to: Home-3-Ekström
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Denier
+Slot renamed to: Home-6-Iwu
+Slot renamed to: Home-7-Soares
+Slot renamed to: Home-8-Jung
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot renamed to: Home-11-McNulty
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot renamed to: Home-16-Bank
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Siami
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Cafferata
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Willems
+Slot renamed to: Away-8-Ezzine
+Slot renamed to: Away-9-Mbenga
+Slot renamed to: Away-10-Kucklick
+Slot renamed to: Away-11-van de Kerkhof
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot renamed to: Away-15-Hardy
+Slot renamed to: Away-16-Humphrey
+Slot renamed to: Home-1-Kuzmic
+Slot renamed to: Home-2-Baas
+Slot renamed to: Home-3-Ekström
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Denier
+Slot renamed to: Home-6-Iwu
+Slot renamed to: Home-7-Soares
+Slot renamed to: Home-8-Jung
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot renamed to: Home-11-McNulty
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot renamed to: Home-16-Bank
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Siami
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Cafferata
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Willems
+Slot renamed to: Away-8-Ezzine
+Slot renamed to: Away-9-Mbenga
+Slot renamed to: Away-10-Kucklick
+Slot renamed to: Away-11-van de Kerkhof
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot renamed to: Away-15-Hardy
+Slot renamed to: Away-16-Humphrey
+Slot renamed to: Home-1-Kuzmic
+Slot renamed to: Home-2-Baas
+Slot renamed to: Home-3-Ekström
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Denier
+Slot renamed to: Home-6-Iwu
+Slot renamed to: Home-7-Soares
+Slot renamed to: Home-8-Jung
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot renamed to: Home-11-McNulty
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot renamed to: Home-16-Bank
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Siami
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Cafferata
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Willems
+Slot renamed to: Away-8-Ezzine
+Slot renamed to: Away-9-Mbenga
+Slot renamed to: Away-10-Kucklick
+Slot renamed to: Away-11-van de Kerkhof
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot renamed to: Away-15-Hardy
+Slot renamed to: Away-16-Humphrey
+Slot renamed to: Home-1-Kuzmic
+Slot renamed to: Home-2-Baas
+Slot renamed to: Home-3-Ekström
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Denier
+Slot renamed to: Home-6-Iwu
+Slot renamed to: Home-7-Soares
+Slot renamed to: Home-8-Jung
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot renamed to: Home-11-McNulty
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot renamed to: Home-16-Bank
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Siami
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Cafferata
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Willems
+Slot renamed to: Away-8-Ezzine
+Slot renamed to: Away-9-Mbenga
+Slot renamed to: Away-10-Kucklick
+Slot renamed to: Away-11-van de Kerkhof
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot renamed to: Away-15-Hardy
+Slot renamed to: Away-16-Humphrey
+Slot renamed to: Home-1-Kuzmic
+Slot renamed to: Home-2-Baas
+Slot renamed to: Home-3-Ekström
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Denier
+Slot renamed to: Home-6-Iwu
+Slot renamed to: Home-7-Soares
+Slot renamed to: Home-8-Jung
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot renamed to: Home-11-McNulty
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot renamed to: Home-16-Bank
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Siami
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Cafferata
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Willems
+Slot renamed to: Away-8-Ezzine
+Slot renamed to: Away-9-Mbenga
+Slot renamed to: Away-10-Kucklick
+Slot renamed to: Away-11-van de Kerkhof
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot renamed to: Away-15-Hardy
+Slot renamed to: Away-16-Humphrey
+Slot renamed to: Home-1-Kuzmic
+Slot renamed to: Home-2-Baas
+Slot renamed to: Home-3-Ekström
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Denier
+Slot renamed to: Home-6-Iwu
+Slot renamed to: Home-7-Soares
+Slot renamed to: Home-8-Jung
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot renamed to: Home-11-McNulty
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot renamed to: Home-16-Bank
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Siami
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Cafferata
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Willems
+Slot renamed to: Away-8-Ezzine
+Slot renamed to: Away-9-Mbenga
+Slot renamed to: Away-10-Kucklick
+Slot renamed to: Away-11-van de Kerkhof
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot renamed to: Away-15-Hardy
+Slot renamed to: Away-16-Humphrey
+Slot renamed to: Home-1-Kuzmic
+Slot renamed to: Home-2-Baas
+Slot renamed to: Home-3-Ekström
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Denier
+Slot renamed to: Home-6-Iwu
+Slot renamed to: Home-7-Soares
+Slot renamed to: Home-8-Jung
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot renamed to: Home-11-McNulty
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot renamed to: Home-16-Bank
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Siami
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Cafferata
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Willems
+Slot renamed to: Away-8-Ezzine
+Slot renamed to: Away-9-Mbenga
+Slot renamed to: Away-10-Kucklick
+Slot renamed to: Away-11-van de Kerkhof
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot renamed to: Away-15-Hardy
+Slot renamed to: Away-16-Humphrey
+Slot renamed to: Home-1-Kuzmic
+Slot renamed to: Home-2-Baas
+Slot renamed to: Home-3-Ekström
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Denier
+Slot renamed to: Home-6-Iwu
+Slot renamed to: Home-7-Soares
+Slot renamed to: Home-8-Jung
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot renamed to: Home-11-McNulty
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot renamed to: Home-16-Bank
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Siami
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Cafferata
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Willems
+Slot renamed to: Away-8-Ezzine
+Slot renamed to: Away-9-Mbenga
+Slot renamed to: Away-10-Kucklick
+Slot renamed to: Away-11-van de Kerkhof
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot renamed to: Away-15-Hardy
+Slot renamed to: Away-16-Humphrey
+Slot renamed to: Home-1-Kuzmic
+Slot renamed to: Home-2-Baas
+Slot renamed to: Home-3-Ekström
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Denier
+Slot renamed to: Home-6-Iwu
+Slot renamed to: Home-7-Soares
+Slot renamed to: Home-8-Jung
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot renamed to: Home-11-McNulty
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot renamed to: Home-16-Bank
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Siami
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Cafferata
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Willems
+Slot renamed to: Away-8-Ezzine
+Slot renamed to: Away-9-Mbenga
+Slot renamed to: Away-10-Kucklick
+Slot renamed to: Away-11-van de Kerkhof
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot renamed to: Away-15-Hardy
+Slot renamed to: Away-16-Humphrey
+Slot renamed to: Home-1-Kuzmic
+Slot renamed to: Home-2-Baas
+Slot renamed to: Home-3-Ekström
+Slot renamed to: Home-4-Attah
+Slot renamed to: Home-5-Denier
+Slot renamed to: Home-6-Iwu
+Slot renamed to: Home-7-Soares
+Slot renamed to: Home-8-Jung
+Slot renamed to: Home-9-Fruin
+Slot renamed to: Home-10-Terto
+Slot renamed to: Home-11-McNulty
+Slot renamed to: Home-12-Mooney
+Slot renamed to: Home-13-Gowman
+Slot renamed to: Home-14-Nilsson
+Slot renamed to: Home-15-Orresta
+Slot renamed to: Home-16-Bank
+Slot renamed to: Away-1-Doxakis
+Slot renamed to: Away-2-Siami
+Slot renamed to: Away-3-Abraham
+Slot renamed to: Away-4-Byrne
+Slot renamed to: Away-5-Cafferata
+Slot renamed to: Away-6-Littlewood
+Slot renamed to: Away-7-Willems
+Slot renamed to: Away-8-Ezzine
+Slot renamed to: Away-9-Mbenga
+Slot renamed to: Away-10-Kucklick
+Slot renamed to: Away-11-van de Kerkhof
+Slot renamed to: Away-12-Bosic
+Slot renamed to: Away-13-Patras
+Slot renamed to: Away-14-Mitchell
+Slot renamed to: Away-15-Hardy
+Slot renamed to: Away-16-Humphrey
+Unloading 8 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 8.209900 ms
+MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584918925740
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Unloading 3889 unused Assets to reduce memory usage. Loaded Objects now: 50815.
+Total: 23.647900 ms (FindLiveObjects: 3.086400 ms CreateObjectMapping: 3.167100 ms MarkObjects: 12.934000 ms  DeleteObjects: 4.460000 ms)
+
+Selecting token 10. Terto
+10. Terto moved to (0, 0, -6)
+Selecting token 9. Fruin
+9. Fruin moved to (0, 0, 4)
+Selecting token 8. Jung
+8. Jung moved to (-4, 0, 2)
+Selecting token 6. Iwu
+6. Iwu moved to (-4, 0, -2)
+Selecting token 3. Ekström
+3. Ekström moved to (-7, 0, 7)
+Selecting token 4. Attah
+4. Attah moved to (-7, 0, 2)
+Selecting token 5. Denier
+5. Denier moved to (-7, 0, -3)
+Selecting token 2. Baas
+2. Baas moved to (-7, 0, -7)
+Selecting token 6. Iwu
+6. Iwu moved to (-3, 0, -3)
+Home confirmed setup (1/2)
+Selecting token 4. Byrne
+4. Byrne moved to (8, 0, 2)
+Selecting token 5. Cafferata
+5. Cafferata moved to (8, 0, -3)
+Selecting token 3. Abraham
+3. Abraham moved to (8, 0, -7)
+Selecting token 9. Mbenga
+9. Mbenga moved to (0, 0, 5)
+Selecting token 10. Kucklick
+10. Kucklick moved to (0, 0, -5)
+Selecting token 11. van de Kerkhof
+11. van de Kerkhof moved to (0, 0, -8)
+Selecting token 7. Willems
+7. Willems moved to (0, 0, 8)
+Selecting token 2. Siami
+2. Siami moved to (7, 0, 7)
+Selecting token 4. Byrne
+4. Byrne moved to (7, 0, 2)
+Selecting token 5. Cafferata
+5. Cafferata moved to (7, 0, -4)
+Selecting token 3. Abraham
+3. Abraham moved to (6, 0, -8)
+Selecting token 8. Ezzine
+8. Ezzine moved to (5, 0, 0)
+Selecting token 8. Ezzine
+8. Ezzine moved to (6, 0, 0)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+6. Littlewood took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+[Game Log] 6. Littlewood (Windows Personal) attempts a kick-off pass
+Path: (1, 0, -1) -> (1, 0, 0) -> (2, 0, 0) -> (3, 0, -1) -> (3, 0, 0) -> (4, 0, 0) -> (5, 0, -1) -> (5, 0, 0) -> (6, 0, 0)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-7, tokens=none.
+Pass completed to (6, 0, 0)
+[Game Log] 6. Littlewood (Windows Personal) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Ezzine
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+First-Time Pass target confirmed. Waiting for FTP movement phases.
+Offside assessed (first_time_pass_target_confirmed): line x=-7, tokens=none.
+Substitutions are no longer available: Committed to FirstTimePass
+[Game Log] 8. Ezzine (Windows Personal) attempts a ground pass
+Attacker movement phase started. Move one attacker 1 hex or press [X] to skip.
+Attacker 9. Mbenga selected.
+Attacker 7. Willems selected.
+Attacker 9. Mbenga selected.
+Valid Hex to move the Attacker.
+Moving 9. Mbenga to hex (-1, 0, 4)
+MoveTokenAlongPath: shouldCarryBall: False
+Token arrived at hex: HexCell [-1, 4]
+[Game Log] 9. Mbenga (Windows Personal) moves 1 paces
+Defender movement phase started. Move one defender 1 hex or press [X] to skip.
+Defender 9. Fruin selected.
+Valid Hex to move the Defender.
+Moving 9. Fruin to hex (0, 0, 3)
+MoveTokenAlongPath: shouldCarryBall: False
+Token arrived at hex: HexCell [0, 3]
+[Game Log] 9. Fruin (Sons' Mac) moves 1 paces
+FTP interception order: 9. Fruin (blocking: False, at (0, 0, 2))
+Ball path interactions after FTP movement phases: 1.
+Selected FTP defender for interception: 9. Fruin. Press [R] to roll.
+Dice roll by 9. Fruin at (0, 0, 3): 5
+[Expected Stats] 9. Fruin records xRecovery 0.167 on ftp against 8. Ezzine
+[Game Log] 9. Fruin (Sons' Mac) attempts an interception
+9. Fruin at (0, 0, 3) failed to intercept.
+FTP successful! No more defenders to roll.
+Highlights cleared after ball movement.
+Attacking team has possession: False.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing 9. Mbenga to HandleTokenSelection
+Passing 3. Abraham to HandleTokenSelection
+Passing 11. van de Kerkhof to HandleTokenSelection
+Passing 6. Littlewood to HandleTokenSelection
+Passing 9. Mbenga to HandleTokenSelection
+Passing HexCell [-5, 2] to AsyncMoveTokenToHexRegularly
+Passing HexCell [-5, 2] to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: HexCell [-5, 2]
+[Game Log] 9. Mbenga (Windows Personal) moves 4 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: 9. Mbenga, IsDribbler: False, remainingDribblerPace: 0
+The selected Token is not the dribbler
+Non Dribbler Moved.
+Advancing Movement Phase
+Passing 6. Littlewood to HandleTokenSelection
+Passing HexCell [0, 2] to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: HexCell [0, 2]
+Attacking team has possession: True.
+[Game Log] 6. Littlewood (Windows Personal) moves 2 paces
+isDribblerRunning set to true because someone picked up the ball.
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: 6. Littlewood, IsDribbler: True, remainingDribblerPace: 4
+[Game Log] 8. Ezzine (Windows Personal) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Littlewood
+Offside assessment cleared: ball_collection.
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+Nutmeg options: 9. Fruin
+remainingDribblerPace: 2, nutmeggableDefenders: 1
+Nutmeg(s) Are available to the dribbler
+6. Littlewood is next to at least one Nutmeggable Defender. Click a Nutmeggable Defender or Press [N] to attempt a Nutmeg, or [X] to allow interceptions.
+Online session failed: Receiving online session data failed: InvalidAuth

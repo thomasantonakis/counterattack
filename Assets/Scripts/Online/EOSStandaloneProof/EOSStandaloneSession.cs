@@ -1,0 +1,206 @@
+using System;
+using CounterAttack.Online;
+using System.Collections;
+using Epic.OnlineServices;
+using Epic.OnlineServices.Connect;
+using Epic.OnlineServices.Platform;
+using PlayEveryWare.EpicOnlineServices;
+using PlayEveryWare.EpicOnlineServices.Utility;
+using UnityEngine;
+
+// One application run owns one session; Windows borrows the native plugin platform.
+internal sealed class EOSStandaloneSession : IDisposable
+{
+    public PlatformInterface Platform { get; private set; }
+    public ProductUserId UserId { get; private set; }
+    private bool ownsPlatform;
+    private readonly OnlineNativeSessionLifetime lifetime;
+    private OnlineAuthRenewal authRenewal;
+    public int AuthenticationRefreshes=>authRenewal?.SuccessfulRefreshes??0;
+    internal EOSStandaloneSession()
+    {
+        lifetime=new OnlineNativeSessionLifetime(()=>
+        {
+            try{if(ownsPlatform)Platform?.Release();}
+            finally{Platform=null;UserId=null;}
+        });
+    }
+    internal IDisposable OwnNativeSubscription(IDisposable resource)=>lifetime.Own(resource);
+    internal IDisposable OwnNativeSubscription(Action release)=>lifetime.Own(release);
+    public void Tick()
+    {
+        if(lifetime.IsDisposed || Platform==null)throw new ObjectDisposedException(nameof(EOSStandaloneSession));
+        authRenewal?.Tick();CheckAuthentication();Platform.Tick();authRenewal?.Tick();CheckAuthentication();
+    }
+    private void CheckAuthentication()
+    {if(authRenewal?.Fault!=null)throw new EOSProofFailure(authRenewal.Fault);}
+    internal void RequestAuthenticationRenewalForVerification()
+    {if(authRenewal==null || !authRenewal.NotifyExpiring(UserId?.ToString()))throw new InvalidOperationException("Authentication renewal is unavailable");}
+
+    private static bool initialized;
+#if UNITY_EDITOR
+    private const string EditorOwnedSdkKey = "Counterattack.OnlineFrontend.OwnedSdk";
+
+    [UnityEditor.InitializeOnLoadMethod]
+    private static void RegisterEditorShutdown()
+    {
+        UnityEditor.EditorApplication.quitting += ShutdownOwnedEditorSdk;
+    }
+
+    private static void ShutdownOwnedEditorSdk()
+    {
+        if (!UnityEditor.SessionState.GetBool(EditorOwnedSdkKey, false)) return;
+        OnlineFrontendSession.RetireActiveSession();
+        UnityEditor.SessionState.EraseBool(EditorOwnedSdkKey);
+        EOSManager.EOSSingleton.LoadEOSLibraries();
+        PlatformInterface.Shutdown();
+    }
+#endif
+#if UNITY_STANDALONE_OSX && !UNITY_EDITOR
+    private static bool ownsSdk;
+#endif
+    internal static void EnsureInitialized()
+    {
+#if (UNITY_STANDALONE_WIN && !UNITY_EDITOR) || UNITY_EDITOR_WIN
+        if (EOSManagerPlatformSpecificsSingleton.Instance == null) WindowsPlatformSpecifics.Register();
+        EOSProofCheck.Require(EOSManagerPlatformSpecificsSingleton.Instance is WindowsPlatformSpecifics, "Windows adapter");
+#elif (UNITY_STANDALONE_OSX && !UNITY_EDITOR) || UNITY_EDITOR_OSX
+        if (EOSManagerPlatformSpecificsSingleton.Instance == null) MacOSPlatformSpecifics.Register();
+        EOSProofCheck.Require(EOSManagerPlatformSpecificsSingleton.Instance is MacOSPlatformSpecifics, "macOS adapter");
+#else
+        throw new InvalidOperationException("Standalone EOS proof supports Windows and macOS only");
+#endif
+        if (initialized) return;
+#if UNITY_STANDALONE_WIN && !UNITY_EDITOR
+        // The packaged Windows Gfx plugin initializes EOS before managed scene
+        // startup. Borrow its platform; never initialize, release or shut it down
+        // from this probe. The native plugin owns that lifetime.
+        initialized = true;
+        return;
+#else
+        EOSManager.EOSSingleton.LoadEOSLibraries();
+#if UNITY_EDITOR
+        if (UnityEditor.SessionState.GetBool(EditorOwnedSdkKey, false))
+        {
+            initialized = true;
+            return;
+        }
+#endif
+        var options = ConfigurationUtility.GetEOSInitializeOptions();
+        var result = PlatformInterface.Initialize(ref options.options);
+        EOSProofCheck.Require(result is Result.Success or Result.AlreadyConfigured, "EOS native initialization: " + result);
+#if UNITY_EDITOR
+        if (result == Result.Success) UnityEditor.SessionState.SetBool(EditorOwnedSdkKey, true);
+#elif UNITY_STANDALONE_OSX
+        ownsSdk = result == Result.Success;
+#endif
+        initialized = true;
+#endif
+    }
+
+    internal static void Shutdown()
+    {
+#if UNITY_STANDALONE_OSX && !UNITY_EDITOR
+        if (!ownsSdk) return;
+        ownsSdk = false;
+        PlatformInterface.Shutdown();
+#endif
+    }
+
+    public IEnumerator OpenAndLogin()
+    {
+        if(lifetime.IsDisposed)throw new ObjectDisposedException(nameof(EOSStandaloneSession));
+        EnsureInitialized();
+
+#if UNITY_STANDALONE_WIN && !UNITY_EDITOR
+        Platform = EOSManager.Instance.GetEOSPlatformInterface();
+        ownsPlatform = false;
+#else
+        var createOptions = ConfigurationUtility.GetEOSCreateOptions();
+        Platform = PlatformInterface.Create(ref createOptions.options);
+        ownsPlatform = true;
+#endif
+        EOSProofCheck.Require(Platform != null, "EOS platform creation");
+
+        var connect = Platform.GetConnectInterface();
+        EOSProofCheck.Require(connect != null, "EOS Connect interface");
+        Result? deviceResult = null;
+        var deviceOptions = new CreateDeviceIdOptions { DeviceModel = "Counterattack standalone proof" };
+        connect.CreateDeviceId(ref deviceOptions, null,
+            (ref CreateDeviceIdCallbackInfo info) => deviceResult = info.ResultCode);
+        var deadline = Time.realtimeSinceStartupAsDouble + 25;
+        while (!deviceResult.HasValue && Time.realtimeSinceStartupAsDouble < deadline)
+        {
+            Platform.Tick();
+            yield return null;
+        }
+        EOSProofCheck.Require(deviceResult.HasValue, "CreateDeviceId callback timed out");
+        EOSProofCheck.Require(deviceResult.Value == Result.Success || deviceResult.Value == Result.DuplicateNotAllowed, "Creating or reusing the local device identity: " + deviceResult.Value);
+
+        var loginOptions = new LoginOptions
+        {
+            Credentials = new Credentials { Type = ExternalCredentialType.DeviceidAccessToken },
+            UserLoginInfo = new UserLoginInfo { DisplayName = "Counterattack M0" }
+        };
+        LoginCallbackInfo? login = null;
+        connect.Login(ref loginOptions, null, (ref LoginCallbackInfo info) => login = info);
+        deadline = Time.realtimeSinceStartupAsDouble + 25;
+        while (!login.HasValue && Time.realtimeSinceStartupAsDouble < deadline)
+        {
+            Platform.Tick();
+            yield return null;
+        }
+        EOSProofCheck.Require(login.HasValue, "Connect.Login callback timed out");
+        if (login.Value.ResultCode == Result.InvalidUser)
+        {
+            Result? createUserResult = null;
+            var userOptions = new CreateUserOptions { ContinuanceToken = login.Value.ContinuanceToken };
+            connect.CreateUser(ref userOptions, null,
+                (ref CreateUserCallbackInfo info) => createUserResult = info.ResultCode);
+            deadline = Time.realtimeSinceStartupAsDouble + 25;
+            while (!createUserResult.HasValue && Time.realtimeSinceStartupAsDouble < deadline)
+            {
+                Platform.Tick();
+                yield return null;
+            }
+            EOSProofCheck.Require(createUserResult.HasValue, "Connect.CreateUser callback timed out");
+            EOSProofCheck.Require(createUserResult.Value == Result.Success, "Creating the test product user: " + createUserResult.Value);
+
+            login = null;
+            connect.Login(ref loginOptions, null, (ref LoginCallbackInfo info) => login = info);
+            deadline = Time.realtimeSinceStartupAsDouble + 25;
+            while (!login.HasValue && Time.realtimeSinceStartupAsDouble < deadline)
+            {
+                Platform.Tick();
+                yield return null;
+            }
+            EOSProofCheck.Require(login.HasValue, "Connect.Login retry timed out");
+        }
+
+        EOSProofCheck.Require(login.Value.ResultCode == Result.Success, "EOS Connect login: " + login.Value.ResultCode);
+        EOSProofCheck.Require(login.Value.LocalUserId != null, "Authenticated product user ID");
+        EOSProofCheck.Require(login.Value.LocalUserId.IsValid(), "Authenticated product user ID validity");
+        UserId = login.Value.LocalUserId;
+        authRenewal=new OnlineAuthRenewal(UserId.ToString(),()=>Time.realtimeSinceStartupAsDouble,complete=>
+        {
+            var refreshOptions=new LoginOptions
+            {
+                Credentials=new Credentials{Type=ExternalCredentialType.DeviceidAccessToken},
+                UserLoginInfo=new UserLoginInfo{DisplayName="Counterattack M0"}
+            };
+            connect.Login(ref refreshOptions,null,(ref LoginCallbackInfo result)=>
+                complete(result.ResultCode==Result.Success,result.LocalUserId?.ToString(),result.ResultCode.ToString()));
+        });
+        var expiryOptions=new AddNotifyAuthExpirationOptions();
+        ulong expiry=connect.AddNotifyAuthExpiration(ref expiryOptions,null,(ref AuthExpirationCallbackInfo info)=>
+            authRenewal?.NotifyExpiring(info.LocalUserId?.ToString()));
+        EOSProofCheck.Require(expiry!=0,"Registering EOS Connect authentication expiration");
+        lifetime.Own(()=>connect.RemoveNotifyAuthExpiration(expiry));
+    }
+
+    public void Dispose()
+    {
+        authRenewal?.Dispose();
+        lifetime.Dispose();
+    }
+}

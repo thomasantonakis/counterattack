@@ -221,7 +221,8 @@ public class MatchStatsUI : MonoBehaviour
     [SerializeField] private GameInputManager lineupHoverInput;
     private PlayerToken lastHoveredHomeToken;
     private PlayerToken lastHoveredAwayToken;
-    private Sprite previewValueBadgeSprite;
+    private PlayerToken shootoutHomePreview;
+    private PlayerToken shootoutAwayPreview;
 
     private const float TablesTopPadding = 0f;
     private const float CardColumnGap = 0.035f;
@@ -339,13 +340,15 @@ public class MatchStatsUI : MonoBehaviour
     {
         if (RoomInputOwnership.IntroActive) return;
         if (RoomInputOwnership.CardOpen) return;
-        if (MatchManager.Instance != null && MatchManager.Instance.IsGameplayInputBlocked)
+        bool online = CounterAttack.Online.OnlineRoomSession.Current?.HasInitialData == true;
+        if (!online && MatchManager.Instance != null && MatchManager.Instance.IsGameplayInputBlocked)
         {
             UpdateLineupHoverFromStatsText();
             return;
         }
 
-        if (!GameInputManager.IsPresentationModalActive && Input.GetKeyUp(KeyCode.E))
+        if ((online || !GameInputManager.IsPresentationModalActive) && Input.GetKeyUp(KeyCode.E)
+            && (!online || !CounterAttack.Online.OnlineBoardInput.KeyboardOwnedByUI(KeyCode.E)))
         {
             TogglePanel();
         }
@@ -399,13 +402,15 @@ public class MatchStatsUI : MonoBehaviour
     {
         while (Vector2.Distance(panel.anchoredPosition, targetPos) > 0.1f)
         {
-            panel.anchoredPosition = Vector2.Lerp(panel.anchoredPosition, targetPos, Time.deltaTime * animationSpeed);
+            float elapsed = CounterAttack.Online.OnlineRoomSession.Current?.IsResuming == true
+                ? Time.unscaledDeltaTime : Time.deltaTime;
+            panel.anchoredPosition = Vector2.Lerp(panel.anchoredPosition, targetPos, elapsed * animationSpeed);
             yield return null;
         }
         panel.anchoredPosition = targetPos;
     }
 
-    void UpdateStatsUI()
+    internal void UpdateStatsUI()
     {
         if (MatchManager.Instance == null || MatchManager.Instance.gameData == null)
         {
@@ -1154,6 +1159,22 @@ public class MatchStatsUI : MonoBehaviour
         RefreshHoverCards();
     }
 
+    internal void SetPublishedShootoutContestants(PlayerToken shooter, PlayerToken goalkeeper)
+    {
+        PlayerToken home = null;
+        PlayerToken away = null;
+        if (shooter != null && goalkeeper != null)
+        {
+            home = shooter.isHomeTeam ? shooter : goalkeeper;
+            away = shooter.isHomeTeam ? goalkeeper : shooter;
+        }
+
+        if (shootoutHomePreview == home && shootoutAwayPreview == away) return;
+        shootoutHomePreview = home;
+        shootoutAwayPreview = away;
+        RefreshHoverCards();
+    }
+
     private void HandleHoverTokenChanged(PlayerToken token, HexCell hex)
     {
         if (RoomInputOwnership.BlocksHover) return;
@@ -1177,8 +1198,10 @@ public class MatchStatsUI : MonoBehaviour
     private void RefreshHoverCards()
     {
         EnsureHoverCards();
-        RefreshHoverCard(homeHoverCard, homeGoalkeeperHoverCard, homeHoverCardAnchor, lineupHoveredHomeToken ?? lastHoveredHomeToken, true);
-        RefreshHoverCard(awayHoverCard, awayGoalkeeperHoverCard, awayHoverCardAnchor, lineupHoveredAwayToken ?? lastHoveredAwayToken, false);
+        RefreshHoverCard(homeHoverCard, homeGoalkeeperHoverCard, homeHoverCardAnchor,
+            shootoutHomePreview ?? lineupHoveredHomeToken ?? lastHoveredHomeToken, true);
+        RefreshHoverCard(awayHoverCard, awayGoalkeeperHoverCard, awayHoverCardAnchor,
+            shootoutAwayPreview ?? lineupHoveredAwayToken ?? lastHoveredAwayToken, false);
     }
 
     private void RefreshHoverCard(PlayerCard outfieldCard, GoalkeeperCard goalkeeperCard, RectTransform anchor, PlayerToken token, bool isHomeTeam)
@@ -1205,8 +1228,9 @@ public class MatchStatsUI : MonoBehaviour
         {
             SetHoverCardActive(outfieldCard, false);
             goalkeeperCard.UpdateFromToken(token, nationalityLabel);
-            ApplyPreviewCardTheme(goalkeeperCard.gameObject, true, nationalityLabel);
             SetHoverCardActive(goalkeeperCard, true);
+            LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)goalkeeperCard.transform);
+            ApplyPreviewCardTheme(goalkeeperCard.gameObject, true, nationalityLabel);
             return;
         }
 
@@ -1214,8 +1238,9 @@ public class MatchStatsUI : MonoBehaviour
         {
             SetHoverCardActive(goalkeeperCard, false);
             outfieldCard.UpdateFromToken(token, nationalityLabel);
-            ApplyPreviewCardTheme(outfieldCard.gameObject, false, nationalityLabel);
             SetHoverCardActive(outfieldCard, true);
+            LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)outfieldCard.transform);
+            ApplyPreviewCardTheme(outfieldCard.gameObject, false, nationalityLabel);
             return;
         }
 
@@ -1518,34 +1543,10 @@ public class MatchStatsUI : MonoBehaviour
             return;
         }
 
-        previewValueBadgeSprite ??= CreatePreviewBadgeSprite();
-        if (previewValueBadgeSprite == null)
-        {
-            return;
-        }
-
         Transform parent = valueText.transform.parent;
-        if (parent == null)
-        {
-            return;
-        }
-
-        string badgeName = $"{valueText.name}Badge";
-        Image badge = FindDescendantComponent<Image>(parent, badgeName);
-        if (badge == null)
-        {
-            GameObject badgeObject = new(badgeName, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
-            badgeObject.transform.SetParent(parent, false);
-            badge = badgeObject.GetComponent<Image>();
-            badge.transform.SetSiblingIndex(valueText.transform.GetSiblingIndex());
-        }
-
-
-        badge.sprite = previewValueBadgeSprite;
-        badge.preserveAspect = true;
-        badge.color = GetPreviewValueBadgeColor(parsedValue);
-        badge.raycastTarget = false;
-        valueText.raycastTarget = false;
+        if (parent == null) return;
+        var badge = FindDescendantComponent<Image>(parent, $"{valueText.name}Badge");
+        if (badge != null) badge.color = GetPreviewValueBadgeColor(parsedValue);
     }
 
     public static Color GetInspectionAttributeColor(int value) => GetPreviewValueBadgeColor(value);
@@ -1565,37 +1566,6 @@ public class MatchStatsUI : MonoBehaviour
         return PreviewLowValueColor;
     }
 
-    private static Sprite CreatePreviewBadgeSprite()
-    {
-        const int textureSize = 32;
-        const float edgeSoftness = 2f;
-        Texture2D texture = new(textureSize, textureSize, TextureFormat.RGBA32, false)
-        {
-            name = "PreviewValueBadgeRuntime",
-            hideFlags = HideFlags.HideAndDontSave,
-            filterMode = FilterMode.Bilinear,
-            wrapMode = TextureWrapMode.Clamp,
-        };
-
-        Color32[] pixels = new Color32[textureSize * textureSize];
-        Vector2 center = new((textureSize - 1) * 0.5f, (textureSize - 1) * 0.5f);
-        float radius = ((textureSize * 0.5f) - 2f) * 0.72f;
-
-        for (int y = 0; y < textureSize; y++)
-        {
-            for (int x = 0; x < textureSize; x++)
-            {
-                float distance = Vector2.Distance(new Vector2(x, y), center);
-                float alpha = Mathf.Clamp01((radius - distance) / edgeSoftness);
-                pixels[(y * textureSize) + x] = new Color32(255, 255, 255, (byte)Mathf.RoundToInt(alpha * 255f));
-            }
-        }
-
-        texture.SetPixels32(pixels);
-        texture.Apply(false, true);
-
-        return Sprite.Create(texture, new Rect(0f, 0f, textureSize, textureSize), new Vector2(0.5f, 0.5f), textureSize);
-    }
 
     private static T FindDescendantComponent<T>(Transform root, string name) where T : Component
     {

@@ -1,0 +1,16 @@
+{"name":"OnlineHeaderSelectAllPlayModeTests.BulkNominationsResolveRealHeader(1,False,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineHeaderSelectAllPlayModeTests.BulkNominationsResolveRealHeader(1,False,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineHeaderSelectAllPlayModeTests.BulkNominationsResolveRealHeader(1,True,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineHeaderSelectAllPlayModeTests.BulkNominationsResolveRealHeader(1,True,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineHeaderSelectAllPlayModeTests.BulkNominationsResolveRealHeader(-1,False,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineHeaderSelectAllPlayModeTests.BulkNominationsResolveRealHeader(-1,False,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineHeaderSelectAllPlayModeTests.BulkNominationsResolveRealHeader(-1,True,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineHeaderSelectAllPlayModeTests.BulkNominationsResolveRealHeader(-1,True,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineHeaderSelectAllPlayModeTests.OverLimitRequiresIndividualNominations(1,False,\"attack\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineHeaderSelectAllPlayModeTests.OverLimitRequiresIndividualNominations(1,False,\"defence\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineHeaderSelectAllPlayModeTests.OverLimitRequiresIndividualNominations(1,True,\"attack\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineHeaderSelectAllPlayModeTests.OverLimitRequiresIndividualNominations(1,True,\"defence\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineHeaderSelectAllPlayModeTests.OverLimitRequiresIndividualNominations(-1,False,\"attack\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineHeaderSelectAllPlayModeTests.OverLimitRequiresIndividualNominations(-1,False,\"defence\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineHeaderSelectAllPlayModeTests.OverLimitRequiresIndividualNominations(-1,True,\"attack\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineHeaderSelectAllPlayModeTests.OverLimitRequiresIndividualNominations(-1,True,\"defence\")","status":"Passed","message":"","stackTrace":""}

@@ -1,0 +1,447 @@
+{
+  "kind": "normal-game-human-walkthrough",
+  "source_commit": "8364215d6cc98d7cc88bdff93679899c468e4fec",
+  "observations": [
+    {
+      "utc": "2026-11-19T13:41:19.032377+00:00",
+      "stage": "draft-initial-roll",
+      "source": "user-observed on both machines",
+      "reported": [
+        "Mac guest manages Home; Windows host manages Away",
+        "Host Start Draft pressed",
+        "Both wait for Mac roll; no cards visible yet",
+        "Goalkeeper deals reported consistent between screens",
+        "Draft did not auto-roll",
+        "Dice reported blue/white for both teams"
+      ],
+      "review": [
+        "Inspect team-specific dice presentation after this live run",
+        "Clarify intended Draft auto-roll behavior before changing it"
+      ],
+      "verification_boundary": "No roll outcome or pick has been confirmed yet"
+    },
+    {
+      "utc": "2026-11-19T13:43:55.161566+00:00",
+      "stage": "draft-first-batch",
+      "source": "user report and supplied Windows screenshot",
+      "verified_observations": [
+        "Mac roll was immediately displayed on Windows; correct next team was offered a roll",
+        "Second roll completed; screenshot shows Home 4, Away 1 and Sons Mac picks",
+        "Both machines reported the same four cards: Fruin, Gowman, Littlewood, Cafferata",
+        "Coin-flip panel disappeared immediately after second roll",
+        "Confirm roster and Leave labels/buttons overlap at bottom right",
+        "User reports poor card formatting"
+      ],
+      "accepted_requirement": "Keep the completed Draft coin-flip result visible for five seconds before advancing to card picking",
+      "follow_up": [
+        "Add real five-second shared Draft roll-result hold without allowing early picks",
+        "Review card layout/typography against supplied screenshot",
+        "Separate authored Confirm roster and Leave controls and verify both windows at supported resolution"
+      ],
+      "screenshot": "TestResults/GameplayRegression/Runs/20261119T132848333Z-HumanOnlineWindows/screenshots/draft-first-batch.png",
+      "verification_boundary": "First card selection and slot assignment not yet verified; no source changes made during live run"
+    },
+    {
+      "utc": "2026-11-19T13:45:24.303672+00:00",
+      "stage": "draft-first-pick-divergence",
+      "source": "user-observed on both machines",
+      "reported": [
+        "Mac guest selected a card and assigned it to Home slot 2 using separate clicks",
+        "Mac shows the selected card in slot 2",
+        "Windows host does not show the update"
+      ],
+      "unverified": [
+        "Drag-and-drop",
+        "Double-click selection/assignment"
+      ],
+      "instruction": "Keep both clients open at the discrepancy; no further picks pending diagnosis",
+      "resolution": "User corrected observation: they were looking at an earlier screenshot. Live Windows host displays the chosen player in Home slot 2 and the card is removed from the offer.",
+      "classification": "Superseded observation; no synchronization defect established"
+    },
+    {
+      "utc": "2026-11-19T13:47:16.758088+00:00",
+      "stage": "draft-first-pick-confirmed",
+      "source": "user correction after inspecting live Windows host",
+      "verified_observations": [
+        "First Mac guest pick appears in Home slot 2 on Windows host",
+        "Chosen card disappears from the draft offer on Windows as on Mac"
+      ],
+      "accepted_requirement": "Keep remaining offered cards in their original visual positions throughout a batch; picking a card leaves a gap instead of compacting/reordering the survivors. Refill only for the next batch.",
+      "remaining_checks": [
+        "Additional host/guest picks",
+        "Card drag-and-drop",
+        "Double-click quick pick"
+      ],
+      "verification_boundary": "No actual host/guest pick divergence has been observed"
+    },
+    {
+      "utc": "2026-11-19T13:48:40.885330+00:00",
+      "stage": "draft-first-host-pick-confirmed",
+      "source": "user-observed on both machines",
+      "verified_observations": [
+        "Windows host selected an offered card and assigned it to Away slot 2",
+        "Mac guest displays the same assigned player and removes the same offered card",
+        "Both screens indicate Sons Mac picks next"
+      ],
+      "next_check": "Mac-owned card drag-and-drop into empty Home slot 3",
+      "verification_boundary": "Double-click and drag have not yet been manually verified"
+    },
+    {
+      "utc": "2026-11-19T13:49:41.325348+00:00",
+      "stage": "draft-card-drag-confirmed",
+      "source": "user confirmation after requested Mac drag checkpoint",
+      "verified_observations": [
+        "Mac-owned offered card drag/drop into Home slot 3 worked",
+        "User confirmed the requested cross-machine slot/card/turn check"
+      ],
+      "code_audit": [
+        "OnlineDraftClickTarget.OnPointerClick calls SelectCard without using clickCount",
+        "Offline PlayerCardDragHandler quick-pick is guarded by the disabled offline DraftManager"
+      ],
+      "follow_up": "Add independently tested online double-click quick-pick using authenticated Pick requests and correct next empty own slot; verify it on both machines",
+      "verification_boundary": "Double-click quick-placement not implemented in current online click handler; own-roster rearrangement and full Draft completion still pending"
+    },
+    {
+      "utc": "2026-11-19T13:50:14.697471+00:00",
+      "stage": "draft-own-roster-rearrangement",
+      "source": "user-observed",
+      "reported": [
+        "Manager can rearrange slots in their own roster while the other laptop awaits its pick"
+      ],
+      "still_to_confirm": [
+        "Other machine mirrors the rearranged slot positions",
+        "Actual double-click behavior on an offered card"
+      ],
+      "expected_current_double_click": "Online click handler selects card; quick-placement is not wired",
+      "verification_boundary": "Do not count local roster rearrangement alone as cross-machine swap verification"
+    },
+    {
+      "utc": "2026-11-19T13:51:23.798899+00:00",
+      "stage": "draft-swap-sync-and-double-click-confirmed",
+      "source": "user-observed on both machines",
+      "verified_observations": [
+        "Own roster rearrangement appears on both machines immediately as observed by the user",
+        "Rearrangement is usable while the opponent has the current pick",
+        "Double-clicking an offered card only selects it and displays Select a destination slot in your roster"
+      ],
+      "accepted_follow_up": "Implement online double-click quick-placement into the next eligible empty own slot through the existing authenticated Pick command, preserving turn/slot/ownership checks",
+      "verification_boundary": "Immediate appearance is a user observation, not a numerical latency measurement; Windows-origin card drag and completed roster agreement still pending"
+    },
+    {
+      "utc": "2026-11-19T13:54:57.474657+00:00",
+      "stage": "draft-complete-both-screens",
+      "source": "user report and two supplied completed-Draft screenshots",
+      "verified_observations": [
+        "Both screenshots show Draft complete, batch 7/7, Home roll 4 and Away roll 1",
+        "Both screenshots display the same completed 16-slot Home and Away rosters",
+        "User reports drag positions are not mirrored during movement; the drop commits and synchronizes the final slot arrangement",
+        "Confirm roster/Leave overlap persists at completed-roster review"
+      ],
+      "screenshots": [
+        "TestResults/GameplayRegression/Runs/20261119T132848333Z-HumanOnlineWindows/screenshots/draft-complete-first.png",
+        "TestResults/GameplayRegression/Runs/20261119T132848333Z-HumanOnlineWindows/screenshots/draft-complete-second.png"
+      ],
+      "verification_boundary": "Roster confirmations, opening choice and Room transition have not yet been verified in this human run"
+    },
+    {
+      "utc": "2026-11-19T13:56:44.169442+00:00",
+      "stage": "draft-roster-confirmations",
+      "source": "user-observed on both machines",
+      "verified_observations": [
+        "Windows host displays Start match after both roster confirmations",
+        "Mac guest displays Waiting for..."
+      ],
+      "next_check": "Host Start match enters shared opening coin toss before Room launch",
+      "verification_boundary": "Opening coin toss and full Room transition still pending"
+    },
+    {
+      "utc": "2026-11-19T13:58:35.333045+00:00",
+      "stage": "opening-coin-toss-started",
+      "source": "user-observed",
+      "verified_observations": [
+        "Host Start match opens coin-toss panel",
+        "Mac/Home is the indicated opening-roll owner",
+        "Bottom-right Roll action is visible while coin-toss panel is active",
+        "Leave remains in the bottom-right controls area"
+      ],
+      "accepted_ui_requirements": [
+        "Hide the extra bottom-right Roll button while the coin-toss panel is active",
+        "Move Draft Leave control to the bottom-left, separated from the main action controls"
+      ],
+      "temporary_walkthrough_input": "Use R in the current owning game window; OnlineDraftView.LateUpdate routes it through the existing authenticated roll action",
+      "verification_boundary": "Opening roll outcomes, winner choice and Room launch not yet confirmed"
+    },
+    {
+      "utc": "2026-11-19T14:00:29.262600+00:00",
+      "stage": "opening-choice-ui",
+      "source": "user-observed",
+      "reported": [
+        "Roll button submitted the opening roll successfully",
+        "Coin-toss panel was removed immediately after results",
+        "Kick off, Attack Left and Attack Right are offered as separate bottom-right buttons above Start match/Leave"
+      ],
+      "accepted_requirement": "Retain the original coin-toss panel after the result and expand it to offer the winning manager the choices, matching the original game presentation instead of separate bottom-right options",
+      "verification_boundary": "Choice ownership, resulting kickoff/directions and Room entry remain to be confirmed"
+    },
+    {
+      "utc": "2026-11-19T14:05:00.130802+00:00",
+      "stage": "opening-choice-and-room-entry",
+      "source": "user report and supplied Room screenshot",
+      "verified_observations": [
+        "Windows/Away won the opening toss",
+        "Choice controls were visible on both machines but disabled for Mac/non-owner",
+        "Windows selected Kick off; control passed to Mac/Home",
+        "Mac selected Attack Left as described by user",
+        "Match entered Room automatically after about five seconds as observed by user",
+        "Kits were reported correct on both teams",
+        "Pre-kickoff setup is active for Mac/Home; eligible player hexes are yellow and selecting one publishes cyan legal destinations"
+      ],
+      "reported_presentation_gaps": [
+        "No original Room introduction sequence",
+        "Jersey numbers not rendering on tokens"
+      ],
+      "corrected_observation": "Initial report of absent pre-kickoff repositioning was corrected: user found the active Home setup and its legal highlights",
+      "screenshot": "TestResults/GameplayRegression/Runs/20261119T132848333Z-HumanOnlineWindows/screenshots/room-initial-kickoff.png",
+      "verification_boundary": "No initial setup token move, team setup confirmation or kickoff action has yet been confirmed"
+    },
+    {
+      "utc": "2026-11-19T14:06:57.137697+00:00",
+      "stage": "initial-kickoff-home-repositioning",
+      "source": "user-observed on both machines",
+      "verified_observations": [
+        "Mac/Home token repositioning is mirrored on the Windows screen"
+      ],
+      "visual_review": [
+        "Hex borders are white in the current online Room; compare with intended/offline appearance before deciding a change"
+      ],
+      "verification_boundary": "User-observed movement mirroring is not a numerical latency measurement; setup confirmations and Away movement still pending"
+    },
+    {
+      "utc": "2026-11-19T14:08:36.211964+00:00",
+      "stage": "away-setup-host-highlights-missing",
+      "source": "user correction after setup handoff",
+      "reported": [
+        "After Home confirmation, instructions change color and Away is the setup owner",
+        "Away eligible-player highlights appear ONLY on the Mac guest screen",
+        "Windows authority screen does not show those highlights"
+      ],
+      "classification": "Observed host/guest presentation discrepancy; previous inference of matching highlights withdrawn",
+      "verification_boundary": "Away move and Away confirmation remain untested; keep current setup phase"
+    },
+    {
+      "utc": "2026-11-19T14:09:00.315676+00:00",
+      "stage": "away-setup-host-selection-guest-only-destinations",
+      "source": "user-observed on both machines",
+      "verified_observations": [
+        "Clicking an Away token on Windows host produces valid destination highlights on the Mac guest",
+        "Those destination highlights remain absent on Windows host"
+      ],
+      "diagnostic_significance": "Host selection/admission and guest publication are functioning; host-side visual cue generation needs correction",
+      "code_evidence": [
+        "OnlineBoardInput.RefreshPublishedHighlights currently returns for non-guest sessions",
+        "OnlineGroundPassAuthority.ReadKickoffDecision publishes eligible players and destinations separately from host source visuals"
+      ],
+      "verification_boundary": "Do not infer a transport failure from this presentation discrepancy; Away move is still pending"
+    },
+    {
+      "utc": "2026-11-19T14:09:41.913057+00:00",
+      "stage": "initial-kickoff-away-repositioning-confirmed",
+      "source": "user-observed on both machines",
+      "verified_observations": [
+        "Windows/Away setup moves synchronize with Mac guest",
+        "Both Home-origin and Away-origin setup repositioning have now been observed across the connection"
+      ],
+      "known_open_issue": "Windows host lacks eligible-player and destination highlights; the guest renders them",
+      "verification_boundary": "No numerical latency claim; Away confirmation and kickoff taker selection remain pending"
+    },
+    {
+      "utc": "2026-11-19T14:10:57.626219+00:00",
+      "stage": "initial-kickoff-away-owned",
+      "source": "user-observed on both machines",
+      "verified_observations": [
+        "After setup confirmations, Windows/Away has the kickoff",
+        "Current kickoff instruction is correct in both text and team color"
+      ],
+      "verification_boundary": "Kickoff taker selection, ball/possession projection and first pass still pending"
+    },
+    {
+      "utc": "2026-11-19T14:13:30.382727+00:00",
+      "stage": "kickoff-taker-and-mandatory-ground-pass",
+      "source": "user confirmation after kickoff-taker checkpoint",
+      "verified_observations": [
+        "Kickoff taker/ball placement confirmed correct after selection",
+        "Game automatically entered Standard Pass for the kickoff",
+        "Mac guest highlights the valid pass destinations",
+        "Windows host shows no destination highlights"
+      ],
+      "issue_scope_update": "Missing host legal-choice highlights affect Standard Pass as well as kickoff setup; investigate host fallback presentation across action families",
+      "next_check": "Windows single-click preview to a nearby Away teammate identified by a legal cyan hex on Mac",
+      "verification_boundary": "No pass preview or committed kickoff pass confirmed yet"
+    },
+    {
+      "utc": "2026-11-19T14:14:46.102072+00:00",
+      "stage": "kickoff-pass-target-preview",
+      "source": "user-observed on both machines",
+      "verified_observations": [
+        "Preselecting pass targets colors the destination orange on both screens",
+        "Selected destination presentation also works on token-occupied hexes as reported"
+      ],
+      "diagnostic_refinement": "Host can render selected-target/source previews; missing host presentation concerns general legal destination/eligible-player hints rather than every highlight",
+      "next_check": "Confirm an Away teammate target on Windows and compare actual ball travel/continuation",
+      "verification_boundary": "No claim that opponent-occupied hexes are legal; use a teammate receiving target for the controlled kickoff pass"
+    },
+    {
+      "utc": "2026-11-19T14:17:33.969727+00:00",
+      "stage": "kickoff-pass-completed-and-ftp-switch",
+      "source": "user-observed on both machines",
+      "verified_observations": [
+        "Kickoff pass confirmed",
+        "Mac legal-target cyan highlights cleared after commit",
+        "Ball movement synchronized",
+        "Correct continuation offered",
+        "F starts First Time Pass and legal preselection works"
+      ],
+      "reported_issue": "M does not switch to movement before FTP commitment although the instruction advertises M",
+      "verification_boundary": "Player assistance is being checked from this run; do not commit FTP while diagnosing switch behavior"
+    },
+    {
+      "utc": "2026-11-19T14:18:51.123048+00:00",
+      "stage": "ftp-preview-action-switch-diagnosis",
+      "verified_settings": {
+        "playerAssistance": 2,
+        "label": "Intermediate",
+        "source": "Current frontend OnlineSessions/ae9931ddaf7e4618ab7d8a1a912ef834/room-authority.json and room-bootstrap.json; label from CreateNewGameManager.PlayerAssistanceLabels"
+      },
+      "code_evidence": "OnlineGroundPassAuthority appends action-switch offers only for action, target, long.target and high.target; ftp.target is excluded",
+      "accepted_defect": "Before FTP commitment, M advertised by instructions must permit switching to movement through authenticated semantic action admission",
+      "follow_up": [
+        "Reproduce the uncommitted FTP-to-movement switch with a focused native test",
+        "Preserve committed FTP movement/roll and interruption guards",
+        "Audit other advertised precommit action switches rather than bypassing the gateway"
+      ],
+      "verification_boundary": "Current live clients are unchanged; no claim that the switch has been fixed"
+    },
+    {
+      "utc": "2026-11-19T14:20:36.653505+00:00",
+      "stage": "ftp-target-committed-attacker-move",
+      "source": "user-observed on both machines",
+      "verified_observations": [
+        "FTP target confirmation advances to the one-hex attacking move",
+        "Both screens offer that movement decision with correct team color",
+        "Selecting an Away token on Windows produces destination highlights only on the Mac"
+      ],
+      "issue_scope_update": "Missing host-side legal destination hints also affect committed FTP attacker movement",
+      "verification_boundary": "Attacker movement completion and subsequent defending movement remain pending"
+    },
+    {
+      "utc": "2026-11-19T14:21:42.717436+00:00",
+      "stage": "ftp-attacker-move-completed",
+      "source": "user confirmation",
+      "verified_observations": [
+        "Away attacking one-hex FTP move synchronized",
+        "Home defending one-hex move offered next"
+      ],
+      "planned_check": "Mac moves a Home outfielder into an eligible interception position near the pass path using the legal one-hex move",
+      "verification_boundary": "Interception offer and defending roll are not yet verified"
+    },
+    {
+      "utc": "2026-11-19T14:24:12.479923+00:00",
+      "stage": "ftp-defender-roll-and-movement-continuation",
+      "source": "user-observed on both machines",
+      "verified_observations": [
+        "Defending Home interception opportunity was offered",
+        "Interception auto-rolled after five seconds",
+        "Interception failed and Movement automatically committed"
+      ],
+      "reported_defects": [
+        "Interception roll panel appeared only on Windows host/Away, although Mac guest/Home was the defender",
+        "Panel copy did not match the original presentation"
+      ],
+      "additional_observation": "Movement panel appears only on the attacking team screen",
+      "review_boundary": "Distinguish owner-only movement controls from shared read-only phase/remaining-move information before deciding visibility rules",
+      "verification_boundary": "Do not count manual defender-owned roll input as verified; the observed roll was automatic"
+    },
+    {
+      "utc": "2026-11-19T14:25:13.797527+00:00",
+      "stage": "shared-rolling-panel-requirement",
+      "source": "explicit user instruction",
+      "accepted_requirement": "Both machines must see every rolling panel, regardless of which manager owns the roll",
+      "required_shared_presentation": [
+        "Actor/team identity",
+        "Dice presentation matching the original authored panel",
+        "Applicable target/threshold/modifiers",
+        "Same countdown and final result"
+      ],
+      "ownership_boundary": "Only the owning manager supplies manual roll input; the other manager sees a read-only panel. Authority performs one shared roll including automatic timeout, without duplicate RNG or rule execution.",
+      "scope": "All rolling panel families, not only this FTP interception",
+      "verification_boundary": "Current live clients do not yet satisfy this shared rolling-panel requirement"
+    },
+    {
+      "utc": "2026-11-19T14:28:26.263896+00:00",
+      "stage": "shared-result-dismissal-and-highlight-lifetime",
+      "source": "explicit user requirement and walkthrough discussion",
+      "accepted_requirement": "Before the roll panel timeout expires, one manager pressing Esc must not dismiss the shared panel/continue by itself; early dismissal requires both managers to press Esc, for all roll types",
+      "pending_clarification": "Resolved by user: normal five-second result timeout remains; each manager may close their own panel early, and game resumes on both closures or timeout.",
+      "highlight_lifecycle_requirement": "Highlights represent currently legal next choices. Remove/refresh them when that choice becomes invalid or the action/phase/owner changes; retain highlights while the player/hex remains a legal next choice. Clear stale earlier FTP/setup hints when Movement begins.",
+      "next_check": "Start normal Movement Phase testing from Windows/Away and inspect movement replication and highlight/counter updates",
+      "verification_boundary": "No shared-Esc or highlight-lifetime code change has been applied to live clients"
+    },
+    {
+      "utc": "2026-11-19T14:31:13.980129+00:00",
+      "stage": "resolved-roll-dual-dismissal-rule-confirmed",
+      "source": "explicit clarified user requirement",
+      "accepted_rule": {
+        "scope": "All resolved roll-panel types",
+        "timer_start": "When the roll/panel is resolved; maximum shared result hold is five seconds",
+        "initial_visibility": "Result panel visible on both machines",
+        "escape": "Closes only the pressing manager's local result panel and records that manager's acknowledgement",
+        "early_continuation": "Resume gameplay as soon as both managers have closed their result panels",
+        "timeout": "At five seconds, close any remaining result panel and resume even if one or neither manager pressed Esc",
+        "authority": "One authoritative continuation; guest local dismissal cannot independently advance rules or generate another roll"
+      },
+      "implementation_checks": [
+        "Keep gameplay held after only one local dismissal even though that panel is hidden",
+        "Keep the other manager's panel visible until their own Esc or the shared deadline",
+        "Make acknowledgements idempotent and scoped to the current resolved roll",
+        "Consume result-panel Esc without also opening pause",
+        "Preserve existing pre-roll auto-roll behavior; this rule is for resolved results"
+      ],
+      "verification_boundary": "Design clarified and recorded; no current live-client implementation change"
+    },
+    {
+      "utc": "2026-11-19T14:34:02.377576+00:00",
+      "stage": "movement-pickup-nutmeg-softlock",
+      "source": "user-observed on both machines",
+      "verified_observations": [
+        "Movement player selection publishes reachable hexes correctly to both screens",
+        "Movement token travel and switching selected players synchronize",
+        "V pickup input is accepted",
+        "After pickup, X/N options are offered for the nutmeg decision"
+      ],
+      "blocking_defect": "Neither X nor N is accepted at this pickup/nutmeg decision; no legal continuation is apparent and user reports a soft lock",
+      "diagnostic_refinement": "Host highlight failure is not universal: normal Movement reachable destinations render on both clients; preserve this working source path",
+      "user_direction": "Stop the walkthrough, recap observations, independently implement/test fixes, restart paired human testing later"
+    },
+    {
+      "utc": "2026-11-19T14:43:06.295581+00:00",
+      "stage": "session-auth-failure-and-mac-crash",
+      "evidence": {
+        "windows_report_status": "failed",
+        "windows_error": "Receiving online session data failed: InvalidAuth",
+        "login_started_utc": "2026-11-19T13:32:04.0448638Z",
+        "session_failed_utc": "2026-11-19T14:32:04.3255009Z",
+        "duration_seconds": 3600.2806371,
+        "frontend_heartbeat_rtt_ms": {
+          "samples": 128,
+          "p50": 42.057249999970736,
+          "p95": 166.55415999987326,
+          "last": 68.35650000039095
+        }
+      },
+      "user_report": "macOS says CA from Chatgpt closed unexpectedly",
+      "classification": "Confirmed Mac crash; Windows authentication failed at the one-hour boundary. Exact Mac native cause awaits its diagnostic report.",
+      "correction": "Pickup/nutmeg X/N soft lock coincided with transport auth failure; reproduce authenticated before claiming missing bindings.",
+      "agent_actions": "No quit/close/kill command was sent to either game; Windows owned player remained responsive."
+    }
+  ]
+}

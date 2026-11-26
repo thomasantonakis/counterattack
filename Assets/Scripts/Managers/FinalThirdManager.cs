@@ -368,6 +368,7 @@ public partial class FinalThirdManager : MonoBehaviour
                 Debug.Log("Forfeit detected during F3 movement. Exiting movement phase.");
                 break;
             }
+            onlineAcknowledgedSelection = selectedToken;
             isWaitingForTargetHex = true;
             isWaitingForTokenSelection = false;
             yield return new WaitUntil(() => (!isWaitingForTargetHex && !isMovingToken) || forfeitWasPressed);
@@ -453,6 +454,7 @@ public partial class FinalThirdManager : MonoBehaviour
             return;
         }
         selectedToken = token;
+        onlineAcknowledgedSelection = null;
         int movementRange = GetF3MovementRangeForToken(selectedToken);
         movementPhaseManager.HighlightValidMovementHexes(selectedToken, movementRange);
         ApplyContextualMovementHighlights(selectedToken);

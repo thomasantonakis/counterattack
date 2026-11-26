@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="2" result="Passed" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-14 15:54:18Z" end-time="2026-11-14 15:54:31Z" duration="12.4747564">
+  <test-suite type="TestSuite" id="2507" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1239" result="Passed" start-time="2026-11-14 15:54:18Z" end-time="2026-11-14 15:54:31Z" duration="12.474756" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2504" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1239" result="Passed" start-time="2026-11-14 15:54:18Z" end-time="2026-11-14 15:54:31Z" duration="12.418421" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12208" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1843" name="OnlineRoomPenaltyPlayModeTests" fullname="OnlineRoomPenaltyPlayModeTests" classname="OnlineRoomPenaltyPlayModeTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-14 15:54:18Z" end-time="2026-11-14 15:54:31Z" duration="12.407246" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlinePenalties" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="1846" name="RoomPenaltySetupReachesShot" fullname="OnlineRoomPenaltyPlayModeTests.RoomPenaltySetupReachesShot" classname="OnlineRoomPenaltyPlayModeTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-14 15:54:18Z" end-time="2026-11-14 15:54:31Z" duration="12.388472" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="1844" name="RoomPenaltySetupReachesShot(1)" fullname="OnlineRoomPenaltyPlayModeTests.RoomPenaltySetupReachesShot(1)" methodname="RoomPenaltySetupReachesShot" classname="OnlineRoomPenaltyPlayModeTests" runstate="Runnable" seed="1632762043" result="Passed" start-time="2026-11-14 15:54:18Z" end-time="2026-11-14 15:54:26Z" duration="7.257664" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Ball reference set in PlayerToken. Ball Hex: 
+Fixture Home 1 (Jersey 1) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=4, HighPass=0, Resilience=0
+Fixture Away 1 (Jersey 1) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=4, HighPass=0, Resilience=0
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Penalty awarded. Select the penalty taker. Spot: (14, 0, 0), defending GK spot: (18, 0, 0).
+Moving Fixture Away 1 to required penalty spot (18, 0, 0).
+Fixture Home 9 selected as penalty taker.
+Moving Fixture Home 9 to required penalty spot (14, 0, 0).
+Penalty setup phase started: PenaltyDef1.
+Penalty setup phase started: PenaltyAtt.
+Penalty setup phase started: PenaltyDef2.
+Penalty setup complete. Select a shot target.
+Substitutions are no longer available: Penalty shot target selection
+Substitutions are no longer available: Committed to Shot
+[Game Log] Fixture Home 9 (Online proof Home) takes a Penalty Kick!
+Penalty Kick initiated. Proceeding to target selection.
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (19, 0, 0) selected. Preparing trajectory.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Ball reference set in PlayerToken. Ball Hex: 
+Ball reference set in PlayerToken. Ball Hex: 
+]]></output>
+          </test-case>
+          <test-case id="1845" name="RoomPenaltySetupReachesShot(-1)" fullname="OnlineRoomPenaltyPlayModeTests.RoomPenaltySetupReachesShot(-1)" methodname="RoomPenaltySetupReachesShot" classname="OnlineRoomPenaltyPlayModeTests" runstate="Runnable" seed="680307632" result="Passed" start-time="2026-11-14 15:54:26Z" end-time="2026-11-14 15:54:31Z" duration="5.084486" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Ball reference set in PlayerToken. Ball Hex: 
+Fixture Home 1 (Jersey 1) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=4, HighPass=0, Resilience=0
+Fixture Away 1 (Jersey 1) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=4, HighPass=0, Resilience=0
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=0, tokens=Fixture Home 1.
+Penalty awarded. Select the penalty taker. Spot: (-14, 0, 0), defending GK spot: (-18, 0, 0).
+Moving Fixture Away 1 to required penalty spot (-18, 0, 0).
+Fixture Home 9 selected as penalty taker.
+Moving Fixture Home 9 to required penalty spot (-14, 0, 0).
+Penalty setup phase started: PenaltyDef1.
+Penalty setup phase started: PenaltyAtt.
+Penalty setup phase started: PenaltyDef2.
+Penalty setup complete. Select a shot target.
+Substitutions are no longer available: Penalty shot target selection
+Substitutions are no longer available: Committed to Shot
+[Game Log] Fixture Home 9 (Online proof Home) takes a Penalty Kick!
+Penalty Kick initiated. Proceeding to target selection.
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (-19, 0, 0) selected. Preparing trajectory.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Ball reference set in PlayerToken. Ball Hex: 
+Ball reference set in PlayerToken. Ball Hex: 
+Saving results to: TestResults\GameplayRegression\Runs\20261114T155418827Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

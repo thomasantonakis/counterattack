@@ -4,6 +4,7 @@ using System.IO; // For file operations
 
 public class ApplicationManager : MonoBehaviour
 {
+    public const string OnlineGameMode = "Online";
     public const string HotSeatGameMode = "Hot Seat";
     public const string SinglePlayerGameMode = "Single Player";
 
@@ -14,6 +15,28 @@ public class ApplicationManager : MonoBehaviour
     public bool HasExplicitSaveContext { get; private set; }
     public string SelectedRoomGameMode { get; private set; } = HotSeatGameMode;
     public bool UseRegularFormationOnNextRoomLoad { get; private set; }
+    public System.IDisposable BeginOnlineRoomSaveContext(string path)
+    {
+        if (!Path.IsPathFullyQualified(path)) throw new System.ArgumentException("An absolute online session path is required", nameof(path));
+        var lease = new OnlineSaveContext(this);
+        SetActiveSaveFilePath(path);
+        SetSelectedRoomGameMode(OnlineGameMode);
+        return lease;
+    }
+    private sealed class OnlineSaveContext : System.IDisposable
+    {
+        private ApplicationManager owner;
+        private readonly string path, mode;
+        private readonly bool explicitContext, intro;
+        public OnlineSaveContext(ApplicationManager app)
+        { owner=app;path=app.LastSavedFileName;mode=app.SelectedRoomGameMode;explicitContext=app.HasExplicitSaveContext;intro=app.playIntroOnNextRoomLoad; }
+        public void Dispose()
+        {
+            if(owner==null)return;
+            owner.LastSavedFileName=path;owner.HasExplicitSaveContext=explicitContext;
+            owner.SelectedRoomGameMode=mode;owner.playIntroOnNextRoomLoad=intro;owner=null;
+        }
+    }
     private bool playIntroOnNextRoomLoad;
     public void PrepareDraftRoomIntro() => playIntroOnNextRoomLoad = true;
     public bool ConsumeDraftRoomIntro()

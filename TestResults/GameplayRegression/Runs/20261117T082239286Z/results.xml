@@ -1,0 +1,441 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="6" result="Passed" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-17 08:22:39Z" end-time="2026-11-17 08:24:37Z" duration="117.9433222">
+  <test-suite type="TestSuite" id="3230" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1853" result="Passed" start-time="2026-11-17 08:22:39Z" end-time="2026-11-17 08:24:37Z" duration="117.943322" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="3227" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1853" result="Passed" start-time="2026-11-17 08:22:39Z" end-time="2026-11-17 08:24:37Z" duration="117.905527" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12156" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="2224" name="OnlineOffTargetCameraPlayModeTests" fullname="OnlineOffTargetCameraPlayModeTests" classname="OnlineOffTargetCameraPlayModeTests" runstate="Runnable" testcasecount="20" result="Passed" start-time="2026-11-17 08:22:39Z" end-time="2026-11-17 08:24:37Z" duration="117.886573" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineOffTargetCamera" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="2246" name="RealSnapshotCameraMiss" fullname="OnlineOffTargetCameraPlayModeTests.RealSnapshotCameraMiss" classname="OnlineOffTargetCameraPlayModeTests" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-11-17 08:22:39Z" end-time="2026-11-17 08:24:37Z" duration="117.858820" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="2240" name="RealSnapshotCameraMiss(False,&quot;flight&quot;)" fullname="OnlineOffTargetCameraPlayModeTests.RealSnapshotCameraMiss(False,&quot;flight&quot;)" methodname="RealSnapshotCameraMiss" classname="OnlineOffTargetCameraPlayModeTests" runstate="Runnable" seed="61935163" result="Passed" start-time="2026-11-17 08:22:39Z" end-time="2026-11-17 08:23:00Z" duration="21.407940" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[TokenKitCatalog] Loading kits JSON from Resources path 'Kits/kit-picker-v1-11-supported' (asset: Assets/Resources/Kits/kit-picker-v1-11-supported.json).
+[TokenKitCatalog] Found kits JSON TextAsset 'kit-picker-v1-11-supported' at Resources path 'Kits/kit-picker-v1-11-supported' (32277 characters).
+[TokenKitCatalog] Parsed 101 kit preset(s) from Resources path 'Kits/kit-picker-v1-11-supported'.
+[TokenKitCatalog] Active kit catalog contains 101 kit preset(s).
+MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584945313768
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+9. Meloni took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+Path: (-1, 0, -1) -> (-1, 0, 0) -> (-2, 0, 0) -> (-3, 0, -1) -> (-3, 0, 0) -> (-4, 0, 0) -> (-5, 0, -1) -> (-5, 0, 0) -> (-6, 0, 0)
+[Game Log] 9. Meloni (Away club) attempts a kick-off pass
+Path: (-1, 0, -1) -> (-1, 0, 0) -> (-2, 0, 0) -> (-3, 0, -1) -> (-3, 0, 0) -> (-4, 0, 0) -> (-5, 0, -1) -> (-5, 0, 0) -> (-6, 0, 0)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-14, tokens=none.
+Pass completed to (-6, 0, 0)
+[Game Log] 9. Meloni (Away club) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Buzek
+Offside assessment cleared: ground_pass_completed.
+Attacking team has possession: True.
+Offside assessed (any_other_scenario): line x=-14, tokens=none.
+Long Ball target precompute started. version=4, frame=65, ballHex=-13,0, candidateCount=1900
+Movement phase has been reset.
+Long Ball target precompute cancelled. version=4, elapsedMs=27.8, elapsedFrames=0, processed=0, validTargets=16
+Long Ball target precompute started. version=6, frame=65, ballHex=-13,0, candidateCount=1900
+Long Ball target precompute cancelled. version=6, elapsedMs=30.4, elapsedFrames=0, processed=0, validTargets=16
+Snapshot initiated. Allow one defender to move 2 hexes.
+[Game Log] 10. Buzek (Away club) takes a Snapshot!
+Selecting defender 2. Baez. Highlighting reachable hexes.
+Hex clicked: HexCell [-10, 7]
+Moving 2. Baez to hex (-10, 0, 7)
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: HexCell [-10, 7]
+[Game Log] 2. Baez (Home club) moves 1 paces
+Defender movement phase complete. Proceeding to target selection.
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (-19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Goalkeeper 1. Kuzmic can attempt a save at (-16, 0, 0) with penalty 0
+Shot interactions found: 1
+The GK is next up. Shooter must Roll to shoot. Setting isWaitingForShotRoll to true.
+Hello from the StartShotRoll
+10. Buzek rolled a 1, this means the Shot is OFF target! GoalKick awarded.
+[Expected Stats] 10. Buzek records xG 0.09 on snapshot off target
+[Game Log] 10. Buzek (Away club) sends an attempt off target
+Camera
+Hello from OOM, HexCell [-18, 0], LeftGoalLine, inaccuracy
+It's a Goal Kick.
+Possession changed! Home now is the Attacking Team.
+Player tokens updated after possession change.
+Left Side: Goal kick from center Hex at the 6-yard-box.
+Substitutions are now available: Goal Kick awarded
+OutOfBoundsPush: (-16, 0, 0) is occupied by attacker 1. Kuzmic; no push needed.
+⚽ Ball just entered the penalty box! Checking if GK should move.
+]]></output>
+          </test-case>
+          <test-case id="2241" name="RealSnapshotCameraMiss(False,&quot;reset-flight&quot;)" fullname="OnlineOffTargetCameraPlayModeTests.RealSnapshotCameraMiss(False,&quot;reset-flight&quot;)" methodname="RealSnapshotCameraMiss" classname="OnlineOffTargetCameraPlayModeTests" runstate="Runnable" seed="1370209734" result="Passed" start-time="2026-11-17 08:23:00Z" end-time="2026-11-17 08:23:18Z" duration="17.376656" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584945377406
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+9. Meloni took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+Path: (-1, 0, -1) -> (-1, 0, 0) -> (-2, 0, 0) -> (-3, 0, -1) -> (-3, 0, 0) -> (-4, 0, 0) -> (-5, 0, -1) -> (-5, 0, 0) -> (-6, 0, 0)
+[Game Log] 9. Meloni (Away club) attempts a kick-off pass
+Path: (-1, 0, -1) -> (-1, 0, 0) -> (-2, 0, 0) -> (-3, 0, -1) -> (-3, 0, 0) -> (-4, 0, 0) -> (-5, 0, -1) -> (-5, 0, 0) -> (-6, 0, 0)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-14, tokens=none.
+Pass completed to (-6, 0, 0)
+[Game Log] 9. Meloni (Away club) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Buzek
+Offside assessment cleared: ground_pass_completed.
+Attacking team has possession: True.
+Offside assessed (any_other_scenario): line x=-14, tokens=none.
+Long Ball target precompute started. version=4, frame=260, ballHex=-13,0, candidateCount=1900
+Movement phase has been reset.
+Long Ball target precompute cancelled. version=4, elapsedMs=20.0, elapsedFrames=0, processed=0, validTargets=16
+Long Ball target precompute started. version=6, frame=260, ballHex=-13,0, candidateCount=1900
+Long Ball target precompute cancelled. version=6, elapsedMs=24.8, elapsedFrames=0, processed=0, validTargets=16
+Snapshot initiated. Allow one defender to move 2 hexes.
+[Game Log] 10. Buzek (Away club) takes a Snapshot!
+Selecting defender 2. Baez. Highlighting reachable hexes.
+Hex clicked: HexCell [-10, 7]
+Moving 2. Baez to hex (-10, 0, 7)
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: HexCell [-10, 7]
+[Game Log] 2. Baez (Home club) moves 1 paces
+Defender movement phase complete. Proceeding to target selection.
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (-19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Goalkeeper 1. Kuzmic can attempt a save at (-16, 0, 0) with penalty 0
+Shot interactions found: 1
+The GK is next up. Shooter must Roll to shoot. Setting isWaitingForShotRoll to true.
+Hello from the StartShotRoll
+10. Buzek rolled a 1, this means the Shot is OFF target! GoalKick awarded.
+[Expected Stats] 10. Buzek records xG 0.09 on snapshot off target
+[Game Log] 10. Buzek (Away club) sends an attempt off target
+Camera
+]]></output>
+          </test-case>
+          <test-case id="2242" name="RealSnapshotCameraMiss(False,&quot;hold-hold&quot;)" fullname="OnlineOffTargetCameraPlayModeTests.RealSnapshotCameraMiss(False,&quot;hold-hold&quot;)" methodname="RealSnapshotCameraMiss" classname="OnlineOffTargetCameraPlayModeTests" runstate="Runnable" seed="1100486937" result="Passed" start-time="2026-11-17 08:23:18Z" end-time="2026-11-17 08:23:39Z" duration="21.540878" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584945441044
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+9. Meloni took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+Path: (-1, 0, -1) -> (-1, 0, 0) -> (-2, 0, 0) -> (-3, 0, -1) -> (-3, 0, 0) -> (-4, 0, 0) -> (-5, 0, -1) -> (-5, 0, 0) -> (-6, 0, 0)
+[Game Log] 9. Meloni (Away club) attempts a kick-off pass
+Path: (-1, 0, -1) -> (-1, 0, 0) -> (-2, 0, 0) -> (-3, 0, -1) -> (-3, 0, 0) -> (-4, 0, 0) -> (-5, 0, -1) -> (-5, 0, 0) -> (-6, 0, 0)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-14, tokens=none.
+Pass completed to (-6, 0, 0)
+[Game Log] 9. Meloni (Away club) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Buzek
+Offside assessment cleared: ground_pass_completed.
+Attacking team has possession: True.
+Offside assessed (any_other_scenario): line x=-14, tokens=none.
+Long Ball target precompute started. version=4, frame=442, ballHex=-13,0, candidateCount=1900
+Movement phase has been reset.
+Long Ball target precompute cancelled. version=4, elapsedMs=21.6, elapsedFrames=0, processed=0, validTargets=16
+Long Ball target precompute started. version=6, frame=442, ballHex=-13,0, candidateCount=1900
+Long Ball target precompute cancelled. version=6, elapsedMs=25.9, elapsedFrames=0, processed=0, validTargets=16
+Snapshot initiated. Allow one defender to move 2 hexes.
+[Game Log] 10. Buzek (Away club) takes a Snapshot!
+Selecting defender 2. Baez. Highlighting reachable hexes.
+Hex clicked: HexCell [-10, 7]
+Moving 2. Baez to hex (-10, 0, 7)
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: HexCell [-10, 7]
+[Game Log] 2. Baez (Home club) moves 1 paces
+Defender movement phase complete. Proceeding to target selection.
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (-19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Goalkeeper 1. Kuzmic can attempt a save at (-16, 0, 0) with penalty 0
+Shot interactions found: 1
+The GK is next up. Shooter must Roll to shoot. Setting isWaitingForShotRoll to true.
+Hello from the StartShotRoll
+10. Buzek rolled a 1, this means the Shot is OFF target! GoalKick awarded.
+[Expected Stats] 10. Buzek records xG 0.09 on snapshot off target
+[Game Log] 10. Buzek (Away club) sends an attempt off target
+Camera
+Hello from OOM, HexCell [-18, 0], LeftGoalLine, inaccuracy
+It's a Goal Kick.
+Possession changed! Home now is the Attacking Team.
+Player tokens updated after possession change.
+Left Side: Goal kick from center Hex at the 6-yard-box.
+Substitutions are now available: Goal Kick awarded
+OutOfBoundsPush: (-16, 0, 0) is occupied by attacker 1. Kuzmic; no push needed.
+⚽ Ball just entered the penalty box! Checking if GK should move.
+]]></output>
+          </test-case>
+          <test-case id="2243" name="RealSnapshotCameraMiss(True,&quot;flight&quot;)" fullname="OnlineOffTargetCameraPlayModeTests.RealSnapshotCameraMiss(True,&quot;flight&quot;)" methodname="RealSnapshotCameraMiss" classname="OnlineOffTargetCameraPlayModeTests" runstate="Runnable" seed="889040408" result="Passed" start-time="2026-11-17 08:23:39Z" end-time="2026-11-17 08:23:58Z" duration="18.861662" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584945504682
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+9. Meloni took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+Path: (1, 0, -1) -> (1, 0, 0) -> (2, 0, 0) -> (3, 0, -1) -> (3, 0, 0) -> (4, 0, 0) -> (5, 0, -1) -> (5, 0, 0) -> (6, 0, 0)
+[Game Log] 9. Meloni (Away club) attempts a kick-off pass
+Path: (1, 0, -1) -> (1, 0, 0) -> (2, 0, 0) -> (3, 0, -1) -> (3, 0, 0) -> (4, 0, 0) -> (5, 0, -1) -> (5, 0, 0) -> (6, 0, 0)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=14, tokens=none.
+Pass completed to (6, 0, 0)
+[Game Log] 9. Meloni (Away club) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Buzek
+Offside assessment cleared: ground_pass_completed.
+Attacking team has possession: True.
+Offside assessed (any_other_scenario): line x=14, tokens=none.
+Long Ball target precompute started. version=4, frame=688, ballHex=13,0, candidateCount=1900
+Movement phase has been reset.
+Long Ball target precompute cancelled. version=4, elapsedMs=19.3, elapsedFrames=0, processed=0, validTargets=16
+Long Ball target precompute started. version=6, frame=688, ballHex=13,0, candidateCount=1900
+Long Ball target precompute cancelled. version=6, elapsedMs=23.7, elapsedFrames=0, processed=0, validTargets=16
+Snapshot initiated. Allow one defender to move 2 hexes.
+[Game Log] 10. Buzek (Away club) takes a Snapshot!
+Selecting defender 2. Baez. Highlighting reachable hexes.
+Hex clicked: HexCell [10, 7]
+Moving 2. Baez to hex (10, 0, 7)
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: HexCell [10, 7]
+[Game Log] 2. Baez (Home club) moves 1 paces
+Defender movement phase complete. Proceeding to target selection.
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Goalkeeper 1. Kuzmic can attempt a save at (16, 0, 0) with penalty 0
+Shot interactions found: 1
+The GK is next up. Shooter must Roll to shoot. Setting isWaitingForShotRoll to true.
+Hello from the StartShotRoll
+10. Buzek rolled a 1, this means the Shot is OFF target! GoalKick awarded.
+[Expected Stats] 10. Buzek records xG 0.09 on snapshot off target
+[Game Log] 10. Buzek (Away club) sends an attempt off target
+Camera
+Hello from OOM, HexCell [18, 0], RightGoalLine, inaccuracy
+It's a Goal Kick.
+Possession changed! Home now is the Attacking Team.
+Player tokens updated after possession change.
+Right Side: Goal kick from center Hex at the 6-yard-box.
+Substitutions are now available: Goal Kick awarded
+OutOfBoundsPush: (16, 0, 0) is occupied by attacker 1. Kuzmic; no push needed.
+⚽ Ball just entered the penalty box! Checking if GK should move.
+]]></output>
+          </test-case>
+          <test-case id="2244" name="RealSnapshotCameraMiss(True,&quot;reset-flight&quot;)" fullname="OnlineOffTargetCameraPlayModeTests.RealSnapshotCameraMiss(True,&quot;reset-flight&quot;)" methodname="RealSnapshotCameraMiss" classname="OnlineOffTargetCameraPlayModeTests" runstate="Runnable" seed="1525754265" result="Passed" start-time="2026-11-17 08:23:58Z" end-time="2026-11-17 08:24:15Z" duration="17.125634" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584945568320
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+9. Meloni took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+Path: (1, 0, -1) -> (1, 0, 0) -> (2, 0, 0) -> (3, 0, -1) -> (3, 0, 0) -> (4, 0, 0) -> (5, 0, -1) -> (5, 0, 0) -> (6, 0, 0)
+[Game Log] 9. Meloni (Away club) attempts a kick-off pass
+Path: (1, 0, -1) -> (1, 0, 0) -> (2, 0, 0) -> (3, 0, -1) -> (3, 0, 0) -> (4, 0, 0) -> (5, 0, -1) -> (5, 0, 0) -> (6, 0, 0)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=14, tokens=none.
+Pass completed to (6, 0, 0)
+[Game Log] 9. Meloni (Away club) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Buzek
+Offside assessment cleared: ground_pass_completed.
+Attacking team has possession: True.
+Offside assessed (any_other_scenario): line x=14, tokens=none.
+Long Ball target precompute started. version=4, frame=888, ballHex=13,0, candidateCount=1900
+Movement phase has been reset.
+Long Ball target precompute cancelled. version=4, elapsedMs=21.1, elapsedFrames=0, processed=0, validTargets=16
+Long Ball target precompute started. version=6, frame=888, ballHex=13,0, candidateCount=1900
+Long Ball target precompute cancelled. version=6, elapsedMs=30.0, elapsedFrames=0, processed=0, validTargets=16
+Snapshot initiated. Allow one defender to move 2 hexes.
+[Game Log] 10. Buzek (Away club) takes a Snapshot!
+Selecting defender 2. Baez. Highlighting reachable hexes.
+Hex clicked: HexCell [10, 7]
+Moving 2. Baez to hex (10, 0, 7)
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: HexCell [10, 7]
+[Game Log] 2. Baez (Home club) moves 1 paces
+Defender movement phase complete. Proceeding to target selection.
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Goalkeeper 1. Kuzmic can attempt a save at (16, 0, 0) with penalty 0
+Shot interactions found: 1
+The GK is next up. Shooter must Roll to shoot. Setting isWaitingForShotRoll to true.
+Hello from the StartShotRoll
+10. Buzek rolled a 1, this means the Shot is OFF target! GoalKick awarded.
+[Expected Stats] 10. Buzek records xG 0.09 on snapshot off target
+[Game Log] 10. Buzek (Away club) sends an attempt off target
+Camera
+]]></output>
+          </test-case>
+          <test-case id="2245" name="RealSnapshotCameraMiss(True,&quot;hold-hold&quot;)" fullname="OnlineOffTargetCameraPlayModeTests.RealSnapshotCameraMiss(True,&quot;hold-hold&quot;)" methodname="RealSnapshotCameraMiss" classname="OnlineOffTargetCameraPlayModeTests" runstate="Runnable" seed="1852000209" result="Passed" start-time="2026-11-17 08:24:15Z" end-time="2026-11-17 08:24:37Z" duration="21.502231" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584945631958
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+9. Meloni took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+Path: (1, 0, -1) -> (1, 0, 0) -> (2, 0, 0) -> (3, 0, -1) -> (3, 0, 0) -> (4, 0, 0) -> (5, 0, -1) -> (5, 0, 0) -> (6, 0, 0)
+[Game Log] 9. Meloni (Away club) attempts a kick-off pass
+Path: (1, 0, -1) -> (1, 0, 0) -> (2, 0, 0) -> (3, 0, -1) -> (3, 0, 0) -> (4, 0, 0) -> (5, 0, -1) -> (5, 0, 0) -> (6, 0, 0)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=14, tokens=none.
+Pass completed to (6, 0, 0)
+[Game Log] 9. Meloni (Away club) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Buzek
+Offside assessment cleared: ground_pass_completed.
+Attacking team has possession: True.
+Offside assessed (any_other_scenario): line x=14, tokens=none.
+Long Ball target precompute started. version=4, frame=1069, ballHex=13,0, candidateCount=1900
+Movement phase has been reset.
+Long Ball target precompute cancelled. version=4, elapsedMs=19.8, elapsedFrames=0, processed=0, validTargets=16
+Long Ball target precompute started. version=6, frame=1069, ballHex=13,0, candidateCount=1900
+Long Ball target precompute cancelled. version=6, elapsedMs=23.0, elapsedFrames=0, processed=0, validTargets=16
+Snapshot initiated. Allow one defender to move 2 hexes.
+[Game Log] 10. Buzek (Away club) takes a Snapshot!
+Selecting defender 2. Baez. Highlighting reachable hexes.
+Hex clicked: HexCell [10, 7]
+Moving 2. Baez to hex (10, 0, 7)
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: HexCell [10, 7]
+[Game Log] 2. Baez (Home club) moves 1 paces
+Defender movement phase complete. Proceeding to target selection.
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Goalkeeper 1. Kuzmic can attempt a save at (16, 0, 0) with penalty 0
+Shot interactions found: 1
+The GK is next up. Shooter must Roll to shoot. Setting isWaitingForShotRoll to true.
+Hello from the StartShotRoll
+10. Buzek rolled a 1, this means the Shot is OFF target! GoalKick awarded.
+[Expected Stats] 10. Buzek records xG 0.09 on snapshot off target
+[Game Log] 10. Buzek (Away club) sends an attempt off target
+Camera
+Hello from OOM, HexCell [18, 0], RightGoalLine, inaccuracy
+It's a Goal Kick.
+Possession changed! Home now is the Attacking Team.
+Player tokens updated after possession change.
+Right Side: Goal kick from center Hex at the 6-yard-box.
+Substitutions are now available: Goal Kick awarded
+OutOfBoundsPush: (16, 0, 0) is occupied by attacker 1. Kuzmic; no push needed.
+⚽ Ball just entered the penalty box! Checking if GK should move.
+Saving results to: TestResults\GameplayRegression\Runs\20261117T082239286Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

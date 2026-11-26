@@ -1,0 +1,5 @@
+{"name":"OnlineMovementSnapshotEditorTests.AmbiguousDeclinesAreNotGuessed","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMovementSnapshotEditorTests.KeysFollowPublishedContext(S,\"movement.snapshot\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMovementSnapshotEditorTests.KeysFollowPublishedContext(X,\"movement.snapshot.decline\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMovementSnapshotEditorTests.KeysFollowPublishedContext(X,\"dribble.finish\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMovementSnapshotEditorTests.KeysFollowPublishedContext(X,\"shot.cancel\")","status":"Passed","message":"","stackTrace":""}

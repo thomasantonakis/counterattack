@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="40" result="Passed" total="40" passed="40" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-15 05:58:16Z" end-time="2026-11-15 05:58:19Z" duration="2.3788875">
+  <test-suite type="TestSuite" id="2780" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1501" result="Passed" start-time="2026-11-15 05:58:16Z" end-time="2026-11-15 05:58:19Z" duration="2.378888" total="40" passed="40" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="2774" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="1501" result="Passed" start-time="2026-11-15 05:58:17Z" end-time="2026-11-15 05:58:19Z" duration="2.262785" total="40" passed="40" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="1132" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="1630" name="OnlineDraftAuthorityEditorTests" fullname="OnlineDraftAuthorityEditorTests" classname="OnlineDraftAuthorityEditorTests" runstate="Runnable" testcasecount="40" result="Passed" start-time="2026-11-15 05:58:17Z" end-time="2026-11-15 05:58:19Z" duration="2.236578" total="40" passed="40" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineDraft" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="1671" name="RealCatalogDraft" fullname="OnlineDraftAuthorityEditorTests.RealCatalogDraft" classname="OnlineDraftAuthorityEditorTests" runstate="Runnable" testcasecount="40" result="Passed" start-time="2026-11-15 05:58:17Z" end-time="2026-11-15 05:58:19Z" duration="2.229719" total="40" passed="40" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1631" name="RealCatalogDraft(False,16,&quot;roll&quot;)" fullname="OnlineDraftAuthorityEditorTests.RealCatalogDraft(False,16,&quot;roll&quot;)" methodname="RealCatalogDraft" classname="OnlineDraftAuthorityEditorTests" runstate="Runnable" seed="610974246" result="Passed" start-time="2026-11-15 05:58:17Z" end-time="2026-11-15 05:58:17Z" duration="0.218398" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[TokenKitCatalog] Loading kits JSON from Resources path 'Kits/kit-picker-v1-11-supported' (asset: Assets/Resources/Kits/kit-picker-v1-11-supported.json).
+[TokenKitCatalog] Found kits JSON TextAsset 'kit-picker-v1-11-supported' at Resources path 'Kits/kit-picker-v1-11-supported' (32277 characters).
+[TokenKitCatalog] Parsed 101 kit preset(s) from Resources path 'Kits/kit-picker-v1-11-supported'.
+[TokenKitCatalog] Active kit catalog contains 101 kit preset(s).
+]]></output>
+          </test-case>
+          <test-case id="1632" name="RealCatalogDraft(False,16,&quot;ties&quot;)" fullname="OnlineDraftAuthorityEditorTests.RealCatalogDraft(False,16,&quot;ties&quot;)" methodname="RealCatalogDraft" classname="OnlineDraftAuthorityEditorTests" runstate="Runnable" seed="1818809747" result="Passed" start-time="2026-11-15 05:58:17Z" end-time="2026-11-15 05:58:17Z" duration="0.029536" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1633" name="RealCatalogDraft(False,16,&quot;batch&quot;)" fullname="OnlineDraftAuthorityEditorTests.RealCatalogDraft(False,16,&quot;batch&quot;)" methodname="RealCatalogDraft" classname="OnlineDraftAuthorityEditorTests" runstate="Runnable" seed="245699574" result="Passed" start-time="2026-11-15 05:58:17Z" end-time="2026-11-15 05:58:17Z" duration="0.033042" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1634" name="RealCatalogDraft(False,16,&quot;boundaries&quot;)" fullname="OnlineDraftAuthorityEditorTests.RealCatalogDraft(False,16,&quot;boundaries&quot;)" methodname="RealCatalogDraft" classname="OnlineDraftAuthorityEditorTests" runstate="Runnable" seed="1886914404" result="Passed" start-time="2026-11-15 05:58:17Z" end-time="2026-11-15 05:58:17Z" duration="0.052657" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1635" name="RealCatalogDraft(False,16,&quot;identity&quot;)" fullname="OnlineDraftAuthorityEditorTests.RealCatalogDraft(False,16,&quot;identity&quot;)" methodname="RealCatalogDraft" classname="OnlineDraftAuthorityEditorTests" runstate="Runnable" seed="1838658066" result="Passed" start-time="2026-11-15 05:58:17Z" end-time="2026-11-15 05:58:17Z" duration="0.027185" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1636" name="RealCatalogDraft(False,16,&quot;duplicate&quot;)" fullname="OnlineDraftAuthorityEditorTests.RealCatalogDraft(False,16,&quot;duplicate&quot;)" methodname="RealCatalogDraft" classname="OnlineDraftAuthorityEditorTests" runstate="Runnable" seed="2091714461" result="Passed" start-time="2026-11-15 05:58:17Z" end-time="2026-11-15 05:58:17Z" duration="0.029686" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1637" name="RealCatalogDraft(False,16,&quot;snapshot&quot;)" fullname="OnlineDraftAuthorityEditorTests.RealCatalogDraft(False,16,&quot;snapshot&quot;)" methodname="RealCatalogDraft" classname="OnlineDraftAuthorityEditorTests" runstate="Runnable" seed="93558463" result="Passed" start-time="2026-11-15 05:58:17Z" end-time="2026-11-15 05:58:17Z" duration="0.030459" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1638" name="RealCatalogDraft(False,16,&quot;swap&quot;)" fullname="OnlineDraftAuthorityEditorTests.RealCatalogDraft(False,16,&quot;swap&quot;)" methodname="RealCatalogDraft" classname="OnlineDraftAuthorityEditorTests" runstate="Runnable" seed="739856062" result="Passed" start-time="2026-11-15 05:58:17Z" end-time="2026-11-15 05:58:17Z" duration="0.056781" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1639" name="RealCatalogDraft(False,16,&quot;recovery&quot;)" fullname="OnlineDraftAuthorityEditorTests.RealCatalogDraft(False,16,&quot;recovery&quot;)" methodname="RealCatalogDraft" classname="OnlineDraftAuthorityEditorTests" runstate="Runnable" seed="477441669" result="Passed" start-time="2026-11-15 05:58:17Z" end-time="2026-11-15 05:58:17Z" duration="0.072487" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1640" name="RealCatalogDraft(False,16,&quot;complete&quot;)" fullname="OnlineDraftAuthorityEditorTests.RealCatalogDraft(False,16,&quot;complete&quot;)" methodname="RealCatalogDraft" classname="OnlineDraftAuthorityEditorTests" runstate="Runnable" seed="855358289" result="Passed" start-time="2026-11-15 05:58:17Z" end-time="2026-11-15 05:58:17Z" duration="0.101177" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1641" name="RealCatalogDraft(False,18,&quot;roll&quot;)" fullname="OnlineDraftAuthorityEditorTests.RealCatalogDraft(False,18,&quot;roll&quot;)" methodname="RealCatalogDraft" classname="OnlineDraftAuthorityEditorTests" runstate="Runnable" seed="1702435050" result="Passed" start-time="2026-11-15 05:58:17Z" end-time="2026-11-15 05:58:17Z" duration="0.028621" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1642" name="RealCatalogDraft(False,18,&quot;ties&quot;)" fullname="OnlineDraftAuthorityEditorTests.RealCatalogDraft(False,18,&quot;ties&quot;)" methodname="RealCatalogDraft" classname="OnlineDraftAuthorityEditorTests" runstate="Runnable" seed="597824013" result="Passed" start-time="2026-11-15 05:58:17Z" end-time="2026-11-15 05:58:17Z" duration="0.032356" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1643" name="RealCatalogDraft(False,18,&quot;batch&quot;)" fullname="OnlineDraftAuthorityEditorTests.RealCatalogDraft(False,18,&quot;batch&quot;)" methodname="RealCatalogDraft" classname="OnlineDraftAuthorityEditorTests" runstate="Runnable" seed="658296244" result="Passed" start-time="2026-11-15 05:58:17Z" end-time="2026-11-15 05:58:18Z" duration="0.047607" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1644" name="RealCatalogDraft(False,18,&quot;boundaries&quot;)" fullname="OnlineDraftAuthorityEditorTests.RealCatalogDraft(False,18,&quot;boundaries&quot;)" methodname="RealCatalogDraft" classname="OnlineDraftAuthorityEditorTests" runstate="Runnable" seed="1193002352" result="Passed" start-time="2026-11-15 05:58:18Z" end-time="2026-11-15 05:58:18Z" duration="0.034094" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1645" name="RealCatalogDraft(False,18,&quot;identity&quot;)" fullname="OnlineDraftAuthorityEditorTests.RealCatalogDraft(False,18,&quot;identity&quot;)" methodname="RealCatalogDraft" classname="OnlineDraftAuthorityEditorTests" runstate="Runnable" seed="1355389367" result="Passed" start-time="2026-11-15 05:58:18Z" end-time="2026-11-15 05:58:18Z" duration="0.025990" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1646" name="RealCatalogDraft(False,18,&quot;duplicate&quot;)" fullname="OnlineDraftAuthorityEditorTests.RealCatalogDraft(False,18,&quot;duplicate&quot;)" methodname="RealCatalogDraft" classname="OnlineDraftAuthorityEditorTests" runstate="Runnable" seed="905681620" result="Passed" start-time="2026-11-15 05:58:18Z" end-time="2026-11-15 05:58:18Z" duration="0.034633" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1647" name="RealCatalogDraft(False,18,&quot;snapshot&quot;)" fullname="OnlineDraftAuthorityEditorTests.RealCatalogDraft(False,18,&quot;snapshot&quot;)" methodname="RealCatalogDraft" classname="OnlineDraftAuthorityEditorTests" runstate="Runnable" seed="7554486" result="Passed" start-time="2026-11-15 05:58:18Z" end-time="2026-11-15 05:58:18Z" duration="0.043916" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1648" name="RealCatalogDraft(False,18,&quot;swap&quot;)" fullname="OnlineDraftAuthorityEditorTests.RealCatalogDraft(False,18,&quot;swap&quot;)" methodname="RealCatalogDraft" classname="OnlineDraftAuthorityEditorTests" runstate="Runnable" seed="528821047" result="Passed" start-time="2026-11-15 05:58:18Z" end-time="2026-11-15 05:58:18Z" duration="0.028775" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1649" name="RealCatalogDraft(False,18,&quot;recovery&quot;)" fullname="OnlineDraftAuthorityEditorTests.RealCatalogDraft(False,18,&quot;recovery&quot;)" methodname="RealCatalogDraft" classname="OnlineDraftAuthorityEditorTests" runstate="Runnable" seed="355387179" result="Passed" start-time="2026-11-15 05:58:18Z" end-time="2026-11-15 05:58:18Z" duration="0.113687" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1650" name="RealCatalogDraft(False,18,&quot;complete&quot;)" fullname="OnlineDraftAuthorityEditorTests.RealCatalogDraft(False,18,&quot;complete&quot;)" methodname="RealCatalogDraft" classname="OnlineDraftAuthorityEditorTests" runstate="Runnable" seed="1726566156" result="Passed" start-time="2026-11-15 05:58:18Z" end-time="2026-11-15 05:58:18Z" duration="0.105101" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1651" name="RealCatalogDraft(True,16,&quot;roll&quot;)" fullname="OnlineDraftAuthorityEditorTests.RealCatalogDraft(True,16,&quot;roll&quot;)" methodname="RealCatalogDraft" classname="OnlineDraftAuthorityEditorTests" runstate="Runnable" seed="2036312727" result="Passed" start-time="2026-11-15 05:58:18Z" end-time="2026-11-15 05:58:18Z" duration="0.027344" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1652" name="RealCatalogDraft(True,16,&quot;ties&quot;)" fullname="OnlineDraftAuthorityEditorTests.RealCatalogDraft(True,16,&quot;ties&quot;)" methodname="RealCatalogDraft" classname="OnlineDraftAuthorityEditorTests" runstate="Runnable" seed="608648707" result="Passed" start-time="2026-11-15 05:58:18Z" end-time="2026-11-15 05:58:18Z" duration="0.027627" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1653" name="RealCatalogDraft(True,16,&quot;batch&quot;)" fullname="OnlineDraftAuthorityEditorTests.RealCatalogDraft(True,16,&quot;batch&quot;)" methodname="RealCatalogDraft" classname="OnlineDraftAuthorityEditorTests" runstate="Runnable" seed="1675864853" result="Passed" start-time="2026-11-15 05:58:18Z" end-time="2026-11-15 05:58:18Z" duration="0.066519" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1654" name="RealCatalogDraft(True,16,&quot;boundaries&quot;)" fullname="OnlineDraftAuthorityEditorTests.RealCatalogDraft(True,16,&quot;boundaries&quot;)" methodname="RealCatalogDraft" classname="OnlineDraftAuthorityEditorTests" runstate="Runnable" seed="550185684" result="Passed" start-time="2026-11-15 05:58:18Z" end-time="2026-11-15 05:58:18Z" duration="0.030728" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1655" name="RealCatalogDraft(True,16,&quot;identity&quot;)" fullname="OnlineDraftAuthorityEditorTests.RealCatalogDraft(True,16,&quot;identity&quot;)" methodname="RealCatalogDraft" classname="OnlineDraftAuthorityEditorTests" runstate="Runnable" seed="901301378" result="Passed" start-time="2026-11-15 05:58:18Z" end-time="2026-11-15 05:58:18Z" duration="0.027297" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1656" name="RealCatalogDraft(True,16,&quot;duplicate&quot;)" fullname="OnlineDraftAuthorityEditorTests.RealCatalogDraft(True,16,&quot;duplicate&quot;)" methodname="RealCatalogDraft" classname="OnlineDraftAuthorityEditorTests" runstate="Runnable" seed="1793806076" result="Passed" start-time="2026-11-15 05:58:18Z" end-time="2026-11-15 05:58:18Z" duration="0.026835" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1657" name="RealCatalogDraft(True,16,&quot;snapshot&quot;)" fullname="OnlineDraftAuthorityEditorTests.RealCatalogDraft(True,16,&quot;snapshot&quot;)" methodname="RealCatalogDraft" classname="OnlineDraftAuthorityEditorTests" runstate="Runnable" seed="980377054" result="Passed" start-time="2026-11-15 05:58:18Z" end-time="2026-11-15 05:58:18Z" duration="0.064800" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1658" name="RealCatalogDraft(True,16,&quot;swap&quot;)" fullname="OnlineDraftAuthorityEditorTests.RealCatalogDraft(True,16,&quot;swap&quot;)" methodname="RealCatalogDraft" classname="OnlineDraftAuthorityEditorTests" runstate="Runnable" seed="2101899191" result="Passed" start-time="2026-11-15 05:58:18Z" end-time="2026-11-15 05:58:18Z" duration="0.030433" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1659" name="RealCatalogDraft(True,16,&quot;recovery&quot;)" fullname="OnlineDraftAuthorityEditorTests.RealCatalogDraft(True,16,&quot;recovery&quot;)" methodname="RealCatalogDraft" classname="OnlineDraftAuthorityEditorTests" runstate="Runnable" seed="1343113529" result="Passed" start-time="2026-11-15 05:58:18Z" end-time="2026-11-15 05:58:18Z" duration="0.062301" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1660" name="RealCatalogDraft(True,16,&quot;complete&quot;)" fullname="OnlineDraftAuthorityEditorTests.RealCatalogDraft(True,16,&quot;complete&quot;)" methodname="RealCatalogDraft" classname="OnlineDraftAuthorityEditorTests" runstate="Runnable" seed="445854810" result="Passed" start-time="2026-11-15 05:58:18Z" end-time="2026-11-15 05:58:18Z" duration="0.089307" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1661" name="RealCatalogDraft(True,18,&quot;roll&quot;)" fullname="OnlineDraftAuthorityEditorTests.RealCatalogDraft(True,18,&quot;roll&quot;)" methodname="RealCatalogDraft" classname="OnlineDraftAuthorityEditorTests" runstate="Runnable" seed="447065384" result="Passed" start-time="2026-11-15 05:58:18Z" end-time="2026-11-15 05:58:18Z" duration="0.028006" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1662" name="RealCatalogDraft(True,18,&quot;ties&quot;)" fullname="OnlineDraftAuthorityEditorTests.RealCatalogDraft(True,18,&quot;ties&quot;)" methodname="RealCatalogDraft" classname="OnlineDraftAuthorityEditorTests" runstate="Runnable" seed="1625879451" result="Passed" start-time="2026-11-15 05:58:18Z" end-time="2026-11-15 05:58:18Z" duration="0.026614" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1663" name="RealCatalogDraft(True,18,&quot;batch&quot;)" fullname="OnlineDraftAuthorityEditorTests.RealCatalogDraft(True,18,&quot;batch&quot;)" methodname="RealCatalogDraft" classname="OnlineDraftAuthorityEditorTests" runstate="Runnable" seed="23809569" result="Passed" start-time="2026-11-15 05:58:18Z" end-time="2026-11-15 05:58:18Z" duration="0.070628" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1664" name="RealCatalogDraft(True,18,&quot;boundaries&quot;)" fullname="OnlineDraftAuthorityEditorTests.RealCatalogDraft(True,18,&quot;boundaries&quot;)" methodname="RealCatalogDraft" classname="OnlineDraftAuthorityEditorTests" runstate="Runnable" seed="1919534774" result="Passed" start-time="2026-11-15 05:58:19Z" end-time="2026-11-15 05:58:19Z" duration="0.029326" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1665" name="RealCatalogDraft(True,18,&quot;identity&quot;)" fullname="OnlineDraftAuthorityEditorTests.RealCatalogDraft(True,18,&quot;identity&quot;)" methodname="RealCatalogDraft" classname="OnlineDraftAuthorityEditorTests" runstate="Runnable" seed="491390983" result="Passed" start-time="2026-11-15 05:58:19Z" end-time="2026-11-15 05:58:19Z" duration="0.027014" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1666" name="RealCatalogDraft(True,18,&quot;duplicate&quot;)" fullname="OnlineDraftAuthorityEditorTests.RealCatalogDraft(True,18,&quot;duplicate&quot;)" methodname="RealCatalogDraft" classname="OnlineDraftAuthorityEditorTests" runstate="Runnable" seed="1601965376" result="Passed" start-time="2026-11-15 05:58:19Z" end-time="2026-11-15 05:58:19Z" duration="0.060142" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1667" name="RealCatalogDraft(True,18,&quot;snapshot&quot;)" fullname="OnlineDraftAuthorityEditorTests.RealCatalogDraft(True,18,&quot;snapshot&quot;)" methodname="RealCatalogDraft" classname="OnlineDraftAuthorityEditorTests" runstate="Runnable" seed="929150345" result="Passed" start-time="2026-11-15 05:58:19Z" end-time="2026-11-15 05:58:19Z" duration="0.030683" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1668" name="RealCatalogDraft(True,18,&quot;swap&quot;)" fullname="OnlineDraftAuthorityEditorTests.RealCatalogDraft(True,18,&quot;swap&quot;)" methodname="RealCatalogDraft" classname="OnlineDraftAuthorityEditorTests" runstate="Runnable" seed="810670479" result="Passed" start-time="2026-11-15 05:58:19Z" end-time="2026-11-15 05:58:19Z" duration="0.028170" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1669" name="RealCatalogDraft(True,18,&quot;recovery&quot;)" fullname="OnlineDraftAuthorityEditorTests.RealCatalogDraft(True,18,&quot;recovery&quot;)" methodname="RealCatalogDraft" classname="OnlineDraftAuthorityEditorTests" runstate="Runnable" seed="922073008" result="Passed" start-time="2026-11-15 05:58:19Z" end-time="2026-11-15 05:58:19Z" duration="0.097541" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1670" name="RealCatalogDraft(True,18,&quot;complete&quot;)" fullname="OnlineDraftAuthorityEditorTests.RealCatalogDraft(True,18,&quot;complete&quot;)" methodname="RealCatalogDraft" classname="OnlineDraftAuthorityEditorTests" runstate="Runnable" seed="1694668475" result="Passed" start-time="2026-11-15 05:58:19Z" end-time="2026-11-15 05:58:19Z" duration="0.067065" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Saving results to: TestResults\GameplayRegression\Runs\20261115T055816884Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

@@ -1,0 +1,18 @@
+{
+    "role": "host",
+    "status": "closed",
+    "message": "",
+    "platform": "WindowsEditor",
+    "startedUtc": "2026-11-15T05:45:08.6942517Z",
+    "completedUtc": "2026-11-15T05:45:10.9908670Z",
+    "routingPolicy": "AllowRelays",
+    "bytesSent": 0,
+    "bytesReceived": 0,
+    "latency": {
+        "samples": 0,
+        "lastMilliseconds": 0.0,
+        "p50Milliseconds": 0.0,
+        "p95Milliseconds": 0.0
+    },
+    "setupAgreed": false
+}

@@ -1,0 +1,1 @@
+OnlineDraftChannelEditorTests.SerializedDraft(True,"local-loss")

@@ -1,0 +1,1 @@
+OnlineFoulPlayModeTests.InBoxStealFoulAwardsPenalty(-1)

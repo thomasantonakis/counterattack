@@ -1,0 +1,16 @@
+{"name":"ExtraTimeStoppageEditorTests.ActualRollUsesPeriodCap(1,1,1)","status":"Passed","message":"","stackTrace":""}
+{"name":"ExtraTimeStoppageEditorTests.ActualRollUsesPeriodCap(1,1,3)","status":"Passed","message":"","stackTrace":""}
+{"name":"ExtraTimeStoppageEditorTests.ActualRollUsesPeriodCap(1,6,1)","status":"Passed","message":"","stackTrace":""}
+{"name":"ExtraTimeStoppageEditorTests.ActualRollUsesPeriodCap(1,6,3)","status":"Passed","message":"","stackTrace":""}
+{"name":"ExtraTimeStoppageEditorTests.ActualRollUsesPeriodCap(2,1,1)","status":"Passed","message":"","stackTrace":""}
+{"name":"ExtraTimeStoppageEditorTests.ActualRollUsesPeriodCap(2,1,3)","status":"Passed","message":"","stackTrace":""}
+{"name":"ExtraTimeStoppageEditorTests.ActualRollUsesPeriodCap(2,6,1)","status":"Passed","message":"","stackTrace":""}
+{"name":"ExtraTimeStoppageEditorTests.ActualRollUsesPeriodCap(2,6,3)","status":"Passed","message":"","stackTrace":""}
+{"name":"ExtraTimeStoppageEditorTests.ActualRollUsesPeriodCap(3,1,1)","status":"Passed","message":"","stackTrace":""}
+{"name":"ExtraTimeStoppageEditorTests.ActualRollUsesPeriodCap(3,1,3)","status":"Passed","message":"","stackTrace":""}
+{"name":"ExtraTimeStoppageEditorTests.ActualRollUsesPeriodCap(3,6,1)","status":"Passed","message":"","stackTrace":""}
+{"name":"ExtraTimeStoppageEditorTests.ActualRollUsesPeriodCap(3,6,3)","status":"Passed","message":"","stackTrace":""}
+{"name":"ExtraTimeStoppageEditorTests.ActualRollUsesPeriodCap(4,1,1)","status":"Passed","message":"","stackTrace":""}
+{"name":"ExtraTimeStoppageEditorTests.ActualRollUsesPeriodCap(4,1,3)","status":"Passed","message":"","stackTrace":""}
+{"name":"ExtraTimeStoppageEditorTests.ActualRollUsesPeriodCap(4,6,1)","status":"Passed","message":"","stackTrace":""}
+{"name":"ExtraTimeStoppageEditorTests.ActualRollUsesPeriodCap(4,6,3)","status":"Passed","message":"","stackTrace":""}

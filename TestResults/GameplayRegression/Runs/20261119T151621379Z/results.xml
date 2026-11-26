@@ -1,0 +1,675 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="16" result="Failed(Child)" total="16" passed="4" failed="12" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-19 15:16:21Z" end-time="2026-11-19 15:17:08Z" duration="47.0883889">
+  <test-suite type="TestSuite" id="3274" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1889" result="Failed" site="Child" start-time="2026-11-19 15:16:21Z" end-time="2026-11-19 15:17:08Z" duration="47.088389" total="16" passed="4" failed="12" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="3271" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1889" result="Failed" site="Child" start-time="2026-11-19 15:16:21Z" end-time="2026-11-19 15:17:08Z" duration="47.039858" total="16" passed="4" failed="12" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="2816" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestFixture" id="1766" name="OnlineFtpPreviewSwitchPlayModeTests" fullname="OnlineFtpPreviewSwitchPlayModeTests" classname="OnlineFtpPreviewSwitchPlayModeTests" runstate="Runnable" testcasecount="16" result="Failed" site="Child" start-time="2026-11-19 15:16:21Z" end-time="2026-11-19 15:17:08Z" duration="47.004316" total="16" passed="4" failed="12" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineFtpPreviewSwitch" />
+        </properties>
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="ParameterizedMethod" id="1783" name="MovementSwitchRespectsPreviewCommitmentAndHold" fullname="OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold" classname="OnlineFtpPreviewSwitchPlayModeTests" runstate="Runnable" testcasecount="16" result="Failed" site="Child" start-time="2026-11-19 15:16:21Z" end-time="2026-11-19 15:17:08Z" duration="46.991872" total="16" passed="4" failed="12" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-case id="1767" name="MovementSwitchRespectsPreviewCommitmentAndHold(1,False,&quot;unselected&quot;)" fullname="OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(1,False,&quot;unselected&quot;)" methodname="MovementSwitchRespectsPreviewCommitmentAndHold" classname="OnlineFtpPreviewSwitchPlayModeTests" runstate="Runnable" seed="779282769" result="Failed" start-time="2026-11-19 15:16:21Z" end-time="2026-11-19 15:16:25Z" duration="3.683581" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Uncommitted FTP must offer the advertised movement switch
+  Expected: collection containing "movement.start"
+  But was:  < "ftp.target:-1:0", "ftp.target:-1:1", "ftp.target:-1:10", "ftp.target:-1:11", "ftp.target:-1:2", "ftp.target:-1:3", "ftp.target:-1:4", "ftp.target:-1:5", "ftp.target:-1:6", "ftp.target:-1:7", "ftp.target:-1:8", "ftp.target:-1:9", "ftp.target:-2:1", "ftp.target:-2:10", "ftp.target:-2:11", "ftp.target:-2:2", "ftp.target:-2:3", "ftp.target:-2:4", "ftp.target:-2:5", "ftp.target:-2:6", "ftp.target:-2:7", "ftp.target:-2:8", "ftp.target:-2:9", "ftp.target:-3:1", "ftp.target:-3:10", "ftp.target:-3:2", "ftp.target:-3:3", "ftp.target:-3:4", "ftp.target:-3:5", "ftp.target:-3:6", "ftp.target:-3:7", "ftp.target:-3:8", "ftp.target:-3:9", "ftp.target:-4:10", "ftp.target:-4:2", "ftp.target:-4:3", "ftp.target:-4:4", "ftp.target:-4:5", "ftp.target:-4:6", "ftp.target:-4:7", "ftp.target:-4:8", "ftp.target:-4:9", "ftp.target:-5:2", "ftp.target:-5:3", "ftp.target:-5:4", "ftp.target:-5:5", "ftp.target:-5:6", "ftp.target:-5:7", "ftp.target:-5:8", "ftp.target:-5:9", "ftp.target:-6:3", "ftp.target:-6:4", "ftp.target:-6:5", "ftp.target:-6:6", "ftp.target:-6:7", "ftp.target:-6:8", "ftp.target:-6:9", "ftp.target:0:0", "ftp.target:0:1", "ftp.target:0:10", "ftp.target:0:11", "ftp.target:0:12", "ftp.target:0:2", "ftp.target:0:3", "ftp.target:0:4", "ftp.target:0:5", "ftp.target:0:7", "ftp.target:0:8", "ftp.target:0:9", "ftp.target:1:0", "ftp.target:1:1", "ftp.target:1:10", "ftp.target:1:11", "ftp.target:1:2", "ftp.target:1:3", "ftp.target:1:4", "ftp.target:1:5", "ftp.target:1:6", "ftp.target:1:7", "ftp.target:1:8", "ftp.target:1:9", "ftp.target:2:1", "ftp.target:2:10", "ftp.target:2:11", "ftp.target:2:2", "ftp.target:2:3", "ftp.target:2:4", "ftp.target:2:5", "ftp.target:2:6", "ftp.target:2:7", "ftp.target:2:8", "ftp.target:2:9", "ftp.target:3:1", "ftp.target:3:10", "ftp.target:3:2", "ftp.target:3:3", "ftp.target:3:4", "ftp.target:3:5", "ftp.target:3:6", "ftp.target:3:7", "ftp.target:3:8", "ftp.target:3:9", "ftp.target:4:10", "ftp.target:4:2", "ftp.target:4:3", "ftp.target:4:4", "ftp.target:4:5", "ftp.target:4:6", "ftp.target:4:7", "ftp.target:4:8", "ftp.target:4:9", "ftp.target:5:2", "ftp.target:5:3", "ftp.target:5:4", "ftp.target:5:5", "ftp.target:5:6", "ftp.target:5:7", "ftp.target:5:8", "ftp.target:5:9", "ftp.target:6:3", "ftp.target:6:4", "ftp.target:6:5", "ftp.target:6:6", "ftp.target:6:7", "ftp.target:6:8", "ftp.target:6:9" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineFtpPreviewSwitch>d__78.MoveNext () [0x003f4] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFtpPreviewSwitch\OnlineFtpPreviewSwitchFixture.cs:34
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Away recovering player (Fixture Away) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Away recovering player (Fixture Away) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online backline
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+]]></output>
+          </test-case>
+          <test-case id="1768" name="MovementSwitchRespectsPreviewCommitmentAndHold(1,False,&quot;selected&quot;)" fullname="OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(1,False,&quot;selected&quot;)" methodname="MovementSwitchRespectsPreviewCommitmentAndHold" classname="OnlineFtpPreviewSwitchPlayModeTests" runstate="Runnable" seed="1786878852" result="Failed" start-time="2026-11-19 15:16:25Z" end-time="2026-11-19 15:16:27Z" duration="2.686503" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Uncommitted FTP must offer the advertised movement switch
+  Expected: collection containing "movement.start"
+  But was:  < "ftp.target:-1:0", "ftp.target:-1:1", "ftp.target:-1:10", "ftp.target:-1:11", "ftp.target:-1:2", "ftp.target:-1:3", "ftp.target:-1:4", "ftp.target:-1:5", "ftp.target:-1:6", "ftp.target:-1:7", "ftp.target:-1:8", "ftp.target:-1:9", "ftp.target:-2:1", "ftp.target:-2:10", "ftp.target:-2:11", "ftp.target:-2:2", "ftp.target:-2:3", "ftp.target:-2:4", "ftp.target:-2:5", "ftp.target:-2:6", "ftp.target:-2:7", "ftp.target:-2:8", "ftp.target:-2:9", "ftp.target:-3:1", "ftp.target:-3:10", "ftp.target:-3:2", "ftp.target:-3:3", "ftp.target:-3:4", "ftp.target:-3:5", "ftp.target:-3:6", "ftp.target:-3:7", "ftp.target:-3:8", "ftp.target:-3:9", "ftp.target:-4:10", "ftp.target:-4:2", "ftp.target:-4:3", "ftp.target:-4:4", "ftp.target:-4:5", "ftp.target:-4:6", "ftp.target:-4:7", "ftp.target:-4:8", "ftp.target:-4:9", "ftp.target:-5:2", "ftp.target:-5:3", "ftp.target:-5:4", "ftp.target:-5:5", "ftp.target:-5:6", "ftp.target:-5:7", "ftp.target:-5:8", "ftp.target:-5:9", "ftp.target:-6:3", "ftp.target:-6:4", "ftp.target:-6:5", "ftp.target:-6:6", "ftp.target:-6:7", "ftp.target:-6:8", "ftp.target:-6:9", "ftp.target:0:0", "ftp.target:0:1", "ftp.target:0:10", "ftp.target:0:11", "ftp.target:0:12", "ftp.target:0:2", "ftp.target:0:3", "ftp.target:0:4", "ftp.target:0:5", "ftp.target:0:7", "ftp.target:0:8", "ftp.target:0:9", "ftp.target:1:0", "ftp.target:1:1", "ftp.target:1:10", "ftp.target:1:11", "ftp.target:1:2", "ftp.target:1:3", "ftp.target:1:4", "ftp.target:1:5", "ftp.target:1:6", "ftp.target:1:7", "ftp.target:1:8", "ftp.target:1:9", "ftp.target:2:1", "ftp.target:2:10", "ftp.target:2:11", "ftp.target:2:2", "ftp.target:2:3", "ftp.target:2:4", "ftp.target:2:5", "ftp.target:2:6", "ftp.target:2:7", "ftp.target:2:8", "ftp.target:2:9", "ftp.target:3:1", "ftp.target:3:10", "ftp.target:3:2", "ftp.target:3:3", "ftp.target:3:4", "ftp.target:3:5", "ftp.target:3:6", "ftp.target:3:7", "ftp.target:3:8", "ftp.target:3:9", "ftp.target:4:10", "ftp.target:4:2", "ftp.target:4:3", "ftp.target:4:4", "ftp.target:4:5", "ftp.target:4:6", "ftp.target:4:7", "ftp.target:4:8", "ftp.target:4:9", "ftp.target:5:2", "ftp.target:5:3", "ftp.target:5:4", "ftp.target:5:5", "ftp.target:5:6", "ftp.target:5:7", "ftp.target:5:8", "ftp.target:5:9", "ftp.target:6:3", "ftp.target:6:4", "ftp.target:6:5", "ftp.target:6:6", "ftp.target:6:7", "ftp.target:6:8", "ftp.target:6:9" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineFtpPreviewSwitch>d__78.MoveNext () [0x003f4] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFtpPreviewSwitch\OnlineFtpPreviewSwitchFixture.cs:34
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Away recovering player (Fixture Away) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Away recovering player (Fixture Away) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online backline
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+]]></output>
+          </test-case>
+          <test-case id="1769" name="MovementSwitchRespectsPreviewCommitmentAndHold(1,False,&quot;committed&quot;)" fullname="OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(1,False,&quot;committed&quot;)" methodname="MovementSwitchRespectsPreviewCommitmentAndHold" classname="OnlineFtpPreviewSwitchPlayModeTests" runstate="Runnable" seed="1720533900" result="Passed" start-time="2026-11-19 15:16:27Z" end-time="2026-11-19 15:16:30Z" duration="2.920458" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Away recovering player (Fixture Away) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Away recovering player (Fixture Away) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online backline
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+First-Time Pass target confirmed. Waiting for FTP movement phases.
+Offside assessed (first_time_pass_target_confirmed): line x=8, tokens=none.
+Substitutions are no longer available: Committed to FirstTimePass
+[Game Log] Online backline (Fixture Away) attempts a ground pass
+Attacker movement phase started. Move one attacker 1 hex or press [X] to skip.
+]]></output>
+          </test-case>
+          <test-case id="1770" name="MovementSwitchRespectsPreviewCommitmentAndHold(1,False,&quot;hold&quot;)" fullname="OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(1,False,&quot;hold&quot;)" methodname="MovementSwitchRespectsPreviewCommitmentAndHold" classname="OnlineFtpPreviewSwitchPlayModeTests" runstate="Runnable" seed="973269987" result="Failed" start-time="2026-11-19 15:16:30Z" end-time="2026-11-19 15:16:33Z" duration="2.954342" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Uncommitted FTP must offer the advertised movement switch
+  Expected: collection containing "movement.start"
+  But was:  < "ftp.target:-1:0", "ftp.target:-1:1", "ftp.target:-1:10", "ftp.target:-1:11", "ftp.target:-1:2", "ftp.target:-1:3", "ftp.target:-1:4", "ftp.target:-1:5", "ftp.target:-1:6", "ftp.target:-1:7", "ftp.target:-1:8", "ftp.target:-1:9", "ftp.target:-2:1", "ftp.target:-2:10", "ftp.target:-2:11", "ftp.target:-2:2", "ftp.target:-2:3", "ftp.target:-2:4", "ftp.target:-2:5", "ftp.target:-2:6", "ftp.target:-2:7", "ftp.target:-2:8", "ftp.target:-2:9", "ftp.target:-3:1", "ftp.target:-3:10", "ftp.target:-3:2", "ftp.target:-3:3", "ftp.target:-3:4", "ftp.target:-3:5", "ftp.target:-3:6", "ftp.target:-3:7", "ftp.target:-3:8", "ftp.target:-3:9", "ftp.target:-4:10", "ftp.target:-4:2", "ftp.target:-4:3", "ftp.target:-4:4", "ftp.target:-4:5", "ftp.target:-4:6", "ftp.target:-4:7", "ftp.target:-4:8", "ftp.target:-4:9", "ftp.target:-5:2", "ftp.target:-5:3", "ftp.target:-5:4", "ftp.target:-5:5", "ftp.target:-5:6", "ftp.target:-5:7", "ftp.target:-5:8", "ftp.target:-5:9", "ftp.target:-6:3", "ftp.target:-6:4", "ftp.target:-6:5", "ftp.target:-6:6", "ftp.target:-6:7", "ftp.target:-6:8", "ftp.target:-6:9", "ftp.target:0:0", "ftp.target:0:1", "ftp.target:0:10", "ftp.target:0:11", "ftp.target:0:12", "ftp.target:0:2", "ftp.target:0:3", "ftp.target:0:4", "ftp.target:0:5", "ftp.target:0:7", "ftp.target:0:8", "ftp.target:0:9", "ftp.target:1:0", "ftp.target:1:1", "ftp.target:1:10", "ftp.target:1:11", "ftp.target:1:2", "ftp.target:1:3", "ftp.target:1:4", "ftp.target:1:5", "ftp.target:1:6", "ftp.target:1:7", "ftp.target:1:8", "ftp.target:1:9", "ftp.target:2:1", "ftp.target:2:10", "ftp.target:2:11", "ftp.target:2:2", "ftp.target:2:3", "ftp.target:2:4", "ftp.target:2:5", "ftp.target:2:6", "ftp.target:2:7", "ftp.target:2:8", "ftp.target:2:9", "ftp.target:3:1", "ftp.target:3:10", "ftp.target:3:2", "ftp.target:3:3", "ftp.target:3:4", "ftp.target:3:5", "ftp.target:3:6", "ftp.target:3:7", "ftp.target:3:8", "ftp.target:3:9", "ftp.target:4:10", "ftp.target:4:2", "ftp.target:4:3", "ftp.target:4:4", "ftp.target:4:5", "ftp.target:4:6", "ftp.target:4:7", "ftp.target:4:8", "ftp.target:4:9", "ftp.target:5:2", "ftp.target:5:3", "ftp.target:5:4", "ftp.target:5:5", "ftp.target:5:6", "ftp.target:5:7", "ftp.target:5:8", "ftp.target:5:9", "ftp.target:6:3", "ftp.target:6:4", "ftp.target:6:5", "ftp.target:6:6", "ftp.target:6:7", "ftp.target:6:8", "ftp.target:6:9" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineFtpPreviewSwitch>d__78.MoveNext () [0x003f4] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFtpPreviewSwitch\OnlineFtpPreviewSwitchFixture.cs:34
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Away recovering player (Fixture Away) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Away recovering player (Fixture Away) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online backline
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+]]></output>
+          </test-case>
+          <test-case id="1771" name="MovementSwitchRespectsPreviewCommitmentAndHold(1,True,&quot;unselected&quot;)" fullname="OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(1,True,&quot;unselected&quot;)" methodname="MovementSwitchRespectsPreviewCommitmentAndHold" classname="OnlineFtpPreviewSwitchPlayModeTests" runstate="Runnable" seed="1162842474" result="Failed" start-time="2026-11-19 15:16:33Z" end-time="2026-11-19 15:16:36Z" duration="2.907079" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Uncommitted FTP must offer the advertised movement switch
+  Expected: collection containing "movement.start"
+  But was:  < "ftp.target:-1:0", "ftp.target:-1:1", "ftp.target:-1:10", "ftp.target:-1:11", "ftp.target:-1:2", "ftp.target:-1:3", "ftp.target:-1:4", "ftp.target:-1:5", "ftp.target:-1:6", "ftp.target:-1:7", "ftp.target:-1:8", "ftp.target:-1:9", "ftp.target:-2:1", "ftp.target:-2:10", "ftp.target:-2:11", "ftp.target:-2:2", "ftp.target:-2:3", "ftp.target:-2:4", "ftp.target:-2:5", "ftp.target:-2:6", "ftp.target:-2:7", "ftp.target:-2:8", "ftp.target:-2:9", "ftp.target:-3:1", "ftp.target:-3:10", "ftp.target:-3:2", "ftp.target:-3:3", "ftp.target:-3:4", "ftp.target:-3:5", "ftp.target:-3:6", "ftp.target:-3:7", "ftp.target:-3:8", "ftp.target:-3:9", "ftp.target:-4:10", "ftp.target:-4:2", "ftp.target:-4:3", "ftp.target:-4:4", "ftp.target:-4:5", "ftp.target:-4:6", "ftp.target:-4:7", "ftp.target:-4:8", "ftp.target:-4:9", "ftp.target:-5:2", "ftp.target:-5:3", "ftp.target:-5:4", "ftp.target:-5:5", "ftp.target:-5:6", "ftp.target:-5:7", "ftp.target:-5:8", "ftp.target:-5:9", "ftp.target:-6:3", "ftp.target:-6:4", "ftp.target:-6:5", "ftp.target:-6:6", "ftp.target:-6:7", "ftp.target:-6:8", "ftp.target:-6:9", "ftp.target:0:0", "ftp.target:0:1", "ftp.target:0:10", "ftp.target:0:11", "ftp.target:0:12", "ftp.target:0:2", "ftp.target:0:3", "ftp.target:0:4", "ftp.target:0:5", "ftp.target:0:7", "ftp.target:0:8", "ftp.target:0:9", "ftp.target:1:0", "ftp.target:1:1", "ftp.target:1:10", "ftp.target:1:11", "ftp.target:1:2", "ftp.target:1:3", "ftp.target:1:4", "ftp.target:1:5", "ftp.target:1:6", "ftp.target:1:7", "ftp.target:1:8", "ftp.target:1:9", "ftp.target:2:1", "ftp.target:2:10", "ftp.target:2:11", "ftp.target:2:2", "ftp.target:2:3", "ftp.target:2:4", "ftp.target:2:5", "ftp.target:2:6", "ftp.target:2:7", "ftp.target:2:8", "ftp.target:2:9", "ftp.target:3:1", "ftp.target:3:10", "ftp.target:3:2", "ftp.target:3:3", "ftp.target:3:4", "ftp.target:3:5", "ftp.target:3:6", "ftp.target:3:7", "ftp.target:3:8", "ftp.target:3:9", "ftp.target:4:10", "ftp.target:4:2", "ftp.target:4:3", "ftp.target:4:4", "ftp.target:4:5", "ftp.target:4:6", "ftp.target:4:7", "ftp.target:4:8", "ftp.target:4:9", "ftp.target:5:2", "ftp.target:5:3", "ftp.target:5:4", "ftp.target:5:5", "ftp.target:5:6", "ftp.target:5:7", "ftp.target:5:8", "ftp.target:5:9", "ftp.target:6:3", "ftp.target:6:4", "ftp.target:6:5", "ftp.target:6:6", "ftp.target:6:7", "ftp.target:6:8", "ftp.target:6:9" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineFtpPreviewSwitch>d__78.MoveNext () [0x003f4] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFtpPreviewSwitch\OnlineFtpPreviewSwitchFixture.cs:34
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+]]></output>
+          </test-case>
+          <test-case id="1772" name="MovementSwitchRespectsPreviewCommitmentAndHold(1,True,&quot;selected&quot;)" fullname="OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(1,True,&quot;selected&quot;)" methodname="MovementSwitchRespectsPreviewCommitmentAndHold" classname="OnlineFtpPreviewSwitchPlayModeTests" runstate="Runnable" seed="166655149" result="Failed" start-time="2026-11-19 15:16:36Z" end-time="2026-11-19 15:16:39Z" duration="2.844014" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Uncommitted FTP must offer the advertised movement switch
+  Expected: collection containing "movement.start"
+  But was:  < "ftp.target:-1:0", "ftp.target:-1:1", "ftp.target:-1:10", "ftp.target:-1:11", "ftp.target:-1:2", "ftp.target:-1:3", "ftp.target:-1:4", "ftp.target:-1:5", "ftp.target:-1:6", "ftp.target:-1:7", "ftp.target:-1:8", "ftp.target:-1:9", "ftp.target:-2:1", "ftp.target:-2:10", "ftp.target:-2:11", "ftp.target:-2:2", "ftp.target:-2:3", "ftp.target:-2:4", "ftp.target:-2:5", "ftp.target:-2:6", "ftp.target:-2:7", "ftp.target:-2:8", "ftp.target:-2:9", "ftp.target:-3:1", "ftp.target:-3:10", "ftp.target:-3:2", "ftp.target:-3:3", "ftp.target:-3:4", "ftp.target:-3:5", "ftp.target:-3:6", "ftp.target:-3:7", "ftp.target:-3:8", "ftp.target:-3:9", "ftp.target:-4:10", "ftp.target:-4:2", "ftp.target:-4:3", "ftp.target:-4:4", "ftp.target:-4:5", "ftp.target:-4:6", "ftp.target:-4:7", "ftp.target:-4:8", "ftp.target:-4:9", "ftp.target:-5:2", "ftp.target:-5:3", "ftp.target:-5:4", "ftp.target:-5:5", "ftp.target:-5:6", "ftp.target:-5:7", "ftp.target:-5:8", "ftp.target:-5:9", "ftp.target:-6:3", "ftp.target:-6:4", "ftp.target:-6:5", "ftp.target:-6:6", "ftp.target:-6:7", "ftp.target:-6:8", "ftp.target:-6:9", "ftp.target:0:0", "ftp.target:0:1", "ftp.target:0:10", "ftp.target:0:11", "ftp.target:0:12", "ftp.target:0:2", "ftp.target:0:3", "ftp.target:0:4", "ftp.target:0:5", "ftp.target:0:7", "ftp.target:0:8", "ftp.target:0:9", "ftp.target:1:0", "ftp.target:1:1", "ftp.target:1:10", "ftp.target:1:11", "ftp.target:1:2", "ftp.target:1:3", "ftp.target:1:4", "ftp.target:1:5", "ftp.target:1:6", "ftp.target:1:7", "ftp.target:1:8", "ftp.target:1:9", "ftp.target:2:1", "ftp.target:2:10", "ftp.target:2:11", "ftp.target:2:2", "ftp.target:2:3", "ftp.target:2:4", "ftp.target:2:5", "ftp.target:2:6", "ftp.target:2:7", "ftp.target:2:8", "ftp.target:2:9", "ftp.target:3:1", "ftp.target:3:10", "ftp.target:3:2", "ftp.target:3:3", "ftp.target:3:4", "ftp.target:3:5", "ftp.target:3:6", "ftp.target:3:7", "ftp.target:3:8", "ftp.target:3:9", "ftp.target:4:10", "ftp.target:4:2", "ftp.target:4:3", "ftp.target:4:4", "ftp.target:4:5", "ftp.target:4:6", "ftp.target:4:7", "ftp.target:4:8", "ftp.target:4:9", "ftp.target:5:2", "ftp.target:5:3", "ftp.target:5:4", "ftp.target:5:5", "ftp.target:5:6", "ftp.target:5:7", "ftp.target:5:8", "ftp.target:5:9", "ftp.target:6:3", "ftp.target:6:4", "ftp.target:6:5", "ftp.target:6:6", "ftp.target:6:7", "ftp.target:6:8", "ftp.target:6:9" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineFtpPreviewSwitch>d__78.MoveNext () [0x003f4] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFtpPreviewSwitch\OnlineFtpPreviewSwitchFixture.cs:34
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+]]></output>
+          </test-case>
+          <test-case id="1773" name="MovementSwitchRespectsPreviewCommitmentAndHold(1,True,&quot;committed&quot;)" fullname="OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(1,True,&quot;committed&quot;)" methodname="MovementSwitchRespectsPreviewCommitmentAndHold" classname="OnlineFtpPreviewSwitchPlayModeTests" runstate="Runnable" seed="2083980163" result="Passed" start-time="2026-11-19 15:16:39Z" end-time="2026-11-19 15:16:42Z" duration="2.883593" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+First-Time Pass target confirmed. Waiting for FTP movement phases.
+Offside assessed (first_time_pass_target_confirmed): line x=8, tokens=none.
+Substitutions are no longer available: Committed to FirstTimePass
+[Game Log] Online receiver (Fixture Home) attempts a ground pass
+Attacker movement phase started. Move one attacker 1 hex or press [X] to skip.
+]]></output>
+          </test-case>
+          <test-case id="1774" name="MovementSwitchRespectsPreviewCommitmentAndHold(1,True,&quot;hold&quot;)" fullname="OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(1,True,&quot;hold&quot;)" methodname="MovementSwitchRespectsPreviewCommitmentAndHold" classname="OnlineFtpPreviewSwitchPlayModeTests" runstate="Runnable" seed="1549938953" result="Failed" start-time="2026-11-19 15:16:42Z" end-time="2026-11-19 15:16:45Z" duration="2.848615" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Uncommitted FTP must offer the advertised movement switch
+  Expected: collection containing "movement.start"
+  But was:  < "ftp.target:-1:0", "ftp.target:-1:1", "ftp.target:-1:10", "ftp.target:-1:11", "ftp.target:-1:2", "ftp.target:-1:3", "ftp.target:-1:4", "ftp.target:-1:5", "ftp.target:-1:6", "ftp.target:-1:7", "ftp.target:-1:8", "ftp.target:-1:9", "ftp.target:-2:1", "ftp.target:-2:10", "ftp.target:-2:11", "ftp.target:-2:2", "ftp.target:-2:3", "ftp.target:-2:4", "ftp.target:-2:5", "ftp.target:-2:6", "ftp.target:-2:7", "ftp.target:-2:8", "ftp.target:-2:9", "ftp.target:-3:1", "ftp.target:-3:10", "ftp.target:-3:2", "ftp.target:-3:3", "ftp.target:-3:4", "ftp.target:-3:5", "ftp.target:-3:6", "ftp.target:-3:7", "ftp.target:-3:8", "ftp.target:-3:9", "ftp.target:-4:10", "ftp.target:-4:2", "ftp.target:-4:3", "ftp.target:-4:4", "ftp.target:-4:5", "ftp.target:-4:6", "ftp.target:-4:7", "ftp.target:-4:8", "ftp.target:-4:9", "ftp.target:-5:2", "ftp.target:-5:3", "ftp.target:-5:4", "ftp.target:-5:5", "ftp.target:-5:6", "ftp.target:-5:7", "ftp.target:-5:8", "ftp.target:-5:9", "ftp.target:-6:3", "ftp.target:-6:4", "ftp.target:-6:5", "ftp.target:-6:6", "ftp.target:-6:7", "ftp.target:-6:8", "ftp.target:-6:9", "ftp.target:0:0", "ftp.target:0:1", "ftp.target:0:10", "ftp.target:0:11", "ftp.target:0:12", "ftp.target:0:2", "ftp.target:0:3", "ftp.target:0:4", "ftp.target:0:5", "ftp.target:0:7", "ftp.target:0:8", "ftp.target:0:9", "ftp.target:1:0", "ftp.target:1:1", "ftp.target:1:10", "ftp.target:1:11", "ftp.target:1:2", "ftp.target:1:3", "ftp.target:1:4", "ftp.target:1:5", "ftp.target:1:6", "ftp.target:1:7", "ftp.target:1:8", "ftp.target:1:9", "ftp.target:2:1", "ftp.target:2:10", "ftp.target:2:11", "ftp.target:2:2", "ftp.target:2:3", "ftp.target:2:4", "ftp.target:2:5", "ftp.target:2:6", "ftp.target:2:7", "ftp.target:2:8", "ftp.target:2:9", "ftp.target:3:1", "ftp.target:3:10", "ftp.target:3:2", "ftp.target:3:3", "ftp.target:3:4", "ftp.target:3:5", "ftp.target:3:6", "ftp.target:3:7", "ftp.target:3:8", "ftp.target:3:9", "ftp.target:4:10", "ftp.target:4:2", "ftp.target:4:3", "ftp.target:4:4", "ftp.target:4:5", "ftp.target:4:6", "ftp.target:4:7", "ftp.target:4:8", "ftp.target:4:9", "ftp.target:5:2", "ftp.target:5:3", "ftp.target:5:4", "ftp.target:5:5", "ftp.target:5:6", "ftp.target:5:7", "ftp.target:5:8", "ftp.target:5:9", "ftp.target:6:3", "ftp.target:6:4", "ftp.target:6:5", "ftp.target:6:6", "ftp.target:6:7", "ftp.target:6:8", "ftp.target:6:9" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineFtpPreviewSwitch>d__78.MoveNext () [0x003f4] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFtpPreviewSwitch\OnlineFtpPreviewSwitchFixture.cs:34
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+]]></output>
+          </test-case>
+          <test-case id="1775" name="MovementSwitchRespectsPreviewCommitmentAndHold(-1,False,&quot;unselected&quot;)" fullname="OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(-1,False,&quot;unselected&quot;)" methodname="MovementSwitchRespectsPreviewCommitmentAndHold" classname="OnlineFtpPreviewSwitchPlayModeTests" runstate="Runnable" seed="1924537230" result="Failed" start-time="2026-11-19 15:16:45Z" end-time="2026-11-19 15:16:48Z" duration="2.775049" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Uncommitted FTP must offer the advertised movement switch
+  Expected: collection containing "movement.start"
+  But was:  < "ftp.target:-1:0", "ftp.target:-1:1", "ftp.target:-1:10", "ftp.target:-1:11", "ftp.target:-1:2", "ftp.target:-1:3", "ftp.target:-1:4", "ftp.target:-1:5", "ftp.target:-1:6", "ftp.target:-1:7", "ftp.target:-1:8", "ftp.target:-1:9", "ftp.target:-2:1", "ftp.target:-2:10", "ftp.target:-2:11", "ftp.target:-2:2", "ftp.target:-2:3", "ftp.target:-2:4", "ftp.target:-2:5", "ftp.target:-2:6", "ftp.target:-2:7", "ftp.target:-2:8", "ftp.target:-2:9", "ftp.target:-3:1", "ftp.target:-3:10", "ftp.target:-3:2", "ftp.target:-3:3", "ftp.target:-3:4", "ftp.target:-3:5", "ftp.target:-3:6", "ftp.target:-3:7", "ftp.target:-3:8", "ftp.target:-3:9", "ftp.target:-4:10", "ftp.target:-4:2", "ftp.target:-4:3", "ftp.target:-4:4", "ftp.target:-4:5", "ftp.target:-4:6", "ftp.target:-4:7", "ftp.target:-4:8", "ftp.target:-4:9", "ftp.target:-5:2", "ftp.target:-5:3", "ftp.target:-5:4", "ftp.target:-5:5", "ftp.target:-5:6", "ftp.target:-5:7", "ftp.target:-5:8", "ftp.target:-5:9", "ftp.target:-6:3", "ftp.target:-6:4", "ftp.target:-6:5", "ftp.target:-6:6", "ftp.target:-6:7", "ftp.target:-6:8", "ftp.target:-6:9", "ftp.target:0:0", "ftp.target:0:1", "ftp.target:0:10", "ftp.target:0:11", "ftp.target:0:12", "ftp.target:0:2", "ftp.target:0:3", "ftp.target:0:4", "ftp.target:0:5", "ftp.target:0:7", "ftp.target:0:8", "ftp.target:0:9", "ftp.target:1:0", "ftp.target:1:1", "ftp.target:1:10", "ftp.target:1:11", "ftp.target:1:2", "ftp.target:1:3", "ftp.target:1:4", "ftp.target:1:5", "ftp.target:1:6", "ftp.target:1:7", "ftp.target:1:8", "ftp.target:1:9", "ftp.target:2:1", "ftp.target:2:10", "ftp.target:2:11", "ftp.target:2:2", "ftp.target:2:3", "ftp.target:2:4", "ftp.target:2:5", "ftp.target:2:6", "ftp.target:2:7", "ftp.target:2:8", "ftp.target:2:9", "ftp.target:3:1", "ftp.target:3:10", "ftp.target:3:2", "ftp.target:3:3", "ftp.target:3:4", "ftp.target:3:5", "ftp.target:3:6", "ftp.target:3:7", "ftp.target:3:8", "ftp.target:3:9", "ftp.target:4:10", "ftp.target:4:2", "ftp.target:4:3", "ftp.target:4:4", "ftp.target:4:5", "ftp.target:4:6", "ftp.target:4:7", "ftp.target:4:8", "ftp.target:4:9", "ftp.target:5:2", "ftp.target:5:3", "ftp.target:5:4", "ftp.target:5:5", "ftp.target:5:6", "ftp.target:5:7", "ftp.target:5:8", "ftp.target:5:9", "ftp.target:6:3", "ftp.target:6:4", "ftp.target:6:5", "ftp.target:6:6", "ftp.target:6:7", "ftp.target:6:8", "ftp.target:6:9" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineFtpPreviewSwitch>d__78.MoveNext () [0x003f4] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFtpPreviewSwitch\OnlineFtpPreviewSwitchFixture.cs:34
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Away recovering player (Fixture Away) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Away recovering player (Fixture Away) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online backline
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+]]></output>
+          </test-case>
+          <test-case id="1776" name="MovementSwitchRespectsPreviewCommitmentAndHold(-1,False,&quot;selected&quot;)" fullname="OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(-1,False,&quot;selected&quot;)" methodname="MovementSwitchRespectsPreviewCommitmentAndHold" classname="OnlineFtpPreviewSwitchPlayModeTests" runstate="Runnable" seed="529070091" result="Failed" start-time="2026-11-19 15:16:48Z" end-time="2026-11-19 15:16:51Z" duration="2.951285" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Uncommitted FTP must offer the advertised movement switch
+  Expected: collection containing "movement.start"
+  But was:  < "ftp.target:-1:0", "ftp.target:-1:1", "ftp.target:-1:10", "ftp.target:-1:11", "ftp.target:-1:2", "ftp.target:-1:3", "ftp.target:-1:4", "ftp.target:-1:5", "ftp.target:-1:6", "ftp.target:-1:7", "ftp.target:-1:8", "ftp.target:-1:9", "ftp.target:-2:1", "ftp.target:-2:10", "ftp.target:-2:11", "ftp.target:-2:2", "ftp.target:-2:3", "ftp.target:-2:4", "ftp.target:-2:5", "ftp.target:-2:6", "ftp.target:-2:7", "ftp.target:-2:8", "ftp.target:-2:9", "ftp.target:-3:1", "ftp.target:-3:10", "ftp.target:-3:2", "ftp.target:-3:3", "ftp.target:-3:4", "ftp.target:-3:5", "ftp.target:-3:6", "ftp.target:-3:7", "ftp.target:-3:8", "ftp.target:-3:9", "ftp.target:-4:10", "ftp.target:-4:2", "ftp.target:-4:3", "ftp.target:-4:4", "ftp.target:-4:5", "ftp.target:-4:6", "ftp.target:-4:7", "ftp.target:-4:8", "ftp.target:-4:9", "ftp.target:-5:2", "ftp.target:-5:3", "ftp.target:-5:4", "ftp.target:-5:5", "ftp.target:-5:6", "ftp.target:-5:7", "ftp.target:-5:8", "ftp.target:-5:9", "ftp.target:-6:3", "ftp.target:-6:4", "ftp.target:-6:5", "ftp.target:-6:6", "ftp.target:-6:7", "ftp.target:-6:8", "ftp.target:-6:9", "ftp.target:0:0", "ftp.target:0:1", "ftp.target:0:10", "ftp.target:0:11", "ftp.target:0:12", "ftp.target:0:2", "ftp.target:0:3", "ftp.target:0:4", "ftp.target:0:5", "ftp.target:0:7", "ftp.target:0:8", "ftp.target:0:9", "ftp.target:1:0", "ftp.target:1:1", "ftp.target:1:10", "ftp.target:1:11", "ftp.target:1:2", "ftp.target:1:3", "ftp.target:1:4", "ftp.target:1:5", "ftp.target:1:6", "ftp.target:1:7", "ftp.target:1:8", "ftp.target:1:9", "ftp.target:2:1", "ftp.target:2:10", "ftp.target:2:11", "ftp.target:2:2", "ftp.target:2:3", "ftp.target:2:4", "ftp.target:2:5", "ftp.target:2:6", "ftp.target:2:7", "ftp.target:2:8", "ftp.target:2:9", "ftp.target:3:1", "ftp.target:3:10", "ftp.target:3:2", "ftp.target:3:3", "ftp.target:3:4", "ftp.target:3:5", "ftp.target:3:6", "ftp.target:3:7", "ftp.target:3:8", "ftp.target:3:9", "ftp.target:4:10", "ftp.target:4:2", "ftp.target:4:3", "ftp.target:4:4", "ftp.target:4:5", "ftp.target:4:6", "ftp.target:4:7", "ftp.target:4:8", "ftp.target:4:9", "ftp.target:5:2", "ftp.target:5:3", "ftp.target:5:4", "ftp.target:5:5", "ftp.target:5:6", "ftp.target:5:7", "ftp.target:5:8", "ftp.target:5:9", "ftp.target:6:3", "ftp.target:6:4", "ftp.target:6:5", "ftp.target:6:6", "ftp.target:6:7", "ftp.target:6:8", "ftp.target:6:9" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineFtpPreviewSwitch>d__78.MoveNext () [0x003f4] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFtpPreviewSwitch\OnlineFtpPreviewSwitchFixture.cs:34
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Away recovering player (Fixture Away) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Away recovering player (Fixture Away) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online backline
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+]]></output>
+          </test-case>
+          <test-case id="1777" name="MovementSwitchRespectsPreviewCommitmentAndHold(-1,False,&quot;committed&quot;)" fullname="OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(-1,False,&quot;committed&quot;)" methodname="MovementSwitchRespectsPreviewCommitmentAndHold" classname="OnlineFtpPreviewSwitchPlayModeTests" runstate="Runnable" seed="12303680" result="Passed" start-time="2026-11-19 15:16:51Z" end-time="2026-11-19 15:16:54Z" duration="3.004284" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Away recovering player (Fixture Away) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Away recovering player (Fixture Away) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online backline
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+First-Time Pass target confirmed. Waiting for FTP movement phases.
+Offside assessed (first_time_pass_target_confirmed): line x=-8, tokens=none.
+Substitutions are no longer available: Committed to FirstTimePass
+[Game Log] Online backline (Fixture Away) attempts a ground pass
+Attacker movement phase started. Move one attacker 1 hex or press [X] to skip.
+]]></output>
+          </test-case>
+          <test-case id="1778" name="MovementSwitchRespectsPreviewCommitmentAndHold(-1,False,&quot;hold&quot;)" fullname="OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(-1,False,&quot;hold&quot;)" methodname="MovementSwitchRespectsPreviewCommitmentAndHold" classname="OnlineFtpPreviewSwitchPlayModeTests" runstate="Runnable" seed="2055664308" result="Failed" start-time="2026-11-19 15:16:54Z" end-time="2026-11-19 15:16:57Z" duration="2.958122" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Uncommitted FTP must offer the advertised movement switch
+  Expected: collection containing "movement.start"
+  But was:  < "ftp.target:-1:0", "ftp.target:-1:1", "ftp.target:-1:10", "ftp.target:-1:11", "ftp.target:-1:2", "ftp.target:-1:3", "ftp.target:-1:4", "ftp.target:-1:5", "ftp.target:-1:6", "ftp.target:-1:7", "ftp.target:-1:8", "ftp.target:-1:9", "ftp.target:-2:1", "ftp.target:-2:10", "ftp.target:-2:11", "ftp.target:-2:2", "ftp.target:-2:3", "ftp.target:-2:4", "ftp.target:-2:5", "ftp.target:-2:6", "ftp.target:-2:7", "ftp.target:-2:8", "ftp.target:-2:9", "ftp.target:-3:1", "ftp.target:-3:10", "ftp.target:-3:2", "ftp.target:-3:3", "ftp.target:-3:4", "ftp.target:-3:5", "ftp.target:-3:6", "ftp.target:-3:7", "ftp.target:-3:8", "ftp.target:-3:9", "ftp.target:-4:10", "ftp.target:-4:2", "ftp.target:-4:3", "ftp.target:-4:4", "ftp.target:-4:5", "ftp.target:-4:6", "ftp.target:-4:7", "ftp.target:-4:8", "ftp.target:-4:9", "ftp.target:-5:2", "ftp.target:-5:3", "ftp.target:-5:4", "ftp.target:-5:5", "ftp.target:-5:6", "ftp.target:-5:7", "ftp.target:-5:8", "ftp.target:-5:9", "ftp.target:-6:3", "ftp.target:-6:4", "ftp.target:-6:5", "ftp.target:-6:6", "ftp.target:-6:7", "ftp.target:-6:8", "ftp.target:-6:9", "ftp.target:0:0", "ftp.target:0:1", "ftp.target:0:10", "ftp.target:0:11", "ftp.target:0:12", "ftp.target:0:2", "ftp.target:0:3", "ftp.target:0:4", "ftp.target:0:5", "ftp.target:0:7", "ftp.target:0:8", "ftp.target:0:9", "ftp.target:1:0", "ftp.target:1:1", "ftp.target:1:10", "ftp.target:1:11", "ftp.target:1:2", "ftp.target:1:3", "ftp.target:1:4", "ftp.target:1:5", "ftp.target:1:6", "ftp.target:1:7", "ftp.target:1:8", "ftp.target:1:9", "ftp.target:2:1", "ftp.target:2:10", "ftp.target:2:11", "ftp.target:2:2", "ftp.target:2:3", "ftp.target:2:4", "ftp.target:2:5", "ftp.target:2:6", "ftp.target:2:7", "ftp.target:2:8", "ftp.target:2:9", "ftp.target:3:1", "ftp.target:3:10", "ftp.target:3:2", "ftp.target:3:3", "ftp.target:3:4", "ftp.target:3:5", "ftp.target:3:6", "ftp.target:3:7", "ftp.target:3:8", "ftp.target:3:9", "ftp.target:4:10", "ftp.target:4:2", "ftp.target:4:3", "ftp.target:4:4", "ftp.target:4:5", "ftp.target:4:6", "ftp.target:4:7", "ftp.target:4:8", "ftp.target:4:9", "ftp.target:5:2", "ftp.target:5:3", "ftp.target:5:4", "ftp.target:5:5", "ftp.target:5:6", "ftp.target:5:7", "ftp.target:5:8", "ftp.target:5:9", "ftp.target:6:3", "ftp.target:6:4", "ftp.target:6:5", "ftp.target:6:6", "ftp.target:6:7", "ftp.target:6:8", "ftp.target:6:9" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineFtpPreviewSwitch>d__78.MoveNext () [0x003f4] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFtpPreviewSwitch\OnlineFtpPreviewSwitchFixture.cs:34
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Away recovering player (Fixture Away) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Away recovering player (Fixture Away) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online backline
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+]]></output>
+          </test-case>
+          <test-case id="1779" name="MovementSwitchRespectsPreviewCommitmentAndHold(-1,True,&quot;unselected&quot;)" fullname="OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(-1,True,&quot;unselected&quot;)" methodname="MovementSwitchRespectsPreviewCommitmentAndHold" classname="OnlineFtpPreviewSwitchPlayModeTests" runstate="Runnable" seed="2032679592" result="Failed" start-time="2026-11-19 15:16:57Z" end-time="2026-11-19 15:16:59Z" duration="2.791389" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Uncommitted FTP must offer the advertised movement switch
+  Expected: collection containing "movement.start"
+  But was:  < "ftp.target:-1:0", "ftp.target:-1:1", "ftp.target:-1:10", "ftp.target:-1:11", "ftp.target:-1:2", "ftp.target:-1:3", "ftp.target:-1:4", "ftp.target:-1:5", "ftp.target:-1:6", "ftp.target:-1:7", "ftp.target:-1:8", "ftp.target:-1:9", "ftp.target:-2:1", "ftp.target:-2:10", "ftp.target:-2:11", "ftp.target:-2:2", "ftp.target:-2:3", "ftp.target:-2:4", "ftp.target:-2:5", "ftp.target:-2:6", "ftp.target:-2:7", "ftp.target:-2:8", "ftp.target:-2:9", "ftp.target:-3:1", "ftp.target:-3:10", "ftp.target:-3:2", "ftp.target:-3:3", "ftp.target:-3:4", "ftp.target:-3:5", "ftp.target:-3:6", "ftp.target:-3:7", "ftp.target:-3:8", "ftp.target:-3:9", "ftp.target:-4:10", "ftp.target:-4:2", "ftp.target:-4:3", "ftp.target:-4:4", "ftp.target:-4:5", "ftp.target:-4:6", "ftp.target:-4:7", "ftp.target:-4:8", "ftp.target:-4:9", "ftp.target:-5:2", "ftp.target:-5:3", "ftp.target:-5:4", "ftp.target:-5:5", "ftp.target:-5:6", "ftp.target:-5:7", "ftp.target:-5:8", "ftp.target:-5:9", "ftp.target:-6:3", "ftp.target:-6:4", "ftp.target:-6:5", "ftp.target:-6:6", "ftp.target:-6:7", "ftp.target:-6:8", "ftp.target:-6:9", "ftp.target:0:0", "ftp.target:0:1", "ftp.target:0:10", "ftp.target:0:11", "ftp.target:0:12", "ftp.target:0:2", "ftp.target:0:3", "ftp.target:0:4", "ftp.target:0:5", "ftp.target:0:7", "ftp.target:0:8", "ftp.target:0:9", "ftp.target:1:0", "ftp.target:1:1", "ftp.target:1:10", "ftp.target:1:11", "ftp.target:1:2", "ftp.target:1:3", "ftp.target:1:4", "ftp.target:1:5", "ftp.target:1:6", "ftp.target:1:7", "ftp.target:1:8", "ftp.target:1:9", "ftp.target:2:1", "ftp.target:2:10", "ftp.target:2:11", "ftp.target:2:2", "ftp.target:2:3", "ftp.target:2:4", "ftp.target:2:5", "ftp.target:2:6", "ftp.target:2:7", "ftp.target:2:8", "ftp.target:2:9", "ftp.target:3:1", "ftp.target:3:10", "ftp.target:3:2", "ftp.target:3:3", "ftp.target:3:4", "ftp.target:3:5", "ftp.target:3:6", "ftp.target:3:7", "ftp.target:3:8", "ftp.target:3:9", "ftp.target:4:10", "ftp.target:4:2", "ftp.target:4:3", "ftp.target:4:4", "ftp.target:4:5", "ftp.target:4:6", "ftp.target:4:7", "ftp.target:4:8", "ftp.target:4:9", "ftp.target:5:2", "ftp.target:5:3", "ftp.target:5:4", "ftp.target:5:5", "ftp.target:5:6", "ftp.target:5:7", "ftp.target:5:8", "ftp.target:5:9", "ftp.target:6:3", "ftp.target:6:4", "ftp.target:6:5", "ftp.target:6:6", "ftp.target:6:7", "ftp.target:6:8", "ftp.target:6:9" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineFtpPreviewSwitch>d__78.MoveNext () [0x003f4] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFtpPreviewSwitch\OnlineFtpPreviewSwitchFixture.cs:34
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+]]></output>
+          </test-case>
+          <test-case id="1780" name="MovementSwitchRespectsPreviewCommitmentAndHold(-1,True,&quot;selected&quot;)" fullname="OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(-1,True,&quot;selected&quot;)" methodname="MovementSwitchRespectsPreviewCommitmentAndHold" classname="OnlineFtpPreviewSwitchPlayModeTests" runstate="Runnable" seed="2110909913" result="Failed" start-time="2026-11-19 15:16:59Z" end-time="2026-11-19 15:17:02Z" duration="2.863390" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Uncommitted FTP must offer the advertised movement switch
+  Expected: collection containing "movement.start"
+  But was:  < "ftp.target:-1:0", "ftp.target:-1:1", "ftp.target:-1:10", "ftp.target:-1:11", "ftp.target:-1:2", "ftp.target:-1:3", "ftp.target:-1:4", "ftp.target:-1:5", "ftp.target:-1:6", "ftp.target:-1:7", "ftp.target:-1:8", "ftp.target:-1:9", "ftp.target:-2:1", "ftp.target:-2:10", "ftp.target:-2:11", "ftp.target:-2:2", "ftp.target:-2:3", "ftp.target:-2:4", "ftp.target:-2:5", "ftp.target:-2:6", "ftp.target:-2:7", "ftp.target:-2:8", "ftp.target:-2:9", "ftp.target:-3:1", "ftp.target:-3:10", "ftp.target:-3:2", "ftp.target:-3:3", "ftp.target:-3:4", "ftp.target:-3:5", "ftp.target:-3:6", "ftp.target:-3:7", "ftp.target:-3:8", "ftp.target:-3:9", "ftp.target:-4:10", "ftp.target:-4:2", "ftp.target:-4:3", "ftp.target:-4:4", "ftp.target:-4:5", "ftp.target:-4:6", "ftp.target:-4:7", "ftp.target:-4:8", "ftp.target:-4:9", "ftp.target:-5:2", "ftp.target:-5:3", "ftp.target:-5:4", "ftp.target:-5:5", "ftp.target:-5:6", "ftp.target:-5:7", "ftp.target:-5:8", "ftp.target:-5:9", "ftp.target:-6:3", "ftp.target:-6:4", "ftp.target:-6:5", "ftp.target:-6:6", "ftp.target:-6:7", "ftp.target:-6:8", "ftp.target:-6:9", "ftp.target:0:0", "ftp.target:0:1", "ftp.target:0:10", "ftp.target:0:11", "ftp.target:0:12", "ftp.target:0:2", "ftp.target:0:3", "ftp.target:0:4", "ftp.target:0:5", "ftp.target:0:7", "ftp.target:0:8", "ftp.target:0:9", "ftp.target:1:0", "ftp.target:1:1", "ftp.target:1:10", "ftp.target:1:11", "ftp.target:1:2", "ftp.target:1:3", "ftp.target:1:4", "ftp.target:1:5", "ftp.target:1:6", "ftp.target:1:7", "ftp.target:1:8", "ftp.target:1:9", "ftp.target:2:1", "ftp.target:2:10", "ftp.target:2:11", "ftp.target:2:2", "ftp.target:2:3", "ftp.target:2:4", "ftp.target:2:5", "ftp.target:2:6", "ftp.target:2:7", "ftp.target:2:8", "ftp.target:2:9", "ftp.target:3:1", "ftp.target:3:10", "ftp.target:3:2", "ftp.target:3:3", "ftp.target:3:4", "ftp.target:3:5", "ftp.target:3:6", "ftp.target:3:7", "ftp.target:3:8", "ftp.target:3:9", "ftp.target:4:10", "ftp.target:4:2", "ftp.target:4:3", "ftp.target:4:4", "ftp.target:4:5", "ftp.target:4:6", "ftp.target:4:7", "ftp.target:4:8", "ftp.target:4:9", "ftp.target:5:2", "ftp.target:5:3", "ftp.target:5:4", "ftp.target:5:5", "ftp.target:5:6", "ftp.target:5:7", "ftp.target:5:8", "ftp.target:5:9", "ftp.target:6:3", "ftp.target:6:4", "ftp.target:6:5", "ftp.target:6:6", "ftp.target:6:7", "ftp.target:6:8", "ftp.target:6:9" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineFtpPreviewSwitch>d__78.MoveNext () [0x003f4] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFtpPreviewSwitch\OnlineFtpPreviewSwitchFixture.cs:34
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+]]></output>
+          </test-case>
+          <test-case id="1781" name="MovementSwitchRespectsPreviewCommitmentAndHold(-1,True,&quot;committed&quot;)" fullname="OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(-1,True,&quot;committed&quot;)" methodname="MovementSwitchRespectsPreviewCommitmentAndHold" classname="OnlineFtpPreviewSwitchPlayModeTests" runstate="Runnable" seed="1854306607" result="Passed" start-time="2026-11-19 15:17:02Z" end-time="2026-11-19 15:17:05Z" duration="2.910082" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+First-Time Pass target confirmed. Waiting for FTP movement phases.
+Offside assessed (first_time_pass_target_confirmed): line x=-8, tokens=none.
+Substitutions are no longer available: Committed to FirstTimePass
+[Game Log] Online receiver (Fixture Home) attempts a ground pass
+Attacker movement phase started. Move one attacker 1 hex or press [X] to skip.
+]]></output>
+          </test-case>
+          <test-case id="1782" name="MovementSwitchRespectsPreviewCommitmentAndHold(-1,True,&quot;hold&quot;)" fullname="OnlineFtpPreviewSwitchPlayModeTests.MovementSwitchRespectsPreviewCommitmentAndHold(-1,True,&quot;hold&quot;)" methodname="MovementSwitchRespectsPreviewCommitmentAndHold" classname="OnlineFtpPreviewSwitchPlayModeTests" runstate="Runnable" seed="1387172539" result="Failed" start-time="2026-11-19 15:17:05Z" end-time="2026-11-19 15:17:08Z" duration="2.948594" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Uncommitted FTP must offer the advertised movement switch
+  Expected: collection containing "movement.start"
+  But was:  < "ftp.target:-1:0", "ftp.target:-1:1", "ftp.target:-1:10", "ftp.target:-1:11", "ftp.target:-1:2", "ftp.target:-1:3", "ftp.target:-1:4", "ftp.target:-1:5", "ftp.target:-1:6", "ftp.target:-1:7", "ftp.target:-1:8", "ftp.target:-1:9", "ftp.target:-2:1", "ftp.target:-2:10", "ftp.target:-2:11", "ftp.target:-2:2", "ftp.target:-2:3", "ftp.target:-2:4", "ftp.target:-2:5", "ftp.target:-2:6", "ftp.target:-2:7", "ftp.target:-2:8", "ftp.target:-2:9", "ftp.target:-3:1", "ftp.target:-3:10", "ftp.target:-3:2", "ftp.target:-3:3", "ftp.target:-3:4", "ftp.target:-3:5", "ftp.target:-3:6", "ftp.target:-3:7", "ftp.target:-3:8", "ftp.target:-3:9", "ftp.target:-4:10", "ftp.target:-4:2", "ftp.target:-4:3", "ftp.target:-4:4", "ftp.target:-4:5", "ftp.target:-4:6", "ftp.target:-4:7", "ftp.target:-4:8", "ftp.target:-4:9", "ftp.target:-5:2", "ftp.target:-5:3", "ftp.target:-5:4", "ftp.target:-5:5", "ftp.target:-5:6", "ftp.target:-5:7", "ftp.target:-5:8", "ftp.target:-5:9", "ftp.target:-6:3", "ftp.target:-6:4", "ftp.target:-6:5", "ftp.target:-6:6", "ftp.target:-6:7", "ftp.target:-6:8", "ftp.target:-6:9", "ftp.target:0:0", "ftp.target:0:1", "ftp.target:0:10", "ftp.target:0:11", "ftp.target:0:12", "ftp.target:0:2", "ftp.target:0:3", "ftp.target:0:4", "ftp.target:0:5", "ftp.target:0:7", "ftp.target:0:8", "ftp.target:0:9", "ftp.target:1:0", "ftp.target:1:1", "ftp.target:1:10", "ftp.target:1:11", "ftp.target:1:2", "ftp.target:1:3", "ftp.target:1:4", "ftp.target:1:5", "ftp.target:1:6", "ftp.target:1:7", "ftp.target:1:8", "ftp.target:1:9", "ftp.target:2:1", "ftp.target:2:10", "ftp.target:2:11", "ftp.target:2:2", "ftp.target:2:3", "ftp.target:2:4", "ftp.target:2:5", "ftp.target:2:6", "ftp.target:2:7", "ftp.target:2:8", "ftp.target:2:9", "ftp.target:3:1", "ftp.target:3:10", "ftp.target:3:2", "ftp.target:3:3", "ftp.target:3:4", "ftp.target:3:5", "ftp.target:3:6", "ftp.target:3:7", "ftp.target:3:8", "ftp.target:3:9", "ftp.target:4:10", "ftp.target:4:2", "ftp.target:4:3", "ftp.target:4:4", "ftp.target:4:5", "ftp.target:4:6", "ftp.target:4:7", "ftp.target:4:8", "ftp.target:4:9", "ftp.target:5:2", "ftp.target:5:3", "ftp.target:5:4", "ftp.target:5:5", "ftp.target:5:6", "ftp.target:5:7", "ftp.target:5:8", "ftp.target:5:9", "ftp.target:6:3", "ftp.target:6:4", "ftp.target:6:5", "ftp.target:6:6", "ftp.target:6:7", "ftp.target:6:8", "ftp.target:6:9" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineFtpPreviewSwitch>d__78.MoveNext () [0x003f4] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFtpPreviewSwitch\OnlineFtpPreviewSwitchFixture.cs:34
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+Movement phase has been reset.
+First Time pass attempt mode activated.
+FirstTimePassManager activated. Waiting for target selection...
+First-Time Pass target selected. Click again to confirm or elsewhere to try another target.
+Saving results to: TestResults\GameplayRegression\Runs\20261119T151621379Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

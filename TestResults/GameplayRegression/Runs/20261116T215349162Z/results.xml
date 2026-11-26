@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="45" result="Passed" total="45" passed="45" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 21:53:49Z" end-time="2026-11-16 21:53:49Z" duration="0.4025379">
+  <test-suite type="TestSuite" id="5227" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1873" result="Passed" start-time="2026-11-16 21:53:49Z" end-time="2026-11-16 21:53:49Z" duration="0.402538" total="45" passed="45" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="5220" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="1873" result="Passed" start-time="2026-11-16 21:53:49Z" end-time="2026-11-16 21:53:49Z" duration="0.372768" total="45" passed="45" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12156" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="3718" name="OnlineContextKeysEditorTests" fullname="OnlineContextKeysEditorTests" classname="OnlineContextKeysEditorTests" runstate="Runnable" testcasecount="45" result="Passed" start-time="2026-11-16 21:53:49Z" end-time="2026-11-16 21:53:49Z" duration="0.328991" total="45" passed="45" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineContextKeys" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="3765" name="AmbiguousFamiliesAreNotGuessed" fullname="OnlineContextKeysEditorTests.AmbiguousFamiliesAreNotGuessed" classname="OnlineContextKeysEditorTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-11-16 21:53:49Z" end-time="2026-11-16 21:53:49Z" duration="0.054044" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="3757" name="AmbiguousFamiliesAreNotGuessed(P,&quot;ground.start&quot;,&quot;set-piece.ground&quot;)" fullname="OnlineContextKeysEditorTests.AmbiguousFamiliesAreNotGuessed(P,&quot;ground.start&quot;,&quot;set-piece.ground&quot;)" methodname="AmbiguousFamiliesAreNotGuessed" classname="OnlineContextKeysEditorTests" runstate="Runnable" seed="159948503" result="Passed" start-time="2026-11-16 21:53:49Z" end-time="2026-11-16 21:53:49Z" duration="0.000564" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3758" name="AmbiguousFamiliesAreNotGuessed(F,&quot;ftp.start&quot;,&quot;keeper.pickup.feet&quot;)" fullname="OnlineContextKeysEditorTests.AmbiguousFamiliesAreNotGuessed(F,&quot;ftp.start&quot;,&quot;keeper.pickup.feet&quot;)" methodname="AmbiguousFamiliesAreNotGuessed" classname="OnlineContextKeysEditorTests" runstate="Runnable" seed="293766718" result="Passed" start-time="2026-11-16 21:53:49Z" end-time="2026-11-16 21:53:49Z" duration="0.000177" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3759" name="AmbiguousFamiliesAreNotGuessed(H,&quot;header.free&quot;,&quot;header.backpass.hands&quot;)" fullname="OnlineContextKeysEditorTests.AmbiguousFamiliesAreNotGuessed(H,&quot;header.free&quot;,&quot;header.backpass.hands&quot;)" methodname="AmbiguousFamiliesAreNotGuessed" classname="OnlineContextKeysEditorTests" runstate="Runnable" seed="55679925" result="Passed" start-time="2026-11-16 21:53:49Z" end-time="2026-11-16 21:53:49Z" duration="0.000195" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3760" name="AmbiguousFamiliesAreNotGuessed(Q,&quot;keeper.quick&quot;,&quot;keeper.quick.start&quot;)" fullname="OnlineContextKeysEditorTests.AmbiguousFamiliesAreNotGuessed(Q,&quot;keeper.quick&quot;,&quot;keeper.quick.start&quot;)" methodname="AmbiguousFamiliesAreNotGuessed" classname="OnlineContextKeysEditorTests" runstate="Runnable" seed="1212932989" result="Passed" start-time="2026-11-16 21:53:49Z" end-time="2026-11-16 21:53:49Z" duration="0.000210" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3761" name="AmbiguousFamiliesAreNotGuessed(K,&quot;keeper.final-third&quot;,&quot;final-third.kick&quot;)" fullname="OnlineContextKeysEditorTests.AmbiguousFamiliesAreNotGuessed(K,&quot;keeper.final-third&quot;,&quot;final-third.kick&quot;)" methodname="AmbiguousFamiliesAreNotGuessed" classname="OnlineContextKeysEditorTests" runstate="Runnable" seed="1535377885" result="Passed" start-time="2026-11-16 21:53:49Z" end-time="2026-11-16 21:53:49Z" duration="0.000273" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3762" name="AmbiguousFamiliesAreNotGuessed(X,&quot;dribble.finish&quot;,&quot;high.skip&quot;)" fullname="OnlineContextKeysEditorTests.AmbiguousFamiliesAreNotGuessed(X,&quot;dribble.finish&quot;,&quot;high.skip&quot;)" methodname="AmbiguousFamiliesAreNotGuessed" classname="OnlineContextKeysEditorTests" runstate="Runnable" seed="354810283" result="Passed" start-time="2026-11-16 21:53:49Z" end-time="2026-11-16 21:53:49Z" duration="0.000218" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3763" name="AmbiguousFamiliesAreNotGuessed(Return,&quot;kickoff.confirm&quot;,&quot;final-third.forfeit&quot;)" fullname="OnlineContextKeysEditorTests.AmbiguousFamiliesAreNotGuessed(Return,&quot;kickoff.confirm&quot;,&quot;final-third.forfeit&quot;)" methodname="AmbiguousFamiliesAreNotGuessed" classname="OnlineContextKeysEditorTests" runstate="Runnable" seed="333976794" result="Passed" start-time="2026-11-16 21:53:49Z" end-time="2026-11-16 21:53:49Z" duration="0.000197" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3764" name="AmbiguousFamiliesAreNotGuessed(S,&quot;set-piece.shot&quot;,&quot;shot.start&quot;)" fullname="OnlineContextKeysEditorTests.AmbiguousFamiliesAreNotGuessed(S,&quot;set-piece.shot&quot;,&quot;shot.start&quot;)" methodname="AmbiguousFamiliesAreNotGuessed" classname="OnlineContextKeysEditorTests" runstate="Runnable" seed="312386628" result="Passed" start-time="2026-11-16 21:53:49Z" end-time="2026-11-16 21:53:49Z" duration="0.000172" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="3756" name="ExistingPhysicalKeyUsesItsPublishedContext" fullname="OnlineContextKeysEditorTests.ExistingPhysicalKeyUsesItsPublishedContext" classname="OnlineContextKeysEditorTests" runstate="Runnable" testcasecount="37" result="Passed" start-time="2026-11-16 21:53:49Z" end-time="2026-11-16 21:53:49Z" duration="0.272620" total="37" passed="37" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="3719" name="ExistingPhysicalKeyUsesItsPublishedContext(P,&quot;set-piece.ground&quot;)" fullname="OnlineContextKeysEditorTests.ExistingPhysicalKeyUsesItsPublishedContext(P,&quot;set-piece.ground&quot;)" methodname="ExistingPhysicalKeyUsesItsPublishedContext" classname="OnlineContextKeysEditorTests" runstate="Runnable" seed="388131546" result="Passed" start-time="2026-11-16 21:53:49Z" end-time="2026-11-16 21:53:49Z" duration="0.000558" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3720" name="ExistingPhysicalKeyUsesItsPublishedContext(P,&quot;throw.feet&quot;)" fullname="OnlineContextKeysEditorTests.ExistingPhysicalKeyUsesItsPublishedContext(P,&quot;throw.feet&quot;)" methodname="ExistingPhysicalKeyUsesItsPublishedContext" classname="OnlineContextKeysEditorTests" runstate="Runnable" seed="1431119437" result="Passed" start-time="2026-11-16 21:53:49Z" end-time="2026-11-16 21:53:49Z" duration="0.000257" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3721" name="ExistingPhysicalKeyUsesItsPublishedContext(P,&quot;final-third.pass&quot;)" fullname="OnlineContextKeysEditorTests.ExistingPhysicalKeyUsesItsPublishedContext(P,&quot;final-third.pass&quot;)" methodname="ExistingPhysicalKeyUsesItsPublishedContext" classname="OnlineContextKeysEditorTests" runstate="Runnable" seed="707371607" result="Passed" start-time="2026-11-16 21:53:49Z" end-time="2026-11-16 21:53:49Z" duration="0.000390" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3722" name="ExistingPhysicalKeyUsesItsPublishedContext(L,&quot;set-piece.long&quot;)" fullname="OnlineContextKeysEditorTests.ExistingPhysicalKeyUsesItsPublishedContext(L,&quot;set-piece.long&quot;)" methodname="ExistingPhysicalKeyUsesItsPublishedContext" classname="OnlineContextKeysEditorTests" runstate="Runnable" seed="1209631541" result="Passed" start-time="2026-11-16 21:53:49Z" end-time="2026-11-16 21:53:49Z" duration="0.000278" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3723" name="ExistingPhysicalKeyUsesItsPublishedContext(C,&quot;set-piece.high&quot;)" fullname="OnlineContextKeysEditorTests.ExistingPhysicalKeyUsesItsPublishedContext(C,&quot;set-piece.high&quot;)" methodname="ExistingPhysicalKeyUsesItsPublishedContext" classname="OnlineContextKeysEditorTests" runstate="Runnable" seed="506033039" result="Passed" start-time="2026-11-16 21:53:49Z" end-time="2026-11-16 21:53:49Z" duration="0.000265" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3724" name="ExistingPhysicalKeyUsesItsPublishedContext(C,&quot;throw.head&quot;)" fullname="OnlineContextKeysEditorTests.ExistingPhysicalKeyUsesItsPublishedContext(C,&quot;throw.head&quot;)" methodname="ExistingPhysicalKeyUsesItsPublishedContext" classname="OnlineContextKeysEditorTests" runstate="Runnable" seed="1522700402" result="Passed" start-time="2026-11-16 21:53:49Z" end-time="2026-11-16 21:53:49Z" duration="0.000264" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3725" name="ExistingPhysicalKeyUsesItsPublishedContext(F,&quot;header.backpass.feet&quot;)" fullname="OnlineContextKeysEditorTests.ExistingPhysicalKeyUsesItsPublishedContext(F,&quot;header.backpass.feet&quot;)" methodname="ExistingPhysicalKeyUsesItsPublishedContext" classname="OnlineContextKeysEditorTests" runstate="Runnable" seed="235999652" result="Passed" start-time="2026-11-16 21:53:49Z" end-time="2026-11-16 21:53:49Z" duration="0.000280" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3726" name="ExistingPhysicalKeyUsesItsPublishedContext(F,&quot;keeper.pickup.feet&quot;)" fullname="OnlineContextKeysEditorTests.ExistingPhysicalKeyUsesItsPublishedContext(F,&quot;keeper.pickup.feet&quot;)" methodname="ExistingPhysicalKeyUsesItsPublishedContext" classname="OnlineContextKeysEditorTests" runstate="Runnable" seed="2114117418" result="Passed" start-time="2026-11-16 21:53:49Z" end-time="2026-11-16 21:53:49Z" duration="0.000275" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3727" name="ExistingPhysicalKeyUsesItsPublishedContext(F,&quot;foul.take&quot;)" fullname="OnlineContextKeysEditorTests.ExistingPhysicalKeyUsesItsPublishedContext(F,&quot;foul.take&quot;)" methodname="ExistingPhysicalKeyUsesItsPublishedContext" classname="OnlineContextKeysEditorTests" runstate="Runnable" seed="1249004392" result="Passed" start-time="2026-11-16 21:53:49Z" end-time="2026-11-16 21:53:49Z" duration="0.000275" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3728" name="ExistingPhysicalKeyUsesItsPublishedContext(M,&quot;throw.movement&quot;)" fullname="OnlineContextKeysEditorTests.ExistingPhysicalKeyUsesItsPublishedContext(M,&quot;throw.movement&quot;)" methodname="ExistingPhysicalKeyUsesItsPublishedContext" classname="OnlineContextKeysEditorTests" runstate="Runnable" seed="1294622270" result="Passed" start-time="2026-11-16 21:53:49Z" end-time="2026-11-16 21:53:49Z" duration="0.000346" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3729" name="ExistingPhysicalKeyUsesItsPublishedContext(D,&quot;final-third.drop&quot;)" fullname="OnlineContextKeysEditorTests.ExistingPhysicalKeyUsesItsPublishedContext(D,&quot;final-third.drop&quot;)" methodname="ExistingPhysicalKeyUsesItsPublishedContext" classname="OnlineContextKeysEditorTests" runstate="Runnable" seed="2074367501" result="Passed" start-time="2026-11-16 21:53:49Z" end-time="2026-11-16 21:53:49Z" duration="0.000287" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3730" name="ExistingPhysicalKeyUsesItsPublishedContext(B,&quot;header.control&quot;)" fullname="OnlineContextKeysEditorTests.ExistingPhysicalKeyUsesItsPublishedContext(B,&quot;header.control&quot;)" methodname="ExistingPhysicalKeyUsesItsPublishedContext" classname="OnlineContextKeysEditorTests" runstate="Runnable" seed="1975756020" result="Passed" start-time="2026-11-16 21:53:49Z" end-time="2026-11-16 21:53:49Z" duration="0.000294" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3731" name="ExistingPhysicalKeyUsesItsPublishedContext(N,&quot;duel.nutmeg&quot;)" fullname="OnlineContextKeysEditorTests.ExistingPhysicalKeyUsesItsPublishedContext(N,&quot;duel.nutmeg&quot;)" methodname="ExistingPhysicalKeyUsesItsPublishedContext" classname="OnlineContextKeysEditorTests" runstate="Runnable" seed="1485703820" result="Passed" start-time="2026-11-16 21:53:49Z" end-time="2026-11-16 21:53:49Z" duration="0.000303" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3732" name="ExistingPhysicalKeyUsesItsPublishedContext(T,&quot;throw.now&quot;)" fullname="OnlineContextKeysEditorTests.ExistingPhysicalKeyUsesItsPublishedContext(T,&quot;throw.now&quot;)" methodname="ExistingPhysicalKeyUsesItsPublishedContext" classname="OnlineContextKeysEditorTests" runstate="Runnable" seed="866076721" result="Passed" start-time="2026-11-16 21:53:49Z" end-time="2026-11-16 21:53:49Z" duration="0.000437" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3733" name="ExistingPhysicalKeyUsesItsPublishedContext(S,&quot;set-piece.shot&quot;)" fullname="OnlineContextKeysEditorTests.ExistingPhysicalKeyUsesItsPublishedContext(S,&quot;set-piece.shot&quot;)" methodname="ExistingPhysicalKeyUsesItsPublishedContext" classname="OnlineContextKeysEditorTests" runstate="Runnable" seed="222230533" result="Passed" start-time="2026-11-16 21:53:49Z" end-time="2026-11-16 21:53:49Z" duration="0.000272" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3734" name="ExistingPhysicalKeyUsesItsPublishedContext(Q,&quot;keeper.quick&quot;)" fullname="OnlineContextKeysEditorTests.ExistingPhysicalKeyUsesItsPublishedContext(Q,&quot;keeper.quick&quot;)" methodname="ExistingPhysicalKeyUsesItsPublishedContext" classname="OnlineContextKeysEditorTests" runstate="Runnable" seed="645906854" result="Passed" start-time="2026-11-16 21:53:49Z" end-time="2026-11-16 21:53:49Z" duration="0.000263" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3735" name="ExistingPhysicalKeyUsesItsPublishedContext(Q,&quot;keeper.quick.start&quot;)" fullname="OnlineContextKeysEditorTests.ExistingPhysicalKeyUsesItsPublishedContext(Q,&quot;keeper.quick.start&quot;)" methodname="ExistingPhysicalKeyUsesItsPublishedContext" classname="OnlineContextKeysEditorTests" runstate="Runnable" seed="521000336" result="Passed" start-time="2026-11-16 21:53:49Z" end-time="2026-11-16 21:53:49Z" duration="0.000289" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3736" name="ExistingPhysicalKeyUsesItsPublishedContext(K,&quot;keeper.final-third&quot;)" fullname="OnlineContextKeysEditorTests.ExistingPhysicalKeyUsesItsPublishedContext(K,&quot;keeper.final-third&quot;)" methodname="ExistingPhysicalKeyUsesItsPublishedContext" classname="OnlineContextKeysEditorTests" runstate="Runnable" seed="442126420" result="Passed" start-time="2026-11-16 21:53:49Z" end-time="2026-11-16 21:53:49Z" duration="0.000270" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3737" name="ExistingPhysicalKeyUsesItsPublishedContext(K,&quot;final-third.kick&quot;)" fullname="OnlineContextKeysEditorTests.ExistingPhysicalKeyUsesItsPublishedContext(K,&quot;final-third.kick&quot;)" methodname="ExistingPhysicalKeyUsesItsPublishedContext" classname="OnlineContextKeysEditorTests" runstate="Runnable" seed="1514209897" result="Passed" start-time="2026-11-16 21:53:49Z" end-time="2026-11-16 21:53:49Z" duration="0.000287" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3738" name="ExistingPhysicalKeyUsesItsPublishedContext(H,&quot;header.free&quot;)" fullname="OnlineContextKeysEditorTests.ExistingPhysicalKeyUsesItsPublishedContext(H,&quot;header.free&quot;)" methodname="ExistingPhysicalKeyUsesItsPublishedContext" classname="OnlineContextKeysEditorTests" runstate="Runnable" seed="1472725444" result="Passed" start-time="2026-11-16 21:53:49Z" end-time="2026-11-16 21:53:49Z" duration="0.000277" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3739" name="ExistingPhysicalKeyUsesItsPublishedContext(H,&quot;header.pass&quot;)" fullname="OnlineContextKeysEditorTests.ExistingPhysicalKeyUsesItsPublishedContext(H,&quot;header.pass&quot;)" methodname="ExistingPhysicalKeyUsesItsPublishedContext" classname="OnlineContextKeysEditorTests" runstate="Runnable" seed="1346511679" result="Passed" start-time="2026-11-16 21:53:49Z" end-time="2026-11-16 21:53:49Z" duration="0.000435" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3740" name="ExistingPhysicalKeyUsesItsPublishedContext(H,&quot;header.backpass.hands&quot;)" fullname="OnlineContextKeysEditorTests.ExistingPhysicalKeyUsesItsPublishedContext(H,&quot;header.backpass.hands&quot;)" methodname="ExistingPhysicalKeyUsesItsPublishedContext" classname="OnlineContextKeysEditorTests" runstate="Runnable" seed="1369518183" result="Passed" start-time="2026-11-16 21:53:49Z" end-time="2026-11-16 21:53:49Z" duration="0.000285" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3741" name="ExistingPhysicalKeyUsesItsPublishedContext(H,&quot;keeper.pickup.hands&quot;)" fullname="OnlineContextKeysEditorTests.ExistingPhysicalKeyUsesItsPublishedContext(H,&quot;keeper.pickup.hands&quot;)" methodname="ExistingPhysicalKeyUsesItsPublishedContext" classname="OnlineContextKeysEditorTests" runstate="Runnable" seed="846380379" result="Passed" start-time="2026-11-16 21:53:49Z" end-time="2026-11-16 21:53:49Z" duration="0.000290" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3742" name="ExistingPhysicalKeyUsesItsPublishedContext(G,&quot;high.keeper.stay&quot;)" fullname="OnlineContextKeysEditorTests.ExistingPhysicalKeyUsesItsPublishedContext(G,&quot;high.keeper.stay&quot;)" methodname="ExistingPhysicalKeyUsesItsPublishedContext" classname="OnlineContextKeysEditorTests" runstate="Runnable" seed="752556817" result="Passed" start-time="2026-11-16 21:53:49Z" end-time="2026-11-16 21:53:49Z" duration="0.000279" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3743" name="ExistingPhysicalKeyUsesItsPublishedContext(V,&quot;long.keeper.claim&quot;)" fullname="OnlineContextKeysEditorTests.ExistingPhysicalKeyUsesItsPublishedContext(V,&quot;long.keeper.claim&quot;)" methodname="ExistingPhysicalKeyUsesItsPublishedContext" classname="OnlineContextKeysEditorTests" runstate="Runnable" seed="1303994036" result="Passed" start-time="2026-11-16 21:53:49Z" end-time="2026-11-16 21:53:49Z" duration="0.000245" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3744" name="ExistingPhysicalKeyUsesItsPublishedContext(A,&quot;foul.advantage&quot;)" fullname="OnlineContextKeysEditorTests.ExistingPhysicalKeyUsesItsPublishedContext(A,&quot;foul.advantage&quot;)" methodname="ExistingPhysicalKeyUsesItsPublishedContext" classname="OnlineContextKeysEditorTests" runstate="Runnable" seed="1939563061" result="Passed" start-time="2026-11-16 21:53:49Z" end-time="2026-11-16 21:53:49Z" duration="0.000262" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3745" name="ExistingPhysicalKeyUsesItsPublishedContext(X,&quot;movement.forfeit&quot;)" fullname="OnlineContextKeysEditorTests.ExistingPhysicalKeyUsesItsPublishedContext(X,&quot;movement.forfeit&quot;)" methodname="ExistingPhysicalKeyUsesItsPublishedContext" classname="OnlineContextKeysEditorTests" runstate="Runnable" seed="1195202008" result="Passed" start-time="2026-11-16 21:53:49Z" end-time="2026-11-16 21:53:49Z" duration="0.000253" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3746" name="ExistingPhysicalKeyUsesItsPublishedContext(X,&quot;high.skip&quot;)" fullname="OnlineContextKeysEditorTests.ExistingPhysicalKeyUsesItsPublishedContext(X,&quot;high.skip&quot;)" methodname="ExistingPhysicalKeyUsesItsPublishedContext" classname="OnlineContextKeysEditorTests" runstate="Runnable" seed="713921319" result="Passed" start-time="2026-11-16 21:53:49Z" end-time="2026-11-16 21:53:49Z" duration="0.000281" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3747" name="ExistingPhysicalKeyUsesItsPublishedContext(X,&quot;high.keeper.decline&quot;)" fullname="OnlineContextKeysEditorTests.ExistingPhysicalKeyUsesItsPublishedContext(X,&quot;high.keeper.decline&quot;)" methodname="ExistingPhysicalKeyUsesItsPublishedContext" classname="OnlineContextKeysEditorTests" runstate="Runnable" seed="822965826" result="Passed" start-time="2026-11-16 21:53:49Z" end-time="2026-11-16 21:53:49Z" duration="0.000279" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3748" name="ExistingPhysicalKeyUsesItsPublishedContext(X,&quot;ftp.skip&quot;)" fullname="OnlineContextKeysEditorTests.ExistingPhysicalKeyUsesItsPublishedContext(X,&quot;ftp.skip&quot;)" methodname="ExistingPhysicalKeyUsesItsPublishedContext" classname="OnlineContextKeysEditorTests" runstate="Runnable" seed="776256748" result="Passed" start-time="2026-11-16 21:53:49Z" end-time="2026-11-16 21:53:49Z" duration="0.000258" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3749" name="ExistingPhysicalKeyUsesItsPublishedContext(X,&quot;long.keeper.decline&quot;)" fullname="OnlineContextKeysEditorTests.ExistingPhysicalKeyUsesItsPublishedContext(X,&quot;long.keeper.decline&quot;)" methodname="ExistingPhysicalKeyUsesItsPublishedContext" classname="OnlineContextKeysEditorTests" runstate="Runnable" seed="1689904485" result="Passed" start-time="2026-11-16 21:53:49Z" end-time="2026-11-16 21:53:49Z" duration="0.000366" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3750" name="ExistingPhysicalKeyUsesItsPublishedContext(X,&quot;keeper.stay&quot;)" fullname="OnlineContextKeysEditorTests.ExistingPhysicalKeyUsesItsPublishedContext(X,&quot;keeper.stay&quot;)" methodname="ExistingPhysicalKeyUsesItsPublishedContext" classname="OnlineContextKeysEditorTests" runstate="Runnable" seed="2027174847" result="Passed" start-time="2026-11-16 21:53:49Z" end-time="2026-11-16 21:53:49Z" duration="0.000261" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3751" name="ExistingPhysicalKeyUsesItsPublishedContext(X,&quot;set-piece.skip&quot;)" fullname="OnlineContextKeysEditorTests.ExistingPhysicalKeyUsesItsPublishedContext(X,&quot;set-piece.skip&quot;)" methodname="ExistingPhysicalKeyUsesItsPublishedContext" classname="OnlineContextKeysEditorTests" runstate="Runnable" seed="371513966" result="Passed" start-time="2026-11-16 21:53:49Z" end-time="2026-11-16 21:53:49Z" duration="0.000260" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3752" name="ExistingPhysicalKeyUsesItsPublishedContext(X,&quot;duel.stay&quot;)" fullname="OnlineContextKeysEditorTests.ExistingPhysicalKeyUsesItsPublishedContext(X,&quot;duel.stay&quot;)" methodname="ExistingPhysicalKeyUsesItsPublishedContext" classname="OnlineContextKeysEditorTests" runstate="Runnable" seed="799202522" result="Passed" start-time="2026-11-16 21:53:49Z" end-time="2026-11-16 21:53:49Z" duration="0.000265" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3753" name="ExistingPhysicalKeyUsesItsPublishedContext(X,&quot;dribble.decline-nutmeg&quot;)" fullname="OnlineContextKeysEditorTests.ExistingPhysicalKeyUsesItsPublishedContext(X,&quot;dribble.decline-nutmeg&quot;)" methodname="ExistingPhysicalKeyUsesItsPublishedContext" classname="OnlineContextKeysEditorTests" runstate="Runnable" seed="818443293" result="Passed" start-time="2026-11-16 21:53:49Z" end-time="2026-11-16 21:53:49Z" duration="0.000275" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3754" name="ExistingPhysicalKeyUsesItsPublishedContext(Return,&quot;final-third.forfeit&quot;)" fullname="OnlineContextKeysEditorTests.ExistingPhysicalKeyUsesItsPublishedContext(Return,&quot;final-third.forfeit&quot;)" methodname="ExistingPhysicalKeyUsesItsPublishedContext" classname="OnlineContextKeysEditorTests" runstate="Runnable" seed="1763264093" result="Passed" start-time="2026-11-16 21:53:49Z" end-time="2026-11-16 21:53:49Z" duration="0.000278" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3755" name="ExistingPhysicalKeyUsesItsPublishedContext(KeypadEnter,&quot;final-third.forfeit&quot;)" fullname="OnlineContextKeysEditorTests.ExistingPhysicalKeyUsesItsPublishedContext(KeypadEnter,&quot;final-third.forfeit&quot;)" methodname="ExistingPhysicalKeyUsesItsPublishedContext" classname="OnlineContextKeysEditorTests" runstate="Runnable" seed="1069699618" result="Passed" start-time="2026-11-16 21:53:49Z" end-time="2026-11-16 21:53:49Z" duration="0.000409" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Saving results to: TestResults\GameplayRegression\Runs\20261116T215349162Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

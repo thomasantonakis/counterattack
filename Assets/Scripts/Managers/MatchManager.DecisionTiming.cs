@@ -12,6 +12,19 @@ public partial class MatchManager
     private ThrowInManager timingThrowIn;
     private PenaltyShootoutManager timingShootout;
     public int TimingRollSequence { get; private set; }
+    private int onlineAuthorityScopes;
+    public bool IsOnlineAuthorityControlled => onlineAuthorityScopes > 0;
+    internal void RegisterOnlineAuthorityScope() => onlineAuthorityScopes++;
+    internal void UnregisterOnlineAuthorityScope() => onlineAuthorityScopes = Math.Max(0, onlineAuthorityScopes - 1);
+    public DecisionTimingSnapshot CaptureOnlineDecisionTiming() => decisionTiming?.Capture();
+    public float OnlineRegulationSeconds => currentHalfRegulationSeconds;
+    public void AdvanceOnlineAuthorityTime(float seconds)
+    {
+        if (CounterAttack.Online.OnlineRoomSession.IsGuest) return;
+        if (float.IsNaN(seconds) || float.IsInfinity(seconds) || seconds < 0) throw new ArgumentOutOfRangeException(nameof(seconds));
+        AdvanceDecisionTiming(seconds);
+        AdvanceMatchTime(seconds);
+    }
     public DecisionTimingService DecisionTiming
     {
         get
@@ -90,7 +103,7 @@ public partial class MatchManager
         movementPhaseManager?.goalKeeperManager?.RegisterTiming(r);
         r.Scope(nameof(MatchManager), null);
         r.Roll(this, "stoppage", isWaitingForExtraActionsRoll,
-            () => isWaitingForExtraActionsRoll && (stoppageActionsPanel == null || !stoppageActionsPanel.HasSceneBindings || stoppageActionsPanel.IsAwaitingRoll), OnKeyReceived);
+            () => isWaitingForExtraActionsRoll && (IsOnlineAuthorityControlled || stoppageActionsPanel == null || !stoppageActionsPanel.HasSceneBindings || stoppageActionsPanel.IsAwaitingRoll), OnKeyReceived);
         timingRollManager = r.RollManager;
         r.ApplyRoll();
         timing.EndRegistration();

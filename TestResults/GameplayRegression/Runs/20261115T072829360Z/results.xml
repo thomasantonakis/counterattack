@@ -1,0 +1,447 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="16" result="Failed(Child)" total="16" passed="4" failed="12" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-15 07:28:29Z" end-time="2026-11-15 07:30:30Z" duration="121.0102209">
+  <test-suite type="TestSuite" id="2595" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1310" result="Failed" site="Child" start-time="2026-11-15 07:28:29Z" end-time="2026-11-15 07:30:30Z" duration="121.010221" total="16" passed="4" failed="12" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="2592" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1310" result="Failed" site="Child" start-time="2026-11-15 07:28:29Z" end-time="2026-11-15 07:30:30Z" duration="120.984532" total="16" passed="4" failed="12" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="1132" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestFixture" id="1632" name="OnlineFullRoomPlayModeTests" fullname="OnlineFullRoomPlayModeTests" classname="OnlineFullRoomPlayModeTests" runstate="Runnable" testcasecount="16" result="Failed" site="Child" start-time="2026-11-15 07:28:29Z" end-time="2026-11-15 07:30:30Z" duration="120.972055" total="16" passed="4" failed="12" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineFullRoom" />
+        </properties>
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="ParameterizedMethod" id="1641" name="ActualFullRoom" fullname="OnlineFullRoomPlayModeTests.ActualFullRoom" classname="OnlineFullRoomPlayModeTests" runstate="Runnable" testcasecount="8" result="Failed" site="Child" start-time="2026-11-15 07:28:29Z" end-time="2026-11-15 07:29:15Z" duration="46.028760" total="8" passed="4" failed="4" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-case id="1633" name="ActualFullRoom(False,16,False)" fullname="OnlineFullRoomPlayModeTests.ActualFullRoom(False,16,False)" methodname="ActualFullRoom" classname="OnlineFullRoomPlayModeTests" runstate="Runnable" seed="1842134751" result="Passed" start-time="2026-11-15 07:28:29Z" end-time="2026-11-15 07:28:36Z" duration="6.836029" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[TokenKitCatalog] Loading kits JSON from Resources path 'Kits/kit-picker-v1-11-supported' (asset: Assets/Resources/Kits/kit-picker-v1-11-supported.json).
+[TokenKitCatalog] Found kits JSON TextAsset 'kit-picker-v1-11-supported' at Resources path 'Kits/kit-picker-v1-11-supported' (32277 characters).
+[TokenKitCatalog] Parsed 101 kit preset(s) from Resources path 'Kits/kit-picker-v1-11-supported'.
+[TokenKitCatalog] Active kit catalog contains 101 kit preset(s).
+MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584921316066
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Ball reference set in PlayerToken. Ball Hex: 
+]]></output>
+          </test-case>
+          <test-case id="1634" name="ActualFullRoom(False,16,True)" fullname="OnlineFullRoomPlayModeTests.ActualFullRoom(False,16,True)" methodname="ActualFullRoom" classname="OnlineFullRoomPlayModeTests" runstate="Runnable" seed="2106173855" result="Passed" start-time="2026-11-15 07:28:36Z" end-time="2026-11-15 07:28:42Z" duration="5.722672" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584921378574
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Ball reference set in PlayerToken. Ball Hex: 
+]]></output>
+          </test-case>
+          <test-case id="1635" name="ActualFullRoom(False,18,False)" fullname="OnlineFullRoomPlayModeTests.ActualFullRoom(False,18,False)" methodname="ActualFullRoom" classname="OnlineFullRoomPlayModeTests" runstate="Runnable" seed="1063044007" result="Passed" start-time="2026-11-15 07:28:42Z" end-time="2026-11-15 07:28:47Z" duration="5.828153" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584921441082
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Ball reference set in PlayerToken. Ball Hex: 
+]]></output>
+          </test-case>
+          <test-case id="1636" name="ActualFullRoom(False,18,True)" fullname="OnlineFullRoomPlayModeTests.ActualFullRoom(False,18,True)" methodname="ActualFullRoom" classname="OnlineFullRoomPlayModeTests" runstate="Runnable" seed="366658790" result="Passed" start-time="2026-11-15 07:28:47Z" end-time="2026-11-15 07:28:53Z" duration="5.783215" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584921503590
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Ball reference set in PlayerToken. Ball Hex: 
+]]></output>
+          </test-case>
+          <test-case id="1637" name="ActualFullRoom(True,16,False)" fullname="OnlineFullRoomPlayModeTests.ActualFullRoom(True,16,False)" methodname="ActualFullRoom" classname="OnlineFullRoomPlayModeTests" runstate="Runnable" seed="1464038582" result="Failed" start-time="2026-11-15 07:28:53Z" end-time="2026-11-15 07:28:58Z" duration="5.334641" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: null
+  But was:  <DecisionTimingSnapshot>
+]]></message>
+              <stack-trace><![CDATA[at OnlineFullRoomSceneFixture+<Run>d__12.MoveNext () [0x00857] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFullRoom\OnlineFullRoomSceneFixture.cs:81
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+Ball reference set in PlayerToken. Ball Hex: 
+]]></output>
+          </test-case>
+          <test-case id="1638" name="ActualFullRoom(True,16,True)" fullname="OnlineFullRoomPlayModeTests.ActualFullRoom(True,16,True)" methodname="ActualFullRoom" classname="OnlineFullRoomPlayModeTests" runstate="Runnable" seed="1134739327" result="Failed" start-time="2026-11-15 07:28:58Z" end-time="2026-11-15 07:29:04Z" duration="5.549548" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: null
+  But was:  <DecisionTimingSnapshot>
+]]></message>
+              <stack-trace><![CDATA[at OnlineFullRoomSceneFixture+<Run>d__12.MoveNext () [0x00857] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFullRoom\OnlineFullRoomSceneFixture.cs:81
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+Ball reference set in PlayerToken. Ball Hex: 
+]]></output>
+          </test-case>
+          <test-case id="1639" name="ActualFullRoom(True,18,False)" fullname="OnlineFullRoomPlayModeTests.ActualFullRoom(True,18,False)" methodname="ActualFullRoom" classname="OnlineFullRoomPlayModeTests" runstate="Runnable" seed="1652161356" result="Failed" start-time="2026-11-15 07:29:04Z" end-time="2026-11-15 07:29:10Z" duration="5.553115" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: null
+  But was:  <DecisionTimingSnapshot>
+]]></message>
+              <stack-trace><![CDATA[at OnlineFullRoomSceneFixture+<Run>d__12.MoveNext () [0x00857] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFullRoom\OnlineFullRoomSceneFixture.cs:81
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+Ball reference set in PlayerToken. Ball Hex: 
+]]></output>
+          </test-case>
+          <test-case id="1640" name="ActualFullRoom(True,18,True)" fullname="OnlineFullRoomPlayModeTests.ActualFullRoom(True,18,True)" methodname="ActualFullRoom" classname="OnlineFullRoomPlayModeTests" runstate="Runnable" seed="646607657" result="Failed" start-time="2026-11-15 07:29:10Z" end-time="2026-11-15 07:29:15Z" duration="5.388210" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: null
+  But was:  <DecisionTimingSnapshot>
+]]></message>
+              <stack-trace><![CDATA[at OnlineFullRoomSceneFixture+<Run>d__12.MoveNext () [0x00857] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFullRoom\OnlineFullRoomSceneFixture.cs:81
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+Ball reference set in PlayerToken. Ball Hex: 
+]]></output>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="1646" name="AuthoredKickoff" fullname="OnlineFullRoomPlayModeTests.AuthoredKickoff" classname="OnlineFullRoomPlayModeTests" runstate="Runnable" testcasecount="4" result="Failed" site="Child" start-time="2026-11-15 07:29:15Z" end-time="2026-11-15 07:29:44Z" duration="29.210104" total="4" passed="0" failed="4" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-case id="1642" name="AuthoredKickoff(16,False)" fullname="OnlineFullRoomPlayModeTests.AuthoredKickoff(16,False)" methodname="AuthoredKickoff" classname="OnlineFullRoomPlayModeTests" runstate="Runnable" seed="2108757937" result="Failed" start-time="2026-11-15 07:29:15Z" end-time="2026-11-15 07:29:23Z" duration="7.493883" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: True
+  But was:  False
+]]></message>
+              <stack-trace><![CDATA[at OnlineFullRoomSceneFixture+<Run>d__12.MoveNext () [0x009d1] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFullRoom\OnlineFullRoomSceneFixture.cs:92
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584921816130
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+1. Aziz took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+Ball reference set in PlayerToken. Ball Hex: 
+]]></output>
+          </test-case>
+          <test-case id="1643" name="AuthoredKickoff(16,True)" fullname="OnlineFullRoomPlayModeTests.AuthoredKickoff(16,True)" methodname="AuthoredKickoff" classname="OnlineFullRoomPlayModeTests" runstate="Runnable" seed="2110298687" result="Failed" start-time="2026-11-15 07:29:23Z" end-time="2026-11-15 07:29:30Z" duration="7.148476" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: True
+  But was:  False
+]]></message>
+              <stack-trace><![CDATA[at OnlineFullRoomSceneFixture+<Run>d__12.MoveNext () [0x009d1] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFullRoom\OnlineFullRoomSceneFixture.cs:92
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584921878638
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+1. Aziz took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+Ball reference set in PlayerToken. Ball Hex: 
+]]></output>
+          </test-case>
+          <test-case id="1644" name="AuthoredKickoff(18,False)" fullname="OnlineFullRoomPlayModeTests.AuthoredKickoff(18,False)" methodname="AuthoredKickoff" classname="OnlineFullRoomPlayModeTests" runstate="Runnable" seed="412490223" result="Failed" start-time="2026-11-15 07:29:30Z" end-time="2026-11-15 07:29:37Z" duration="7.237195" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: True
+  But was:  False
+]]></message>
+              <stack-trace><![CDATA[at OnlineFullRoomSceneFixture+<Run>d__12.MoveNext () [0x009d1] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFullRoom\OnlineFullRoomSceneFixture.cs:92
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584921941146
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+1. Aziz took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+Ball reference set in PlayerToken. Ball Hex: 
+]]></output>
+          </test-case>
+          <test-case id="1645" name="AuthoredKickoff(18,True)" fullname="OnlineFullRoomPlayModeTests.AuthoredKickoff(18,True)" methodname="AuthoredKickoff" classname="OnlineFullRoomPlayModeTests" runstate="Runnable" seed="102912616" result="Failed" start-time="2026-11-15 07:29:37Z" end-time="2026-11-15 07:29:44Z" duration="7.299859" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: True
+  But was:  False
+]]></message>
+              <stack-trace><![CDATA[at OnlineFullRoomSceneFixture+<Run>d__12.MoveNext () [0x009d1] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFullRoom\OnlineFullRoomSceneFixture.cs:92
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584922003654
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Home confirmed setup (1/2)
+Away confirmed setup (2/2)
+Kick-off taker selection: select an attacking token to move to (0,0).
+Movement phase has been reset.
+Substitutions are no longer available: Kick-off Standard Pass committed
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+1. Aziz took the set piece and cannot be the next player to touch the ball.
+Substitutions are no longer available: Committed to StandardPass
+Ball reference set in PlayerToken. Ball Hex: 
+]]></output>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="1651" name="FullGuestProjection" fullname="OnlineFullRoomPlayModeTests.FullGuestProjection" classname="OnlineFullRoomPlayModeTests" runstate="Runnable" testcasecount="4" result="Failed" site="Child" start-time="2026-11-15 07:29:44Z" end-time="2026-11-15 07:30:30Z" duration="45.724947" total="4" passed="0" failed="4" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-case id="1647" name="FullGuestProjection(16,False)" fullname="OnlineFullRoomPlayModeTests.FullGuestProjection(16,False)" methodname="FullGuestProjection" classname="OnlineFullRoomPlayModeTests" runstate="Runnable" seed="285285271" result="Failed" start-time="2026-11-15 07:29:44Z" end-time="2026-11-15 07:29:56Z" duration="11.298707" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Replica projection must not create an authority clock
+  Expected: null
+  But was:  <DecisionTimingSnapshot>
+]]></message>
+              <stack-trace><![CDATA[at OnlineFullRoomSceneFixture+<Run>d__12.MoveNext () [0x007b8] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFullRoom\OnlineFullRoomSceneFixture.cs:77
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584922066162
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+Ball reference set in PlayerToken. Ball Hex: 
+]]></output>
+          </test-case>
+          <test-case id="1648" name="FullGuestProjection(16,True)" fullname="OnlineFullRoomPlayModeTests.FullGuestProjection(16,True)" methodname="FullGuestProjection" classname="OnlineFullRoomPlayModeTests" runstate="Runnable" seed="1662725900" result="Failed" start-time="2026-11-15 07:29:56Z" end-time="2026-11-15 07:30:07Z" duration="11.558580" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Replica projection must not create an authority clock
+  Expected: null
+  But was:  <DecisionTimingSnapshot>
+]]></message>
+              <stack-trace><![CDATA[at OnlineFullRoomSceneFixture+<Run>d__12.MoveNext () [0x007b8] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFullRoom\OnlineFullRoomSceneFixture.cs:77
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584922191178
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+Ball reference set in PlayerToken. Ball Hex: 
+]]></output>
+          </test-case>
+          <test-case id="1649" name="FullGuestProjection(18,False)" fullname="OnlineFullRoomPlayModeTests.FullGuestProjection(18,False)" methodname="FullGuestProjection" classname="OnlineFullRoomPlayModeTests" runstate="Runnable" seed="930979146" result="Failed" start-time="2026-11-15 07:30:07Z" end-time="2026-11-15 07:30:18Z" duration="11.303274" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Replica projection must not create an authority clock
+  Expected: null
+  But was:  <DecisionTimingSnapshot>
+]]></message>
+              <stack-trace><![CDATA[at OnlineFullRoomSceneFixture+<Run>d__12.MoveNext () [0x007b8] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFullRoom\OnlineFullRoomSceneFixture.cs:77
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584922316194
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+Ball reference set in PlayerToken. Ball Hex: 
+]]></output>
+          </test-case>
+          <test-case id="1650" name="FullGuestProjection(18,True)" fullname="OnlineFullRoomPlayModeTests.FullGuestProjection(18,True)" methodname="FullGuestProjection" classname="OnlineFullRoomPlayModeTests" runstate="Runnable" seed="1812848205" result="Failed" start-time="2026-11-15 07:30:18Z" end-time="2026-11-15 07:30:30Z" duration="11.539715" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Replica projection must not create an authority clock
+  Expected: null
+  But was:  <DecisionTimingSnapshot>
+]]></message>
+              <stack-trace><![CDATA[at OnlineFullRoomSceneFixture+<Run>d__12.MoveNext () [0x007b8] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineFullRoom\OnlineFullRoomSceneFixture.cs:77
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584922441210
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+Ball reference set in PlayerToken. Ball Hex: 
+Saving results to: TestResults\GameplayRegression\Runs\20261115T072829360Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

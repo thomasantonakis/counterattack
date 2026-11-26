@@ -1,0 +1,68 @@
+# Online save and resume implementation plan
+
+Implement a host-owned save so the same two players can close Counterattack and continue a match days later. The host loads the save and shares a fresh lobby code. The returning guest takes the original seat after EOS authentication, and both players confirm readiness before play continues.
+
+## Player flow and first release scope
+
+1. Either player pauses. At a supported checkpoint, the host can use **Save Match As** to name a new save or **Save Match** to update its selected slot. This includes a settled loose ball at the opening of an automatically committed Movement Phase and settled play after the stoppage-actions roll. Show a success message only after the file is committed. Both players can then leave through the existing menu.
+2. The original host opens **Online → Load Match**, selects an online save, and creates a lobby. Show its new code using the existing copy-code interaction.
+3. The guest uses **Online → Join** with that code. After verification, show the saved teams, score and match time on a resume screen. The host stays Home and the guest stays Away. Go directly to `Room` with the saved rosters and setup.
+4. Once Room is restored and both players have received the restored state, each confirms **Ready**. The host releases the resume hold and publishes the playable state. Either player may cancel before play starts. The saved checkpoint remains available for another attempt.
+
+The first release uses local storage on the original host machine and requires both original EOS Product User IDs. With current device-based EOS login, players should use their original devices and profiles. A device identity reset can prevent loading or rejoining. Cloud saves, host migration, account portability, substitute players, Draft saves and mid-action saves are future work.
+
+## Paired walkthrough
+
+Build the normal game on both platforms from the same commit. The macOS build
+script is `Documentation/Setup/BuildEOSStandaloneMac.sh game`. The Windows
+build and launch script is `Documentation/Setup/BuildOnlineGameWindows.ps1 -Launch`.
+For the final report, use the shorter [paired Full Time check](OnlineFullTimeReport.md#verification-checklist)
+with a save near the final whistle.
+
+1. Host on one machine and join on the other. Play through kickoff and complete
+   a ground pass to a teammate or a Movement Phase with possession. Let any
+   resulting Final Third moves, rolls and result panels finish.
+2. Have Away pause. On Home, select **Save Match As**, give it a name, and
+   confirm the saved message. Both players return to the main menu and close
+   their apps.
+3. Reopen both apps. On the original host, choose **Online → Load Match**,
+   select the save from the table, and copy the fresh code. If a third EOS profile is available,
+   try that profile first and verify it cannot take the saved Away seat. Then
+   join with the original guest's device and profile.
+4. Compare teams, score, half, time, ball position, and player statistics and
+   status before selecting **Ready**.
+   Confirm one Ready leaves play held. Confirm both release play and that the
+   current attacking team can make the next move on both screens.
+5. Leave without saving. Load the same slot again, verify that it returns to
+   the original checkpoint, then cancel before both players confirm Ready.
+   Record the commit, host and guest platform, and any divergence or error.
+
+## 1. Capture and store a host checkpoint
+
+- Add a dedicated online save store under `Application.persistentDataPath`, separate from offline slots and per-run `OnlineSessions` diagnostics. Use a versioned envelope with a durable match ID, checkpoint ID, UTC save time, display name, compatibility metadata, authenticated host/Home and guest/Away IDs, and serialized match data plus the runtime snapshot. Derive browser metadata from the validated checkpoint. Keep participant IDs and paths local to the host and out of user-facing messages and guest payloads.
+- Keep the online guards in `RoomSaveService`. Reuse `MatchManager.CanCreateRuntimeSnapshot`, `CreateRuntimeSnapshot` and the Room restore logic through an online-specific service. Build the save from a consistent copy of the authoritative state, with settings, rosters, opening and extra-time setup, stats, scorer and event history, and the snapshot. Verify every field needed for the next legal decision, including clock and decision timing, possession and last touches, token identity and position, substitutions and offside state. Pending rolls and their acknowledgements must settle before capture.
+- Authorize capture only on the connected host during an established shared pause, even if the guest requested the pause. The Room guard allows settled choices with possession after Movement Phase, Standard Pass, First Time Pass, Long Ball, a successful tackle, ball control, a completed header, or ordinary recovery. Require initialized tokens and ball and no pending intro, coin toss, restart flow, roll review, substitution review, shootout, connection hold or match completion. Give the host a clear reason when saving is unavailable. Confirm the pause overlay allows the host to reach the save controls during a guest-owned pause while preserving the ordinary pause owner's resume rights.
+- Capture synchronously on the host at one revision before serializing. Serialize overlapping save attempts, write to a temporary file in the slot directory and atomically publish or replace the slot. Keep the last successful checkpoint on write failure. Keep the load source untouched throughout hosting, restoring and resuming. A later explicit save can update its selected slot.
+- Preserve event history up to the checkpoint and continue with increasing event sequence numbers. Use a new play session and a new run directory on each load, and retain checkpoint provenance in host metadata. Verify that match events written after the checkpoint cannot appear in a later restore unless captured by another save. Use [RoomSaveService.cs](../../Assets/Scripts/Managers/RoomSaveService.cs) and [RoomLiveLogService.cs](../../Assets/Scripts/Managers/RoomLiveLogService.cs) as references.
+
+## 2. Open a fresh lobby and verify both seats
+
+- Add an authored **Load Match** flow to `OnlineModeMenu` using the existing save browser presentation where appropriate. Show save name, teams, score, match time and save date. Report unsupported or corrupt saves clearly. Validate schema, required snapshot fields and rules compatibility before use. Verify the local EOS identity is the saved host before advertising a lobby.
+- Extend the authenticated frontend handshake with a resume mode. Reuse lobby creation, join by code, version checks and connection cleanup. Bind the remote EOS Product User ID reported by the transport to the saved guest seat before sending any resume bootstrap. Reject mismatches and let the original guest join the waiting lobby. A lobby code locates a session and confers no seat authority.
+- Use a fresh network match/session ID and fresh command revision, decision and reconnect state on every attempt. Keep the durable match/checkpoint identity local and separate from network IDs. Reject old session packets, duplicate readiness messages, mismatched session or bootstrap acknowledgements and incompatible clients. Check compatibility using the existing policy and update its protocol version where the wire contract changes.
+- Give the guest only the bootstrap needed to render Room through the authenticated connection. Use the saved settings and roster data for initialization and the host's normal published snapshot for live state. Keep regular **Host** and **Join** behavior available. Extend [OnlineFrontendSession.cs](../../Assets/Scripts/Online/OnlineFrontendSession.cs), [OnlineSetupChannels.cs](../../Assets/Scripts/Online/OnlineSetupChannels.cs) and [OnlineModeMenu.cs](../../Assets/Scripts/Online/OnlineModeMenu.cs).
+
+## 3. Restore Room and release play
+
+- Give `OnlineRoomLaunchLifetime` a resume path separate from `OnlineRoomLaunchData.Create`, which expects a completed Draft. Verify the host's initialization applies the runtime snapshot exactly once after grid, tokens and ball are ready. The guest initializes as a read-only replica and applies the first host publication. Suppress Draft, opening coin toss, pre-match intro and fresh kickoff behavior for a resumed checkpoint.
+- Replace the resume path's dependence on `OnlineRoomStartup` seeing `KickOffSetup` with explicit initialization/restore milestones. A restored match can already be in a different state. Start authority publication only after restore succeeds. Let the guest acknowledge the matching first restored publication. Bound initialization and restore failures, report them to both players, and release lobby/session resources so the host can retry.
+- Use a dedicated resume hold on the host and both clients. Freeze the match clock, decision timers and command handling while loading or waiting. Preserve the saved clock state and remaining decision time. Everyone sees the same score, clock, board and active team before confirming. Release play once after both authenticated seats confirm for the same restored session. Before release, if readiness is lost through disconnect, require fresh confirmation from the returning seat after state synchronization. After release, use existing live reconnect and pause behavior.
+- After restore, compare authoritative and replica state and verify the next real action works for the correct team and is reflected on both clients. Use [OnlineRoomStartup.cs](../../Assets/Scripts/Online/OnlineRoomStartup.cs), [OnlineRoomLaunchLifetime.cs](../../Assets/Scripts/Online/OnlineRoomLaunchLifetime.cs), [OnlineGroundPassBoard.cs](../../Assets/Scripts/Online/OnlineGroundPassBoard.cs) and [MatchManager.cs](../../Assets/Scripts/Managers/MatchManager.cs) for the restore and publication boundary.
+
+## Verification checklist
+
+- [x] Add focused native `OnlineSaveResume` test fixtures and verification checklists. Cases use temporary saves and restore scene and session state.
+- [x] Verify checkpoints, save compatibility, role and identity checks, atomic overwrite failure, repeated loads, readiness and stale messages in EditMode.
+- [x] Exercise the authored pause, save browser, restored Room and the next action in PlayMode. Cover each attacking side, the guest-owned pause, unsettled and settled actions, restored match and player stats, and both Ready confirmations.
+- [x] Run focused fixtures through the live Unity CLI. The post-merge runs passed 22 EditMode and 4 PlayMode cases with zero failures or skips. Unity compiled with zero errors. Native XML and progress are in `TestResults/GameplayRegression/Runs/20261125T002102746Z/` and `TestResults/GameplayRegression/Runs/20261125T002226439Z/`.
+- [ ] Run a paired packaged-build walkthrough on Windows and macOS. Save after a real gameplay action, close both apps, relaunch both, host from the save, reject another device's identity, and let the original guest join with the new code. Verify both screens agree before ready and after the next action. Verify two separate loads from the same file and report the roles, builds and results.

@@ -1,0 +1,971 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="16" result="Failed(Child)" total="16" passed="0" failed="16" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 21:59:30Z" end-time="2026-11-16 22:00:00Z" duration="29.9469846">
+  <test-suite type="TestSuite" id="3028" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1681" result="Failed" site="Child" start-time="2026-11-16 21:59:30Z" end-time="2026-11-16 22:00:00Z" duration="29.946985" total="16" passed="0" failed="16" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="3025" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1681" result="Failed" site="Child" start-time="2026-11-16 21:59:30Z" end-time="2026-11-16 22:00:00Z" duration="29.916859" total="16" passed="0" failed="16" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12156" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestFixture" id="1780" name="OnlineHeaderSelectAllPlayModeTests" fullname="OnlineHeaderSelectAllPlayModeTests" classname="OnlineHeaderSelectAllPlayModeTests" runstate="Runnable" testcasecount="16" result="Failed" site="Child" start-time="2026-11-16 21:59:30Z" end-time="2026-11-16 22:00:00Z" duration="29.907290" total="16" passed="0" failed="16" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineHeaderSelectAll" />
+        </properties>
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="ParameterizedMethod" id="1789" name="BulkNominationsResolveRealHeader" fullname="OnlineHeaderSelectAllPlayModeTests.BulkNominationsResolveRealHeader" classname="OnlineHeaderSelectAllPlayModeTests" runstate="Runnable" testcasecount="8" result="Failed" site="Child" start-time="2026-11-16 21:59:30Z" end-time="2026-11-16 21:59:45Z" duration="15.361768" total="8" passed="0" failed="8" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-case id="1781" name="BulkNominationsResolveRealHeader(1,False,False)" fullname="OnlineHeaderSelectAllPlayModeTests.BulkNominationsResolveRealHeader(1,False,False)" methodname="BulkNominationsResolveRealHeader" classname="OnlineHeaderSelectAllPlayModeTests" runstate="Runnable" seed="263314788" result="Failed" start-time="2026-11-16 21:59:30Z" end-time="2026-11-16 21:59:33Z" duration="2.561865" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: collection containing "header.all"
+  But was:  < "header.nominate:away:7", "header.nominate:away:8" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<>c__DisplayClass91_0.<RunOnlineHeaderAll>g__Bulk|3 (System.String connection) [0x00012] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineHeaderSelectAll\OnlineHeaderSelectAllFixture.cs:32
+at GoalkeeperBoxEntryFixture+<RunOnlineHeaderAll>d__91.MoveNext () [0x00622] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineHeaderSelectAll\OnlineHeaderSelectAllFixture.cs:48
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=1, tokens=none.
+Movement phase has been reset.
+High Pass target map is still calculating. Target highlights will draw when ready.
+HighPassManager activated. Waiting for target selection...
+Clicked hex: (0, 0, 6)
+High Pass target map is still calculating. Target highlights will draw when ready.
+First click registered. Click again to confirm the High Pass.
+Clicked hex: (0, 0, 6)
+High Pass confirmed by second click.
+Offside assessed (high_pass_target_confirmed): line x=1, tokens=none.
+HP target precompute cancelled. version=5, elapsedMs=8133.8, elapsedFrames=11, processed=0, validTargets=4
+Substitutions are no longer available: Committed to HighPass
+Attacker Away recovering player is locked on the target hex and cannot move.
+Attacker HP movement phase started. Move one attacker up to 3 hexes.
+Initial target already has an attacker. Press [X] to forfeit Attacker HP movement or move another attacker up to 3 hexes.
+Attacker HP movement forfeited. Proceeding to Defender HP movement.
+Defender HP movement phase started. Move one defender up to 3 hexes, or press [X] to forfeit.
+Defender HP movement forfeited. Waiting for accuracy roll. Please Press R key.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Performing accuracy roll for High Pass. Please Press R key.
+[Game Log] Away aerial passer (Fixture Away) attempts an aerial pass
+Passer: Away aerial passer, HighPass: 4
+High Pass is accurate, passer roll: 5
+[Game Log] Away aerial passer (Fixture Away) accurate places an aerial pass
+Ball has reached its destination: (0, 0, 6)
+Ball landed within bounds.
+GK cannot rush out to challenge.
+Eligible to head: Second attacking jumper at (-1, 0, 6)
+Eligible to head: Second defensive jumper at (0, 0, 7)
+Eligible to head: Away recovering player at (0, 0, 6)
+Eligible to head: Home carrier at (1, 0, 6)
+hasEligibleAttackers: True, hasEligibleDefenders: True
+Please 1-2 attackers to jump for the header. Press 'A' to select all available, or press 'Enter' to confirm selection.
+]]></output>
+          </test-case>
+          <test-case id="1782" name="BulkNominationsResolveRealHeader(1,False,True)" fullname="OnlineHeaderSelectAllPlayModeTests.BulkNominationsResolveRealHeader(1,False,True)" methodname="BulkNominationsResolveRealHeader" classname="OnlineHeaderSelectAllPlayModeTests" runstate="Runnable" seed="1044096942" result="Failed" start-time="2026-11-16 21:59:33Z" end-time="2026-11-16 21:59:34Z" duration="1.810411" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: collection containing "header.all"
+  But was:  < "header.nominate:away:7", "header.nominate:away:8" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<>c__DisplayClass91_0.<RunOnlineHeaderAll>g__Bulk|3 (System.String connection) [0x00012] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineHeaderSelectAll\OnlineHeaderSelectAllFixture.cs:32
+at GoalkeeperBoxEntryFixture+<RunOnlineHeaderAll>d__91.MoveNext () [0x00622] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineHeaderSelectAll\OnlineHeaderSelectAllFixture.cs:48
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=0, tokens=none.
+Movement phase has been reset.
+High Pass target map is still calculating. Target highlights will draw when ready.
+HighPassManager activated. Waiting for target selection...
+Clicked hex: (0, 0, 6)
+High Pass target map is still calculating. Target highlights will draw when ready.
+First click registered. Click again to confirm the High Pass.
+Clicked hex: (0, 0, 6)
+High Pass confirmed by second click.
+Offside assessed (high_pass_target_confirmed): line x=0, tokens=none.
+HP target precompute cancelled. version=5, elapsedMs=10174.0, elapsedFrames=108, processed=0, validTargets=4
+Substitutions are no longer available: Committed to HighPass
+Attacker Away recovering player is locked on the target hex and cannot move.
+Attacker HP movement phase started. Move one attacker up to 3 hexes.
+Initial target already has an attacker. Press [X] to forfeit Attacker HP movement or move another attacker up to 3 hexes.
+Attacker HP movement forfeited. Proceeding to Defender HP movement.
+Defender HP movement phase started. Move one defender up to 3 hexes, or press [X] to forfeit.
+Defender HP movement forfeited. Waiting for accuracy roll. Please Press R key.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Performing accuracy roll for High Pass. Please Press R key.
+[Game Log] Away aerial passer (Fixture Away) attempts an aerial pass
+Passer: Away aerial passer, HighPass: 4
+High Pass is accurate, passer roll: 5
+[Game Log] Away aerial passer (Fixture Away) accurate places an aerial pass
+Ball has reached its destination: (0, 0, 6)
+Ball landed within bounds.
+Defending GK Home keeper can rush out to challenge! Press [X] to forfeit, click a highlighted Hex to go and jump with GK. Press [G] to rush without moving.
+Eligible to head: Second attacking jumper at (-1, 0, 6)
+Eligible to head: Second defensive jumper at (0, 0, 7)
+Eligible to head: Away recovering player at (0, 0, 6)
+Eligible to head: Home keeper at (0, 0, 5)
+Eligible to head: Home carrier at (1, 0, 6)
+hasEligibleAttackers: True, hasEligibleDefenders: True
+Please 1-2 attackers to jump for the header. Press 'A' to select all available, or press 'Enter' to confirm selection.
+]]></output>
+          </test-case>
+          <test-case id="1783" name="BulkNominationsResolveRealHeader(1,True,False)" fullname="OnlineHeaderSelectAllPlayModeTests.BulkNominationsResolveRealHeader(1,True,False)" methodname="BulkNominationsResolveRealHeader" classname="OnlineHeaderSelectAllPlayModeTests" runstate="Runnable" seed="1015716587" result="Failed" start-time="2026-11-16 21:59:34Z" end-time="2026-11-16 21:59:36Z" duration="1.725782" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: collection containing "header.all"
+  But was:  < "header.nominate:home:10", "header.nominate:home:7" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<>c__DisplayClass91_0.<RunOnlineHeaderAll>g__Bulk|3 (System.String connection) [0x00012] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineHeaderSelectAll\OnlineHeaderSelectAllFixture.cs:32
+at GoalkeeperBoxEntryFixture+<RunOnlineHeaderAll>d__91.MoveNext () [0x00622] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineHeaderSelectAll\OnlineHeaderSelectAllFixture.cs:48
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+High Pass target map is still calculating. Target highlights will draw when ready.
+HighPassManager activated. Waiting for target selection...
+Clicked hex: (0, 0, 6)
+High Pass target map is still calculating. Target highlights will draw when ready.
+First click registered. Click again to confirm the High Pass.
+Clicked hex: (0, 0, 6)
+High Pass confirmed by second click.
+Offside assessed (high_pass_target_confirmed): line x=8, tokens=none.
+HP target precompute cancelled. version=5, elapsedMs=11944.5, elapsedFrames=206, processed=0, validTargets=4
+Substitutions are no longer available: Committed to HighPass
+Attacker Online receiver is locked on the target hex and cannot move.
+Attacker HP movement phase started. Move one attacker up to 3 hexes.
+Initial target already has an attacker. Press [X] to forfeit Attacker HP movement or move another attacker up to 3 hexes.
+Attacker HP movement forfeited. Proceeding to Defender HP movement.
+Defender HP movement phase started. Move one defender up to 3 hexes, or press [X] to forfeit.
+Defender HP movement forfeited. Waiting for accuracy roll. Please Press R key.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Performing accuracy roll for High Pass. Please Press R key.
+[Game Log] Home carrier (Fixture Home) attempts an aerial pass
+Passer: Home carrier, HighPass: 4
+High Pass is accurate, passer roll: 5
+[Game Log] Home carrier (Fixture Home) accurate places an aerial pass
+Ball has reached its destination: (0, 0, 6)
+Ball landed within bounds.
+GK cannot rush out to challenge.
+Eligible to head: Second attacking jumper at (-1, 0, 6)
+Eligible to head: Second defensive jumper at (0, 0, 7)
+Eligible to head: Online receiver at (0, 0, 6)
+Eligible to head: Away recovering player at (1, 0, 6)
+hasEligibleAttackers: True, hasEligibleDefenders: True
+Please 1-2 attackers to jump for the header. Press 'A' to select all available, or press 'Enter' to confirm selection.
+]]></output>
+          </test-case>
+          <test-case id="1784" name="BulkNominationsResolveRealHeader(1,True,True)" fullname="OnlineHeaderSelectAllPlayModeTests.BulkNominationsResolveRealHeader(1,True,True)" methodname="BulkNominationsResolveRealHeader" classname="OnlineHeaderSelectAllPlayModeTests" runstate="Runnable" seed="1282819855" result="Failed" start-time="2026-11-16 21:59:36Z" end-time="2026-11-16 21:59:38Z" duration="1.787653" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: collection containing "header.all"
+  But was:  < "header.nominate:home:10", "header.nominate:home:7" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<>c__DisplayClass91_0.<RunOnlineHeaderAll>g__Bulk|3 (System.String connection) [0x00012] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineHeaderSelectAll\OnlineHeaderSelectAllFixture.cs:32
+at GoalkeeperBoxEntryFixture+<RunOnlineHeaderAll>d__91.MoveNext () [0x00622] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineHeaderSelectAll\OnlineHeaderSelectAllFixture.cs:48
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=1, tokens=none.
+Movement phase has been reset.
+High Pass target map is still calculating. Target highlights will draw when ready.
+HighPassManager activated. Waiting for target selection...
+Clicked hex: (0, 0, 6)
+High Pass target map is still calculating. Target highlights will draw when ready.
+First click registered. Click again to confirm the High Pass.
+Clicked hex: (0, 0, 6)
+High Pass confirmed by second click.
+Offside assessed (high_pass_target_confirmed): line x=1, tokens=none.
+HP target precompute cancelled. version=5, elapsedMs=13635.6, elapsedFrames=303, processed=0, validTargets=4
+Substitutions are no longer available: Committed to HighPass
+Attacker Online receiver is locked on the target hex and cannot move.
+Attacker HP movement phase started. Move one attacker up to 3 hexes.
+Initial target already has an attacker. Press [X] to forfeit Attacker HP movement or move another attacker up to 3 hexes.
+Attacker HP movement forfeited. Proceeding to Defender HP movement.
+Defender HP movement phase started. Move one defender up to 3 hexes, or press [X] to forfeit.
+Defender HP movement forfeited. Waiting for accuracy roll. Please Press R key.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Performing accuracy roll for High Pass. Please Press R key.
+[Game Log] Home carrier (Fixture Home) attempts an aerial pass
+Passer: Home carrier, HighPass: 4
+High Pass is accurate, passer roll: 5
+[Game Log] Home carrier (Fixture Home) accurate places an aerial pass
+Ball has reached its destination: (0, 0, 6)
+Ball landed within bounds.
+Defending GK Away keeper can rush out to challenge! Press [X] to forfeit, click a highlighted Hex to go and jump with GK. Press [G] to rush without moving.
+Eligible to head: Second attacking jumper at (-1, 0, 6)
+Eligible to head: Second defensive jumper at (0, 0, 7)
+Eligible to head: Online receiver at (0, 0, 6)
+Eligible to head: Away keeper at (0, 0, 5)
+Eligible to head: Away recovering player at (1, 0, 6)
+hasEligibleAttackers: True, hasEligibleDefenders: True
+Please 1-2 attackers to jump for the header. Press 'A' to select all available, or press 'Enter' to confirm selection.
+]]></output>
+          </test-case>
+          <test-case id="1785" name="BulkNominationsResolveRealHeader(-1,False,False)" fullname="OnlineHeaderSelectAllPlayModeTests.BulkNominationsResolveRealHeader(-1,False,False)" methodname="BulkNominationsResolveRealHeader" classname="OnlineHeaderSelectAllPlayModeTests" runstate="Runnable" seed="558082314" result="Failed" start-time="2026-11-16 21:59:38Z" end-time="2026-11-16 21:59:40Z" duration="1.721605" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: collection containing "header.all"
+  But was:  < "header.nominate:away:7", "header.nominate:away:8" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<>c__DisplayClass91_0.<RunOnlineHeaderAll>g__Bulk|3 (System.String connection) [0x00012] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineHeaderSelectAll\OnlineHeaderSelectAllFixture.cs:32
+at GoalkeeperBoxEntryFixture+<RunOnlineHeaderAll>d__91.MoveNext () [0x00622] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineHeaderSelectAll\OnlineHeaderSelectAllFixture.cs:48
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-1, tokens=none.
+Movement phase has been reset.
+High Pass target map is still calculating. Target highlights will draw when ready.
+HighPassManager activated. Waiting for target selection...
+Clicked hex: (0, 0, 6)
+High Pass target map is still calculating. Target highlights will draw when ready.
+First click registered. Click again to confirm the High Pass.
+Clicked hex: (0, 0, 6)
+High Pass confirmed by second click.
+Offside assessed (high_pass_target_confirmed): line x=-1, tokens=none.
+HP target precompute cancelled. version=5, elapsedMs=15490.6, elapsedFrames=401, processed=0, validTargets=16
+Substitutions are no longer available: Committed to HighPass
+Attacker Away recovering player is locked on the target hex and cannot move.
+Attacker HP movement phase started. Move one attacker up to 3 hexes.
+Initial target already has an attacker. Press [X] to forfeit Attacker HP movement or move another attacker up to 3 hexes.
+Attacker HP movement forfeited. Proceeding to Defender HP movement.
+Defender HP movement phase started. Move one defender up to 3 hexes, or press [X] to forfeit.
+Defender HP movement forfeited. Waiting for accuracy roll. Please Press R key.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Performing accuracy roll for High Pass. Please Press R key.
+[Game Log] Away aerial passer (Fixture Away) attempts an aerial pass
+Passer: Away aerial passer, HighPass: 4
+High Pass is accurate, passer roll: 5
+[Game Log] Away aerial passer (Fixture Away) accurate places an aerial pass
+Ball has reached its destination: (0, 0, 6)
+Ball landed within bounds.
+GK cannot rush out to challenge.
+Eligible to head: Home carrier at (-1, 0, 6)
+Eligible to head: Second defensive jumper at (0, 0, 7)
+Eligible to head: Away recovering player at (0, 0, 6)
+Eligible to head: Second attacking jumper at (1, 0, 6)
+hasEligibleAttackers: True, hasEligibleDefenders: True
+Please 1-2 attackers to jump for the header. Press 'A' to select all available, or press 'Enter' to confirm selection.
+]]></output>
+          </test-case>
+          <test-case id="1786" name="BulkNominationsResolveRealHeader(-1,False,True)" fullname="OnlineHeaderSelectAllPlayModeTests.BulkNominationsResolveRealHeader(-1,False,True)" methodname="BulkNominationsResolveRealHeader" classname="OnlineHeaderSelectAllPlayModeTests" runstate="Runnable" seed="1594029112" result="Failed" start-time="2026-11-16 21:59:40Z" end-time="2026-11-16 21:59:42Z" duration="1.894565" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: collection containing "header.all"
+  But was:  < "header.nominate:away:7", "header.nominate:away:8" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<>c__DisplayClass91_0.<RunOnlineHeaderAll>g__Bulk|3 (System.String connection) [0x00012] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineHeaderSelectAll\OnlineHeaderSelectAllFixture.cs:32
+at GoalkeeperBoxEntryFixture+<RunOnlineHeaderAll>d__91.MoveNext () [0x00622] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineHeaderSelectAll\OnlineHeaderSelectAllFixture.cs:48
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=0, tokens=none.
+Movement phase has been reset.
+High Pass target map is still calculating. Target highlights will draw when ready.
+HighPassManager activated. Waiting for target selection...
+Clicked hex: (0, 0, 6)
+High Pass target map is still calculating. Target highlights will draw when ready.
+First click registered. Click again to confirm the High Pass.
+Clicked hex: (0, 0, 6)
+High Pass confirmed by second click.
+Offside assessed (high_pass_target_confirmed): line x=0, tokens=none.
+HP target precompute cancelled. version=5, elapsedMs=17284.3, elapsedFrames=499, processed=0, validTargets=16
+Substitutions are no longer available: Committed to HighPass
+Attacker Away recovering player is locked on the target hex and cannot move.
+Attacker HP movement phase started. Move one attacker up to 3 hexes.
+Initial target already has an attacker. Press [X] to forfeit Attacker HP movement or move another attacker up to 3 hexes.
+Attacker HP movement forfeited. Proceeding to Defender HP movement.
+Defender HP movement phase started. Move one defender up to 3 hexes, or press [X] to forfeit.
+Defender HP movement forfeited. Waiting for accuracy roll. Please Press R key.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Performing accuracy roll for High Pass. Please Press R key.
+[Game Log] Away aerial passer (Fixture Away) attempts an aerial pass
+Passer: Away aerial passer, HighPass: 4
+High Pass is accurate, passer roll: 5
+[Game Log] Away aerial passer (Fixture Away) accurate places an aerial pass
+Ball has reached its destination: (0, 0, 6)
+Ball landed within bounds.
+Defending GK Home keeper can rush out to challenge! Press [X] to forfeit, click a highlighted Hex to go and jump with GK. Press [G] to rush without moving.
+Eligible to head: Home carrier at (-1, 0, 6)
+Eligible to head: Second defensive jumper at (0, 0, 7)
+Eligible to head: Away recovering player at (0, 0, 6)
+Eligible to head: Home keeper at (0, 0, 5)
+Eligible to head: Second attacking jumper at (1, 0, 6)
+hasEligibleAttackers: True, hasEligibleDefenders: True
+Please 1-2 attackers to jump for the header. Press 'A' to select all available, or press 'Enter' to confirm selection.
+]]></output>
+          </test-case>
+          <test-case id="1787" name="BulkNominationsResolveRealHeader(-1,True,False)" fullname="OnlineHeaderSelectAllPlayModeTests.BulkNominationsResolveRealHeader(-1,True,False)" methodname="BulkNominationsResolveRealHeader" classname="OnlineHeaderSelectAllPlayModeTests" runstate="Runnable" seed="1845777430" result="Failed" start-time="2026-11-16 21:59:42Z" end-time="2026-11-16 21:59:43Z" duration="1.709757" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: collection containing "header.all"
+  But was:  < "header.nominate:home:10", "header.nominate:home:7" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<>c__DisplayClass91_0.<RunOnlineHeaderAll>g__Bulk|3 (System.String connection) [0x00012] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineHeaderSelectAll\OnlineHeaderSelectAllFixture.cs:32
+at GoalkeeperBoxEntryFixture+<RunOnlineHeaderAll>d__91.MoveNext () [0x00622] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineHeaderSelectAll\OnlineHeaderSelectAllFixture.cs:48
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+High Pass target map is still calculating. Target highlights will draw when ready.
+HighPassManager activated. Waiting for target selection...
+Clicked hex: (0, 0, 6)
+High Pass target map is still calculating. Target highlights will draw when ready.
+First click registered. Click again to confirm the High Pass.
+Clicked hex: (0, 0, 6)
+High Pass confirmed by second click.
+Offside assessed (high_pass_target_confirmed): line x=-8, tokens=none.
+HP target precompute cancelled. version=5, elapsedMs=19069.2, elapsedFrames=596, processed=0, validTargets=16
+Substitutions are no longer available: Committed to HighPass
+Attacker Online receiver is locked on the target hex and cannot move.
+Attacker HP movement phase started. Move one attacker up to 3 hexes.
+Initial target already has an attacker. Press [X] to forfeit Attacker HP movement or move another attacker up to 3 hexes.
+Attacker HP movement forfeited. Proceeding to Defender HP movement.
+Defender HP movement phase started. Move one defender up to 3 hexes, or press [X] to forfeit.
+Defender HP movement forfeited. Waiting for accuracy roll. Please Press R key.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Performing accuracy roll for High Pass. Please Press R key.
+[Game Log] Home carrier (Fixture Home) attempts an aerial pass
+Passer: Home carrier, HighPass: 4
+High Pass is accurate, passer roll: 5
+[Game Log] Home carrier (Fixture Home) accurate places an aerial pass
+Ball has reached its destination: (0, 0, 6)
+Ball landed within bounds.
+GK cannot rush out to challenge.
+Eligible to head: Away recovering player at (-1, 0, 6)
+Eligible to head: Second defensive jumper at (0, 0, 7)
+Eligible to head: Online receiver at (0, 0, 6)
+Eligible to head: Second attacking jumper at (1, 0, 6)
+hasEligibleAttackers: True, hasEligibleDefenders: True
+Please 1-2 attackers to jump for the header. Press 'A' to select all available, or press 'Enter' to confirm selection.
+]]></output>
+          </test-case>
+          <test-case id="1788" name="BulkNominationsResolveRealHeader(-1,True,True)" fullname="OnlineHeaderSelectAllPlayModeTests.BulkNominationsResolveRealHeader(-1,True,True)" methodname="BulkNominationsResolveRealHeader" classname="OnlineHeaderSelectAllPlayModeTests" runstate="Runnable" seed="635761553" result="Failed" start-time="2026-11-16 21:59:43Z" end-time="2026-11-16 21:59:45Z" duration="1.792259" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: collection containing "header.all"
+  But was:  < "header.nominate:home:10", "header.nominate:home:7" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<>c__DisplayClass91_0.<RunOnlineHeaderAll>g__Bulk|3 (System.String connection) [0x00012] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineHeaderSelectAll\OnlineHeaderSelectAllFixture.cs:32
+at GoalkeeperBoxEntryFixture+<RunOnlineHeaderAll>d__91.MoveNext () [0x00622] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineHeaderSelectAll\OnlineHeaderSelectAllFixture.cs:48
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-1, tokens=none.
+Movement phase has been reset.
+High Pass target map is still calculating. Target highlights will draw when ready.
+HighPassManager activated. Waiting for target selection...
+Clicked hex: (0, 0, 6)
+High Pass target map is still calculating. Target highlights will draw when ready.
+First click registered. Click again to confirm the High Pass.
+Clicked hex: (0, 0, 6)
+High Pass confirmed by second click.
+Offside assessed (high_pass_target_confirmed): line x=-1, tokens=none.
+HP target precompute cancelled. version=5, elapsedMs=20838.3, elapsedFrames=693, processed=0, validTargets=16
+Substitutions are no longer available: Committed to HighPass
+Attacker Online receiver is locked on the target hex and cannot move.
+Attacker HP movement phase started. Move one attacker up to 3 hexes.
+Initial target already has an attacker. Press [X] to forfeit Attacker HP movement or move another attacker up to 3 hexes.
+Attacker HP movement forfeited. Proceeding to Defender HP movement.
+Defender HP movement phase started. Move one defender up to 3 hexes, or press [X] to forfeit.
+Defender HP movement forfeited. Waiting for accuracy roll. Please Press R key.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Performing accuracy roll for High Pass. Please Press R key.
+[Game Log] Home carrier (Fixture Home) attempts an aerial pass
+Passer: Home carrier, HighPass: 4
+High Pass is accurate, passer roll: 5
+[Game Log] Home carrier (Fixture Home) accurate places an aerial pass
+Ball has reached its destination: (0, 0, 6)
+Ball landed within bounds.
+Defending GK Away keeper can rush out to challenge! Press [X] to forfeit, click a highlighted Hex to go and jump with GK. Press [G] to rush without moving.
+Eligible to head: Away recovering player at (-1, 0, 6)
+Eligible to head: Second defensive jumper at (0, 0, 7)
+Eligible to head: Online receiver at (0, 0, 6)
+Eligible to head: Away keeper at (0, 0, 5)
+Eligible to head: Second attacking jumper at (1, 0, 6)
+hasEligibleAttackers: True, hasEligibleDefenders: True
+Please 1-2 attackers to jump for the header. Press 'A' to select all available, or press 'Enter' to confirm selection.
+]]></output>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="1798" name="OverLimitRequiresIndividualNominations" fullname="OnlineHeaderSelectAllPlayModeTests.OverLimitRequiresIndividualNominations" classname="OnlineHeaderSelectAllPlayModeTests" runstate="Runnable" testcasecount="8" result="Failed" site="Child" start-time="2026-11-16 21:59:45Z" end-time="2026-11-16 22:00:00Z" duration="14.538130" total="8" passed="0" failed="8" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-case id="1790" name="OverLimitRequiresIndividualNominations(1,False,&quot;attack&quot;)" fullname="OnlineHeaderSelectAllPlayModeTests.OverLimitRequiresIndividualNominations(1,False,&quot;attack&quot;)" methodname="OverLimitRequiresIndividualNominations" classname="OnlineHeaderSelectAllPlayModeTests" runstate="Runnable" seed="413826342" result="Failed" start-time="2026-11-16 21:59:45Z" end-time="2026-11-16 21:59:47Z" duration="1.866519" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: collection containing "header.all"
+  But was:  < "header.confirm", "header.nominate:home:7", "header.nominate:home:9" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<>c__DisplayClass91_0.<RunOnlineHeaderAll>g__Bulk|3 (System.String connection) [0x00012] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineHeaderSelectAll\OnlineHeaderSelectAllFixture.cs:32
+at GoalkeeperBoxEntryFixture+<RunOnlineHeaderAll>d__91.MoveNext () [0x007ee] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineHeaderSelectAll\OnlineHeaderSelectAllFixture.cs:55
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=1, tokens=none.
+Movement phase has been reset.
+High Pass target map is still calculating. Target highlights will draw when ready.
+HighPassManager activated. Waiting for target selection...
+Clicked hex: (0, 0, 6)
+High Pass target map is still calculating. Target highlights will draw when ready.
+First click registered. Click again to confirm the High Pass.
+Clicked hex: (0, 0, 6)
+High Pass confirmed by second click.
+Offside assessed (high_pass_target_confirmed): line x=1, tokens=none.
+HP target precompute cancelled. version=5, elapsedMs=22644.9, elapsedFrames=791, processed=0, validTargets=4
+Substitutions are no longer available: Committed to HighPass
+Attacker Away recovering player is locked on the target hex and cannot move.
+Attacker HP movement phase started. Move one attacker up to 3 hexes.
+Initial target already has an attacker. Press [X] to forfeit Attacker HP movement or move another attacker up to 3 hexes.
+Attacker HP movement forfeited. Proceeding to Defender HP movement.
+Defender HP movement phase started. Move one defender up to 3 hexes, or press [X] to forfeit.
+Defender HP movement forfeited. Waiting for accuracy roll. Please Press R key.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Performing accuracy roll for High Pass. Please Press R key.
+[Game Log] Away aerial passer (Fixture Away) attempts an aerial pass
+Passer: Away aerial passer, HighPass: 4
+High Pass is accurate, passer roll: 5
+[Game Log] Away aerial passer (Fixture Away) accurate places an aerial pass
+Ball has reached its destination: (0, 0, 6)
+Ball landed within bounds.
+GK cannot rush out to challenge.
+Eligible to head: Extra nomination candidate at (-1, 0, 7)
+Eligible to head: Second attacking jumper at (-1, 0, 6)
+Eligible to head: Second defensive jumper at (0, 0, 7)
+Eligible to head: Away recovering player at (0, 0, 6)
+Eligible to head: Home carrier at (1, 0, 6)
+hasEligibleAttackers: True, hasEligibleDefenders: True
+Please 1-2 attackers to jump for the header. Press 'A' to select all available, or press 'Enter' to confirm selection.
+Attacker Away recovering player selected to jump for the header.
+Attacker Second attacking jumper selected to jump for the header.
+Attack header selection confirmed.
+Please select up to two outfield defenders plus the defending GK if eligible. Press 'A' to select all available when allowed, and at any time press 'Enter' to confirm selection.
+]]></output>
+          </test-case>
+          <test-case id="1791" name="OverLimitRequiresIndividualNominations(1,False,&quot;defence&quot;)" fullname="OnlineHeaderSelectAllPlayModeTests.OverLimitRequiresIndividualNominations(1,False,&quot;defence&quot;)" methodname="OverLimitRequiresIndividualNominations" classname="OnlineHeaderSelectAllPlayModeTests" runstate="Runnable" seed="366148006" result="Failed" start-time="2026-11-16 21:59:47Z" end-time="2026-11-16 21:59:49Z" duration="1.800245" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: collection containing "header.all"
+  But was:  < "header.nominate:away:7", "header.nominate:away:8" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<>c__DisplayClass91_0.<RunOnlineHeaderAll>g__Bulk|3 (System.String connection) [0x00012] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineHeaderSelectAll\OnlineHeaderSelectAllFixture.cs:32
+at GoalkeeperBoxEntryFixture+<RunOnlineHeaderAll>d__91.MoveNext () [0x00622] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineHeaderSelectAll\OnlineHeaderSelectAllFixture.cs:48
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=1, tokens=none.
+Movement phase has been reset.
+High Pass target map is still calculating. Target highlights will draw when ready.
+HighPassManager activated. Waiting for target selection...
+Clicked hex: (0, 0, 6)
+High Pass target map is still calculating. Target highlights will draw when ready.
+First click registered. Click again to confirm the High Pass.
+Clicked hex: (0, 0, 6)
+High Pass confirmed by second click.
+Offside assessed (high_pass_target_confirmed): line x=1, tokens=none.
+HP target precompute cancelled. version=5, elapsedMs=24592.1, elapsedFrames=889, processed=0, validTargets=4
+Substitutions are no longer available: Committed to HighPass
+Attacker Away recovering player is locked on the target hex and cannot move.
+Attacker HP movement phase started. Move one attacker up to 3 hexes.
+Initial target already has an attacker. Press [X] to forfeit Attacker HP movement or move another attacker up to 3 hexes.
+Attacker HP movement forfeited. Proceeding to Defender HP movement.
+Defender HP movement phase started. Move one defender up to 3 hexes, or press [X] to forfeit.
+Defender HP movement forfeited. Waiting for accuracy roll. Please Press R key.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Performing accuracy roll for High Pass. Please Press R key.
+[Game Log] Away aerial passer (Fixture Away) attempts an aerial pass
+Passer: Away aerial passer, HighPass: 4
+High Pass is accurate, passer roll: 5
+[Game Log] Away aerial passer (Fixture Away) accurate places an aerial pass
+Ball has reached its destination: (0, 0, 6)
+Ball landed within bounds.
+GK cannot rush out to challenge.
+Eligible to head: Extra nomination candidate at (-1, 0, 7)
+Eligible to head: Second attacking jumper at (-1, 0, 6)
+Eligible to head: Second defensive jumper at (0, 0, 7)
+Eligible to head: Away recovering player at (0, 0, 6)
+Eligible to head: Home carrier at (1, 0, 6)
+hasEligibleAttackers: True, hasEligibleDefenders: True
+Please 1-2 attackers to jump for the header. Press 'A' to select all available, or press 'Enter' to confirm selection.
+]]></output>
+          </test-case>
+          <test-case id="1792" name="OverLimitRequiresIndividualNominations(1,True,&quot;attack&quot;)" fullname="OnlineHeaderSelectAllPlayModeTests.OverLimitRequiresIndividualNominations(1,True,&quot;attack&quot;)" methodname="OverLimitRequiresIndividualNominations" classname="OnlineHeaderSelectAllPlayModeTests" runstate="Runnable" seed="1103137561" result="Failed" start-time="2026-11-16 21:59:49Z" end-time="2026-11-16 21:59:50Z" duration="1.777603" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: collection containing "header.all"
+  But was:  < "header.confirm", "header.nominate:away:7", "header.nominate:away:8" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<>c__DisplayClass91_0.<RunOnlineHeaderAll>g__Bulk|3 (System.String connection) [0x00012] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineHeaderSelectAll\OnlineHeaderSelectAllFixture.cs:32
+at GoalkeeperBoxEntryFixture+<RunOnlineHeaderAll>d__91.MoveNext () [0x007ee] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineHeaderSelectAll\OnlineHeaderSelectAllFixture.cs:55
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+High Pass target map is still calculating. Target highlights will draw when ready.
+HighPassManager activated. Waiting for target selection...
+Clicked hex: (0, 0, 6)
+High Pass target map is still calculating. Target highlights will draw when ready.
+First click registered. Click again to confirm the High Pass.
+Clicked hex: (0, 0, 6)
+High Pass confirmed by second click.
+Offside assessed (high_pass_target_confirmed): line x=8, tokens=none.
+HP target precompute cancelled. version=5, elapsedMs=26301.0, elapsedFrames=986, processed=0, validTargets=4
+Substitutions are no longer available: Committed to HighPass
+Attacker Online receiver is locked on the target hex and cannot move.
+Attacker HP movement phase started. Move one attacker up to 3 hexes.
+Initial target already has an attacker. Press [X] to forfeit Attacker HP movement or move another attacker up to 3 hexes.
+Attacker HP movement forfeited. Proceeding to Defender HP movement.
+Defender HP movement phase started. Move one defender up to 3 hexes, or press [X] to forfeit.
+Defender HP movement forfeited. Waiting for accuracy roll. Please Press R key.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Performing accuracy roll for High Pass. Please Press R key.
+[Game Log] Home carrier (Fixture Home) attempts an aerial pass
+Passer: Home carrier, HighPass: 4
+High Pass is accurate, passer roll: 5
+[Game Log] Home carrier (Fixture Home) accurate places an aerial pass
+Ball has reached its destination: (0, 0, 6)
+Ball landed within bounds.
+GK cannot rush out to challenge.
+Eligible to head: Extra nomination candidate at (-1, 0, 7)
+Eligible to head: Second attacking jumper at (-1, 0, 6)
+Eligible to head: Second defensive jumper at (0, 0, 7)
+Eligible to head: Online receiver at (0, 0, 6)
+Eligible to head: Away recovering player at (1, 0, 6)
+hasEligibleAttackers: True, hasEligibleDefenders: True
+Please 1-2 attackers to jump for the header. Press 'A' to select all available, or press 'Enter' to confirm selection.
+Attacker Online receiver selected to jump for the header.
+Attacker Second attacking jumper selected to jump for the header.
+Attack header selection confirmed.
+Please select up to two outfield defenders plus the defending GK if eligible. Press 'A' to select all available when allowed, and at any time press 'Enter' to confirm selection.
+]]></output>
+          </test-case>
+          <test-case id="1793" name="OverLimitRequiresIndividualNominations(1,True,&quot;defence&quot;)" fullname="OnlineHeaderSelectAllPlayModeTests.OverLimitRequiresIndividualNominations(1,True,&quot;defence&quot;)" methodname="OverLimitRequiresIndividualNominations" classname="OnlineHeaderSelectAllPlayModeTests" runstate="Runnable" seed="2128205967" result="Failed" start-time="2026-11-16 21:59:50Z" end-time="2026-11-16 21:59:52Z" duration="1.765054" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: collection containing "header.all"
+  But was:  < "header.nominate:home:10", "header.nominate:home:7" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<>c__DisplayClass91_0.<RunOnlineHeaderAll>g__Bulk|3 (System.String connection) [0x00012] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineHeaderSelectAll\OnlineHeaderSelectAllFixture.cs:32
+at GoalkeeperBoxEntryFixture+<RunOnlineHeaderAll>d__91.MoveNext () [0x00622] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineHeaderSelectAll\OnlineHeaderSelectAllFixture.cs:48
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+High Pass target map is still calculating. Target highlights will draw when ready.
+HighPassManager activated. Waiting for target selection...
+Clicked hex: (0, 0, 6)
+High Pass target map is still calculating. Target highlights will draw when ready.
+First click registered. Click again to confirm the High Pass.
+Clicked hex: (0, 0, 6)
+High Pass confirmed by second click.
+Offside assessed (high_pass_target_confirmed): line x=8, tokens=none.
+HP target precompute cancelled. version=5, elapsedMs=28103.3, elapsedFrames=1085, processed=0, validTargets=4
+Substitutions are no longer available: Committed to HighPass
+Attacker Online receiver is locked on the target hex and cannot move.
+Attacker HP movement phase started. Move one attacker up to 3 hexes.
+Initial target already has an attacker. Press [X] to forfeit Attacker HP movement or move another attacker up to 3 hexes.
+Attacker HP movement forfeited. Proceeding to Defender HP movement.
+Defender HP movement phase started. Move one defender up to 3 hexes, or press [X] to forfeit.
+Defender HP movement forfeited. Waiting for accuracy roll. Please Press R key.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Performing accuracy roll for High Pass. Please Press R key.
+[Game Log] Home carrier (Fixture Home) attempts an aerial pass
+Passer: Home carrier, HighPass: 4
+High Pass is accurate, passer roll: 5
+[Game Log] Home carrier (Fixture Home) accurate places an aerial pass
+Ball has reached its destination: (0, 0, 6)
+Ball landed within bounds.
+GK cannot rush out to challenge.
+Eligible to head: Extra nomination candidate at (-1, 0, 7)
+Eligible to head: Second attacking jumper at (-1, 0, 6)
+Eligible to head: Second defensive jumper at (0, 0, 7)
+Eligible to head: Online receiver at (0, 0, 6)
+Eligible to head: Away recovering player at (1, 0, 6)
+hasEligibleAttackers: True, hasEligibleDefenders: True
+Please 1-2 attackers to jump for the header. Press 'A' to select all available, or press 'Enter' to confirm selection.
+]]></output>
+          </test-case>
+          <test-case id="1794" name="OverLimitRequiresIndividualNominations(-1,False,&quot;attack&quot;)" fullname="OnlineHeaderSelectAllPlayModeTests.OverLimitRequiresIndividualNominations(-1,False,&quot;attack&quot;)" methodname="OverLimitRequiresIndividualNominations" classname="OnlineHeaderSelectAllPlayModeTests" runstate="Runnable" seed="1035733740" result="Failed" start-time="2026-11-16 21:59:52Z" end-time="2026-11-16 21:59:54Z" duration="1.903586" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: collection containing "header.all"
+  But was:  < "header.confirm", "header.nominate:home:7", "header.nominate:home:9" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<>c__DisplayClass91_0.<RunOnlineHeaderAll>g__Bulk|3 (System.String connection) [0x00012] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineHeaderSelectAll\OnlineHeaderSelectAllFixture.cs:32
+at GoalkeeperBoxEntryFixture+<RunOnlineHeaderAll>d__91.MoveNext () [0x007ee] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineHeaderSelectAll\OnlineHeaderSelectAllFixture.cs:55
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-1, tokens=none.
+Movement phase has been reset.
+High Pass target map is still calculating. Target highlights will draw when ready.
+HighPassManager activated. Waiting for target selection...
+Clicked hex: (0, 0, 6)
+High Pass target map is still calculating. Target highlights will draw when ready.
+First click registered. Click again to confirm the High Pass.
+Clicked hex: (0, 0, 6)
+High Pass confirmed by second click.
+Offside assessed (high_pass_target_confirmed): line x=-1, tokens=none.
+HP target precompute cancelled. version=5, elapsedMs=29878.6, elapsedFrames=1182, processed=0, validTargets=16
+Substitutions are no longer available: Committed to HighPass
+Attacker Away recovering player is locked on the target hex and cannot move.
+Attacker HP movement phase started. Move one attacker up to 3 hexes.
+Initial target already has an attacker. Press [X] to forfeit Attacker HP movement or move another attacker up to 3 hexes.
+Attacker HP movement forfeited. Proceeding to Defender HP movement.
+Defender HP movement phase started. Move one defender up to 3 hexes, or press [X] to forfeit.
+Defender HP movement forfeited. Waiting for accuracy roll. Please Press R key.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Performing accuracy roll for High Pass. Please Press R key.
+[Game Log] Away aerial passer (Fixture Away) attempts an aerial pass
+Passer: Away aerial passer, HighPass: 4
+High Pass is accurate, passer roll: 5
+[Game Log] Away aerial passer (Fixture Away) accurate places an aerial pass
+Ball has reached its destination: (0, 0, 6)
+Ball landed within bounds.
+GK cannot rush out to challenge.
+Eligible to head: Home carrier at (-1, 0, 6)
+Eligible to head: Second defensive jumper at (0, 0, 7)
+Eligible to head: Away recovering player at (0, 0, 6)
+Eligible to head: Extra nomination candidate at (1, 0, 7)
+Eligible to head: Second attacking jumper at (1, 0, 6)
+hasEligibleAttackers: True, hasEligibleDefenders: True
+Please 1-2 attackers to jump for the header. Press 'A' to select all available, or press 'Enter' to confirm selection.
+Attacker Away recovering player selected to jump for the header.
+Attacker Second attacking jumper selected to jump for the header.
+Attack header selection confirmed.
+Please select up to two outfield defenders plus the defending GK if eligible. Press 'A' to select all available when allowed, and at any time press 'Enter' to confirm selection.
+]]></output>
+          </test-case>
+          <test-case id="1795" name="OverLimitRequiresIndividualNominations(-1,False,&quot;defence&quot;)" fullname="OnlineHeaderSelectAllPlayModeTests.OverLimitRequiresIndividualNominations(-1,False,&quot;defence&quot;)" methodname="OverLimitRequiresIndividualNominations" classname="OnlineHeaderSelectAllPlayModeTests" runstate="Runnable" seed="972429434" result="Failed" start-time="2026-11-16 21:59:54Z" end-time="2026-11-16 21:59:56Z" duration="1.741513" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: collection containing "header.all"
+  But was:  < "header.nominate:away:7", "header.nominate:away:8" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<>c__DisplayClass91_0.<RunOnlineHeaderAll>g__Bulk|3 (System.String connection) [0x00012] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineHeaderSelectAll\OnlineHeaderSelectAllFixture.cs:32
+at GoalkeeperBoxEntryFixture+<RunOnlineHeaderAll>d__91.MoveNext () [0x00622] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineHeaderSelectAll\OnlineHeaderSelectAllFixture.cs:48
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-1, tokens=none.
+Movement phase has been reset.
+High Pass target map is still calculating. Target highlights will draw when ready.
+HighPassManager activated. Waiting for target selection...
+Clicked hex: (0, 0, 6)
+High Pass target map is still calculating. Target highlights will draw when ready.
+First click registered. Click again to confirm the High Pass.
+Clicked hex: (0, 0, 6)
+High Pass confirmed by second click.
+Offside assessed (high_pass_target_confirmed): line x=-1, tokens=none.
+HP target precompute cancelled. version=5, elapsedMs=31768.4, elapsedFrames=1280, processed=0, validTargets=16
+Substitutions are no longer available: Committed to HighPass
+Attacker Away recovering player is locked on the target hex and cannot move.
+Attacker HP movement phase started. Move one attacker up to 3 hexes.
+Initial target already has an attacker. Press [X] to forfeit Attacker HP movement or move another attacker up to 3 hexes.
+Attacker HP movement forfeited. Proceeding to Defender HP movement.
+Defender HP movement phase started. Move one defender up to 3 hexes, or press [X] to forfeit.
+Defender HP movement forfeited. Waiting for accuracy roll. Please Press R key.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Performing accuracy roll for High Pass. Please Press R key.
+[Game Log] Away aerial passer (Fixture Away) attempts an aerial pass
+Passer: Away aerial passer, HighPass: 4
+High Pass is accurate, passer roll: 5
+[Game Log] Away aerial passer (Fixture Away) accurate places an aerial pass
+Ball has reached its destination: (0, 0, 6)
+Ball landed within bounds.
+GK cannot rush out to challenge.
+Eligible to head: Home carrier at (-1, 0, 6)
+Eligible to head: Second defensive jumper at (0, 0, 7)
+Eligible to head: Away recovering player at (0, 0, 6)
+Eligible to head: Extra nomination candidate at (1, 0, 7)
+Eligible to head: Second attacking jumper at (1, 0, 6)
+hasEligibleAttackers: True, hasEligibleDefenders: True
+Please 1-2 attackers to jump for the header. Press 'A' to select all available, or press 'Enter' to confirm selection.
+]]></output>
+          </test-case>
+          <test-case id="1796" name="OverLimitRequiresIndividualNominations(-1,True,&quot;attack&quot;)" fullname="OnlineHeaderSelectAllPlayModeTests.OverLimitRequiresIndividualNominations(-1,True,&quot;attack&quot;)" methodname="OverLimitRequiresIndividualNominations" classname="OnlineHeaderSelectAllPlayModeTests" runstate="Runnable" seed="1370050264" result="Failed" start-time="2026-11-16 21:59:56Z" end-time="2026-11-16 21:59:58Z" duration="1.904036" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: collection containing "header.all"
+  But was:  < "header.confirm", "header.nominate:away:7", "header.nominate:away:8" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<>c__DisplayClass91_0.<RunOnlineHeaderAll>g__Bulk|3 (System.String connection) [0x00012] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineHeaderSelectAll\OnlineHeaderSelectAllFixture.cs:32
+at GoalkeeperBoxEntryFixture+<RunOnlineHeaderAll>d__91.MoveNext () [0x007ee] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineHeaderSelectAll\OnlineHeaderSelectAllFixture.cs:55
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+High Pass target map is still calculating. Target highlights will draw when ready.
+HighPassManager activated. Waiting for target selection...
+Clicked hex: (0, 0, 6)
+High Pass target map is still calculating. Target highlights will draw when ready.
+First click registered. Click again to confirm the High Pass.
+Clicked hex: (0, 0, 6)
+High Pass confirmed by second click.
+Offside assessed (high_pass_target_confirmed): line x=-8, tokens=none.
+HP target precompute cancelled. version=5, elapsedMs=33497.3, elapsedFrames=1378, processed=0, validTargets=16
+Substitutions are no longer available: Committed to HighPass
+Attacker Online receiver is locked on the target hex and cannot move.
+Attacker HP movement phase started. Move one attacker up to 3 hexes.
+Initial target already has an attacker. Press [X] to forfeit Attacker HP movement or move another attacker up to 3 hexes.
+Attacker HP movement forfeited. Proceeding to Defender HP movement.
+Defender HP movement phase started. Move one defender up to 3 hexes, or press [X] to forfeit.
+Defender HP movement forfeited. Waiting for accuracy roll. Please Press R key.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Performing accuracy roll for High Pass. Please Press R key.
+[Game Log] Home carrier (Fixture Home) attempts an aerial pass
+Passer: Home carrier, HighPass: 4
+High Pass is accurate, passer roll: 5
+[Game Log] Home carrier (Fixture Home) accurate places an aerial pass
+Ball has reached its destination: (0, 0, 6)
+Ball landed within bounds.
+GK cannot rush out to challenge.
+Eligible to head: Away recovering player at (-1, 0, 6)
+Eligible to head: Second defensive jumper at (0, 0, 7)
+Eligible to head: Online receiver at (0, 0, 6)
+Eligible to head: Extra nomination candidate at (1, 0, 7)
+Eligible to head: Second attacking jumper at (1, 0, 6)
+hasEligibleAttackers: True, hasEligibleDefenders: True
+Please 1-2 attackers to jump for the header. Press 'A' to select all available, or press 'Enter' to confirm selection.
+Attacker Online receiver selected to jump for the header.
+Attacker Second attacking jumper selected to jump for the header.
+Attack header selection confirmed.
+Please select up to two outfield defenders plus the defending GK if eligible. Press 'A' to select all available when allowed, and at any time press 'Enter' to confirm selection.
+]]></output>
+          </test-case>
+          <test-case id="1797" name="OverLimitRequiresIndividualNominations(-1,True,&quot;defence&quot;)" fullname="OnlineHeaderSelectAllPlayModeTests.OverLimitRequiresIndividualNominations(-1,True,&quot;defence&quot;)" methodname="OverLimitRequiresIndividualNominations" classname="OnlineHeaderSelectAllPlayModeTests" runstate="Runnable" seed="1316651861" result="Failed" start-time="2026-11-16 21:59:58Z" end-time="2026-11-16 22:00:00Z" duration="1.763053" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: collection containing "header.all"
+  But was:  < "header.nominate:home:10", "header.nominate:home:7" >
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<>c__DisplayClass91_0.<RunOnlineHeaderAll>g__Bulk|3 (System.String connection) [0x00012] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineHeaderSelectAll\OnlineHeaderSelectAllFixture.cs:32
+at GoalkeeperBoxEntryFixture+<RunOnlineHeaderAll>d__91.MoveNext () [0x00622] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineHeaderSelectAll\OnlineHeaderSelectAllFixture.cs:48
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+High Pass target map is still calculating. Target highlights will draw when ready.
+HighPassManager activated. Waiting for target selection...
+Clicked hex: (0, 0, 6)
+High Pass target map is still calculating. Target highlights will draw when ready.
+First click registered. Click again to confirm the High Pass.
+Clicked hex: (0, 0, 6)
+High Pass confirmed by second click.
+Offside assessed (high_pass_target_confirmed): line x=-8, tokens=none.
+HP target precompute cancelled. version=5, elapsedMs=35401.3, elapsedFrames=1476, processed=0, validTargets=16
+Substitutions are no longer available: Committed to HighPass
+Attacker Online receiver is locked on the target hex and cannot move.
+Attacker HP movement phase started. Move one attacker up to 3 hexes.
+Initial target already has an attacker. Press [X] to forfeit Attacker HP movement or move another attacker up to 3 hexes.
+Attacker HP movement forfeited. Proceeding to Defender HP movement.
+Defender HP movement phase started. Move one defender up to 3 hexes, or press [X] to forfeit.
+Defender HP movement forfeited. Waiting for accuracy roll. Please Press R key.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Performing accuracy roll for High Pass. Please Press R key.
+[Game Log] Home carrier (Fixture Home) attempts an aerial pass
+Passer: Home carrier, HighPass: 4
+High Pass is accurate, passer roll: 5
+[Game Log] Home carrier (Fixture Home) accurate places an aerial pass
+Ball has reached its destination: (0, 0, 6)
+Ball landed within bounds.
+GK cannot rush out to challenge.
+Eligible to head: Away recovering player at (-1, 0, 6)
+Eligible to head: Second defensive jumper at (0, 0, 7)
+Eligible to head: Online receiver at (0, 0, 6)
+Eligible to head: Extra nomination candidate at (1, 0, 7)
+Eligible to head: Second attacking jumper at (1, 0, 6)
+hasEligibleAttackers: True, hasEligibleDefenders: True
+Please 1-2 attackers to jump for the header. Press 'A' to select all available, or press 'Enter' to confirm selection.
+Saving results to: TestResults\GameplayRegression\Runs\20261116T215930091Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

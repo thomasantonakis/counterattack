@@ -26,6 +26,10 @@ public sealed class MovementOpeningSavePlayModeTests
         => (IEnumerator)Fixture.GetMethod("RunMovementOpeningSave").Invoke(board, new object[] { 1, true, true });
 
     [UnityTest]
+    public IEnumerator LooseBallOpeningAtSettledStoppageSavesAndRestores([Values(1,-1)] int side)
+        => (IEnumerator)Fixture.GetMethod("RunStoppageMovementOpeningSave").Invoke(board, new object[] { side });
+
+    [UnityTest]
     public IEnumerator ForfeitClosesOpeningWithoutAnyMoves()
         => (IEnumerator)Fixture.GetMethod("RunForfeitedMovementOpeningCannotSave").Invoke(board, null);
 

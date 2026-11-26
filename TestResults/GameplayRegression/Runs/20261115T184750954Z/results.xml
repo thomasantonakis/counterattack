@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="2" result="Passed" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-15 18:47:50Z" end-time="2026-11-15 18:47:51Z" duration="0.1621646">
+  <test-suite type="TestSuite" id="2940" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1641" result="Passed" start-time="2026-11-15 18:47:50Z" end-time="2026-11-15 18:47:51Z" duration="0.162165" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="2934" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="1641" result="Passed" start-time="2026-11-15 18:47:51Z" end-time="2026-11-15 18:47:51Z" duration="0.130924" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17216" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="1963" name="OnlineRoomMenuEditorTests" fullname="OnlineRoomMenuEditorTests" classname="OnlineRoomMenuEditorTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-15 18:47:51Z" end-time="2026-11-15 18:47:51Z" duration="0.127411" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineRoomMenu" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="1966" name="CloseRestoresContextBeforeSceneUnload" fullname="OnlineRoomMenuEditorTests.CloseRestoresContextBeforeSceneUnload" classname="OnlineRoomMenuEditorTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-15 18:47:51Z" end-time="2026-11-15 18:47:51Z" duration="0.120898" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1964" name="CloseRestoresContextBeforeSceneUnload(False)" fullname="OnlineRoomMenuEditorTests.CloseRestoresContextBeforeSceneUnload(False)" methodname="CloseRestoresContextBeforeSceneUnload" classname="OnlineRoomMenuEditorTests" runstate="Runnable" seed="961094504" result="Passed" start-time="2026-11-15 18:47:51Z" end-time="2026-11-15 18:47:51Z" duration="0.087834" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1965" name="CloseRestoresContextBeforeSceneUnload(True)" fullname="OnlineRoomMenuEditorTests.CloseRestoresContextBeforeSceneUnload(True)" methodname="CloseRestoresContextBeforeSceneUnload" classname="OnlineRoomMenuEditorTests" runstate="Runnable" seed="696424763" result="Passed" start-time="2026-11-15 18:47:51Z" end-time="2026-11-15 18:47:51Z" duration="0.003807" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Saving results to: TestResults\GameplayRegression\Runs\20261115T184750954Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

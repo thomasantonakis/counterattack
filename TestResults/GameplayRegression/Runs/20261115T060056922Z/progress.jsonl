@@ -1,0 +1,16 @@
+{"name":"OnlineDraftChannelEditorTests.SerializedDraft(False,\"arrival\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftChannelEditorTests.SerializedDraft(False,\"roll\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftChannelEditorTests.SerializedDraft(False,\"pick\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftChannelEditorTests.SerializedDraft(False,\"complete\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftChannelEditorTests.SerializedDraft(False,\"rejoin\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftChannelEditorTests.SerializedDraft(False,\"lost-reply\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftChannelEditorTests.SerializedDraft(False,\"malformed\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftChannelEditorTests.SerializedDraft(False,\"local-loss\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftChannelEditorTests.SerializedDraft(True,\"arrival\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftChannelEditorTests.SerializedDraft(True,\"roll\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftChannelEditorTests.SerializedDraft(True,\"pick\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftChannelEditorTests.SerializedDraft(True,\"complete\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftChannelEditorTests.SerializedDraft(True,\"rejoin\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftChannelEditorTests.SerializedDraft(True,\"lost-reply\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftChannelEditorTests.SerializedDraft(True,\"malformed\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineDraftChannelEditorTests.SerializedDraft(True,\"local-loss\")","status":"Passed","message":"","stackTrace":""}

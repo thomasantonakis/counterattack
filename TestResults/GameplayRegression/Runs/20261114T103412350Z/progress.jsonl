@@ -1,0 +1,10 @@
+{"name":"LegacyFirstTimePassPlayModeTests.FirstTimePass(\"to_space\")","status":"Passed","message":"","stackTrace":""}
+{"name":"LegacyFirstTimePassPlayModeTests.FirstTimePass(\"to_player\")","status":"Passed","message":"","stackTrace":""}
+{"name":"LegacyFirstTimePassPlayModeTests.FirstTimePass(\"easy_hover\")","status":"Passed","message":"","stackTrace":""}
+{"name":"LegacyFirstTimePassPlayModeTests.FirstTimePass(\"hard_commit\")","status":"Passed","message":"","stackTrace":""}
+{"name":"LegacyFirstTimePassPlayModeTests.FirstTimePass(\"auto_recovery\")","status":"Passed","message":"","stackTrace":""}
+{"name":"LegacyFirstTimePassPlayModeTests.FirstTimePass(\"zoi_recovery\")","status":"Passed","message":"","stackTrace":""}
+{"name":"LegacyFirstTimePassPlayModeTests.FirstTimePass(\"excluded_passer\")","status":"Passed","message":"","stackTrace":""}
+{"name":"LegacyFirstTimePassPlayModeTests.FirstTimePass(\"switch_options\")","status":"Passed","message":"","stackTrace":""}
+{"name":"LegacyFirstTimePassPlayModeTests.FirstTimePass(\"reset_movement\")","status":"Passed","message":"","stackTrace":""}
+{"name":"LegacyFirstTimePassPlayModeTests.FirstTimePass(\"end_options\")","status":"Passed","message":"","stackTrace":""}

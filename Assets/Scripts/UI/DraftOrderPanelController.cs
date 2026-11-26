@@ -2,8 +2,10 @@ using TMPro;
 using UnityEngine;
 
 /// <summary>Scene-authored first-pick and coin-toss roll-offs. Animation never consumes gameplay randomness.</summary>
-public sealed class DraftOrderPanelController : MonoBehaviour
+public sealed partial class DraftOrderPanelController : MonoBehaviour
 {
+    public const float RollResultSeconds = 2f;
+    public const float RollWiggleDelaySeconds = .25f;
     public GameObject visuals;
     public RectTransform panel;
     public TMP_Text title, homeTeam, awayTeam, homeResult, awayResult, outcome, footer;
@@ -11,10 +13,11 @@ public sealed class DraftOrderPanelController : MonoBehaviour
     private enum Stage { Closed, Home, Away, Result, Choice }
     private Stage stage;
     private int homeScore, awayScore;
-    private float resultUntil;
+    private float resultUntil, rollUntil;
+    private bool rollAutomatically;
+    private int displayedRollSeconds;
     private bool coinToss;
     private string coinTossChoices;
-    private float rollDeadline;
     private float wiggleDeadline;
     private bool wigglePlayed;
     private GameplayAudioDirector roomAudioDirector;
@@ -44,11 +47,13 @@ public sealed class DraftOrderPanelController : MonoBehaviour
         return string.IsNullOrWhiteSpace(name) ? (home ? "Home" : "Away") : name;
     }
 
-    public bool Open(GameSettings settings, bool forCoinToss = false, string tossTitle = "COIN TOSS FLIP", string choicesCopy = "kickoff or direction")
+    public bool Open(GameSettings settings, bool forCoinToss = false, string tossTitle = "COIN TOSS FLIP", string choicesCopy = "kickoff or direction",
+        bool rollAutomatically = false)
     {
         if (!HasSceneBindings || settings == null || IsOpen) return false;
         HomeWon = null;
         coinToss = forCoinToss;
+        this.rollAutomatically = rollAutomatically || !OnlineRoomControlled;
         roomAudioDirector = roomMatch != null ? FindFirstObjectByType<GameplayAudioDirector>() : null;
         coinTossChoices = choicesCopy;
         title.text = coinToss ? tossTitle : "ROLL FOR FIRST DRAFT PICK";
@@ -74,9 +79,23 @@ public sealed class DraftOrderPanelController : MonoBehaviour
         outcome.text = coinToss ? $"Highest roll chooses {coinTossChoices}" : "Highest roll drafts first";
         homeDie.Begin(false);
         awayDie.Clear();
-        stage = Stage.Home;
+        BeginRoll(Stage.Home);
+    }
+
+    private void BeginRoll(Stage rollingTeam)
+    {
+        stage = rollingTeam;
         BeginRollWait();
-        footer.text = $"{homeTeam.text} manager · Press [R] to roll";
+        rollUntil = Time.unscaledTime + DecisionTimingConfig.AutomaticRollSeconds;
+        UpdateRollPrompt(rollAutomatically ? Mathf.CeilToInt(DecisionTimingConfig.AutomaticRollSeconds) : -1);
+    }
+
+    private void UpdateRollPrompt(int seconds)
+    {
+        displayedRollSeconds = seconds;
+        string team = stage == Stage.Home ? homeTeam.text : awayTeam.text;
+        string countdown = seconds >= 0 ? $" · Auto-roll in {seconds}s" : string.Empty;
+        footer.text = $"{team} manager · Press [R] to roll{countdown}";
     }
 
     public bool HandleKey(KeyPressData key)
@@ -92,6 +111,7 @@ public sealed class DraftOrderPanelController : MonoBehaviour
 
     public void Roll(RollInputOverride? rollOverride = null)
     {
+        if(OnlineRoomControlled && !onlineRoll)return;
         if (stage is not (Stage.Home or Stage.Away)) return;
         StopWaitAudio();
         if (roomMatch == null) MenuAudioPlayer.Play(GameplayAudioPool.Dice);
@@ -112,9 +132,7 @@ public sealed class DraftOrderPanelController : MonoBehaviour
             homeResult.text = result;
             awayResult.text = "";
             awayDie.Begin(false);
-            stage = Stage.Away;
-            BeginRollWait();
-            footer.text = $"{awayTeam.text} manager · Press [R] to roll";
+            BeginRoll(Stage.Away);
             return;
         }
         awayScore = roll;
@@ -122,7 +140,7 @@ public sealed class DraftOrderPanelController : MonoBehaviour
         awayResult.text = result;
         outcome.text = homeScore == awayScore ? "TIE · Both managers roll again"
             : $"{(homeScore > awayScore ? homeTeam.text : awayTeam.text)} {(coinToss ? "wins the coin toss" : "drafts first")}";
-        resultUntil = Time.unscaledTime + 2f;
+        resultUntil = Time.unscaledTime + RollResultSeconds;
         stage = Stage.Result;
         footer.text = homeScore == awayScore ? "New rolls in 2 seconds"
             : coinToss ? "Choices open in 2 seconds" : "Draft begins in 2 seconds";
@@ -130,6 +148,7 @@ public sealed class DraftOrderPanelController : MonoBehaviour
 
     public void AdvanceResult(float unscaledTime)
     {
+        if(OnlineRoomControlled && !onlineProgress)return;
         if (stage != Stage.Result || unscaledTime < resultUntil) return;
         if (homeScore == awayScore) { BeginRound(); return; }
         HomeWon = homeScore > awayScore;
@@ -146,13 +165,15 @@ public sealed class DraftOrderPanelController : MonoBehaviour
                 ? roomAudioDirector != null && roomAudioDirector.PlayDiceWiggle()
                 : MenuAudioPlayer.Play(GameplayAudioPool.DiceWiggle);
         }
-        if (unscaledTime >= rollDeadline) Roll();
+        if (!rollAutomatically) return;
+        int seconds = Mathf.CeilToInt(rollUntil - unscaledTime);
+        if (seconds <= 0) Roll();
+        else if (seconds != displayedRollSeconds) UpdateRollPrompt(seconds);
     }
 
     private void BeginRollWait()
     {
-        rollDeadline = Time.unscaledTime + DecisionTimingConfig.AutomaticRollSeconds;
-        wiggleDeadline = Time.unscaledTime + .25f;
+        wiggleDeadline = Time.unscaledTime + RollWiggleDelaySeconds;
         wigglePlayed = false;
     }
 
@@ -175,24 +196,35 @@ public sealed class DraftOrderPanelController : MonoBehaviour
 
     private void Update()
     {
+        if(OnlineRoomControlled)return;
         AdvanceRollWait(Time.unscaledTime);
         AdvanceResult(Time.unscaledTime);
         if (!IsOpen) return;
         Fit();
         if (externalInput) return;
-        if (Input.GetKeyDown(KeyCode.R)) HandleKey(new KeyPressData(KeyCode.R, false, false, false));
-        if (!(Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
-            || !(Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))) return;
-        for (int i = 1; i <= 6; i++)
+        if (Input.GetKeyDown(KeyCode.R))
         {
-            var number = (KeyCode)((int)KeyCode.Alpha0 + i);
-            var keypad = (KeyCode)((int)KeyCode.Keypad0 + i);
-            if (Input.GetKeyDown(number)) HandleKey(new KeyPressData(number, true, true, false));
-            if (Input.GetKeyDown(keypad)) HandleKey(new KeyPressData(keypad, true, true, false));
+            HandleKey(new KeyPressData(KeyCode.R, false, false, false));
+            return;
         }
+
+        bool rigging = (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
+            && (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift));
+        if (rigging)
+        {
+            for (int i = 1; i <= 6; i++)
+            {
+                var number = (KeyCode)((int)KeyCode.Alpha0 + i);
+                var keypad = (KeyCode)((int)KeyCode.Keypad0 + i);
+                if (!Input.GetKeyDown(number) && !Input.GetKeyDown(keypad)) continue;
+                HandleKey(new KeyPressData(number, true, true, false));
+                return;
+            }
+        }
+
     }
 
-    private void Fit()
+    internal void Fit()
     {
         if (panel == null || panel.parent is not RectTransform bounds) return;
         panel.localScale = Vector3.one * Mathf.Max(.001f,

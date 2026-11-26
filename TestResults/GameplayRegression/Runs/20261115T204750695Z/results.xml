@@ -1,0 +1,463 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="16" result="Passed" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-15 20:47:50Z" end-time="2026-11-15 20:51:06Z" duration="196.0913044">
+  <test-suite type="TestSuite" id="2674" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1375" result="Passed" start-time="2026-11-15 20:47:50Z" end-time="2026-11-15 20:51:06Z" duration="196.091304" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2671" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1375" result="Passed" start-time="2026-11-15 20:47:50Z" end-time="2026-11-15 20:51:06Z" duration="196.054817" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17216" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1932" name="OnlineRequiredKeeperPlayModeTests" fullname="OnlineRequiredKeeperPlayModeTests" classname="OnlineRequiredKeeperPlayModeTests" runstate="Runnable" testcasecount="33" result="Passed" start-time="2026-11-15 20:47:50Z" end-time="2026-11-15 20:51:06Z" duration="196.044893" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineRequiredKeeper" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="1967" name="EmergencyKeeperNomination" fullname="OnlineRequiredKeeperPlayModeTests.EmergencyKeeperNomination" classname="OnlineRequiredKeeperPlayModeTests" runstate="Runnable" testcasecount="16" result="Passed" start-time="2026-11-15 20:47:50Z" end-time="2026-11-15 20:51:06Z" duration="196.029400" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="1951" name="EmergencyKeeperNomination(False,&quot;no-bench&quot;,False,False)" fullname="OnlineRequiredKeeperPlayModeTests.EmergencyKeeperNomination(False,&quot;no-bench&quot;,False,False)" methodname="EmergencyKeeperNomination" classname="OnlineRequiredKeeperPlayModeTests" runstate="Runnable" seed="1491310578" result="Passed" start-time="2026-11-15 20:47:50Z" end-time="2026-11-15 20:48:04Z" duration="13.197510" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[TokenKitCatalog] Loading kits JSON from Resources path 'Kits/kit-picker-v1-11-supported' (asset: Assets/Resources/Kits/kit-picker-v1-11-supported.json).
+[TokenKitCatalog] Found kits JSON TextAsset 'kit-picker-v1-11-supported' at Resources path 'Kits/kit-picker-v1-11-supported' (32277 characters).
+[TokenKitCatalog] Parsed 101 kit preset(s) from Resources path 'Kits/kit-picker-v1-11-supported'.
+[TokenKitCatalog] Active kit catalog contains 101 kit preset(s).
+MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584937180698
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Mooney (Jersey 12) has been sent off. Token deactivated.
+Aziz (Jersey 1) has been sent off. Token deactivated.
+Aziz (Jersey 1) has been sent off.
+Substitutions are no longer available: Aziz was sent off and no bench goalkeeper is available. Click a playing outfield player to dress and act as emergency goalkeeper.
+Aziz was sent off and no bench goalkeeper is available. Click a playing outfield player to dress and act as emergency goalkeeper.
+Converting Aguayo (Jersey 2) from outfield player to goalkeeper.
+Aguayo (Jersey 2) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=4, Dribbling=5, HighPass=5, Resilience=4
+Substitutions are no longer available: Goalkeeper replacement completed
+Aguayo (Jersey 2) has been nominated as emergency goalkeeper.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1952" name="EmergencyKeeperNomination(False,&quot;no-bench&quot;,False,True)" fullname="OnlineRequiredKeeperPlayModeTests.EmergencyKeeperNomination(False,&quot;no-bench&quot;,False,True)" methodname="EmergencyKeeperNomination" classname="OnlineRequiredKeeperPlayModeTests" runstate="Runnable" seed="2036427057" result="Passed" start-time="2026-11-15 20:48:04Z" end-time="2026-11-15 20:48:15Z" duration="11.901204" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584937306890
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Mooney (Jersey 12) has been sent off. Token deactivated.
+Aziz (Jersey 1) has been sent off. Token deactivated.
+Aziz (Jersey 1) has been sent off.
+Substitutions are no longer available: Aziz was sent off and no bench goalkeeper is available. Click a playing outfield player to dress and act as emergency goalkeeper.
+Aziz was sent off and no bench goalkeeper is available. Click a playing outfield player to dress and act as emergency goalkeeper.
+Converting Aguayo (Jersey 2) from outfield player to goalkeeper.
+Aguayo (Jersey 2) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=4, Dribbling=5, HighPass=5, Resilience=4
+Substitutions are no longer available: Goalkeeper replacement completed
+Aguayo (Jersey 2) has been nominated as emergency goalkeeper.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1953" name="EmergencyKeeperNomination(False,&quot;no-bench&quot;,True,False)" fullname="OnlineRequiredKeeperPlayModeTests.EmergencyKeeperNomination(False,&quot;no-bench&quot;,True,False)" methodname="EmergencyKeeperNomination" classname="OnlineRequiredKeeperPlayModeTests" runstate="Runnable" seed="380331652" result="Passed" start-time="2026-11-15 20:48:15Z" end-time="2026-11-15 20:48:27Z" duration="12.052519" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584937433082
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Mooney (Jersey 12) has been sent off. Token deactivated.
+Aziz (Jersey 1) has been sent off. Token deactivated.
+Aziz (Jersey 1) has been sent off.
+Substitutions are no longer available: Aziz was sent off and no bench goalkeeper is available. Click a playing outfield player to dress and act as emergency goalkeeper.
+Aziz was sent off and no bench goalkeeper is available. Click a playing outfield player to dress and act as emergency goalkeeper.
+Converting Aguayo (Jersey 2) from outfield player to goalkeeper.
+Aguayo (Jersey 2) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=4, Dribbling=5, HighPass=5, Resilience=4
+Substitutions are no longer available: Goalkeeper replacement completed
+Aguayo (Jersey 2) has been nominated as emergency goalkeeper.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1954" name="EmergencyKeeperNomination(False,&quot;no-bench&quot;,True,True)" fullname="OnlineRequiredKeeperPlayModeTests.EmergencyKeeperNomination(False,&quot;no-bench&quot;,True,True)" methodname="EmergencyKeeperNomination" classname="OnlineRequiredKeeperPlayModeTests" runstate="Runnable" seed="172623243" result="Passed" start-time="2026-11-15 20:48:27Z" end-time="2026-11-15 20:48:39Z" duration="11.968034" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584937559274
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Mooney (Jersey 12) has been sent off. Token deactivated.
+Aziz (Jersey 1) has been sent off. Token deactivated.
+Aziz (Jersey 1) has been sent off.
+Substitutions are no longer available: Aziz was sent off and no bench goalkeeper is available. Click a playing outfield player to dress and act as emergency goalkeeper.
+Aziz was sent off and no bench goalkeeper is available. Click a playing outfield player to dress and act as emergency goalkeeper.
+Converting Aguayo (Jersey 2) from outfield player to goalkeeper.
+Aguayo (Jersey 2) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=4, Dribbling=5, HighPass=5, Resilience=4
+Substitutions are no longer available: Goalkeeper replacement completed
+Aguayo (Jersey 2) has been nominated as emergency goalkeeper.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1955" name="EmergencyKeeperNomination(False,&quot;no-subs&quot;,False,False)" fullname="OnlineRequiredKeeperPlayModeTests.EmergencyKeeperNomination(False,&quot;no-subs&quot;,False,False)" methodname="EmergencyKeeperNomination" classname="OnlineRequiredKeeperPlayModeTests" runstate="Runnable" seed="2085221327" result="Passed" start-time="2026-11-15 20:48:39Z" end-time="2026-11-15 20:48:52Z" duration="12.204630" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584937685466
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Substitutions are now available: Owned exhausted-allowance setup
+Aziz (Jersey 1) has been sent off. Token deactivated.
+Aziz (Jersey 1) has been sent off.
+Substitutions are no longer available: Aziz was sent off and no substitutions remain. Click a playing outfield player to dress and act as emergency goalkeeper.
+Aziz was sent off and no substitutions remain. Click a playing outfield player to dress and act as emergency goalkeeper.
+Converting Aguayo (Jersey 2) from outfield player to goalkeeper.
+Aguayo (Jersey 2) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=4, Dribbling=5, HighPass=5, Resilience=4
+Substitutions are no longer available: Goalkeeper replacement completed
+Aguayo (Jersey 2) has been nominated as emergency goalkeeper.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1956" name="EmergencyKeeperNomination(False,&quot;no-subs&quot;,False,True)" fullname="OnlineRequiredKeeperPlayModeTests.EmergencyKeeperNomination(False,&quot;no-subs&quot;,False,True)" methodname="EmergencyKeeperNomination" classname="OnlineRequiredKeeperPlayModeTests" runstate="Runnable" seed="1692219529" result="Passed" start-time="2026-11-15 20:48:52Z" end-time="2026-11-15 20:49:04Z" duration="11.936335" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584937811658
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Substitutions are now available: Owned exhausted-allowance setup
+Aziz (Jersey 1) has been sent off. Token deactivated.
+Aziz (Jersey 1) has been sent off.
+Substitutions are no longer available: Aziz was sent off and no substitutions remain. Click a playing outfield player to dress and act as emergency goalkeeper.
+Aziz was sent off and no substitutions remain. Click a playing outfield player to dress and act as emergency goalkeeper.
+Converting Aguayo (Jersey 2) from outfield player to goalkeeper.
+Aguayo (Jersey 2) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=4, Dribbling=5, HighPass=5, Resilience=4
+Substitutions are no longer available: Goalkeeper replacement completed
+Aguayo (Jersey 2) has been nominated as emergency goalkeeper.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1957" name="EmergencyKeeperNomination(False,&quot;no-subs&quot;,True,False)" fullname="OnlineRequiredKeeperPlayModeTests.EmergencyKeeperNomination(False,&quot;no-subs&quot;,True,False)" methodname="EmergencyKeeperNomination" classname="OnlineRequiredKeeperPlayModeTests" runstate="Runnable" seed="1777987714" result="Passed" start-time="2026-11-15 20:49:04Z" end-time="2026-11-15 20:49:16Z" duration="11.923622" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584937937850
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Substitutions are now available: Owned exhausted-allowance setup
+Aziz (Jersey 1) has been sent off. Token deactivated.
+Aziz (Jersey 1) has been sent off.
+Substitutions are no longer available: Aziz was sent off and no substitutions remain. Click a playing outfield player to dress and act as emergency goalkeeper.
+Aziz was sent off and no substitutions remain. Click a playing outfield player to dress and act as emergency goalkeeper.
+Converting Aguayo (Jersey 2) from outfield player to goalkeeper.
+Aguayo (Jersey 2) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=4, Dribbling=5, HighPass=5, Resilience=4
+Substitutions are no longer available: Goalkeeper replacement completed
+Aguayo (Jersey 2) has been nominated as emergency goalkeeper.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1958" name="EmergencyKeeperNomination(False,&quot;no-subs&quot;,True,True)" fullname="OnlineRequiredKeeperPlayModeTests.EmergencyKeeperNomination(False,&quot;no-subs&quot;,True,True)" methodname="EmergencyKeeperNomination" classname="OnlineRequiredKeeperPlayModeTests" runstate="Runnable" seed="2778362" result="Passed" start-time="2026-11-15 20:49:16Z" end-time="2026-11-15 20:49:27Z" duration="11.977799" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584938064042
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Substitutions are now available: Owned exhausted-allowance setup
+Aziz (Jersey 1) has been sent off. Token deactivated.
+Aziz (Jersey 1) has been sent off.
+Substitutions are no longer available: Aziz was sent off and no substitutions remain. Click a playing outfield player to dress and act as emergency goalkeeper.
+Aziz was sent off and no substitutions remain. Click a playing outfield player to dress and act as emergency goalkeeper.
+Converting Aguayo (Jersey 2) from outfield player to goalkeeper.
+Aguayo (Jersey 2) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=4, Dribbling=5, HighPass=5, Resilience=4
+Substitutions are no longer available: Goalkeeper replacement completed
+Aguayo (Jersey 2) has been nominated as emergency goalkeeper.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1959" name="EmergencyKeeperNomination(True,&quot;no-bench&quot;,False,False)" fullname="OnlineRequiredKeeperPlayModeTests.EmergencyKeeperNomination(True,&quot;no-bench&quot;,False,False)" methodname="EmergencyKeeperNomination" classname="OnlineRequiredKeeperPlayModeTests" runstate="Runnable" seed="456193193" result="Passed" start-time="2026-11-15 20:49:28Z" end-time="2026-11-15 20:49:39Z" duration="11.728945" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584938190234
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Zimmer (Jersey 12) has been sent off. Token deactivated.
+Kuzmic (Jersey 1) has been sent off. Token deactivated.
+Kuzmic (Jersey 1) has been sent off.
+Substitutions are no longer available: Kuzmic was sent off and no bench goalkeeper is available. Click a playing outfield player to dress and act as emergency goalkeeper.
+Kuzmic was sent off and no bench goalkeeper is available. Click a playing outfield player to dress and act as emergency goalkeeper.
+Converting Baez (Jersey 2) from outfield player to goalkeeper.
+Baez (Jersey 2) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=5, HighPass=6, Resilience=3
+Substitutions are no longer available: Goalkeeper replacement completed
+Baez (Jersey 2) has been nominated as emergency goalkeeper.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1960" name="EmergencyKeeperNomination(True,&quot;no-bench&quot;,False,True)" fullname="OnlineRequiredKeeperPlayModeTests.EmergencyKeeperNomination(True,&quot;no-bench&quot;,False,True)" methodname="EmergencyKeeperNomination" classname="OnlineRequiredKeeperPlayModeTests" runstate="Runnable" seed="284538215" result="Passed" start-time="2026-11-15 20:49:39Z" end-time="2026-11-15 20:49:51Z" duration="12.123358" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584938316426
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Zimmer (Jersey 12) has been sent off. Token deactivated.
+Kuzmic (Jersey 1) has been sent off. Token deactivated.
+Kuzmic (Jersey 1) has been sent off.
+Substitutions are no longer available: Kuzmic was sent off and no bench goalkeeper is available. Click a playing outfield player to dress and act as emergency goalkeeper.
+Kuzmic was sent off and no bench goalkeeper is available. Click a playing outfield player to dress and act as emergency goalkeeper.
+Converting Baez (Jersey 2) from outfield player to goalkeeper.
+Baez (Jersey 2) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=5, HighPass=6, Resilience=3
+Substitutions are no longer available: Goalkeeper replacement completed
+Baez (Jersey 2) has been nominated as emergency goalkeeper.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1961" name="EmergencyKeeperNomination(True,&quot;no-bench&quot;,True,False)" fullname="OnlineRequiredKeeperPlayModeTests.EmergencyKeeperNomination(True,&quot;no-bench&quot;,True,False)" methodname="EmergencyKeeperNomination" classname="OnlineRequiredKeeperPlayModeTests" runstate="Runnable" seed="608683580" result="Passed" start-time="2026-11-15 20:49:51Z" end-time="2026-11-15 20:50:03Z" duration="12.051195" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584938442618
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Zimmer (Jersey 12) has been sent off. Token deactivated.
+Kuzmic (Jersey 1) has been sent off. Token deactivated.
+Kuzmic (Jersey 1) has been sent off.
+Substitutions are no longer available: Kuzmic was sent off and no bench goalkeeper is available. Click a playing outfield player to dress and act as emergency goalkeeper.
+Kuzmic was sent off and no bench goalkeeper is available. Click a playing outfield player to dress and act as emergency goalkeeper.
+Converting Baez (Jersey 2) from outfield player to goalkeeper.
+Baez (Jersey 2) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=5, HighPass=6, Resilience=3
+Substitutions are no longer available: Goalkeeper replacement completed
+Baez (Jersey 2) has been nominated as emergency goalkeeper.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1962" name="EmergencyKeeperNomination(True,&quot;no-bench&quot;,True,True)" fullname="OnlineRequiredKeeperPlayModeTests.EmergencyKeeperNomination(True,&quot;no-bench&quot;,True,True)" methodname="EmergencyKeeperNomination" classname="OnlineRequiredKeeperPlayModeTests" runstate="Runnable" seed="1114032121" result="Passed" start-time="2026-11-15 20:50:03Z" end-time="2026-11-15 20:50:15Z" duration="12.090920" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584938568810
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Zimmer (Jersey 12) has been sent off. Token deactivated.
+Kuzmic (Jersey 1) has been sent off. Token deactivated.
+Kuzmic (Jersey 1) has been sent off.
+Substitutions are no longer available: Kuzmic was sent off and no bench goalkeeper is available. Click a playing outfield player to dress and act as emergency goalkeeper.
+Kuzmic was sent off and no bench goalkeeper is available. Click a playing outfield player to dress and act as emergency goalkeeper.
+Converting Baez (Jersey 2) from outfield player to goalkeeper.
+Baez (Jersey 2) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=5, HighPass=6, Resilience=3
+Substitutions are no longer available: Goalkeeper replacement completed
+Baez (Jersey 2) has been nominated as emergency goalkeeper.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1963" name="EmergencyKeeperNomination(True,&quot;no-subs&quot;,False,False)" fullname="OnlineRequiredKeeperPlayModeTests.EmergencyKeeperNomination(True,&quot;no-subs&quot;,False,False)" methodname="EmergencyKeeperNomination" classname="OnlineRequiredKeeperPlayModeTests" runstate="Runnable" seed="781715153" result="Passed" start-time="2026-11-15 20:50:15Z" end-time="2026-11-15 20:50:28Z" duration="12.615520" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584938695002
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Substitutions are now available: Owned exhausted-allowance setup
+Kuzmic (Jersey 1) has been sent off. Token deactivated.
+Kuzmic (Jersey 1) has been sent off.
+Substitutions are no longer available: Kuzmic was sent off and no substitutions remain. Click a playing outfield player to dress and act as emergency goalkeeper.
+Kuzmic was sent off and no substitutions remain. Click a playing outfield player to dress and act as emergency goalkeeper.
+Converting Baez (Jersey 2) from outfield player to goalkeeper.
+Baez (Jersey 2) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=5, HighPass=6, Resilience=3
+Substitutions are no longer available: Goalkeeper replacement completed
+Baez (Jersey 2) has been nominated as emergency goalkeeper.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1964" name="EmergencyKeeperNomination(True,&quot;no-subs&quot;,False,True)" fullname="OnlineRequiredKeeperPlayModeTests.EmergencyKeeperNomination(True,&quot;no-subs&quot;,False,True)" methodname="EmergencyKeeperNomination" classname="OnlineRequiredKeeperPlayModeTests" runstate="Runnable" seed="2126285773" result="Passed" start-time="2026-11-15 20:50:28Z" end-time="2026-11-15 20:50:41Z" duration="12.667648" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584938821194
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Substitutions are now available: Owned exhausted-allowance setup
+Kuzmic (Jersey 1) has been sent off. Token deactivated.
+Kuzmic (Jersey 1) has been sent off.
+Substitutions are no longer available: Kuzmic was sent off and no substitutions remain. Click a playing outfield player to dress and act as emergency goalkeeper.
+Kuzmic was sent off and no substitutions remain. Click a playing outfield player to dress and act as emergency goalkeeper.
+Converting Baez (Jersey 2) from outfield player to goalkeeper.
+Baez (Jersey 2) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=5, HighPass=6, Resilience=3
+Substitutions are no longer available: Goalkeeper replacement completed
+Baez (Jersey 2) has been nominated as emergency goalkeeper.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1965" name="EmergencyKeeperNomination(True,&quot;no-subs&quot;,True,False)" fullname="OnlineRequiredKeeperPlayModeTests.EmergencyKeeperNomination(True,&quot;no-subs&quot;,True,False)" methodname="EmergencyKeeperNomination" classname="OnlineRequiredKeeperPlayModeTests" runstate="Runnable" seed="321847784" result="Passed" start-time="2026-11-15 20:50:41Z" end-time="2026-11-15 20:50:54Z" duration="12.920032" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584938947386
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Substitutions are now available: Owned exhausted-allowance setup
+Kuzmic (Jersey 1) has been sent off. Token deactivated.
+Kuzmic (Jersey 1) has been sent off.
+Substitutions are no longer available: Kuzmic was sent off and no substitutions remain. Click a playing outfield player to dress and act as emergency goalkeeper.
+Kuzmic was sent off and no substitutions remain. Click a playing outfield player to dress and act as emergency goalkeeper.
+Converting Baez (Jersey 2) from outfield player to goalkeeper.
+Baez (Jersey 2) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=5, HighPass=6, Resilience=3
+Substitutions are no longer available: Goalkeeper replacement completed
+Baez (Jersey 2) has been nominated as emergency goalkeeper.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1966" name="EmergencyKeeperNomination(True,&quot;no-subs&quot;,True,True)" fullname="OnlineRequiredKeeperPlayModeTests.EmergencyKeeperNomination(True,&quot;no-subs&quot;,True,True)" methodname="EmergencyKeeperNomination" classname="OnlineRequiredKeeperPlayModeTests" runstate="Runnable" seed="1607728154" result="Passed" start-time="2026-11-15 20:50:54Z" end-time="2026-11-15 20:51:06Z" duration="12.616149" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584939073578
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Substitutions are now available: Owned exhausted-allowance setup
+Kuzmic (Jersey 1) has been sent off. Token deactivated.
+Kuzmic (Jersey 1) has been sent off.
+Substitutions are no longer available: Kuzmic was sent off and no substitutions remain. Click a playing outfield player to dress and act as emergency goalkeeper.
+Kuzmic was sent off and no substitutions remain. Click a playing outfield player to dress and act as emergency goalkeeper.
+Converting Baez (Jersey 2) from outfield player to goalkeeper.
+Baez (Jersey 2) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=5, HighPass=6, Resilience=3
+Substitutions are no longer available: Goalkeeper replacement completed
+Baez (Jersey 2) has been nominated as emergency goalkeeper.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+Saving results to: TestResults\GameplayRegression\Runs\20261115T204750695Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

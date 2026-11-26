@@ -1,0 +1,399 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="16" result="Passed" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-15 20:44:19Z" end-time="2026-11-15 20:47:34Z" duration="195.0161137">
+  <test-suite type="TestSuite" id="2674" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1375" result="Passed" start-time="2026-11-15 20:44:19Z" end-time="2026-11-15 20:47:34Z" duration="195.016114" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2671" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1375" result="Passed" start-time="2026-11-15 20:44:19Z" end-time="2026-11-15 20:47:34Z" duration="194.983975" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17216" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1932" name="OnlineRequiredKeeperPlayModeTests" fullname="OnlineRequiredKeeperPlayModeTests" classname="OnlineRequiredKeeperPlayModeTests" runstate="Runnable" testcasecount="33" result="Passed" start-time="2026-11-15 20:44:19Z" end-time="2026-11-15 20:47:34Z" duration="194.974625" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineRequiredKeeper" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="1950" name="ForcedBenchKeeperReplacement" fullname="OnlineRequiredKeeperPlayModeTests.ForcedBenchKeeperReplacement" classname="OnlineRequiredKeeperPlayModeTests" runstate="Runnable" testcasecount="16" result="Passed" start-time="2026-11-15 20:44:19Z" end-time="2026-11-15 20:47:34Z" duration="194.964079" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="1934" name="ForcedBenchKeeperReplacement(False,&quot;bench&quot;,False,False)" fullname="OnlineRequiredKeeperPlayModeTests.ForcedBenchKeeperReplacement(False,&quot;bench&quot;,False,False)" methodname="ForcedBenchKeeperReplacement" classname="OnlineRequiredKeeperPlayModeTests" runstate="Runnable" seed="680329906" result="Passed" start-time="2026-11-15 20:44:19Z" end-time="2026-11-15 20:44:33Z" duration="13.322996" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[TokenKitCatalog] Loading kits JSON from Resources path 'Kits/kit-picker-v1-11-supported' (asset: Assets/Resources/Kits/kit-picker-v1-11-supported.json).
+[TokenKitCatalog] Found kits JSON TextAsset 'kit-picker-v1-11-supported' at Resources path 'Kits/kit-picker-v1-11-supported' (32277 characters).
+[TokenKitCatalog] Parsed 101 kit preset(s) from Resources path 'Kits/kit-picker-v1-11-supported'.
+[TokenKitCatalog] Active kit catalog contains 101 kit preset(s).
+MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584935138224
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Aziz (Jersey 1) has been sent off. Token deactivated.
+Aziz (Jersey 1) has been sent off.
+Substitutions are now available: Goalkeeper sent off - replace an outfield player with a bench goalkeeper
+Goalkeeper Aziz has been sent off. Select a playing outfield player to come off and bring on the bench goalkeeper.
+Substitutions are no longer available: Goalkeeper replacement completed
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1935" name="ForcedBenchKeeperReplacement(False,&quot;bench&quot;,False,True)" fullname="OnlineRequiredKeeperPlayModeTests.ForcedBenchKeeperReplacement(False,&quot;bench&quot;,False,True)" methodname="ForcedBenchKeeperReplacement" classname="OnlineRequiredKeeperPlayModeTests" runstate="Runnable" seed="706044641" result="Passed" start-time="2026-11-15 20:44:33Z" end-time="2026-11-15 20:44:45Z" duration="12.186259" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584935264416
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Aziz (Jersey 1) has been sent off. Token deactivated.
+Aziz (Jersey 1) has been sent off.
+Substitutions are now available: Goalkeeper sent off - replace an outfield player with a bench goalkeeper
+Goalkeeper Aziz has been sent off. Select a playing outfield player to come off and bring on the bench goalkeeper.
+Substitutions are no longer available: Goalkeeper replacement completed
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1936" name="ForcedBenchKeeperReplacement(False,&quot;bench&quot;,True,False)" fullname="OnlineRequiredKeeperPlayModeTests.ForcedBenchKeeperReplacement(False,&quot;bench&quot;,True,False)" methodname="ForcedBenchKeeperReplacement" classname="OnlineRequiredKeeperPlayModeTests" runstate="Runnable" seed="1727420521" result="Passed" start-time="2026-11-15 20:44:45Z" end-time="2026-11-15 20:44:57Z" duration="12.083451" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584935390608
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Aziz (Jersey 1) has been sent off. Token deactivated.
+Aziz (Jersey 1) has been sent off.
+Substitutions are now available: Goalkeeper sent off - replace an outfield player with a bench goalkeeper
+Goalkeeper Aziz has been sent off. Select a playing outfield player to come off and bring on the bench goalkeeper.
+Substitutions are no longer available: Goalkeeper replacement completed
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1937" name="ForcedBenchKeeperReplacement(False,&quot;bench&quot;,True,True)" fullname="OnlineRequiredKeeperPlayModeTests.ForcedBenchKeeperReplacement(False,&quot;bench&quot;,True,True)" methodname="ForcedBenchKeeperReplacement" classname="OnlineRequiredKeeperPlayModeTests" runstate="Runnable" seed="447572890" result="Passed" start-time="2026-11-15 20:44:57Z" end-time="2026-11-15 20:45:09Z" duration="11.941061" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584935516800
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Aziz (Jersey 1) has been sent off. Token deactivated.
+Aziz (Jersey 1) has been sent off.
+Substitutions are now available: Goalkeeper sent off - replace an outfield player with a bench goalkeeper
+Goalkeeper Aziz has been sent off. Select a playing outfield player to come off and bring on the bench goalkeeper.
+Substitutions are no longer available: Goalkeeper replacement completed
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1938" name="ForcedBenchKeeperReplacement(False,&quot;double&quot;,False,False)" fullname="OnlineRequiredKeeperPlayModeTests.ForcedBenchKeeperReplacement(False,&quot;double&quot;,False,False)" methodname="ForcedBenchKeeperReplacement" classname="OnlineRequiredKeeperPlayModeTests" runstate="Runnable" seed="1986725555" result="Passed" start-time="2026-11-15 20:45:09Z" end-time="2026-11-15 20:45:21Z" duration="12.190910" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584935642992
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+1. Aziz has been injured.
+1. Aziz's attributes after injury: Heading=0, Dribbling=0, Tackling=4, Pace=4, HighPass=3, Shooting=0, Resilience=5
+1. Aziz suffers a second injury and now requires substitution.
+Substitutions are now available: Goalkeeper double injury requires substitution
+Aziz cannot continue. Confirm a bench goalkeeper substitution before play can continue.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1939" name="ForcedBenchKeeperReplacement(False,&quot;double&quot;,False,True)" fullname="OnlineRequiredKeeperPlayModeTests.ForcedBenchKeeperReplacement(False,&quot;double&quot;,False,True)" methodname="ForcedBenchKeeperReplacement" classname="OnlineRequiredKeeperPlayModeTests" runstate="Runnable" seed="1198663435" result="Passed" start-time="2026-11-15 20:45:21Z" end-time="2026-11-15 20:45:33Z" duration="11.985324" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584935769184
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+1. Aziz has been injured.
+1. Aziz's attributes after injury: Heading=0, Dribbling=0, Tackling=4, Pace=4, HighPass=3, Shooting=0, Resilience=5
+1. Aziz suffers a second injury and now requires substitution.
+Substitutions are now available: Goalkeeper double injury requires substitution
+Aziz cannot continue. Confirm a bench goalkeeper substitution before play can continue.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1940" name="ForcedBenchKeeperReplacement(False,&quot;double&quot;,True,False)" fullname="OnlineRequiredKeeperPlayModeTests.ForcedBenchKeeperReplacement(False,&quot;double&quot;,True,False)" methodname="ForcedBenchKeeperReplacement" classname="OnlineRequiredKeeperPlayModeTests" runstate="Runnable" seed="1462097415" result="Passed" start-time="2026-11-15 20:45:33Z" end-time="2026-11-15 20:45:45Z" duration="11.914240" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584935895376
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+1. Aziz has been injured.
+1. Aziz's attributes after injury: Heading=0, Dribbling=0, Tackling=4, Pace=4, HighPass=3, Shooting=0, Resilience=5
+1. Aziz suffers a second injury and now requires substitution.
+Substitutions are now available: Goalkeeper double injury requires substitution
+Aziz cannot continue. Confirm a bench goalkeeper substitution before play can continue.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1941" name="ForcedBenchKeeperReplacement(False,&quot;double&quot;,True,True)" fullname="OnlineRequiredKeeperPlayModeTests.ForcedBenchKeeperReplacement(False,&quot;double&quot;,True,True)" methodname="ForcedBenchKeeperReplacement" classname="OnlineRequiredKeeperPlayModeTests" runstate="Runnable" seed="458970025" result="Passed" start-time="2026-11-15 20:45:45Z" end-time="2026-11-15 20:45:57Z" duration="12.054764" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584936021568
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+1. Aziz has been injured.
+1. Aziz's attributes after injury: Heading=0, Dribbling=0, Tackling=4, Pace=4, HighPass=3, Shooting=0, Resilience=5
+1. Aziz suffers a second injury and now requires substitution.
+Substitutions are now available: Goalkeeper double injury requires substitution
+Aziz cannot continue. Confirm a bench goalkeeper substitution before play can continue.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1942" name="ForcedBenchKeeperReplacement(True,&quot;bench&quot;,False,False)" fullname="OnlineRequiredKeeperPlayModeTests.ForcedBenchKeeperReplacement(True,&quot;bench&quot;,False,False)" methodname="ForcedBenchKeeperReplacement" classname="OnlineRequiredKeeperPlayModeTests" runstate="Runnable" seed="322287161" result="Passed" start-time="2026-11-15 20:45:57Z" end-time="2026-11-15 20:46:09Z" duration="11.931735" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584936147760
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Kuzmic (Jersey 1) has been sent off. Token deactivated.
+Kuzmic (Jersey 1) has been sent off.
+Substitutions are now available: Goalkeeper sent off - replace an outfield player with a bench goalkeeper
+Goalkeeper Kuzmic has been sent off. Select a playing outfield player to come off and bring on the bench goalkeeper.
+Substitutions are no longer available: Goalkeeper replacement completed
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1943" name="ForcedBenchKeeperReplacement(True,&quot;bench&quot;,False,True)" fullname="OnlineRequiredKeeperPlayModeTests.ForcedBenchKeeperReplacement(True,&quot;bench&quot;,False,True)" methodname="ForcedBenchKeeperReplacement" classname="OnlineRequiredKeeperPlayModeTests" runstate="Runnable" seed="1322853380" result="Passed" start-time="2026-11-15 20:46:09Z" end-time="2026-11-15 20:46:21Z" duration="12.267948" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584936273952
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Kuzmic (Jersey 1) has been sent off. Token deactivated.
+Kuzmic (Jersey 1) has been sent off.
+Substitutions are now available: Goalkeeper sent off - replace an outfield player with a bench goalkeeper
+Goalkeeper Kuzmic has been sent off. Select a playing outfield player to come off and bring on the bench goalkeeper.
+Substitutions are no longer available: Goalkeeper replacement completed
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1944" name="ForcedBenchKeeperReplacement(True,&quot;bench&quot;,True,False)" fullname="OnlineRequiredKeeperPlayModeTests.ForcedBenchKeeperReplacement(True,&quot;bench&quot;,True,False)" methodname="ForcedBenchKeeperReplacement" classname="OnlineRequiredKeeperPlayModeTests" runstate="Runnable" seed="39829582" result="Passed" start-time="2026-11-15 20:46:21Z" end-time="2026-11-15 20:46:33Z" duration="12.315581" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584936400144
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Kuzmic (Jersey 1) has been sent off. Token deactivated.
+Kuzmic (Jersey 1) has been sent off.
+Substitutions are now available: Goalkeeper sent off - replace an outfield player with a bench goalkeeper
+Goalkeeper Kuzmic has been sent off. Select a playing outfield player to come off and bring on the bench goalkeeper.
+Substitutions are no longer available: Goalkeeper replacement completed
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1945" name="ForcedBenchKeeperReplacement(True,&quot;bench&quot;,True,True)" fullname="OnlineRequiredKeeperPlayModeTests.ForcedBenchKeeperReplacement(True,&quot;bench&quot;,True,True)" methodname="ForcedBenchKeeperReplacement" classname="OnlineRequiredKeeperPlayModeTests" runstate="Runnable" seed="1204614714" result="Passed" start-time="2026-11-15 20:46:33Z" end-time="2026-11-15 20:46:45Z" duration="12.006692" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584936526336
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Kuzmic (Jersey 1) has been sent off. Token deactivated.
+Kuzmic (Jersey 1) has been sent off.
+Substitutions are now available: Goalkeeper sent off - replace an outfield player with a bench goalkeeper
+Goalkeeper Kuzmic has been sent off. Select a playing outfield player to come off and bring on the bench goalkeeper.
+Substitutions are no longer available: Goalkeeper replacement completed
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1946" name="ForcedBenchKeeperReplacement(True,&quot;double&quot;,False,False)" fullname="OnlineRequiredKeeperPlayModeTests.ForcedBenchKeeperReplacement(True,&quot;double&quot;,False,False)" methodname="ForcedBenchKeeperReplacement" classname="OnlineRequiredKeeperPlayModeTests" runstate="Runnable" seed="492974121" result="Passed" start-time="2026-11-15 20:46:45Z" end-time="2026-11-15 20:46:58Z" duration="12.133628" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584936652528
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+1. Kuzmic has been injured.
+1. Kuzmic's attributes after injury: Heading=0, Dribbling=1, Tackling=4, Pace=5, HighPass=5, Shooting=0, Resilience=3
+1. Kuzmic suffers a second injury and now requires substitution.
+Substitutions are now available: Goalkeeper double injury requires substitution
+Kuzmic cannot continue. Confirm a bench goalkeeper substitution before play can continue.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1947" name="ForcedBenchKeeperReplacement(True,&quot;double&quot;,False,True)" fullname="OnlineRequiredKeeperPlayModeTests.ForcedBenchKeeperReplacement(True,&quot;double&quot;,False,True)" methodname="ForcedBenchKeeperReplacement" classname="OnlineRequiredKeeperPlayModeTests" runstate="Runnable" seed="1592112460" result="Passed" start-time="2026-11-15 20:46:58Z" end-time="2026-11-15 20:47:10Z" duration="12.321662" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584936778720
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+1. Kuzmic has been injured.
+1. Kuzmic's attributes after injury: Heading=0, Dribbling=1, Tackling=4, Pace=5, HighPass=5, Shooting=0, Resilience=3
+1. Kuzmic suffers a second injury and now requires substitution.
+Substitutions are now available: Goalkeeper double injury requires substitution
+Kuzmic cannot continue. Confirm a bench goalkeeper substitution before play can continue.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1948" name="ForcedBenchKeeperReplacement(True,&quot;double&quot;,True,False)" fullname="OnlineRequiredKeeperPlayModeTests.ForcedBenchKeeperReplacement(True,&quot;double&quot;,True,False)" methodname="ForcedBenchKeeperReplacement" classname="OnlineRequiredKeeperPlayModeTests" runstate="Runnable" seed="937847691" result="Passed" start-time="2026-11-15 20:47:10Z" end-time="2026-11-15 20:47:22Z" duration="12.127385" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584936904912
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+1. Kuzmic has been injured.
+1. Kuzmic's attributes after injury: Heading=0, Dribbling=1, Tackling=4, Pace=5, HighPass=5, Shooting=0, Resilience=3
+1. Kuzmic suffers a second injury and now requires substitution.
+Substitutions are now available: Goalkeeper double injury requires substitution
+Kuzmic cannot continue. Confirm a bench goalkeeper substitution before play can continue.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="1949" name="ForcedBenchKeeperReplacement(True,&quot;double&quot;,True,True)" fullname="OnlineRequiredKeeperPlayModeTests.ForcedBenchKeeperReplacement(True,&quot;double&quot;,True,True)" methodname="ForcedBenchKeeperReplacement" classname="OnlineRequiredKeeperPlayModeTests" runstate="Runnable" seed="1061055628" result="Passed" start-time="2026-11-15 20:47:22Z" end-time="2026-11-15 20:47:34Z" duration="12.126262" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584937031104
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+1. Kuzmic has been injured.
+1. Kuzmic's attributes after injury: Heading=0, Dribbling=1, Tackling=4, Pace=5, HighPass=5, Shooting=0, Resilience=3
+1. Kuzmic suffers a second injury and now requires substitution.
+Substitutions are now available: Goalkeeper double injury requires substitution
+Kuzmic cannot continue. Confirm a bench goalkeeper substitution before play can continue.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+Saving results to: TestResults\GameplayRegression\Runs\20261115T204419565Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

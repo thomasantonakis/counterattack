@@ -1,0 +1,8 @@
+{
+  "source_report_branch": "verification/sons-mac-20261119T144722Z-session-93237",
+  "normal_room_bootstrap_matches_windows": true,
+  "crash_type": "EXC_BAD_ACCESS / SIGSEGV",
+  "faulting_native_symbol": "EOS_P2P_RemoveNotifyPeerConnectionInterrupted",
+  "crash_time_local": "2026-11-19 16:35:20 +0200",
+  "diagnosis": "A gameplay notification subscription could be removed after the Mac-owned native platform was released; owned-before-platform cleanup and early nested-exchange disposal added. Native Mac retest still required."
+}

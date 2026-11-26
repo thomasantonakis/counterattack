@@ -1,0 +1,605 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="16" result="Passed" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 18:58:07Z" end-time="2026-11-16 18:58:28Z" duration="20.4518934">
+  <test-suite type="TestSuite" id="2990" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1649" result="Passed" start-time="2026-11-16 18:58:07Z" end-time="2026-11-16 18:58:28Z" duration="20.451893" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2987" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1649" result="Passed" start-time="2026-11-16 18:58:07Z" end-time="2026-11-16 18:58:28Z" duration="20.404119" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12156" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="2383" name="OnlineStationaryDefenderPlayModeTests" fullname="OnlineStationaryDefenderPlayModeTests" classname="OnlineStationaryDefenderPlayModeTests" runstate="Runnable" testcasecount="16" result="Passed" start-time="2026-11-16 18:58:07Z" end-time="2026-11-16 18:58:28Z" duration="20.390449" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineStationaryDefender" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="2402" name="DistantDefenderCannotTackleInPlace" fullname="OnlineStationaryDefenderPlayModeTests.DistantDefenderCannotTackleInPlace" classname="OnlineStationaryDefenderPlayModeTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-11-16 18:58:07Z" end-time="2026-11-16 18:58:14Z" duration="6.290498" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="2398" name="DistantDefenderCannotTackleInPlace(1,False)" fullname="OnlineStationaryDefenderPlayModeTests.DistantDefenderCannotTackleInPlace(1,False)" methodname="DistantDefenderCannotTackleInPlace" classname="OnlineStationaryDefenderPlayModeTests" runstate="Runnable" seed="215791592" result="Passed" start-time="2026-11-16 18:58:07Z" end-time="2026-11-16 18:58:10Z" duration="2.503453" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Home carrier to HandleTokenSelection
+A Valid Defender was selected: Home carrier
+Passing Hex 33,18 to AsyncMoveTokenToHexRegularly
+Passing Hex 33,18 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 33,18
+[Game Log] Home carrier (Fixture Home) moves 1 paces
+isMovingTokenAttacker: False
+Defender does not land on Ball Hex
+Defender is not close enough to pickup or intercept. No prompt shown.
+Advancing Movement Phase
+]]></output>
+          </test-case>
+          <test-case id="2399" name="DistantDefenderCannotTackleInPlace(1,True)" fullname="OnlineStationaryDefenderPlayModeTests.DistantDefenderCannotTackleInPlace(1,True)" methodname="DistantDefenderCannotTackleInPlace" classname="OnlineStationaryDefenderPlayModeTests" runstate="Runnable" seed="1895635046" result="Passed" start-time="2026-11-16 18:58:10Z" end-time="2026-11-16 18:58:11Z" duration="1.410470" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Away recovering player to HandleTokenSelection
+A Valid Defender was selected: Away recovering player
+Passing Hex 33,18 to AsyncMoveTokenToHexRegularly
+Passing Hex 33,18 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 33,18
+[Game Log] Away recovering player (Fixture Away) moves 1 paces
+isMovingTokenAttacker: False
+Defender does not land on Ball Hex
+Defender is not close enough to pickup or intercept. No prompt shown.
+Advancing Movement Phase
+]]></output>
+          </test-case>
+          <test-case id="2400" name="DistantDefenderCannotTackleInPlace(-1,False)" fullname="OnlineStationaryDefenderPlayModeTests.DistantDefenderCannotTackleInPlace(-1,False)" methodname="DistantDefenderCannotTackleInPlace" classname="OnlineStationaryDefenderPlayModeTests" runstate="Runnable" seed="1032644409" result="Passed" start-time="2026-11-16 18:58:11Z" end-time="2026-11-16 18:58:12Z" duration="1.239929" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Home carrier to HandleTokenSelection
+A Valid Defender was selected: Home carrier
+Passing Hex 17,18 to AsyncMoveTokenToHexRegularly
+Passing Hex 17,18 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 17,18
+[Game Log] Home carrier (Fixture Home) moves 1 paces
+isMovingTokenAttacker: False
+Defender does not land on Ball Hex
+Defender is not close enough to pickup or intercept. No prompt shown.
+Advancing Movement Phase
+]]></output>
+          </test-case>
+          <test-case id="2401" name="DistantDefenderCannotTackleInPlace(-1,True)" fullname="OnlineStationaryDefenderPlayModeTests.DistantDefenderCannotTackleInPlace(-1,True)" methodname="DistantDefenderCannotTackleInPlace" classname="OnlineStationaryDefenderPlayModeTests" runstate="Runnable" seed="457770468" result="Passed" start-time="2026-11-16 18:58:12Z" end-time="2026-11-16 18:58:14Z" duration="1.087764" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Away recovering player to HandleTokenSelection
+A Valid Defender was selected: Away recovering player
+Passing Hex 17,18 to AsyncMoveTokenToHexRegularly
+Passing Hex 17,18 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 17,18
+[Game Log] Away recovering player (Fixture Away) moves 1 paces
+isMovingTokenAttacker: False
+Defender does not land on Ball Hex
+Defender is not close enough to pickup or intercept. No prompt shown.
+Advancing Movement Phase
+]]></output>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="2397" name="KeeperCanMoveInsteadOfChallenge" fullname="OnlineStationaryDefenderPlayModeTests.KeeperCanMoveInsteadOfChallenge" classname="OnlineStationaryDefenderPlayModeTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-11-16 18:58:14Z" end-time="2026-11-16 18:58:18Z" duration="4.752147" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="2393" name="KeeperCanMoveInsteadOfChallenge(1,False)" fullname="OnlineStationaryDefenderPlayModeTests.KeeperCanMoveInsteadOfChallenge(1,False)" methodname="KeeperCanMoveInsteadOfChallenge" classname="OnlineStationaryDefenderPlayModeTests" runstate="Runnable" seed="1084726943" result="Passed" start-time="2026-11-16 18:58:14Z" end-time="2026-11-16 18:58:15Z" duration="1.235995" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=5, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Home keeper to HandleTokenSelection
+A Valid Defender was selected: Home keeper
+Home keeper is adjacent to Away recovering player outside the goalkeeper's penalty box. Press [D]ive, [T]ackle with feet, or [N] to stand there.
+Passing Hex 31,18 to AsyncMoveTokenToHexRegularly
+Passing Hex 31,18 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 31,18
+[Game Log] Home keeper (Fixture Home) moves 1 paces
+isMovingTokenAttacker: False
+Defender does not land on Ball Hex
+Defender is not close enough to pickup or intercept. No prompt shown.
+Advancing Movement Phase
+]]></output>
+          </test-case>
+          <test-case id="2394" name="KeeperCanMoveInsteadOfChallenge(1,True)" fullname="OnlineStationaryDefenderPlayModeTests.KeeperCanMoveInsteadOfChallenge(1,True)" methodname="KeeperCanMoveInsteadOfChallenge" classname="OnlineStationaryDefenderPlayModeTests" runstate="Runnable" seed="96353141" result="Passed" start-time="2026-11-16 18:58:15Z" end-time="2026-11-16 18:58:16Z" duration="1.169475" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=6, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Away keeper to HandleTokenSelection
+A Valid Defender was selected: Away keeper
+Away keeper is adjacent to Home carrier outside the goalkeeper's penalty box. Press [D]ive, [T]ackle with feet, or [N] to stand there.
+Passing Hex 31,18 to AsyncMoveTokenToHexRegularly
+Passing Hex 31,18 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 31,18
+[Game Log] Away keeper (Fixture Away) moves 1 paces
+isMovingTokenAttacker: False
+Defender does not land on Ball Hex
+Defender is not close enough to pickup or intercept. No prompt shown.
+Advancing Movement Phase
+]]></output>
+          </test-case>
+          <test-case id="2395" name="KeeperCanMoveInsteadOfChallenge(-1,False)" fullname="OnlineStationaryDefenderPlayModeTests.KeeperCanMoveInsteadOfChallenge(-1,False)" methodname="KeeperCanMoveInsteadOfChallenge" classname="OnlineStationaryDefenderPlayModeTests" runstate="Runnable" seed="124727742" result="Passed" start-time="2026-11-16 18:58:16Z" end-time="2026-11-16 18:58:17Z" duration="1.159782" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-5, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Home keeper to HandleTokenSelection
+A Valid Defender was selected: Home keeper
+Home keeper is adjacent to Away recovering player outside the goalkeeper's penalty box. Press [D]ive, [T]ackle with feet, or [N] to stand there.
+Passing Hex 19,18 to AsyncMoveTokenToHexRegularly
+Passing Hex 19,18 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 19,18
+[Game Log] Home keeper (Fixture Home) moves 1 paces
+isMovingTokenAttacker: False
+Defender does not land on Ball Hex
+Defender is not close enough to pickup or intercept. No prompt shown.
+Advancing Movement Phase
+]]></output>
+          </test-case>
+          <test-case id="2396" name="KeeperCanMoveInsteadOfChallenge(-1,True)" fullname="OnlineStationaryDefenderPlayModeTests.KeeperCanMoveInsteadOfChallenge(-1,True)" methodname="KeeperCanMoveInsteadOfChallenge" classname="OnlineStationaryDefenderPlayModeTests" runstate="Runnable" seed="2080206301" result="Passed" start-time="2026-11-16 18:58:17Z" end-time="2026-11-16 18:58:18Z" duration="1.176438" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-6, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Away keeper to HandleTokenSelection
+A Valid Defender was selected: Away keeper
+Away keeper is adjacent to Home carrier outside the goalkeeper's penalty box. Press [D]ive, [T]ackle with feet, or [N] to stand there.
+Passing Hex 19,18 to AsyncMoveTokenToHexRegularly
+Passing Hex 19,18 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 19,18
+[Game Log] Away keeper (Fixture Away) moves 1 paces
+isMovingTokenAttacker: False
+Defender does not land on Ball Hex
+Defender is not close enough to pickup or intercept. No prompt shown.
+Advancing Movement Phase
+]]></output>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="2392" name="OutfielderCanTackleOrMove" fullname="OnlineStationaryDefenderPlayModeTests.OutfielderCanTackleOrMove" classname="OnlineStationaryDefenderPlayModeTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-11-16 18:58:18Z" end-time="2026-11-16 18:58:28Z" duration="9.325422" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="2384" name="OutfielderCanTackleOrMove(1,False,False)" fullname="OnlineStationaryDefenderPlayModeTests.OutfielderCanTackleOrMove(1,False,False)" methodname="OutfielderCanTackleOrMove" classname="OnlineStationaryDefenderPlayModeTests" runstate="Runnable" seed="693146723" result="Passed" start-time="2026-11-16 18:58:18Z" end-time="2026-11-16 18:58:20Z" duration="1.440938" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=6, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Home carrier to HandleTokenSelection
+A Valid Defender was selected: Home carrier
+Home carrier is adjacent to Away recovering player. Press 'T' to tackle or select a hex to move.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+🔍 Connected Token Found: Home carrier
+[Game Log] Away recovering player (Fixture Away) engages in a ground duel
+[Expected Stats] Away recovering player vs Home carrier (tackle duel) xDribbles=0.472, xTackles=0.528, tie=0.125, foul=0.167
+Press R to roll the dice for tackle. Defender rolls first.
+Defender rolled: 2. Now it's the attacker's turn.
+Attacker rolled: 6. Comparing results...
+Tackle phase reset.
+Defender Name: Home carrier with Tackling: 4, Attacker: Away recovering player with Dribbling: 4
+Tackle failed! Home carrier Roll(2)+Tackling(4)=6 loses to Away recovering player's Roll(6)+Dribbling(4) = 10, who retains possession of the ball.
+🔍 Connected Token Found: Home carrier
+[Game Log] Away recovering player (Fixture Away) skips past Home carrier
+Away recovering player can reposition!
+Away recovering player won the tackle and is repositioning around Home carrier. Click a Highlighted Hex to move there or Press X to stay put.
+Advancing Movement Phase
+]]></output>
+          </test-case>
+          <test-case id="2385" name="OutfielderCanTackleOrMove(1,False,True)" fullname="OnlineStationaryDefenderPlayModeTests.OutfielderCanTackleOrMove(1,False,True)" methodname="OutfielderCanTackleOrMove" classname="OnlineStationaryDefenderPlayModeTests" runstate="Runnable" seed="499515839" result="Passed" start-time="2026-11-16 18:58:20Z" end-time="2026-11-16 18:58:21Z" duration="1.174124" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=6, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Home carrier to HandleTokenSelection
+A Valid Defender was selected: Home carrier
+Home carrier is adjacent to Away recovering player. Press 'T' to tackle or select a hex to move.
+Passing Hex 31,18 to AsyncMoveTokenToHexRegularly
+Passing Hex 31,18 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 31,18
+[Game Log] Home carrier (Fixture Home) moves 1 paces
+isMovingTokenAttacker: False
+Defender does not land on Ball Hex
+Defender is not close enough to pickup or intercept. No prompt shown.
+Advancing Movement Phase
+]]></output>
+          </test-case>
+          <test-case id="2386" name="OutfielderCanTackleOrMove(1,True,False)" fullname="OnlineStationaryDefenderPlayModeTests.OutfielderCanTackleOrMove(1,True,False)" methodname="OutfielderCanTackleOrMove" classname="OnlineStationaryDefenderPlayModeTests" runstate="Runnable" seed="1266757869" result="Passed" start-time="2026-11-16 18:58:21Z" end-time="2026-11-16 18:58:22Z" duration="1.089656" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Away recovering player to HandleTokenSelection
+A Valid Defender was selected: Away recovering player
+Away recovering player is adjacent to Home carrier. Press 'T' to tackle or select a hex to move.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+🔍 Connected Token Found: Away recovering player
+[Game Log] Home carrier (Fixture Home) engages in a ground duel
+[Expected Stats] Home carrier vs Away recovering player (tackle duel) xDribbles=0.472, xTackles=0.528, tie=0.125, foul=0.167
+Press R to roll the dice for tackle. Defender rolls first.
+Defender rolled: 2. Now it's the attacker's turn.
+Attacker rolled: 6. Comparing results...
+Tackle phase reset.
+Defender Name: Away recovering player with Tackling: 4, Attacker: Home carrier with Dribbling: 4
+Tackle failed! Away recovering player Roll(2)+Tackling(4)=6 loses to Home carrier's Roll(6)+Dribbling(4) = 10, who retains possession of the ball.
+🔍 Connected Token Found: Away recovering player
+[Game Log] Home carrier (Fixture Home) skips past Away recovering player
+Home carrier can reposition!
+Home carrier won the tackle and is repositioning around Away recovering player. Click a Highlighted Hex to move there or Press X to stay put.
+Advancing Movement Phase
+]]></output>
+          </test-case>
+          <test-case id="2387" name="OutfielderCanTackleOrMove(1,True,True)" fullname="OnlineStationaryDefenderPlayModeTests.OutfielderCanTackleOrMove(1,True,True)" methodname="OutfielderCanTackleOrMove" classname="OnlineStationaryDefenderPlayModeTests" runstate="Runnable" seed="1557106753" result="Passed" start-time="2026-11-16 18:58:22Z" end-time="2026-11-16 18:58:23Z" duration="1.187735" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Away recovering player to HandleTokenSelection
+A Valid Defender was selected: Away recovering player
+Away recovering player is adjacent to Home carrier. Press 'T' to tackle or select a hex to move.
+Passing Hex 31,18 to AsyncMoveTokenToHexRegularly
+Passing Hex 31,18 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 31,18
+[Game Log] Away recovering player (Fixture Away) moves 1 paces
+isMovingTokenAttacker: False
+Defender does not land on Ball Hex
+Defender is not close enough to pickup or intercept. No prompt shown.
+Advancing Movement Phase
+]]></output>
+          </test-case>
+          <test-case id="2388" name="OutfielderCanTackleOrMove(-1,False,False)" fullname="OnlineStationaryDefenderPlayModeTests.OutfielderCanTackleOrMove(-1,False,False)" methodname="OutfielderCanTackleOrMove" classname="OnlineStationaryDefenderPlayModeTests" runstate="Runnable" seed="585259621" result="Passed" start-time="2026-11-16 18:58:23Z" end-time="2026-11-16 18:58:24Z" duration="1.058908" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-6, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Home carrier to HandleTokenSelection
+A Valid Defender was selected: Home carrier
+Home carrier is adjacent to Away recovering player. Press 'T' to tackle or select a hex to move.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+🔍 Connected Token Found: Home carrier
+[Game Log] Away recovering player (Fixture Away) engages in a ground duel
+[Expected Stats] Away recovering player vs Home carrier (tackle duel) xDribbles=0.472, xTackles=0.528, tie=0.125, foul=0.167
+Press R to roll the dice for tackle. Defender rolls first.
+Defender rolled: 2. Now it's the attacker's turn.
+Attacker rolled: 6. Comparing results...
+Tackle phase reset.
+Defender Name: Home carrier with Tackling: 4, Attacker: Away recovering player with Dribbling: 4
+Tackle failed! Home carrier Roll(2)+Tackling(4)=6 loses to Away recovering player's Roll(6)+Dribbling(4) = 10, who retains possession of the ball.
+🔍 Connected Token Found: Home carrier
+[Game Log] Away recovering player (Fixture Away) skips past Home carrier
+Away recovering player can reposition!
+Away recovering player won the tackle and is repositioning around Home carrier. Click a Highlighted Hex to move there or Press X to stay put.
+Advancing Movement Phase
+]]></output>
+          </test-case>
+          <test-case id="2389" name="OutfielderCanTackleOrMove(-1,False,True)" fullname="OnlineStationaryDefenderPlayModeTests.OutfielderCanTackleOrMove(-1,False,True)" methodname="OutfielderCanTackleOrMove" classname="OnlineStationaryDefenderPlayModeTests" runstate="Runnable" seed="246907415" result="Passed" start-time="2026-11-16 18:58:24Z" end-time="2026-11-16 18:58:25Z" duration="1.264929" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-6, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Home carrier to HandleTokenSelection
+A Valid Defender was selected: Home carrier
+Home carrier is adjacent to Away recovering player. Press 'T' to tackle or select a hex to move.
+Passing Hex 19,18 to AsyncMoveTokenToHexRegularly
+Passing Hex 19,18 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 19,18
+[Game Log] Home carrier (Fixture Home) moves 1 paces
+isMovingTokenAttacker: False
+Defender does not land on Ball Hex
+Defender is not close enough to pickup or intercept. No prompt shown.
+Advancing Movement Phase
+]]></output>
+          </test-case>
+          <test-case id="2390" name="OutfielderCanTackleOrMove(-1,True,False)" fullname="OnlineStationaryDefenderPlayModeTests.OutfielderCanTackleOrMove(-1,True,False)" methodname="OutfielderCanTackleOrMove" classname="OnlineStationaryDefenderPlayModeTests" runstate="Runnable" seed="1708484964" result="Passed" start-time="2026-11-16 18:58:25Z" end-time="2026-11-16 18:58:26Z" duration="0.960955" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Away recovering player to HandleTokenSelection
+A Valid Defender was selected: Away recovering player
+Away recovering player is adjacent to Home carrier. Press 'T' to tackle or select a hex to move.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+🔍 Connected Token Found: Away recovering player
+[Game Log] Home carrier (Fixture Home) engages in a ground duel
+[Expected Stats] Home carrier vs Away recovering player (tackle duel) xDribbles=0.472, xTackles=0.528, tie=0.125, foul=0.167
+Press R to roll the dice for tackle. Defender rolls first.
+Defender rolled: 2. Now it's the attacker's turn.
+Attacker rolled: 6. Comparing results...
+Tackle phase reset.
+Defender Name: Away recovering player with Tackling: 4, Attacker: Home carrier with Dribbling: 4
+Tackle failed! Away recovering player Roll(2)+Tackling(4)=6 loses to Home carrier's Roll(6)+Dribbling(4) = 10, who retains possession of the ball.
+🔍 Connected Token Found: Away recovering player
+[Game Log] Home carrier (Fixture Home) skips past Away recovering player
+Home carrier can reposition!
+Home carrier won the tackle and is repositioning around Away recovering player. Click a Highlighted Hex to move there or Press X to stay put.
+Advancing Movement Phase
+]]></output>
+          </test-case>
+          <test-case id="2391" name="OutfielderCanTackleOrMove(-1,True,True)" fullname="OnlineStationaryDefenderPlayModeTests.OutfielderCanTackleOrMove(-1,True,True)" methodname="OutfielderCanTackleOrMove" classname="OnlineStationaryDefenderPlayModeTests" runstate="Runnable" seed="1580811127" result="Passed" start-time="2026-11-16 18:58:26Z" end-time="2026-11-16 18:58:28Z" duration="1.129585" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Passing Away recovering player to HandleTokenSelection
+A Valid Defender was selected: Away recovering player
+Away recovering player is adjacent to Home carrier. Press 'T' to tackle or select a hex to move.
+Passing Hex 19,18 to AsyncMoveTokenToHexRegularly
+Passing Hex 19,18 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 19,18
+[Game Log] Away recovering player (Fixture Away) moves 1 paces
+isMovingTokenAttacker: False
+Defender does not land on Ball Hex
+Defender is not close enough to pickup or intercept. No prompt shown.
+Advancing Movement Phase
+Saving results to: TestResults\GameplayRegression\Runs\20261116T185807545Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

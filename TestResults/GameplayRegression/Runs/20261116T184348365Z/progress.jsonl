@@ -1,0 +1,11 @@
+{"name":"OnlineStoppageActionsEditorTests.CappedCompletedAllowanceIsRetained(1,7)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineStoppageActionsEditorTests.CappedCompletedAllowanceIsRetained(3,3)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineStoppageActionsEditorTests.MalformedAllowanceDoesNotAdvanceReplica(\"negative-total\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineStoppageActionsEditorTests.MalformedAllowanceDoesNotAdvanceReplica(\"regulation-cap\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineStoppageActionsEditorTests.MalformedAllowanceDoesNotAdvanceReplica(\"extra-cap\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineStoppageActionsEditorTests.MalformedAllowanceDoesNotAdvanceReplica(\"negative-remaining\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineStoppageActionsEditorTests.MalformedAllowanceDoesNotAdvanceReplica(\"excess-remaining\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineStoppageActionsEditorTests.MalformedAllowanceDoesNotAdvanceReplica(\"undetermined-counts\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineStoppageActionsEditorTests.MalformedAllowanceDoesNotAdvanceReplica(\"awaiting-before-expiry\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineStoppageActionsEditorTests.MalformedAllowanceDoesNotAdvanceReplica(\"awaiting-after-result\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineStoppageActionsEditorTests.RUsesPublishedStoppageCommand","status":"Passed","message":"","stackTrace":""}

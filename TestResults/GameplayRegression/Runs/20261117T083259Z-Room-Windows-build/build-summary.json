@@ -1,0 +1,28 @@
+{
+  "buildId": "build_7e1cd30e449a",
+  "status": "completed",
+  "result": "Succeeded",
+  "totalErrors": 1,
+  "totalWarnings": 2,
+  "errors": [
+    {
+      "message": "FileNotFoundException: While determining the PlatformToolsets that are installed, the vswhere.exe utility could not be found."
+    }
+  ],
+  "warnings": [
+    {
+      "message": "Value 0 is out of range for TEnum, setting to 0."
+    },
+    {
+      "message": "Pipeline: No RuntimePipelineConfig asset found (Project Settings > Pipeline > Runtime). Pipeline will be disabled in Player builds."
+    }
+  ],
+  "outputPath": "C:/Users/thomas/Documents/Projects/Personal/counterattack/Build/OnlineRoom/Windows/CounterattackOnlineRoom.exe",
+  "totalSizeBytes": 464906787,
+  "buildTimeMs": 42137,
+  "platform": "StandaloneWindows64",
+  "scope": "Online full-room-v20 off-target camera flight publication and epoch cancellation; snapshots/full shots; paired internet deferred",
+  "configured_scenes": [
+    "Assets/Scenes/OnlineRoomProof.unity"
+  ]
+}

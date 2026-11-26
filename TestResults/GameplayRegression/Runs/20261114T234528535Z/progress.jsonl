@@ -1,0 +1,7 @@
+{"name":"OnlineRoundTripStatisticsEditorTests.MeasuresBoundedMonotonicRoundTrips(\"one-clock\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoundTripStatisticsEditorTests.MeasuresBoundedMonotonicRoundTrips(\"duplicate\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoundTripStatisticsEditorTests.MeasuresBoundedMonotonicRoundTrips(\"unknown\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoundTripStatisticsEditorTests.MeasuresBoundedMonotonicRoundTrips(\"negative\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoundTripStatisticsEditorTests.MeasuresBoundedMonotonicRoundTrips(\"pending-bound\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoundTripStatisticsEditorTests.MeasuresBoundedMonotonicRoundTrips(\"samples-bound\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoundTripStatisticsEditorTests.MeasuresBoundedMonotonicRoundTrips(\"percentiles\")","status":"Passed","message":"","stackTrace":""}

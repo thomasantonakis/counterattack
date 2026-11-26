@@ -38,6 +38,9 @@ public class CameraController : MonoBehaviour
     private float projectionShift;
     private int adaptivePreset;
     public bool IsReady { get; private set; }
+    private bool onlinePresentationHeld;
+
+    public void SetOnlinePresentationHold(bool held) => onlinePresentationHeld = held;
 
     void Start()
     {
@@ -90,10 +93,11 @@ public class CameraController : MonoBehaviour
         // HandlePresetKeys();
     }
 
-    private static bool IsCameraInputBlocked => RoomInputOwnership.BlocksCamera
-        || GameInputManager.IsPresentationModalActive && !HeaderChallengePanelController.IsVisible
+    private bool IsCameraInputBlocked => onlinePresentationHeld || RoomInputOwnership.BlocksCamera
+        || !CounterAttack.Online.OnlineRoomSession.IsSpectator
+            && GameInputManager.IsPresentationModalActive && !HeaderChallengePanelController.IsVisible
             && !DuelResolutionPanelController.IsVisible && !StoppageActionsPanelController.IsVisible
-        || MatchManager.Instance != null && MatchManager.Instance.IsGameplayInputBlocked;
+        || MatchManager.Instance?.IsPauseMenuOpen == true;
 
     private void OnEnable()
     {
@@ -119,9 +123,7 @@ public class CameraController : MonoBehaviour
 
     private void OnKeyReceived(KeyPressData keyData)
     {
-        if (keyData == null
-            || keyData.isConsumed
-            || (MatchManager.Instance != null && MatchManager.Instance.IsGameplayInputBlocked))
+        if (keyData == null || keyData.isConsumed || IsCameraInputBlocked)
         {
             return;
         }
@@ -142,8 +144,7 @@ public class CameraController : MonoBehaviour
     // Shared with modal input routing, so camera presets do not reach gameplay subscribers.
     public bool TryHandlePresetKey(KeyPressData keyData)
     {
-        if (keyData == null || keyData.isConsumed || keyData.ctrl
-            || (MatchManager.Instance != null && MatchManager.Instance.IsGameplayInputBlocked)
+        if (keyData == null || keyData.isConsumed || keyData.ctrl || IsCameraInputBlocked
             || !TryGetPresetIndex(keyData.key, out int presetIndex)) return false;
 
         if (keyData.shift) SaveCurrentCameraToPreset(presetIndex);

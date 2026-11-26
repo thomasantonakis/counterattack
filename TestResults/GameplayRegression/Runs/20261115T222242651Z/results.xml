@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="12" result="Passed" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-15 22:22:42Z" end-time="2026-11-15 22:23:15Z" duration="33.1265975">
+  <test-suite type="TestSuite" id="2722" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1416" result="Passed" start-time="2026-11-15 22:22:42Z" end-time="2026-11-15 22:23:15Z" duration="33.126598" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2719" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1416" result="Passed" start-time="2026-11-15 22:22:42Z" end-time="2026-11-15 22:23:15Z" duration="33.093567" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17216" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="2036" name="OnlineSharedPausePlayModeTests" fullname="OnlineSharedPausePlayModeTests" classname="OnlineSharedPausePlayModeTests" runstate="Runnable" testcasecount="12" result="Passed" start-time="2026-11-15 22:22:42Z" end-time="2026-11-15 22:23:15Z" duration="33.085133" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineSharedPause" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="2048" name="InFlightBallFreezesAndResumesOnce" fullname="OnlineSharedPausePlayModeTests.InFlightBallFreezesAndResumesOnce" classname="OnlineSharedPausePlayModeTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-15 22:22:42Z" end-time="2026-11-15 22:22:47Z" duration="4.765360" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="2046" name="InFlightBallFreezesAndResumesOnce(1)" fullname="OnlineSharedPausePlayModeTests.InFlightBallFreezesAndResumesOnce(1)" methodname="InFlightBallFreezesAndResumesOnce" classname="OnlineSharedPausePlayModeTests" runstate="Runnable" seed="1264136409" result="Passed" start-time="2026-11-15 22:22:42Z" end-time="2026-11-15 22:22:45Z" duration="2.478662" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+]]></output>
+          </test-case>
+          <test-case id="2047" name="InFlightBallFreezesAndResumesOnce(-1)" fullname="OnlineSharedPausePlayModeTests.InFlightBallFreezesAndResumesOnce(-1)" methodname="InFlightBallFreezesAndResumesOnce" classname="OnlineSharedPausePlayModeTests" runstate="Runnable" seed="1257469894" result="Passed" start-time="2026-11-15 22:22:45Z" end-time="2026-11-15 22:22:47Z" duration="2.257880" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+]]></output>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="2051" name="PausedInterceptionCannotDrawOrReplayARoll" fullname="OnlineSharedPausePlayModeTests.PausedInterceptionCannotDrawOrReplayARoll" classname="OnlineSharedPausePlayModeTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-15 22:22:47Z" end-time="2026-11-15 22:22:52Z" duration="5.150925" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="2049" name="PausedInterceptionCannotDrawOrReplayARoll(1)" fullname="OnlineSharedPausePlayModeTests.PausedInterceptionCannotDrawOrReplayARoll(1)" methodname="PausedInterceptionCannotDrawOrReplayARoll" classname="OnlineSharedPausePlayModeTests" runstate="Runnable" seed="1694631752" result="Passed" start-time="2026-11-15 22:22:47Z" end-time="2026-11-15 22:22:50Z" duration="2.564014" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+8. Away recovering player at (1, 0, 3) with a tackling of 4 can intercept with a roll of 6 at (0, 0, 3). Closest interception hex is (0, 0, 3) (3 steps from the ball).
+Dangerous pass detected. Waiting for 1 dice rolls...
+Ball path interactions: 1
+Starting ball path interaction sequence...
+Selected defender for interception: Away recovering player. Press [R] to roll.
+Dice roll by Away recovering player at (1, 0, 3): 3
+[Expected Stats] Away recovering player records xRecovery 0.167 on standard against Home carrier
+[Game Log] Away recovering player (Fixture Away) attempts an interception
+Away recovering player at (1, 0, 3) failed to intercept.
+Pass successful! No more defenders to roll.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+]]></output>
+          </test-case>
+          <test-case id="2050" name="PausedInterceptionCannotDrawOrReplayARoll(-1)" fullname="OnlineSharedPausePlayModeTests.PausedInterceptionCannotDrawOrReplayARoll(-1)" methodname="PausedInterceptionCannotDrawOrReplayARoll" classname="OnlineSharedPausePlayModeTests" runstate="Runnable" seed="1382439823" result="Passed" start-time="2026-11-15 22:22:50Z" end-time="2026-11-15 22:22:52Z" duration="2.580091" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+8. Away recovering player at (-1, 0, 3) with a tackling of 4 can intercept with a roll of 6 at (0, 0, 3). Closest interception hex is (0, 0, 3) (3 steps from the ball).
+Dangerous pass detected. Waiting for 1 dice rolls...
+Ball path interactions: 1
+Starting ball path interaction sequence...
+Selected defender for interception: Away recovering player. Press [R] to roll.
+Dice roll by Away recovering player at (-1, 0, 3): 3
+[Expected Stats] Away recovering player records xRecovery 0.167 on standard against Home carrier
+[Game Log] Away recovering player (Fixture Away) attempts an interception
+Away recovering player at (-1, 0, 3) failed to intercept.
+Pass successful! No more defenders to roll.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+]]></output>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="2045" name="RequesterOwnsPauseAcrossReconnect" fullname="OnlineSharedPausePlayModeTests.RequesterOwnsPauseAcrossReconnect" classname="OnlineSharedPausePlayModeTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-11-15 22:22:52Z" end-time="2026-11-15 22:23:15Z" duration="23.155570" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="2037" name="RequesterOwnsPauseAcrossReconnect(1,False,False)" fullname="OnlineSharedPausePlayModeTests.RequesterOwnsPauseAcrossReconnect(1,False,False)" methodname="RequesterOwnsPauseAcrossReconnect" classname="OnlineSharedPausePlayModeTests" runstate="Runnable" seed="540951633" result="Passed" start-time="2026-11-15 22:22:52Z" end-time="2026-11-15 22:22:55Z" duration="2.870239" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+]]></output>
+          </test-case>
+          <test-case id="2038" name="RequesterOwnsPauseAcrossReconnect(1,False,True)" fullname="OnlineSharedPausePlayModeTests.RequesterOwnsPauseAcrossReconnect(1,False,True)" methodname="RequesterOwnsPauseAcrossReconnect" classname="OnlineSharedPausePlayModeTests" runstate="Runnable" seed="2001631542" result="Passed" start-time="2026-11-15 22:22:55Z" end-time="2026-11-15 22:22:58Z" duration="2.842017" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+]]></output>
+          </test-case>
+          <test-case id="2039" name="RequesterOwnsPauseAcrossReconnect(1,True,False)" fullname="OnlineSharedPausePlayModeTests.RequesterOwnsPauseAcrossReconnect(1,True,False)" methodname="RequesterOwnsPauseAcrossReconnect" classname="OnlineSharedPausePlayModeTests" runstate="Runnable" seed="530397004" result="Passed" start-time="2026-11-15 22:22:58Z" end-time="2026-11-15 22:23:01Z" duration="2.885268" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+]]></output>
+          </test-case>
+          <test-case id="2040" name="RequesterOwnsPauseAcrossReconnect(1,True,True)" fullname="OnlineSharedPausePlayModeTests.RequesterOwnsPauseAcrossReconnect(1,True,True)" methodname="RequesterOwnsPauseAcrossReconnect" classname="OnlineSharedPausePlayModeTests" runstate="Runnable" seed="168356889" result="Passed" start-time="2026-11-15 22:23:01Z" end-time="2026-11-15 22:23:04Z" duration="2.850881" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+]]></output>
+          </test-case>
+          <test-case id="2041" name="RequesterOwnsPauseAcrossReconnect(-1,False,False)" fullname="OnlineSharedPausePlayModeTests.RequesterOwnsPauseAcrossReconnect(-1,False,False)" methodname="RequesterOwnsPauseAcrossReconnect" classname="OnlineSharedPausePlayModeTests" runstate="Runnable" seed="1603875392" result="Passed" start-time="2026-11-15 22:23:04Z" end-time="2026-11-15 22:23:07Z" duration="2.945846" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+]]></output>
+          </test-case>
+          <test-case id="2042" name="RequesterOwnsPauseAcrossReconnect(-1,False,True)" fullname="OnlineSharedPausePlayModeTests.RequesterOwnsPauseAcrossReconnect(-1,False,True)" methodname="RequesterOwnsPauseAcrossReconnect" classname="OnlineSharedPausePlayModeTests" runstate="Runnable" seed="466020876" result="Passed" start-time="2026-11-15 22:23:07Z" end-time="2026-11-15 22:23:09Z" duration="2.890943" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+]]></output>
+          </test-case>
+          <test-case id="2043" name="RequesterOwnsPauseAcrossReconnect(-1,True,False)" fullname="OnlineSharedPausePlayModeTests.RequesterOwnsPauseAcrossReconnect(-1,True,False)" methodname="RequesterOwnsPauseAcrossReconnect" classname="OnlineSharedPausePlayModeTests" runstate="Runnable" seed="1872859521" result="Passed" start-time="2026-11-15 22:23:09Z" end-time="2026-11-15 22:23:12Z" duration="2.955173" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+]]></output>
+          </test-case>
+          <test-case id="2044" name="RequesterOwnsPauseAcrossReconnect(-1,True,True)" fullname="OnlineSharedPausePlayModeTests.RequesterOwnsPauseAcrossReconnect(-1,True,True)" methodname="RequesterOwnsPauseAcrossReconnect" classname="OnlineSharedPausePlayModeTests" runstate="Runnable" seed="2139190758" result="Passed" start-time="2026-11-15 22:23:12Z" end-time="2026-11-15 22:23:15Z" duration="2.900036" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Fixture Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+Pass is not dangerous, moving ball.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Fixture Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Online receiver
+Offside assessment cleared: ground_pass_completed.
+Saving results to: TestResults\GameplayRegression\Runs\20261115T222242651Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

@@ -1,0 +1,16 @@
+{"name":"OnlinePickupKeyPlayModeTests.ExcludedCollectorCannotUseV(1,False,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePickupKeyPlayModeTests.ExcludedCollectorCannotUseV(1,False,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePickupKeyPlayModeTests.ExcludedCollectorCannotUseV(1,True,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePickupKeyPlayModeTests.ExcludedCollectorCannotUseV(1,True,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePickupKeyPlayModeTests.ExcludedCollectorCannotUseV(-1,False,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePickupKeyPlayModeTests.ExcludedCollectorCannotUseV(-1,False,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePickupKeyPlayModeTests.ExcludedCollectorCannotUseV(-1,True,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePickupKeyPlayModeTests.ExcludedCollectorCannotUseV(-1,True,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePickupKeyPlayModeTests.RealPickupThroughV(1,False,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePickupKeyPlayModeTests.RealPickupThroughV(1,False,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePickupKeyPlayModeTests.RealPickupThroughV(1,True,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePickupKeyPlayModeTests.RealPickupThroughV(1,True,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePickupKeyPlayModeTests.RealPickupThroughV(-1,False,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePickupKeyPlayModeTests.RealPickupThroughV(-1,False,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePickupKeyPlayModeTests.RealPickupThroughV(-1,True,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePickupKeyPlayModeTests.RealPickupThroughV(-1,True,True)","status":"Passed","message":"","stackTrace":""}

@@ -1,0 +1,8 @@
+{"name":"OnlineShootoutPlayModeTests.CompleteShootout(False,False,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineShootoutPlayModeTests.CompleteShootout(False,False,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineShootoutPlayModeTests.CompleteShootout(False,True,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineShootoutPlayModeTests.CompleteShootout(False,True,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineShootoutPlayModeTests.CompleteShootout(True,False,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineShootoutPlayModeTests.CompleteShootout(True,False,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineShootoutPlayModeTests.CompleteShootout(True,True,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineShootoutPlayModeTests.CompleteShootout(True,True,True)","status":"Passed","message":"","stackTrace":""}

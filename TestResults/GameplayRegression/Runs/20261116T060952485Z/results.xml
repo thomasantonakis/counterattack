@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="7" result="Passed" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 06:09:52Z" end-time="2026-11-16 06:10:09Z" duration="16.6813891">
+  <test-suite type="TestSuite" id="2751" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1440" result="Passed" start-time="2026-11-16 06:09:52Z" end-time="2026-11-16 06:10:09Z" duration="16.681389" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2748" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1440" result="Passed" start-time="2026-11-16 06:09:52Z" end-time="2026-11-16 06:10:09Z" duration="16.639869" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17216" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1877" name="OnlineManualControlsPlayModeTests" fullname="OnlineManualControlsPlayModeTests" classname="OnlineManualControlsPlayModeTests" runstate="Runnable" testcasecount="7" result="Passed" start-time="2026-11-16 06:09:52Z" end-time="2026-11-16 06:10:09Z" duration="16.632957" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineManualControls" />
+        </properties>
+        <test-case id="1881" name="PendingAndLocalLossStopSubmission" fullname="OnlineManualControlsPlayModeTests.PendingAndLocalLossStopSubmission" methodname="PendingAndLocalLossStopSubmission" classname="OnlineManualControlsPlayModeTests" runstate="Runnable" seed="1337032844" result="Passed" start-time="2026-11-16 06:09:52Z" end-time="2026-11-16 06:09:53Z" duration="0.583903" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+]]></output>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="1880" name="RealButtonsUseAuthorizedGateway" fullname="OnlineManualControlsPlayModeTests.RealButtonsUseAuthorizedGateway" classname="OnlineManualControlsPlayModeTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-16 06:09:53Z" end-time="2026-11-16 06:09:59Z" duration="5.928183" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="1878" name="RealButtonsUseAuthorizedGateway(1)" fullname="OnlineManualControlsPlayModeTests.RealButtonsUseAuthorizedGateway(1)" methodname="RealButtonsUseAuthorizedGateway" classname="OnlineManualControlsPlayModeTests" runstate="Runnable" seed="918276218" result="Passed" start-time="2026-11-16 06:09:53Z" end-time="2026-11-16 06:09:56Z" duration="3.019525" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Ball reference set in PlayerToken. Ball Hex: 
+Home keeper (Jersey 1) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=4, HighPass=0, Resilience=0
+Away keeper (Jersey 1) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=4, HighPass=0, Resilience=0
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Online proof Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+8. Away interceptor at (1, 0, 3) with a tackling of 4 can intercept with a roll of 6 at (0, 0, 3). Closest interception hex is (0, 0, 3) (3 steps from the ball).
+Dangerous pass detected. Waiting for 1 dice rolls...
+Ball path interactions: 1
+Starting ball path interaction sequence...
+Selected defender for interception: Away interceptor. Press [R] to roll.
+Dice roll by Away interceptor at (1, 0, 3): 1
+[Expected Stats] Away interceptor records xRecovery 0.167 on standard against Home carrier
+[Game Log] Away interceptor (Online proof Away) attempts an interception
+Away interceptor at (1, 0, 3) failed to intercept.
+Pass successful! No more defenders to roll.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Online proof Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Home receiver
+Offside assessment cleared: ground_pass_completed.
+Ball reference set in PlayerToken. Ball Hex: 
+Ball reference set in PlayerToken. Ball Hex: 
+]]></output>
+          </test-case>
+          <test-case id="1879" name="RealButtonsUseAuthorizedGateway(-1)" fullname="OnlineManualControlsPlayModeTests.RealButtonsUseAuthorizedGateway(-1)" methodname="RealButtonsUseAuthorizedGateway" classname="OnlineManualControlsPlayModeTests" runstate="Runnable" seed="1970189312" result="Passed" start-time="2026-11-16 06:09:56Z" end-time="2026-11-16 06:09:59Z" duration="2.798216" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Ball reference set in PlayerToken. Ball Hex: 
+Home keeper (Jersey 1) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=4, HighPass=0, Resilience=0
+Away keeper (Jersey 1) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=4, HighPass=0, Resilience=0
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=0, tokens=Home keeper.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Online proof Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+8. Away interceptor at (-1, 0, 3) with a tackling of 4 can intercept with a roll of 6 at (0, 0, 3). Closest interception hex is (0, 0, 3) (3 steps from the ball).
+Dangerous pass detected. Waiting for 1 dice rolls...
+Ball path interactions: 1
+Starting ball path interaction sequence...
+Selected defender for interception: Away interceptor. Press [R] to roll.
+Dice roll by Away interceptor at (-1, 0, 3): 1
+[Expected Stats] Away interceptor records xRecovery 0.167 on standard against Home carrier
+[Game Log] Away interceptor (Online proof Away) attempts an interception
+Away interceptor at (-1, 0, 3) failed to intercept.
+Pass successful! No more defenders to roll.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Online proof Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Home receiver
+Offside assessment cleared: ground_pass_completed.
+Ball reference set in PlayerToken. Ball Hex: 
+Ball reference set in PlayerToken. Ball Hex: 
+]]></output>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="1886" name="RealExchangeRecoversInterruptedTransport" fullname="OnlineManualControlsPlayModeTests.RealExchangeRecoversInterruptedTransport" classname="OnlineManualControlsPlayModeTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-11-16 06:09:59Z" end-time="2026-11-16 06:10:09Z" duration="10.092990" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="1882" name="RealExchangeRecoversInterruptedTransport(1,False)" fullname="OnlineManualControlsPlayModeTests.RealExchangeRecoversInterruptedTransport(1,False)" methodname="RealExchangeRecoversInterruptedTransport" classname="OnlineManualControlsPlayModeTests" runstate="Runnable" seed="1286176145" result="Passed" start-time="2026-11-16 06:09:59Z" end-time="2026-11-16 06:10:02Z" duration="2.956234" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Ball reference set in PlayerToken. Ball Hex: 
+Home keeper (Jersey 1) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=4, HighPass=0, Resilience=0
+Away keeper (Jersey 1) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=4, HighPass=0, Resilience=0
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Online proof Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+8. Away interceptor at (1, 0, 3) with a tackling of 4 can intercept with a roll of 6 at (0, 0, 3). Closest interception hex is (0, 0, 3) (3 steps from the ball).
+Dangerous pass detected. Waiting for 1 dice rolls...
+Ball path interactions: 1
+Starting ball path interaction sequence...
+Selected defender for interception: Away interceptor. Press [R] to roll.
+Dice roll by Away interceptor at (1, 0, 3): 1
+[Expected Stats] Away interceptor records xRecovery 0.167 on standard against Home carrier
+[Game Log] Away interceptor (Online proof Away) attempts an interception
+Away interceptor at (1, 0, 3) failed to intercept.
+Pass successful! No more defenders to roll.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Online proof Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Home receiver
+Offside assessment cleared: ground_pass_completed.
+Ball reference set in PlayerToken. Ball Hex: 
+Ball reference set in PlayerToken. Ball Hex: 
+]]></output>
+          </test-case>
+          <test-case id="1883" name="RealExchangeRecoversInterruptedTransport(1,True)" fullname="OnlineManualControlsPlayModeTests.RealExchangeRecoversInterruptedTransport(1,True)" methodname="RealExchangeRecoversInterruptedTransport" classname="OnlineManualControlsPlayModeTests" runstate="Runnable" seed="853087973" result="Passed" start-time="2026-11-16 06:10:02Z" end-time="2026-11-16 06:10:04Z" duration="2.129622" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Ball reference set in PlayerToken. Ball Hex: 
+Home keeper (Jersey 1) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=4, HighPass=0, Resilience=0
+Away keeper (Jersey 1) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=4, HighPass=0, Resilience=0
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Online proof Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+8. Away interceptor at (1, 0, 3) with a tackling of 4 can intercept with a roll of 6 at (0, 0, 3). Closest interception hex is (0, 0, 3) (3 steps from the ball).
+Dangerous pass detected. Waiting for 1 dice rolls...
+Ball path interactions: 1
+Starting ball path interaction sequence...
+Selected defender for interception: Away interceptor. Press [R] to roll.
+Dice roll by Away interceptor at (1, 0, 3): 6
+[Expected Stats] Away interceptor records xRecovery 0.167 on standard against Home carrier
+[Game Log] Away interceptor (Online proof Away) attempts an interception
+Pass intercepted by Away interceptor at (1, 0, 3)!
+🔍 Connected Token Found: Home carrier
+[Game Log] Away interceptor (Online proof Away) Intercepts a Standard Pass from Home carrier
+Offside assessment cleared: ground_pass_interception.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Offside assessed (any_other_scenario): line x=0, tokens=none.
+Ball reference set in PlayerToken. Ball Hex: 
+Ball reference set in PlayerToken. Ball Hex: 
+]]></output>
+          </test-case>
+          <test-case id="1884" name="RealExchangeRecoversInterruptedTransport(-1,False)" fullname="OnlineManualControlsPlayModeTests.RealExchangeRecoversInterruptedTransport(-1,False)" methodname="RealExchangeRecoversInterruptedTransport" classname="OnlineManualControlsPlayModeTests" runstate="Runnable" seed="107568462" result="Passed" start-time="2026-11-16 06:10:04Z" end-time="2026-11-16 06:10:07Z" duration="2.880714" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Ball reference set in PlayerToken. Ball Hex: 
+Home keeper (Jersey 1) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=4, HighPass=0, Resilience=0
+Away keeper (Jersey 1) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=4, HighPass=0, Resilience=0
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=0, tokens=Home keeper.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Online proof Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+8. Away interceptor at (-1, 0, 3) with a tackling of 4 can intercept with a roll of 6 at (0, 0, 3). Closest interception hex is (0, 0, 3) (3 steps from the ball).
+Dangerous pass detected. Waiting for 1 dice rolls...
+Ball path interactions: 1
+Starting ball path interaction sequence...
+Selected defender for interception: Away interceptor. Press [R] to roll.
+Dice roll by Away interceptor at (-1, 0, 3): 1
+[Expected Stats] Away interceptor records xRecovery 0.167 on standard against Home carrier
+[Game Log] Away interceptor (Online proof Away) attempts an interception
+Away interceptor at (-1, 0, 3) failed to intercept.
+Pass successful! No more defenders to roll.
+Attacking team has possession: True.
+Offside assessed (end_standard_pass): line x=-8, tokens=none.
+Pass completed to (0, 0, 6)
+[Game Log] Home carrier (Online proof Home) completes a ground pass
+Set LastTokenToTouchTheBallOnPurpose to Home receiver
+Offside assessment cleared: ground_pass_completed.
+Ball reference set in PlayerToken. Ball Hex: 
+Ball reference set in PlayerToken. Ball Hex: 
+]]></output>
+          </test-case>
+          <test-case id="1885" name="RealExchangeRecoversInterruptedTransport(-1,True)" fullname="OnlineManualControlsPlayModeTests.RealExchangeRecoversInterruptedTransport(-1,True)" methodname="RealExchangeRecoversInterruptedTransport" classname="OnlineManualControlsPlayModeTests" runstate="Runnable" seed="1464049183" result="Passed" start-time="2026-11-16 06:10:07Z" end-time="2026-11-16 06:10:09Z" duration="2.116987" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Ball reference set in PlayerToken. Ball Hex: 
+Home keeper (Jersey 1) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=4, HighPass=0, Resilience=0
+Away keeper (Jersey 1) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=4, HighPass=0, Resilience=0
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=0, tokens=Home keeper.
+Movement phase has been reset.
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Standard pass target selected. Click again to confirm or elsewhere to try another target.
+Substitutions are no longer available: Committed to StandardPass
+[Game Log] Home carrier (Online proof Home) attempts a ground pass
+Path: (0, 0, 1) -> (0, 0, 2) -> (0, 0, 3) -> (0, 0, 4) -> (0, 0, 5) -> (0, 0, 6)
+8. Away interceptor at (-1, 0, 3) with a tackling of 4 can intercept with a roll of 6 at (0, 0, 3). Closest interception hex is (0, 0, 3) (3 steps from the ball).
+Dangerous pass detected. Waiting for 1 dice rolls...
+Ball path interactions: 1
+Starting ball path interaction sequence...
+Selected defender for interception: Away interceptor. Press [R] to roll.
+Dice roll by Away interceptor at (-1, 0, 3): 6
+[Expected Stats] Away interceptor records xRecovery 0.167 on standard against Home carrier
+[Game Log] Away interceptor (Online proof Away) attempts an interception
+Pass intercepted by Away interceptor at (-1, 0, 3)!
+🔍 Connected Token Found: Home carrier
+[Game Log] Away interceptor (Online proof Away) Intercepts a Standard Pass from Home carrier
+Offside assessment cleared: ground_pass_interception.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Offside assessed (any_other_scenario): line x=0, tokens=none.
+Ball reference set in PlayerToken. Ball Hex: 
+Ball reference set in PlayerToken. Ball Hex: 
+Saving results to: TestResults\GameplayRegression\Runs\20261116T060952485Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

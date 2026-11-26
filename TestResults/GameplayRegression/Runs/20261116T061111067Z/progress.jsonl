@@ -1,0 +1,6 @@
+{"name":"OnlineRoomMenuPlayModeTests.AuthoredMenuRespectsPauseOwnership(False,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomMenuPlayModeTests.AuthoredMenuRespectsPauseOwnership(False,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomMenuPlayModeTests.AuthoredMenuRespectsPauseOwnership(True,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomMenuPlayModeTests.AuthoredMenuRespectsPauseOwnership(True,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomMenuPlayModeTests.LeaveReturnsToMenuWithoutWritingMatch(False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomMenuPlayModeTests.LeaveReturnsToMenuWithoutWritingMatch(True)","status":"Passed","message":"","stackTrace":""}

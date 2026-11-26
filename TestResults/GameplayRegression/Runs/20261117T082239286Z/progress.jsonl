@@ -1,0 +1,6 @@
+{"name":"OnlineOffTargetCameraPlayModeTests.RealSnapshotCameraMiss(False,\"flight\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineOffTargetCameraPlayModeTests.RealSnapshotCameraMiss(False,\"reset-flight\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineOffTargetCameraPlayModeTests.RealSnapshotCameraMiss(False,\"hold-hold\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineOffTargetCameraPlayModeTests.RealSnapshotCameraMiss(True,\"flight\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineOffTargetCameraPlayModeTests.RealSnapshotCameraMiss(True,\"reset-flight\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineOffTargetCameraPlayModeTests.RealSnapshotCameraMiss(True,\"hold-hold\")","status":"Passed","message":"","stackTrace":""}

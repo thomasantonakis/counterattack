@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="5" result="Passed" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-14 22:44:02Z" end-time="2026-11-14 22:44:18Z" duration="15.4451828">
+  <test-suite type="TestSuite" id="2525" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1253" result="Passed" start-time="2026-11-14 22:44:02Z" end-time="2026-11-14 22:44:18Z" duration="15.445183" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2522" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1253" result="Passed" start-time="2026-11-14 22:44:02Z" end-time="2026-11-14 22:44:18Z" duration="15.415093" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="1132" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="2484" name="LegacyThrowInPlayModeTests" fullname="LegacyThrowInPlayModeTests" classname="LegacyThrowInPlayModeTests" runstate="Runnable" testcasecount="5" result="Passed" start-time="2026-11-14 22:44:02Z" end-time="2026-11-14 22:44:18Z" duration="15.400492" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="ParameterizedMethod" id="2489" name="ThrowExecution" fullname="LegacyThrowInPlayModeTests.ThrowExecution" classname="LegacyThrowInPlayModeTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-11-14 22:44:02Z" end-time="2026-11-14 22:44:13Z" duration="10.116733" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="2485" name="ThrowExecution(&quot;feet&quot;)" fullname="LegacyThrowInPlayModeTests.ThrowExecution(&quot;feet&quot;)" methodname="ThrowExecution" classname="LegacyThrowInPlayModeTests" runstate="Runnable" seed="1335744749" result="Passed" start-time="2026-11-14 22:44:02Z" end-time="2026-11-14 22:44:04Z" duration="1.723671" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Throw-in preparation started at (0, 0, 12) for Home. Select the taker.
+Legacy migration click -> hex: Hex 25,31 @ (0, 0, 12), token: Cafferata
+Cafferata took the set piece and cannot be the next player to touch the ball.
+Cafferata moved to throw-in hex at (0, 0, 12).
+Substitutions are no longer available: Throw-in mandatory movement
+Movement phase has been reset.
+Throw-in movement restrictions applied. Taker: Cafferata, protected hex: (0, 0, 12), radius: 2.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Legacy migration key press -> X
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Legacy migration key press -> X
+Trying to Forfeit Movement.
+No more defenders wish to move. Attack gets 2f2 move.
+Advancing Movement Phase
+All defenders have moved. Ready for Movement Phase 2f2.
+Legacy migration key press -> X
+Trying to Forfeit Movement.
+No more tokens moving in 2f2 phase. Ending Movement Phase.
+Movement phase has been reset.
+Movement phase is over.
+Throw-in mandatory movement completed. Press [M] for one extra movement phase or [T] to throw now.
+Legacy migration key press -> T
+Throw-in ready. No throw-to-head target is available, auto-selecting throw to feet.
+Substitutions are no longer available: Committed to StandardPass
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Throw-in option selected: [P] short to feet. Select target hex (up to 6).
+]]></output>
+          </test-case>
+          <test-case id="2486" name="ThrowExecution(&quot;single&quot;)" fullname="LegacyThrowInPlayModeTests.ThrowExecution(&quot;single&quot;)" methodname="ThrowExecution" classname="LegacyThrowInPlayModeTests" runstate="Runnable" seed="2078846151" result="Passed" start-time="2026-11-14 22:44:04Z" end-time="2026-11-14 22:44:08Z" duration="3.566773" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Throw-in preparation started at (0, 0, 12) for Home. Select the taker.
+Legacy migration click -> hex: Hex 25,31 @ (0, 0, 12), token: Cafferata
+Cafferata took the set piece and cannot be the next player to touch the ball.
+Cafferata moved to throw-in hex at (0, 0, 12).
+Substitutions are no longer available: Throw-in mandatory movement
+Movement phase has been reset.
+Throw-in movement restrictions applied. Taker: Cafferata, protected hex: (0, 0, 12), radius: 2.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Legacy migration key press -> X
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Legacy migration key press -> X
+Trying to Forfeit Movement.
+No more defenders wish to move. Attack gets 2f2 move.
+Advancing Movement Phase
+All defenders have moved. Ready for Movement Phase 2f2.
+Legacy migration key press -> X
+Trying to Forfeit Movement.
+No more tokens moving in 2f2 phase. Ending Movement Phase.
+Movement phase has been reset.
+Movement phase is over.
+Throw-in mandatory movement completed. Press [M] for one extra movement phase or [T] to throw now.
+Legacy migration key press -> T
+Throw-in ready. No throw-to-head target is available, auto-selecting throw to feet.
+Substitutions are no longer available: Committed to StandardPass
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Throw-in option selected: [P] short to feet. Select target hex (up to 6).
+Throw-in preparation started at (0, 0, 12) for Home. Select the taker.
+Legacy migration click -> hex: Hex 25,31 @ (0, 0, 12), token: Cafferata
+Cafferata took the set piece and cannot be the next player to touch the ball.
+Cafferata moved to throw-in hex at (0, 0, 12).
+Substitutions are no longer available: Throw-in mandatory movement
+Movement phase has been reset.
+Throw-in movement restrictions applied. Taker: Cafferata, protected hex: (0, 0, 12), radius: 2.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Legacy migration key press -> X
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Legacy migration key press -> X
+Trying to Forfeit Movement.
+No more defenders wish to move. Attack gets 2f2 move.
+Advancing Movement Phase
+All defenders have moved. Ready for Movement Phase 2f2.
+Legacy migration key press -> X
+Trying to Forfeit Movement.
+No more tokens moving in 2f2 phase. Ending Movement Phase.
+Movement phase has been reset.
+Movement phase is over.
+Throw-in mandatory movement completed. Press [M] for one extra movement phase or [T] to throw now.
+Legacy migration key press -> T
+Throw-in ready. Press [P] to throw short to feet or [C] to throw to head.
+Legacy migration key press -> C
+Throw-to-head auto-targeted: Yaneva.
+Substitutions are no longer available: Committed to Header
+Eligible to head: Yaneva at (3, 0, 10)
+hasEligibleAttackers: True, hasEligibleDefenders: False
+No defenders eligible to head the ball. Offering option to header (H) or bring the ball down (B).
+]]></output>
+          </test-case>
+          <test-case id="2487" name="ThrowExecution(&quot;easy&quot;)" fullname="LegacyThrowInPlayModeTests.ThrowExecution(&quot;easy&quot;)" methodname="ThrowExecution" classname="LegacyThrowInPlayModeTests" runstate="Runnable" seed="1177248008" result="Passed" start-time="2026-11-14 22:44:08Z" end-time="2026-11-14 22:44:10Z" duration="2.411337" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Throw-in preparation started at (0, 0, 12) for Home. Select the taker.
+Legacy migration click -> hex: Hex 25,31 @ (0, 0, 12), token: Cafferata
+Cafferata took the set piece and cannot be the next player to touch the ball.
+Cafferata moved to throw-in hex at (0, 0, 12).
+Substitutions are no longer available: Throw-in mandatory movement
+Movement phase has been reset.
+Throw-in movement restrictions applied. Taker: Cafferata, protected hex: (0, 0, 12), radius: 2.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Legacy migration key press -> X
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Legacy migration key press -> X
+Trying to Forfeit Movement.
+No more defenders wish to move. Attack gets 2f2 move.
+Advancing Movement Phase
+All defenders have moved. Ready for Movement Phase 2f2.
+Legacy migration key press -> X
+Trying to Forfeit Movement.
+No more tokens moving in 2f2 phase. Ending Movement Phase.
+Movement phase has been reset.
+Movement phase is over.
+Throw-in mandatory movement completed. Press [M] for one extra movement phase or [T] to throw now.
+Legacy migration key press -> T
+Throw-in ready. Press [P] to throw short to feet or [C] to throw to head.
+Legacy migration key press -> C
+Throw-in option selected: [C] to head. Click an eligible attacker, then click again to confirm.
+Legacy migration click -> hex: Hex 28,29 @ (3, 0, 10), token: Yaneva
+Throw-to-head target selected: Yaneva. Click again to confirm, or choose another eligible attacker.
+Legacy migration click -> hex: Hex 28,29 @ (3, 0, 10), token: Yaneva
+Substitutions are no longer available: Committed to Header
+Eligible to head: Yaneva at (3, 0, 10)
+hasEligibleAttackers: True, hasEligibleDefenders: False
+No defenders eligible to head the ball. Offering option to header (H) or bring the ball down (B).
+]]></output>
+          </test-case>
+          <test-case id="2488" name="ThrowExecution(&quot;hard&quot;)" fullname="LegacyThrowInPlayModeTests.ThrowExecution(&quot;hard&quot;)" methodname="ThrowExecution" classname="LegacyThrowInPlayModeTests" runstate="Runnable" seed="525370678" result="Passed" start-time="2026-11-14 22:44:10Z" end-time="2026-11-14 22:44:13Z" duration="2.389841" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Throw-in preparation started at (0, 0, 12) for Home. Select the taker.
+Legacy migration click -> hex: Hex 25,31 @ (0, 0, 12), token: Cafferata
+Cafferata took the set piece and cannot be the next player to touch the ball.
+Cafferata moved to throw-in hex at (0, 0, 12).
+Substitutions are no longer available: Throw-in mandatory movement
+Movement phase has been reset.
+Throw-in movement restrictions applied. Taker: Cafferata, protected hex: (0, 0, 12), radius: 2.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Legacy migration key press -> X
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Legacy migration key press -> X
+Trying to Forfeit Movement.
+No more defenders wish to move. Attack gets 2f2 move.
+Advancing Movement Phase
+All defenders have moved. Ready for Movement Phase 2f2.
+Legacy migration key press -> X
+Trying to Forfeit Movement.
+No more tokens moving in 2f2 phase. Ending Movement Phase.
+Movement phase has been reset.
+Movement phase is over.
+Throw-in mandatory movement completed. Press [M] for one extra movement phase or [T] to throw now.
+Legacy migration key press -> T
+Throw-in ready. Press [P] to throw short to feet or [C] to throw to head.
+Legacy migration key press -> C
+Throw-in option selected: [C] to head. Click an eligible attacker to commit.
+Legacy migration click -> hex: Hex 28,29 @ (3, 0, 10), token: Yaneva
+Substitutions are no longer available: Committed to Header
+Eligible to head: Yaneva at (3, 0, 10)
+hasEligibleAttackers: True, hasEligibleDefenders: False
+No defenders eligible to head the ball. Offering option to header (H) or bring the ball down (B).
+]]></output>
+          </test-case>
+        </test-suite>
+        <test-case id="2490" name="ThrowInDisplacementAndRestrictedMovement" fullname="LegacyThrowInPlayModeTests.ThrowInDisplacementAndRestrictedMovement" methodname="ThrowInDisplacementAndRestrictedMovement" classname="LegacyThrowInPlayModeTests" runstate="Runnable" seed="1893328497" result="Passed" start-time="2026-11-14 22:44:13Z" end-time="2026-11-14 22:44:18Z" duration="5.254894" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Throw-in preparation started at (0, 0, 12) for Home. Select the taker.
+Legacy migration click -> hex: Hex 21,27 @ (-4, 0, 8), token: Cafferata
+Attacker restart push: moving Yaneva from (0, 0, 12) to (0, 0, 11).
+Cafferata took the set piece and cannot be the next player to touch the ball.
+Cafferata moved to throw-in hex at (0, 0, 12).
+Substitutions are no longer available: Throw-in mandatory movement
+Movement phase has been reset.
+Throw-in movement restrictions applied. Taker: Cafferata, protected hex: (0, 0, 12), radius: 2.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Legacy migration click -> hex: Hex 25,31 @ (0, 0, 12), token: Cafferata
+Passing Cafferata to HandleTokenSelection
+Cafferata is taking the throw-in and cannot move during the throw-in Movement Phase.
+Legacy migration key press -> X
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Legacy migration key press -> X
+Trying to Forfeit Movement.
+Cannot forfeit defensive movement. Throw-in requires these defenders to move away from the taker: Away recovering player.
+Legacy migration click -> hex: Hex 26,29 @ (1, 0, 10), token: Away recovering player
+Passing Away recovering player to HandleTokenSelection
+A Valid Defender was selected: Away recovering player
+Legacy migration click -> hex: Hex 25,27 @ (0, 0, 8), token: None
+Passing Hex 25,27 to AsyncMoveTokenToHexRegularly
+Passing Hex 25,27 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 25,27
+[Game Log] Away recovering player (Fixture Away) moves 3 paces
+isMovingTokenAttacker: False
+Defender does not land on Ball Hex
+Defender is not close enough to pickup or intercept. No prompt shown.
+Advancing Movement Phase
+Legacy migration key press -> X
+Trying to Forfeit Movement.
+No more defenders wish to move. Attack gets 2f2 move.
+Advancing Movement Phase
+All defenders have moved. Ready for Movement Phase 2f2.
+Legacy migration key press -> X
+Trying to Forfeit Movement.
+No more tokens moving in 2f2 phase. Ending Movement Phase.
+Movement phase has been reset.
+Movement phase is over.
+Throw-in mandatory movement completed. Press [M] for one extra movement phase or [T] to throw now.
+Legacy migration key press -> M
+Movement phase has been reset.
+Throw-in movement restrictions applied. Taker: Cafferata, protected hex: (0, 0, 12), radius: 2.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Legacy migration click -> hex: Hex 25,30 @ (0, 0, 11), token: Yaneva
+Passing Yaneva to HandleTokenSelection
+Legacy migration click -> hex: Hex 19,27 @ (-6, 0, 8), token: None
+Passing Hex 19,27 to AsyncMoveTokenToHexRegularly
+Passing Hex 19,27 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 19,27
+[Game Log] Yaneva (Fixture Home) moves 6 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Yaneva, IsDribbler: False, remainingDribblerPace: 0
+The selected Token is not the dribbler
+Non Dribbler Moved.
+Advancing Movement Phase
+Legacy migration key press -> X
+Trying to Forfeit Movement.
+No more Attackers wish to move. Defence's turn to move up to 5 tokens.
+Advancing Movement Phase
+All attackers have moved. Switching to Defensive Movement Phase.
+Legacy migration key press -> X
+Trying to Forfeit Movement.
+No more defenders wish to move. Attack gets 2f2 move.
+Advancing Movement Phase
+All defenders have moved. Ready for Movement Phase 2f2.
+Legacy migration key press -> X
+Trying to Forfeit Movement.
+No more tokens moving in 2f2 phase. Ending Movement Phase.
+Movement phase has been reset.
+Movement phase is over.
+Throw-in ready. No throw-to-head target is available, auto-selecting throw to feet.
+Substitutions are no longer available: Committed to StandardPass
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Throw-in option selected: [P] short to feet. Select target hex (up to 6).
+Saving results to: TestResults\GameplayRegression\Runs\20261114T224402832Z\results.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

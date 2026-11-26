@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="1" result="Passed" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 17:09:24Z" end-time="2026-11-16 17:09:25Z" duration="1.902663">
+  <test-suite type="TestSuite" id="2916" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1590" result="Passed" start-time="2026-11-16 17:09:24Z" end-time="2026-11-16 17:09:25Z" duration="1.902663" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2913" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1590" result="Passed" start-time="2026-11-16 17:09:24Z" end-time="2026-11-16 17:09:25Z" duration="1.874283" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12156" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1844" name="OnlineKeeperGroundChoicesPlayModeTests" fullname="OnlineKeeperGroundChoicesPlayModeTests" classname="OnlineKeeperGroundChoicesPlayModeTests" runstate="Runnable" testcasecount="68" result="Passed" start-time="2026-11-16 17:09:24Z" end-time="2026-11-16 17:09:25Z" duration="1.868217" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineKeeperGroundChoices" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="1916" name="KeeperDiveOutcomes" fullname="OnlineKeeperGroundChoicesPlayModeTests.KeeperDiveOutcomes" classname="OnlineKeeperGroundChoicesPlayModeTests" runstate="Runnable" testcasecount="36" result="Passed" start-time="2026-11-16 17:09:24Z" end-time="2026-11-16 17:09:25Z" duration="1.859072" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="1914" name="KeeperDiveOutcomes(-1,&quot;away-wall&quot;,&quot;lose&quot;)" fullname="OnlineKeeperGroundChoicesPlayModeTests.KeeperDiveOutcomes(-1,&quot;away-wall&quot;,&quot;lose&quot;)" methodname="KeeperDiveOutcomes" classname="OnlineKeeperGroundChoicesPlayModeTests" runstate="Runnable" seed="1265937273" result="Passed" start-time="2026-11-16 17:09:24Z" end-time="2026-11-16 17:09:25Z" duration="1.839151" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-12, tokens=none.
+Movement phase has been reset.
+Passing Away recovering player to HandleTokenSelection
+Away recovering player selected as dribbler. Starting dribble movement.
+Setting remaining Pace to Away recovering player's Pace: 5
+Checking for nutmeggable Defenders
+Committing to Movement Phase action. section=AttMP, selectedToken=Away recovering player, awaitingHexDestination=True, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Hex 13,17 to AsyncMoveTokenToHexRegularly
+Passing Hex 13,17 to MoveTokenToHex
+isDribblerRunning set to true
+MoveTokenAlongPath: shouldCarryBall: True
+MovingBall with Token
+MovingBall with Token
+Home keeper may dive from the GK Wall at (-12, 0, -2) with penalty 0. Press [D]ive or [N]ot.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+🔍 Connected Token Found: Home keeper
+[Game Log] Away recovering player (Fixture Away) engages in a ground duel
+[Expected Stats] Away recovering player vs Home keeper (gk wall dive) xDribbles=0.472, xTackles=0.528, tie=0.125, foul=0.167
+Press R to roll the dice for tackle. Defender rolls first.
+Defender rolled: 2. Now it's the attacker's turn.
+Attacker rolled: 6. Comparing results...
+Tackle phase reset.
+Defender Name: Home keeper with Saving: 4, Attacker: Away recovering player with Dribbling: 4
+Away recovering player beats Home keeper's GK Wall Dive and continues dribbling.
+🔍 Connected Token Found: Home keeper
+[Game Log] Away recovering player (Fixture Away) 
+Token arrived at hex: Hex 13,17
+Attacking team has possession: True.
+[Game Log] Away recovering player (Fixture Away) moves 1 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Away recovering player, IsDribbler: True, remainingDribblerPace: 5
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+remainingDribblerPace: 4, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Away recovering player Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Calculating Eligible Defenders for Interception
+eligibleDefenders.Count: 0
+No interceptions Available, let the dribbler move if available
+Away recovering player is in the opponent penalty Box. Press [S] to take a snapshot!
+Offside assessed (snapshot_available): line x=-12, tokens=none.
+Dribbler has 4 remaining Pace, Highlighting 1 Hex, isAwaitingHexDestination
+Dribbler is running. Forfeiting remaining pace.
+Advancing Movement Phase
+Saving results to: TestResults\GameplayRegression\Runs\20261116T170923993Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

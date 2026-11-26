@@ -1,0 +1,5 @@
+{"name":"OnlineMovementPlayModeTests.InvalidTargetsAndGuestCannotMoveAuthority","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMovementPlayModeTests.OwnedMovementAndLongPassContinuation(1,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMovementPlayModeTests.OwnedMovementAndLongPassContinuation(1,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMovementPlayModeTests.OwnedMovementAndLongPassContinuation(-1,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineMovementPlayModeTests.OwnedMovementAndLongPassContinuation(-1,True)","status":"Passed","message":"","stackTrace":""}

@@ -1,0 +1,18 @@
+{
+    "role": "host",
+    "status": "failed",
+    "message": "Receiving online session data failed: InvalidAuth",
+    "platform": "WindowsPlayer",
+    "startedUtc": "2026-11-19T13:32:04.0448638Z",
+    "completedUtc": "2026-11-19T14:32:04.3255009Z",
+    "routingPolicy": "AllowRelays",
+    "bytesSent": 1696579,
+    "bytesReceived": 1366196,
+    "latency": {
+        "samples": 128,
+        "lastMilliseconds": 68.35650000039095,
+        "p50Milliseconds": 42.057249999970739,
+        "p95Milliseconds": 166.55415999987327
+    },
+    "setupAgreed": true
+}

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="13" result="Passed" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 17:37:30Z" end-time="2026-11-16 17:37:31Z" duration="0.1582288">
+  <test-suite type="TestSuite" id="5072" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1804" result="Passed" start-time="2026-11-16 17:37:30Z" end-time="2026-11-16 17:37:31Z" duration="0.158229" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="5066" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="1804" result="Passed" start-time="2026-11-16 17:37:30Z" end-time="2026-11-16 17:37:31Z" duration="0.136853" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12156" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="3837" name="OnlineGroundPassWireEditorTests" fullname="OnlineGroundPassWireEditorTests" classname="OnlineGroundPassWireEditorTests" runstate="Runnable" testcasecount="13" result="Passed" start-time="2026-11-16 17:37:31Z" end-time="2026-11-16 17:37:31Z" duration="0.103887" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineGroundPassNetwork" />
+        </properties>
+        <test-case id="3851" name="AsynchronousOutcomeWithSameCommandRevisionHasNewPublication" fullname="OnlineGroundPassWireEditorTests.AsynchronousOutcomeWithSameCommandRevisionHasNewPublication" methodname="AsynchronousOutcomeWithSameCommandRevisionHasNewPublication" classname="OnlineGroundPassWireEditorTests" runstate="Runnable" seed="843447280" result="Passed" start-time="2026-11-16 17:37:31Z" end-time="2026-11-16 17:37:31Z" duration="0.004397" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="3852" name="DuplicateRosterIdentityIsRejected" fullname="OnlineGroundPassWireEditorTests.DuplicateRosterIdentityIsRejected" methodname="DuplicateRosterIdentityIsRejected" classname="OnlineGroundPassWireEditorTests" runstate="Runnable" seed="1308482998" result="Passed" start-time="2026-11-16 17:37:31Z" end-time="2026-11-16 17:37:31Z" duration="0.000645" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="3842" name="FragmentedStateReassemblesAndRoundTrips" fullname="OnlineGroundPassWireEditorTests.FragmentedStateReassemblesAndRoundTrips" classname="OnlineGroundPassWireEditorTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-11-16 17:37:31Z" end-time="2026-11-16 17:37:31Z" duration="0.037406" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="3839" name="FragmentedStateReassemblesAndRoundTrips(1)" fullname="OnlineGroundPassWireEditorTests.FragmentedStateReassemblesAndRoundTrips(1)" methodname="FragmentedStateReassemblesAndRoundTrips" classname="OnlineGroundPassWireEditorTests" runstate="Runnable" seed="143651712" result="Passed" start-time="2026-11-16 17:37:31Z" end-time="2026-11-16 17:37:31Z" duration="0.014120" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3840" name="FragmentedStateReassemblesAndRoundTrips(100)" fullname="OnlineGroundPassWireEditorTests.FragmentedStateReassemblesAndRoundTrips(100)" methodname="FragmentedStateReassemblesAndRoundTrips" classname="OnlineGroundPassWireEditorTests" runstate="Runnable" seed="402420497" result="Passed" start-time="2026-11-16 17:37:31Z" end-time="2026-11-16 17:37:31Z" duration="0.001020" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3841" name="FragmentedStateReassemblesAndRoundTrips(2000)" fullname="OnlineGroundPassWireEditorTests.FragmentedStateReassemblesAndRoundTrips(2000)" methodname="FragmentedStateReassemblesAndRoundTrips" classname="OnlineGroundPassWireEditorTests" runstate="Runnable" seed="1814426569" result="Passed" start-time="2026-11-16 17:37:31Z" end-time="2026-11-16 17:37:31Z" duration="0.006852" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-suite type="ParameterizedMethod" id="3847" name="InvalidPacketLengthsAreRejected" fullname="OnlineGroundPassWireEditorTests.InvalidPacketLengthsAreRejected" classname="OnlineGroundPassWireEditorTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-11-16 17:37:31Z" end-time="2026-11-16 17:37:31Z" duration="0.014426" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="3844" name="InvalidPacketLengthsAreRejected(0)" fullname="OnlineGroundPassWireEditorTests.InvalidPacketLengthsAreRejected(0)" methodname="InvalidPacketLengthsAreRejected" classname="OnlineGroundPassWireEditorTests" runstate="Runnable" seed="1607414540" result="Passed" start-time="2026-11-16 17:37:31Z" end-time="2026-11-16 17:37:31Z" duration="0.002194" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3845" name="InvalidPacketLengthsAreRejected(10)" fullname="OnlineGroundPassWireEditorTests.InvalidPacketLengthsAreRejected(10)" methodname="InvalidPacketLengthsAreRejected" classname="OnlineGroundPassWireEditorTests" runstate="Runnable" seed="517397387" result="Passed" start-time="2026-11-16 17:37:31Z" end-time="2026-11-16 17:37:31Z" duration="0.000231" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3846" name="InvalidPacketLengthsAreRejected(1171)" fullname="OnlineGroundPassWireEditorTests.InvalidPacketLengthsAreRejected(1171)" methodname="InvalidPacketLengthsAreRejected" classname="OnlineGroundPassWireEditorTests" runstate="Runnable" seed="1879534193" result="Passed" start-time="2026-11-16 17:37:31Z" end-time="2026-11-16 17:37:31Z" duration="0.000237" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-case id="3838" name="LocalPackagedGameplayRoleParsesWithoutNetworkInputs" fullname="OnlineGroundPassWireEditorTests.LocalPackagedGameplayRoleParsesWithoutNetworkInputs" methodname="LocalPackagedGameplayRoleParsesWithoutNetworkInputs" classname="OnlineGroundPassWireEditorTests" runstate="Runnable" seed="2124326772" result="Passed" start-time="2026-11-16 17:37:31Z" end-time="2026-11-16 17:37:31Z" duration="0.001281" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="3843" name="OutOfOrderFragmentIsRejectedAndParserCanRecover" fullname="OnlineGroundPassWireEditorTests.OutOfOrderFragmentIsRejectedAndParserCanRecover" methodname="OutOfOrderFragmentIsRejectedAndParserCanRecover" classname="OnlineGroundPassWireEditorTests" runstate="Runnable" seed="935067192" result="Passed" start-time="2026-11-16 17:37:31Z" end-time="2026-11-16 17:37:31Z" duration="0.001502" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="3848" name="OversizedMessageIsRejectedBeforeTransmission" fullname="OnlineGroundPassWireEditorTests.OversizedMessageIsRejectedBeforeTransmission" methodname="OversizedMessageIsRejectedBeforeTransmission" classname="OnlineGroundPassWireEditorTests" runstate="Runnable" seed="2145247572" result="Passed" start-time="2026-11-16 17:37:31Z" end-time="2026-11-16 17:37:31Z" duration="0.000812" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="3850" name="ReplicaRejectsOldForeignAndConflictingPublicationsWithoutMutation" fullname="OnlineGroundPassWireEditorTests.ReplicaRejectsOldForeignAndConflictingPublicationsWithoutMutation" methodname="ReplicaRejectsOldForeignAndConflictingPublicationsWithoutMutation" classname="OnlineGroundPassWireEditorTests" runstate="Runnable" seed="1728425518" result="Passed" start-time="2026-11-16 17:37:31Z" end-time="2026-11-16 17:37:31Z" duration="0.001593" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="3849" name="UnknownMessageKindIsRejected" fullname="OnlineGroundPassWireEditorTests.UnknownMessageKindIsRejected" methodname="UnknownMessageKindIsRejected" classname="OnlineGroundPassWireEditorTests" runstate="Runnable" seed="1723584179" result="Passed" start-time="2026-11-16 17:37:31Z" end-time="2026-11-16 17:37:31Z" duration="0.000763" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Saving results to: TestResults\GameplayRegression\Runs\20261116T173730942Z\results.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

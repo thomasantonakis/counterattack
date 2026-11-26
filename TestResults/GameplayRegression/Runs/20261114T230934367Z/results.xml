@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="24" result="Failed(Child)" total="24" passed="23" failed="1" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-14 23:09:34Z" end-time="2026-11-14 23:09:40Z" duration="6.3280486">
+  <test-suite type="TestSuite" id="2616" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1354" result="Failed" site="Child" start-time="2026-11-14 23:09:34Z" end-time="2026-11-14 23:09:40Z" duration="6.328049" total="24" passed="23" failed="1" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="2610" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="1354" result="Failed" site="Child" start-time="2026-11-14 23:09:34Z" end-time="2026-11-14 23:09:40Z" duration="6.305590" total="24" passed="23" failed="1" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="1132" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestFixture" id="1799" name="OnlineSetupClientEditorTests" fullname="OnlineSetupClientEditorTests" classname="OnlineSetupClientEditorTests" runstate="Runnable" testcasecount="24" result="Failed" site="Child" start-time="2026-11-14 23:09:34Z" end-time="2026-11-14 23:09:40Z" duration="6.296147" total="24" passed="23" failed="1" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineSetupClient" />
+        </properties>
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="ParameterizedMethod" id="1824" name="ClientFlow" fullname="OnlineSetupClientEditorTests.ClientFlow" classname="OnlineSetupClientEditorTests" runstate="Runnable" testcasecount="24" result="Failed" site="Child" start-time="2026-11-14 23:09:34Z" end-time="2026-11-14 23:09:40Z" duration="6.288164" total="24" passed="23" failed="1" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-case id="1800" name="ClientFlow(False,&quot;agree-start&quot;)" fullname="OnlineSetupClientEditorTests.ClientFlow(False,&quot;agree-start&quot;)" methodname="ClientFlow" classname="OnlineSetupClientEditorTests" runstate="Runnable" seed="8182064" result="Passed" start-time="2026-11-14 23:09:34Z" end-time="2026-11-14 23:09:35Z" duration="0.559514" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[TokenKitCatalog] Loading kits JSON from Resources path 'Kits/kit-picker-v1-11-supported' (asset: Assets/Resources/Kits/kit-picker-v1-11-supported.json).
+[TokenKitCatalog] Found kits JSON TextAsset 'kit-picker-v1-11-supported' at Resources path 'Kits/kit-picker-v1-11-supported' (32277 characters).
+[TokenKitCatalog] Parsed 101 kit preset(s) from Resources path 'Kits/kit-picker-v1-11-supported'.
+[TokenKitCatalog] Active kit catalog contains 101 kit preset(s).
+]]></output>
+          </test-case>
+          <test-case id="1801" name="ClientFlow(False,&quot;local-edit&quot;)" fullname="OnlineSetupClientEditorTests.ClientFlow(False,&quot;local-edit&quot;)" methodname="ClientFlow" classname="OnlineSetupClientEditorTests" runstate="Runnable" seed="150943227" result="Passed" start-time="2026-11-14 23:09:35Z" end-time="2026-11-14 23:09:35Z" duration="0.312622" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1802" name="ClientFlow(False,&quot;remote-edit&quot;)" fullname="OnlineSetupClientEditorTests.ClientFlow(False,&quot;remote-edit&quot;)" methodname="ClientFlow" classname="OnlineSetupClientEditorTests" runstate="Runnable" seed="1370556496" result="Passed" start-time="2026-11-14 23:09:35Z" end-time="2026-11-14 23:09:35Z" duration="0.158139" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1803" name="ClientFlow(False,&quot;pending-edit&quot;)" fullname="OnlineSetupClientEditorTests.ClientFlow(False,&quot;pending-edit&quot;)" methodname="ClientFlow" classname="OnlineSetupClientEditorTests" runstate="Runnable" seed="975734735" result="Passed" start-time="2026-11-14 23:09:35Z" end-time="2026-11-14 23:09:35Z" duration="0.311033" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1804" name="ClientFlow(False,&quot;reconnect&quot;)" fullname="OnlineSetupClientEditorTests.ClientFlow(False,&quot;reconnect&quot;)" methodname="ClientFlow" classname="OnlineSetupClientEditorTests" runstate="Runnable" seed="2115906279" result="Passed" start-time="2026-11-14 23:09:35Z" end-time="2026-11-14 23:09:36Z" duration="0.385654" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1805" name="ClientFlow(False,&quot;rejected&quot;)" fullname="OnlineSetupClientEditorTests.ClientFlow(False,&quot;rejected&quot;)" methodname="ClientFlow" classname="OnlineSetupClientEditorTests" runstate="Runnable" seed="1574260920" result="Passed" start-time="2026-11-14 23:09:36Z" end-time="2026-11-14 23:09:36Z" duration="0.265787" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1806" name="ClientFlow(False,&quot;role-filter&quot;)" fullname="OnlineSetupClientEditorTests.ClientFlow(False,&quot;role-filter&quot;)" methodname="ClientFlow" classname="OnlineSetupClientEditorTests" runstate="Runnable" seed="1643376865" result="Passed" start-time="2026-11-14 23:09:36Z" end-time="2026-11-14 23:09:36Z" duration="0.154683" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1807" name="ClientFlow(False,&quot;detached&quot;)" fullname="OnlineSetupClientEditorTests.ClientFlow(False,&quot;detached&quot;)" methodname="ClientFlow" classname="OnlineSetupClientEditorTests" runstate="Runnable" seed="61257728" result="Passed" start-time="2026-11-14 23:09:36Z" end-time="2026-11-14 23:09:36Z" duration="0.087860" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1808" name="ClientFlow(False,&quot;duplicate-ack&quot;)" fullname="OnlineSetupClientEditorTests.ClientFlow(False,&quot;duplicate-ack&quot;)" methodname="ClientFlow" classname="OnlineSetupClientEditorTests" runstate="Runnable" seed="1148359101" result="Passed" start-time="2026-11-14 23:09:36Z" end-time="2026-11-14 23:09:37Z" duration="0.169205" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1809" name="ClientFlow(False,&quot;stale-snapshot&quot;)" fullname="OnlineSetupClientEditorTests.ClientFlow(False,&quot;stale-snapshot&quot;)" methodname="ClientFlow" classname="OnlineSetupClientEditorTests" runstate="Runnable" seed="1723901116" result="Passed" start-time="2026-11-14 23:09:37Z" end-time="2026-11-14 23:09:37Z" duration="0.215537" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1810" name="ClientFlow(False,&quot;wrong-match&quot;)" fullname="OnlineSetupClientEditorTests.ClientFlow(False,&quot;wrong-match&quot;)" methodname="ClientFlow" classname="OnlineSetupClientEditorTests" runstate="Runnable" seed="520636759" result="Passed" start-time="2026-11-14 23:09:37Z" end-time="2026-11-14 23:09:37Z" duration="0.193637" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1811" name="ClientFlow(False,&quot;revision-conflict&quot;)" fullname="OnlineSetupClientEditorTests.ClientFlow(False,&quot;revision-conflict&quot;)" methodname="ClientFlow" classname="OnlineSetupClientEditorTests" runstate="Runnable" seed="619498562" result="Passed" start-time="2026-11-14 23:09:37Z" end-time="2026-11-14 23:09:37Z" duration="0.080887" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1812" name="ClientFlow(True,&quot;agree-start&quot;)" fullname="OnlineSetupClientEditorTests.ClientFlow(True,&quot;agree-start&quot;)" methodname="ClientFlow" classname="OnlineSetupClientEditorTests" runstate="Runnable" seed="590257744" result="Failed" start-time="2026-11-14 23:09:37Z" end-time="2026-11-14 23:09:37Z" duration="0.401364" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: 1
+  But was:  2
+]]></message>
+              <stack-trace><![CDATA[at OnlineSetupClientEditorTests.ClientFlow (System.Boolean hostAway, System.String branch) [0x00053] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineSetupClient\OnlineSetupClientEditorTests.cs:46
+]]></stack-trace>
+            </failure>
+          </test-case>
+          <test-case id="1813" name="ClientFlow(True,&quot;local-edit&quot;)" fullname="OnlineSetupClientEditorTests.ClientFlow(True,&quot;local-edit&quot;)" methodname="ClientFlow" classname="OnlineSetupClientEditorTests" runstate="Runnable" seed="1025605948" result="Passed" start-time="2026-11-14 23:09:37Z" end-time="2026-11-14 23:09:38Z" duration="0.375704" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1814" name="ClientFlow(True,&quot;remote-edit&quot;)" fullname="OnlineSetupClientEditorTests.ClientFlow(True,&quot;remote-edit&quot;)" methodname="ClientFlow" classname="OnlineSetupClientEditorTests" runstate="Runnable" seed="2140567094" result="Passed" start-time="2026-11-14 23:09:38Z" end-time="2026-11-14 23:09:38Z" duration="0.181392" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1815" name="ClientFlow(True,&quot;pending-edit&quot;)" fullname="OnlineSetupClientEditorTests.ClientFlow(True,&quot;pending-edit&quot;)" methodname="ClientFlow" classname="OnlineSetupClientEditorTests" runstate="Runnable" seed="1065194668" result="Passed" start-time="2026-11-14 23:09:38Z" end-time="2026-11-14 23:09:38Z" duration="0.420378" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1816" name="ClientFlow(True,&quot;reconnect&quot;)" fullname="OnlineSetupClientEditorTests.ClientFlow(True,&quot;reconnect&quot;)" methodname="ClientFlow" classname="OnlineSetupClientEditorTests" runstate="Runnable" seed="743104986" result="Passed" start-time="2026-11-14 23:09:38Z" end-time="2026-11-14 23:09:39Z" duration="0.468517" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1817" name="ClientFlow(True,&quot;rejected&quot;)" fullname="OnlineSetupClientEditorTests.ClientFlow(True,&quot;rejected&quot;)" methodname="ClientFlow" classname="OnlineSetupClientEditorTests" runstate="Runnable" seed="2028608721" result="Passed" start-time="2026-11-14 23:09:39Z" end-time="2026-11-14 23:09:39Z" duration="0.329886" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1818" name="ClientFlow(True,&quot;role-filter&quot;)" fullname="OnlineSetupClientEditorTests.ClientFlow(True,&quot;role-filter&quot;)" methodname="ClientFlow" classname="OnlineSetupClientEditorTests" runstate="Runnable" seed="1351136182" result="Passed" start-time="2026-11-14 23:09:39Z" end-time="2026-11-14 23:09:39Z" duration="0.230839" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1819" name="ClientFlow(True,&quot;detached&quot;)" fullname="OnlineSetupClientEditorTests.ClientFlow(True,&quot;detached&quot;)" methodname="ClientFlow" classname="OnlineSetupClientEditorTests" runstate="Runnable" seed="1988398063" result="Passed" start-time="2026-11-14 23:09:39Z" end-time="2026-11-14 23:09:40Z" duration="0.084965" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1820" name="ClientFlow(True,&quot;duplicate-ack&quot;)" fullname="OnlineSetupClientEditorTests.ClientFlow(True,&quot;duplicate-ack&quot;)" methodname="ClientFlow" classname="OnlineSetupClientEditorTests" runstate="Runnable" seed="215388511" result="Passed" start-time="2026-11-14 23:09:40Z" end-time="2026-11-14 23:09:40Z" duration="0.260407" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1821" name="ClientFlow(True,&quot;stale-snapshot&quot;)" fullname="OnlineSetupClientEditorTests.ClientFlow(True,&quot;stale-snapshot&quot;)" methodname="ClientFlow" classname="OnlineSetupClientEditorTests" runstate="Runnable" seed="1282124946" result="Passed" start-time="2026-11-14 23:09:40Z" end-time="2026-11-14 23:09:40Z" duration="0.212088" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1822" name="ClientFlow(True,&quot;wrong-match&quot;)" fullname="OnlineSetupClientEditorTests.ClientFlow(True,&quot;wrong-match&quot;)" methodname="ClientFlow" classname="OnlineSetupClientEditorTests" runstate="Runnable" seed="167577202" result="Passed" start-time="2026-11-14 23:09:40Z" end-time="2026-11-14 23:09:40Z" duration="0.220677" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1823" name="ClientFlow(True,&quot;revision-conflict&quot;)" fullname="OnlineSetupClientEditorTests.ClientFlow(True,&quot;revision-conflict&quot;)" methodname="ClientFlow" classname="OnlineSetupClientEditorTests" runstate="Runnable" seed="813808379" result="Passed" start-time="2026-11-14 23:09:40Z" end-time="2026-11-14 23:09:40Z" duration="0.065364" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Saving results to: TestResults\GameplayRegression\Runs\20261114T230934367Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

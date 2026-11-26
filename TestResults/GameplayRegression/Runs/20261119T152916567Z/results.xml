@@ -1,0 +1,970 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="8" result="Passed" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-19 15:29:16Z" end-time="2026-11-19 15:29:28Z" duration="11.9695896">
+  <test-suite type="TestSuite" id="3288" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1901" result="Passed" start-time="2026-11-19 15:29:16Z" end-time="2026-11-19 15:29:28Z" duration="11.969590" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="3285" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1901" result="Passed" start-time="2026-11-19 15:29:16Z" end-time="2026-11-19 15:29:28Z" duration="11.908945" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="2816" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="2352" name="OnlinePickupNutmegPlayModeTests" fullname="OnlinePickupNutmegPlayModeTests" classname="OnlinePickupNutmegPlayModeTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-11-19 15:29:16Z" end-time="2026-11-19 15:29:28Z" duration="11.886892" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlinePickupNutmeg" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="2361" name="PickupDribbleUsesAuthenticatedNutmegKeys" fullname="OnlinePickupNutmegPlayModeTests.PickupDribbleUsesAuthenticatedNutmegKeys" classname="OnlinePickupNutmegPlayModeTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-11-19 15:29:16Z" end-time="2026-11-19 15:29:28Z" duration="11.871993" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="2353" name="PickupDribbleUsesAuthenticatedNutmegKeys(1,False,False)" fullname="OnlinePickupNutmegPlayModeTests.PickupDribbleUsesAuthenticatedNutmegKeys(1,False,False)" methodname="PickupDribbleUsesAuthenticatedNutmegKeys" classname="OnlinePickupNutmegPlayModeTests" runstate="Runnable" seed="2101248804" result="Passed" start-time="2026-11-19 15:29:16Z" end-time="2026-11-19 15:29:19Z" duration="2.761548" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: False.
+Attacking team has possession: False.
+Offside assessment preserved (end_movement_phase) while ball remains uncollected. Requested context: end_movement_phase.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Online pickup nutmeg collector to HandleTokenSelection
+Passing Hex 20,19 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 20,19
+Attacking team has possession: True.
+[Game Log] Online pickup nutmeg collector (Fixture Away) moves 1 paces
+isDribblerRunning set to true because someone picked up the ball.
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Online pickup nutmeg collector, IsDribbler: True, remainingDribblerPace: 5
+Set LastTokenToTouchTheBallOnPurpose to Online pickup nutmeg collector
+Offside assessment cleared: ball_collection.
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+remainingDribblerPace: 4, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Online pickup nutmeg collector Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Skipping ZOI steal attempts because the dribbler has just picked up a free ball, not dribbled it into a defender's ZOI.
+Dribbler has 4 remaining Pace, Highlighting 1 Hex, isAwaitingHexDestination
+Passing Hex 21,19 to AsyncMoveTokenToHexRegularly
+Passing Hex 21,19 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+Token arrived at hex: Hex 21,19
+Attacking team has possession: True.
+[Game Log] Online pickup nutmeg collector (Fixture Away) moves 1 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Online pickup nutmeg collector, IsDribbler: True, remainingDribblerPace: 4
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+Nutmeg options: Home carrier
+remainingDribblerPace: 3, nutmeggableDefenders: 1
+Nutmeg(s) Are available to the dribbler
+Online pickup nutmeg collector is next to at least one Nutmeggable Defender. Click a Nutmeggable Defender or Press [N] to attempt a Nutmeg, or [X] to allow interceptions.
+Reject Nutmeg. Check for interceptions.
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Online pickup nutmeg collector Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Calculating Eligible Defenders for Interception
+Interception List: Home carrier
+eligibleDefenders.Count: 1
+There are possible Interceptions
+Eligible defenders for interception: Home carrier
+Selected defender for interception: Home carrier. Press R to roll...
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+]]></output>
+          </test-case>
+          <test-case id="2354" name="PickupDribbleUsesAuthenticatedNutmegKeys(1,False,True)" fullname="OnlinePickupNutmegPlayModeTests.PickupDribbleUsesAuthenticatedNutmegKeys(1,False,True)" methodname="PickupDribbleUsesAuthenticatedNutmegKeys" classname="OnlinePickupNutmegPlayModeTests" runstate="Runnable" seed="1176826284" result="Passed" start-time="2026-11-19 15:29:19Z" end-time="2026-11-19 15:29:20Z" duration="1.428151" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: False.
+Attacking team has possession: False.
+Offside assessment preserved (end_movement_phase) while ball remains uncollected. Requested context: end_movement_phase.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Online pickup nutmeg collector to HandleTokenSelection
+Passing Hex 20,19 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 20,19
+Attacking team has possession: True.
+[Game Log] Online pickup nutmeg collector (Fixture Away) moves 1 paces
+isDribblerRunning set to true because someone picked up the ball.
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Online pickup nutmeg collector, IsDribbler: True, remainingDribblerPace: 5
+Set LastTokenToTouchTheBallOnPurpose to Online pickup nutmeg collector
+Offside assessment cleared: ball_collection.
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+remainingDribblerPace: 4, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Online pickup nutmeg collector Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Skipping ZOI steal attempts because the dribbler has just picked up a free ball, not dribbled it into a defender's ZOI.
+Dribbler has 4 remaining Pace, Highlighting 1 Hex, isAwaitingHexDestination
+Passing Hex 21,19 to AsyncMoveTokenToHexRegularly
+Passing Hex 21,19 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+Token arrived at hex: Hex 21,19
+Attacking team has possession: True.
+[Game Log] Online pickup nutmeg collector (Fixture Away) moves 1 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Online pickup nutmeg collector, IsDribbler: True, remainingDribblerPace: 4
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+Nutmeg options: Home carrier
+remainingDribblerPace: 3, nutmeggableDefenders: 1
+Nutmeg(s) Are available to the dribbler
+Online pickup nutmeg collector is next to at least one Nutmeggable Defender. Click a Nutmeggable Defender or Press [N] to attempt a Nutmeg, or [X] to allow interceptions.
+Starting Nutmeg Victim Identification...
+Only one nutmeggable defender: Home carrier. Proceeding with nutmeg.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+🔍 Connected Token Found: Home carrier
+[Game Log] Online pickup nutmeg collector (Fixture Away) engages in a ground duel
+[Expected Stats] Online pickup nutmeg collector vs Home carrier (nutmeg duel) xDribbles=0.372, xTackles=0.628, tie=0.104, foul=0.167
+Press R to roll the dice for tackle. Defender rolls first.
+]]></output>
+          </test-case>
+          <test-case id="2355" name="PickupDribbleUsesAuthenticatedNutmegKeys(1,True,False)" fullname="OnlinePickupNutmegPlayModeTests.PickupDribbleUsesAuthenticatedNutmegKeys(1,True,False)" methodname="PickupDribbleUsesAuthenticatedNutmegKeys" classname="OnlinePickupNutmegPlayModeTests" runstate="Runnable" seed="440130425" result="Passed" start-time="2026-11-19 15:29:20Z" end-time="2026-11-19 15:29:22Z" duration="1.202141" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: False.
+Attacking team has possession: False.
+Offside assessment preserved (end_movement_phase) while ball remains uncollected. Requested context: end_movement_phase.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Online pickup nutmeg collector to HandleTokenSelection
+Passing Hex 20,19 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 20,19
+Attacking team has possession: True.
+[Game Log] Online pickup nutmeg collector (Fixture Home) moves 1 paces
+isDribblerRunning set to true because someone picked up the ball.
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Online pickup nutmeg collector, IsDribbler: True, remainingDribblerPace: 5
+Set LastTokenToTouchTheBallOnPurpose to Online pickup nutmeg collector
+Offside assessment cleared: ball_collection.
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+remainingDribblerPace: 4, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Online pickup nutmeg collector Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Skipping ZOI steal attempts because the dribbler has just picked up a free ball, not dribbled it into a defender's ZOI.
+Dribbler has 4 remaining Pace, Highlighting 1 Hex, isAwaitingHexDestination
+Passing Hex 21,19 to AsyncMoveTokenToHexRegularly
+Passing Hex 21,19 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+Token arrived at hex: Hex 21,19
+Attacking team has possession: True.
+[Game Log] Online pickup nutmeg collector (Fixture Home) moves 1 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Online pickup nutmeg collector, IsDribbler: True, remainingDribblerPace: 4
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+Nutmeg options: Away recovering player
+remainingDribblerPace: 3, nutmeggableDefenders: 1
+Nutmeg(s) Are available to the dribbler
+Online pickup nutmeg collector is next to at least one Nutmeggable Defender. Click a Nutmeggable Defender or Press [N] to attempt a Nutmeg, or [X] to allow interceptions.
+Reject Nutmeg. Check for interceptions.
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Online pickup nutmeg collector Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Calculating Eligible Defenders for Interception
+Interception List: Away recovering player
+eligibleDefenders.Count: 1
+There are possible Interceptions
+Eligible defenders for interception: Away recovering player
+Selected defender for interception: Away recovering player. Press R to roll...
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+]]></output>
+          </test-case>
+          <test-case id="2356" name="PickupDribbleUsesAuthenticatedNutmegKeys(1,True,True)" fullname="OnlinePickupNutmegPlayModeTests.PickupDribbleUsesAuthenticatedNutmegKeys(1,True,True)" methodname="PickupDribbleUsesAuthenticatedNutmegKeys" classname="OnlinePickupNutmegPlayModeTests" runstate="Runnable" seed="2066005096" result="Passed" start-time="2026-11-19 15:29:22Z" end-time="2026-11-19 15:29:23Z" duration="1.208273" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Attacking team has possession: False.
+Attacking team has possession: False.
+Offside assessment preserved (end_movement_phase) while ball remains uncollected. Requested context: end_movement_phase.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Online pickup nutmeg collector to HandleTokenSelection
+Passing Hex 20,19 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 20,19
+Attacking team has possession: True.
+[Game Log] Online pickup nutmeg collector (Fixture Home) moves 1 paces
+isDribblerRunning set to true because someone picked up the ball.
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Online pickup nutmeg collector, IsDribbler: True, remainingDribblerPace: 5
+Set LastTokenToTouchTheBallOnPurpose to Online pickup nutmeg collector
+Offside assessment cleared: ball_collection.
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+remainingDribblerPace: 4, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Online pickup nutmeg collector Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Skipping ZOI steal attempts because the dribbler has just picked up a free ball, not dribbled it into a defender's ZOI.
+Dribbler has 4 remaining Pace, Highlighting 1 Hex, isAwaitingHexDestination
+Passing Hex 21,19 to AsyncMoveTokenToHexRegularly
+Passing Hex 21,19 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+Token arrived at hex: Hex 21,19
+Attacking team has possession: True.
+[Game Log] Online pickup nutmeg collector (Fixture Home) moves 1 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Online pickup nutmeg collector, IsDribbler: True, remainingDribblerPace: 4
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+Nutmeg options: Away recovering player
+remainingDribblerPace: 3, nutmeggableDefenders: 1
+Nutmeg(s) Are available to the dribbler
+Online pickup nutmeg collector is next to at least one Nutmeggable Defender. Click a Nutmeggable Defender or Press [N] to attempt a Nutmeg, or [X] to allow interceptions.
+Starting Nutmeg Victim Identification...
+Only one nutmeggable defender: Away recovering player. Proceeding with nutmeg.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+🔍 Connected Token Found: Away recovering player
+[Game Log] Online pickup nutmeg collector (Fixture Home) engages in a ground duel
+[Expected Stats] Online pickup nutmeg collector vs Away recovering player (nutmeg duel) xDribbles=0.372, xTackles=0.628, tie=0.104, foul=0.167
+Press R to roll the dice for tackle. Defender rolls first.
+]]></output>
+          </test-case>
+          <test-case id="2357" name="PickupDribbleUsesAuthenticatedNutmegKeys(-1,False,False)" fullname="OnlinePickupNutmegPlayModeTests.PickupDribbleUsesAuthenticatedNutmegKeys(-1,False,False)" methodname="PickupDribbleUsesAuthenticatedNutmegKeys" classname="OnlinePickupNutmegPlayModeTests" runstate="Runnable" seed="1395638711" result="Passed" start-time="2026-11-19 15:29:23Z" end-time="2026-11-19 15:29:24Z" duration="1.307193" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: False.
+Attacking team has possession: False.
+Offside assessment preserved (end_movement_phase) while ball remains uncollected. Requested context: end_movement_phase.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Online pickup nutmeg collector to HandleTokenSelection
+Passing Hex 30,19 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 30,19
+Attacking team has possession: True.
+[Game Log] Online pickup nutmeg collector (Fixture Away) moves 1 paces
+isDribblerRunning set to true because someone picked up the ball.
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Online pickup nutmeg collector, IsDribbler: True, remainingDribblerPace: 5
+Set LastTokenToTouchTheBallOnPurpose to Online pickup nutmeg collector
+Offside assessment cleared: ball_collection.
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+remainingDribblerPace: 4, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Online pickup nutmeg collector Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Skipping ZOI steal attempts because the dribbler has just picked up a free ball, not dribbled it into a defender's ZOI.
+Dribbler has 4 remaining Pace, Highlighting 1 Hex, isAwaitingHexDestination
+Passing Hex 29,19 to AsyncMoveTokenToHexRegularly
+Passing Hex 29,19 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+Token arrived at hex: Hex 29,19
+Attacking team has possession: True.
+[Game Log] Online pickup nutmeg collector (Fixture Away) moves 1 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Online pickup nutmeg collector, IsDribbler: True, remainingDribblerPace: 4
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+Nutmeg options: Home carrier
+remainingDribblerPace: 3, nutmeggableDefenders: 1
+Nutmeg(s) Are available to the dribbler
+Online pickup nutmeg collector is next to at least one Nutmeggable Defender. Click a Nutmeggable Defender or Press [N] to attempt a Nutmeg, or [X] to allow interceptions.
+Reject Nutmeg. Check for interceptions.
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Online pickup nutmeg collector Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Calculating Eligible Defenders for Interception
+Interception List: Home carrier
+eligibleDefenders.Count: 1
+There are possible Interceptions
+Eligible defenders for interception: Home carrier
+Selected defender for interception: Home carrier. Press R to roll...
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+]]></output>
+          </test-case>
+          <test-case id="2358" name="PickupDribbleUsesAuthenticatedNutmegKeys(-1,False,True)" fullname="OnlinePickupNutmegPlayModeTests.PickupDribbleUsesAuthenticatedNutmegKeys(-1,False,True)" methodname="PickupDribbleUsesAuthenticatedNutmegKeys" classname="OnlinePickupNutmegPlayModeTests" runstate="Runnable" seed="1067064830" result="Passed" start-time="2026-11-19 15:29:24Z" end-time="2026-11-19 15:29:25Z" duration="1.273132" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Attacking team has possession: False.
+Attacking team has possession: False.
+Offside assessment preserved (end_movement_phase) while ball remains uncollected. Requested context: end_movement_phase.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Online pickup nutmeg collector to HandleTokenSelection
+Passing Hex 30,19 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 30,19
+Attacking team has possession: True.
+[Game Log] Online pickup nutmeg collector (Fixture Away) moves 1 paces
+isDribblerRunning set to true because someone picked up the ball.
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Online pickup nutmeg collector, IsDribbler: True, remainingDribblerPace: 5
+Set LastTokenToTouchTheBallOnPurpose to Online pickup nutmeg collector
+Offside assessment cleared: ball_collection.
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+remainingDribblerPace: 4, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Online pickup nutmeg collector Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Skipping ZOI steal attempts because the dribbler has just picked up a free ball, not dribbled it into a defender's ZOI.
+Dribbler has 4 remaining Pace, Highlighting 1 Hex, isAwaitingHexDestination
+Passing Hex 29,19 to AsyncMoveTokenToHexRegularly
+Passing Hex 29,19 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+Token arrived at hex: Hex 29,19
+Attacking team has possession: True.
+[Game Log] Online pickup nutmeg collector (Fixture Away) moves 1 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Online pickup nutmeg collector, IsDribbler: True, remainingDribblerPace: 4
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+Nutmeg options: Home carrier
+remainingDribblerPace: 3, nutmeggableDefenders: 1
+Nutmeg(s) Are available to the dribbler
+Online pickup nutmeg collector is next to at least one Nutmeggable Defender. Click a Nutmeggable Defender or Press [N] to attempt a Nutmeg, or [X] to allow interceptions.
+Starting Nutmeg Victim Identification...
+Only one nutmeggable defender: Home carrier. Proceeding with nutmeg.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+🔍 Connected Token Found: Home carrier
+[Game Log] Online pickup nutmeg collector (Fixture Away) engages in a ground duel
+[Expected Stats] Online pickup nutmeg collector vs Home carrier (nutmeg duel) xDribbles=0.372, xTackles=0.628, tie=0.104, foul=0.167
+Press R to roll the dice for tackle. Defender rolls first.
+]]></output>
+          </test-case>
+          <test-case id="2359" name="PickupDribbleUsesAuthenticatedNutmegKeys(-1,True,False)" fullname="OnlinePickupNutmegPlayModeTests.PickupDribbleUsesAuthenticatedNutmegKeys(-1,True,False)" methodname="PickupDribbleUsesAuthenticatedNutmegKeys" classname="OnlinePickupNutmegPlayModeTests" runstate="Runnable" seed="140348441" result="Passed" start-time="2026-11-19 15:29:25Z" end-time="2026-11-19 15:29:27Z" duration="1.325396" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: False.
+Attacking team has possession: False.
+Offside assessment preserved (end_movement_phase) while ball remains uncollected. Requested context: end_movement_phase.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Online pickup nutmeg collector to HandleTokenSelection
+Passing Hex 30,19 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 30,19
+Attacking team has possession: True.
+[Game Log] Online pickup nutmeg collector (Fixture Home) moves 1 paces
+isDribblerRunning set to true because someone picked up the ball.
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Online pickup nutmeg collector, IsDribbler: True, remainingDribblerPace: 5
+Set LastTokenToTouchTheBallOnPurpose to Online pickup nutmeg collector
+Offside assessment cleared: ball_collection.
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+remainingDribblerPace: 4, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Online pickup nutmeg collector Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Skipping ZOI steal attempts because the dribbler has just picked up a free ball, not dribbled it into a defender's ZOI.
+Dribbler has 4 remaining Pace, Highlighting 1 Hex, isAwaitingHexDestination
+Passing Hex 29,19 to AsyncMoveTokenToHexRegularly
+Passing Hex 29,19 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+Token arrived at hex: Hex 29,19
+Attacking team has possession: True.
+[Game Log] Online pickup nutmeg collector (Fixture Home) moves 1 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Online pickup nutmeg collector, IsDribbler: True, remainingDribblerPace: 4
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+Nutmeg options: Away recovering player
+remainingDribblerPace: 3, nutmeggableDefenders: 1
+Nutmeg(s) Are available to the dribbler
+Online pickup nutmeg collector is next to at least one Nutmeggable Defender. Click a Nutmeggable Defender or Press [N] to attempt a Nutmeg, or [X] to allow interceptions.
+Reject Nutmeg. Check for interceptions.
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Online pickup nutmeg collector Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Calculating Eligible Defenders for Interception
+Interception List: Away recovering player
+eligibleDefenders.Count: 1
+There are possible Interceptions
+Eligible defenders for interception: Away recovering player
+Selected defender for interception: Away recovering player. Press R to roll...
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+]]></output>
+          </test-case>
+          <test-case id="2360" name="PickupDribbleUsesAuthenticatedNutmegKeys(-1,True,True)" fullname="OnlinePickupNutmegPlayModeTests.PickupDribbleUsesAuthenticatedNutmegKeys(-1,True,True)" methodname="PickupDribbleUsesAuthenticatedNutmegKeys" classname="OnlinePickupNutmegPlayModeTests" runstate="Runnable" seed="415807053" result="Passed" start-time="2026-11-19 15:29:27Z" end-time="2026-11-19 15:29:28Z" duration="1.299538" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Attacking team has possession: False.
+Attacking team has possession: False.
+Offside assessment preserved (end_movement_phase) while ball remains uncollected. Requested context: end_movement_phase.
+Committing to Movement Phase action. section=AttMP, selectedToken=none, awaitingHexDestination=False, dribblerRunning=False, tokenPickedUpBall=False
+Substitutions are no longer available: Committed to MovementPhase
+Passing Online pickup nutmeg collector to HandleTokenSelection
+Passing Hex 30,19 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 30,19
+Attacking team has possession: True.
+[Game Log] Online pickup nutmeg collector (Fixture Home) moves 1 paces
+isDribblerRunning set to true because someone picked up the ball.
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Online pickup nutmeg collector, IsDribbler: True, remainingDribblerPace: 5
+Set LastTokenToTouchTheBallOnPurpose to Online pickup nutmeg collector
+Offside assessment cleared: ball_collection.
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+remainingDribblerPace: 4, nutmeggableDefenders: 0
+No nutmeggable defenders available
+ContinueFromRejectedNutmeg: Checking for Interceptions
+Online pickup nutmeg collector Rejected the Nutmeg option, forcing interceptions from adjacent defenders.
+Skipping ZOI steal attempts because the dribbler has just picked up a free ball, not dribbled it into a defender's ZOI.
+Dribbler has 4 remaining Pace, Highlighting 1 Hex, isAwaitingHexDestination
+Passing Hex 29,19 to AsyncMoveTokenToHexRegularly
+Passing Hex 29,19 to MoveTokenToHex
+MoveTokenAlongPath: shouldCarryBall: True
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+MovingBall with Token
+Token arrived at hex: Hex 29,19
+Attacking team has possession: True.
+[Game Log] Online pickup nutmeg collector (Fixture Home) moves 1 paces
+isMovingTokenAttacker: True
+We are not in a Defensive Movement Phase
+Hello from the Attacking MP, Selected Token: Online pickup nutmeg collector, IsDribbler: True, remainingDribblerPace: 4
+The selected Token is the dribbler
+Hello, this is a dribbler dribbling, Reducing their pace.
+Checking for nutmeggable Defenders
+Nutmeg options: Away recovering player
+remainingDribblerPace: 3, nutmeggableDefenders: 1
+Nutmeg(s) Are available to the dribbler
+Online pickup nutmeg collector is next to at least one Nutmeggable Defender. Click a Nutmeggable Defender or Press [N] to attempt a Nutmeg, or [X] to allow interceptions.
+Starting Nutmeg Victim Identification...
+Only one nutmeggable defender: Away recovering player. Proceeding with nutmeg.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+🔍 Connected Token Found: Away recovering player
+[Game Log] Online pickup nutmeg collector (Fixture Home) engages in a ground duel
+[Expected Stats] Online pickup nutmeg collector vs Away recovering player (nutmeg duel) xDribbles=0.372, xTackles=0.628, tie=0.104, foul=0.167
+Press R to roll the dice for tackle. Defender rolls first.
+Saving results to: TestResults\GameplayRegression\Runs\20261119T152916567Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

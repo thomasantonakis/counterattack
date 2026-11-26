@@ -1,0 +1,4 @@
+{"name":"OnlineRoomThrowInPlayModeTests.RoomThrowInContinues(1,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomThrowInPlayModeTests.RoomThrowInContinues(1,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomThrowInPlayModeTests.RoomThrowInContinues(-1,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineRoomThrowInPlayModeTests.RoomThrowInContinues(-1,True)","status":"Passed","message":"","stackTrace":""}

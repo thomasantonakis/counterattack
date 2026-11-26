@@ -74,7 +74,6 @@ public partial class HeaderManager : MonoBehaviour
     public int interceptionDiceRoll;
     private readonly Dictionary<HexCell, bool> headerTargetThreatByHex = new();
     private readonly List<HexCell> headerAtGoalTargetHexes = new();
-    private readonly Dictionary<HexCell, float> headerAtGoalTargetOriginalHeights = new();
     private readonly HashSet<PlayerToken> headerInterceptionSuppressedTokens = new();
     private HexCell hoveredHeaderTargetHex;
     private HexCell hoveredHeaderAtGoalTargetHex;
@@ -789,23 +788,15 @@ public partial class HeaderManager : MonoBehaviour
                 continue;
             }
 
-            canShootToHex.HighlightHex("CanShootFrom", 1);
+            canShootToHex.HighlightRaisedGoalTarget("CanShootFrom", 0.03f, 1);
             if (!headerAtGoalTargetHexes.Contains(canShootToHex))
             {
                 headerAtGoalTargetHexes.Add(canShootToHex);
             }
-            if (!headerAtGoalTargetOriginalHeights.ContainsKey(canShootToHex))
-            {
-                headerAtGoalTargetOriginalHeights[canShootToHex] = canShootToHex.transform.position.y;
-            }
-            if (canShootToHex.transform.position.y < 0.03f)
-            {
-                Vector3 position = canShootToHex.transform.position;
-                position.y = 0.03f;
-                canShootToHex.transform.position = position;
-            }
         }
     }
+
+    internal IReadOnlyList<HexCell> PublishedHeaderAtGoalTargets => headerAtGoalTargetHexes;
 
     private void ClearHeaderAtGoalTargets()
     {
@@ -817,17 +808,11 @@ public partial class HeaderManager : MonoBehaviour
                 continue;
             }
 
+            hex.ClearRaisedGoalTarget();
             hex.ResetHighlight();
-            if (headerAtGoalTargetOriginalHeights.TryGetValue(hex, out float originalHeight))
-            {
-                Vector3 position = hex.transform.position;
-                position.y = originalHeight;
-                hex.transform.position = position;
-            }
         }
 
         headerAtGoalTargetHexes.Clear();
-        headerAtGoalTargetOriginalHeights.Clear();
     }
 
     private bool IsHeaderAtGoalAvailable()
@@ -2011,12 +1996,12 @@ public partial class HeaderManager : MonoBehaviour
         await helperFunctions.StartCoroutineAndWait(SingleRollResolutionPresentation.Resolve(this, controlRoll,
             controlResult,
             continueWithScatter: !controlled, scatterOwner: looseBallManager));
-        if (version != controlPresentationVersion || !isActiveAndEnabled) return;
+        if (!IsOnlineControlContinuationCurrent(version)) return;
         if (controlled)
         {
             Debug.Log($"You beauty! {controllingToken.name} brings the ball down on their feet! Continue as if it were a SuccessfulTackle");
             await helperFunctions.StartCoroutineAndWait(groundBallManager.HandleGroundBallMovement(controllingToken.GetCurrentHex()));
-            if (version != controlPresentationVersion || !isActiveAndEnabled) return;
+            if (!IsOnlineControlContinuationCurrent(version)) return;
             MatchManager.Instance.gameData.gameLog.LogEvent(
                 MatchManager.Instance.LastTokenToTouchTheBallOnPurpose
                 , MatchManager.ActionType.AerialPassCompleted
@@ -2361,6 +2346,7 @@ public partial class HeaderManager : MonoBehaviour
 
     private IEnumerator PresentHeaderInterception(RollInputOverride? rollOverride)
     {
+        int version=challengePresentationVersion;
         GameplayDiceRollResult diceResult = MatchManager.Instance.ResolveGameplayDiceRoll(
             "header_interception",
             rollOverride,
@@ -2372,6 +2358,7 @@ public partial class HeaderManager : MonoBehaviour
         yield return SingleRollResolutionPresentation.Resolve(this, diceResult,
             HeaderInterceptionSucceeded()
                 ? "INTERCEPTED" : "INTERCEPTION FAILED");
+        if(version!=challengePresentationVersion || !isActivated)yield break;
         isWaitingForInterceptionRoll = false;
     }
 
@@ -2476,6 +2463,7 @@ public partial class HeaderManager : MonoBehaviour
 
     private IEnumerator PerformInterceptionCheck()
     {
+        int version=challengePresentationVersion;
         if (interceptingDefenders == null || interceptingDefenders.Count == 0)
         {
             Debug.Log("No defenders available for interception.");
@@ -2496,7 +2484,8 @@ public partial class HeaderManager : MonoBehaviour
             }
             SingleRollResolutionPresentation.Recovery(this, () => isWaitingForInterceptionRoll,
                 interceptingDefender, "Landing Ball Interception");
-            while (isWaitingForInterceptionRoll) yield return null;
+            while (isWaitingForInterceptionRoll && version==challengePresentationVersion && isActivated) yield return null;
+            if(version!=challengePresentationVersion || !isActivated)yield break;
 
             Debug.Log($"Checking interception for defender at {defenderHex.coordinates}");
             Debug.Log($"Dice roll for defender {interceptingDefender.name} at {defenderHex.coordinates}: {interceptionDiceRoll}");
@@ -2557,6 +2546,7 @@ public partial class HeaderManager : MonoBehaviour
     {
         challengePresentationVersion++;
         isWaitingForHeaderRoll = false;
+        isWaitingForInterceptionRoll = false;
         headerChallengePanel?.Cancel(this);
     }
 

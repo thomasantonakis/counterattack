@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="8" result="Passed" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-17 08:12:15Z" end-time="2026-11-17 08:12:30Z" duration="14.780701">
+  <test-suite type="TestSuite" id="3223" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1847" result="Passed" start-time="2026-11-17 08:12:15Z" end-time="2026-11-17 08:12:30Z" duration="14.780701" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="3220" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1847" result="Passed" start-time="2026-11-17 08:12:15Z" end-time="2026-11-17 08:12:30Z" duration="14.742716" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12156" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="2561" name="OnlineGroundShotPlayModeTests" fullname="OnlineGroundShotPlayModeTests" classname="OnlineGroundShotPlayModeTests" runstate="Runnable" testcasecount="14" result="Passed" start-time="2026-11-17 08:12:15Z" end-time="2026-11-17 08:12:30Z" duration="14.711972" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineShots" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="2570" name="ShotAndSnapshotContinueThroughSave" fullname="OnlineGroundShotPlayModeTests.ShotAndSnapshotContinueThroughSave" classname="OnlineGroundShotPlayModeTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-11-17 08:12:15Z" end-time="2026-11-17 08:12:30Z" duration="14.696119" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="2562" name="ShotAndSnapshotContinueThroughSave(1,False,False)" fullname="OnlineGroundShotPlayModeTests.ShotAndSnapshotContinueThroughSave(1,False,False)" methodname="ShotAndSnapshotContinueThroughSave" classname="OnlineGroundShotPlayModeTests" runstate="Runnable" seed="678050399" result="Passed" start-time="2026-11-17 08:12:15Z" end-time="2026-11-17 08:12:18Z" duration="3.352430" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=13, tokens=none.
+Movement phase has been reset.
+Movement phase has been reset.
+Substitutions are no longer available: Committed to Shot
+Full Power Shot initiated. Proceeding to target selection.
+[Game Log] Home carrier (Fixture Home) Unknown ShotType
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Goalkeeper Away keeper can attempt a save at (16, 0, 0) with penalty 0
+Shot interactions found: 1
+The GK is next up. Shooter must Roll to shoot. Setting isWaitingForShotRoll to true.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Hello from the StartShotRoll
+Goalkeeper Away keeper now attempts a save. Press [R] to roll
+Unknown kit preset ''. Falling back to blue token style.
+GK Away keeper rolls 2 + Saving: 6 + Penalty: 0 = 8
+[Game Log] Away keeper (Fixture Away) faces a shot
+[Expected Stats] Home carrier records xG 0.132 on fullPower on target
+[Game Log] Home carrier (Fixture Home) completes an attempt on target
+GKPush: Away keeper is already on save hex (16, 0, 0).
+Away keeper saves the shot! Will they hold the ball? Away keeper (PlayerToken) needs to roll lower than 4 to hold the ball. Press [R] to roll for Handling Test!
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+[Game Log] Away keeper (Fixture Away) makes a save! 🧤Saved and held!
+🔍 Connected Token Found: Home carrier
+[Game Log] Away keeper (Fixture Away) wins possession after a shot from Home carrier
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Away keeper rolled 1 and holds the ball.
+Away keeper held the shot. Press [Q]uickThrow, or [K] to activate Final Thirds
+QuickThrow Scenario chosen, NOBODY MOVES! Click Hex to select target for GK's throw
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Substitutions are no longer available: Committed to StandardPass
+]]></output>
+          </test-case>
+          <test-case id="2563" name="ShotAndSnapshotContinueThroughSave(1,False,True)" fullname="OnlineGroundShotPlayModeTests.ShotAndSnapshotContinueThroughSave(1,False,True)" methodname="ShotAndSnapshotContinueThroughSave" classname="OnlineGroundShotPlayModeTests" runstate="Runnable" seed="786783742" result="Passed" start-time="2026-11-17 08:12:18Z" end-time="2026-11-17 08:12:21Z" duration="2.440924" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=13, tokens=none.
+Movement phase has been reset.
+Substitutions are no longer available: Committed to Shot
+Full Power Shot initiated. Proceeding to target selection.
+[Game Log] Home carrier (Fixture Home) Unknown ShotType
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Goalkeeper Away keeper can attempt a save at (16, 0, 0) with penalty 0
+Shot interactions found: 1
+The GK is next up. Shooter must Roll to shoot. Setting isWaitingForShotRoll to true.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Hello from the StartShotRoll
+Goalkeeper Away keeper now attempts a save. Press [R] to roll
+Unknown kit preset ''. Falling back to blue token style.
+GK Away keeper rolls 2 + Saving: 6 + Penalty: 0 = 8
+[Game Log] Away keeper (Fixture Away) faces a shot
+[Expected Stats] Home carrier records xG 0.132 on fullPower on target
+[Game Log] Home carrier (Fixture Home) completes an attempt on target
+GKPush: Away keeper is already on save hex (16, 0, 0).
+Away keeper saves the shot! Will they hold the ball? Away keeper (PlayerToken) needs to roll lower than 4 to hold the ball. Press [R] to roll for Handling Test!
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+[Game Log] Away keeper (Fixture Away) makes a save! 🧤Saved and held!
+🔍 Connected Token Found: Home carrier
+[Game Log] Away keeper (Fixture Away) wins possession after a shot from Home carrier
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Away keeper rolled 1 and holds the ball.
+Away keeper held the shot. Press [Q]uickThrow, or [K] to activate Final Thirds
+QuickThrow Scenario chosen, NOBODY MOVES! Click Hex to select target for GK's throw
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Substitutions are no longer available: Committed to StandardPass
+]]></output>
+          </test-case>
+          <test-case id="2564" name="ShotAndSnapshotContinueThroughSave(1,True,False)" fullname="OnlineGroundShotPlayModeTests.ShotAndSnapshotContinueThroughSave(1,True,False)" methodname="ShotAndSnapshotContinueThroughSave" classname="OnlineGroundShotPlayModeTests" runstate="Runnable" seed="924728428" result="Passed" start-time="2026-11-17 08:12:21Z" end-time="2026-11-17 08:12:22Z" duration="1.531550" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Attacking team has possession: True.
+Offside assessed (any_other_scenario): line x=13, tokens=none.
+Movement phase has been reset.
+Movement phase has been reset.
+Snapshot initiated. Allow one defender to move 2 hexes.
+[Game Log] Home carrier (Fixture Home) takes a Snapshot!
+Selecting defender Away recovering player. Highlighting reachable hexes.
+Hex clicked: Hex 33,28
+Moving Away recovering player to hex (8, 0, 9)
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 33,28
+[Game Log] Away recovering player (Fixture Away) moves 1 paces
+Defender movement phase complete. Proceeding to target selection.
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Goalkeeper Away keeper can attempt a save at (16, 0, 0) with penalty 0
+Shot interactions found: 1
+The GK is next up. Shooter must Roll to shoot. Setting isWaitingForShotRoll to true.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Hello from the StartShotRoll
+Goalkeeper Away keeper now attempts a save. Press [R] to roll
+Unknown kit preset ''. Falling back to blue token style.
+GK Away keeper rolls 2 + Saving: 6 + Penalty: 0 = 8
+[Game Log] Away keeper (Fixture Away) faces a shot
+[Expected Stats] Home carrier records xG 0.09 on snapshot on target
+[Game Log] Home carrier (Fixture Home) completes an attempt on target
+GKPush: Away keeper is already on save hex (16, 0, 0).
+Away keeper saves the shot! Will they hold the ball? Away keeper (PlayerToken) needs to roll lower than 4 to hold the ball. Press [R] to roll for Handling Test!
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+[Game Log] Away keeper (Fixture Away) makes a save! 🧤Saved and held!
+🔍 Connected Token Found: Home carrier
+[Game Log] Away keeper (Fixture Away) wins possession after a shot from Home carrier
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Away keeper rolled 1 and holds the ball.
+Away keeper held the shot. Press [Q]uickThrow, or [K] to activate Final Thirds
+QuickThrow Scenario chosen, NOBODY MOVES! Click Hex to select target for GK's throw
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Substitutions are no longer available: Committed to StandardPass
+]]></output>
+          </test-case>
+          <test-case id="2565" name="ShotAndSnapshotContinueThroughSave(1,True,True)" fullname="OnlineGroundShotPlayModeTests.ShotAndSnapshotContinueThroughSave(1,True,True)" methodname="ShotAndSnapshotContinueThroughSave" classname="OnlineGroundShotPlayModeTests" runstate="Runnable" seed="1006183808" result="Passed" start-time="2026-11-17 08:12:22Z" end-time="2026-11-17 08:12:24Z" duration="1.451628" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Attacking team has possession: True.
+Offside assessed (any_other_scenario): line x=13, tokens=none.
+Movement phase has been reset.
+Snapshot initiated. Allow one defender to move 2 hexes.
+[Game Log] Home carrier (Fixture Home) takes a Snapshot!
+Selecting defender Away recovering player. Highlighting reachable hexes.
+Hex clicked: Hex 33,28
+Moving Away recovering player to hex (8, 0, 9)
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 33,28
+[Game Log] Away recovering player (Fixture Away) moves 1 paces
+Defender movement phase complete. Proceeding to target selection.
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Goalkeeper Away keeper can attempt a save at (16, 0, 0) with penalty 0
+Shot interactions found: 1
+The GK is next up. Shooter must Roll to shoot. Setting isWaitingForShotRoll to true.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Hello from the StartShotRoll
+Goalkeeper Away keeper now attempts a save. Press [R] to roll
+Unknown kit preset ''. Falling back to blue token style.
+GK Away keeper rolls 2 + Saving: 6 + Penalty: 0 = 8
+[Game Log] Away keeper (Fixture Away) faces a shot
+[Expected Stats] Home carrier records xG 0.09 on snapshot on target
+[Game Log] Home carrier (Fixture Home) completes an attempt on target
+GKPush: Away keeper is already on save hex (16, 0, 0).
+Away keeper saves the shot! Will they hold the ball? Away keeper (PlayerToken) needs to roll lower than 4 to hold the ball. Press [R] to roll for Handling Test!
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+[Game Log] Away keeper (Fixture Away) makes a save! 🧤Saved and held!
+🔍 Connected Token Found: Home carrier
+[Game Log] Away keeper (Fixture Away) wins possession after a shot from Home carrier
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Away keeper rolled 1 and holds the ball.
+Away keeper held the shot. Press [Q]uickThrow, or [K] to activate Final Thirds
+QuickThrow Scenario chosen, NOBODY MOVES! Click Hex to select target for GK's throw
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Substitutions are no longer available: Committed to StandardPass
+]]></output>
+          </test-case>
+          <test-case id="2566" name="ShotAndSnapshotContinueThroughSave(-1,False,False)" fullname="OnlineGroundShotPlayModeTests.ShotAndSnapshotContinueThroughSave(-1,False,False)" methodname="ShotAndSnapshotContinueThroughSave" classname="OnlineGroundShotPlayModeTests" runstate="Runnable" seed="1173138073" result="Passed" start-time="2026-11-17 08:12:24Z" end-time="2026-11-17 08:12:25Z" duration="1.542395" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-13, tokens=none.
+Movement phase has been reset.
+Movement phase has been reset.
+Substitutions are no longer available: Committed to Shot
+Full Power Shot initiated. Proceeding to target selection.
+[Game Log] Home carrier (Fixture Home) Unknown ShotType
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (-19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Goalkeeper Away keeper can attempt a save at (-16, 0, 0) with penalty 0
+Shot interactions found: 1
+The GK is next up. Shooter must Roll to shoot. Setting isWaitingForShotRoll to true.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Hello from the StartShotRoll
+Goalkeeper Away keeper now attempts a save. Press [R] to roll
+Unknown kit preset ''. Falling back to blue token style.
+GK Away keeper rolls 2 + Saving: 6 + Penalty: 0 = 8
+[Game Log] Away keeper (Fixture Away) faces a shot
+[Expected Stats] Home carrier records xG 0.132 on fullPower on target
+[Game Log] Home carrier (Fixture Home) completes an attempt on target
+GKPush: Away keeper is already on save hex (-16, 0, 0).
+Away keeper saves the shot! Will they hold the ball? Away keeper (PlayerToken) needs to roll lower than 4 to hold the ball. Press [R] to roll for Handling Test!
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+[Game Log] Away keeper (Fixture Away) makes a save! 🧤Saved and held!
+🔍 Connected Token Found: Home carrier
+[Game Log] Away keeper (Fixture Away) wins possession after a shot from Home carrier
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Away keeper rolled 1 and holds the ball.
+Away keeper held the shot. Press [Q]uickThrow, or [K] to activate Final Thirds
+QuickThrow Scenario chosen, NOBODY MOVES! Click Hex to select target for GK's throw
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Substitutions are no longer available: Committed to StandardPass
+]]></output>
+          </test-case>
+          <test-case id="2567" name="ShotAndSnapshotContinueThroughSave(-1,False,True)" fullname="OnlineGroundShotPlayModeTests.ShotAndSnapshotContinueThroughSave(-1,False,True)" methodname="ShotAndSnapshotContinueThroughSave" classname="OnlineGroundShotPlayModeTests" runstate="Runnable" seed="769151229" result="Passed" start-time="2026-11-17 08:12:25Z" end-time="2026-11-17 08:12:27Z" duration="1.433873" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-13, tokens=none.
+Movement phase has been reset.
+Substitutions are no longer available: Committed to Shot
+Full Power Shot initiated. Proceeding to target selection.
+[Game Log] Home carrier (Fixture Home) Unknown ShotType
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (-19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Goalkeeper Away keeper can attempt a save at (-16, 0, 0) with penalty 0
+Shot interactions found: 1
+The GK is next up. Shooter must Roll to shoot. Setting isWaitingForShotRoll to true.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Hello from the StartShotRoll
+Goalkeeper Away keeper now attempts a save. Press [R] to roll
+Unknown kit preset ''. Falling back to blue token style.
+GK Away keeper rolls 2 + Saving: 6 + Penalty: 0 = 8
+[Game Log] Away keeper (Fixture Away) faces a shot
+[Expected Stats] Home carrier records xG 0.132 on fullPower on target
+[Game Log] Home carrier (Fixture Home) completes an attempt on target
+GKPush: Away keeper is already on save hex (-16, 0, 0).
+Away keeper saves the shot! Will they hold the ball? Away keeper (PlayerToken) needs to roll lower than 4 to hold the ball. Press [R] to roll for Handling Test!
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+[Game Log] Away keeper (Fixture Away) makes a save! 🧤Saved and held!
+🔍 Connected Token Found: Home carrier
+[Game Log] Away keeper (Fixture Away) wins possession after a shot from Home carrier
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Away keeper rolled 1 and holds the ball.
+Away keeper held the shot. Press [Q]uickThrow, or [K] to activate Final Thirds
+QuickThrow Scenario chosen, NOBODY MOVES! Click Hex to select target for GK's throw
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Substitutions are no longer available: Committed to StandardPass
+]]></output>
+          </test-case>
+          <test-case id="2568" name="ShotAndSnapshotContinueThroughSave(-1,True,False)" fullname="OnlineGroundShotPlayModeTests.ShotAndSnapshotContinueThroughSave(-1,True,False)" methodname="ShotAndSnapshotContinueThroughSave" classname="OnlineGroundShotPlayModeTests" runstate="Runnable" seed="1180713559" result="Passed" start-time="2026-11-17 08:12:27Z" end-time="2026-11-17 08:12:28Z" duration="1.422582" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Attacking team has possession: True.
+Offside assessed (any_other_scenario): line x=-13, tokens=none.
+Movement phase has been reset.
+Movement phase has been reset.
+Snapshot initiated. Allow one defender to move 2 hexes.
+[Game Log] Home carrier (Fixture Home) takes a Snapshot!
+Selecting defender Away recovering player. Highlighting reachable hexes.
+Hex clicked: Hex 17,28
+Moving Away recovering player to hex (-8, 0, 9)
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 17,28
+[Game Log] Away recovering player (Fixture Away) moves 1 paces
+Defender movement phase complete. Proceeding to target selection.
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (-19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Goalkeeper Away keeper can attempt a save at (-16, 0, 0) with penalty 0
+Shot interactions found: 1
+The GK is next up. Shooter must Roll to shoot. Setting isWaitingForShotRoll to true.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Hello from the StartShotRoll
+Goalkeeper Away keeper now attempts a save. Press [R] to roll
+Unknown kit preset ''. Falling back to blue token style.
+GK Away keeper rolls 2 + Saving: 6 + Penalty: 0 = 8
+[Game Log] Away keeper (Fixture Away) faces a shot
+[Expected Stats] Home carrier records xG 0.09 on snapshot on target
+[Game Log] Home carrier (Fixture Home) completes an attempt on target
+GKPush: Away keeper is already on save hex (-16, 0, 0).
+Away keeper saves the shot! Will they hold the ball? Away keeper (PlayerToken) needs to roll lower than 4 to hold the ball. Press [R] to roll for Handling Test!
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+[Game Log] Away keeper (Fixture Away) makes a save! 🧤Saved and held!
+🔍 Connected Token Found: Home carrier
+[Game Log] Away keeper (Fixture Away) wins possession after a shot from Home carrier
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Away keeper rolled 1 and holds the ball.
+Away keeper held the shot. Press [Q]uickThrow, or [K] to activate Final Thirds
+QuickThrow Scenario chosen, NOBODY MOVES! Click Hex to select target for GK's throw
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Substitutions are no longer available: Committed to StandardPass
+]]></output>
+          </test-case>
+          <test-case id="2569" name="ShotAndSnapshotContinueThroughSave(-1,True,True)" fullname="OnlineGroundShotPlayModeTests.ShotAndSnapshotContinueThroughSave(-1,True,True)" methodname="ShotAndSnapshotContinueThroughSave" classname="OnlineGroundShotPlayModeTests" runstate="Runnable" seed="594093389" result="Passed" start-time="2026-11-17 08:12:28Z" end-time="2026-11-17 08:12:30Z" duration="1.479360" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Attacking team has possession: True.
+Offside assessed (any_other_scenario): line x=-13, tokens=none.
+Movement phase has been reset.
+Snapshot initiated. Allow one defender to move 2 hexes.
+[Game Log] Home carrier (Fixture Home) takes a Snapshot!
+Selecting defender Away recovering player. Highlighting reachable hexes.
+Hex clicked: Hex 17,28
+Moving Away recovering player to hex (-8, 0, 9)
+MoveTokenAlongPath: shouldCarryBall: True
+Token arrived at hex: Hex 17,28
+[Game Log] Away recovering player (Fixture Away) moves 1 paces
+Defender movement phase complete. Proceeding to target selection.
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (-19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Goalkeeper Away keeper can attempt a save at (-16, 0, 0) with penalty 0
+Shot interactions found: 1
+The GK is next up. Shooter must Roll to shoot. Setting isWaitingForShotRoll to true.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+Hello from the StartShotRoll
+Goalkeeper Away keeper now attempts a save. Press [R] to roll
+Unknown kit preset ''. Falling back to blue token style.
+GK Away keeper rolls 2 + Saving: 6 + Penalty: 0 = 8
+[Game Log] Away keeper (Fixture Away) faces a shot
+[Expected Stats] Home carrier records xG 0.09 on snapshot on target
+[Game Log] Home carrier (Fixture Home) completes an attempt on target
+GKPush: Away keeper is already on save hex (-16, 0, 0).
+Away keeper saves the shot! Will they hold the ball? Away keeper (PlayerToken) needs to roll lower than 4 to hold the ball. Press [R] to roll for Handling Test!
+Unknown kit preset ''. Falling back to blue token style.
+Unknown kit preset ''. Falling back to blue token style.
+[Game Log] Away keeper (Fixture Away) makes a save! 🧤Saved and held!
+🔍 Connected Token Found: Home carrier
+[Game Log] Away keeper (Fixture Away) wins possession after a shot from Home carrier
+Possession changed! Away now is the Attacking Team.
+Player tokens updated after possession change.
+Away keeper rolled 1 and holds the ball.
+Away keeper held the shot. Press [Q]uickThrow, or [K] to activate Final Thirds
+QuickThrow Scenario chosen, NOBODY MOVES! Click Hex to select target for GK's throw
+Standard pass attempt mode activated.
+GroundBallManager activated. Waiting for target selection...
+Substitutions are no longer available: Committed to StandardPass
+Saving results to: TestResults\GameplayRegression\Runs\20261117T081215194Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

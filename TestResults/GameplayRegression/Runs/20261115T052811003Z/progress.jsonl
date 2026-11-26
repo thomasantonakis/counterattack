@@ -1,0 +1,6 @@
+{"name":"OnlineFrontendEntryPlayModeTests.NormalMenuEntry(\"entry\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFrontendEntryPlayModeTests.NormalMenuEntry(\"offline\")","status":"Failed","message":"  Expected: True\r\n  But was:  False\r\n","stackTrace":"at OnlineFrontendEntrySceneFixture+<Run>d__10.MoveNext () [0x00251] in C:\\Users\\thomas\\Documents\\Projects\\Personal\\counterattack\\Assets\\Editor\\FeatureTests\\OnlineFrontendEntry\\OnlineFrontendEntrySceneFixture.cs:42\r\nat UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\\Library\\PackageCache\\com.unity.test-framework@1405238725ab\\UnityEngine.TestRunner\\NUnitExtensions\\Attributes\\TestEnumerator.cs:44\r\n"}
+{"name":"OnlineFrontendEntryPlayModeTests.NormalMenuEntry(\"invalid-join\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFrontendEntryPlayModeTests.NormalMenuEntry(\"save-guard\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFrontendEntryPlayModeTests.NormalMenuEntry(\"persistent-lifetime\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineFrontendEntryPlayModeTests.NormalMenuEntry(\"back\")","status":"Passed","message":"","stackTrace":""}

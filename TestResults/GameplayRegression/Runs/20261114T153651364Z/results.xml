@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="4" result="Passed" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-14 15:36:51Z" end-time="2026-11-14 15:37:06Z" duration="15.5538396">
+  <test-suite type="TestSuite" id="2483" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1221" result="Passed" start-time="2026-11-14 15:36:51Z" end-time="2026-11-14 15:37:06Z" duration="15.553840" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2480" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1221" result="Passed" start-time="2026-11-14 15:36:51Z" end-time="2026-11-14 15:37:06Z" duration="15.508907" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12208" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1854" name="OnlineRosterPresentationPlayModeTests" fullname="OnlineRosterPresentationPlayModeTests" classname="OnlineRosterPresentationPlayModeTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-11-14 15:36:51Z" end-time="2026-11-14 15:37:06Z" duration="15.501760" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineRosterPresentation" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="1859" name="RosterVisibility" fullname="OnlineRosterPresentationPlayModeTests.RosterVisibility" classname="OnlineRosterPresentationPlayModeTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-11-14 15:36:51Z" end-time="2026-11-14 15:37:06Z" duration="15.488198" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="1855" name="RosterVisibility(False,False)" fullname="OnlineRosterPresentationPlayModeTests.RosterVisibility(False,False)" methodname="RosterVisibility" classname="OnlineRosterPresentationPlayModeTests" runstate="Runnable" seed="357608726" result="Passed" start-time="2026-11-14 15:36:51Z" end-time="2026-11-14 15:36:58Z" duration="6.608238" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Fixture Home 1 (Jersey 1) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=4, HighPass=0, Resilience=0
+Fixture Away 1 (Jersey 1) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=4, HighPass=0, Resilience=0
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Fixture Away 8 (Jersey 8) has been sent off. Token deactivated.
+Ball reference set in PlayerToken. Ball Hex: 
+Ball reference set in PlayerToken. Ball Hex: 
+]]></output>
+          </test-case>
+          <test-case id="1856" name="RosterVisibility(False,True)" fullname="OnlineRosterPresentationPlayModeTests.RosterVisibility(False,True)" methodname="RosterVisibility" classname="OnlineRosterPresentationPlayModeTests" runstate="Runnable" seed="1521512190" result="Passed" start-time="2026-11-14 15:36:58Z" end-time="2026-11-14 15:37:01Z" duration="3.169774" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Fixture Home 1 (Jersey 1) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=4, HighPass=0, Resilience=0
+Fixture Away 1 (Jersey 1) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=4, HighPass=0, Resilience=0
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Fixture Away 8 (Jersey 8) has been sent off. Token deactivated.
+Ball reference set in PlayerToken. Ball Hex: 
+Ball reference set in PlayerToken. Ball Hex: 
+]]></output>
+          </test-case>
+          <test-case id="1857" name="RosterVisibility(True,False)" fullname="OnlineRosterPresentationPlayModeTests.RosterVisibility(True,False)" methodname="RosterVisibility" classname="OnlineRosterPresentationPlayModeTests" runstate="Runnable" seed="1229824367" result="Passed" start-time="2026-11-14 15:37:01Z" end-time="2026-11-14 15:37:04Z" duration="2.787815" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Fixture Home 1 (Jersey 1) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=4, HighPass=0, Resilience=0
+Fixture Away 1 (Jersey 1) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=4, HighPass=0, Resilience=0
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Fixture Away 8 (Jersey 8) has been sent off. Token deactivated.
+Ball reference set in PlayerToken. Ball Hex: 
+Ball reference set in PlayerToken. Ball Hex: 
+]]></output>
+          </test-case>
+          <test-case id="1858" name="RosterVisibility(True,True)" fullname="OnlineRosterPresentationPlayModeTests.RosterVisibility(True,True)" methodname="RosterVisibility" classname="OnlineRosterPresentationPlayModeTests" runstate="Runnable" seed="1138570793" result="Passed" start-time="2026-11-14 15:37:04Z" end-time="2026-11-14 15:37:06Z" duration="2.870388" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Fixture Home 1 (Jersey 1) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=4, HighPass=0, Resilience=0
+Fixture Away 1 (Jersey 1) is now acting as goalkeeper. Stats adjusted: Saving=0, Aerial=0, Handling=0, Shooting=0, Heading=0. Retained: Pace=5, Dribbling=4, HighPass=0, Resilience=0
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Fixture Away 8 (Jersey 8) has been sent off. Token deactivated.
+Ball reference set in PlayerToken. Ball Hex: 
+Ball reference set in PlayerToken. Ball Hex: 
+Saving results to: TestResults\GameplayRegression\Runs\20261114T153651364Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

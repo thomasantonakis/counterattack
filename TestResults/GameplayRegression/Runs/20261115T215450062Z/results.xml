@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="8" result="Passed" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-15 21:54:50Z" end-time="2026-11-15 21:56:43Z" duration="113.1030466">
+  <test-suite type="TestSuite" id="2691" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1388" result="Passed" start-time="2026-11-15 21:54:50Z" end-time="2026-11-15 21:56:43Z" duration="113.103047" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2688" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1388" result="Passed" start-time="2026-11-15 21:54:50Z" end-time="2026-11-15 21:56:43Z" duration="113.074971" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17216" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="2054" name="OnlineShootoutPlayModeTests" fullname="OnlineShootoutPlayModeTests" classname="OnlineShootoutPlayModeTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-11-15 21:54:50Z" end-time="2026-11-15 21:56:43Z" duration="113.067397" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineShootout" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="2063" name="OwnOrdersRequireBothManagers" fullname="OnlineShootoutPlayModeTests.OwnOrdersRequireBothManagers" classname="OnlineShootoutPlayModeTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-11-15 21:54:50Z" end-time="2026-11-15 21:56:43Z" duration="113.057045" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="2055" name="OwnOrdersRequireBothManagers(False,False,False)" fullname="OnlineShootoutPlayModeTests.OwnOrdersRequireBothManagers(False,False,False)" methodname="OwnOrdersRequireBothManagers" classname="OnlineShootoutPlayModeTests" runstate="Runnable" seed="1137461400" result="Passed" start-time="2026-11-15 21:54:50Z" end-time="2026-11-15 21:55:05Z" duration="15.649293" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[TokenKitCatalog] Loading kits JSON from Resources path 'Kits/kit-picker-v1-11-supported' (asset: Assets/Resources/Kits/kit-picker-v1-11-supported.json).
+[TokenKitCatalog] Found kits JSON TextAsset 'kit-picker-v1-11-supported' at Resources path 'Kits/kit-picker-v1-11-supported' (32277 characters).
+[TokenKitCatalog] Parsed 101 kit preset(s) from Resources path 'Kits/kit-picker-v1-11-supported'.
+[TokenKitCatalog] Active kit catalog contains 101 kit preset(s).
+MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584944038350
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+[Shootout] Order selection opened with 11 nominees per team.
+Substitutions are no longer available: Penalty shootout
+⚽ Ball just entered the penalty box! Checking if GK should move.
+[Shootout] Away kick 1: 3. Vladoiu shoots at the left goal.
+Substitutions are no longer available: Committed to Shot
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, 0). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2056" name="OwnOrdersRequireBothManagers(False,False,True)" fullname="OnlineShootoutPlayModeTests.OwnOrdersRequireBothManagers(False,False,True)" methodname="OwnOrdersRequireBothManagers" classname="OnlineShootoutPlayModeTests" runstate="Runnable" seed="1902599182" result="Passed" start-time="2026-11-15 21:55:05Z" end-time="2026-11-15 21:55:19Z" duration="13.739005" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584944165042
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+[Shootout] Order selection opened with 11 nominees per team.
+Substitutions are no longer available: Penalty shootout
+⚽ Ball just entered the penalty box! Checking if GK should move.
+[Shootout] Away kick 1: 3. Vladoiu shoots at the right goal.
+Substitutions are no longer available: Committed to Shot
+Penalty Shootout Kick initiated. Random target selected at (19, 0, 0). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2057" name="OwnOrdersRequireBothManagers(False,True,False)" fullname="OnlineShootoutPlayModeTests.OwnOrdersRequireBothManagers(False,True,False)" methodname="OwnOrdersRequireBothManagers" classname="OnlineShootoutPlayModeTests" runstate="Runnable" seed="1675999748" result="Passed" start-time="2026-11-15 21:55:19Z" end-time="2026-11-15 21:55:33Z" duration="14.022140" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584944291734
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Goaley (Jersey 11) has been sent off. Token deactivated.
+[Shootout] Order selection opened with 10 nominees per team.
+Substitutions are no longer available: Penalty shootout
+⚽ Ball just entered the penalty box! Checking if GK should move.
+[Shootout] Away kick 1: 3. Vladoiu shoots at the left goal.
+Substitutions are no longer available: Committed to Shot
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, 0). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2058" name="OwnOrdersRequireBothManagers(False,True,True)" fullname="OnlineShootoutPlayModeTests.OwnOrdersRequireBothManagers(False,True,True)" methodname="OwnOrdersRequireBothManagers" classname="OnlineShootoutPlayModeTests" runstate="Runnable" seed="443493939" result="Passed" start-time="2026-11-15 21:55:33Z" end-time="2026-11-15 21:55:47Z" duration="13.968622" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584944418426
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Goaley (Jersey 11) has been sent off. Token deactivated.
+[Shootout] Order selection opened with 10 nominees per team.
+Substitutions are no longer available: Penalty shootout
+⚽ Ball just entered the penalty box! Checking if GK should move.
+[Shootout] Away kick 1: 3. Vladoiu shoots at the right goal.
+Substitutions are no longer available: Committed to Shot
+Penalty Shootout Kick initiated. Random target selected at (19, 0, 0). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2059" name="OwnOrdersRequireBothManagers(True,False,False)" fullname="OnlineShootoutPlayModeTests.OwnOrdersRequireBothManagers(True,False,False)" methodname="OwnOrdersRequireBothManagers" classname="OnlineShootoutPlayModeTests" runstate="Runnable" seed="1442453548" result="Passed" start-time="2026-11-15 21:55:47Z" end-time="2026-11-15 21:56:01Z" duration="13.576508" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584944545118
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+[Shootout] Order selection opened with 11 nominees per team.
+Substitutions are no longer available: Penalty shootout
+⚽ Ball just entered the penalty box! Checking if GK should move.
+[Shootout] Home kick 1: 4. Gortz shoots at the left goal.
+Substitutions are no longer available: Committed to Shot
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, 0). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2060" name="OwnOrdersRequireBothManagers(True,False,True)" fullname="OnlineShootoutPlayModeTests.OwnOrdersRequireBothManagers(True,False,True)" methodname="OwnOrdersRequireBothManagers" classname="OnlineShootoutPlayModeTests" runstate="Runnable" seed="1058665529" result="Passed" start-time="2026-11-15 21:56:01Z" end-time="2026-11-15 21:56:14Z" duration="13.800262" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584944671810
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+[Shootout] Order selection opened with 11 nominees per team.
+Substitutions are no longer available: Penalty shootout
+⚽ Ball just entered the penalty box! Checking if GK should move.
+[Shootout] Home kick 1: 4. Gortz shoots at the right goal.
+Substitutions are no longer available: Committed to Shot
+Penalty Shootout Kick initiated. Random target selected at (19, 0, 0). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2061" name="OwnOrdersRequireBothManagers(True,True,False)" fullname="OnlineShootoutPlayModeTests.OwnOrdersRequireBothManagers(True,True,False)" methodname="OwnOrdersRequireBothManagers" classname="OnlineShootoutPlayModeTests" runstate="Runnable" seed="365913289" result="Passed" start-time="2026-11-15 21:56:14Z" end-time="2026-11-15 21:56:29Z" duration="14.320809" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584944798502
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Goaley (Jersey 11) has been sent off. Token deactivated.
+[Shootout] Order selection opened with 10 nominees per team.
+Substitutions are no longer available: Penalty shootout
+⚽ Ball just entered the penalty box! Checking if GK should move.
+[Shootout] Home kick 1: 4. Gortz shoots at the left goal.
+Substitutions are no longer available: Committed to Shot
+Penalty Shootout Kick initiated. Random target selected at (-19, 0, 0). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2062" name="OwnOrdersRequireBothManagers(True,True,True)" fullname="OnlineShootoutPlayModeTests.OwnOrdersRequireBothManagers(True,True,True)" methodname="OwnOrdersRequireBothManagers" classname="OnlineShootoutPlayModeTests" runstate="Runnable" seed="1700398566" result="Passed" start-time="2026-11-15 21:56:29Z" end-time="2026-11-15 21:56:43Z" duration="13.943433" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584944925194
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Goaley (Jersey 11) has been sent off. Token deactivated.
+[Shootout] Order selection opened with 10 nominees per team.
+Substitutions are no longer available: Penalty shootout
+⚽ Ball just entered the penalty box! Checking if GK should move.
+[Shootout] Home kick 1: 4. Gortz shoots at the right goal.
+Substitutions are no longer available: Committed to Shot
+Penalty Shootout Kick initiated. Random target selected at (19, 0, 0). Waiting for shooter roll.
+Penalty Kick target selected. Shooter must roll before the GK save attempt.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+Saving results to: TestResults\GameplayRegression\Runs\20261115T215450062Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

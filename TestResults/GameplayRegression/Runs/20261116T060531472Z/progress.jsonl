@@ -1,0 +1,16 @@
+{"name":"CoinTossPresentationEditorTests.CpuAlwaysChoosesBallIfAvailableAndCompletesForcedDirectionChoice(True)","status":"Passed","message":"","stackTrace":""}
+{"name":"CoinTossPresentationEditorTests.CpuAlwaysChoosesBallIfAvailableAndCompletesForcedDirectionChoice(False)","status":"Passed","message":"","stackTrace":""}
+{"name":"CoinTossPresentationEditorTests.CpuChoiceRespectsActualManagerControlsAndLegacyPersonas","status":"Passed","message":"","stackTrace":""}
+{"name":"CoinTossPresentationEditorTests.LoadingMatchKeepsOpeningChoicesAlongsideLaterLiveDirections","status":"Passed","message":"","stackTrace":""}
+{"name":"CoinTossPresentationEditorTests.SavedOpeningChoicesRetainTeamIdentityAndUseOppositeFormationHalves(True)","status":"Passed","message":"","stackTrace":""}
+{"name":"CoinTossPresentationEditorTests.SavedOpeningChoicesRetainTeamIdentityAndUseOppositeFormationHalves(False)","status":"Passed","message":"","stackTrace":""}
+{"name":"CoinTossPresentationEditorTests.SavedPanelsRollRerollThenExpandWithDisabledKickoffAndClickableDirections(\"Draft\")","status":"Passed","message":"","stackTrace":""}
+{"name":"CoinTossPresentationEditorTests.SavedPanelsRollRerollThenExpandWithDisabledKickoffAndClickableDirections(\"FreeDraft\")","status":"Passed","message":"","stackTrace":""}
+{"name":"CoinTossPresentationEditorTests.WinnerChoosingDirectionGivesOpponentKickoff(True,LeftToRight,False,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"CoinTossPresentationEditorTests.WinnerChoosingDirectionGivesOpponentKickoff(True,RightToLeft,False,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"CoinTossPresentationEditorTests.WinnerChoosingDirectionGivesOpponentKickoff(False,LeftToRight,True,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"CoinTossPresentationEditorTests.WinnerChoosingDirectionGivesOpponentKickoff(False,RightToLeft,True,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"CoinTossPresentationEditorTests.WinnerChoosingKickoffLeavesOnlyDirectionsForLoser(True,LeftToRight,False)","status":"Passed","message":"","stackTrace":""}
+{"name":"CoinTossPresentationEditorTests.WinnerChoosingKickoffLeavesOnlyDirectionsForLoser(True,RightToLeft,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"CoinTossPresentationEditorTests.WinnerChoosingKickoffLeavesOnlyDirectionsForLoser(False,LeftToRight,True)","status":"Passed","message":"","stackTrace":""}
+{"name":"CoinTossPresentationEditorTests.WinnerChoosingKickoffLeavesOnlyDirectionsForLoser(False,RightToLeft,False)","status":"Passed","message":"","stackTrace":""}

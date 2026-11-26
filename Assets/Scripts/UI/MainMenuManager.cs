@@ -18,7 +18,8 @@ public class MainMenuManager : MonoBehaviour
 
     public void PlayMultiPlayerGame()
     {
-        Debug.Log("Starting Multi Player Game!");
+        ApplicationManager.EnsureInstanceExists();
+        SceneManager.LoadScene(CounterAttack.Online.OnlineModeMenu.SceneName);
     }
 
     public void PlayCampaignMode()

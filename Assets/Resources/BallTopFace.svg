@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Football panel pattern">
+  <g stroke="#101010" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="50" cy="50" r="45" fill="none"/>
+    <path fill="none" d="M20 25 31 29 M44 19 59 20 68 30 M79 42 91 52 M76 57 66 73 M52 85 44 93 M63 85 72 88 M46 66 52 74 M15 51 6 56 M25 67 24 82"/>
+    <path fill="#101010" d="M31 29 36 14 53 5 62 12 59 20 45 26Z M68 30 81 26 91 41 86 54 76 57 64 43Z M24 42 36 44 45 57 39 68 25 67 15 55Z M52 74 66 73 77 84 65 93 50 92 45 85Z"/>
+    <path fill="none" d="m31 29-7 13m21-16-9 18m28-1-19 14m-6 11 13 6m25 10 9-8"/>
+  </g>
+</svg>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="2" result="Failed(Child)" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-15 18:11:53Z" end-time="2026-11-15 18:11:53Z" duration="0.1185585">
+  <test-suite type="TestSuite" id="2920" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1625" result="Failed" site="Child" start-time="2026-11-15 18:11:53Z" end-time="2026-11-15 18:11:53Z" duration="0.118559" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="2914" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="1625" result="Failed" site="Child" start-time="2026-11-15 18:11:53Z" end-time="2026-11-15 18:11:53Z" duration="0.085186" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17216" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestFixture" id="1908" name="OnlineRoomHandoffEditorTests" fullname="OnlineRoomHandoffEditorTests" classname="OnlineRoomHandoffEditorTests" runstate="Runnable" testcasecount="12" result="Failed" site="Child" start-time="2026-11-15 18:11:53Z" end-time="2026-11-15 18:11:53Z" duration="0.077708" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineRoomHandoff" />
+        </properties>
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="ParameterizedMethod" id="1923" name="NativeTeardownDisposesGameplayBeforeProbe" fullname="OnlineRoomHandoffEditorTests.NativeTeardownDisposesGameplayBeforeProbe" classname="OnlineRoomHandoffEditorTests" runstate="Runnable" testcasecount="2" result="Failed" site="Child" start-time="2026-11-15 18:11:53Z" end-time="2026-11-15 18:11:53Z" duration="0.071129" total="2" passed="0" failed="2" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-case id="1921" name="NativeTeardownDisposesGameplayBeforeProbe(False)" fullname="OnlineRoomHandoffEditorTests.NativeTeardownDisposesGameplayBeforeProbe(False)" methodname="NativeTeardownDisposesGameplayBeforeProbe" classname="OnlineRoomHandoffEditorTests" runstate="Runnable" seed="1837878908" result="Failed" start-time="2026-11-15 18:11:53Z" end-time="2026-11-15 18:11:53Z" duration="0.045409" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Gameplay subscriptions must be released while their EOS probe is alive
+  Expected is <System.String[2]>, actual is <System.Collections.Generic.List`1[System.String]> with 2 elements
+  Values differ at index [0]
+  Expected string length 8 but was 5. Strings differ at index 0.
+  Expected: "gameplay"
+  But was:  "probe"
+  -----------^
+]]></message>
+              <stack-trace><![CDATA[at OnlineRoomHandoffEditorTests.NativeTeardownDisposesGameplayBeforeProbe (System.Boolean failingGameplayCleanup) [0x000d0] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineRoomHandoff\OnlineRoomHandoffEditorTests.cs:69
+]]></stack-trace>
+            </failure>
+          </test-case>
+          <test-case id="1922" name="NativeTeardownDisposesGameplayBeforeProbe(True)" fullname="OnlineRoomHandoffEditorTests.NativeTeardownDisposesGameplayBeforeProbe(True)" methodname="NativeTeardownDisposesGameplayBeforeProbe" classname="OnlineRoomHandoffEditorTests" runstate="Runnable" seed="1973170877" result="Failed" start-time="2026-11-15 18:11:53Z" end-time="2026-11-15 18:11:53Z" duration="0.002766" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected: No Exception to be thrown
+  But was:  <System.InvalidOperationException: Owned cleanup failure
+  at OnlineRoomHandoffEditorTests+<>c__DisplayClass3_0.<NativeTeardownDisposesGameplayBeforeProbe>b__1 () [0x00023] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineRoomHandoff\OnlineRoomHandoffEditorTests.cs:64 
+  at OnlineRoomHandoffEditorTests+TraceFlow.Dispose () [0x00000] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineRoomHandoff\OnlineRoomHandoffEditorTests.cs:56 
+  at CounterAttack.Online.OnlineFrontendSession.StopRoom () [0x00000] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Scripts\Online\OnlineFrontendSession.cs:296 
+  at CounterAttack.Online.OnlineFrontendSession+<Run>d__82.MoveNext () [0x000bc] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Scripts\Online\OnlineFrontendSession.cs:97 
+  at OnlineRoomHandoffEditorTests+<>c__DisplayClass3_1.<NativeTeardownDisposesGameplayBeforeProbe>b__2 () [0x00000] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineRoomHandoff\OnlineRoomHandoffEditorTests.cs:68 
+  at NUnit.Framework.Constraints.ThrowsConstraint+VoidInvocationDescriptor.Invoke () [0x00001] in <8b63e8ac0a4746599ed207982825ae6c>:0 
+  at NUnit.Framework.Constraints.ThrowsConstraint+ExceptionInterceptor.Intercept (System.Object invocation) [0x00050] in <8b63e8ac0a4746599ed207982825ae6c>:0 >
+]]></message>
+              <stack-trace><![CDATA[at OnlineRoomHandoffEditorTests.NativeTeardownDisposesGameplayBeforeProbe (System.Boolean failingGameplayCleanup) [0x000c0] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineRoomHandoff\OnlineRoomHandoffEditorTests.cs:68
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Saving results to: TestResults\GameplayRegression\Runs\20261115T181153316Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

@@ -197,6 +197,7 @@ public partial class FirstTimePassManager : MonoBehaviour
 
     public void ActivateFTP()
     {
+        onlineFtpVersion++;
         ball.SelectBall();
         Debug.Log("First Time pass attempt mode activated.");
         isActivated = true;
@@ -1182,6 +1183,7 @@ public partial class FirstTimePassManager : MonoBehaviour
 
     public void CleanUpFTP()
     {
+        onlineFtpVersion++;
         hexGrid.ClearHighlightedHexes();
         isActivated = false;
         isAwaitingTargetSelection = false;
@@ -1351,6 +1353,7 @@ public partial class FirstTimePassManager : MonoBehaviour
 
     private IEnumerator PresentFTPInterception(RollInputOverride? rollOverride)
     {
+        int version=onlineFtpVersion;
         if (currentPathInteraction != null && currentPathInteraction.Type == GroundBallPathInteractionType.GoalkeeperWallSave)
         {
             StartCoroutine(ResolveGoalkeeperWallSaveRoll(currentPathInteraction, rollOverride));
@@ -1404,6 +1407,7 @@ public partial class FirstTimePassManager : MonoBehaviour
 
         yield return SingleRollResolutionPresentation.Resolve(this, interceptionRoll,
             successfulInterception ? "INTERCEPTED" : "INTERCEPTION FAILED");
+        if(!IsFtpContinuationCurrent(version))yield break;
         if (successfulInterception)
         {
             Debug.Log($"Pass intercepted by {defenderToken.name} at {currentDefenderHex.coordinates}!");

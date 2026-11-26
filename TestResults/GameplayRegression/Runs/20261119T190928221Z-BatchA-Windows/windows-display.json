@@ -1,0 +1,83 @@
+﻿{
+    "startup":  {
+                    "x":  0,
+                    "y":  0,
+                    "width":  1920,
+                    "height":  1080,
+                    "caption":  false,
+                    "resizable":  false,
+                    "maximizeButton":  false,
+                    "maximized":  false
+                },
+    "windowed":  {
+                     "x":  184,
+                     "y":  104,
+                     "width":  1552,
+                     "height":  871,
+                     "caption":  true,
+                     "resizable":  true,
+                     "maximizeButton":  true,
+                     "maximized":  false
+                 },
+    "resized":  {
+                    "x":  184,
+                    "y":  104,
+                    "width":  980,
+                    "height":  720,
+                    "caption":  true,
+                    "resizable":  true,
+                    "maximizeButton":  true,
+                    "maximized":  false
+                },
+    "maximized":  {
+                      "x":  -8,
+                      "y":  -8,
+                      "width":  1936,
+                      "height":  1056,
+                      "caption":  true,
+                      "resizable":  true,
+                      "maximizeButton":  true,
+                      "maximized":  true
+                  },
+    "restored":  {
+                     "x":  184,
+                     "y":  104,
+                     "width":  980,
+                     "height":  720,
+                     "caption":  true,
+                     "resizable":  true,
+                     "maximizeButton":  true,
+                     "maximized":  false
+                 },
+    "fullscreenAgain":  {
+                            "x":  0,
+                            "y":  0,
+                            "width":  1920,
+                            "height":  1080,
+                            "caption":  false,
+                            "resizable":  false,
+                            "maximizeButton":  false,
+                            "maximized":  false
+                        },
+    "windowedBeforeExit":  {
+                               "x":  470,
+                               "y":  180,
+                               "width":  980,
+                               "height":  720,
+                               "caption":  true,
+                               "resizable":  true,
+                               "maximizeButton":  true,
+                               "maximized":  false
+                           },
+    "relaunch":  {
+                     "x":  0,
+                     "y":  0,
+                     "width":  1920,
+                     "height":  1080,
+                     "caption":  false,
+                     "resizable":  false,
+                     "maximizeButton":  false,
+                     "maximized":  false
+                 },
+    "status":  "passed"
+}

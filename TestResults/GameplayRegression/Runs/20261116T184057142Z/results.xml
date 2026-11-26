@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="8" result="Failed(Child)" total="8" passed="0" failed="8" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 18:40:57Z" end-time="2026-11-16 18:41:50Z" duration="53.1026734">
+  <test-suite type="TestSuite" id="2965" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1629" result="Failed" site="Child" start-time="2026-11-16 18:40:57Z" end-time="2026-11-16 18:41:50Z" duration="53.102673" total="8" passed="0" failed="8" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="2962" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1629" result="Failed" site="Child" start-time="2026-11-16 18:40:57Z" end-time="2026-11-16 18:41:50Z" duration="53.070972" total="8" passed="0" failed="8" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12156" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestFixture" id="2383" name="OnlineStoppageActionsPlayModeTests" fullname="OnlineStoppageActionsPlayModeTests" classname="OnlineStoppageActionsPlayModeTests" runstate="Runnable" testcasecount="8" result="Failed" site="Child" start-time="2026-11-16 18:40:57Z" end-time="2026-11-16 18:41:50Z" duration="53.062258" total="8" passed="0" failed="8" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineStoppageActions" />
+        </properties>
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="ParameterizedMethod" id="2392" name="ExpiredHalfRollsAndResumes" fullname="OnlineStoppageActionsPlayModeTests.ExpiredHalfRollsAndResumes" classname="OnlineStoppageActionsPlayModeTests" runstate="Runnable" testcasecount="8" result="Failed" site="Child" start-time="2026-11-16 18:40:57Z" end-time="2026-11-16 18:41:50Z" duration="53.048846" total="8" passed="0" failed="8" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-case id="2384" name="ExpiredHalfRollsAndResumes(False,False,1)" fullname="OnlineStoppageActionsPlayModeTests.ExpiredHalfRollsAndResumes(False,False,1)" methodname="ExpiredHalfRollsAndResumes" classname="OnlineStoppageActionsPlayModeTests" runstate="Runnable" seed="1454238425" result="Failed" start-time="2026-11-16 18:40:57Z" end-time="2026-11-16 18:41:05Z" duration="7.962151" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected string length 13 but was 15. Strings differ at index 0.
+  Expected: "stoppage.roll"
+  But was:  "kickoff.pending"
+  -----------^
+]]></message>
+              <stack-trace><![CDATA[at OnlineFullRoomSceneFixture+<RunStoppage>d__39.MoveNext () [0x0012e] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineStoppageActions\OnlineFullRoomSceneFixture.Stoppage.cs:18
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[[TokenKitCatalog] Loading kits JSON from Resources path 'Kits/kit-picker-v1-11-supported' (asset: Assets/Resources/Kits/kit-picker-v1-11-supported.json).
+[TokenKitCatalog] Found kits JSON TextAsset 'kit-picker-v1-11-supported' at Resources path 'Kits/kit-picker-v1-11-supported' (32277 characters).
+[TokenKitCatalog] Parsed 101 kit preset(s) from Resources path 'Kits/kit-picker-v1-11-supported'.
+[TokenKitCatalog] Active kit catalog contains 101 kit preset(s).
+MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584921962936
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Half 1 regulation time expired. Current action may finish before stoppage actions are determined.
+Half 1 regulation time is up. Attacking team rolls a normal D6 for stoppage actions. Press [R].
+]]></output>
+          </test-case>
+          <test-case id="2385" name="ExpiredHalfRollsAndResumes(False,False,6)" fullname="OnlineStoppageActionsPlayModeTests.ExpiredHalfRollsAndResumes(False,False,6)" methodname="ExpiredHalfRollsAndResumes" classname="OnlineStoppageActionsPlayModeTests" runstate="Runnable" seed="244397231" result="Failed" start-time="2026-11-16 18:41:05Z" end-time="2026-11-16 18:41:11Z" duration="6.492510" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected string length 13 but was 15. Strings differ at index 0.
+  Expected: "stoppage.roll"
+  But was:  "kickoff.pending"
+  -----------^
+]]></message>
+              <stack-trace><![CDATA[at OnlineFullRoomSceneFixture+<RunStoppage>d__39.MoveNext () [0x0012e] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineStoppageActions\OnlineFullRoomSceneFixture.Stoppage.cs:18
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584922026574
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Half 1 regulation time expired. Current action may finish before stoppage actions are determined.
+Half 1 regulation time is up. Attacking team rolls a normal D6 for stoppage actions. Press [R].
+]]></output>
+          </test-case>
+          <test-case id="2386" name="ExpiredHalfRollsAndResumes(False,True,1)" fullname="OnlineStoppageActionsPlayModeTests.ExpiredHalfRollsAndResumes(False,True,1)" methodname="ExpiredHalfRollsAndResumes" classname="OnlineStoppageActionsPlayModeTests" runstate="Runnable" seed="65621374" result="Failed" start-time="2026-11-16 18:41:11Z" end-time="2026-11-16 18:41:18Z" duration="6.388806" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected string length 13 but was 15. Strings differ at index 0.
+  Expected: "stoppage.roll"
+  But was:  "kickoff.pending"
+  -----------^
+]]></message>
+              <stack-trace><![CDATA[at OnlineFullRoomSceneFixture+<RunStoppage>d__39.MoveNext () [0x0012e] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineStoppageActions\OnlineFullRoomSceneFixture.Stoppage.cs:18
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584922090212
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Half 3 regulation time expired. Current action may finish before stoppage actions are determined.
+Half 3 regulation time is up. Attacking team rolls a normal D6 for stoppage actions. Press [R].
+]]></output>
+          </test-case>
+          <test-case id="2387" name="ExpiredHalfRollsAndResumes(False,True,6)" fullname="OnlineStoppageActionsPlayModeTests.ExpiredHalfRollsAndResumes(False,True,6)" methodname="ExpiredHalfRollsAndResumes" classname="OnlineStoppageActionsPlayModeTests" runstate="Runnable" seed="1289902395" result="Failed" start-time="2026-11-16 18:41:18Z" end-time="2026-11-16 18:41:24Z" duration="6.365765" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected string length 13 but was 15. Strings differ at index 0.
+  Expected: "stoppage.roll"
+  But was:  "kickoff.pending"
+  -----------^
+]]></message>
+              <stack-trace><![CDATA[at OnlineFullRoomSceneFixture+<RunStoppage>d__39.MoveNext () [0x0012e] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineStoppageActions\OnlineFullRoomSceneFixture.Stoppage.cs:18
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584922153850
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Half 3 regulation time expired. Current action may finish before stoppage actions are determined.
+Half 3 regulation time is up. Attacking team rolls a normal D6 for stoppage actions. Press [R].
+]]></output>
+          </test-case>
+          <test-case id="2388" name="ExpiredHalfRollsAndResumes(True,False,1)" fullname="OnlineStoppageActionsPlayModeTests.ExpiredHalfRollsAndResumes(True,False,1)" methodname="ExpiredHalfRollsAndResumes" classname="OnlineStoppageActionsPlayModeTests" runstate="Runnable" seed="973841138" result="Failed" start-time="2026-11-16 18:41:24Z" end-time="2026-11-16 18:41:31Z" duration="6.571651" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected string length 13 but was 15. Strings differ at index 0.
+  Expected: "stoppage.roll"
+  But was:  "kickoff.pending"
+  -----------^
+]]></message>
+              <stack-trace><![CDATA[at OnlineFullRoomSceneFixture+<RunStoppage>d__39.MoveNext () [0x0012e] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineStoppageActions\OnlineFullRoomSceneFixture.Stoppage.cs:18
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584922217488
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Half 1 regulation time expired. Current action may finish before stoppage actions are determined.
+Half 1 regulation time is up. Attacking team rolls a normal D6 for stoppage actions. Press [R].
+]]></output>
+          </test-case>
+          <test-case id="2389" name="ExpiredHalfRollsAndResumes(True,False,6)" fullname="OnlineStoppageActionsPlayModeTests.ExpiredHalfRollsAndResumes(True,False,6)" methodname="ExpiredHalfRollsAndResumes" classname="OnlineStoppageActionsPlayModeTests" runstate="Runnable" seed="2062518457" result="Failed" start-time="2026-11-16 18:41:31Z" end-time="2026-11-16 18:41:37Z" duration="6.437312" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected string length 13 but was 15. Strings differ at index 0.
+  Expected: "stoppage.roll"
+  But was:  "kickoff.pending"
+  -----------^
+]]></message>
+              <stack-trace><![CDATA[at OnlineFullRoomSceneFixture+<RunStoppage>d__39.MoveNext () [0x0012e] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineStoppageActions\OnlineFullRoomSceneFixture.Stoppage.cs:18
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584922281126
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Half 1 regulation time expired. Current action may finish before stoppage actions are determined.
+Half 1 regulation time is up. Attacking team rolls a normal D6 for stoppage actions. Press [R].
+]]></output>
+          </test-case>
+          <test-case id="2390" name="ExpiredHalfRollsAndResumes(True,True,1)" fullname="OnlineStoppageActionsPlayModeTests.ExpiredHalfRollsAndResumes(True,True,1)" methodname="ExpiredHalfRollsAndResumes" classname="OnlineStoppageActionsPlayModeTests" runstate="Runnable" seed="1978021770" result="Failed" start-time="2026-11-16 18:41:37Z" end-time="2026-11-16 18:41:43Z" duration="6.435386" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected string length 13 but was 15. Strings differ at index 0.
+  Expected: "stoppage.roll"
+  But was:  "kickoff.pending"
+  -----------^
+]]></message>
+              <stack-trace><![CDATA[at OnlineFullRoomSceneFixture+<RunStoppage>d__39.MoveNext () [0x0012e] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineStoppageActions\OnlineFullRoomSceneFixture.Stoppage.cs:18
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584922344764
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Half 3 regulation time expired. Current action may finish before stoppage actions are determined.
+Half 3 regulation time is up. Attacking team rolls a normal D6 for stoppage actions. Press [R].
+]]></output>
+          </test-case>
+          <test-case id="2391" name="ExpiredHalfRollsAndResumes(True,True,6)" fullname="OnlineStoppageActionsPlayModeTests.ExpiredHalfRollsAndResumes(True,True,6)" methodname="ExpiredHalfRollsAndResumes" classname="OnlineStoppageActionsPlayModeTests" runstate="Runnable" seed="1850667168" result="Failed" start-time="2026-11-16 18:41:43Z" end-time="2026-11-16 18:41:50Z" duration="6.357878" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected string length 13 but was 15. Strings differ at index 0.
+  Expected: "stoppage.roll"
+  But was:  "kickoff.pending"
+  -----------^
+]]></message>
+              <stack-trace><![CDATA[at OnlineFullRoomSceneFixture+<RunStoppage>d__39.MoveNext () [0x0012e] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineStoppageActions\OnlineFullRoomSceneFixture.Stoppage.cs:18
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584922408402
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Half 3 regulation time expired. Current action may finish before stoppage actions are determined.
+Half 3 regulation time is up. Attacking team rolls a normal D6 for stoppage actions. Press [R].
+Saving results to: TestResults\GameplayRegression\Runs\20261116T184057142Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

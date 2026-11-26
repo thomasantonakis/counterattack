@@ -961,20 +961,7 @@ public partial class ShotManager : MonoBehaviour
             }
             if (keyData.key == KeyCode.X)
             {
-                isAvailable = false;
-                isActivated = false;
-                isWaitingForSnapshotDecisionFromLoose = false;
-                isWaitingForShotCommitConfirmation = false;
-                if (movementPhaseManager.isActivated)
-                {
-                    Debug.Log($"Ball found itself (during MP) on {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.playerName} who decided to not take the Snapshot");
-                    movementPhaseManager.AdvanceMovementPhase();
-                }
-                else
-                {
-                    // TODO: this should be "Any other Scenario"
-                    Debug.LogWarning($"Ball found itself (NOT during MP) on {MatchManager.Instance.LastTokenToTouchTheBallOnPurpose.playerName} who decided to not take the Snapshot");
-                }
+                DeclineCollectedSnapshot();
                 keyData.Consume(nameof(ShotManager));
                 return;
             }
@@ -1351,7 +1338,7 @@ public partial class ShotManager : MonoBehaviour
 
         foreach (HexCell canShootToHex in originHex.ShootingPaths.Keys)
         {
-            canShootToHex.HighlightHex("CanShootFrom", 1);
+            canShootToHex.HighlightRaisedGoalTarget("CanShootFrom", ShotTargetElevation, 1);
             if (!hexGrid.highlightedHexes.Contains(canShootToHex))
             {
                 hexGrid.highlightedHexes.Add(canShootToHex);
@@ -1359,10 +1346,6 @@ public partial class ShotManager : MonoBehaviour
             if (!shotCommitPreviewTargets.Contains(canShootToHex))
             {
                 shotCommitPreviewTargets.Add(canShootToHex);
-            }
-            if (canShootToHex.transform.position.y == 0)
-            {
-                canShootToHex.transform.position += Vector3.up * ShotTargetElevation;
             }
         }
     }
@@ -1597,12 +1580,9 @@ public partial class ShotManager : MonoBehaviour
         foreach (HexCell targetHex in shotCommitPreviewTargets)
         {
             if (targetHex == null) continue;
+            targetHex.ClearRaisedGoalTarget();
             targetHex.ResetHighlight();
             hexGrid.highlightedHexes.Remove(targetHex);
-            if (targetHex.transform.position.y > 0.001f)
-            {
-                targetHex.transform.position -= Vector3.up * ShotTargetElevation;
-            }
         }
 
         shotCommitPreviewTargets.Clear();
@@ -1959,12 +1939,9 @@ public partial class ShotManager : MonoBehaviour
         foreach (HexCell targetHex in shotTargetSelectionTargets)
         {
             if (targetHex == null) continue;
+            targetHex.ClearRaisedGoalTarget();
             targetHex.ResetHighlight();
             hexGrid.highlightedHexes.Remove(targetHex);
-            if (targetHex.transform.position.y > 0.001f)
-            {
-                targetHex.transform.position -= Vector3.up * ShotTargetElevation;
-            }
         }
 
         shotTargetSelectionTargets.Clear();
@@ -2267,7 +2244,7 @@ public partial class ShotManager : MonoBehaviour
             $"Saving total: {FormatHeaderPower(totalSavingPower)} · {saveOutcome}",
             continueWithScatter: totalSavingPower == headerAttackerTotalScore,
             scatterOwner: looseBallManager, resolvedTotal: totalSavingPower));
-        if (presentationVersion != headerSavePresentationVersion || !isActiveAndEnabled) return;
+        if (!IsOnlineShotContinuationCurrent(presentationVersion)) return;
 
         // Compare with attacker's total
         if (totalSavingPower == headerAttackerTotalScore)
@@ -2286,15 +2263,20 @@ public partial class ShotManager : MonoBehaviour
             );
             MatchManager.Instance.SetHangingPass("shot");
             await helperFunctions.StartCoroutineAndWait(groundBallManager.HandleGroundBallMovement(saveHex, allowGKBoxMove: false));
+            if(!IsOnlineShotContinuationCurrent(presentationVersion))return;
             await helperFunctions.StartCoroutineAndWait(MoveGoalkeeperToSaveHex(gkToken));
+            if(!IsOnlineShotContinuationCurrent(presentationVersion))return;
             await helperFunctions.StartCoroutineAndWait(looseBallManager.ResolveLooseBall(gkToken, LooseBallSourceType.GroundDeflection, allowGKBoxMove: false, presentationContext: LooseBallPresentationContext.ShotResolution, isHeaderShotContinuation: true));
+            if(!IsOnlineShotContinuationCurrent(presentationVersion))return;
             ResetShotProcess();
         }
         else if (totalSavingPower > headerAttackerTotalScore)
         {
             Debug.Log($"{gkToken.name} saves the header! Will they hold the ball? Needs to roll lower than {gkToken.handling} to hold the ball. Press [R] to roll for Handling Test!");
             await helperFunctions.StartCoroutineAndWait(groundBallManager.HandleGroundBallMovement(saveHex, allowGKBoxMove: false));
+            if(!IsOnlineShotContinuationCurrent(presentationVersion))return;
             await helperFunctions.StartCoroutineAndWait(MoveGoalkeeperToSaveHex(gkToken));
+            if(!IsOnlineShotContinuationCurrent(presentationVersion))return;
             // MatchManager.Instance.ChangePossession();
             isWaitingforHandlingTest = true;
             BeginHeaderHandlingPresentation(gkToken);
@@ -2303,6 +2285,7 @@ public partial class ShotManager : MonoBehaviour
         {
             Debug.Log($"{headerAttacker.name} wins the header at goal! GOAL!");
             await helperFunctions.StartCoroutineAndWait(groundBallManager.HandleGroundBallMovement(headerTargetHex, headerAttackerTotalScore/2, allowGKBoxMove: false));
+            if(!IsOnlineShotContinuationCurrent(presentationVersion))return;
             MatchManager.Instance.gameData.gameLog.LogEvent(headerAttacker, MatchManager.ActionType.ShotOnTarget);
             MatchManager.Instance.gameData.gameLog.LogEvent(
                         headerAttacker
@@ -2577,7 +2560,7 @@ public partial class ShotManager : MonoBehaviour
         // Highlight and raise all CanShootTo hexes
         foreach (var canShootToHex in shootingPaths.Keys)
         {
-            canShootToHex.HighlightHex("CanShootFrom", 1);
+            canShootToHex.HighlightRaisedGoalTarget("CanShootFrom", ShotTargetElevation, 1);
             if (!hexGrid.highlightedHexes.Contains(canShootToHex))
             {
                 hexGrid.highlightedHexes.Add(canShootToHex);
@@ -2585,10 +2568,6 @@ public partial class ShotManager : MonoBehaviour
             if (!shotTargetSelectionTargets.Contains(canShootToHex))
             {
                 shotTargetSelectionTargets.Add(canShootToHex);
-            }
-            if (canShootToHex.transform.position.y == 0)
-            {
-                canShootToHex.transform.position += Vector3.up * ShotTargetElevation; // Raise it above the plane
             }
         }
 
@@ -3370,7 +3349,9 @@ public partial class ShotManager : MonoBehaviour
 
     private IEnumerator StartShotBlockRoll(RollInputOverride? rollOverride)
     {
+        int admissionVersion=headerSavePresentationVersion;
         yield return null; // Wait for next frame
+        if(!IsOnlineShotContinuationCurrent(admissionVersion) || !isActivated || !isWaitingForBlockDiceRoll)yield break;
         RecordSnapshotBallStartedIfNeeded();
         ShotInteraction currentDefenderEntry = currentShotInteraction;
         if (currentDefenderEntry != null && currentDefenderBlockingHex != null)
@@ -3420,7 +3401,7 @@ public partial class ShotManager : MonoBehaviour
                         successfulInterception ? "BLOCKED · Loose ball follows" : "BLOCK FAILED · Shot continues",
                         continueWithScatter: successfulInterception, scatterOwner: looseBallManager,
                         continueWithNextRoll: successfulInterception);
-                    if (version != headerSavePresentationVersion || !isActiveAndEnabled) yield break;
+                    if (!IsOnlineShotContinuationCurrent(version)) yield break;
                 }
                 if (successfulInterception)
                 {
@@ -3442,6 +3423,7 @@ public partial class ShotManager : MonoBehaviour
                     yield return StartCoroutine(looseBallManager.ResolveLooseBall(defenderToken, LooseBallSourceType.GroundDeflection,
                         allowGKBoxMove: ball.GetCurrentHex()?.isInPenaltyBox == 0,
                         presentationContext: LooseBallPresentationContext.ShotResolution));
+                    if(!IsOnlineShotContinuationCurrent(admissionVersion))yield break;
                     ResetShotProcess();
                 }
                 else
@@ -3562,7 +3544,7 @@ public partial class ShotManager : MonoBehaviour
                     && (IsPenaltyShot() || interceptors.Count > 0 && interceptors[0].IsGK)
                     && DuelResolutionPanelController.Instance != null
                     && DuelResolutionPanelController.Instance.IsShotComparisonFor(this));
-            if (version != headerSavePresentationVersion || !isActiveAndEnabled) yield break;
+            if (!IsOnlineShotContinuationCurrent(version)) yield break;
         }
 
         if (IsFreeKickShot())
@@ -3936,6 +3918,8 @@ public partial class ShotManager : MonoBehaviour
 
     private IEnumerator ResolveShotOffTarget()
     {
+        int presentationVersion=headerSavePresentationVersion;
+        bool online=MatchManager.Instance?.IsOnlineAuthorityControlled==true;
         if (IsPenaltyShootoutShot())
         {
             Debug.Log($"{shooter.name} rolled a {shooterRoll}, this means the penalty shootout kick is OFF target.");
@@ -3954,6 +3938,7 @@ public partial class ShotManager : MonoBehaviour
         RecordSnapshotBallStartedIfNeeded();
         DeferShotActionResolutionUntilExternalRestart();
         yield return StartCoroutine(ShootOffTargetRandomizer());
+        if(online && !IsOnlineShotContinuationCurrent(presentationVersion))yield break;
         EndMovementPhaseForShotResolutionIfNeeded(clearStunnedTokens: true);
         ResetShotProcess();
     }
@@ -4021,7 +4006,7 @@ public partial class ShotManager : MonoBehaviour
                 continueWithScatter: totalSavingPower == totalShotPower && !gkEntry.isOutsideBoxGoalkeeperHandSave,
                 scatterOwner: looseBallManager, resolvedTotal: totalSavingPower,
                 continueWhileResultVisible: IsPenaltyShootoutShot() && totalSavingPower != totalShotPower);
-            if (version != headerSavePresentationVersion || !isActiveAndEnabled) yield break;
+            if (!IsOnlineShotContinuationCurrent(version)) yield break;
         }
         // int totalSavingPower = gkRoll + gkToken.saving + gkPenalty;
         // int totalSavingPower = 6;
@@ -4387,6 +4372,7 @@ public partial class ShotManager : MonoBehaviour
         GameplayDiceRollResult handlingRoll = MatchManager.Instance.ResolveGameplayDiceRoll(
             "goalkeeper_handling",
             rollOverride,
+            jackpotEnabled: false,
             actor: gkToken,
             relatedToken: MatchManager.Instance.LastTokenToTouchTheBallOnPurpose,
             sourceHex: gkToken != null ? gkToken.GetCurrentHex() : null,
@@ -4404,7 +4390,7 @@ public partial class ShotManager : MonoBehaviour
             yield return SingleRollResolutionPresentation.Resolve(this, displayRoll,
                 gkRoll < gkToken.handling ? "HELD · Save-and-hold choice follows" : "SPILLED · Loose ball follows",
                 continueWithScatter: gkRoll >= gkToken.handling, scatterOwner: looseBallManager);
-            if (presentationVersion != headerSavePresentationVersion || !isActiveAndEnabled) yield break;
+            if (!IsOnlineShotContinuationCurrent(presentationVersion)) yield break;
         }
         // Handling Test
         if (gkRoll < gkToken.handling)
@@ -4525,6 +4511,7 @@ public partial class ShotManager : MonoBehaviour
         isWaitingForGKDiceRoll = false;
         isWaitingforHandlingTest = false;
         isWaitingForSaveandHoldScenario = preserveSaveAndHoldDecision;
+        isWaitingForSnapshotDecisionFromLoose = false;
         isWaitingForOutsideBoxGKShotDecision = false;
         isWaitingForShotCommitConfirmation = false;
         isWaitingforBlockerMovement = false;
@@ -4671,6 +4658,8 @@ public partial class ShotManager : MonoBehaviour
 
     private IEnumerator FailedLob()
     {
+        int presentationVersion = headerSavePresentationVersion;
+        bool online = MatchManager.Instance?.IsOnlineAuthorityControlled == true;
         HexCell originHex = GetShotOriginHex();
         int goalSide = GetAttackingGoalSide();
         int targetX = 22 * goalSide;
@@ -4678,66 +4667,68 @@ public partial class ShotManager : MonoBehaviour
                   (targetHex.coordinates.x - originHex.coordinates.x);
         int intercept = targetHex.coordinates.z - Mathf.RoundToInt(slope * targetHex.coordinates.x);
         int intersectionZ = Mathf.RoundToInt(slope * targetX + intercept);
-        yield return StartCoroutine(longBallManager.HandleLongBallMovement(GetOffTargetHex(targetX, intersectionZ), true));
+        yield return StartCoroutine(longBallManager.HandleLongBallMovement(GetOffTargetHex(targetX, intersectionZ), true,
+            continuationIsCurrent: online ? () => IsOnlineShotContinuationCurrent(presentationVersion) : (System.Func<bool>)null));
+        if (online && !IsOnlineShotContinuationCurrent(presentationVersion)) yield break;
         HexCell lastInboundsHex = GetOffTargetHex(18 * goalSide, Mathf.RoundToInt(slope * (18 * goalSide) + intercept));
         yield return StartCoroutine(ResolveOffTargetGoalKick(lastInboundsHex, goalSide));
     }
     
     private IEnumerator NextToBar()
     {
+        int presentationVersion = headerSavePresentationVersion;
+        bool online = MatchManager.Instance?.IsOnlineAuthorityControlled == true;
         HexCell originHex = GetShotOriginHex();
         int goalSide = GetAttackingGoalSide();
         int targetZ = originHex.coordinates.z >= 0 ? 4 : -5;
         HexCell finalHex = GetOffTargetHex(19 * goalSide, targetZ);
-        yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(finalHex, 4, allowGKBoxMove: false));
+        yield return StartCoroutine(groundBallManager.HandleGroundBallMovement(finalHex, 4, allowGKBoxMove: false,
+            continuationIsCurrent: online ? () => IsOnlineShotContinuationCurrent(presentationVersion) : (System.Func<bool>)null));
+        if (online && !IsOnlineShotContinuationCurrent(presentationVersion)) yield break;
         HexCell lastInboundsHex = GetOffTargetHex(18 * goalSide, targetZ);
         yield return StartCoroutine(ResolveOffTargetGoalKick(lastInboundsHex, goalSide));
     }
 
     private IEnumerator oGamosTouKaragkiozi()
     {
-        hexGrid.ClearHighlightedHexes();
-        HexCell originHex = GetShotOriginHex();
-        // Step 1: Get Camera Position & Forward Direction
-        Transform camTransform = Camera.main.transform;
-        Vector3 cameraPosition = camTransform.position;
-        Vector3 cameraForward = camTransform.forward.normalized;
-
-        // Step 2: Define Close-Up Target Position (In Front of Camera)
-        float closeUpDistance = 1f; // Distance in front of the camera where the ball will stop
-        Vector3 closeUpPosition = cameraPosition + (cameraForward * closeUpDistance);
-
-        // Step 3: Move the Ball Towards the Camera (Fast)
-        float moveDuration = 0.4f; // Ball flies toward the camera in 0.4 seconds
-        float elapsedTime = 0f;
-        Vector3 startPos = originHex.GetHexCenter();
-
-        while (elapsedTime < moveDuration)
+        int presentationVersion=headerSavePresentationVersion;
+        bool online=MatchManager.Instance?.IsOnlineAuthorityControlled==true;
+        if(online)onlineCameraPresentationVersion=presentationVersion;
+        int goalSide=0;HexCell finalHex=null;
+        try
         {
-            elapsedTime += Time.deltaTime;
-            float progress = elapsedTime / moveDuration;
-            ball.transform.position = Vector3.Lerp(startPos, closeUpPosition, progress);
-            yield return null; // Wait for the next frame
+            hexGrid.ClearHighlightedHexes();
+            HexCell originHex=GetShotOriginHex();
+            Transform camTransform=Camera.main.transform;
+            Vector3 closeUpPosition=camTransform.position+camTransform.forward.normalized;
+            float elapsedTime=0;const float moveDuration=.4f;
+            Vector3 startPos=originHex.GetHexCenter();
+            while(elapsedTime<moveDuration)
+            {
+                if(online && !IsOnlineShotContinuationCurrent(presentationVersion))yield break;
+                elapsedTime+=Time.deltaTime;
+                ball.transform.position=Vector3.Lerp(startPos,closeUpPosition,elapsedTime/moveDuration);
+                yield return null;
+            }
+            // Shared pause/recovery owns timeScale, including this original hold.
+            yield return new WaitForSeconds(2f);
+            if(online && !IsOnlineShotContinuationCurrent(presentationVersion))yield break;
+            goalSide=GetAttackingGoalSide();finalHex=GetOffTargetHex(22*goalSide,0);
+            if(finalHex!=null)
+            {
+                ball.transform.position=finalHex.GetHexCenter();ball.PlaceAtCell(finalHex);
+            }
+            else Debug.LogWarning($"Final hex at ({22*goalSide}, 0, 0) is null!");
         }
-
-        // Step 4: Hold Ball Near Camera for Dramatic Pause
-        yield return new WaitForSeconds(2f);
-
-        // Step 5: Move Ball behind the goal line.
-        int goalSide = GetAttackingGoalSide();
-        int finalX = 22 * goalSide;
-        HexCell finalHex = GetOffTargetHex(finalX, 0);
-
-        if (finalHex != null)
+        finally
         {
-            ball.transform.position = finalHex.GetHexCenter();
-            ball.PlaceAtCell(finalHex);
-            HexCell lastInboundsHex = GetOffTargetHex(18 * goalSide, 0);
-            yield return StartCoroutine(ResolveOffTargetGoalKick(lastInboundsHex, goalSide));
+            if(online && onlineCameraPresentationVersion==presentationVersion)onlineCameraPresentationVersion=-1;
         }
-        else
+        if(online && !IsOnlineShotContinuationCurrent(presentationVersion))yield break;
+        if(finalHex!=null)
         {
-            Debug.LogWarning($"Final hex at ({finalX}, 0, 0) is null!");
+            HexCell lastInboundsHex=GetOffTargetHex(18*goalSide,0);
+            yield return StartCoroutine(ResolveOffTargetGoalKick(lastInboundsHex,goalSide));
         }
     }
 

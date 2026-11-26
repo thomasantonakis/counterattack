@@ -1,0 +1,10 @@
+{"name":"OnlineControlDecisionEditorTests.AbsentPublicationAndChoicesAreSafe","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineControlDecisionEditorTests.CaptureAllocationDoesNotScaleWithRosterPayload","status":"Failed","message":"  Input capture cost must depend on choices, not the size of the world publication\r\n  Expected: less than or equal to 299008\r\n  But was:  524288\r\n","stackTrace":"at OnlineControlDecisionEditorTests.CaptureAllocationDoesNotScaleWithRosterPayload () [0x001a1] in C:\\Users\\thomas\\Documents\\Projects\\Personal\\counterattack\\Assets\\Editor\\FeatureTests\\OnlineControlDecision\\OnlineControlDecisionEditorTests.cs:53\r\n"}
+{"name":"OnlineControlDecisionEditorTests.CommandRetainsDisplayedBoundaryAfterPublisherChanges(False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineControlDecisionEditorTests.CommandRetainsDisplayedBoundaryAfterPublisherChanges(True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineControlDecisionEditorTests.PublishedGatesRemainDetached(\"connection\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineControlDecisionEditorTests.PublishedGatesRemainDetached(\"pause\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineControlDecisionEditorTests.PublishedGatesRemainDetached(\"required\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineControlDecisionEditorTests.PublishedGatesRemainDetached(\"forced\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineControlDecisionEditorTests.PublishedGatesRemainDetached(\"emergency\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineControlDecisionEditorTests.PublishedGatesRemainDetached(\"shootout\")","status":"Passed","message":"","stackTrace":""}

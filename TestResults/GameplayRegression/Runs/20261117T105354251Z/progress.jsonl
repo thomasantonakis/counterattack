@@ -1,0 +1,6 @@
+{"name":"OnlineGroundPassPlayModeTests.RealGroundPassOutcome(1,\"safe\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineGroundPassPlayModeTests.RealGroundPassOutcome(1,\"intercept\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineGroundPassPlayModeTests.RealGroundPassOutcome(1,\"failed_interception\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineGroundPassPlayModeTests.RealGroundPassOutcome(-1,\"safe\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineGroundPassPlayModeTests.RealGroundPassOutcome(-1,\"intercept\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineGroundPassPlayModeTests.RealGroundPassOutcome(-1,\"failed_interception\")","status":"Passed","message":"","stackTrace":""}

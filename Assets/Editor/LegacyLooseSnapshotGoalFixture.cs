@@ -4,9 +4,9 @@ using NUnit.Framework;
 
 public sealed partial class GoalkeeperBoxEntryFixture
 {
-    private IEnumerator PrepareLegacyLooseSnapshot()
+    private IEnumerator PrepareLegacyLooseSnapshot(int side = 1)
     {
-        var p = LoadLegacyRoster(); var yaneva = p["Yaneva"]; var support = p["Toothnail"]; var soares = p["Soares"];
+        var p = LoadLegacyRoster(side); var yaneva = p["Yaneva"]; var support = p["Toothnail"]; var soares = p["Soares"];
         AttachAuthoredPanels(); EnableForAuthoredPresentation(movement); EnableForAuthoredPresentation(loose);
         EnableForAuthoredPresentation(match.shotManager); Subscribe(ground); Subscribe(match.finalThirdManager);
         LegacyKey("P"); ClickPass(yaneva.currentHex); ClickPass(yaneva.currentHex);
@@ -15,25 +15,25 @@ public sealed partial class GoalkeeperBoxEntryFixture
         Assert.That(match.attackHasPossession && movement.isAvailable && ftp.isAvailable, Is.True);
         LegacyKey("M");
         input.TryExecuteSyntheticHexClick(support.currentHex, "Legacy migration", out _);
-        input.TryExecuteSyntheticHexClick(Hex(13, 5), "Legacy migration", out _);
-        yield return Until(() => support.currentHex == Hex(13, 5) && !movement.isPlayerMoving, "first movement positions Toothnail on the later scatter path");
+        input.TryExecuteSyntheticHexClick(Hex(13 * side, 5), "Legacy migration", out _);
+        yield return Until(() => support.currentHex == Hex(13 * side, 5) && !movement.isPlayerMoving, "first movement positions Toothnail on the later scatter path");
         LegacyKey("X"); Assert.That(movement.isMovementPhaseDef && movement.attackersMoved == 4, Is.True);
         input.TryExecuteSyntheticHexClick(soares.currentHex, "Legacy migration", out _);
-        input.TryExecuteSyntheticHexClick(Hex(13, 1), "Legacy migration", out _);
-        yield return Until(() => soares.currentHex == Hex(13, 1) && !movement.isPlayerMoving, "Soares prepares the box nutmeg victim through actual movement");
+        input.TryExecuteSyntheticHexClick(Hex(13 * side, 1), "Legacy migration", out _);
+        yield return Until(() => soares.currentHex == Hex(13 * side, 1) && !movement.isPlayerMoving, "Soares prepares the box nutmeg victim through actual movement");
         LegacyKey("X"); Assert.That(movement.isMovementPhase2f2 && movement.defendersMoved == 5, Is.True);
         Assert.That(movement.attackersMoved, Is.EqualTo(4)); LegacyKey("X");
         yield return Until(() => match.finalThirdManager.isActivated, "first movement completes into Final Thirds");
         yield return ForfeitLegacyFinalThirds(); LegacyKey("M");
         input.TryExecuteSyntheticHexClick(yaneva.currentHex, "Legacy migration", out _);
-        yield return LegacyDribbleStep(yaneva, Hex(11));
-        input.TryExecuteSyntheticHexClick(Hex(12, 1), "Legacy migration", out _);
+        yield return LegacyDribbleStep(yaneva, Hex(11 * side));
+        input.TryExecuteSyntheticHexClick(Hex(12 * side, 1), "Legacy migration", out _);
         yield return Until(() => keeper.isActivated, "second movement dribble enters the box");
-        input.TryExecuteSyntheticHexClick(Hex(16, -1), "Legacy migration", out _);
+        input.TryExecuteSyntheticHexClick(Hex(16 * side, -1), "Legacy migration", out _);
         yield return Until(() => !keeper.isActivated && !keeper.IsResolvingMove && movement.isWaitingForNutmegDecision,
             "keeper movement resumes the actual adjacent Soares nutmeg choice");
-        input.TryExecuteSyntheticHexClick(Hex(13, 1), "Legacy migration", out _);
-        input.TryExecuteSyntheticHexClick(Hex(12, 1), "Legacy migration", out _);
+        input.TryExecuteSyntheticHexClick(Hex(13 * side, 1), "Legacy migration", out _);
+        input.TryExecuteSyntheticHexClick(Hex(12 * side, 1), "Legacy migration", out _);
         LegacyKey("N"); yield return Until(() => movement.isWaitingForTackleRoll, "accepted Soares nutmeg opens its rolls");
         movement.PerformTackleDiceRoll(true, 5); yield return AssertLegacyOutfieldDefenderPresentation();
         movement.PerformTackleDiceRoll(false, 4);

@@ -1,0 +1,12 @@
+{"name":"OnlinePublicationCadencePlayModeTests.ReliableHostPublication(16,False,\"selection\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePublicationCadencePlayModeTests.ReliableHostPublication(16,False,\"pause\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePublicationCadencePlayModeTests.ReliableHostPublication(16,False,\"heartbeat\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePublicationCadencePlayModeTests.ReliableHostPublication(16,True,\"selection\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePublicationCadencePlayModeTests.ReliableHostPublication(16,True,\"pause\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePublicationCadencePlayModeTests.ReliableHostPublication(16,True,\"heartbeat\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePublicationCadencePlayModeTests.ReliableHostPublication(18,False,\"selection\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePublicationCadencePlayModeTests.ReliableHostPublication(18,False,\"pause\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePublicationCadencePlayModeTests.ReliableHostPublication(18,False,\"heartbeat\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePublicationCadencePlayModeTests.ReliableHostPublication(18,True,\"selection\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePublicationCadencePlayModeTests.ReliableHostPublication(18,True,\"pause\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePublicationCadencePlayModeTests.ReliableHostPublication(18,True,\"heartbeat\")","status":"Passed","message":"","stackTrace":""}

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="11" result="Passed" total="11" passed="11" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-15 22:22:19Z" end-time="2026-11-15 22:22:19Z" duration="0.1932303">
+  <test-suite type="TestSuite" id="4715" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1684" result="Passed" start-time="2026-11-15 22:22:19Z" end-time="2026-11-15 22:22:19Z" duration="0.193230" total="11" passed="11" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="4708" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="1684" result="Passed" start-time="2026-11-15 22:22:19Z" end-time="2026-11-15 22:22:19Z" duration="0.173870" total="11" passed="11" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17216" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="3890" name="OnlineSharedPauseEditorTests" fullname="OnlineSharedPauseEditorTests" classname="OnlineSharedPauseEditorTests" runstate="Runnable" testcasecount="11" result="Passed" start-time="2026-11-15 22:22:19Z" end-time="2026-11-15 22:22:19Z" duration="0.163718" total="11" passed="11" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineSharedPause" />
+        </properties>
+        <test-case id="3900" name="ControlReceiptsAreBoundedAndCannotReplayAnExpiredPause" fullname="OnlineSharedPauseEditorTests.ControlReceiptsAreBoundedAndCannotReplayAnExpiredPause" methodname="ControlReceiptsAreBoundedAndCannotReplayAnExpiredPause" classname="OnlineSharedPauseEditorTests" runstate="Runnable" seed="1744264804" result="Passed" start-time="2026-11-15 22:22:19Z" end-time="2026-11-15 22:22:19Z" duration="0.026883" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="3899" name="DisposeRestoresOwnedPauseAndScaleWithoutTouchingGameState" fullname="OnlineSharedPauseEditorTests.DisposeRestoresOwnedPauseAndScaleWithoutTouchingGameState" methodname="DisposeRestoresOwnedPauseAndScaleWithoutTouchingGameState" classname="OnlineSharedPauseEditorTests" runstate="Runnable" seed="1101119925" result="Passed" start-time="2026-11-15 22:22:19Z" end-time="2026-11-15 22:22:19Z" duration="0.002961" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-suite type="ParameterizedMethod" id="3898" name="InvalidControlCannotMutatePause" fullname="OnlineSharedPauseEditorTests.InvalidControlCannotMutatePause" classname="OnlineSharedPauseEditorTests" runstate="Runnable" testcasecount="7" result="Passed" start-time="2026-11-15 22:22:19Z" end-time="2026-11-15 22:22:19Z" duration="0.084311" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="3891" name="InvalidControlCannotMutatePause(&quot;unknown&quot;,&quot;match&quot;,1,0,&quot;shared-pause&quot;,&quot;pause.request&quot;,UnknownConnection)" fullname="OnlineSharedPauseEditorTests.InvalidControlCannotMutatePause(&quot;unknown&quot;,&quot;match&quot;,1,0,&quot;shared-pause&quot;,&quot;pause.request&quot;,UnknownConnection)" methodname="InvalidControlCannotMutatePause" classname="OnlineSharedPauseEditorTests" runstate="Runnable" seed="355567800" result="Passed" start-time="2026-11-15 22:22:19Z" end-time="2026-11-15 22:22:19Z" duration="0.002320" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3892" name="InvalidControlCannotMutatePause(&quot;h&quot;,&quot;wrong&quot;,1,0,&quot;shared-pause&quot;,&quot;pause.request&quot;,WrongMatch)" fullname="OnlineSharedPauseEditorTests.InvalidControlCannotMutatePause(&quot;h&quot;,&quot;wrong&quot;,1,0,&quot;shared-pause&quot;,&quot;pause.request&quot;,WrongMatch)" methodname="InvalidControlCannotMutatePause" classname="OnlineSharedPauseEditorTests" runstate="Runnable" seed="1524884430" result="Passed" start-time="2026-11-15 22:22:19Z" end-time="2026-11-15 22:22:19Z" duration="0.001177" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3893" name="InvalidControlCannotMutatePause(&quot;h&quot;,&quot;match&quot;,0,0,&quot;shared-pause&quot;,&quot;pause.request&quot;,InvalidCommand)" fullname="OnlineSharedPauseEditorTests.InvalidControlCannotMutatePause(&quot;h&quot;,&quot;match&quot;,0,0,&quot;shared-pause&quot;,&quot;pause.request&quot;,InvalidCommand)" methodname="InvalidControlCannotMutatePause" classname="OnlineSharedPauseEditorTests" runstate="Runnable" seed="752662951" result="Passed" start-time="2026-11-15 22:22:19Z" end-time="2026-11-15 22:22:19Z" duration="0.001166" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3894" name="InvalidControlCannotMutatePause(&quot;h&quot;,&quot;match&quot;,1,1,&quot;shared-pause&quot;,&quot;pause.request&quot;,StaleRevision)" fullname="OnlineSharedPauseEditorTests.InvalidControlCannotMutatePause(&quot;h&quot;,&quot;match&quot;,1,1,&quot;shared-pause&quot;,&quot;pause.request&quot;,StaleRevision)" methodname="InvalidControlCannotMutatePause" classname="OnlineSharedPauseEditorTests" runstate="Runnable" seed="604457736" result="Passed" start-time="2026-11-15 22:22:19Z" end-time="2026-11-15 22:22:19Z" duration="0.000969" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3895" name="InvalidControlCannotMutatePause(&quot;h&quot;,&quot;match&quot;,1,0,&quot;wrong&quot;,&quot;pause.request&quot;,WrongDecision)" fullname="OnlineSharedPauseEditorTests.InvalidControlCannotMutatePause(&quot;h&quot;,&quot;match&quot;,1,0,&quot;wrong&quot;,&quot;pause.request&quot;,WrongDecision)" methodname="InvalidControlCannotMutatePause" classname="OnlineSharedPauseEditorTests" runstate="Runnable" seed="1904329982" result="Passed" start-time="2026-11-15 22:22:19Z" end-time="2026-11-15 22:22:19Z" duration="0.001077" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3896" name="InvalidControlCannotMutatePause(&quot;h&quot;,&quot;match&quot;,1,0,&quot;shared-pause&quot;,&quot;anything&quot;,IllegalAction)" fullname="OnlineSharedPauseEditorTests.InvalidControlCannotMutatePause(&quot;h&quot;,&quot;match&quot;,1,0,&quot;shared-pause&quot;,&quot;anything&quot;,IllegalAction)" methodname="InvalidControlCannotMutatePause" classname="OnlineSharedPauseEditorTests" runstate="Runnable" seed="359088634" result="Passed" start-time="2026-11-15 22:22:19Z" end-time="2026-11-15 22:22:19Z" duration="0.000749" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3897" name="InvalidControlCannotMutatePause(&quot;h&quot;,&quot;match&quot;,1,0,&quot;shared-pause&quot;,&quot;pause.resume&quot;,NotReady)" fullname="OnlineSharedPauseEditorTests.InvalidControlCannotMutatePause(&quot;h&quot;,&quot;match&quot;,1,0,&quot;shared-pause&quot;,&quot;pause.resume&quot;,NotReady)" methodname="InvalidControlCannotMutatePause" classname="OnlineSharedPauseEditorTests" runstate="Runnable" seed="147500682" result="Passed" start-time="2026-11-15 22:22:19Z" end-time="2026-11-15 22:22:19Z" duration="0.000762" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-case id="3902" name="OldWireVersionCannotSilentlySkipSharedPause" fullname="OnlineSharedPauseEditorTests.OldWireVersionCannotSilentlySkipSharedPause" methodname="OldWireVersionCannotSilentlySkipSharedPause" classname="OnlineSharedPauseEditorTests" runstate="Runnable" seed="885004332" result="Passed" start-time="2026-11-15 22:22:19Z" end-time="2026-11-15 22:22:19Z" duration="0.025978" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="3901" name="VersionSixControlFramePreservesItsSeparateRevisionAndSequence" fullname="OnlineSharedPauseEditorTests.VersionSixControlFramePreservesItsSeparateRevisionAndSequence" methodname="VersionSixControlFramePreservesItsSeparateRevisionAndSequence" classname="OnlineSharedPauseEditorTests" runstate="Runnable" seed="1186668633" result="Passed" start-time="2026-11-15 22:22:19Z" end-time="2026-11-15 22:22:19Z" duration="0.003234" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Saving results to: TestResults\GameplayRegression\Runs\20261115T222219786Z\results.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

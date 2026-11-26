@@ -1,0 +1,12 @@
+{"name":"OnlineOffTargetWidePlayModeTests.RealSnapshotWideMiss(False,\"flight\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineOffTargetWidePlayModeTests.RealSnapshotWideMiss(False,\"reset-flight\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineOffTargetWidePlayModeTests.RealSnapshotWideMiss(False,\"replace-flight\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineOffTargetWidePlayModeTests.RealSnapshotWideMiss(True,\"flight\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineOffTargetWidePlayModeTests.RealSnapshotWideMiss(True,\"reset-flight\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineOffTargetWidePlayModeTests.RealSnapshotWideMiss(True,\"replace-flight\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineOffTargetWidePlayModeTests.RealWideMiss(False,\"flight\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineOffTargetWidePlayModeTests.RealWideMiss(False,\"reset-flight\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineOffTargetWidePlayModeTests.RealWideMiss(False,\"replace-flight\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineOffTargetWidePlayModeTests.RealWideMiss(True,\"flight\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineOffTargetWidePlayModeTests.RealWideMiss(True,\"reset-flight\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineOffTargetWidePlayModeTests.RealWideMiss(True,\"replace-flight\")","status":"Passed","message":"","stackTrace":""}

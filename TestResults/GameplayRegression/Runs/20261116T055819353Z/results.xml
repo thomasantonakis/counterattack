@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="2" result="Passed" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 05:58:19Z" end-time="2026-11-16 05:58:58Z" duration="39.4377678">
+  <test-suite type="TestSuite" id="2748" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1438" result="Passed" start-time="2026-11-16 05:58:19Z" end-time="2026-11-16 05:58:58Z" duration="39.437768" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="2745" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1438" result="Passed" start-time="2026-11-16 05:58:19Z" end-time="2026-11-16 05:58:58Z" duration="39.405486" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17216" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1984" name="OnlineRoomCoinTossPlayModeTests" fullname="OnlineRoomCoinTossPlayModeTests" classname="OnlineRoomCoinTossPlayModeTests" runstate="Runnable" testcasecount="22" result="Passed" start-time="2026-11-16 05:58:19Z" end-time="2026-11-16 05:58:58Z" duration="39.399370" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineRoomCoinToss" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="2009" name="RetieWaitsAcrossOverlappingHolds" fullname="OnlineRoomCoinTossPlayModeTests.RetieWaitsAcrossOverlappingHolds" classname="OnlineRoomCoinTossPlayModeTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-16 05:58:19Z" end-time="2026-11-16 05:58:58Z" duration="39.384655" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="2007" name="RetieWaitsAcrossOverlappingHolds(False)" fullname="OnlineRoomCoinTossPlayModeTests.RetieWaitsAcrossOverlappingHolds(False)" methodname="RetieWaitsAcrossOverlappingHolds" classname="OnlineRoomCoinTossPlayModeTests" runstate="Runnable" seed="371522019" result="Passed" start-time="2026-11-16 05:58:19Z" end-time="2026-11-16 05:58:40Z" duration="20.968164" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[TokenKitCatalog] Loading kits JSON from Resources path 'Kits/kit-picker-v1-11-supported' (asset: Assets/Resources/Kits/kit-picker-v1-11-supported.json).
+[TokenKitCatalog] Found kits JSON TextAsset 'kit-picker-v1-11-supported' at Resources path 'Kits/kit-picker-v1-11-supported' (32277 characters).
+[TokenKitCatalog] Parsed 101 kit preset(s) from Resources path 'Kits/kit-picker-v1-11-supported'.
+[TokenKitCatalog] Active kit catalog contains 101 kit preset(s).
+MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584955985268
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Extra time reached. Each team receives one additional substitution.
+Extra time reached. Waiting for the coin toss before resetting teams.
+Coin toss: Home club kicks off. Home club attacks RightToLeft; Away club attacks LeftToRight.
+[GoalFlow] Token/hex ownership reconciled cleanly after goal reset.
+Post-goal kick-off setup: both teams may reposition tokens in their own half, including the halfway line, except the center spot. The kicker will be selected later. Defenders cannot stand in the center circle. Press Enter twice when both teams are ready.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2008" name="RetieWaitsAcrossOverlappingHolds(True)" fullname="OnlineRoomCoinTossPlayModeTests.RetieWaitsAcrossOverlappingHolds(True)" methodname="RetieWaitsAcrossOverlappingHolds" classname="OnlineRoomCoinTossPlayModeTests" runstate="Runnable" seed="34224787" result="Passed" start-time="2026-11-16 05:58:40Z" end-time="2026-11-16 05:58:58Z" duration="18.382161" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584956112372
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Final whistle with tied score. Opening penalty shootout coin toss.
+Coin toss: Home club takes the first penalty at the left goal.
+[Shootout] Order selection opened with 11 nominees per team.
+Ball reference set in PlayerToken. Ball Hex: 
+ScoreboardManager: Running LoadTeamNames
+Saving results to: TestResults\GameplayRegression\Runs\20261116T055819353Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

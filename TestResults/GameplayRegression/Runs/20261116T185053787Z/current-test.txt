@@ -1,0 +1,1 @@
+ExtraTimeStoppageEditorTests.ActualRollUsesPeriodCap(4,6,3)

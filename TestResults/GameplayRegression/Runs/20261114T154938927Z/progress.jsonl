@@ -1,0 +1,12 @@
+{"name":"OnlinePenaltyPlayModeTests.PenaltyContinues(1,\"goal\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePenaltyPlayModeTests.PenaltyContinues(1,\"save\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePenaltyPlayModeTests.PenaltyContinues(1,\"automatic\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePenaltyPlayModeTests.PenaltyContinues(1,\"hold\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePenaltyPlayModeTests.PenaltyContinues(1,\"defence-clearance\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePenaltyPlayModeTests.PenaltyContinues(1,\"attack-clearance\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePenaltyPlayModeTests.PenaltyContinues(-1,\"goal\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePenaltyPlayModeTests.PenaltyContinues(-1,\"save\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePenaltyPlayModeTests.PenaltyContinues(-1,\"automatic\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePenaltyPlayModeTests.PenaltyContinues(-1,\"hold\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePenaltyPlayModeTests.PenaltyContinues(-1,\"defence-clearance\")","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlinePenaltyPlayModeTests.PenaltyContinues(-1,\"attack-clearance\")","status":"Passed","message":"","stackTrace":""}

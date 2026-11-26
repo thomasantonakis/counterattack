@@ -1,0 +1,310 @@
+using System;
+using System.Linq;
+using Newtonsoft.Json.Linq;
+using UnityEngine;
+using UnityEngine.UI;
+
+namespace CounterAttack.Online
+{
+    // Every object is authored in the proof scene. Guest authorityRoot stays inactive.
+    public sealed partial class OnlineGroundPassBoard : MonoBehaviour
+    {
+        public GameObject authorityRoot;
+        public MatchManager match;
+        public HexGrid grid;
+        public HexCell[] cells;
+        public PlayerToken[] tokens;
+        [Tooltip("Keep a manual session alive across actions. This does not replace the prepared roster with a normal Room match.")]
+        public bool continuousManualSession;
+        public bool liveFullRoom;
+        internal bool usesNativeRoom;
+        internal bool HasOnlineConclusion { get; private set; }
+        internal bool HasOnlineReportHistory { get; private set; }
+        internal OnlineNativeRoomPause nativePause;
+        internal PenaltyShootoutOrderPanelController nativeShootout;
+        internal bool GuestRulesInactive => usesNativeRoom
+            ? GetComponent<OnlineRoomStartup>().GuestConfigured : !authorityRoot.activeSelf;
+        public ScoreboardManager liveScoreboard;
+        public GameDebugMonitor instructionMonitor;
+        public OnlineRoomMenu menu;
+        public OnlineShootoutView shootoutView;
+        public OnlineCoinTossView coinView;
+        public OnlineMatchConclusionView conclusionView;
+        public OnlineBoardInput boardInput;
+        public OnlineRoomPointers pointers;
+        public OnlineRoomRollPanels rollPanels;
+        public Vector3Int[] initialCoordinates;
+        public Transform[] displayedTokens;
+        public Transform displayedBall;
+        private MovementPhaseMovedTokensPanel movementPanel;
+        private MovementPhaseTokenStatusPanel movementTokenStatusPanel;
+        private bool restoredStatsPresented;
+        public Camera boardCamera;
+        public Text statusText;
+        public GameObject localStatsPanel;
+        public GameObject sharedPausePanel, requesterPauseMessage, passivePauseMessage;
+        public OnlineTeam localTeam = OnlineTeam.Home;
+        public OnlineGroundPassControls controls;
+        private MatchManager previousMatch;
+        private bool ownsMatch;
+        private bool spectatorBoardPresented;
+        private string goalAudioMatchId;
+        private int heardHomeGoals, heardAwayGoals;
+
+        public void InitializeAuthority()
+        {
+            localTeam = OnlineTeam.Away;
+            previousMatch = MatchManager.Instance;
+            MatchManager.Instance = match; ownsMatch = true;
+            match.gameData = new MatchManager.GameData();
+            match.gameData.gameSettings.homeTeamName = "Online proof Home";
+            match.gameData.gameSettings.awayTeamName = "Online proof Away";
+            match.difficulty_level = 2;
+            match.currentState = MatchManager.GameState.AnyOtherScenario;
+            match.homeTeamDirection = MatchManager.TeamAttackingDirection.LeftToRight;
+            match.awayTeamDirection = MatchManager.TeamAttackingDirection.RightToLeft;
+            match.teamInAttack = MatchManager.TeamInAttack.Home;
+            match.isClockRunning = true;
+            grid.cells = new HexCell[grid.GridWidth, grid.GridHeight];
+            foreach (var cell in cells)
+            {
+                grid.cells[cell.coordinates.x + grid.GridWidth / 2, cell.coordinates.z + grid.GridHeight / 2] = cell;
+                cell.occupyingToken = null; cell.isAttackOccupied = cell.isDefenseOccupied = false;
+            }
+            grid.InitializePrecomputedGameplayCaches();
+            PlayerToken.SetBallReference(match.ball);
+            match.playerTokenManager.allTokens = tokens.ToList();
+            for (var i = 0; i < tokens.Length; i++)
+            {
+                var hex = grid.GetHexCellAt(initialCoordinates[i]);
+                tokens[i].isAttacker = tokens[i].isHomeTeam;
+                if (tokens[i].jerseyNumber == 1)
+                {
+                    tokens[i].ConvertToGK();
+                    tokens[i].saving = tokens[i].aerial = tokens[i].handling = 4;
+                }
+                tokens[i].SetCurrentHex(hex);
+                tokens[i].transform.position = hex.GetHexCenter();
+                hex.isAttackOccupied = tokens[i].isAttacker; hex.isDefenseOccupied = !tokens[i].isAttacker;
+            }
+            authorityRoot.SetActive(true);
+            match.SetLastToken(tokens[0]); match.attackHasPossession = true;
+            match.ball.PlaceAtCell(tokens[0].currentHex);
+            // Real outcome entry point; managers remain disabled to suppress unrelated
+            // startup/input/AI loops. Explicit ground-pass coroutines run on active hosts.
+            match.BroadcastSafeEndofMovementPhase(countMovementAction: false, triggerFinalThird: false);
+        }
+
+        internal void DisplaySpectator(OnlineGroundPassState state, JObject publication)
+        {
+            bool held = state.isSharedPaused || state.connectionHeld;
+            ResetPresentationMotion(held);
+            bool smooth = spectatorBoardPresented && !held && publication["pose"] != null;
+            var lastBall = displayedBall.position;
+            var lastPlayers = smooth ? displayedTokens.Select(token => token.position).ToArray() : null;
+            match.ApplyOnlineReplicaMatchState(state);
+            displayedBall.gameObject.SetActive(state.ballOnBoard);
+            var motion = OnlineSpectatorRoomProjection.ReadMotion(publication, displayedBall.position);
+            if (motion != null && smooth)
+            {
+                if (publication["pose"]["ball"] != null) displayedBall.position = lastBall;
+                foreach (var player in motion.players ?? Array.Empty<OnlinePlayerPresentation>())
+                {
+                    int index = Array.FindIndex(tokens, token => OnlineRollPublication.ActorId(token) == player.id);
+                    if (index >= 0) displayedTokens[index].position = lastPlayers[index];
+                }
+                QueuePresentation(motion, 0.25f);
+            }
+            else if (motion != null) DisplayPresentation(motion);
+            spectatorBoardPresented = true;
+            liveScoreboard?.RefreshPublishedOnlineState();
+            match.matchStatsUI?.UpdateStatsUI();
+            match.OnlineEventBanner?.ApplyOnlinePublication(state.banners);
+            rollPanels?.ApplySpectator(publication["dice"], held);
+            var coin = match.coinTossPanel;
+            if (state.coin == null || held) coin?.HidePublishedToss();
+            else
+            {
+                var settings = match.gameData.gameSettings;
+                coin?.PresentPublishedToss(settings.homeTeamName, settings.awayTeamName, settings.homeKit,
+                    settings.awayKit, state.coin, ownsTurn: false, viewOnly: true);
+            }
+            instructionMonitor?.DisplayOnlineInstruction(new OnlineInstructionObservation
+            {
+                text = state.matchComplete ? "Full time" : "Spectating the match"
+            }, blocked: false);
+            if (state.matchComplete) EndGamePanelManager.ShowPublishedOnlineConclusion(state);
+        }
+
+        public void Display(OnlineGroundPassState state, string role)
+        {
+            ResetPresentationMotion(state.connectionHeld || state.isSharedPaused);
+            pointers?.SetHold(state.connectionHeld || state.isSharedPaused);
+            if (liveFullRoom && boardCamera != null && boardCamera.TryGetComponent<CameraController>(out var camera))
+                camera.SetOnlinePresentationHold(state.connectionHeld || state.isSharedPaused);
+            if(liveFullRoom)instructionMonitor?.DisplayOnlineInstruction(state.instruction,state.connectionHeld || state.isSharedPaused || state.stage=="blocked");
+            if (controls != null) controls.Display(state);
+            rollPanels?.Apply(state.rollPanel, state.isSharedPaused || state.connectionHeld);
+            if (liveFullRoom && OnlineRoomSession.IsGuest)
+            {
+                match.ApplyOnlineReplicaMatchState(state);
+                PresentGuestGoalAudio(state);
+                if(movementPanel==null)movementPanel=FindAnyObjectByType<MovementPhaseMovedTokensPanel>(FindObjectsInactive.Include);
+                movementPanel?.ApplyOnline(state.movementPanel,tokens,state.connectionHeld || state.isSharedPaused);
+                if(movementTokenStatusPanel==null)movementTokenStatusPanel=FindAnyObjectByType<MovementPhaseTokenStatusPanel>(FindObjectsInactive.Include);
+                movementTokenStatusPanel?.ApplyOnline(state.movementTokenStatus,tokens);
+                liveScoreboard?.RefreshPublishedOnlineState();
+                match.OnlineEventBanner?.ApplyOnlinePublication(state.banners);
+                match.OnlinePitchLines?.ApplyOnlineFinalThirdLabel(state.finalThirdLabelSide, state.finalThirdLabelHome);
+            }
+            if (usesNativeRoom && state.resumePending && !restoredStatsPresented)
+            {
+                // Ready holds Unity time, so the normal scaled UI refresh cannot
+                // present restored data before both managers confirm.
+                if (!OnlineRoomSession.IsGuest) liveScoreboard?.RefreshPublishedOnlineState();
+                match.matchStatsUI?.UpdateStatsUI();
+                restoredStatsPresented = true;
+            }
+            if (sharedPausePanel != null) sharedPausePanel.SetActive(
+                liveFullRoom && state.connectionHeld || state.isSharedPaused && menu?.UsesRoomPause(state) != true);
+            var requester = state.isSharedPaused && state.pauseRequester == localTeam.ToString();
+            if (requesterPauseMessage != null) requesterPauseMessage.SetActive(requester);
+            if (passivePauseMessage != null) passivePauseMessage.SetActive(state.isSharedPaused && !requester);
+            menu?.Display(state);
+            nativePause?.Display(state);
+            shootoutView?.Display(state);
+            coinView?.Display(state);
+            conclusionView?.Display(state);
+            if (usesNativeRoom)
+            {
+                match.coinTossPanel?.DisplayNativeOnline(state, localTeam);
+                nativeShootout?.DisplayOnline(state, this);
+                EndGamePanelManager.ShowPublishedOnlineConclusion(state);
+                HasOnlineConclusion |= OnlineManualSessionPolicy.CanFinish(state, continuous: true);
+            }
+            boardInput?.Display(state);
+            foreach (var token in state.tokens)
+            {
+                if(liveFullRoom && !OnlineRoomSession.IsGuest)break;
+                var index = Array.FindIndex(tokens, t => (t.isHomeTeam ? "home:" : "away:") + t.jerseyNumber == token.id);
+                EOSProofCheck.Require(index >= 0, "Published roster must match the authored board");
+                displayedTokens[index].gameObject.SetActive(liveFullRoom?token.visible:token.onBoard);
+                if (token.onBoard) displayedTokens[index].position = Center(token.x, token.z) + Vector3.up * (liveFullRoom?.2f:.5f);
+            }
+            if(!liveFullRoom || OnlineRoomSession.IsGuest)
+            {
+            displayedBall.gameObject.SetActive(state.ballOnBoard);
+            if (state.ballOnBoard && !usesNativeRoom)
+                displayedBall.position = Center(state.ballX, state.ballZ) + Vector3.up * (liveFullRoom?match.ball.transform.position.y:1.2f);
+            }
+            // A full snapshot can arrive between animation frames, or be the first
+            // state after reconnect. Restore its captured visual pose after the
+            // logical occupancy pass; presentation never invokes movement/rules.
+            if(liveFullRoom && OnlineRoomSession.IsGuest && state.roomPose!=null)DisplayPresentation(state.roomPose);
+            boardInput?.SynchronizePreviewMarkerPose();
+            if (statusText != null) statusText.text = role + " | " + state.stage + " | " + state.owner
+                + " | Score " + (state.homeStats?.totalGoals ?? 0) + " - " + (state.awayStats?.totalGoals ?? 0)
+                + "\nState " + state.publicationSequence + " | Rolls " + state.rollSequence
+                + " | Clock " + state.regulationSeconds.ToString("F1")
+                + (state.connectionHeld ? "\nConnection interrupted - waiting for player" : state.isSharedPaused ? "\nPaused by " + state.pauseRequester : "")
+                + "\n" + string.Join("  ", state.tokens.Where(t => t.passesAttempted > 0 || t.interceptionsAttempted > 0)
+                    .Select(t => t.id + " passes " + t.passesCompleted + "/" + t.passesAttempted + " interceptions " + t.interceptionsMade));
+            if(statusText!=null && state.shootout!=null)statusText.text+="\nPenalties "+state.shootout.homeScore+" - "+state.shootout.awayScore+" | Attempts "+state.shootout.homeAttempts+" - "+state.shootout.awayAttempts;
+            if (statusText != null && state.rolls?.Length > 0)
+            {
+                var roll = state.rolls[state.rolls.Length - 1];
+                statusText.text += "\n" + roll.context.Replace('_',' ') + ": " + (roll.isJackpot ? "STAR" : roll.roll.ToString())
+                    + (roll.actorId == null ? "" : " | " + roll.actorId + " " + roll.actorName);
+            }
+            if(statusText!=null && state.header!=null)
+                statusText.text+="\nHeader attack: "+string.Join(", ",state.header.attackers)
+                    +" | defense: "+string.Join(", ",state.header.defenders)
+                    +"\n"+string.Join(" | ",state.header.scores.Select(score=>score.actorId+" rolled "+score.roll+" = "+score.total))
+                    +(string.IsNullOrEmpty(state.header.winner)?"":" | winner "+state.header.winner);
+        }
+
+        private void PresentGuestGoalAudio(OnlineGroundPassState state)
+        {
+            if (state.homeStats == null || state.awayStats == null) return;
+
+            int homeGoals = state.homeStats.totalGoals;
+            int awayGoals = state.awayStats.totalGoals;
+            if (goalAudioMatchId != state.matchId)
+            {
+                // The first publication may restore a running or saved match.
+                goalAudioMatchId = state.matchId;
+                heardHomeGoals = homeGoals;
+                heardAwayGoals = awayGoals;
+                return;
+            }
+
+            if (homeGoals > heardHomeGoals)
+            {
+                heardHomeGoals = homeGoals;
+                GameplayAudioEvents.PublishGoalConfirmed(match, homeScored: true);
+            }
+            if (awayGoals > heardAwayGoals)
+            {
+                heardAwayGoals = awayGoals;
+                GameplayAudioEvents.PublishGoalConfirmed(match, homeScored: false);
+            }
+        }
+
+        internal void PresentFullTimeHistory(System.Collections.Generic.IReadOnlyList<GameplayEvent> events, int half)
+        {
+            if (!usesNativeRoom || !OnlineRoomSession.IsGuest || !HasOnlineConclusion || HasOnlineReportHistory) return;
+            EndGamePanelManager.ApplyPublishedOnlineHistory(events, half);
+            HasOnlineReportHistory = true;
+        }
+
+        internal void PresentSessionDeparture(string message, bool allowCheckpoint = false)
+        {
+            if (HasOnlineConclusion)
+            {
+                if (OnlineRoomSession.IsGuest && !HasOnlineReportHistory)
+                    EndGamePanelManager.ShowOnlineHistoryUnavailable();
+                return;
+            }
+            menu?.PresentPeerDeparture();
+            nativePause?.PresentClosedMatch(message, allowCheckpoint);
+        }
+
+        private Vector3 Center(int x, int z) => grid.GetHexCenterForCoordinates(new Vector3Int(x, 0, z));
+
+        public void DisplayPresentation(OnlineGroundPassPresentation frame)
+        {
+            presentationMoving=false;
+            // Trusted, validated presentation values only; completion never calls rules.
+            displayedBall.position = new Vector3(frame.ballX, frame.ballY, frame.ballZ);
+            if(frame.players!=null)
+                foreach(var player in frame.players)
+                {
+                    int index=Array.FindIndex(tokens,token=>OnlineRollPublication.ActorId(token)==player.id);
+                    if(index>=0) displayedTokens[index].position=new Vector3(player.x,player.y,player.z);
+                }
+        }
+
+        private void Update()
+        {
+            AdvancePresentation(Time.unscaledDeltaTime);
+            boardInput?.AdvancePreviewMarkers();
+            if(liveFullRoom)instructionMonitor?.RefreshOnlineInstructionPalette();
+            // Personal presentation only. No keys route to rule/input managers.
+            if (boardCamera != null && !usesNativeRoom)
+            {
+                boardCamera.orthographicSize = Mathf.Clamp(boardCamera.orthographicSize - Input.mouseScrollDelta.y, 4f, 40f);
+                if (Input.GetMouseButton(1)) boardCamera.transform.position += new Vector3(-Input.GetAxis("Mouse X"), 0, -Input.GetAxis("Mouse Y"));
+            }
+            if (localStatsPanel != null && Input.GetKeyDown(KeyCode.Tab)) localStatsPanel.SetActive(!localStatsPanel.activeSelf);
+        }
+
+        private void OnDestroy()
+        {
+            if (!ownsMatch) return;
+            // The inactive MatchManager never owns a live save. Remove its singleton
+            // before teardown so its OnDestroy cannot flush through ApplicationManager.
+            MatchManager.Instance = previousMatch;
+            PlayerToken.SetBallReference(previousMatch != null ? previousMatch.ball : null);
+        }
+    }
+}

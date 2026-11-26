@@ -11,7 +11,7 @@ using Newtonsoft.Json.Linq;
 using UnityEngine.EventSystems;
 using System.Linq;
 
-public class CreateNewGameManager : MonoBehaviour
+public partial class CreateNewGameManager : MonoBehaviour
 {
     private const string TieBreakerExtraTimeAndPenalties = "Extra Time & Penalties";
     private const string TieBreakerPenalties = "Penalties";
@@ -146,13 +146,12 @@ public class CreateNewGameManager : MonoBehaviour
             return;
         }
 
-        float desiredHeight = item.rect.height * dropdown.options.Count;
-        // TMP can shrink its generated popup during layout. Regular kit lists keep
-        // the authored scroll-window height in both Single Player and Hot Seat.
+        int visibleRows = dropdown.options.Count;
+        if (!IsAlwaysVisibleKitDropdown(dropdown) && GetRequestedCreateLoadGameMode() == ApplicationManager.OnlineGameMode)
+            visibleRows = Mathf.Min(8, visibleRows);
+        float desiredHeight = item.rect.height * visibleRows;
         if (!IsAlwaysVisibleKitDropdown(dropdown))
-        {
             desiredHeight = Mathf.Min(desiredHeight, dropdown.template.rect.height);
-        }
         popupRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, desiredHeight);
         RectTransform viewport = popup.Find("Viewport") as RectTransform;
         if (viewport != null)
@@ -453,7 +452,10 @@ public class CreateNewGameManager : MonoBehaviour
     void SetDropDownOptions()
     {
         bool isSinglePlayerCreateMode = IsSinglePlayerCreateMode();
-        List<string> gameModeOptions = isSinglePlayerCreateMode
+        bool onlineCreateMode = GetRequestedCreateLoadGameMode() == ApplicationManager.OnlineGameMode;
+        List<string> gameModeOptions = onlineCreateMode
+            ? new List<string> { ApplicationManager.OnlineGameMode }
+            : isSinglePlayerCreateMode
             ? new List<string> { ApplicationManager.SinglePlayerGameMode }
             : string.Equals(GetRequestedCreateLoadGameMode(), ApplicationManager.HotSeatGameMode, StringComparison.OrdinalIgnoreCase)
                 ? new List<string> { ApplicationManager.HotSeatGameMode }
@@ -740,7 +742,7 @@ public class CreateNewGameManager : MonoBehaviour
         }
     }
 
-    private IEnumerable<string> LoadWorldCupNationalities()
+    public static IEnumerable<string> LoadWorldCupNationalities()
     {
         TextAsset playersCsv = Resources.Load<TextAsset>("outfield_players");
         if (playersCsv == null)
@@ -864,7 +866,7 @@ public class CreateNewGameManager : MonoBehaviour
         dropdown.SetValueWithoutNotify(defaultIndex >= 0 ? defaultIndex : 0);
         dropdown.RefreshShownValue();
 
-        if (IsAlwaysVisibleKitDropdown(dropdown))
+        if (IsAlwaysVisibleKitDropdown(dropdown) || GetRequestedCreateLoadGameMode() == ApplicationManager.OnlineGameMode)
         {
             ConfigureInternationalOutfieldKitListHeight(dropdown);
         }
@@ -878,17 +880,15 @@ public class CreateNewGameManager : MonoBehaviour
         }
 
         RectTransform item = dropdown.template.Find("Viewport/Content/Item") as RectTransform;
-        if (item == null || item.rect.height <= 0f)
+        if (item == null)
         {
             return;
         }
 
         RectTransform template = dropdown.template as RectTransform;
-        float currentHeight = template.rect.height;
-        float itemHeight = item.rect.height;
-        float contentHeight = itemHeight * dropdown.options.Count;
-        float templatePadding = Mathf.Max(0f, currentHeight - itemHeight * 8f);
-        template.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, contentHeight + templatePadding);
+        float itemHeight = item.rect.height > 0f ? item.rect.height : item.sizeDelta.y;
+        if (itemHeight > 0f)
+            template.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, itemHeight * Mathf.Min(8, dropdown.options.Count) + 8f);
     }
 
     private void RefreshInternationalTeamKitOptions()
@@ -1346,10 +1346,14 @@ public class CreateNewGameManager : MonoBehaviour
         isRefreshingInternationalTeamUi = true;
         try
         {
-            EnsureDifferentInternationalTeams(changedDropdown, otherDropdown);
+            if (onlineSetupConfirmation != null)
+                RefreshOwnedInternationalKits(changedDropdown);
+            else
+            {
+                EnsureDifferentInternationalTeams(changedDropdown, otherDropdown);
+                ForceInternationalOutfieldKitsToTeamDefaults();
+            }
             SyncInternationalTeamInputFields();
-            RefreshInternationalTeamKitOptions();
-            ForceInternationalOutfieldKitsToTeamDefaults();
         }
         finally
         {
@@ -1535,7 +1539,7 @@ public class CreateNewGameManager : MonoBehaviour
         // kitSimilarityText.gameObject.SetActive(true);
     }
 
-    private string BuildKitClashMessage(string attemptedPresetName, string otherPresetName, TokenKitSimilarityBreakdown similarity)
+    private static string BuildKitClashMessage(string attemptedPresetName, string otherPresetName, TokenKitSimilarityBreakdown similarity)
     {
         if (similarity.BodyColorSimilarity > TokenKitCatalog.KitComponentClashThreshold
             && similarity.TopFaceSimilarity > TokenKitCatalog.KitComponentClashThreshold)
@@ -1574,6 +1578,12 @@ public class CreateNewGameManager : MonoBehaviour
         TokenKitPreset homeGkPreset = GetSelectedKitPreset(homeGKKitDropdown);
         TokenKitPreset awayGkPreset = GetSelectedKitPreset(awayGKKitDropdown);
 
+        return ValidateSelectedKits(homePreset,awayPreset,homeGkPreset,awayGkPreset,outfieldSimilarity);
+    }
+
+    public static string ValidateSelectedKits(TokenKitPreset homePreset,TokenKitPreset awayPreset,
+        TokenKitPreset homeGkPreset,TokenKitPreset awayGkPreset,TokenKitSimilarityBreakdown outfieldSimilarity)
+    {
         if (outfieldSimilarity.IsClash)
         {
             return BuildKitClashMessage(homePreset?.DisplayName ?? "Home kit", awayPreset?.DisplayName ?? "Away kit", outfieldSimilarity);
@@ -1598,7 +1608,7 @@ public class CreateNewGameManager : MonoBehaviour
         return string.Empty;
     }
 
-    private string BuildFirstGkKitClashMessage(
+    private static string BuildFirstGkKitClashMessage(
         TokenKitPreset homeGkPreset,
         TokenKitPreset awayGkPreset,
         TokenKitPreset homePreset,
@@ -1619,7 +1629,7 @@ public class CreateNewGameManager : MonoBehaviour
         return BuildGkKitClashMessage(awayGkPreset, awayPreset, "Away GK", "Away outfield");
     }
 
-    private string BuildGkKitClashMessage(TokenKitPreset gkPreset, TokenKitPreset otherPreset, string gkLabel, string otherLabel)
+    private static string BuildGkKitClashMessage(TokenKitPreset gkPreset, TokenKitPreset otherPreset, string gkLabel, string otherLabel)
     {
         if (gkPreset == null || otherPreset == null)
         {
@@ -2002,6 +2012,9 @@ public class CreateNewGameManager : MonoBehaviour
 
     public void BackToCreateLoadRoomMenu()
     {
+        if(string.Equals(GetRequestedCreateLoadGameMode(),ApplicationManager.OnlineGameMode,StringComparison.OrdinalIgnoreCase))
+        {CounterAttack.Online.OnlineFrontendSession.Current?.Close();SceneManager.LoadScene(CounterAttack.Online.OnlineModeMenu.SceneName);return;}
+
         PlayerPrefs.DeleteKey(CreateNewGameReturnSourcePlayerPrefsKey);
         PlayerPrefs.Save();
         ApplicationManager.EnsureInstanceExists();
@@ -2080,7 +2093,7 @@ public class CreateNewGameManager : MonoBehaviour
         TMP_Text label = backButton.GetComponentInChildren<TMP_Text>(true);
         if (label != null)
         {
-            label.text = $"Back to {GetSelectedCreateMenuGameMode()} Menu";
+            label.text = GetRequestedCreateLoadGameMode()==ApplicationManager.OnlineGameMode?"Back to Online Menu":$"Back to {GetSelectedCreateMenuGameMode()} Menu";
         }
     }
 
@@ -2103,6 +2116,7 @@ public class CreateNewGameManager : MonoBehaviour
 
     private void TryRestoreExistingSettingsFromDraftReturn()
     {
+        if(GetRequestedCreateLoadGameMode()==ApplicationManager.OnlineGameMode)return;
         string returnSource = PlayerPrefs.GetString(CreateNewGameReturnSourcePlayerPrefsKey, string.Empty);
         if (!IsDraftReturnSource(returnSource))
         {
@@ -2184,7 +2198,7 @@ public class CreateNewGameManager : MonoBehaviour
         }
     }
 
-    private void ApplyExistingSettingsToUi(GameSettings settings)
+    private void ApplyExistingSettingsToUi(GameSettings settings, TMP_InputField preserveName = null)
     {
         if (settings == null)
         {
@@ -2216,8 +2230,8 @@ public class CreateNewGameManager : MonoBehaviour
         SelectDropdownOption(tiebreakerDropdown, settings.tiebreaker, TieBreakerNone);
         SelectDropdownOption(matchTypeDropdown, settings.matchType, "Regular");
 
-        SetInputFieldTextWithoutNotify(homeTeamInputField, settings.homeTeamName);
-        SetInputFieldTextWithoutNotify(awayTeamInputField, settings.awayTeamName);
+        if (preserveName != homeTeamInputField) SetInputFieldTextWithoutNotify(homeTeamInputField, settings.homeTeamName);
+        if (preserveName != awayTeamInputField) SetInputFieldTextWithoutNotify(awayTeamInputField, settings.awayTeamName);
         RefreshCreateGameButtonState();
 
         if (IsInternationalSettings(settings))
@@ -2239,6 +2253,8 @@ public class CreateNewGameManager : MonoBehaviour
 
         if (IsInternationalMatchSelected())
         {
+            SelectDropdownOption(homeInternationalTeamDropdown, settings.homeTeamName);
+            SelectDropdownOption(awayInternationalTeamDropdown, settings.awayTeamName);
             SyncInternationalTeamInputFields();
             SetInternationalDraftDropdownOptions();
         }
@@ -2507,7 +2523,16 @@ public class CreateNewGameManager : MonoBehaviour
     }
 
     // Update checkboxes and squad size options when match type changes
+    internal bool IsApplyingMatchType { get; private set; }
+
     void OnMatchTypeChanged()
+    {
+        IsApplyingMatchType=true;
+        try { RefreshMatchTypeControls(); }
+        finally { IsApplyingMatchType=false; }
+    }
+
+    private void RefreshMatchTypeControls()
     {
         bool isInternationalMatch = matchTypeDropdown.value == 1;
         if (isInternationalMatch)
@@ -2569,7 +2594,7 @@ public class CreateNewGameManager : MonoBehaviour
             UpdateKitPreviews();
             UpdateKitValidationForCurrentSelection();
             SetRegularDraftDropdownOptions();
-            RestoreRegularMatchSelectionSnapshot();
+            if (!suppressRegularMatchSelectionSnapshot) RestoreRegularMatchSelectionSnapshot();
             UpdateKitPreviews();
             UpdateKitValidationForCurrentSelection();
 
@@ -2587,6 +2612,12 @@ public class CreateNewGameManager : MonoBehaviour
 
     public void SaveGameSettingsToJson()
     {
+        if(RouteOnlineSetupConfirmation())return;
+        if(CounterAttack.Online.OnlineRoomSession.Current!=null)
+        {
+            Debug.LogWarning("Online setup must be connected to its session before confirmation");return;
+        }
+
         if (!TryGetValidatedTeamNames(out string homeTeamName, out string awayTeamName, out string teamValidationMessage))
         {
             RefreshCreateGameButtonState();
@@ -2603,67 +2634,7 @@ public class CreateNewGameManager : MonoBehaviour
             return;
         }
 
-        // Create a GameSettings object and populate it from the UI input fields
-        GameSettings settings = new GameSettings();
-        settings.gameMode = GetSelectedGameModeForSettings();
-        settings.halfDuration = (int)halfDurationSlider.value;
-        settings.numberOfHalfs = int.Parse(numberOfHalvesDropdown.options[numberOfHalvesDropdown.value].text);
-        RefreshTiebreakerOptions();
-        settings.tiebreaker = tiebreakerDropdown.options[tiebreakerDropdown.value].text;
-        settings.matchType = matchTypeDropdown.options[matchTypeDropdown.value].text;
-        settings.squadSize = squadSizeDropdown.options[squadSizeDropdown.value].text;
-        settings.draft = draftDropdown.options[draftDropdown.value].text;
-        settings.gkDraft = gkDraftDropdown.options[gkDraftDropdown.value].text;
-        string selectedReferee = refereeDropdown.options[refereeDropdown.value].text;
-        // Check if the selected referee is "Random"
-        if (selectedReferee == "Random")
-        {
-            // Create a list of referees excluding "Random"
-            List<string> nonRandomReferees = new List<string> { "Webster - 2", "Castolo - 3", "Bakker - 4", "Read - 5" };
-            // Randomly select one of the non-random referees
-            System.Random rng = new System.Random();
-            selectedReferee = nonRandomReferees[rng.Next(nonRandomReferees.Count)];
-            Debug.Log($"Random referee chosen: {selectedReferee}");
-        }
-        settings.referee = selectedReferee;
-        settings.playerAssistance = GetSelectedPlayerAssistanceValue();
-        settings.aiDifficulty = aiDifficultyDropdown != null && aiDifficultyDropdown.options.Count > 0
-            ? aiDifficultyDropdown.options[aiDifficultyDropdown.value].text
-            : AIDifficultyUltraHardLabel;
-        settings.weatherConditions = weatherDropdown.options[weatherDropdown.value].text;
-        settings.fixtureLighting = FixtureLightingOptions.FromIndex(fixtureLightingDropdown != null ? fixtureLightingDropdown.value : 0);
-        settings.ballColor = ballColorDropdown.options[ballColorDropdown.value].text;
-        settings.homeTeamName = homeTeamName;
-        settings.awayTeamName = awayTeamName;
-        RefreshTeamControlValidity(null);
-        bool homeCpuControlled = IsSinglePlayerCreateMode() && IsCpuControlled(homeTeamControlDropdown);
-        bool awayCpuControlled = IsSinglePlayerCreateMode() && IsCpuControlled(awayTeamControlDropdown);
-        settings.homeTeamControl = IsSinglePlayerCreateMode() ? GetTeamControlText(homeTeamControlDropdown) : TeamControlHumanLabel;
-        settings.awayTeamControl = IsSinglePlayerCreateMode() ? GetTeamControlText(awayTeamControlDropdown) : TeamControlHumanLabel;
-        bool usesRegularDraft = string.Equals(settings.draft, "Regular", StringComparison.OrdinalIgnoreCase);
-        settings.homeDraftPersona = ShouldApplyCpuDraftPersona(homeCpuControlled, usesRegularDraft) ? DraftProfileSophisticated : string.Empty;
-        settings.awayDraftPersona = ShouldApplyCpuDraftPersona(awayCpuControlled, usesRegularDraft) ? DraftProfileSophisticated : string.Empty;
-        settings.defaultDraftPersona = IsSinglePlayerCreateMode() ? string.Empty : DraftProfileSophisticated;
-        settings.homeRoomPersona = IsSinglePlayerCreateMode() ? ResolveRoomPersonaFromTeamControl(homeTeamControlDropdown) : RoomPersonaAskHuman;
-        settings.awayRoomPersona = IsSinglePlayerCreateMode() ? ResolveRoomPersonaFromTeamControl(awayTeamControlDropdown) : RoomPersonaAskHuman;
-        settings.defaultRoomPersona = homeCpuControlled && awayCpuControlled
-            ? RoomPersonaCodexTacticianUltraHard
-            : RoomPersonaAskHuman;
-        settings.includeTabletopia = includeTabletopiaToggle.isOn;
-        settings.includeNonTabletopia = includeNonTabletopiaToggle.isOn;
-        settings.includeInternationals = includeInternationalsToggle.isOn;
-        settings.includeTabletopiaGK = includeTabletopiaGKToggle.isOn;
-        settings.includeNonTabletopiaGK = includeNonTabletopiaGKToggle.isOn;
-        settings.includeInternationalsGK = includeInternationalsGKToggle.isOn;
-        TokenKitPreset selectedHomeKit = GetSelectedKitPreset(homeKitDropdown);
-        TokenKitPreset selectedAwayKit = GetSelectedKitPreset(awayKitDropdown);
-        TokenKitPreset selectedHomeGKKit = GetSelectedKitPreset(homeGKKitDropdown);
-        TokenKitPreset selectedAwayGKKit = GetSelectedKitPreset(awayGKKitDropdown);
-        settings.homeKit = selectedHomeKit?.DisplayName ?? GetSelectedKitPresetId(homeKitDropdown);
-        settings.awayKit = selectedAwayKit?.DisplayName ?? GetSelectedKitPresetId(awayKitDropdown);
-        settings.homeGKKit = selectedHomeGKKit?.DisplayName ?? GetSelectedKitPresetId(homeGKKitDropdown);
-        settings.awayGKKit = selectedAwayGKKit?.DisplayName ?? GetSelectedKitPresetId(awayGKKitDropdown);
-        Debug.Log($"[CreateNewGameManager] Selected kits: Home '{settings.homeKit}' (id '{selectedHomeKit?.Id ?? string.Empty}'), Away '{settings.awayKit}' (id '{selectedAwayKit?.Id ?? string.Empty}'), Home GK '{settings.homeGKKit}' (id '{selectedHomeGKKit?.Id ?? string.Empty}'), Away GK '{settings.awayGKKit}' (id '{selectedAwayGKKit?.Id ?? string.Empty}').");
+        GameSettings settings=CaptureSettingsFromUi(homeTeamName,awayTeamName,true);
 
         string path = ResolveGameSettingsSavePath(settings, out bool updatedExistingSave);
         string json = updatedExistingSave

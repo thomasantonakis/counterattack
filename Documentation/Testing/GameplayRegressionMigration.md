@@ -1,5 +1,155 @@
 # Gameplay regression migration
 
+Regular online conclusions add 8 EditMode + 18 PlayMode cases under the
+OnlineMatchConclusion feature folders, category OnlineMatchConclusion.
+All 26 new cases and 35 affected cases passed, zero failed/skipped; compilation
+separately clean. The new tests reproduce and fix offline end-panel interference,
+then assert terminal input, shared outcome/totals and no additional exit save.
+Feature Verification.md retains XML and scope. No legacy scenario was retired.
+
+Room coin toss/half transitions add 13 EditMode + 24 PlayMode cases under
+Assets/Editor/FeatureTests/OnlineRoomCoinToss and
+Assets/Tests/PlayMode/Features/OnlineRoomCoinToss, category OnlineRoomCoinToss.
+All 37 passed with zero failed/skipped. Null-preserving replica/view copies fix
+an actual ghost coin panel; existing malformed-state fixtures use the corrected
+copy path without weakened assertions. The 142 distinct affected cases passed;
+feature Verification.md retains exact XML, reproduced failures and build scope.
+No legacy case was retired; Mac/paired internet execution remains deferred.
+
+Online shootout ordering/outcomes add 19 EditMode and 36 PlayMode cases in
+`Assets/Editor/FeatureTests/OnlineShootout/` and
+`Assets/Tests/PlayMode/Features/OnlineShootout/`, category `OnlineShootout`.
+Feature Verification.md retains exact native evidence, fixture corrections and
+the reproduced online end-panel/scoreboard issue. Full Room v6 publishes orders,
+readiness, scores, attempts/results, actors and explicit final completion.
+No legacy scenario is retired; normal Room opening coin toss/half transitions
+and actual paired internet acceptance remain separate integration work.
+
+Full Room snapshot pose continuity adds 9 EditMode and 5 PlayMode cases in
+`Assets/Editor/FeatureTests/OnlineSnapshotPose/` and
+`Assets/Tests/PlayMode/Features/OnlineSnapshotPose/`, category `OnlineSnapshotPose`.
+All passed with zero failures/skips in `Runs/20261115T210329422Z/results.xml`
+and `Runs/20261115T210343538Z/results.xml`; compilation separately clean.
+The red `Runs/20261115T210205269Z/results.xml` reproduces actual ball snapping.
+No legacy scenario was retired. These are local full snapshots, not paired
+internet latency acceptance. Every case is registered in the Mac manifest.
+
+Required online goalkeeper decisions add 33 independently selectable PlayMode
+cases in `Assets/Tests/PlayMode/Features/OnlineRequiredKeeper/`, category
+`OnlineRequiredKeeper`: 1 + 16 + 16 passed, zero failed/skipped, in
+`Runs/20261115T204309481Z/results.xml`, `Runs/20261115T204419565Z/results.xml`
+and `Runs/20261115T204750695Z/results.xml`. Compilation separately clean.
+The real-scene fixtures cover forced substitutions/emergency nomination,
+requester-owned pauses, actual authored controls and inert guest projection.
+Each case is registered for the deferred Mac run; no legacy cases retired and
+no complete suite or internet pairing executed. See feature Verification.md.
+
+Online dribble continuation adds 12 independently selectable PlayMode cases
+under `Assets/Tests/PlayMode/Features/OnlineDribble/`, category `OnlineDribble`:
+12 passed, zero failed/skipped, in `Runs/20261114T144142718Z/results.xml`.
+Compilation separately clean. Affected offline movement steals passed 2 in
+`Runs/20261114T144326376Z/results.xml`; dribble forfeit passed 1 in
+`Runs/20261114T144435409Z/results.xml`. No legacy cases retired or full suites run.
+Each new case is registered separately in OnlineMacTestManifest.json; Mac is
+deferred. See feature Verification.md for reproduction and coverage boundaries.
+
+Online continuous-session completion adds 8 EditMode cases in
+`Assets/Editor/FeatureTests/OnlineContinuousSession/` and 2 real multi-pass
+PlayMode cases in `Assets/Tests/PlayMode/Features/OnlineContinuousSession/`,
+category `OnlineContinuousSession`, all passed with zero failed/skipped.
+Evidence: `Runs/20261114T104313622Z/results.xml` and
+`Runs/20261114T134834652Z/results.xml`. Affected manual transport 7 passed in
+`Runs/20261114T134924791Z/results.xml`; compilation separately clean.
+No legacy cases retired or whole suites run. See feature Verification.md for
+fixture corrections, packaged evidence and the remaining full-Room boundary.
+
+Online First Time Pass adds 16 independently selectable PlayMode cases in
+`Assets/Tests/PlayMode/Features/OnlineFirstTimePass/`, category
+`OnlineFirstTimePass`: 14 isolated cases in `Runs/20261114T103218502Z/results.xml`
+and 2 real Room-manager cases in `Runs/20261114T103724760Z/results.xml`, all
+passed (zero failed/skipped). Compilation separately clean. Affected offline
+`LegacyFirstTimePassPlayModeTests` passed 10 cases in
+`Runs/20261114T103412350Z/results.xml`. No legacy case was retired or full suite
+run. See feature Verification.md for reproductions and fixture correction.
+
+Online goalkeeper interruptions add ten independently selectable PlayMode
+cases in category `OnlineGoalkeeper`, fixture `OnlineGoalkeeperPlayModeTests`,
+under `Assets/Tests/PlayMode/Features/OnlineGoalkeeper/`. All ten passed,
+zero failed/skipped, in `Runs/20261114T101909890Z/results.xml`; compilation
+separately clean. Deferred offline `LegacyKickoffPlayModeTests` also passed
+two cases in `Runs/20261114T101732849Z/results.xml`. No legacy case was retired
+and no whole suite ran. The earlier Editor block was a low-space dialog,
+resolved manually by the user; subsequent C: free space was about 129 GiB.
+
+Online goals/kickoff add six independently selectable cases in category
+`OnlineGoals`, fixture `OnlineGoalPlayModeTests`, under
+`Assets/Tests/PlayMode/Features/OnlineGoals/`. All six passed (0 failed/skipped)
+in `Runs/20261114T095649920Z/results.xml`; compilation separately clean.
+These extend online coverage rather than replace legacy scenarios. See
+OnlineGoals/Verification.md for reproductions, fixture timing correction and
+broader user-run kickoff coverage. The subsequent offline kickoff check and
+builds could not start because Editor commands timed out after restoring Room;
+Pipeline discovery still responds. No whole suites ran.
+
+Online outfield blocks add 10 independently selectable PlayMode cases, all passed
+with zero failed/skipped and compilation separately clean. Includes late input
+around the existing one-frame delay, cancellation before dice, misses/saves,
+successful scatter and holds. OnlineShots now has 40 distinct passing outcomes
+across focused runs; see Verification.md for exact scope and retained XML.
+
+Ordinary online shots add 14 cases to OnlineShots, bringing its focused category
+to **30 passed**, zero failed/skipped, compilation separately clean. Reproduced
+missing selection, disabled-owner continuation, empty post-pass menus and Final
+Third preview priority before fixes. Manual controls 7 and offline ShotFollowup 4
+also pass. Exact XML and unexecuted blocking/goal paths are in the feature
+Verification.md; no complete suites ran or legacy scenarios removed.
+
+Online headed shots add 16 independently selectable PlayMode cases in category
+OnlineShots with passing final outcomes. Missing save routing, disabled-authority
+continuation and jackpot-enabled numeric handling were reproduced and fixed.
+Two fixture tie cases now finish their real rebound before teardown; their
+focused reruns pass without suppressing logs. Offline save-floor 4 and retained
+jumper/scatter 6 also pass; compilation separately clean, no complete suites.
+See OnlineShots/Verification.md for exact XML, mixed initial runs and pending paths.
+
+Online loose balls add 18 independently selectable PlayMode cases, category
+OnlineLooseBall, all passed with zero failed/skipped and compilation separately
+clean. Mandatory-action routing and cancelled-result replacement races were
+reproduced before fixes. Existing LegacyHeaderResolutionPlayModeTests also passed
+12 cases. See OnlineLooseBall/Verification.md for XML and remaining boundaries;
+no legacy cases removed or complete suites run.
+
+Online keeper distribution adds 14 independently selectable PlayMode cases,
+category OnlineKeeperDistribution. All pass with zero failed/skipped; compilation
+separately clean. Includes real catches, both-team quick throws, Final Third
+drop/kick targeting, holds and stale/guest/replay rejection. Six missing-choice
+failures were reproduced before implementation. See the feature Verification.md
+for native XML, fixture correction and unexecuted branches. No legacy removals
+or complete-suite runs.
+
+Online header integration adds 10 EditMode + 40 PlayMode cases in category
+OnlineHeaders. Four result-hold failures were reproduced before the fix; the
+final focused feature runs pass with zero failed/skipped, compilation separately
+clean. Existing offline ManualHeaderResult (2) and wire/shared-pause (11 EditMode)
+also pass. No legacy cases were removed and no complete suites ran. The feature
+Verification.md records actual XML and still-unexecuted header branches.
+Keeper back-pass and landing interception extensions reproduced missing commands,
+wrong dice actors and cancellation null references before fixes. Final focused
+coverage includes all 40 cases with unchanged dice thresholds and offline rules.
+Affected LegacyHeaderResolutionPlayModeTests passed all 12 after correcting its
+shared inaccurate-header fixture to enter legal open play before requesting C.
+The initial failures and final XML are recorded in OnlineHeaders/Verification.md;
+all downstream assertions remain enabled.
+
+Online high-pass integration adds 21 independently selectable native PlayMode
+cases (category OnlineHighPass), with compilation clean and zero failed/skipped
+in `Runs/20261113T214426081Z/results.xml`. LegacyHighPassBoxSequencePlayModeTests
+was retained and passed (1 case) in `Runs/20261113T214249988Z/results.xml`. Its
+fixture now enters open play through the normal match phase API before pressing
+C: StartMatch correctly offers only a ground pass at kickoff. The original box
+entry, keeper move/rush, F3 and header assertions are preserved. See the
+OnlineHighPass feature verification for the initial failure and affected scope.
+
 Restart selection feedback adds 24 native cases for stopped throw-in targeting,
 post-header MP commitment, corner HP yellow targets and F3 orange hover. Final
 focused runs passed these 24 plus 3 existing high-pass selection and 8 F3 timing
@@ -472,6 +622,110 @@ passed across `Runs/20261108T091321442Z/results.xml` (36/3/0),
 `Runs/20261108T092026689Z/results.xml` (1/0/0). These overlap; do not add counts.
 The feature Verification.md explains fixture corrections and exact broader
 user-run coverage. No legacy scenario was retired and no whole suite was run.
+
+# Online ground duels ? 2026-11-14
+
+Dedicated `OnlineGroundDuelPlayModeTests` / category `OnlineGroundDuels` cover
+real nutmeg attempts, victim selection, tackle/stand, rolls, reposition and ties
+in both directions: 36/0/0 at `Runs/20261114T150325167Z/results.xml`.
+Affected online dribble 12/0/0 at `Runs/20261114T150922447Z/results.xml`;
+offline tackle continuation 1/0/0 at `Runs/20261114T151340606Z/results.xml`.
+Compilation separately clean. Legacy cases retained; no whole suite run.
+Mac cases registered individually and deferred. Fouls and restarts follow.
+
+Online fouls: 16 focused passes (`20261114T152353072Z`) and 5 affected
+offline passes (`20261114T152445990Z`), zero failures/skips. Compilation clean.
+See OnlineFouls/Verification.md. Each new case registered in the deferred Mac
+manifest. Next: set-piece preparation and execution, normal Room lifecycle.
+
+Online set pieces: 20 isolated and 2 actual serialized Room-proof passes, plus
+1 affected offline setup pass, zero failed/skipped; compilation separately clean.
+See OnlineSetPieces/Verification.md. Typed setup, restrictions and execution
+choices now connect to existing pass/cross/long/shot managers. Each new case
+has a deferred Mac manifest entry. Full normal Room remains future work.
+
+Online penalties now have 12 isolated and 2 actual serialized Room-proof passes,
+plus 2 real in-box steal-foul award cases, zero failed/skipped. Compilation clean.
+See OnlinePenalties/Verification.md for native evidence and resolved missing grid
+cache initialization. Mac cases registered individually. Exports at84d016e
+precede penalties/caches; refresh again before paired execution. Next throw-ins,
+remaining substitutions/keeper replacement and normal full Room lifecycle.
+
+Online throw-ins: 10 isolated + 4 actual Room-proof passes and 5 affected offline
+passes, zero failed/skipped; compilation clean. See OnlineThrowIns/Verification.md.
+New user priority: complete Create New Game guest joining/team names/jerseys/both
+ready, Draft owned rolls/picks/slot moves/start, and Room pause/settings,
+substitutions and shootout ordering. See OnlineSessionLifecycle.md. Paired Mac
+execution remains deferred; each new case still requires its own manifest row.
+
+Setup agreement/capture slice: 44 distinct EditMode passes plus 27 affected
+protocol passes, compilation separately clean. See OnlineSetupAgreement/Verification.md.
+Team-owned names/kits, shared configuration, both ready, edit/rebind invalidation
+and host start are implemented. The existing Create New Game button can bind
+confirmation to its session; unbound online guests cannot save/load Draft locally.
+Actual lobby UI/transport, session persistence, Draft and Room menu integration
+remain next. Do not claim the frontend is connected yet. All Mac cases registered.
+
+Online setup client/view: 48 distinct focused EditMode cases passed, plus 24
+affected agreement and 5 authored capture cases. See OnlineSetupClient/Verification.md.
+CreateNewGameScene now owns OnlineSetupView and a Header status object, hidden
+offline; bindings enforce own names/kits, host shared settings and agreed start.
+Unsaved edits survive remote snapshots and pending replies. The persistent EOS
+lobby/session must still supply that client; Main Menu multiplayer is still a
+placeholder. Continue actual host/join transport, scene handoff, Draft, and Room
+menus/substitutions/shootout ordering. Mac manual execution remains deferred.
+
+
+Online off-target camera misses now publish their real ball motion through the
+existing Room v20 / wire v7 pose lanes and retire stale flight/restart work on
+shot reset. Twenty new native cases passed (14 full-shot, six snapshot), plus ten
+focused shot/possession regressions and 13 report-tool unit tests. Every new case
+has a separate deferred Mac manifest entry. All three Windows exports succeeded
+at 08:32-08:33 UTC November 17; packaged Room/local, Gameplay/local and Room/EOS
+login checks passed at 08:36 UTC. Builds retain the known nonfatal vswhere
+post-build diagnostic; compilation has zero errors. See
+Assets/Editor/FeatureTests/OnlineOffTargetCamera/Verification.md.
+Next audit: lob/wide off-target continuation cancellation. Paired testing and
+measured internet latency remain deferred until requested.
+
+
+Off-target lob continuation is now cancellation-safe: eight new full-shot and
+snapshot cases passed in both directions after reproducing four stale-flight
+failures. Four focused long-pass cases and 13 report-tool checks passed. All
+eight additions are individually registered for the deferred Mac run. All three
+Windows exports succeeded at 10:38-10:39 UTC November 17, retaining the known
+nonfatal vswhere diagnostic and zero C# compilation errors. See
+Assets/Editor/FeatureTests/OnlineOffTargetLob/Verification.md. Room stays v20 /
+wire v7. Next: wide-miss ball-motion cancellation. Paired testing remains deferred.
+
+
+Wide off-target misses now cancel safely through GroundBallManager and Ball,
+including replacement movement ownership and rejection before ownership. Twelve
+new full-shot/snapshot cases passed in both directions; four strengthened
+replacement reruns and ten affected ground-pass/goalkeeper box-entry cases also
+passed. Compilation clean; 13 report-tool checks passed. All twelve cases have
+individual deferred Mac entries. All three Windows exports succeeded at
+10:57-10:58 UTC November 17 with the known nonfatal vswhere post-build diagnostic.
+See Assets/Editor/FeatureTests/OnlineOffTargetWide/Verification.md. Room stays
+v20 / wire v7. Full-match paired acceptance and actual internet latency remain
+unmeasured and deferred until requested. Continue remaining interruption/result
+presentation audit; preserve unresolved shared-settings and outfield-X rule
+questions in GameplayReview.md.
+
+
+Mac verification follow-up (2026-11-17): original report
+verification/sons-mac-20261117T111338Z-81219 contains 1,736 native passes,
+four ground-cleanup assertion failures and one skipped one-use EOS session test.
+All three Mac builds and both local probes passed; packaged EOS device creation
+failed without an enum in its old message. No pairing occurred: Windows slept
+through the host-request window (confirmed lid/button power events).
+The four fixture expectations are corrected and pass on Windows, without
+changing gameplay. Tooling now supports exact --fixture / explicit --skip-native,
+gates host waits on successful EOS login and expires host requests at the guest
+deadline. EOS failure messages now include result enums. Seventeen tooling checks
+passed. See Documentation/Testing/OnlinePairingRecovery.md for evidence and the
+short retry command. Do not repeat all 127 fixtures by default; do not claim
+paired success or a fixed Mac identity until the short Mac run proves it.
 
 ### User-run full suites and focused PlayMode repair — 2026-11-19
 

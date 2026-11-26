@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="12" result="Passed" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 23:29:33Z" end-time="2026-11-16 23:30:55Z" duration="81.4983711">
+  <test-suite type="TestSuite" id="3152" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1793" result="Passed" start-time="2026-11-16 23:29:33Z" end-time="2026-11-16 23:30:55Z" duration="81.498371" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="3149" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1793" result="Passed" start-time="2026-11-16 23:29:33Z" end-time="2026-11-16 23:30:55Z" duration="81.438535" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12156" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="2274" name="OnlinePublicationCadencePlayModeTests" fullname="OnlinePublicationCadencePlayModeTests" classname="OnlinePublicationCadencePlayModeTests" runstate="Runnable" testcasecount="12" result="Passed" start-time="2026-11-16 23:29:33Z" end-time="2026-11-16 23:30:55Z" duration="81.428422" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlinePublicationCadence" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="2287" name="ReliableHostPublication" fullname="OnlinePublicationCadencePlayModeTests.ReliableHostPublication" classname="OnlinePublicationCadencePlayModeTests" runstate="Runnable" testcasecount="12" result="Passed" start-time="2026-11-16 23:29:33Z" end-time="2026-11-16 23:30:55Z" duration="81.415382" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <test-case id="2275" name="ReliableHostPublication(16,False,&quot;selection&quot;)" fullname="OnlinePublicationCadencePlayModeTests.ReliableHostPublication(16,False,&quot;selection&quot;)" methodname="ReliableHostPublication" classname="OnlinePublicationCadencePlayModeTests" runstate="Runnable" seed="268769637" result="Passed" start-time="2026-11-16 23:29:33Z" end-time="2026-11-16 23:29:46Z" duration="12.726642" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[[TokenKitCatalog] Loading kits JSON from Resources path 'Kits/kit-picker-v1-11-supported' (asset: Assets/Resources/Kits/kit-picker-v1-11-supported.json).
+[TokenKitCatalog] Found kits JSON TextAsset 'kit-picker-v1-11-supported' at Resources path 'Kits/kit-picker-v1-11-supported' (32277 characters).
+[TokenKitCatalog] Parsed 101 kit preset(s) from Resources path 'Kits/kit-picker-v1-11-supported'.
+[TokenKitCatalog] Active kit catalog contains 101 kit preset(s).
+MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584927984176
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Selecting token 1. Kuzmic
+Deselecting 1. Kuzmic
+Switching Selected token to 10. Taylor
+]]></output>
+          </test-case>
+          <test-case id="2276" name="ReliableHostPublication(16,False,&quot;pause&quot;)" fullname="OnlinePublicationCadencePlayModeTests.ReliableHostPublication(16,False,&quot;pause&quot;)" methodname="ReliableHostPublication" classname="OnlinePublicationCadencePlayModeTests" runstate="Runnable" seed="324768570" result="Passed" start-time="2026-11-16 23:29:46Z" end-time="2026-11-16 23:29:52Z" duration="6.250566" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584928047814
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2277" name="ReliableHostPublication(16,False,&quot;heartbeat&quot;)" fullname="OnlinePublicationCadencePlayModeTests.ReliableHostPublication(16,False,&quot;heartbeat&quot;)" methodname="ReliableHostPublication" classname="OnlinePublicationCadencePlayModeTests" runstate="Runnable" seed="818418925" result="Passed" start-time="2026-11-16 23:29:52Z" end-time="2026-11-16 23:29:59Z" duration="6.371318" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584928111452
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2278" name="ReliableHostPublication(16,True,&quot;selection&quot;)" fullname="OnlinePublicationCadencePlayModeTests.ReliableHostPublication(16,True,&quot;selection&quot;)" methodname="ReliableHostPublication" classname="OnlinePublicationCadencePlayModeTests" runstate="Runnable" seed="1642518916" result="Passed" start-time="2026-11-16 23:29:59Z" end-time="2026-11-16 23:30:05Z" duration="6.316133" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584928175090
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Selecting token 1. Kuzmic
+Deselecting 1. Kuzmic
+Switching Selected token to 10. Taylor
+]]></output>
+          </test-case>
+          <test-case id="2279" name="ReliableHostPublication(16,True,&quot;pause&quot;)" fullname="OnlinePublicationCadencePlayModeTests.ReliableHostPublication(16,True,&quot;pause&quot;)" methodname="ReliableHostPublication" classname="OnlinePublicationCadencePlayModeTests" runstate="Runnable" seed="1413502014" result="Passed" start-time="2026-11-16 23:30:05Z" end-time="2026-11-16 23:30:11Z" duration="6.391468" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584928238728
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2280" name="ReliableHostPublication(16,True,&quot;heartbeat&quot;)" fullname="OnlinePublicationCadencePlayModeTests.ReliableHostPublication(16,True,&quot;heartbeat&quot;)" methodname="ReliableHostPublication" classname="OnlinePublicationCadencePlayModeTests" runstate="Runnable" seed="1800554427" result="Passed" start-time="2026-11-16 23:30:11Z" end-time="2026-11-16 23:30:18Z" duration="6.274611" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584928302366
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2281" name="ReliableHostPublication(18,False,&quot;selection&quot;)" fullname="OnlinePublicationCadencePlayModeTests.ReliableHostPublication(18,False,&quot;selection&quot;)" methodname="ReliableHostPublication" classname="OnlinePublicationCadencePlayModeTests" runstate="Runnable" seed="497081304" result="Passed" start-time="2026-11-16 23:30:18Z" end-time="2026-11-16 23:30:24Z" duration="6.105304" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584928366004
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Selecting token 1. Kuzmic
+Deselecting 1. Kuzmic
+Switching Selected token to 10. Taylor
+]]></output>
+          </test-case>
+          <test-case id="2282" name="ReliableHostPublication(18,False,&quot;pause&quot;)" fullname="OnlinePublicationCadencePlayModeTests.ReliableHostPublication(18,False,&quot;pause&quot;)" methodname="ReliableHostPublication" classname="OnlinePublicationCadencePlayModeTests" runstate="Runnable" seed="1983427071" result="Passed" start-time="2026-11-16 23:30:24Z" end-time="2026-11-16 23:30:30Z" duration="5.978693" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584928429642
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2283" name="ReliableHostPublication(18,False,&quot;heartbeat&quot;)" fullname="OnlinePublicationCadencePlayModeTests.ReliableHostPublication(18,False,&quot;heartbeat&quot;)" methodname="ReliableHostPublication" classname="OnlinePublicationCadencePlayModeTests" runstate="Runnable" seed="1909275517" result="Passed" start-time="2026-11-16 23:30:30Z" end-time="2026-11-16 23:30:36Z" duration="6.255812" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584928493280
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2284" name="ReliableHostPublication(18,True,&quot;selection&quot;)" fullname="OnlinePublicationCadencePlayModeTests.ReliableHostPublication(18,True,&quot;selection&quot;)" methodname="ReliableHostPublication" classname="OnlinePublicationCadencePlayModeTests" runstate="Runnable" seed="811439500" result="Passed" start-time="2026-11-16 23:30:36Z" end-time="2026-11-16 23:30:42Z" duration="6.148146" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584928556918
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Selecting token 1. Kuzmic
+Deselecting 1. Kuzmic
+Switching Selected token to 10. Taylor
+]]></output>
+          </test-case>
+          <test-case id="2285" name="ReliableHostPublication(18,True,&quot;pause&quot;)" fullname="OnlinePublicationCadencePlayModeTests.ReliableHostPublication(18,True,&quot;pause&quot;)" methodname="ReliableHostPublication" classname="OnlinePublicationCadencePlayModeTests" runstate="Runnable" seed="420085313" result="Passed" start-time="2026-11-16 23:30:42Z" end-time="2026-11-16 23:30:48Z" duration="6.281549" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584928620556
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+]]></output>
+          </test-case>
+          <test-case id="2286" name="ReliableHostPublication(18,True,&quot;heartbeat&quot;)" fullname="OnlinePublicationCadencePlayModeTests.ReliableHostPublication(18,True,&quot;heartbeat&quot;)" methodname="ReliableHostPublication" classname="OnlinePublicationCadencePlayModeTests" runstate="Runnable" seed="1435905807" result="Passed" start-time="2026-11-16 23:30:48Z" end-time="2026-11-16 23:30:55Z" duration="6.273289" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[MatchManager Awake() - Starting Initialization
+⚠️ MatchManager Awake() - Entity ID: 568105584928684194
+Ball reference set in PlayerToken. Ball Hex: 
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Finished calculating goal distances and dangerous tackling positions.
+Pre-Kickoff Formation: Click tokens to reposition them. Press Enter twice to continue to kick-off taker selection.
+ScoreboardManager: Running LoadTeamNames
+Saving results to: TestResults\GameplayRegression\Runs\20261116T232933699Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

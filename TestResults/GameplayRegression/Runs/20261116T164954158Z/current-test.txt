@@ -1,0 +1,1 @@
+OnlineOutsideKeeperShotEditorTests.PhysicalChoiceUsesOnlyPublishedAction(B,"shot.keeper.block")

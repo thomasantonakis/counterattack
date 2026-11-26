@@ -1,0 +1,16 @@
+{"name":"OnlineShootoutPlayModeTests.FirstKickOutcomeContinues(False,\"goal\",False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineShootoutPlayModeTests.FirstKickOutcomeContinues(False,\"goal\",True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineShootoutPlayModeTests.FirstKickOutcomeContinues(False,\"offtarget\",False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineShootoutPlayModeTests.FirstKickOutcomeContinues(False,\"offtarget\",True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineShootoutPlayModeTests.FirstKickOutcomeContinues(False,\"save\",False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineShootoutPlayModeTests.FirstKickOutcomeContinues(False,\"save\",True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineShootoutPlayModeTests.FirstKickOutcomeContinues(False,\"tie\",False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineShootoutPlayModeTests.FirstKickOutcomeContinues(False,\"tie\",True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineShootoutPlayModeTests.FirstKickOutcomeContinues(True,\"goal\",False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineShootoutPlayModeTests.FirstKickOutcomeContinues(True,\"goal\",True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineShootoutPlayModeTests.FirstKickOutcomeContinues(True,\"offtarget\",False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineShootoutPlayModeTests.FirstKickOutcomeContinues(True,\"offtarget\",True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineShootoutPlayModeTests.FirstKickOutcomeContinues(True,\"save\",False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineShootoutPlayModeTests.FirstKickOutcomeContinues(True,\"save\",True)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineShootoutPlayModeTests.FirstKickOutcomeContinues(True,\"tie\",False)","status":"Passed","message":"","stackTrace":""}
+{"name":"OnlineShootoutPlayModeTests.FirstKickOutcomeContinues(True,\"tie\",True)","status":"Passed","message":"","stackTrace":""}

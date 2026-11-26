@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="13" result="Passed" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 06:04:47Z" end-time="2026-11-16 06:04:47Z" duration="0.1880298">
+  <test-suite type="TestSuite" id="4758" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1697" result="Passed" start-time="2026-11-16 06:04:47Z" end-time="2026-11-16 06:04:47Z" duration="0.188030" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="4752" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="1697" result="Passed" start-time="2026-11-16 06:04:47Z" end-time="2026-11-16 06:04:47Z" duration="0.169707" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17216" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="3755" name="OnlineRosterReplicationEditorTests" fullname="OnlineRosterReplicationEditorTests" classname="OnlineRosterReplicationEditorTests" runstate="Runnable" testcasecount="13" result="Passed" start-time="2026-11-16 06:04:47Z" end-time="2026-11-16 06:04:47Z" duration="0.162304" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineRosterReplication" />
+        </properties>
+        <test-suite type="ParameterizedMethod" id="3769" name="RejectsMalformedRosterWithoutAdvancingReplica" fullname="OnlineRosterReplicationEditorTests.RejectsMalformedRosterWithoutAdvancingReplica" classname="OnlineRosterReplicationEditorTests" runstate="Runnable" testcasecount="13" result="Passed" start-time="2026-11-16 06:04:47Z" end-time="2026-11-16 06:04:47Z" duration="0.159624" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="3756" name="RejectsMalformedRosterWithoutAdvancingReplica(&quot;missing-runtime&quot;)" fullname="OnlineRosterReplicationEditorTests.RejectsMalformedRosterWithoutAdvancingReplica(&quot;missing-runtime&quot;)" methodname="RejectsMalformedRosterWithoutAdvancingReplica" classname="OnlineRosterReplicationEditorTests" runstate="Runnable" seed="1002119499" result="Passed" start-time="2026-11-16 06:04:47Z" end-time="2026-11-16 06:04:47Z" duration="0.016811" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3757" name="RejectsMalformedRosterWithoutAdvancingReplica(&quot;identity&quot;)" fullname="OnlineRosterReplicationEditorTests.RejectsMalformedRosterWithoutAdvancingReplica(&quot;identity&quot;)" methodname="RejectsMalformedRosterWithoutAdvancingReplica" classname="OnlineRosterReplicationEditorTests" runstate="Runnable" seed="1527358064" result="Passed" start-time="2026-11-16 06:04:47Z" end-time="2026-11-16 06:04:47Z" duration="0.011185" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3758" name="RejectsMalformedRosterWithoutAdvancingReplica(&quot;duplicate-hex&quot;)" fullname="OnlineRosterReplicationEditorTests.RejectsMalformedRosterWithoutAdvancingReplica(&quot;duplicate-hex&quot;)" methodname="RejectsMalformedRosterWithoutAdvancingReplica" classname="OnlineRosterReplicationEditorTests" runstate="Runnable" seed="2012133717" result="Passed" start-time="2026-11-16 06:04:47Z" end-time="2026-11-16 06:04:47Z" duration="0.016276" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3759" name="RejectsMalformedRosterWithoutAdvancingReplica(&quot;inconsistent-hex&quot;)" fullname="OnlineRosterReplicationEditorTests.RejectsMalformedRosterWithoutAdvancingReplica(&quot;inconsistent-hex&quot;)" methodname="RejectsMalformedRosterWithoutAdvancingReplica" classname="OnlineRosterReplicationEditorTests" runstate="Runnable" seed="1357747522" result="Passed" start-time="2026-11-16 06:04:47Z" end-time="2026-11-16 06:04:47Z" duration="0.009267" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3760" name="RejectsMalformedRosterWithoutAdvancingReplica(&quot;sent-off-visible&quot;)" fullname="OnlineRosterReplicationEditorTests.RejectsMalformedRosterWithoutAdvancingReplica(&quot;sent-off-visible&quot;)" methodname="RejectsMalformedRosterWithoutAdvancingReplica" classname="OnlineRosterReplicationEditorTests" runstate="Runnable" seed="1178446711" result="Passed" start-time="2026-11-16 06:04:47Z" end-time="2026-11-16 06:04:47Z" duration="0.009074" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3761" name="RejectsMalformedRosterWithoutAdvancingReplica(&quot;direction&quot;)" fullname="OnlineRosterReplicationEditorTests.RejectsMalformedRosterWithoutAdvancingReplica(&quot;direction&quot;)" methodname="RejectsMalformedRosterWithoutAdvancingReplica" classname="OnlineRosterReplicationEditorTests" runstate="Runnable" seed="1670535379" result="Passed" start-time="2026-11-16 06:04:47Z" end-time="2026-11-16 06:04:47Z" duration="0.012076" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3762" name="RejectsMalformedRosterWithoutAdvancingReplica(&quot;non-finite-world&quot;)" fullname="OnlineRosterReplicationEditorTests.RejectsMalformedRosterWithoutAdvancingReplica(&quot;non-finite-world&quot;)" methodname="RejectsMalformedRosterWithoutAdvancingReplica" classname="OnlineRosterReplicationEditorTests" runstate="Runnable" seed="2123027900" result="Passed" start-time="2026-11-16 06:04:47Z" end-time="2026-11-16 06:04:47Z" duration="0.012218" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3763" name="RejectsMalformedRosterWithoutAdvancingReplica(&quot;non-finite-stat&quot;)" fullname="OnlineRosterReplicationEditorTests.RejectsMalformedRosterWithoutAdvancingReplica(&quot;non-finite-stat&quot;)" methodname="RejectsMalformedRosterWithoutAdvancingReplica" classname="OnlineRosterReplicationEditorTests" runstate="Runnable" seed="1957320407" result="Passed" start-time="2026-11-16 06:04:47Z" end-time="2026-11-16 06:04:47Z" duration="0.008087" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3764" name="RejectsMalformedRosterWithoutAdvancingReplica(&quot;attribute&quot;)" fullname="OnlineRosterReplicationEditorTests.RejectsMalformedRosterWithoutAdvancingReplica(&quot;attribute&quot;)" methodname="RejectsMalformedRosterWithoutAdvancingReplica" classname="OnlineRosterReplicationEditorTests" runstate="Runnable" seed="1692889685" result="Passed" start-time="2026-11-16 06:04:47Z" end-time="2026-11-16 06:04:47Z" duration="0.008867" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3765" name="RejectsMalformedRosterWithoutAdvancingReplica(&quot;roster&quot;)" fullname="OnlineRosterReplicationEditorTests.RejectsMalformedRosterWithoutAdvancingReplica(&quot;roster&quot;)" methodname="RejectsMalformedRosterWithoutAdvancingReplica" classname="OnlineRosterReplicationEditorTests" runstate="Runnable" seed="460321896" result="Passed" start-time="2026-11-16 06:04:47Z" end-time="2026-11-16 06:04:47Z" duration="0.008254" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3766" name="RejectsMalformedRosterWithoutAdvancingReplica(&quot;team-stats&quot;)" fullname="OnlineRosterReplicationEditorTests.RejectsMalformedRosterWithoutAdvancingReplica(&quot;team-stats&quot;)" methodname="RejectsMalformedRosterWithoutAdvancingReplica" classname="OnlineRosterReplicationEditorTests" runstate="Runnable" seed="790003008" result="Passed" start-time="2026-11-16 06:04:47Z" end-time="2026-11-16 06:04:47Z" duration="0.009142" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3767" name="RejectsMalformedRosterWithoutAdvancingReplica(&quot;ball-bounds&quot;)" fullname="OnlineRosterReplicationEditorTests.RejectsMalformedRosterWithoutAdvancingReplica(&quot;ball-bounds&quot;)" methodname="RejectsMalformedRosterWithoutAdvancingReplica" classname="OnlineRosterReplicationEditorTests" runstate="Runnable" seed="279691473" result="Passed" start-time="2026-11-16 06:04:47Z" end-time="2026-11-16 06:04:47Z" duration="0.008484" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="3768" name="RejectsMalformedRosterWithoutAdvancingReplica(&quot;clock&quot;)" fullname="OnlineRosterReplicationEditorTests.RejectsMalformedRosterWithoutAdvancingReplica(&quot;clock&quot;)" methodname="RejectsMalformedRosterWithoutAdvancingReplica" classname="OnlineRosterReplicationEditorTests" runstate="Runnable" seed="195290425" result="Passed" start-time="2026-11-16 06:04:47Z" end-time="2026-11-16 06:04:47Z" duration="0.008881" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <output><![CDATA[Saving results to: TestResults\GameplayRegression\Runs\20261116T060447178Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

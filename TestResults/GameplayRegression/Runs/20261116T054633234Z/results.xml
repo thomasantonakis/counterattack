@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="1" result="Failed(Child)" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 05:46:33Z" end-time="2026-11-16 05:46:33Z" duration="0.1895942">
+  <test-suite type="TestSuite" id="3006" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1697" result="Failed" site="Child" start-time="2026-11-16 05:46:33Z" end-time="2026-11-16 05:46:33Z" duration="0.189594" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="3000" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="1697" result="Failed" site="Child" start-time="2026-11-16 05:46:33Z" end-time="2026-11-16 05:46:33Z" duration="0.084465" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17216" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestFixture" id="1926" name="OnlineRoomCoinTossEditorTests" fullname="OnlineRoomCoinTossEditorTests" classname="OnlineRoomCoinTossEditorTests" runstate="Runnable" testcasecount="13" result="Failed" site="Child" start-time="2026-11-16 05:46:33Z" end-time="2026-11-16 05:46:33Z" duration="0.068653" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineRoomCoinToss" />
+        </properties>
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-case id="1927" name="ReplicaClearsOptionalCoinAndRetainsAbsentWorldPoses" fullname="OnlineRoomCoinTossEditorTests.ReplicaClearsOptionalCoinAndRetainsAbsentWorldPoses" methodname="ReplicaClearsOptionalCoinAndRetainsAbsentWorldPoses" classname="OnlineRoomCoinTossEditorTests" runstate="Runnable" seed="1027255814" result="Failed" start-time="2026-11-16 05:46:33Z" end-time="2026-11-16 05:46:33Z" duration="0.044698" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <failure>
+            <message><![CDATA[  An absent coin cannot become an empty live coin on the guest
+  Expected: null
+  But was:  <CounterAttack.Online.OnlineCoinTossSnapshot>
+]]></message>
+            <stack-trace><![CDATA[at OnlineRoomCoinTossEditorTests.ReplicaClearsOptionalCoinAndRetainsAbsentWorldPoses () [0x00091] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineRoomCoinToss\OnlineRoomCoinTossEditorTests.cs:19
+]]></stack-trace>
+          </failure>
+          <output><![CDATA[Saving results to: TestResults\GameplayRegression\Runs\20261116T054633234Z\results.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

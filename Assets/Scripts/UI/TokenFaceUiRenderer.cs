@@ -13,7 +13,8 @@ public static class TokenFaceUiRenderer
         TokenStyleDefinition style,
         int jerseyNumber,
         float plainNumberFontSize = DefaultPlainNumberFontSize,
-        float verticalNumberFontSize = DefaultVerticalNumberFontSize)
+        float verticalNumberFontSize = DefaultVerticalNumberFontSize,
+        bool preserveNumberPosition = false)
     {
         if (style == null)
         {
@@ -30,7 +31,7 @@ public static class TokenFaceUiRenderer
         if (numberText != null)
         {
             numberText.text = jerseyNumber > 0 ? jerseyNumber.ToString() : string.Empty;
-            TokenFacePreviewUtility.ApplyNumberStyle(numberText, style, plainNumberFontSize, verticalNumberFontSize);
+            TokenFacePreviewUtility.ApplyNumberStyle(numberText, style, plainNumberFontSize, verticalNumberFontSize, preserveNumberPosition);
         }
     }
 

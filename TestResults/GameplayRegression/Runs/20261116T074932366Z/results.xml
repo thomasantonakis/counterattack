@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="4" result="Failed(Child)" total="4" passed="0" failed="4" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-16 07:49:32Z" end-time="2026-11-16 07:49:36Z" duration="4.284656">
+  <test-suite type="TestSuite" id="2787" name="CA from Chatgpt" fullname="CA from Chatgpt" runstate="Runnable" testcasecount="1470" result="Failed" site="Child" start-time="2026-11-16 07:49:32Z" end-time="2026-11-16 07:49:36Z" duration="4.284656" total="4" passed="0" failed="4" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="2784" name="CounterAttack.Gameplay.PlayMode.dll" fullname="C:/Users/thomas/Documents/Projects/Personal/counterattack/Library/ScriptAssemblies/CounterAttack.Gameplay.PlayMode.dll" runstate="Runnable" testcasecount="1470" result="Failed" site="Child" start-time="2026-11-16 07:49:32Z" end-time="2026-11-16 07:49:36Z" duration="4.247098" total="4" passed="0" failed="4" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17216" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestFixture" id="1934" name="OnlineOutsideKeeperShotPlayModeTests" fullname="OnlineOutsideKeeperShotPlayModeTests" classname="OnlineOutsideKeeperShotPlayModeTests" runstate="Runnable" testcasecount="4" result="Failed" site="Child" start-time="2026-11-16 07:49:32Z" end-time="2026-11-16 07:49:36Z" duration="4.239467" total="4" passed="0" failed="4" inconclusive="0" skipped="0" asserts="0">
+        <properties>
+          <property name="Category" value="OnlineOutsideKeeperShot" />
+        </properties>
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="ParameterizedMethod" id="1939" name="ActualOutsideKeeperChoice" fullname="OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice" classname="OnlineOutsideKeeperShotPlayModeTests" runstate="Runnable" testcasecount="4" result="Failed" site="Child" start-time="2026-11-16 07:49:32Z" end-time="2026-11-16 07:49:36Z" duration="4.231230" total="4" passed="0" failed="4" inconclusive="0" skipped="0" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+          </properties>
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-case id="1935" name="ActualOutsideKeeperChoice(1,&quot;hands&quot;)" fullname="OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice(1,&quot;hands&quot;)" methodname="ActualOutsideKeeperChoice" classname="OnlineOutsideKeeperShotPlayModeTests" runstate="Runnable" seed="1083286035" result="Failed" start-time="2026-11-16 07:49:32Z" end-time="2026-11-16 07:49:33Z" duration="1.502621" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected string length 18 but was 12. Strings differ at index 5.
+  Expected: "shot.keeper-choice"
+  But was:  "shot.pending"
+  ----------------^
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineOutsideKeeperShot>d__113.MoveNext () [0x0023e] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineOutsideKeeperShot\OnlineOutsideKeeperShotFixture.cs:19
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Substitutions are no longer available: Committed to Shot
+Full Power Shot initiated. Proceeding to target selection.
+Shooter is OUTSIDE the penalty box. -1 to shot power.
+[Game Log] Home carrier (Fixture Home) takes a SHOT!
+Goalkeeper can move 1 hex
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Goalkeeper Away keeper has only outside-box save hexes on this shot. Waiting for [D]ive or [B]lock decision.
+Shot interactions found: 0
+Away keeper can only handle this shot outside their own penalty box at (10, 0, 0). Press [D]ive to attempt the save with hands, or [B]lock to act as an outfielder.
+]]></output>
+          </test-case>
+          <test-case id="1936" name="ActualOutsideKeeperChoice(1,&quot;block&quot;)" fullname="OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice(1,&quot;block&quot;)" methodname="ActualOutsideKeeperChoice" classname="OnlineOutsideKeeperShotPlayModeTests" runstate="Runnable" seed="1961708445" result="Failed" start-time="2026-11-16 07:49:33Z" end-time="2026-11-16 07:49:34Z" duration="0.837136" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected string length 18 but was 12. Strings differ at index 5.
+  Expected: "shot.keeper-choice"
+  But was:  "shot.pending"
+  ----------------^
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineOutsideKeeperShot>d__113.MoveNext () [0x0023e] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineOutsideKeeperShot\OnlineOutsideKeeperShotFixture.cs:19
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=8, tokens=none.
+Movement phase has been reset.
+Substitutions are no longer available: Committed to Shot
+Full Power Shot initiated. Proceeding to target selection.
+Shooter is OUTSIDE the penalty box. -1 to shot power.
+[Game Log] Home carrier (Fixture Home) takes a SHOT!
+Goalkeeper can move 1 hex
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Goalkeeper Away keeper has only outside-box save hexes on this shot. Waiting for [D]ive or [B]lock decision.
+Shot interactions found: 0
+Away keeper can only handle this shot outside their own penalty box at (10, 0, 0). Press [D]ive to attempt the save with hands, or [B]lock to act as an outfielder.
+]]></output>
+          </test-case>
+          <test-case id="1937" name="ActualOutsideKeeperChoice(-1,&quot;hands&quot;)" fullname="OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice(-1,&quot;hands&quot;)" methodname="ActualOutsideKeeperChoice" classname="OnlineOutsideKeeperShotPlayModeTests" runstate="Runnable" seed="1582803522" result="Failed" start-time="2026-11-16 07:49:34Z" end-time="2026-11-16 07:49:35Z" duration="0.908467" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected string length 18 but was 12. Strings differ at index 5.
+  Expected: "shot.keeper-choice"
+  But was:  "shot.pending"
+  ----------------^
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineOutsideKeeperShot>d__113.MoveNext () [0x0023e] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineOutsideKeeperShot\OnlineOutsideKeeperShotFixture.cs:19
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Substitutions are no longer available: Committed to Shot
+Full Power Shot initiated. Proceeding to target selection.
+Shooter is OUTSIDE the penalty box. -1 to shot power.
+[Game Log] Home carrier (Fixture Home) takes a SHOT!
+Goalkeeper can move 1 hex
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (-19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Goalkeeper Away keeper has only outside-box save hexes on this shot. Waiting for [D]ive or [B]lock decision.
+Shot interactions found: 0
+Away keeper can only handle this shot outside their own penalty box at (-10, 0, 0). Press [D]ive to attempt the save with hands, or [B]lock to act as an outfielder.
+]]></output>
+          </test-case>
+          <test-case id="1938" name="ActualOutsideKeeperChoice(-1,&quot;block&quot;)" fullname="OnlineOutsideKeeperShotPlayModeTests.ActualOutsideKeeperChoice(-1,&quot;block&quot;)" methodname="ActualOutsideKeeperChoice" classname="OnlineOutsideKeeperShotPlayModeTests" runstate="Runnable" seed="1193189470" result="Failed" start-time="2026-11-16 07:49:35Z" end-time="2026-11-16 07:49:36Z" duration="0.951159" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+            <failure>
+              <message><![CDATA[  Expected string length 18 but was 12. Strings differ at index 5.
+  Expected: "shot.keeper-choice"
+  But was:  "shot.pending"
+  ----------------^
+]]></message>
+              <stack-trace><![CDATA[at GoalkeeperBoxEntryFixture+<RunOnlineOutsideKeeperShot>d__113.MoveNext () [0x0023e] in C:\Users\thomas\Documents\Projects\Personal\counterattack\Assets\Editor\FeatureTests\OnlineOutsideKeeperShot\OnlineOutsideKeeperShotFixture.cs:19
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework@1405238725ab\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Ball reference set in PlayerToken. Ball Hex: 
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Found JSON with Shooting Paths. Deserializing...
+Finished Assigning CanShootFrom and CanShootTo paths.
+Finished Assigning CanHeadFrom and CanHeadTo paths.
+Attacking team has possession: True.
+Attacking team has possession: True.
+Offside assessed (end_movement_phase): line x=-8, tokens=none.
+Movement phase has been reset.
+Substitutions are no longer available: Committed to Shot
+Full Power Shot initiated. Proceeding to target selection.
+Shooter is OUTSIDE the penalty box. -1 to shot power.
+[Game Log] Home carrier (Fixture Home) takes a SHOT!
+Goalkeeper can move 1 hex
+Highlighting CanShootTo hexes for target selection.
+Waiting for target selection...
+Target hex (-19, 0, 0) selected. Preparing trajectory.
+Starting interception phase.
+Goalkeeper Away keeper has only outside-box save hexes on this shot. Waiting for [D]ive or [B]lock decision.
+Shot interactions found: 0
+Away keeper can only handle this shot outside their own penalty box at (-10, 0, 0). Press [D]ive to attempt the save with hands, or [B]lock to act as an outfielder.
+Saving results to: TestResults\GameplayRegression\Runs\20261116T074932366Z\results.xml
+]]></output>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

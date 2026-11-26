@@ -1,0 +1,301 @@
+using System;
+using System.Collections;
+using System.IO;
+using System.Linq;
+using UnityEngine;
+
+namespace CounterAttack.Online
+{
+    internal sealed partial class EOSGroundPassExchange
+    {
+        private IEnumerator ManualHost(OnlineGroundPassAuthority authority, OnlineMatchProtocol protocol, OnlineSharedPause pause)
+        {
+            EOSProofCheck.Require(board.controls != null, "Authored manual controls required");
+            using var transport = ObserveManualTransport();
+            board.controls.Configure(protocol.HostTeam);
+            var version = protocol.Compatibility;
+            var recovery = new OnlinePeerRecovery(protocol, version, pause, peerAccount, () => RecoveryNow);
+            string nonce = null;
+            string guestConnection = GuestConnection;
+            string snapshotDigest = null;
+            double nextPublication = 0;
+            double nextTimedSnapshot = 0;
+            string sentBoundary = null;
+            double nextPresentation = 0;
+            long presentationSequence = 0, pointerSequence = 0;
+            double nextPointer = 0;
+            OnlineGroundPassState finishingSnapshot = null;
+            OnlineGroundPassMessage[] reportParts = null;
+            int nextReportPart = 0;
+            double nextReportSend = 0;
+            void Publish(OnlineGroundPassState state, string status)
+            {
+                Send(new OnlineGroundPassMessage { kind = "state", state = state, status = status,
+                    connectionGeneration = recovery.Generation, peerNonce = nonce });
+            }
+            void Dispatch(string connection, OnlineGroundPassMessage command, bool local)
+            {
+                var reply = command.kind == "control" ? pause.Submit(connection, command.ToCommand()) : authority.Submit(connection, command.ToCommand());
+                var response = new OnlineGroundPassMessage { kind = command.kind == "control" ? "control-reply" : "reply",
+                    sequence = command.sequence, revision = reply.Revision, status = reply.Status.ToString(),
+                    connectionGeneration = recovery.Generation, peerNonce = nonce };
+                if (local) board.controls.Reply(response); else Send(response);
+            }
+            void Local(OnlineGroundPassMessage command) => Dispatch(HostConnection, command, true);
+            board.controls.Requested += Local;
+            try
+            {
+                bool ready = false, done = false;
+                long sent = -1;
+                var deadline = board.liveFullRoom?double.PositiveInfinity:RecoveryNow + (ContinuousManualSession?7200:900);
+                while (!done && RecoveryNow < deadline)
+                {
+                    Poll();
+                    if (peerLeft) { recovery.Leave(guestConnection, recovery.Generation); throw new EOSProofFailure("Manual peer voluntarily left"); }
+                    if (transportUnavailable)
+                    { transportUnavailable = false; recovery.TransportLost(guestConnection, recovery.Generation); board.controls.SetConnected(false); }
+                    recovery.Tick();
+                    if (recovery.State != OnlinePeerState.Connected) finishingSnapshot = null;
+                    if (finishingSnapshot == null) board.match.AdvanceOnlineAuthorityTime(Time.unscaledDeltaTime);
+                    while (messages.Count > 0)
+                    {
+                        var message = messages.Dequeue();
+                        if (message.kind == "hello")
+                        {
+                            if (message.status == "heartbeat")
+                                recovery.Heartbeat("guest:" + message.peerNonce, message.connectionGeneration, message.sequence);
+                            else if (message.status == "resync-ack")
+                            {
+                                if (message.peerNonce == nonce && message.digest == snapshotDigest
+                                    && recovery.AcknowledgeSnapshot(guestConnection, message.connectionGeneration))
+                                { ready = true; board.controls.SetConnected(true); }
+                            }
+                            else if (Guid.TryParseExact(message.peerNonce, "N", out _))
+                            {
+                                var candidate = "guest:" + message.peerNonce;
+                                if (message.peerNonce == nonce && recovery.State == OnlinePeerState.Connected
+                                    || recovery.BindAuthenticated(peerAccount, candidate, version))
+                                {
+                                    nonce = message.peerNonce; guestConnection = candidate; ready = false;
+                                    finishingSnapshot = null;
+                                    var snapshot = pause.Capture(authority); snapshotDigest = Digest(snapshot);
+                                    Publish(snapshot, "resync");
+                                }
+                            }
+                            continue;
+                        }
+                        // No queued command or finish from a retired lifetime may mutate
+                        // state, even when EOS still authenticates the same product user.
+                        if (message.peerNonce != nonce || message.connectionGeneration != recovery.Generation || !recovery.CanSubmit) continue;
+                        EOSProofCheck.Require(ready, "Manual handshake before commands");
+                        if (message.kind == "command" || message.kind == "control")
+                        { if (finishingSnapshot == null) Dispatch(guestConnection, message, false); }
+                        else if (message.kind == "pointer" && board.liveFullRoom)
+                            board.pointers?.ShowRemote(message.pointer, message.sequence);
+                        else if (message.kind == "done")
+                        {
+                            var final = finishingSnapshot ?? pause.Capture(authority);
+                            EOSProofCheck.Require(CompletedManualAction(final) && message.digest == Digest(final), "Manual outcome and next decision agree");
+                            Retain(final, "host-manual", recovery.Generation); Send(new OnlineGroundPassMessage { kind = "finish", digest = message.digest,
+                                peerNonce = nonce, connectionGeneration = recovery.Generation }); done = true;
+                        }
+                        else throw new EOSProofFailure("Unexpected manual host message");
+                    }
+                    var state = finishingSnapshot ?? pause.Capture(authority);
+                    if (board.liveFullRoom) latestHostRoomState = state;
+                    if (ready && finishingSnapshot == null && CompletedManualAction(state))
+                    {
+                        finishingSnapshot = state;
+                        board.controls.SetConnected(false);
+                        nextReportPart = 0;
+                        nextReportSend = RecoveryNow;
+                        if (board.usesNativeRoom)
+                        {
+                            try
+                            {
+                                reportParts = OnlineFullTimeReport.Encode(matchId, state.publicationSequence,
+                                    board.match.gameData.events);
+                            }
+                            catch (Exception error) when (error is InvalidDataException or Newtonsoft.Json.JsonException)
+                            {
+                                Debug.LogWarning("Could not publish Full Time history: " + error.Message);
+                                reportParts = new[] { new OnlineGroundPassMessage {
+                                    kind = OnlineFullTimeReport.Unavailable, revision = state.publicationSequence } };
+                            }
+                        }
+                    }
+                    board.Display(state, board.liveFullRoom?$"Online match | {protocol.HostTeam} authority":"Authority Away | enter target X/Z; Home chooses the pass");
+                    var boundary = state.revision + ":" + state.sharedPauseRevision + ":" + state.connectionHeld
+                        + ":" + state.stage + ":" + state.owner + ":" + state.rollSequence;
+                    // Commit/hold/owner changes go immediately. Budget and clock
+                    // refreshes are bounded to four full snapshots per second;
+                    // presentation has its own lighter twenty-Hz lane.
+                    if (nonce != null && !done && (boundary != sentBoundary
+                        || state.publicationSequence != sent && RecoveryNow >= nextTimedSnapshot || RecoveryNow >= nextPublication))
+                    {
+                        Publish(state, recovery.State == OnlinePeerState.TransportLost ? "rejoin-required" : ready ? null : "resync");
+                        if (!ready && recovery.State == OnlinePeerState.Connected) snapshotDigest = Digest(state);
+                        sent = state.publicationSequence; sentBoundary = boundary;
+                        nextTimedSnapshot = RecoveryNow + .25; nextPublication = RecoveryNow + 1;
+                    }
+                    if (finishingSnapshot != null && sent == finishingSnapshot.publicationSequence
+                        && ready && recovery.CanSubmit && reportParts != null && nextReportPart < reportParts.Length
+                        && RecoveryNow >= nextReportSend)
+                    {
+                        var part = reportParts[nextReportPart++];
+                        part.peerNonce = nonce;
+                        part.connectionGeneration = recovery.Generation;
+                        Send(part);
+                        nextReportSend = RecoveryNow + .05;
+                    }
+                    if (ready && recovery.CanSubmit && !done && board.pointers != null && RecoveryNow >= nextPointer)
+                    {
+                        Send(new OnlineGroundPassMessage { kind = "pointer", pointer = board.pointers.CaptureLocal(),
+                            sequence = ++pointerSequence, connectionGeneration = recovery.Generation, peerNonce = nonce });
+                        nextPointer = RecoveryNow + 0.08;
+                    }
+                    if (ready && !done && state.ShouldStreamPresentation() && RecoveryNow >= nextPresentation)
+                    {
+                        var position = board.match.ball.transform.position;
+                        Send(new OnlineGroundPassMessage { kind = "presentation", peerNonce = nonce, connectionGeneration = recovery.Generation,
+                            presentation = new OnlineGroundPassPresentation { matchId = matchId, publicationSequence = sent,
+                                frameSequence = ++presentationSequence, ballX = position.x, ballY = position.y + (board.liveFullRoom?0:1f), ballZ = position.z,
+                                players=board.tokens.Select(token=>new OnlinePlayerPresentation{id=OnlineRollPublication.ActorId(token),
+                                    x=token.transform.position.x,y=token.transform.position.y+(board.liveFullRoom?0:.5f),z=token.transform.position.z}).ToArray() } });
+                        nextPresentation = RecoveryNow + .05;
+                    }
+                    yield return null;
+                }
+                EOSProofCheck.Require(done, "Manual host action timed out");
+            }
+            finally { board.controls.Requested -= Local; board.controls.SetConnected(false); }
+        }
+
+        private IEnumerator ManualGuest(OnlineGroundPassReplica replica)
+        {
+            EOSProofCheck.Require(board.controls != null && board.GuestRulesInactive, "Guest manual controls require inactive gameplay rules");
+            using var transport = ObserveManualTransport();
+            var localTeam = board.usesNativeRoom ? board.localTeam : OnlineTeam.Home;
+            board.controls.Configure(localTeam); board.controls.SetConnected(false);
+            string nonce = Guid.NewGuid().ToString("N");
+            long generation = 0, heartbeat = 0, pointerSequence = 0;
+            double nextPointer = 0;
+            double lastHost = RecoveryNow, nextHeartbeat = 0, nextRejoin = 0;
+            double reportDeadline = double.PositiveInfinity;
+            long terminalPublication = 0;
+            OnlineFullTimeReport.Receiver report = null;
+            bool reportResolved = false, terminalConfirmed = false;
+            void SendCurrent(OnlineGroundPassMessage message)
+            { message.peerNonce = nonce; message.connectionGeneration = generation; Send(message); }
+            void Local(OnlineGroundPassMessage command) => SendCurrent(command);
+            board.controls.Requested += Local;
+            try
+            {
+                SendCurrent(new OnlineGroundPassMessage { kind = "hello" });
+                bool doneSent = false, finished = false;
+                var deadline = board.liveFullRoom?double.PositiveInfinity:RecoveryNow + (ContinuousManualSession?7200:900);
+                while (!finished && RecoveryNow < deadline)
+                {
+                    Poll();
+                    if (peerLeft) { board.controls.SetConnected(false); throw new EOSProofFailure("Manual authority voluntarily left"); }
+                    while (messages.Count > 0)
+                    {
+                        var message = messages.Dequeue();
+                        if (message.peerNonce != nonce || message.connectionGeneration < generation) continue;
+                        if (message.kind == "pointer" && board.liveFullRoom)
+                        {
+                            if (generation > 0 && generation == message.connectionGeneration)
+                                board.pointers?.ShowRemote(message.pointer, message.sequence);
+                            continue;
+                        }
+                        lastHost = RecoveryNow;
+                        if (message.status == "rejoin-required")
+                        {
+                            board.controls.SetConnected(false); nonce = Guid.NewGuid().ToString("N"); generation = 0; heartbeat = 0; doneSent = false;
+                            terminalConfirmed = false;
+                            SendCurrent(new OnlineGroundPassMessage { kind = "hello" }); continue;
+                        }
+                        generation = message.connectionGeneration;
+                        if (message.kind == "state")
+                        {
+                            var incoming = message.state;
+                            EOSProofCheck.Require(replica.Apply(incoming),
+                                $"Manual guest rejected state {incoming?.publicationSequence}, revision {incoming?.revision}, " +
+                                $"phase {incoming?.gameState}/{incoming?.stage}, pause revision {incoming?.sharedPauseRevision}");
+                            board.Display(replica.State, board.liveFullRoom?$"Online match | {localTeam} replica":"Replica Home | Start, enter X/Z, preview then confirm");
+                            terminalConfirmed = CompletedManualAction(incoming) && !incoming.connectionHeld && message.status != "resync";
+                            if (board.usesNativeRoom && CompletedManualAction(incoming)
+                                && incoming.publicationSequence != terminalPublication)
+                            {
+                                terminalPublication = incoming.publicationSequence;
+                                report = new OnlineFullTimeReport.Receiver(matchId, terminalPublication);
+                                reportDeadline = RecoveryNow + 25;
+                                reportResolved = board.HasOnlineReportHistory;
+                            }
+                            if (message.status == "resync")
+                                SendCurrent(new OnlineGroundPassMessage { kind = "hello", status = "resync-ack", digest = Digest(message.state) });
+                            board.controls.SetConnected(!incoming.connectionHeld && message.status != "resync"
+                                && !CompletedManualAction(incoming));
+                        }
+                        else if (message.kind == OnlineFullTimeReport.Part || message.kind == OnlineFullTimeReport.Unavailable)
+                        {
+                            if (!board.usesNativeRoom || report == null || reportResolved || message.revision != terminalPublication)
+                                continue;
+                            if (message.kind == OnlineFullTimeReport.Part) report.Accept(message);
+                            if (report.Events != null)
+                            {
+                                board.PresentFullTimeHistory(report.Events, replica.State.half);
+                                reportResolved = true;
+                            }
+                            else if (report.Failed || message.kind == OnlineFullTimeReport.Unavailable)
+                            {
+                                EndGamePanelManager.ShowOnlineHistoryUnavailable();
+                                reportResolved = true;
+                            }
+                        }
+                        else if (message.kind == "presentation")
+                        { if (replica.ApplyPresentation(message.presentation)) board.QueuePresentation(message.presentation); }
+                        else if (message.kind == "reply" || message.kind == "control-reply") board.controls.Reply(message);
+                        else if (message.kind == "finish")
+                        {
+                            EOSProofCheck.Require(doneSent && message.digest == Digest(replica.State), "Manual final digest confirmed");
+                            Retain(replica.State, "guest-manual", generation); finished = true;
+                        }
+                        else throw new EOSProofFailure("Unexpected manual guest message");
+                    }
+                    var state = replica.State;
+                    if (transportUnavailable || RecoveryNow - lastHost >= 5)
+                    {
+                        board.controls.SetConnected(false);
+                        if (RecoveryNow >= nextRejoin)
+                        {
+                            transportUnavailable = false; nonce = Guid.NewGuid().ToString("N"); generation = 0; heartbeat = 0; doneSent = false;
+                            terminalConfirmed = false;
+                            SendCurrent(new OnlineGroundPassMessage { kind = "hello" }); lastHost = RecoveryNow; nextRejoin = RecoveryNow + 1;
+                        }
+                    }
+                    if (generation > 0 && state != null && !state.connectionHeld && board.pointers != null && RecoveryNow >= nextPointer)
+                    {
+                        SendCurrent(new OnlineGroundPassMessage { kind = "pointer", pointer = board.pointers.CaptureLocal(), sequence = ++pointerSequence });
+                        nextPointer = RecoveryNow + 0.08;
+                    }
+                    if (generation > 0 && RecoveryNow >= nextHeartbeat)
+                    { SendCurrent(new OnlineGroundPassMessage { kind = "hello", status = "heartbeat", sequence = ++heartbeat }); nextHeartbeat = RecoveryNow + 1; }
+                    if (report != null && !reportResolved && RecoveryNow >= reportDeadline)
+                    {
+                        EndGamePanelManager.ShowOnlineHistoryUnavailable();
+                        reportResolved = true;
+                    }
+                    if (!doneSent && state != null && CompletedManualAction(state)
+                        && (!board.usesNativeRoom || terminalConfirmed && reportResolved))
+                    { SendCurrent(new OnlineGroundPassMessage { kind = "done", digest = Digest(state) }); doneSent = true; board.controls.SetConnected(false); }
+                    yield return null;
+                }
+                EOSProofCheck.Require(finished, "Manual guest action timed out");
+            }
+            finally { board.controls.Requested -= Local; board.controls.SetConnected(false); }
+        }
+
+        private bool CompletedManualAction(OnlineGroundPassState state)=>OnlineManualSessionPolicy.CanFinish(state,ContinuousManualSession);
+    }
+}
