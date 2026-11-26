@@ -461,14 +461,6 @@ public class HexCell : MonoBehaviour
 
     private bool localGoalHover;
     private Color currentFillColor;
-    private Color? onlineHostHint;
-
-    internal void SetOnlineHostHint(Color? color)
-    {
-        if (onlineHostHint == color) return;
-        onlineHostHint = color;
-        ApplyHexFillColor(currentFillColor);
-    }
 
     internal void SetLocalGoalHover(bool visible)
     {
@@ -511,10 +503,6 @@ public class HexCell : MonoBehaviour
         else if (onlinePassHover && currentHighlightReason != "passTargetCommitted")
         {
             fillColor = new Color(.18f, .83f, 1f);
-        }
-        else if (onlineHostHint.HasValue && string.IsNullOrEmpty(currentHighlightReason))
-        {
-            fillColor = onlineHostHint.Value;
         }
 
         Material runtimeMaterial = Application.isPlaying ? hexRenderer.material : hexRenderer.sharedMaterial;

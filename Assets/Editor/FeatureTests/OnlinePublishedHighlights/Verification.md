@@ -1,4 +1,17 @@
-# Published guest pitch highlights
+# Online Room pitch previews
+
+The prototype overlays derived from legal actions and selected coordinates have
+been removed. The host uses its gameplay highlights, and guest rendering uses
+the published gameplay hex previews. Assistance-gated pass hover remains active.
+
+- [x] Remove generated host and guest overlays for legal destinations, eligible
+  players, and selections.
+- [x] Update the focused Room fixture to check that overlays stay absent and
+  that guests still render and clear published previews.
+- [ ] Compile in the feature worktree and run
+  `OnlinePublishedHighlightsPlayModeTests` in both board directions and roster sizes.
+
+## Historical prototype verification
 
 - [x] Show unambiguous published destinations using existing authored hex renderers.
 - [x] Distinguish eligible players, selected player and selected target.

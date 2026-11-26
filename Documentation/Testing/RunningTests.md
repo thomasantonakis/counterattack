@@ -684,7 +684,7 @@ actual run artifacts, fixture corrections and affected filters. These are local
 native checks, not paired internet latency or complete-suite validation. Every
 new case has an individual deferred entry in OnlineMacTestManifest.json.
 
-Published guest pitch hints: EditMode `OnlinePublishedHighlightsEditorTests` (14) and PlayMode `OnlinePublishedHighlightsPlayModeTests` (four), category `OnlinePublishedHighlights`. Tests are in `Assets/Editor/FeatureTests/OnlinePublishedHighlights/` and `Assets/Tests/PlayMode/Features/OnlinePublishedHighlights/`. This is display-only coverage, not a gameplay suite or paired test.
+Online Room pitch previews: PlayMode `OnlinePublishedHighlightsPlayModeTests` (four), category `OnlinePublishedHighlights`. The fixture in `Assets/Tests/PlayMode/Features/OnlinePublishedHighlights/` checks that the host and guest omit prototype overlays while the guest can render published gameplay previews.
 
 Authored online instructions: `Assets/Editor/FeatureTests/OnlineInstructions/` / `OnlineInstructionsEditorTests` (13 EditMode) and `Assets/Tests/PlayMode/Features/OnlineInstructions/` / `OnlineInstructionsPlayModeTests` (ten PlayMode), category `OnlineInstructions`. The authored monitor stays disabled; tests cover exact host/guest text, bounded optional observations, kickoff ownership, live pass continuation and hold recovery. Room catalog v19, wire v7.
 
