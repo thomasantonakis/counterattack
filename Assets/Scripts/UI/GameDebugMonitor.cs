@@ -98,7 +98,11 @@ public partial class GameDebugMonitor : MonoBehaviour
 
     void Update()
     {
-        if (CounterAttack.Online.OnlineRoomSession.Current?.HasInitialData == true) return;
+        if (CounterAttack.Online.OnlineRoomSession.Current?.HasInitialData == true)
+        {
+            RefreshDecisionMakingPanelVisibility(false);
+            return;
+        }
         UpdateInstructionText();
         if (isVisible)
         {
@@ -112,9 +116,9 @@ public partial class GameDebugMonitor : MonoBehaviour
 
     void Start()
     {
+        CacheInstructionPanelImage();
         if (CounterAttack.Online.OnlineRoomSession.IsGuest) return;
         LinkRoomSceneComponents();
-        CacheInstructionPanelImage();
         RefreshInstructionPalettes();
     }
 
@@ -1044,7 +1048,8 @@ public partial class GameDebugMonitor : MonoBehaviour
 
     private bool IsSinglePlayerMatch()
     {
-        return MatchManager.Instance?.gameData?.gameSettings != null
+        return CounterAttack.Online.OnlineRoomSession.Current == null
+            && MatchManager.Instance?.gameData?.gameSettings != null
             && string.Equals(
                 MatchManager.Instance.gameData.gameSettings.gameMode,
                 ApplicationManager.SinglePlayerGameMode,

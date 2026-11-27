@@ -23,3 +23,14 @@ in `20261127T164206852Z`, and the offline High Pass box sequence passed 1/1 in
 `TestResults/GameplayRegression/Runs/<run>/results.xml`.
 
 For broader verification use `OnlineNativeRoomPlayModeTests` under `Assets/Tests/PlayMode/Features/OnlineNativeRoom/` and the published-highlight fixtures under `Assets/Tests/PlayMode/Features/OnlinePublishedHighlights/` to check interactions with other Room overlays.
+
+## Decision Making panel
+
+- [x] Confirm the authored panel is hidden for host and guest in the native Room.
+- [x] Confirm the panel is hidden for spectators at Room entry and after a roll publication, including late join.
+
+Unity compiled with zero errors. Host and guest passed 2/2 in
+`TestResults/GameplayRegression/Runs/20261127T165327153Z/results.xml`.
+Spectator cases passed 2/2 in
+`TestResults/GameplayRegression/Runs/20261127T165403684Z/results.xml`.
+Both runs reported zero failures and zero skips.

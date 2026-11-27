@@ -123,6 +123,7 @@ public sealed partial class OnlineFullRoomSceneFixture
         yield return null;
         Assert.That(startup.Board, Is.Not.Null, startup.Failure ?? "Room startup timed out");
         var board = startup.Board;
+        AssertDecisionPanelHidden(board);
         if (late)
             Assert.That(board.match.gameData.gameSettings.homeKit, Is.EqualTo(OnlineModeMenu.HostDefaults().homeKit));
         Assert.That(board.controls, Is.Null);
@@ -149,6 +150,7 @@ public sealed partial class OnlineFullRoomSceneFixture
         yield return null;
         var stoppage = Object.FindAnyObjectByType<StoppageActionsPanelController>(FindObjectsInactive.Include);
         Assert.That(stoppage.visuals.activeInHierarchy && stoppage.die.IsAnimating, Is.True);
+        AssertDecisionPanelHidden(board);
         roll.dice[0] = 4;
         roll.diceAnimating[0] = false;
         Assert.That(OnlineSpectatorRoomWire.TryEncode(room, data.gameSettings, 7, out roomPayload), Is.True);
