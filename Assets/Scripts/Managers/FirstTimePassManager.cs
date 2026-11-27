@@ -551,6 +551,7 @@ public partial class FirstTimePassManager : MonoBehaviour
             }
             RestoreConfirmedFtpMovementHighlights();
             isWaitingForAttackerMove = true;
+            if (difficulty == 2) UpdateMediumModeMovementHover(null);
         }
         else
         {
@@ -597,6 +598,7 @@ public partial class FirstTimePassManager : MonoBehaviour
             }
             RestoreConfirmedFtpMovementHighlights();
             isWaitingForDefenderMove = true;
+            if (difficulty == 2) UpdateMediumModeMovementHover(null);
         }
         else
         {
@@ -647,15 +649,12 @@ public partial class FirstTimePassManager : MonoBehaviour
         hexGrid.ClearHighlightedHexes();
         RestoreConfirmedFtpMovementHighlights();
 
-        if (hoveredHex == null || !IsValidFtpMovementDestination(hoveredHex))
+        foreach (var destination in GetValidFtpMovementDestinations(selectedToken))
         {
-            return;
-        }
+            if (destination == currentTargetHex) continue;
 
-        hoveredHex.HighlightHex("MovementDestinationHover");
-        if (!hexGrid.highlightedHexes.Contains(hoveredHex))
-        {
-            hexGrid.highlightedHexes.Add(hoveredHex);
+            destination.HighlightHex(destination == hoveredHex ? "MovementDestinationHover" : "PaceAvailable");
+            hexGrid.highlightedHexes.Add(destination);
         }
     }
 
@@ -845,18 +844,7 @@ public partial class FirstTimePassManager : MonoBehaviour
                 continue;
             }
 
-            if (hex == currentTargetHex)
-            {
-                hex.HighlightHex("passTargetCommitted");
-            }
-            else if (hex == hoveredHex)
-            {
-                hex.HighlightHex("passTarget");
-            }
-            else
-            {
-                hex.HighlightHex(isDangerous ? "dangerousPass" : "ballPath");
-            }
+            hex.HighlightHex(GroundPassCommon.HoverPreviewReason(hex, hoveredHex, currentTargetHex, isDangerous));
 
             if (!hexGrid.highlightedHexes.Contains(hex))
             {

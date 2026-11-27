@@ -32,10 +32,12 @@ public sealed partial class GoalkeeperBoxEntryFixture
         {
             var support=Token("FTP support",true,false,7);Place(support,Hex(-4*side,-4));
             Submit("home","ftp.player:"+OnlineRollPublication.ActorId(support));
+            Assert.That(Hex(-4*side, -3).HighlightReason, Is.EqualTo("PaceAvailable"));
             Submit("home","ftp.move:"+(-4*side)+":-3");
             yield return Until(()=>authority.Capture().stage=="ftp.defender","attacker preparation move completes");
             Assert.That(support.currentHex,Is.SameAs(Hex(-4*side,-3)));
             Submit("away","ftp.player:"+OnlineRollPublication.ActorId(defender));
+            Assert.That(Hex(8*side, 9).HighlightReason, Is.EqualTo("PaceAvailable"));
             Submit("away","ftp.move:"+(8*side)+":9");
         }
         else { Submit("home","ftp.skip");Assert.That(authority.Capture().owner,Is.EqualTo("Away"));Submit("away","ftp.skip"); }

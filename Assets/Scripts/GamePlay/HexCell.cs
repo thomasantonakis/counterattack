@@ -311,19 +311,13 @@ public class HexCell : MonoBehaviour
                 colorToApply = hoverColor != default ? hoverColor : originalColor * 0.5f;  // Darken the hex on hover
                 break;
             case "passTarget":
-                colorToApply = Color.yellow;  // Use the provided color for the ball path
-                break;
             case "passTargetCommitted":
-                colorToApply = new Color(1f, 0.55f, 0f, 1f);
+            case "ballPath":
+            case "dangerousPass":
+                colorToApply = PassPreviewFill(reason);
                 break;
             case "FreeKickSelectedMoveHover":
                 colorToApply = new Color(1f, 0.55f, 0f, 1f);
-                break;
-            case "ballPath":
-                colorToApply = Color.blue;  // Use the provided color for the ball path
-                break;
-            case "dangerousPass":
-                colorToApply = Color.magenta;  // Use the provided color for the ball path
                 break;
             case "ShotSaveHex":
                 colorToApply = new Color(1f, 0.48f, 0.05f, 1f);
@@ -461,14 +455,6 @@ public class HexCell : MonoBehaviour
 
     private bool localGoalHover;
     private Color currentFillColor;
-    private Color? onlineHostHint;
-
-    internal void SetOnlineHostHint(Color? color)
-    {
-        if (onlineHostHint == color) return;
-        onlineHostHint = color;
-        ApplyHexFillColor(currentFillColor);
-    }
 
     internal void SetLocalGoalHover(bool visible)
     {
@@ -486,14 +472,22 @@ public class HexCell : MonoBehaviour
         ApplyHexFillColor(currentFillColor);
     }
 
-    private bool onlinePassHover;
+    private string localPassPreviewReason;
 
-    internal void SetOnlinePassHover(bool visible)
+    internal void SetLocalPassPreview(string reason)
     {
-        if (onlinePassHover == visible) return;
-        onlinePassHover = visible;
+        if (localPassPreviewReason == reason) return;
+        localPassPreviewReason = reason;
         ApplyHexFillColor(currentFillColor);
     }
+
+    private static Color PassPreviewFill(string reason) => reason switch
+    {
+        "passTarget" => Color.yellow,
+        "passTargetCommitted" => new Color(1f, 0.55f, 0f, 1f),
+        "dangerousPass" => Color.magenta,
+        _ => Color.blue
+    };
 
     private void ApplyHexFillColor(Color fillColor)
     {
@@ -508,13 +502,9 @@ public class HexCell : MonoBehaviour
         {
             fillColor = new Color(1f, 0.48f, 0.05f, 1f);
         }
-        else if (onlinePassHover && currentHighlightReason != "passTargetCommitted")
+        else if (localPassPreviewReason != null && currentHighlightReason != "passTargetCommitted")
         {
-            fillColor = new Color(.18f, .83f, 1f);
-        }
-        else if (onlineHostHint.HasValue && string.IsNullOrEmpty(currentHighlightReason))
-        {
-            fillColor = onlineHostHint.Value;
+            fillColor = PassPreviewFill(localPassPreviewReason);
         }
 
         Material runtimeMaterial = Application.isPlaying ? hexRenderer.material : hexRenderer.sharedMaterial;

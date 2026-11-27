@@ -4,6 +4,16 @@
   "fixtures": [
     {
       "mode": "playmode",
+      "fixture": "OnlinePairedFeedbackPlayModeTests",
+      "categories": [
+        "OnlinePairedFeedback"
+      ],
+      "definition_sha256": "6a396163221ad790c75a21535b06d7aff47cb77cdcb64c9643f894864f34b907",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlinePairedFeedback/OnlinePairedFeedbackPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
       "fixture": "OnlineMovementSummaryPlayModeTests",
       "categories": [
         "OnlineMovementSummary"
@@ -431,16 +441,6 @@
       "definition_sha256": "f83a3cda4508bc7ebc3b7aa29751dc63ad07fea1ca50a52cc8d6063decd84015",
       "route": "native",
       "source": "Assets/Editor/FeatureTests/OnlinePickupKey/OnlinePickupKeyEditorTests.cs"
-    },
-    {
-      "mode": "editor",
-      "fixture": "OnlinePublishedHighlightsEditorTests",
-      "categories": [
-        "OnlinePublishedHighlights"
-      ],
-      "definition_sha256": "c146aaad57003453ff5d3f653e702c20ea9d91d28b8941caf5accd221713331a",
-      "route": "native",
-      "source": "Assets/Editor/FeatureTests/OnlinePublishedHighlights/OnlinePublishedHighlightsEditorTests.cs"
     },
     {
       "mode": "editor",
@@ -1435,6 +1435,19 @@
     }
   ],
   "test_additions": [
+    {
+      "id": "OnlinePairedFeedbackPlayModeTests.KickoffHoverRespectsAssistance(2)",
+      "feature": "OnlinePairedFeedback",
+      "mode": "playmode",
+      "fixture": "OnlinePairedFeedbackPlayModeTests",
+      "method": "KickoffHoverRespectsAssistance",
+      "parameters": [
+        2
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261127T164719718Z/results.xml"
+    },
     {
       "id": "OnlineMovementSummaryPlayModeTests.SharedInstructionsShowTheMovementPhaseAndCount",
       "feature": "OnlineMovement",
@@ -18578,188 +18591,6 @@
       "mac_status": "deferred_until_user_requests",
       "windows_status": "passed",
       "windows_evidence": "TestResults/GameplayRegression/Runs/20261116T234015396Z/results.xml"
-    },
-    {
-      "id": "OnlinePublishedHighlightsEditorTests.DestinationsMatchClickablePublishedChoices(\"unique\",1)",
-      "feature": "OnlinePublishedHighlights",
-      "mode": "editor",
-      "fixture": "OnlinePublishedHighlightsEditorTests",
-      "method": "DestinationsMatchClickablePublishedChoices",
-      "parameters": [
-        "\"unique\",1"
-      ],
-      "mac_status": "deferred_until_user_requests",
-      "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T053958682Z/results.xml"
-    },
-    {
-      "id": "OnlinePublishedHighlightsEditorTests.DestinationsMatchClickablePublishedChoices(\"duplicate\",1)",
-      "feature": "OnlinePublishedHighlights",
-      "mode": "editor",
-      "fixture": "OnlinePublishedHighlightsEditorTests",
-      "method": "DestinationsMatchClickablePublishedChoices",
-      "parameters": [
-        "\"duplicate\",1"
-      ],
-      "mac_status": "deferred_until_user_requests",
-      "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T053958682Z/results.xml"
-    },
-    {
-      "id": "OnlinePublishedHighlightsEditorTests.DestinationsMatchClickablePublishedChoices(\"ambiguous\",0)",
-      "feature": "OnlinePublishedHighlights",
-      "mode": "editor",
-      "fixture": "OnlinePublishedHighlightsEditorTests",
-      "method": "DestinationsMatchClickablePublishedChoices",
-      "parameters": [
-        "\"ambiguous\",0"
-      ],
-      "mac_status": "deferred_until_user_requests",
-      "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T053958682Z/results.xml"
-    },
-    {
-      "id": "OnlinePublishedHighlightsEditorTests.DestinationsMatchClickablePublishedChoices(\"noncanonical\",0)",
-      "feature": "OnlinePublishedHighlights",
-      "mode": "editor",
-      "fixture": "OnlinePublishedHighlightsEditorTests",
-      "method": "DestinationsMatchClickablePublishedChoices",
-      "parameters": [
-        "\"noncanonical\",0"
-      ],
-      "mac_status": "deferred_until_user_requests",
-      "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T053958682Z/results.xml"
-    },
-    {
-      "id": "OnlinePublishedHighlightsEditorTests.DestinationsMatchClickablePublishedChoices(\"plus\",0)",
-      "feature": "OnlinePublishedHighlights",
-      "mode": "editor",
-      "fixture": "OnlinePublishedHighlightsEditorTests",
-      "method": "DestinationsMatchClickablePublishedChoices",
-      "parameters": [
-        "\"plus\",0"
-      ],
-      "mac_status": "deferred_until_user_requests",
-      "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T053958682Z/results.xml"
-    },
-    {
-      "id": "OnlinePublishedHighlightsEditorTests.DestinationsMatchClickablePublishedChoices(\"invalid\",0)",
-      "feature": "OnlinePublishedHighlights",
-      "mode": "editor",
-      "fixture": "OnlinePublishedHighlightsEditorTests",
-      "method": "DestinationsMatchClickablePublishedChoices",
-      "parameters": [
-        "\"invalid\",0"
-      ],
-      "mac_status": "deferred_until_user_requests",
-      "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T053958682Z/results.xml"
-    },
-    {
-      "id": "OnlinePublishedHighlightsEditorTests.HiddenAndOffboardPlayersNeverSupplyPitchHints(False,True)",
-      "feature": "OnlinePublishedHighlights",
-      "mode": "editor",
-      "fixture": "OnlinePublishedHighlightsEditorTests",
-      "method": "HiddenAndOffboardPlayersNeverSupplyPitchHints",
-      "parameters": [
-        "False,True"
-      ],
-      "mac_status": "deferred_until_user_requests",
-      "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T053958682Z/results.xml"
-    },
-    {
-      "id": "OnlinePublishedHighlightsEditorTests.HiddenAndOffboardPlayersNeverSupplyPitchHints(True,False)",
-      "feature": "OnlinePublishedHighlights",
-      "mode": "editor",
-      "fixture": "OnlinePublishedHighlightsEditorTests",
-      "method": "HiddenAndOffboardPlayersNeverSupplyPitchHints",
-      "parameters": [
-        "True,False"
-      ],
-      "mac_status": "deferred_until_user_requests",
-      "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T053958682Z/results.xml"
-    },
-    {
-      "id": "OnlinePublishedHighlightsEditorTests.HoldAndPauseClearHints(False,False)",
-      "feature": "OnlinePublishedHighlights",
-      "mode": "editor",
-      "fixture": "OnlinePublishedHighlightsEditorTests",
-      "method": "HoldAndPauseClearHints",
-      "parameters": [
-        "False,False"
-      ],
-      "mac_status": "deferred_until_user_requests",
-      "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T053958682Z/results.xml"
-    },
-    {
-      "id": "OnlinePublishedHighlightsEditorTests.HoldAndPauseClearHints(True,False)",
-      "feature": "OnlinePublishedHighlights",
-      "mode": "editor",
-      "fixture": "OnlinePublishedHighlightsEditorTests",
-      "method": "HoldAndPauseClearHints",
-      "parameters": [
-        "True,False"
-      ],
-      "mac_status": "deferred_until_user_requests",
-      "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T053958682Z/results.xml"
-    },
-    {
-      "id": "OnlinePublishedHighlightsEditorTests.HoldAndPauseClearHints(False,True)",
-      "feature": "OnlinePublishedHighlights",
-      "mode": "editor",
-      "fixture": "OnlinePublishedHighlightsEditorTests",
-      "method": "HoldAndPauseClearHints",
-      "parameters": [
-        "False,True"
-      ],
-      "mac_status": "deferred_until_user_requests",
-      "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T053958682Z/results.xml"
-    },
-    {
-      "id": "OnlinePublishedHighlightsEditorTests.SelectionPrecedence(\"eligible\",\"PaceAvailable\")",
-      "feature": "OnlinePublishedHighlights",
-      "mode": "editor",
-      "fixture": "OnlinePublishedHighlightsEditorTests",
-      "method": "SelectionPrecedence",
-      "parameters": [
-        "\"eligible\",\"PaceAvailable\""
-      ],
-      "mac_status": "deferred_until_user_requests",
-      "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T053958682Z/results.xml"
-    },
-    {
-      "id": "OnlinePublishedHighlightsEditorTests.SelectionPrecedence(\"selected\",\"MovementDestinationHover\")",
-      "feature": "OnlinePublishedHighlights",
-      "mode": "editor",
-      "fixture": "OnlinePublishedHighlightsEditorTests",
-      "method": "SelectionPrecedence",
-      "parameters": [
-        "\"selected\",\"MovementDestinationHover\""
-      ],
-      "mac_status": "deferred_until_user_requests",
-      "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T053958682Z/results.xml"
-    },
-    {
-      "id": "OnlinePublishedHighlightsEditorTests.SelectionPrecedence(\"target\",\"passTargetCommitted\")",
-      "feature": "OnlinePublishedHighlights",
-      "mode": "editor",
-      "fixture": "OnlinePublishedHighlightsEditorTests",
-      "method": "SelectionPrecedence",
-      "parameters": [
-        "\"target\",\"passTargetCommitted\""
-      ],
-      "mac_status": "deferred_until_user_requests",
-      "windows_status": "passed",
-      "windows_evidence": "TestResults/GameplayRegression/Runs/20261117T053958682Z/results.xml"
     },
     {
       "id": "OnlinePublishedHighlightsPlayModeTests.PublishedGuestChoicesUseAuthoredHexes(16,False)",

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 namespace CounterAttack.Online
@@ -7,9 +8,9 @@ namespace CounterAttack.Online
         private readonly HashSet<HexCell> publishedHintHexes=new();
         private readonly Dictionary<HexCell,float> publishedPreviewHeights=new();
         private readonly HashSet<HexCell> publishedGoalMarkers=new();
-        private readonly HashSet<HexCell> hostHintHexes=new();
         private readonly HashSet<HexCell> passHoverHexes = new();
         private HexCell passHoverOrigin, passHoverTarget;
+        private long passHoverRevision = -1;
         private Vector3 publishedGoalBallPose;
         private void ClearPublishedHighlights()
         {
@@ -24,35 +25,12 @@ namespace CounterAttack.Online
         private void RefreshPublishedHighlights(OnlineGroundPassState publication)
         {
             ClearPublishedHighlights();
-            ClearHostHints();
-            if (publication?.stage != "target" || publication.connectionHeld || publication.isSharedPaused)
-                PresentGroundPassHover(null);
+            PresentGroundPassHover(passHoverTarget);
             if(!isActiveAndEnabled || board==null || !board.liveFullRoom)return;
             if(publication==null || publication.connectionHeld || publication.isSharedPaused || publication.stage=="blocked")return;
-            if(!OnlineRoomSession.IsGuest)
-            {
-                foreach(var hint in OnlinePublishedHexHints.Build(publication))
-                {
-                    if (SuppressGroundPassHint(publication, hint.Value)) continue;
-                    var hex=board.grid.GetHexCellAt(new Vector3Int(hint.Key.x,0,hint.Key.y));
-                    if(hex==null || hex.isInGoal!=0)continue;
-                    hex.SetOnlineHostHint(hint.Value switch{
-                        "PaceAvailable"=>Color.yellow,
-                        "ReachOverlayAttacker"=>new Color(.18f,.83f,1,1),
-                        _=>new Color(1,.48f,.05f,1)});
-                    hostHintHexes.Add(hex);
-                }
-                return;
-            }
-            bool MarkerPermitted(HexCell hex)=>hex.isInGoal==0 || publication.hexPreviews==null
-                || System.Array.Exists(publication.hexPreviews,p=>p.x==hex.coordinates.x && p.z==hex.coordinates.z && p.committedGoal);
-            foreach(var hint in OnlinePublishedHexHints.Build(publication))
-            {
-                if (SuppressGroundPassHint(publication, hint.Value)) continue;
-                var hex=board.grid.GetHexCellAt(new Vector3Int(hint.Key.x,0,hint.Key.y));if(hex==null)continue;
-                if(hint.Value=="passTargetCommitted" && !MarkerPermitted(hex))continue;
-                hex.HighlightHex(hint.Value);publishedHintHexes.Add(hex);
-            }
+            if (!OnlineRoomSession.IsGuest) return;
+
+            // Replicate the authority's gameplay previews without deriving colors from legal actions.
             foreach(var preview in publication.hexPreviews??System.Array.Empty<OnlineHexPreview>())
             {
                 var hex=board.grid.GetHexCellAt(new Vector3Int(preview.x,0,preview.z));if(hex==null)continue;
@@ -61,33 +39,70 @@ namespace CounterAttack.Online
                 hex.SetCommittedGoalTarget(preview.committedGoal);var position=hex.transform.position;position.y=preview.height;hex.transform.position=position;
                 hex.HighlightHex(preview.reason,preview.darkness);publishedHintHexes.Add(hex);
             }
-            if(publication.hasSelectedTarget)
-            {
-                var hex=board.grid.GetHexCellAt(new Vector3Int(publication.selectedX,0,publication.selectedZ));
-                if(hex!=null && MarkerPermitted(hex)){hex.HighlightHex("passTargetCommitted");publishedHintHexes.Add(hex);}
-            }
         }
-
-        private bool SuppressGroundPassHint(OnlineGroundPassState state, string reason)
-            => state.stage == "target" && reason == "ReachOverlayAttacker" && board.match.difficulty_level == 3;
 
         private void PresentGroundPassHover(HexCell target)
         {
             var origin = board?.match?.ball?.GetCurrentHex();
-            if (target != null && (origin == null || state?.stage != "target" || board.match.difficulty_level == 3
-                || board.controls?.CanSubmitAction(OnlineGroundPassAuthority.TargetAction(target.coordinates.x, target.coordinates.z)) != true))
-                target = null;
-            if (target == passHoverTarget && origin == passHoverOrigin) return;
-            foreach (var hex in passHoverHexes) if (hex != null) hex.SetOnlinePassHover(false);
+            bool ftp = state?.stage == "ftp.target";
+            if (target != null)
+            {
+                var coordinates = target.coordinates;
+                var action = ftp ? $"ftp.target:{coordinates.x}:{coordinates.z}"
+                    : OnlineGroundPassAuthority.TargetAction(coordinates.x, coordinates.z);
+                if (origin == null || (!ftp && state?.stage != "target") || board.match.difficulty_level != 1
+                    || board.controls?.CanSubmitAction(action) != true)
+                    target = null;
+            }
+
+            long revision = state?.revision ?? -1;
+            if (target == passHoverTarget && origin == passHoverOrigin && revision == passHoverRevision) return;
+            foreach (var hex in passHoverHexes) if (hex != null) hex.SetLocalPassPreview(null);
             passHoverHexes.Clear();
             passHoverTarget = target;
             passHoverOrigin = origin;
+            passHoverRevision = revision;
             if (target == null) return;
 
-            foreach (var hex in GroundPassCommon.CalculateThickPath(board.grid, origin, target, board.match.ball.ballRadius))
-                passHoverHexes.Add(hex);
+            var match = board.match;
+            bool safeKickoff = !ftp && state.kickoffGroundPass && GroundPassCommon.IsInAttackingTeamOwnHalf(match, target);
+            bool dangerous = !safeKickoff && GroundPassCommon.CountDangerousInteractions(
+                GroundPassCommon.BuildOrderedBallPathInteractions(board.grid, match.ball, match.groundBallManager.goalKeeperManager, target,
+                    isQuickThrow: !ftp && match.currentState == MatchManager.GameState.QuickThrow)) > 0;
+            var selected = state.hasSelectedTarget
+                ? board.grid.GetHexCellAt(new Vector3Int(state.selectedX, 0, state.selectedZ)) : null;
+
+            passHoverHexes.UnionWith(GroundPassCommon.CalculateThickPath(board.grid, origin, target, match.ball.PhysicalRadius));
             passHoverHexes.Add(target);
-            foreach (var hex in passHoverHexes) hex.SetOnlinePassHover(true);
+            foreach (var hex in passHoverHexes)
+                if (hex != null) hex.SetLocalPassPreview(GroundPassCommon.HoverPreviewReason(hex, target, selected, dangerous));
+        }
+
+        private bool IsAssistedTargetHover(HexCell hex)
+        {
+            if (hex == null || !board.liveFullRoom || board.match.difficulty_level >= 3) return false;
+            var action = OnlineBoardActionPicker.Hex(state, hex.coordinates.x, hex.coordinates.z);
+            if (action == null || board.controls?.CanSubmitAction(action) != true) return false;
+
+            var actionKind = action.Substring(0, action.IndexOf(':'));
+            return actionKind switch
+            {
+                "ground.target" or "ftp.target" or "ftp.move" => board.match.difficulty_level == 2,
+                "long.target" or "high.target" or "penalty.target" => true,
+                "set-piece.target" => board.match.difficulty_level == 1,
+                "shot.target" => board.match.difficulty_level == 2,
+                "shot.move" => hex.BasePreviewHighlight.Reason != null,
+                "header.target" => hex.BasePreviewHighlight.Reason is "HeaderTargetFree" or "HeaderTargetRisk",
+                "kickoff.move" => false,
+                _ => hex.BasePreviewHighlight.Reason is "PaceAvailable" or "PaceRisk" or "DangerousTackle" or "reposition"
+            };
+        }
+
+        private void PresentTargetHover(HexCell hex)
+        {
+            var goalAction = GoalHoverAction(hex);
+            SetLocalGoalHover(IsAssistedTargetHover(hex)
+                || (goalAction != null && board.controls?.CanSubmitAction(goalAction) == true) ? hex : null);
         }
         internal void SynchronizePreviewMarkerPose()
         {if(board!=null && publishedGoalMarkers.Count>0)publishedGoalBallPose=board.displayedBall.position;}
@@ -97,11 +112,6 @@ namespace CounterAttack.Online
             foreach(var hex in publishedGoalMarkers)if(hex!=null)hex.SetCommittedGoalTarget(false);
             publishedGoalMarkers.Clear();
         }
-        private void ClearHostHints()
-        {
-            foreach(var hex in hostHintHexes)if(hex!=null)hex.SetOnlineHostHint(null);
-            hostHintHexes.Clear();
-        }
-        private void OnDisable(){SetLocalGoalHover(null);PresentPeerHover(null);PresentGroundPassHover(null);ClearHostHints();ClearPublishedHighlights();}
+        private void OnDisable(){SetLocalGoalHover(null);PresentPeerHover(null);PresentGroundPassHover(null);ClearPublishedHighlights();}
     }
 }

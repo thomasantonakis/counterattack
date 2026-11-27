@@ -77,12 +77,22 @@ public sealed partial class OnlineFullRoomSceneFixture
         CaptureGlobals();previousPath=app.LastSavedFileName;previousExplicit=app.HasExplicitSaveContext;previousMode=app.SelectedRoomGameMode;app.SetSelectedRoomGameMode(ApplicationManager.OnlineGameMode);Time.timeScale=1;
         directory=Path.Combine(Path.GetTempPath(),"CounterattackFullRoom",Guid.NewGuid().ToString("N"));Directory.CreateDirectory(directory);
     }
+    private static void AssertDecisionPanelHidden(OnlineGroundPassBoard board)
+    {
+        var decisionText = board.instructionMonitor.decisionMakingText;
+        Assert.That(decisionText, Is.Not.Null, "Room has the authored decision text");
+        var panel = decisionText.GetComponentInParent<UnityEngine.UI.Image>(includeInactive: true);
+        Assert.That(panel, Is.Not.Null, "Room has the authored decision panel");
+        Assert.That(panel.gameObject.activeSelf, Is.False);
+    }
+
     public IEnumerator RunNativePeerHover(bool guest)
     {
         InitializeFixture();
         SuppressLegacyRoomRunner();
         yield return LoadNativeRoom(Data(16, false, useFrontendSeats: true), guest, "full-room-scene");
         var board = Object.FindAnyObjectByType<OnlineRoomStartup>().Board;
+        AssertDecisionPanelHidden(board);
         var input = board.boardInput;
         input.samplePhysicalInput = false;
         var token = board.tokens.First(candidate => candidate.currentHex != null);

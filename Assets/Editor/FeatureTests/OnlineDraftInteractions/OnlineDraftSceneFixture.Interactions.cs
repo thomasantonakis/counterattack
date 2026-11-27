@@ -79,6 +79,9 @@ public sealed partial class OnlineDraftSceneFixture
         Assert.That(code.textComponent.fontSize, Is.EqualTo(24f));
         var title = code.GetComponent<OnlineLobbyCodeTitle>().title;
         var rect = (RectTransform)code.transform;
+        Assert.That(rect.parent, Is.SameAs(title.rectTransform));
+        if (!setupScene)
+            Assert.That(title.transform.IsChildOf(GameObject.Find("MainCanvas/SceneTitle").transform), Is.True);
         Assert.That(rect.localPosition.x - title.textBounds.max.x, Is.EqualTo(16f).Within(.1f));
         var glyphSize = code.textComponent.GetPreferredValues(code.text);
         Assert.That(rect.rect.width - glyphSize.x, Is.InRange(19f, 22f));

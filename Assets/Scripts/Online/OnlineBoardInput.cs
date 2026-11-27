@@ -22,7 +22,12 @@ namespace CounterAttack.Online
             KeyCode.Keypad1, KeyCode.Keypad2, KeyCode.Keypad3, KeyCode.Keypad4 };
         private static readonly KeyCode[] Keys={KeyCode.P,KeyCode.L,KeyCode.C,KeyCode.F,KeyCode.M,KeyCode.S,KeyCode.R,KeyCode.D,KeyCode.B,KeyCode.N,KeyCode.T,KeyCode.X,
             KeyCode.Q,KeyCode.K,KeyCode.H,KeyCode.G,KeyCode.V,KeyCode.A,KeyCode.Return,KeyCode.KeypadEnter};
-        public void Display(OnlineGroundPassState publication){state=publication;RefreshPublishedHighlights(publication);}
+        public void Display(OnlineGroundPassState publication)
+        {
+            state = publication;
+            RefreshPublishedHighlights(publication);
+            PresentTargetHover(localGoalHover);
+        }
         private bool Submit(string action)=>action!=null && board!=null && board.controls!=null && board.controls.TrySubmitAction(action);
         public bool TryToken(PlayerToken token)
         {
@@ -141,8 +146,7 @@ namespace CounterAttack.Online
             if(token!=null && token.IsMoving)token=null;
             roomPresentation?.PresentOnlineHover(token,hex);
             PresentGroundPassHover(hex);
-            var action = GoalHoverAction(hex);
-            SetLocalGoalHover(action != null && board.controls?.CanSubmitAction(action) == true ? hex : null);
+            PresentTargetHover(hex);
             return token;
         }
 

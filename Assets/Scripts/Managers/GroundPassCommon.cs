@@ -64,6 +64,19 @@ public sealed class GroundBallPathInteraction
 
 public static class GroundPassCommon
 {
+    internal static string HoverPreviewReason(HexCell hex, HexCell target, HexCell selected, bool dangerous)
+        => hex == selected ? "passTargetCommitted"
+            : hex == target ? "passTarget"
+            : dangerous ? "dangerousPass" : "ballPath";
+
+    internal static bool IsInAttackingTeamOwnHalf(MatchManager match, HexCell target)
+    {
+        var direction = match.teamInAttack == MatchManager.TeamInAttack.Home
+            ? match.homeTeamDirection : match.awayTeamDirection;
+        return direction == MatchManager.TeamAttackingDirection.LeftToRight
+            ? target.coordinates.x < 0 : target.coordinates.x > 0;
+    }
+
     public static bool IsDangerousInteraction(GroundBallPathInteraction interaction)
     {
         return interaction != null && interaction.Type != GroundBallPathInteractionType.GoalkeeperBoxMove;

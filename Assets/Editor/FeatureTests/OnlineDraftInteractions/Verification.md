@@ -51,3 +51,11 @@ git rev-parse HEAD
 ```
 
 The Windows build script reports success and launches `Build/OnlineGame/Windows/Counterattack.exe`.
+
+## Lobby code placement
+
+The online Draft lobby code uses the scene title and the same gap and padding as
+Create New Game. The four `SpectatorCanCopyCodeAndReturnToOnlineMenu` PlayMode
+cases passed for Setup, Regular, Free Regular, and Arcade with zero failures or
+skips. Unity compiled with zero errors.
+Native results are in `TestResults/GameplayRegression/Runs/20261127T171337364Z/results.xml`.

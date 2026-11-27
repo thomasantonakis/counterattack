@@ -1519,6 +1519,12 @@ public partial class MovementPhaseManager : MonoBehaviour
 
     private void RefreshCurrentMovementHoverFromInput()
     {
+        if (MatchManager.Instance?.IsOnlineAuthorityControlled == true)
+        {
+            hoveredMovementHex = null;
+            return;
+        }
+
         if (!ShouldShowEasyMovementThreats())
         {
             return;

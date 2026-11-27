@@ -48,6 +48,7 @@ public partial class LongBallManager : MonoBehaviour
     private const int TARGET_PRECOMPUTE_BATCH_SIZE = 16;
     private readonly List<HexCell> availableLongBallTargetHexes = new();
     private HexCell hoveredLongBallTargetHex;
+    private HexCell hoveredKeeperRushHex;
     private Coroutine availableTargetPrecomputeRoutine;
     private int availableTargetPrecomputeVersion = 0;
     private float availableTargetPrecomputeStartedAt = 0f;
@@ -123,6 +124,19 @@ public partial class LongBallManager : MonoBehaviour
 
     private void OnHoverReceived(PlayerToken token, HexCell hex)
     {
+        if (isWaitingForDefLBMove && !isResolvingGkPaceMove && MatchManager.Instance?.difficulty_level < 3)
+        {
+            var next = defenderLongBallMoveHexes.Contains(hex) && hexGrid.highlightedHexes.Contains(hex)
+                ? hex : null;
+            if (next == hoveredKeeperRushHex) return;
+            if (hoveredKeeperRushHex != null && hoveredKeeperRushHex.HighlightReason == "MovementDestinationHover")
+                hoveredKeeperRushHex.HighlightHex("PaceAvailable");
+            hoveredKeeperRushHex = next;
+            hoveredKeeperRushHex?.HighlightHex("MovementDestinationHover");
+            return;
+        }
+
+        hoveredKeeperRushHex = null;
         if (!ShouldShowDifficultyOneTargetHighlights() || !isAvailableTargetsReady)
         {
             hoveredLongBallTargetHex = null;
@@ -1362,6 +1376,7 @@ public partial class LongBallManager : MonoBehaviour
 
     public void CleanUpLongBall(bool preserveTargetPrecompute = false)
     {
+        hoveredKeeperRushHex = null;
         longBallResolutionVersion++;
         DuelResolutionPanelController.Instance?.CancelSingle(this);
         isResolvingGkPaceMove = false;
