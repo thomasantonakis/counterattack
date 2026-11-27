@@ -215,6 +215,7 @@ public partial class GameDebugMonitor : MonoBehaviour
     {
         if (CounterAttack.Online.OnlineRoomSession.Current?.HasInitialData == true)
         {
+            RefreshDecisionMakingPanelVisibility(false);
             RefreshOnlineInstructionPalette();
             return;
         }
