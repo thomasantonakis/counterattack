@@ -17,9 +17,12 @@ public sealed class RoomInspectionCard : MonoBehaviour
     [SerializeField] private CameraController cameraController;
     [SerializeField] private AttributeBadge[] outfieldBadges;
     [SerializeField] private AttributeBadge[] goalkeeperBadges;
+    [SerializeField] private RefereePreviewPanel refereePanel;
+    [SerializeField] private RefereePreviewCard refereeCard;
     public CameraController CameraController => cameraController;
     public PlayerToken LockedPlayer { get; private set; }
     public bool IsOpen { get; private set; }
+    public bool TryToggleHoveredReferee() => refereePanel != null && refereePanel.TryToggleRoomPreview();
 
     private void Awake() { Instance = this; Close(); }
     private void OnDisable() { Close(); if (Instance == this) Instance = null; }
@@ -44,6 +47,21 @@ public sealed class RoomInspectionCard : MonoBehaviour
         Resize();
     }
 
+    public void ToggleReferee()
+    {
+        if (refereeCard == null) return;
+        bool wasOpen = refereeCard.gameObject.activeSelf;
+        Close();
+        if (wasOpen) return;
+        IsOpen = true;
+        refereeCard.gameObject.SetActive(true);
+    }
+
+    public void CloseReferee()
+    {
+        if (refereeCard != null && refereeCard.gameObject.activeSelf) Close();
+    }
+
     private static void RefreshBadges(AttributeBadge[] badges)
     {
         if (badges == null) return;
@@ -58,13 +76,14 @@ public sealed class RoomInspectionCard : MonoBehaviour
         IsOpen = false;
         if (outfieldCard != null) outfieldCard.gameObject.SetActive(false);
         if (goalkeeperCard != null) goalkeeperCard.gameObject.SetActive(false);
+        if (refereeCard != null) refereeCard.gameObject.SetActive(false);
     }
 
     private void LateUpdate()
     {
         if (cardArea != null && cardArea.TryGetComponent<CanvasGroup>(out var group))
             group.alpha = GameInputManager.IsPresentationModalActive ? 0f : 1f;
-        if (IsOpen) Resize();
+        if (LockedPlayer != null) Resize();
     }
     private void Resize()
     {
