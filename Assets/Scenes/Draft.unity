@@ -74432,10 +74432,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: 2320572109075944409, guid: d68c1390c3aa74bba8f85c964c8f55aa, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 3663178851814776617}
+    m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d68c1390c3aa74bba8f85c964c8f55aa, type: 3}
 --- !u!114 &3485708253792727022
@@ -79329,9 +79326,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 1984026857901083279, guid: 294bd47379cd74024a632f77af6d23d9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3663178851814776617}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 294bd47379cd74024a632f77af6d23d9, type: 3}
+--- !u!114 &7838408686700583487 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8084295202828865564, guid: 294bd47379cd74024a632f77af6d23d9, type: 3}
+  m_PrefabInstance: {fileID: 7838408686700583486}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!222 &7921910462818626465
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -80907,7 +80918,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 339f497e29245714497d2dc5757d3b44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CounterAttack.Online.OnlineLobbyCodeTitle
-  title: {fileID: 2147001012}
+  title: {fileID: 7838408686700583487}
 --- !u!114 &7974160574961683178
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -81193,18 +81204,13 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5929970326107025495}
-  m_Father: {fileID: 3480998847391390376}
+  m_Father: {fileID: 112353287}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 298.94, y: 0}
+  m_AnchoredPosition: {x: 351.8201, y: 0.0000076293945}
   m_SizeDelta: {x: 128, y: 39}
   m_Pivot: {x: 0, y: 0.5}
---- !u!224 &3480998847391390376 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 2320572109075944409, guid: d68c1390c3aa74bba8f85c964c8f55aa, type: 3}
-  m_PrefabInstance: {fileID: 3480998847391390375}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &8166642695639283629
 RectTransform:
   m_ObjectHideFlags: 0
