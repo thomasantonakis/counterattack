@@ -56,6 +56,9 @@ public sealed partial class GoalkeeperBoxEntryFixture
         Submit("home",OnlineGroundPassAuthority.HighSkipAction);Submit("away",OnlineGroundPassAuthority.HighSkipAction);
         RigOnlineLongRoll(5);Submit("home",OnlineGroundPassAuthority.HighRollAction);
         yield return Until(()=>authority.Capture().stage=="high.keeper","defending keeper owns high-pass challenge",120);
+        Assert.That(ball.GetCurrentHex(), Is.SameAs(Hex(0, 6)));
+        Assert.That(Hex(0, 6).HighlightReason, Is.Not.EqualTo("passTargetCommitted"),
+            "The accurate High Pass marker clears at landing even when a goalkeeper decision follows");
         var state=authority.Capture();Assert.That(state.owner,Is.EqualTo("Away"));
         Assert.That(authority.Submit("home",OnlineGroundCommand(state,protocol.LastAcceptedSequence(OnlineTeam.Home)+1,
             OnlineGroundPassAuthority.HighKeeperDeclineAction)).Status,Is.EqualTo(OnlineCommandStatus.WrongTeam));

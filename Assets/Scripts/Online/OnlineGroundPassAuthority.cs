@@ -38,6 +38,8 @@ namespace CounterAttack.Online
         public long homeAcceptedSequence, awayAcceptedSequence, homePauseSequence, awayPauseSequence;
         public bool isSharedPaused, connectionHeld;
         public bool ballOnBoard, ballMoving, attackHasPossession, passActive, awaitingTarget, awaitingRoll;
+        [Newtonsoft.Json.JsonProperty(DefaultValueHandling = Newtonsoft.Json.DefaultValueHandling.Ignore)]
+        public bool kickoffGroundPass;
         public bool movementAvailable, firstTimePassAvailable, groundPassAvailable;
         public bool movementActive, playerMoving, goalMotion;
         public OnlineMovementPanelFrame movementPanel;
@@ -332,6 +334,7 @@ namespace CounterAttack.Online
             else if (ground.isActivated && ground.isAwaitingTargetSelection)
             {
                 state.stage = "target";
+                state.kickoffGroundPass = ground.isKickoffPass;
                 foreach (var hex in ground.GetLegalGroundPassTargetsForDecisionPreview())
                 {
                     var id = TargetAction(hex.coordinates.x, hex.coordinates.z);

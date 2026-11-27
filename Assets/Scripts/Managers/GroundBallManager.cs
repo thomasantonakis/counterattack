@@ -676,18 +676,7 @@ public partial class GroundBallManager : MonoBehaviour
                 continue;
             }
 
-            if (hex == currentTargetHex)
-            {
-                hex.HighlightHex("passTargetCommitted");
-            }
-            else if (hex == hoveredHex)
-            {
-                hex.HighlightHex("passTarget");
-            }
-            else
-            {
-                hex.HighlightHex(isDangerous ? "dangerousPass" : "ballPath");
-            }
+            hex.HighlightHex(GroundPassCommon.HoverPreviewReason(hex, hoveredHex, currentTargetHex, isDangerous));
 
             if (!hexGrid.highlightedHexes.Contains(hex))
             {
@@ -1232,13 +1221,7 @@ public partial class GroundBallManager : MonoBehaviour
             return false;
         }
 
-        MatchManager.TeamAttackingDirection attackingDirection = matchManager.teamInAttack == MatchManager.TeamInAttack.Home
-            ? matchManager.homeTeamDirection
-            : matchManager.awayTeamDirection;
-
-        return attackingDirection == MatchManager.TeamAttackingDirection.LeftToRight
-            ? targetHex.coordinates.x < 0
-            : targetHex.coordinates.x > 0;
+        return GroundPassCommon.IsInAttackingTeamOwnHalf(matchManager, targetHex);
     }
 
     private void ProcessCurrentPathInteraction()

@@ -4,6 +4,16 @@
   "fixtures": [
     {
       "mode": "playmode",
+      "fixture": "OnlinePairedFeedbackPlayModeTests",
+      "categories": [
+        "OnlinePairedFeedback"
+      ],
+      "definition_sha256": "6a396163221ad790c75a21535b06d7aff47cb77cdcb64c9643f894864f34b907",
+      "route": "native",
+      "source": "Assets/Tests/PlayMode/Features/OnlinePairedFeedback/OnlinePairedFeedbackPlayModeTests.cs"
+    },
+    {
+      "mode": "playmode",
       "fixture": "OnlineMovementSummaryPlayModeTests",
       "categories": [
         "OnlineMovementSummary"
@@ -1425,6 +1435,19 @@
     }
   ],
   "test_additions": [
+    {
+      "id": "OnlinePairedFeedbackPlayModeTests.KickoffHoverRespectsAssistance(2)",
+      "feature": "OnlinePairedFeedback",
+      "mode": "playmode",
+      "fixture": "OnlinePairedFeedbackPlayModeTests",
+      "method": "KickoffHoverRespectsAssistance",
+      "parameters": [
+        2
+      ],
+      "mac_status": "deferred_until_user_requests",
+      "windows_status": "passed",
+      "windows_evidence": "TestResults/GameplayRegression/Runs/20261127T164719718Z/results.xml"
+    },
     {
       "id": "OnlineMovementSummaryPlayModeTests.SharedInstructionsShowTheMovementPhaseAndCount",
       "feature": "OnlineMovement",

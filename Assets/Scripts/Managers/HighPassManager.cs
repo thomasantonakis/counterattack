@@ -83,7 +83,8 @@ public partial class HighPassManager : MonoBehaviour
     private int availableTargetPrecomputeStartedFrame = 0;
     private bool pendingDifficultyOneTargetHighlightRefresh = false;
     private bool committedTargetMissed;
-    private bool missedTargetCleared;
+    private bool committedTargetHighlightCleared;
+    private HexCell hoveredSetupMoveHex;
     private PlayerToken pendingSetPieceTakerForCommit = null;
     private PlayerToken activeHighPassKickerForTargetExclusion = null;
     private HexCell highPassKickHexForInterceptionSuppression = null;
@@ -130,7 +131,7 @@ public partial class HighPassManager : MonoBehaviour
     private bool ShouldShowCommittedTargetOverlay()
     {
         return currentTargetHex != null
-            && !missedTargetCleared
+            && !committedTargetHighlightCleared
             && isActivated
             && (isWaitingForAttackerSelection
                 || isWaitingForAttackerMove
@@ -456,6 +457,20 @@ public partial class HighPassManager : MonoBehaviour
 
     private void OnHoverReceived(PlayerToken token, HexCell hex)
     {
+        if (MatchManager.Instance?.difficulty_level == 2 && selectedToken != null
+            && (isWaitingForAttackerMove || isWaitingForDefenderMove) && !movementPhaseManager.isPlayerMoving)
+        {
+            var next = hex != null && hexGrid.highlightedHexes.Contains(hex)
+                && (hex == hoveredSetupMoveHex || hex.HighlightReason == "PaceAvailable") ? hex : null;
+            if (next == hoveredSetupMoveHex) return;
+            if (hoveredSetupMoveHex != null && hoveredSetupMoveHex.HighlightReason == "MovementDestinationHover")
+                hoveredSetupMoveHex.HighlightHex("PaceAvailable");
+            hoveredSetupMoveHex = next;
+            hoveredSetupMoveHex?.HighlightHex("MovementDestinationHover");
+            return;
+        }
+
+        hoveredSetupMoveHex = null;
         if (!ShouldShowDifficultyOneTargetHighlights() || !isAvailableTargetsReady)
         {
             hoveredHighPassTargetHex = null;
@@ -1629,7 +1644,7 @@ public partial class HighPassManager : MonoBehaviour
         Debug.Log($"Passer: {attackerToken.name}, HighPass: {highPassAttribute}");
         bool accuratePass = GameplayScore.Total(highPassAttribute, diceRoll, jackpot: accuracyRoll.isJackpot) >= ACCURACY_THRESHOLD;
         committedTargetMissed = !accuratePass;
-        if (committedTargetMissed) ClearMissedTargetHighlight();
+        if (committedTargetMissed) ClearCommittedTargetHighlight();
         yield return SingleRollResolutionPresentation.Resolve(this, accuracyRoll,
             accuratePass ? "ACCURATE" : "INACCURATE", continueWithScatter: !accuratePass);
         if(!IsOnlineHighResolutionCurrent(onlineVersion,online))yield break;
@@ -1823,6 +1838,7 @@ public partial class HighPassManager : MonoBehaviour
         finally{if(onlineFlightVersion==onlineVersion)onlineFlightInProgress=false;}
         if(!IsOnlineHighResolutionCurrent(onlineVersion,online))yield break;
         ball.PlaceAtCell(targetHex);
+        if (!committedTargetHighlightCleared) ClearCommittedTargetHighlight();
         Debug.Log($"Ball has reached its destination: {targetHex.coordinates}");
 
         if (
@@ -1987,16 +2003,16 @@ public partial class HighPassManager : MonoBehaviour
         return gkHex != null && HexGrid.GetHexesInRange(hexGrid, finalTargetHex, 2).Contains(gkHex);
     }
 
-    private void ClearMissedTargetHighlight()
+    private void ClearCommittedTargetHighlight()
     {
-        missedTargetCleared = true;
+        committedTargetHighlightCleared = true;
         currentTargetHex?.ResetHighlight();
         hexGrid.highlightedHexes.Remove(currentTargetHex);
     }
 
     private void HighlightCommittedHighPassTarget()
     {
-        if (currentTargetHex == null || missedTargetCleared)
+        if (currentTargetHex == null || committedTargetHighlightCleared)
         {
             return;
         }
@@ -2337,7 +2353,7 @@ public partial class HighPassManager : MonoBehaviour
         onlineResolutionVersion++;onlineKeeperMoving=false;onlineTargetFingerprint=null;
         if(MatchManager.Instance?.IsOnlineAuthorityControlled==true)DuelResolutionPanelController.Instance?.CancelSingle(this);
         committedTargetMissed = false;
-        missedTargetCleared = false;
+        committedTargetHighlightCleared = false;
         IsDirectGoalKick = false;
         selectedToken = null;
         currentTargetHex = null;

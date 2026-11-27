@@ -43,11 +43,39 @@ public sealed partial class OnlineFullRoomSceneFixture
         var target = board.cells.First(cell => cell.GetOccupyingToken() == null && cell.isInGoal == 0
             && targetState.legalActions.Contains(OnlineGroundPassAuthority.TargetAction(cell.coordinates.x, cell.coordinates.z)));
         var hover = typeof(OnlineBoardInput).GetMethod("PresentGroundPassHover", BindingFlags.Instance | BindingFlags.NonPublic);
-        var highlight = typeof(HexCell).GetField("onlinePassHover", BindingFlags.Instance | BindingFlags.NonPublic);
+        var highlight = typeof(HexCell).GetField("localPassPreviewReason", BindingFlags.Instance | BindingFlags.NonPublic);
         hover.Invoke(board.boardInput, new object[] { target });
-        Assert.That(highlight.GetValue(target), Is.EqualTo(assistance != 3));
+        Assert.That(highlight.GetValue(target), Is.EqualTo(assistance == 1 ? "passTarget" : null));
+        var targetHover = typeof(OnlineBoardInput).GetMethod("PresentTargetHover", BindingFlags.Instance | BindingFlags.NonPublic);
+        var orange = typeof(HexCell).GetField("localGoalHover", BindingFlags.Instance | BindingFlags.NonPublic);
+        targetHover.Invoke(board.boardInput, new object[] { target });
+        Assert.That(orange.GetValue(target), Is.EqualTo(assistance == 2));
+        targetHover.Invoke(board.boardInput, new object[] { null });
+        Assert.That(orange.GetValue(target), Is.False);
         hover.Invoke(board.boardInput, new object[] { null });
-        Assert.That(highlight.GetValue(target), Is.False);
+        Assert.That(highlight.GetValue(target), Is.Null);
+
+        if (assistance != 2) yield break;
+        var x = target.coordinates.x;
+        var z = target.coordinates.z;
+        var alternate = board.cells.First(cell => cell != target && cell.isInGoal == 0 && !cell.isOutOfBounds);
+        foreach (var action in new[] { "ftp.target", "ftp.move", "long.target", "high.target", "movement.target",
+            "final-third.target", "high.move", "long.keeper.move", "keeper.move", "shot.target", "penalty.target" })
+        {
+            if (action.EndsWith(".move") || action is "movement.target" or "final-third.target")
+                target.HighlightHex("PaceAvailable");
+            targetState.legalActions = new[] { $"{action}:{x}:{z}" };
+            board.Display(targetState, "hover check");
+            targetHover.Invoke(board.boardInput, new object[] { alternate });
+            Assert.That(orange.GetValue(alternate), Is.False, action);
+            targetHover.Invoke(board.boardInput, new object[] { target });
+            Assert.That(orange.GetValue(target), Is.True, action);
+            targetState.connectionHeld = true;
+            board.Display(targetState, "connection held");
+            Assert.That(orange.GetValue(target), Is.False, action);
+            targetState.connectionHeld = false;
+        }
+        Assert.That(target.HighlightReason, Is.EqualTo("PaceAvailable"));
     }
 
     public IEnumerator RunGuestGoalTargetsAndStatus()

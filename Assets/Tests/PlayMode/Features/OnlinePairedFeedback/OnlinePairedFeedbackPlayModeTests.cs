@@ -22,7 +22,7 @@ public sealed class OnlinePairedFeedbackPlayModeTests
         => Run("OnlineDraftSceneFixture", "Run", false, false, "team-average");
 
     [UnityTest]
-    public IEnumerator KickoffHoverRespectsAssistance([Values(1, 3)] int assistance)
+    public IEnumerator KickoffHoverRespectsAssistance([Values(1, 2, 3)] int assistance)
         => Run("OnlineFullRoomSceneFixture", "RunOnlineKickoffAssistance", assistance);
 
     [UnityTest]
