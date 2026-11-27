@@ -25,7 +25,8 @@ public static class RoomInputOwnership
         }
         if (key.key == KeyCode.Space && RoomInspectionCard.Instance != null)
         {
-            RoomInspectionCard.Instance.Toggle(hovered);
+            var inspection = RoomInspectionCard.Instance;
+            if (!physical || !inspection.TryToggleHoveredReferee()) inspection.Toggle(hovered);
             key.Consume(nameof(RoomInspectionCard)); return true;
         }
         if (!physical || !CardOpen) return false;

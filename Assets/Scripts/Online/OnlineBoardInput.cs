@@ -60,6 +60,7 @@ namespace CounterAttack.Online
                 || !OnlineRoomSession.IsSpectator && GameInputManager.IsPresentationModalActive) return false;
             var card = RoomInspectionCard.Instance;
             if (card == null) return false;
+            if (card.TryToggleHoveredReferee()) return true;
             if (card.IsOpen)
             {
                 card.Close();

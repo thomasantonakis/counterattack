@@ -245,8 +245,11 @@ public static class TokenKitCatalog
 
     public static TokenKitSimilarityBreakdown GetSimilarityBreakdown(string presetIdOrAliasA, string presetIdOrAliasB)
     {
-        TokenKitPreset presetA = GetPresetByIdOrAlias(presetIdOrAliasA);
-        TokenKitPreset presetB = GetPresetByIdOrAlias(presetIdOrAliasB);
+        return GetSimilarityBreakdown(GetPresetByIdOrAlias(presetIdOrAliasA), GetPresetByIdOrAlias(presetIdOrAliasB));
+    }
+
+    internal static TokenKitSimilarityBreakdown GetSimilarityBreakdown(TokenKitPreset presetA, TokenKitPreset presetB)
+    {
         if (presetA == null || presetB == null)
         {
             return new TokenKitSimilarityBreakdown(0f, 0f, 0f, 0f, false);
@@ -814,7 +817,7 @@ public static class TokenKitCatalog
             "Red");
     }
 
-    private static float GetColorSimilarity(Color a, Color b)
+    internal static float GetColorSimilarity(Color a, Color b)
     {
         float normalizedDistance = Mathf.Clamp01(GetColorDistance(a, b));
         float closeness = 1f - normalizedDistance;
