@@ -152,6 +152,78 @@ public sealed class RefereePreviewEditorTests
         }
     }
 
+    [TestCase("Room")]
+    [TestCase("Draft")]
+    [TestCase("FreeDraft")]
+    public void KitChangesRecolorOnlyTheSmallPanelAndRestoreYellow(string sceneName)
+    {
+        var scene = Open(sceneName);
+        var panel = Find<RefereePreviewPanel>(scene);
+        var card = Find<RefereePreviewCard>(scene);
+        var background = panel.GetComponent<Image>();
+        var name = panel.transform.Find("RefereeName").GetComponent<TMP_Text>();
+        var yellow = background.color;
+        var yellowText = name.color;
+        var badge = panel.transform.Find("LeniencyBadge").GetComponent<Image>();
+        var cardFace = card.GetComponent<RawImage>();
+        var cardTexture = cardFace.texture;
+        var cardTint = cardFace.color;
+        var match = sceneName == "Room" ? Find<MatchManager>(scene) : null;
+        var draft = match == null ? Find<DraftManager>(scene) : null;
+
+        void ApplyKits(string home, string away, string homeKeeper, string awayKeeper)
+        {
+            const string referee = "Read - 5";
+            if (match != null)
+            {
+                match.gameData ??= new MatchManager.GameData
+                {
+                    gameSettings = new MatchManager.GameSettings { referee = referee }
+                };
+                var settings = match.gameData.gameSettings;
+                settings.homeKit = home;
+                settings.awayKit = away;
+                settings.homeGKKit = homeKeeper;
+                settings.awayGKKit = awayKeeper;
+                match.ApplyLiveGameSettingsChanges();
+            }
+            else
+            {
+                draft.currentSettings = new GameSettings
+                {
+                    referee = referee,
+                    homeKit = home, awayKit = away, homeGKKit = homeKeeper, awayGKKit = awayKeeper
+                };
+            }
+            Refresh(panel);
+        }
+
+        void AssertKitPalette(string id)
+        {
+            var expected = TokenKitCatalog.GetInstructionPalette(TokenKitCatalog.GetPresetByIdOrAlias(id).Style);
+            Assert.That(background.color, Is.EqualTo(expected.Primary));
+            Assert.That((Color32)name.color, Is.EqualTo((Color32)expected.Secondary));
+            Assert.That(cardFace.texture, Is.SameAs(cardTexture));
+            Assert.That(cardFace.color, Is.EqualTo(cardTint));
+            Assert.That(badge.color, Is.EqualTo(MatchStatsUI.GetInspectionAttributeColor(5)));
+        }
+
+        ApplyKits("021", "sco", "gk2", "gk3");
+        Assert.That(background.color, Is.EqualTo(yellow));
+        Assert.That(name.color, Is.EqualTo(yellowText));
+        ApplyKits("021", "bra", "gk2", "gk3");
+        AssertKitPalette("gk4");
+        ApplyKits("bra", "021", TokenKitCatalog.GetPresetByIdOrAlias("gk4").DisplayName, "gk3");
+        AssertKitPalette("gk5");
+        ApplyKits("bra", "021", "gk4", "gk5");
+        AssertKitPalette("gk2");
+        ApplyKits("021", "sco", "gk2", "gk6");
+        AssertKitPalette("gk4");
+        ApplyKits("021", "sco", "gk2", "gk3");
+        Assert.That(background.color, Is.EqualTo(yellow));
+        Assert.That(name.color, Is.EqualTo(yellowText));
+    }
+
     private static Scene Open(string name) => EditorSceneManager.OpenScene($"Assets/Scenes/{name}.unity", OpenSceneMode.Single);
     private static T Find<T>(Scene scene) where T : Component =>
         scene.GetRootGameObjects().SelectMany(root => root.GetComponentsInChildren<T>(true)).Single();
